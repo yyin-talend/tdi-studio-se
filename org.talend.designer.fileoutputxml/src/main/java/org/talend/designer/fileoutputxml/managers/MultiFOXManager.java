@@ -26,6 +26,7 @@ import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
+import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
  * wzhang class global comment. Detailled comment
@@ -69,7 +70,7 @@ public class MultiFOXManager extends FOXManager {
             String mainPath = null;
             String currentPath = null;
 
-            String schemaId = metadataTable.getLabel() + ":";
+            String schemaId = metadataTable.getLabel() + ":"; //$NON-NLS-1$
 
             // build root tree
             List<Map<String, String>> rootTable = (List<Map<String, String>>) foxComponent
@@ -101,7 +102,7 @@ public class MultiFOXManager extends FOXManager {
                 }
                 temp.setRow(metadataTable.getLabel());
                 if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                    columnName = columnName.replace(schemaId, "");
+                    columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
                     temp.setColumn(metadataTable.getColumn(columnName));
                     temp.setTable(metadataTable);
                 }
@@ -141,7 +142,7 @@ public class MultiFOXManager extends FOXManager {
                 }
                 temp.setRow(metadataTable.getLabel());
                 if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                    columnName = columnName.replace(schemaId, "");
+                    columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
                     temp.setColumn(metadataTable.getColumn(columnName));
                     temp.setTable(metadataTable);
                 }
@@ -179,7 +180,7 @@ public class MultiFOXManager extends FOXManager {
                 }
                 temp.setRow(metadataTable.getLabel());
                 if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                    columnName = columnName.replace(schemaId, "");
+                    columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
                     temp.setColumn(metadataTable.getColumn(columnName));
                     temp.setTable(metadataTable);
                 }
@@ -191,19 +192,19 @@ public class MultiFOXManager extends FOXManager {
 
             rootNode.setParent(null);
             treeData.add(rootNode);
-
+            rootNode.setRow(metadataTable.getLabel());
             contents.put(metadataTable.getLabel(), treeData);
             i++;
         }
 
     }
 
-    private void tableLoader(Element element, String parentPath, List<Map<String, String>> table) {
+    protected void tableLoaderX(Element element, String parentPath, List<Map<String, String>> table) {
         if (element.getTable() != null) {
-            String schemaId = "";
+            String schemaId = ""; //$NON-NLS-1$
             // set parent node
             if (foxComponent.istFileOutputXMLMultiSchema()) {
-                schemaId = element.getTable().getLabel() + ":";
+                schemaId = element.getTable().getLabel() + ":"; //$NON-NLS-1$
             }
 
             Map<String, String> newMap = new HashMap<String, String>();
@@ -250,12 +251,20 @@ public class MultiFOXManager extends FOXManager {
         List<Map<String, String>> root = new ArrayList<Map<String, String>>();
         List<Map<String, String>> loop = new ArrayList<Map<String, String>>();
         List<Map<String, String>> group = new ArrayList<Map<String, String>>();
-        for (String schema : contents.keySet()) {
-            currentSchema = schema;
-            root.addAll(getRootTable());
-            loop.addAll(getLoopTable());
-            group.addAll(getGroupTable());
-        }
+        // List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(foxComponent,
+        // IConnectionCategory.FLOW);
+        // for (IConnection conn : incomingConnections) {
+        // IMetadataTable metadataTable = conn.getMetadataTable();
+        // String label = metadataTable.getLabel();
+        // currentSchema = label;
+        // root.addAll(getRootTable());
+        // loop.addAll(getLoopTable());
+        // group.addAll(getGroupTable());
+        //        
+        // }
+        root.addAll(getRootTable());
+        loop.addAll(getLoopTable());
+        group.addAll(getGroupTable());
         if (foxComponent.setTableElementParameter(root, FileOutputXMLComponent.ROOT)) {
             result = true;
         }
@@ -267,4 +276,55 @@ public class MultiFOXManager extends FOXManager {
         }
         return result;
     }
+
+    @Override
+    public List<Map<String, String>> getGroupTable() {
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+        for (String key : this.contents.keySet()) {
+            List<FOXTreeNode> list = contents.get(key);
+            if (list.size() > 0) {
+                FOXTreeNode rootNode = list.get(0);
+                Element groupNode = (Element) TreeUtil.getGroupNode(rootNode);
+                if (groupNode != null) {
+                    String path = TreeUtil.getPath(groupNode);
+                    tableLoader(groupNode, path.substring(0, path.lastIndexOf("/")), result); //$NON-NLS-1$
+                }
+            }
+        }
+        return result;
+
+    }
+
+    @Override
+    public List<Map<String, String>> getLoopTable() {
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+        for (String key : this.contents.keySet()) {
+            List<FOXTreeNode> list = contents.get(key);
+            if (list.size() > 0) {
+                FOXTreeNode rootNode = list.get(0);
+                Element loopNode = (Element) TreeUtil.getLoopNode(rootNode);
+                if (loopNode != null) {
+                    String path = TreeUtil.getPath(loopNode);
+                    tableLoader(loopNode, path.substring(0, path.lastIndexOf("/")), result); //$NON-NLS-1$
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Map<String, String>> getRootTable() {
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+        for (String key : this.contents.keySet()) {
+            List<FOXTreeNode> list = contents.get(key);
+            if (list.size() > 0) {
+                FOXTreeNode rootNode = list.get(0);
+                if (rootNode != null) {
+                    tableLoader((Element) rootNode, "", result); //$NON-NLS-1$
+                }
+            }
+        }
+        return result;
+    }
+
 }

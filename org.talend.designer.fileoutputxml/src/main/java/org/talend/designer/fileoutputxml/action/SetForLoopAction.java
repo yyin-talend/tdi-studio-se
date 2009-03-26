@@ -18,6 +18,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
+import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
 
@@ -70,21 +71,23 @@ public class SetForLoopAction extends SelectionProviderAction {
         if (node.isLoop()) {
             return;
         }
+        FOXManager foxManager = foxui.getFoxManager();
 
+        FOXTreeNode rootTreeData = foxManager.getRootFOXTreeNode(node);
         TreeUtil.clearSubGroupNode(node);
         // make sure group element is a ancestor of loop, or no group element.
         if (TreeUtil.findUpGroupNode(node) == null) {
-            TreeUtil.clearSubGroupNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+            TreeUtil.clearSubGroupNode(rootTreeData);
         }
-        TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
-        TreeUtil.clearMainNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        TreeUtil.clearLoopNode(rootTreeData);
+        TreeUtil.clearMainNode(rootTreeData);
 
         if (node.isGroup()) {
             node.setGroup(false);
         }
         node.setLoop(true);
         if (foxui != null) {
-            foxui.updateStatus(null);
+            foxui.updateStatus();
         }
         TreeUtil.upsetMainNode(node);
         xmlViewer.refresh();

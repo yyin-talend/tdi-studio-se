@@ -90,7 +90,7 @@ public class FOXManager {
         List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.LOOP);
         if (currentSchema == null)
             return loopTable.size() <= 0;
-           // modified by wzhang,for multiple schema
+        // modified by wzhang,for multiple schema
         List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
         for (Map<String, String> loopMap : loopTable) {
             String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
@@ -256,7 +256,6 @@ public class FOXManager {
         }
 
         rootNode.setParent(null);
-
         treeData.add(rootNode);
 
     }
@@ -299,7 +298,7 @@ public class FOXManager {
         return result;
     }
 
-    private void tableLoader(Element element, String parentPath, List<Map<String, String>> table) {
+    protected void tableLoader(Element element, String parentPath, List<Map<String, String>> table) {
         Map<String, String> newMap = new HashMap<String, String>();
         String currentPath = parentPath + "/" + element.getLabel(); //$NON-NLS-1$
         newMap.put(FileOutputXMLComponent.PATH, currentPath);
@@ -345,12 +344,25 @@ public class FOXManager {
         return result;
     }
 
-    public List<FOXTreeNode> getTreeData() {
-
-        if (currentSchema != null) {
-            treeData = contents.get(currentSchema);
+    public List<FOXTreeNode> getTreeData(String curSchema) {
+        if (currentSchema == null) {
+            return treeData;
+        } else {
+            return contents.get(curSchema);
         }
-        return treeData;
+
+    }
+
+    public List<FOXTreeNode> getTreeData() {
+        if (currentSchema == null) {
+            return treeData;
+        } else {
+            List<FOXTreeNode> tmpTreeData = new ArrayList<FOXTreeNode>();
+            for (String key : contents.keySet()) {
+                tmpTreeData.addAll(contents.get(key));
+            }
+            return tmpTreeData;
+        }
     }
 
     public List<IMetadataColumn> getSchemaData() {
@@ -393,12 +405,33 @@ public class FOXManager {
             }
             FOXTreeNode parent = current;
             for (int i = 0; i < nods.length - (parentLevel + 1); i++) {
-                parent = parent.getParent();
+                FOXTreeNode tmpParent = parent.getParent();
+                if (tmpParent == null) {
+                    break;
+                }
             }
             if (parent != null)
                 parent.addChild(temp);
         }
 
         return temp;
+    }
+
+    /**
+     * 
+     * DOC wzhang Comment method "getRootFOXTreeNode".
+     * 
+     * @param node
+     * @return
+     */
+    public FOXTreeNode getRootFOXTreeNode(FOXTreeNode node) {
+        if (node != null) {
+            FOXTreeNode parent = node.getParent();
+            if (parent == null) {
+                return node;
+            }
+            return getRootFOXTreeNode(parent);
+        }
+        return null;
     }
 }

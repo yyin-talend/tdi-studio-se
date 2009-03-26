@@ -177,9 +177,9 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
         boolean flagLoop = false;
 
         // add by wzhang. column show with schema name added for mutiSchema
-        String schemaId = "";
+        String schemaId = ""; //$NON-NLS-1$
         if (istFileOutputXMLMultiSchema()) {
-            schemaId = dataComponent.getConnection().getMetadataTable().getLabel() + ":";
+            schemaId = dataComponent.getConnection().getMetadataTable().getLabel() + ":"; //$NON-NLS-1$
         }
 
         for (ColumnNameChanged col : dataComponent.getColumnNameChanged()) {
@@ -226,7 +226,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
         boolean flagLoop = false;
 
         // add by wzhang. column show with schema name added for mutiSchema
-        String schemaId = "";
+        String schemaId = ""; //$NON-NLS-1$
         if (istFileOutputXMLMultiSchema()) {
             return;
         }
@@ -356,7 +356,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      * @return
      */
     public boolean istWriteXMLField() {
-        return getComponent().getName().equals("tWriteXMLField");
+        return getComponent().getName().equals("tWriteXMLField"); //$NON-NLS-1$
     }
 
     /**
@@ -366,7 +366,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      * @return
      */
     public boolean istFileOutputXMLMultiSchema() {
-        return getComponent().getName().equals("tFileOutputXMLMultiSchema");
+        return getComponent().getName().equals("tFileOutputXMLMultiSchema"); //$NON-NLS-1$
     }
 
     /**

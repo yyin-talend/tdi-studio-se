@@ -21,7 +21,6 @@ import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
-import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 
 /**
@@ -78,7 +77,7 @@ public class DeleteNodeAction extends SelectionProviderAction {
         // xmlViewer.refresh();
         // }
         if (node.isLoop() || node.isGroup()) {
-            foxui.updateStatus(Messages.getString("FOXUI.NoLoop")); //$NON-NLS-1$
+            foxui.updateStatus();
         }
         xmlViewer.refresh(parent);
         xmlViewer.expandAll();

@@ -1889,13 +1889,8 @@ public class Node extends Element implements INode {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName())) { //$NON-NLS-1$
-                        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode,
-                                IConnectionCategory.FLOW);
-                        if (tableValues.size() != incomingConnections.size()) {
-                            String errorMessage = Messages.getString("Node.eachRowNeedLoop", param.getDisplayName()); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                        }
+                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$
+                        checkFileOutputXMLMultiSchemaComponent(param, tableValues);
                     } else {
                         if (tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
@@ -1911,13 +1906,8 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName())) { //$NON-NLS-1$
-                        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode,
-                                IConnectionCategory.FLOW);
-                        if (tableValues.size() != incomingConnections.size()) {
-                            String errorMessage = Messages.getString("Node.eachRowNeedLoop", param.getDisplayName()); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                        }
+                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$
+                        checkFileOutputXMLMultiSchemaComponent(param, tableValues);
                     } else {
                         if (tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
@@ -1993,6 +1983,40 @@ public class Node extends Element implements INode {
             if (x) {
                 addStatus(Process.PARALLEL_STATUS);
             }
+        }
+    }
+
+    /**
+     * DOC wzhang Comment method "checkFileOutputXMLMultiSchemaComponent".
+     * 
+     * @param param
+     * @param tableValues
+     */
+    private void checkFileOutputXMLMultiSchemaComponent(IElementParameter param, List<Map<String, String>> tableValues) {
+        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode, IConnectionCategory.FLOW);
+        List<String> pathList = new ArrayList<String>();
+        for (IConnection conn : incomingConnections) {
+            String uniqueName = conn.getUniqueName();
+            boolean isFirst = true;
+            for (Map<String, String> loopMap : tableValues) {
+                String newPath = loopMap.get("PATH");
+                String columnName = loopMap.get("COLUMN");
+                if (columnName != null && columnName.startsWith(uniqueName)) {
+                    if (loopMap.get("ATTRIBUTE").equals("main")) {
+                        if (isFirst) {
+                            pathList.add(newPath);
+                        }
+                        isFirst = false;
+                    }
+                }
+            }
+        }
+
+        if (pathList.size() != incomingConnections.size()) {
+            // if (tableValues.size() != incomingConnections.size()) {
+            String errorMessage = Messages.getString("Node.eachRowNeedLoop", param.getDisplayName()); //$NON-NLS-1$
+            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+            // }
         }
     }
 

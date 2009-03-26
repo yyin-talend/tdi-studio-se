@@ -103,7 +103,7 @@ public abstract class FOXTreeNode {
             return ""; //$NON-NLS-1$
         } else {
             if (getRow() != null) {
-                return getRow() + ":" + this.column.getLabel();
+                return getRow() + ":" + this.column.getLabel(); //$NON-NLS-1$
             }
             return this.column.getLabel();
         }

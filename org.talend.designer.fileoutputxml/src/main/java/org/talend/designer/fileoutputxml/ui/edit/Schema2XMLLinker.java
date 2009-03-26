@@ -54,6 +54,7 @@ import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.utils.TreeUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
 
@@ -75,6 +76,8 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
 
     private Color selectedRelativeLinkColor;
 
+    private FOXManager manager;
+
     /**
      * amaumont XmlToMetadataTableLinker constructor comment.
      * 
@@ -92,6 +95,14 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
         init(schemaTable, xmlViewer.getTree(), new XmlExtractorBgRefresher(this));
         this.xmlViewer = xmlViewer;
         init();
+    }
+
+    public FOXManager getManager() {
+        return this.manager;
+    }
+
+    public void setManager(FOXManager manager) {
+        this.manager = manager;
     }
 
     /**
@@ -156,8 +167,20 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
             @Override
             public void run(IProgressMonitor monitor) {
 
-                List<TreeItem> allItems = TreeUtils.collectAllItems(xmlViewer.getTree());
-
+                TreeItem root = xmlViewer.getTree().getItem(0);
+                if (getManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
+                    List<FOXTreeNode> treeData = getManager().getTreeData(getManager().getCurrentSchema());
+                    if (treeData != null && treeData.size() > 0) {
+                        FOXTreeNode rootTreeData = treeData.get(0);
+                        for (TreeItem item : xmlViewer.getTree().getItems()) {
+                            if (rootTreeData == item.getData()) {
+                                root = item;
+                                break;
+                            }
+                        }
+                    }
+                }
+                List<TreeItem> allItems = TreeUtils.collectAllItems(root);
                 monitorWrap = new EventLoopProgressMonitor(monitor);
 
                 String taskName = Messages.getString("XmlToXPathLinker.Loop"); //$NON-NLS-1$

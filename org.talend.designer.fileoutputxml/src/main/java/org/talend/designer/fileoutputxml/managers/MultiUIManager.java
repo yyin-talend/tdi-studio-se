@@ -52,7 +52,11 @@ public class MultiUIManager extends UIManager {
      * DOC wzhang Comment method "autoMap". for multiSchema.
      */
     public void autoMap() {
-        FOXTreeNode root = foxManager.getTreeData().get(0);
+        List<FOXTreeNode> treeData = foxManager.getTreeData(foxManager.getCurrentSchema());
+        if (treeData == null || treeData.size() < 1) {
+            return;
+        }
+        FOXTreeNode root = treeData.get(0);
         List<FOXTreeNode> mappableNodes = new ArrayList<FOXTreeNode>();
         getMappableNode((Element) root, mappableNodes);
 
@@ -62,17 +66,21 @@ public class MultiUIManager extends UIManager {
             if (metadataTable != null) {
                 List<IMetadataColumn> schemaData = metadataTable.getListColumns();
                 for (FOXTreeNode node : mappableNodes) {
+                    if (node.getChildren().size() > 0) {
+                        continue;
+                    }
                     for (IMetadataColumn column : schemaData) {
                         if (node.getLabel().equals(column.getLabel())) {
                             node.setTable(metadataTable);
                             node.setColumn(column);
+                            node.setRow(foxManager.getCurrentSchema());
                             break;
                         }
                     }
-                    node.setRow(foxManager.currentSchema);
                 }
             }
         }
+
         this.foxUI.refreshXMLViewer(root);
         this.foxUI.redrawLinkers();
     }

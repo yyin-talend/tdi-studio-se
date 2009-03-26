@@ -85,11 +85,11 @@ public class FOXMultiSchemaUI extends FOXUI {
                 Object obj = selection.getFirstElement();
                 if (obj instanceof IConnection) {
                     foxManager.setCurrentSchema(combo.getText());
-                    xmlViewer.setInput(foxManager.getTreeData());
-                    xmlViewer.expandAll();
+                    // xmlViewer.setInput(foxManager.getTreeData());
+                    xmlViewer.refresh();
                     schemaViewer.setInput(((IConnection) obj).getMetadataTable().getListColumns());
                     // record the schema
-                    refreshXMLViewer(null);
+                    // refreshXMLViewer(null);
                     redrawLinkers();
                 }
             }

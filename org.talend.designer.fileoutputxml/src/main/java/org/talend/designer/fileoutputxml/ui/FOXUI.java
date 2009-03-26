@@ -156,6 +156,7 @@ public class FOXUI {
         xmlToSchemaSash.setWeights(new int[] { 40, 60 });
         linker = new Schema2XMLLinker(this.xmlToSchemaSash);
         linker.init(schemaViewer.getTable(), xmlViewer);
+        linker.setManager(foxManager);
         initSchemaTable();
         new FooterComposite(mainComposite, SWT.NONE, foxManager);
         Tree xmlTree = xmlViewer.getTree();
@@ -201,12 +202,13 @@ public class FOXUI {
      * @param tableItems
      */
     private void initLinker(TreeItem node, TableItem[] tableItems) {
-        IMetadataColumn column = ((FOXTreeNode) node.getData()).getColumn();
-        if (column != null) {
+        FOXTreeNode treeNode = (FOXTreeNode) node.getData();
+        IMetadataColumn column = treeNode.getColumn();
+        if (column != null && treeNode.getChildren().size() <= 0) {
             for (int i = 0; i < tableItems.length; i++) {
                 IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
                 if (mColumn.getLabel().equals(column.getLabel())) {
-                    linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), (FOXTreeNode) node.getData());
+                    linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode);
                     break;
                 }
             }
@@ -223,6 +225,19 @@ public class FOXUI {
     public void redrawLinkers() {
         linker.removeAllLinks();
         TreeItem root = xmlViewer.getTree().getItem(0);
+        if (this.getFoxManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
+            List<FOXTreeNode> treeData = this.getFoxManager().getTreeData(this.getFoxManager().getCurrentSchema());
+            if (treeData != null && treeData.size() > 0) {
+                FOXTreeNode rootTreeData = treeData.get(0);
+                for (TreeItem item : xmlViewer.getTree().getItems()) {
+                    if (rootTreeData == item.getData()) {
+                        root = item;
+                        break;
+                    }
+                }
+            }
+        }
+
         TableItem[] tableItems = schemaViewer.getTable().getItems();
         initLinker(root, tableItems);
         if (linker.linkSize() == 0) {
@@ -231,12 +246,10 @@ public class FOXUI {
     }
 
     public void refreshXMLViewer(FOXTreeNode targetNode) {
-        if (this.foxManager.isNoLoopInComponent()) {
-            header.updateStatus(Messages.getString("FOXUI.NoLoop")); //$NON-NLS-1$
-        } else {
-            updateStatus(null);
-        }
-        xmlViewer.getTree().setData("row", foxManager.getCurrentSchema());
+
+        updateStatus();
+
+        xmlViewer.getTree().setData("row", foxManager.getCurrentSchema()); //$NON-NLS-1$
         this.xmlViewer.refresh();
     }
 
@@ -390,7 +403,10 @@ public class FOXUI {
             manager.add(removeGroupAction);
             manager.add(new Separator());
         }
-        manager.add(importFromXMLAction);
+        if (!this.getFoxManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
+            // PTODO will check this for tFileOutputMultiSchema component later.
+            manager.add(importFromXMLAction);
+        }
     }
 
     private boolean getValue() {
@@ -507,11 +523,50 @@ public class FOXUI {
         selectedText = label;
     }
 
-    public void updateStatus(String message) {
-        if (message != null && message.trim().length() > 0) {
+    public void updateStatus() {
+
+        List<FOXTreeNode> allRootTreeData = foxManager.getTreeData();
+        int num = 0, rootNum = 0;
+        List<FOXTreeNode> onLoopNodes = new ArrayList<FOXTreeNode>();
+        for (FOXTreeNode node : allRootTreeData) {
+            FOXTreeNode rootFOXTreeNode = foxManager.getRootFOXTreeNode(node);
+            if (rootFOXTreeNode != null) {
+                if (existedLoopNode(rootFOXTreeNode)) {
+                    num++;
+                } else {
+                    onLoopNodes.add(rootFOXTreeNode);
+                }
+                rootNum++;
+            }
+        }
+
+        if (num != rootNum) {
+            String message = Messages.getString("FOXUI.NoLoop"); //$NON-NLS-1$
+            if (rootNum > 1) {
+                message = ""; //$NON-NLS-1$
+                for (FOXTreeNode node : onLoopNodes) {
+                    message += node.getRow() + ","; //$NON-NLS-1$
+                }
+                message = message.substring(0, message.length() - 1);
+                message += Messages.getString("FOXUI.needLoop"); //$NON-NLS-1$
+            }
             header.updateStatus(message);
         } else {
             header.clearStatus();
         }
+    }
+
+    private boolean existedLoopNode(FOXTreeNode node) {
+        if (node != null) {
+            if (node.isLoop()) {
+                return true;
+            }
+            for (FOXTreeNode child : node.getChildren()) {
+                if (existedLoopNode(child)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

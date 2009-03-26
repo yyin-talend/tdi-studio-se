@@ -18,6 +18,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
+import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
 
@@ -66,11 +67,14 @@ public class SetGroupAction extends SelectionProviderAction {
         if (node.isGroup()) {
             return;
         }
-        TreeUtil.clearSubGroupNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        FOXManager foxManager = foxui.getFoxManager();
+
+        FOXTreeNode rootTreeData = foxManager.getRootFOXTreeNode(node);
+        TreeUtil.clearSubGroupNode(rootTreeData);
         // old TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         node.setGroup(true);
         // old TreeUtil.guessLoopWithGroup(node);
-        foxui.updateStatus(null);
+        foxui.updateStatus();
         xmlViewer.refresh();
     }
 
