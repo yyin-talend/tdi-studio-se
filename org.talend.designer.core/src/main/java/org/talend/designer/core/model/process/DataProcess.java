@@ -162,15 +162,18 @@ public class DataProcess {
         dataNode.setProcess(graphicalNode.getProcess());
 
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
-            dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), uniqueName); //$NON-NLS-1$
-            dataNode.setActivate(true);
-            dataNode.setStart(graphicalNode.isStart());
-            dataNode.setMetadataList(graphicalNode.getMetadataList());
-            dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
-            dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
-            dataNode.setHasConditionalOutputs(false);
-            dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
-            dataNode.setProcess(graphicalNode.getProcess());
+            IComponent component = ComponentsFactoryProvider.getInstance().get("tDummyRow");
+            if (component != null) { // only if component is available
+                dataNode = new DataNode(component, uniqueName); //$NON-NLS-1$
+                dataNode.setActivate(true);
+                dataNode.setStart(graphicalNode.isStart());
+                dataNode.setMetadataList(graphicalNode.getMetadataList());
+                dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+                dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
+                dataNode.setHasConditionalOutputs(false);
+                dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
+                dataNode.setProcess(graphicalNode.getProcess());
+            }
         }
         dataNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
 
@@ -284,6 +287,10 @@ public class DataProcess {
     @SuppressWarnings("unchecked")
     private INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
             List<? extends IElementParameter> parameters) {
+
+        if (ComponentsFactoryProvider.getInstance().get("tFlowMeter") == null) {
+            return targetNode;
+        }
         // from current node to vFlowMeter node.
         DataConnection dataConnec = new DataConnection();
         dataConnec.setActivate(connection.isActivate());
@@ -991,6 +998,9 @@ public class DataProcess {
                 }
                 // Create the new FS component
                 IComponent component = ComponentsFactoryProvider.getInstance().get(FSNODE_COMPONENT_NAME);
+                if (component == null) {
+                    break;
+                }
                 fsNode = new DataNode(component, currentComponent.getUniqueName());
                 fsNode.setActivate(currentComponent.isActivate());
                 fsNode.setStart(currentComponent.isStart());
@@ -1206,6 +1216,9 @@ public class DataProcess {
 
         // create tAsyncOut component
         IComponent component = ComponentsFactoryProvider.getInstance().get("tAsyncOut"); //$NON-NLS-1$
+        if (component == null) {
+            return;
+        }
         DataNode asyncOutNode = new DataNode(component, "tAsyncOut_" + suffix); //$NON-NLS-1$
         asyncOutNode.setActivate(connection.isActivate());
         asyncOutNode.setStart(false);
@@ -1242,6 +1255,9 @@ public class DataProcess {
 
         // create tAsyncIn component
         component = ComponentsFactoryProvider.getInstance().get("tAsyncIn"); //$NON-NLS-1$
+        if (component == null) {
+            return;
+        }
         DataNode asyncInNode = new DataNode(component, "tAsyncIn_" + suffix); //$NON-NLS-1$
         asyncInNode.setActivate(connection.isActivate());
         asyncInNode.setStart(true);

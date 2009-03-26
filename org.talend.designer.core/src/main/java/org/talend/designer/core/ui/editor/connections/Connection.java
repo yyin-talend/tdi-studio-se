@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
@@ -170,7 +171,10 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
             createTraceParamters();
-            createMeterParameters((Process) source.getProcess());
+            IComponent component = ComponentsFactoryProvider.getInstance().get("tFlowMeter");
+            if (component != null) { // only if tFlowMeter is available
+                createMeterParameters((Process) source.getProcess());
+            }
         }
         setName(linkName);
         if (trace != null) {
