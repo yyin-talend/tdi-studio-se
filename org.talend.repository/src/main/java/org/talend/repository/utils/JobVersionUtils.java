@@ -34,8 +34,7 @@ public class JobVersionUtils {
      */
     public static String getCurrentVersion(RepositoryNode repositoryNode) {
         try {
-            return ProxyRepositoryFactory.getInstance().getLastVersion(repositoryNode.getRoot().getProject(),
-                    repositoryNode.getId()).getVersion();
+            return ProxyRepositoryFactory.getInstance().getLastVersion(repositoryNode.getId()).getVersion();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }

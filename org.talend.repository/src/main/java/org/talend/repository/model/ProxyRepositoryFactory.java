@@ -727,16 +727,20 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#getAllVersion(java.lang.String)
      */
     public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
-        List<IRepositoryObject> allVersion = getAllVersion(projectManager.getCurrentProject(), id);
+        List<IRepositoryObject> allVersion = getAllRefVersion(projectManager.getCurrentProject(), id);
+        return allVersion;
+    }
+
+    public List<IRepositoryObject> getAllRefVersion(Project project, String id) throws PersistenceException {
+        List<IRepositoryObject> allVersion = getAllVersion(project, id);
         if (allVersion.isEmpty()) {
-            for (Project p : projectManager.getReferencedProjects()) {
-                allVersion = getAllVersion(p, id);
+            for (Project p : projectManager.getReferencedProjects(project)) {
+                allVersion = getAllRefVersion(p, id);
                 if (!allVersion.isEmpty()) {
                     break;
                 }
             }
         }
-
         return allVersion;
     }
 
@@ -759,10 +763,17 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public IRepositoryObject getLastVersion(String id) throws PersistenceException {
-        IRepositoryObject lastVersion = getLastVersion(projectManager.getCurrentProject(), id);
+
+        IRepositoryObject lastRefVersion = getLastRefVersion(projectManager.getCurrentProject(), id);
+        return lastRefVersion;
+
+    }
+
+    public IRepositoryObject getLastRefVersion(Project project, String id) throws PersistenceException {
+        IRepositoryObject lastVersion = getLastVersion(project, id);
         if (lastVersion == null) {
-            for (Project p : projectManager.getReferencedProjects()) {
-                lastVersion = getLastVersion(p, id);
+            for (Project p : projectManager.getReferencedProjects(project)) {
+                lastVersion = getLastRefVersion(p, id);
                 if (lastVersion != null) {
                     break;
                 }
