@@ -95,12 +95,13 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
     @Override
     protected void createFieldEditors() {
         // Adds a combo for language selection.
-        String[][] entryNamesAndValues = { { Locale.ENGLISH.getDisplayLanguage(), Locale.ENGLISH.getLanguage() },
-                { Locale.FRENCH.getDisplayLanguage(), Locale.FRENCH.getLanguage() },
-                { Locale.CHINESE.getDisplayLanguage(), Locale.CHINESE.getLanguage() },
-                { Locale.GERMAN.getDisplayLanguage(), Locale.GERMAN.getLanguage() },
-                { Locale.JAPANESE.getDisplayLanguage(), Locale.JAPANESE.getLanguage() }, { "Italian", "it" }, { "Brasil", "pt" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                { "Espagnol", "ca" } }; //$NON-NLS-1$ //$NON-NLS-2$
+        String[][] entryNamesAndValues = { { Locale.ENGLISH.getDisplayLanguage(Locale.ENGLISH), Locale.ENGLISH.getLanguage() },
+                { Locale.FRENCH.getDisplayLanguage(Locale.FRENCH), Locale.FRENCH.getLanguage() },
+                { Locale.CHINESE.getDisplayLanguage(Locale.CHINESE), Locale.CHINESE.getLanguage() },
+                { Locale.GERMAN.getDisplayLanguage(Locale.GERMAN), Locale.GERMAN.getLanguage() },
+                { Locale.JAPANESE.getDisplayLanguage(Locale.JAPANESE), Locale.JAPANESE.getLanguage() },
+                { Locale.ITALIAN.getDisplayLanguage(Locale.ITALIAN), Locale.ITALIAN.getLanguage() }, { "Brasil", "br" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                { "Español", "es" }, { "Русский", "ru" } }; //$NON-NLS-1$ //$NON-NLS-2$
         languageSelectionEditor = new OneLineComboFieldEditor(ITalendCorePrefConstants.LANGUAGE_SELECTOR, Messages
                 .getString("I18nPreferencePage.needRestart"), entryNamesAndValues, getFieldEditorParent()); //$NON-NLS-1$
         addField(languageSelectionEditor);
