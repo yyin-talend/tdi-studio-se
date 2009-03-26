@@ -23,10 +23,8 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.proposal.xpath.XPathContentProposal;
-import org.talend.commons.xml.XmlNodeRetriever;
 import org.talend.repository.i18n.Messages;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * ContentProposalProvider which proposes child nodes. <br/>
@@ -159,7 +157,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
                     // System.out.println("nodeLoop : " + i);
 
-                    NodeList nodeList = null;
+                    List<Node> nodeList = null;
 
                     try {
 
@@ -168,7 +166,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
                     } catch (XPathExpressionException e) {
                         ExceptionHandler.process(e);
                     }
-                    if (nodeList != null && nodeList.getLength() == 0) {
+                    if (nodeList != null && nodeList.size() == 0) {
                         try {
                             nodeList = linker.getNodeRetriever().retrieveNodeListFromNode(
                                     modifyXpathToSearchAllChildren(beforeCursorExp, true), nodeLoop);
@@ -180,7 +178,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
                     if (nodeList != null) {
 
-                        int allNodesFieldsLoopSize = nodeList.getLength();
+                        int allNodesFieldsLoopSize = nodeList.size();
                         currentNodeNumber += allNodesFieldsLoopSize;
                         if (allNodesFieldsLoopSize > nodeFieldMax) {
 
@@ -197,9 +195,9 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
                             for (int j = 0; j < nodeFieldNumberOfLoop; ++j) {
                                 // System.out.println("nodeField : " + j);
-                                Node node = nodeList.item(j);
+                                Node node = nodeList.get(j);
                                 String nodeName = node.getNodeName();
-                                String absoluteXPathFromNode = XmlNodeRetriever.getAbsoluteXPathFromNode(node);
+                                String absoluteXPathFromNode = linker.getNodeRetriever().getAbsoluteXPathFromNode(node);
                                 if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
                                         .equals("/")) //$NON-NLS-1$
                                         && !alreadyAdded.contains(absoluteXPathFromNode)) {
@@ -233,7 +231,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
         // ///////////////////////////////////////////////////////////////////////////////////////////////
         // XPath requests for absolute XPath
         //
-        NodeList nodeList = null;
+        List<Node> nodeList = null;
 
         if (!expressionIsEmpty) {
             try {
@@ -245,13 +243,14 @@ public class XPathProposalProvider implements IContentProposalProvider {
         }
 
         if (nodeList != null || expressionIsEmpty) {
-            if (!expressionIsEmpty && nodeList.getLength() > nodeLoopMax) {
+            if (!expressionIsEmpty && nodeList.size() > nodeLoopMax) {
 
                 resultsMayBeIncomplete = true;
 
             } else {
                 try {
-                    nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSearchAllChildren(currentExpr, false));
+                    nodeList = this.linker.getNodeRetriever()
+                            .retrieveNodeList(modifyXpathToSearchAllChildren(currentExpr, false));
                 } catch (XPathExpressionException e) {
                     ExceptionHandler.process(e);
                 }
@@ -259,11 +258,11 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
             if (nodeList != null) {
 
-                for (int j = 0; j < nodeList.getLength(); ++j) {
+                for (int j = 0; j < nodeList.size(); ++j) {
                     // System.out.println("nodeField : " + j);
-                    Node node = nodeList.item(j);
+                    Node node = nodeList.get(j);
                     String nodeName = node.getNodeName();
-                    String absoluteXPathFromNode = XmlNodeRetriever.getAbsoluteXPathFromNode(node);
+                    String absoluteXPathFromNode = linker.getNodeRetriever().getAbsoluteXPathFromNode(node);
                     if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
                             .equals("/")) //$NON-NLS-1$
                             && !alreadyAdded.contains(absoluteXPathFromNode)) {
@@ -317,7 +316,8 @@ public class XPathProposalProvider implements IContentProposalProvider {
      * @param proposals
      */
     private void addTooManyNodesContentProposal(List<IContentProposal> proposals) {
-        XPathContentProposal contentProposal = new XPathContentProposal(Messages.getString("XPathProposalProvider.contentProposal")); //$NON-NLS-1$
+        XPathContentProposal contentProposal = new XPathContentProposal(Messages
+                .getString("XPathProposalProvider.contentProposal")); //$NON-NLS-1$
         proposals.add(contentProposal);
     }
 

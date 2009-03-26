@@ -597,7 +597,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         }
 
         previewInformationLabel.setText(""); //$NON-NLS-1$
-        previewButton.setEnabled(true);
+
+        if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().toLowerCase().endsWith(".xsd")) {
+            previewButton.setEnabled(false);
+        } else {
+            previewButton.setEnabled(true);
+        }
         updateStatus(IStatus.OK, null);
         return true;
     }
@@ -778,16 +783,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 this.linker.createLinks();
             }
             checkFilePathAndManageIt();
-            // Refresh the preview width the adapted rowSeparator
-            // If metadata exist, refreshMetadata
-            // if (getConnection().getXmlFilePath() != null
-            // && !getConnection().getXmlFilePath().equals("") //$NON-NLS-1$
-            // && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()
-            // && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery() != null
-            // && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
-            // && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
-            // refreshPreview();
-            // }
+
+            if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xsd")) {
+                previewButton.setEnabled(false);
+                previewButton.setText("No preview available for XSD file");
+                previewButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                previewButton.getParent().layout();
+            }
         }
     }
 

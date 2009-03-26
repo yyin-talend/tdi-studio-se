@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -31,6 +32,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledText;
@@ -40,11 +43,13 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.MappingTypeRetriever;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
@@ -291,6 +296,13 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                     + "                                                                              "); //$NON-NLS-1$
             return;
         }
+        if (getConnection().getXmlFilePath().endsWith(".xsd")) { //$NON-NLS-1$
+            // no preview for XSD file
+
+            refreshMetaDataTable(null, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets());
+            checkFieldsValue();
+            return;
+        }
 
         try {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -315,6 +327,46 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         checkFieldsValue();
     }
 
+    private void prepareColumnsFromXSD(String file, List<MetadataColumn> columns, List<SchemaTarget> schemaTarget) {
+        Composite composite = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
+        composite.setVisible(false);
+        TreePopulator treePopulator = new TreePopulator(new Tree(composite, SWT.None));
+        ATreeNode node = null;
+        treePopulator.populateTree(file, node);
+        MappingTypeRetriever retriever = MetadataTalendType.getMappingTypeRetriever("xsd_id"); //$NON-NLS-1$
+        for (SchemaTarget schema : schemaTarget) {
+            String relativeXpath = schema.getRelativeXPathQuery();
+            String fullPath = schema.getSchema().getAbsoluteXPathQuery();
+            // adapt relative path
+            String[] relatedSplitedPaths = relativeXpath.split("\\.\\./");
+            if (relatedSplitedPaths.length > 1) {
+                int pathsToRemove = relatedSplitedPaths.length - 1;
+                String[] fullPathSplited = fullPath.split("/");
+                fullPath = "";
+                for (int i = 1; i < (fullPathSplited.length - pathsToRemove); i++) {
+                    fullPath += "/" + fullPathSplited[i];
+                }
+                fullPath += "/" + relatedSplitedPaths[pathsToRemove];
+            } else {
+                fullPath += "/" + relativeXpath;
+            }
+            TreeItem treeItem = treePopulator.getTreeItem(fullPath);
+            if (treeItem != null) {
+                ATreeNode curNode = (ATreeNode) treeItem.getData();
+                MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(schema.getTagName()));
+
+                if (curNode == null || retriever == null) {
+                    metadataColumn.setTalendType(MetadataTalendType.getDefaultTalendType());
+                } else {
+
+                    metadataColumn.setTalendType(retriever.getDefaultSelectedTalendType("xs:" + curNode.getOriginalDataType()));
+                }
+                columns.add(metadataColumn);
+            }
+        }
+    }
+
     /**
      * DOC ocarbone Comment method "refreshMetaData".
      * 
@@ -327,6 +379,19 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         tableEditorView.getMetadataEditor().removeAll();
 
         List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
+
+        String file = ((XmlFileConnection) this.connectionItem.getConnection()).getXmlFilePath();
+
+        if (file != null && file.endsWith(".xsd")) {
+            prepareColumnsFromXSD(file, columns, schemaTarget);
+
+            tableEditorView.getMetadataEditor().addAll(columns);
+            checkFieldsValue();
+            tableEditorView.getTableViewerCreator().layout();
+            tableEditorView.getTableViewerCreator().getTable().deselectAll();
+            informationLabel.setText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
+            return;
+        }
 
         if (csvArray == null || csvArray.getRows().isEmpty()) {
             return;

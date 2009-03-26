@@ -200,7 +200,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // labelIsGuess.setText(Messages.getString("XmlFileStep1.checkBoxIsGuess"));
 
         // file Field XML
-        String[] xmlExtensions = { "*.xml", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String[] xmlExtensions = { "*.xml", "*.xsd", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"), //$NON-NLS-1$
                 xmlExtensions);
 
@@ -325,8 +325,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                     String str;
-                    in = new BufferedReader(new InputStreamReader(
-                            new FileInputStream(getConnection().getXmlFilePath()), guessedCharset.displayName()));
+                    in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
+                            guessedCharset.displayName()));
                     while ((str = in.readLine()) != null) {
                         if (str.contains("encoding")) { //$NON-NLS-1$
                             String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$"; //$NON-NLS-1$
@@ -404,7 +404,6 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
