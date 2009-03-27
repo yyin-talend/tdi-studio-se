@@ -176,7 +176,8 @@ public class PerlProcessor extends Processor {
                 setBreakpoints(codeFile, lineNumbers);
             }
 
-            updateContextCode(codeGen);
+            // updateContextCode(codeGen);
+            syntaxCheck();
 
             service.createPerlRoutineSynchronizer().syncAllRoutines();
             if (checkableEditor != null) {
@@ -190,6 +191,12 @@ public class PerlProcessor extends Processor {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (SystemException e) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
+        }
+    }
+
+    private void syntaxCheck() {
+        if (checkableEditor != null) {
+            checkableEditor.validateSyntax();
         }
     }
 
