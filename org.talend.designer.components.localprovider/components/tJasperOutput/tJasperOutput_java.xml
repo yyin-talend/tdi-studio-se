@@ -90,6 +90,7 @@
 	  <IMPORT NAME="Itext" MODULE="iText-2.1.4.jar" REQUIRED="true" />
 	  <IMPORT NAME="Poi" MODULE="poi-3.2-FINAL-20081019.jar" REQUIRED="true" />
 	  <IMPORT NAME="Jfreechart" MODULE="jfreechart-1.0.3.jar" REQUIRED="true" />
+	  <IMPORT NAME="Jcommon" MODULE="jcommon-1.0.6.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 
