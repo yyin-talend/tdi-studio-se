@@ -67,7 +67,6 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
-import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
@@ -859,7 +858,7 @@ public class DatabaseTableForm extends AbstractForm {
             List<String[]> schemaContent = array.getRows();
             int numbOfColumn = schemaContent.get(0).length;
             for (int i = 1; i <= numbOfColumn; i++) {
-                MetadataColumn oneColum = new MetadataColumnImpl();
+                MetadataColumn oneColum = ConnectionFactory.eINSTANCE.createMetadataColumn();
                 // get the column name from the temp file genenrated by GuessSchemaProcess.java
                 String labelName = (schemaContent.get(0))[i - 1];
                 oneColum.setLabel(labelName);
