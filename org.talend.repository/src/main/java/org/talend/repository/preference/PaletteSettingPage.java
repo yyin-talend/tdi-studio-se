@@ -344,23 +344,27 @@ public class PaletteSettingPage extends ProjectSettingPage {
     }
 
     private void setComponentVisible(String name, boolean visible, boolean restore) {
-        String[] names = name.split(FAMILY_SPEARATOR);
-        String family = names[0];
-        String label = names[1];
-        List<ComponentSetting> components = getComponentsFromProject();
-        for (ComponentSetting componentSetting : components) {
-            if (componentSetting.getFamily().equals(family) && componentSetting.getName().equals(label)) {
-                componentSetting.setHidden(!visible);
-                return;
+        try {
+            String[] names = name.split(FAMILY_SPEARATOR);
+            String family = names[0];
+            String label = names[1];
+            List<ComponentSetting> components = getComponentsFromProject();
+            for (ComponentSetting componentSetting : components) {
+                if (componentSetting.getFamily().equals(family) && componentSetting.getName().equals(label)) {
+                    componentSetting.setHidden(!visible);
+                    return;
+                }
             }
-        }
-        if (!restore) {
-            ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
-            cs.setName(label);
-            cs.setHidden(!visible);
-            cs.setFamily(family);
-            components.add(cs);
-            statusBackup.put(label, !visible);
+            if (!restore) {
+                ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
+                cs.setName(label);
+                cs.setHidden(!visible);
+                cs.setFamily(family);
+                components.add(cs);
+                statusBackup.put(label, !visible);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -448,5 +452,15 @@ public class PaletteSettingPage extends ProjectSettingPage {
             String name = (String) iterator.next();
             setComponentVisibleForRestore(name, statusBackup.get(name));
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preference.ProjectSettingPage#refresh()
+     */
+    @Override
+    public void refresh() {
+
     }
 }

@@ -34,6 +34,8 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
 
     private MultipleThreadDynamicComposite mComposite;
 
+    private Element elem;
+
     /*
      * (non-Javadoc)
      * 
@@ -49,7 +51,7 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
             // display one message box to tell the user the settings is get from old preference page.
             MessageDialog.openInformation(getShell(), getTitle(), Messages.getString("StatLogs.LoadOldPreferences")); //$NON-NLS-1$
         }
-        Element elem = ProjectSettingManager.createStatsAndLogsElement(pro);
+        elem = ProjectSettingManager.createStatsAndLogsElement(pro);
         StatAndLogsSettings stats = pro.getEmfProject().getStatAndLogsSettings();
 
         ElementParameter2ParameterType.loadElementParameters(elem, stats.getParameters());
@@ -96,5 +98,20 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
     protected void performApply() {
         performOk();
         super.performApply();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preference.ProjectSettingPage#refresh()
+     */
+    @Override
+    public void refresh() {
+        if (mComposite != null) {
+            StatAndLogsSettings sal = pro.getEmfProject().getStatAndLogsSettings();
+            ElementParameter2ParameterType.loadElementParameters(elem, sal.getParameters());
+            mComposite.refresh();
+        }
+
     }
 }

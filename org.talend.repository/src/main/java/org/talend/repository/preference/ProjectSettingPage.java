@@ -25,4 +25,6 @@ public abstract class ProjectSettingPage extends PreferencePage {
      * The Project Object.
      */
     protected Project pro = ProjectManager.getInstance().getCurrentProject();
+
+    public abstract void refresh();
 }

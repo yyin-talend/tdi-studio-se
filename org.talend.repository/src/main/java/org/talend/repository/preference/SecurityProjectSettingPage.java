@@ -85,4 +85,16 @@ public class SecurityProjectSettingPage extends ProjectSettingPage {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preference.ProjectSettingPage#refresh()
+     */
+    @Override
+    public void refresh() {
+        if (button != null && !button.isDisposed()) {
+            button.setSelection(pro.getEmfProject().isHidePassword());
+        }
+    }
+
 }

@@ -553,4 +553,15 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preference.ProjectSettingPage#refresh()
+     */
+    @Override
+    public void refresh() {
+        // TODO Auto-generated method stub
+
+    }
+
 }

@@ -103,7 +103,7 @@ public class ProjectSettingDialog {
     public void open() {
         PreferenceManager manager = getNodeManager();
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        final PreferenceDialog dialog = new PreferenceDialog(shell, manager);
+        final PreferenceDialog dialog = new ProjectSettingsPreferenceDialog(shell, manager);
         BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
 
             public void run() {

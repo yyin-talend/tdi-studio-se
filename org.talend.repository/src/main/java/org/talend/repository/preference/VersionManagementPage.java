@@ -802,4 +802,15 @@ public class VersionManagementPage extends ProjectSettingPage {
             ExceptionHandler.process(e);
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preference.ProjectSettingPage#refresh()
+     */
+    @Override
+    public void refresh() {
+        // TODO Auto-generated method stub
+
+    }
 }

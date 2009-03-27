@@ -33,4 +33,15 @@ public class BlankProjectSettingPage extends ProjectSettingPage {
         return com;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preference.ProjectSettingPage#refresh()
+     */
+    @Override
+    public void refresh() {
+        // TODO Auto-generated method stub
+
+    }
+
 }

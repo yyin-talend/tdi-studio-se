@@ -34,6 +34,8 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
 
     private MultipleThreadDynamicComposite mComposite;
 
+    private Element elem;
+
     /*
      * (non-Javadoc)
      * 
@@ -49,7 +51,7 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
             // display one message box to tell the user the settings is get from old preference page.
             MessageDialog.openInformation(getShell(), getTitle(), Messages.getString("ImplicitContextLoad.LoadOldPreferences")); //$NON-NLS-1$
         }
-        Element elem = ProjectSettingManager.createImplicitContextLoadElement(pro);
+        elem = ProjectSettingManager.createImplicitContextLoadElement(pro);
         ImplicitContextSettings implicit = pro.getEmfProject().getImplicitContextSettings();
         ElementParameter2ParameterType.loadElementParameters(elem, implicit.getParameters());
         // create implicitContextLoad Control base on the ImplicitContextLoadElement
@@ -95,6 +97,21 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
     protected void performApply() {
         performOk();
         super.performApply();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preference.ProjectSettingPage#refresh()
+     */
+    @Override
+    public void refresh() {
+        if (mComposite != null) {
+            ImplicitContextSettings implicit = pro.getEmfProject().getImplicitContextSettings();
+            ElementParameter2ParameterType.loadElementParameters(elem, implicit.getParameters());
+            mComposite.refresh();
+        }
+
     }
 
 }

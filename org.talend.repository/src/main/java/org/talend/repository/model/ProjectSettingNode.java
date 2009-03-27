@@ -14,6 +14,7 @@ package org.talend.repository.model;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.preference.PreferenceNode;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -31,11 +32,14 @@ public class ProjectSettingNode extends PreferenceNode {
      */
     public ProjectSettingNode(String id) {
         super(id);
-        // TODO Auto-generated constructor stub
+    }
+
+    public ProjectSettingNode(String id, String label, ImageDescriptor image, String className) {
+        super(id, label, image, className);
     }
 
     public ProjectSettingNode(IConfigurationElement element) {
-        this(element.getAttribute("id")); //$NON-NLS-1$
+        this(element.getAttribute("id"), element.getAttribute("title"), null, element.getAttribute("class")); //$NON-NLS-1$
         category = element.getAttribute("category"); //$NON-NLS-1$
         order = element.getAttribute("order"); //$NON-NLS-1$
     }
