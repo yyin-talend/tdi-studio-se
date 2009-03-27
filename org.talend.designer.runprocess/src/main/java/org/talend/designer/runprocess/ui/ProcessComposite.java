@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -921,8 +923,19 @@ public class ProcessComposite extends Composite {
         if (content == null) {
             content = message.getContent();
         }
+
         StyleRange style = new StyleRange();
         style.start = consoleText.getText().length();
+        Pattern patternP = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%");
+        Matcher mP = patternP.matcher(content);
+        Pattern pattern = Pattern.compile("\\[\\s*\\d+(\\.\\d*)?%\\]");
+        Matcher m = pattern.matcher(content);
+        if (mP.find() || m.find()) {
+            consoleText.append("");
+            content = "";
+        } else {
+            consoleText.append(content);
+        }
         style.length = content.length();
         if (message.getType() == MsgType.CORE_OUT || message.getType() == MsgType.CORE_ERR) {
             style.fontStyle = SWT.ITALIC;
@@ -944,9 +957,8 @@ public class ProcessComposite extends Composite {
             break;
         }
         style.foreground = color;
-
-        consoleText.append(content);
         consoleText.setStyleRange(style);
+
     }
 
     /**
@@ -1372,18 +1384,26 @@ public class ProcessComposite extends Composite {
         String uniqueName = ""; //$NON-NLS-1$
         int firIndex = psMess.getContent().indexOf("$"); //$NON-NLS-1$
         int secIndex = psMess.getContent().indexOf("%"); //$NON-NLS-1$
-        if ((firIndex >= 0) && secIndex > firIndex) {
+        if (isPattern(psMess.getContent())) {
             uniqueName = psMess.getContent().substring(0, firIndex);
             mess = psMess.getContent().substring(firIndex + 1, secIndex);
         }
         Double extentPro = new Double(0);
-        if ((!"".equals(mess)) && mess != null) { //$NON-NLS-1$
-            extentPro = Math.floor(Double.parseDouble(mess) / 10) + 1;
+        if ((!"".equals(mess)) && mess != null && processContext.isMonitorPerf()) { //$NON-NLS-1$
+            extentPro = Math.floor(Double.parseDouble(mess) / 10);
         }
-        if (((extend != extentPro) && nodeUniqueName.equals(uniqueName)) || ((extend != extentPro) && (extentPro == 0))) {
+
+        if (((extend != extentPro) && nodeUniqueName.equals(uniqueName))) {// || ((extend != extentPro) && (extentPro ==
+            // 0))
             node.getNodeProgressBar().updateState("UPDATE_STATUS", new Double(extentPro)); //$NON-NLS-1$
             extend = extentPro;
         }
+    }
+
+    private boolean isPattern(String content) {
+        Pattern pattern = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%");
+        Matcher m = pattern.matcher(content);
+        return m.find();
     }
 
 }

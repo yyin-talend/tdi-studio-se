@@ -174,7 +174,7 @@ public class NodeProgressBarPart extends AbstractGraphicalEditPart implements Pr
         Point loc = node.getLocation().getCopy();
         NodeError nodeError = node.getNodeError();
         Dimension size = progressFig.getSize();
-        loc.x = loc.x + (node.getSize().width - size.width) / 2;
+        loc.x = loc.x + (node.getSize().width - size.width) / 2 + size.width / 7;
         loc.y = loc.y + node.getSize().height + nodeLabel.getLabelSize().height + nodeError.getErrorSize().height;
         Rectangle rectangle = new Rectangle(loc, size);
         ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);

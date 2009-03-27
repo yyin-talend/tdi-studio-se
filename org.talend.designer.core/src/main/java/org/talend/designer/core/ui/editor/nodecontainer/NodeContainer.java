@@ -177,7 +177,7 @@ public class NodeContainer extends Element {
 
         finalRect.height += errorNodeSize.height;// .getUnion(errorNodeRectangle)
         if (node.isFileScaleComponent()) {
-            finalRect.height += progressNodeSize.height;// finalRect = finalRect.getUnion(progressNodeRectangle);
+            finalRect = finalRect.getUnion(progressNodeRectangle);// finalRect.height += progressNodeSize.height;//
         }
         return finalRect;
     }

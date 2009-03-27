@@ -18,6 +18,7 @@ import org.eclipse.jface.action.Action;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * Clean trace data on a process. <br/>
@@ -46,9 +47,15 @@ public class ClearTraceAction extends Action {
      */
     @Override
     public void run() {
+        //        
         IConnection connection = null;
         for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); connection == null && i.hasNext();) {
             INode psNode = i.next();
+            if (psNode instanceof Node) {
+                Node node = (Node) psNode;
+                node.getNodeProgressBar().updateState("UPDATE_STATUS", new Double(0)); //$NON-NLS-1$
+            }
+
             for (IConnection connec : psNode.getOutgoingConnections()) {
                 connec.setTraceData(null);
             }
