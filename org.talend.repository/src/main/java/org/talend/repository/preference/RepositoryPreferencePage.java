@@ -32,6 +32,8 @@ import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * ggu class global comment. Detailled comment
+ * 
+ * @deprecated
  */
 public class RepositoryPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 

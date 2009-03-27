@@ -160,7 +160,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                 if (components != null) {
                     ECodePart codePart = ECodePart.MAIN;
-                    for (IComponent component : components) {
+                    for (int i = 0; i < components.size(); i++) {
+                        IComponent component = components.get(i);
                         // if (component.isTechnical() || component.isVisible()) {
                         if (component.getAvailableCodeParts().size() > 0) {
                             initComponent(codeLanguage, jetBeans, codePart, component);

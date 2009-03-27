@@ -176,9 +176,6 @@
             isReadAction="true"
             level="13"
             name="Read SQLPattern"/>
-            
-      ReadSqlpatternAction      
-            
        
        <Action
             class="org.talend.repository.ui.actions.ExportJobScriptAction"
@@ -281,11 +278,6 @@
              level="20"
              name="View Impact">
        </Action>
-       <Action
-             class="org.talend.repository.ui.actions.MergeReferenceProjectAction"
-             id="org.talend.repository.ui.actions.MergeReferenceProjectAction"             
-             name="Merge reference project">
-       </Action>       
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
@@ -356,15 +348,6 @@
                id="repository.versionsection"
                tab="repository.versiontab"/>
       </propertySections>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.talend.core.prefs"
-            class="org.talend.repository.preference.DocumentationPreferencePage"
-            id="org.talend.repository.prefs.documentation"
-            name="Documentation">
-      </page>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
