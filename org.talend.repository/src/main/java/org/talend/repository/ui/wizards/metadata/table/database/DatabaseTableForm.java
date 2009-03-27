@@ -58,6 +58,8 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.text.IndiceHelper;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -65,10 +67,16 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
+import org.talend.core.model.metadata.types.JavaDataTypeHelper;
+import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
+import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -98,6 +106,10 @@ public class DatabaseTableForm extends AbstractForm {
 
     private static final boolean STREAM_DETACH_IS_VISIBLE = false;
 
+    private static final String GUESS_SCHEMA_TOOLTIP = "Push this button to get a rough schema.."; //$NON-NLS-N$
+
+    private static final String RETRIEVE_SCHEMA_TOOLTIP = "Push this button to get a detailed schema.."; //$NON-NLS-N$
+
     /**
      * FormTable Var.
      */
@@ -119,6 +131,8 @@ public class DatabaseTableForm extends AbstractForm {
     private UtilsButton retreiveSchemaButton;
 
     private UtilsButton checkConnectionButton;
+
+    private UtilsButton guessSchemaButton; // hyWang add
 
     /**
      * Anothers Fields.
@@ -376,17 +390,24 @@ public class DatabaseTableForm extends AbstractForm {
                 .getString("DatabaseTableForm.tableTip"), itemTableName, true); //$NON-NLS-1$
 
         // Button retreiveSchema
-        Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(composite1, 1, false, SWT.CENTER, SWT.TOP);
+        Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(composite1, 3, false, SWT.CENTER, SWT.TOP);
         retreiveSchemaButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
                 .getString("DatabaseTableForm.retreiveSchema"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
-
+        retreiveSchemaButton.setToolTipText(RETRIEVE_SCHEMA_TOOLTIP);
         // Button Check Connection
-        checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
-                .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, "" /*
+                                                                                   * Messages.getString(
+                                                                                   * "DatabaseTableForm.checkConnection"
+                                                                                   * )
+                                                                                   */, false); //$NON-NLS-1$
 
         tableSettingsInfoLabel = new Label(composite1, SWT.NONE);
         tableSettingsInfoLabel.setLayoutData(gridData);
 
+        // Button guessSchema
+        guessSchemaButton = new UtilsButton(compositeRetreiveSchemaButton,
+                Messages.getString("DatabaseTableForm.guessSchema"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        guessSchemaButton.setToolTipText(GUESS_SCHEMA_TOOLTIP);
         // Checkbox streamDetach
         streamDetachCheckbox = new Button(composite1, SWT.CHECK);
         streamDetachCheckbox.setText(Messages.getString("DatabaseTableForm.streamDetach")); //$NON-NLS-1$
@@ -470,6 +491,17 @@ public class DatabaseTableForm extends AbstractForm {
             public void widgetSelected(final SelectionEvent e) {
                 if (retreiveSchemaButton.getEnabled()) {
                     pressRetreiveSchemaButton();
+                    metadataTable.setSourceName(tableCombo.getText());
+                }
+            }
+        });
+
+        // Event guessSchemaButton
+        guessSchemaButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(final SelectionEvent e) {
+                if (guessSchemaButton.getEnabled()) {
+                    pressGuessSchemaButton();
                     metadataTable.setSourceName(tableCombo.getText());
                 }
             }
@@ -813,6 +845,53 @@ public class DatabaseTableForm extends AbstractForm {
 
         updateRetreiveSchemaButton();
         changeTableNavigatorStatus(checkFieldsValue());
+    }
+
+    // made by hyWang
+    private void pressGuessSchemaButton() {
+        IDesignerCoreService designerService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                IDesignerCoreService.class);
+        String tableName = tableCombo.getText();
+        CsvArray array;
+        List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
+        try {
+            array = designerService.convertNode(connectionItem, tableName);
+            List<String[]> schemaContent = array.getRows();
+            int numbOfColumn = schemaContent.get(0).length;
+            for (int i = 1; i <= numbOfColumn; i++) {
+                MetadataColumn oneColum = new MetadataColumnImpl();
+                // get the column name from the temp file genenrated by GuessSchemaProcess.java
+                String labelName = (schemaContent.get(0))[i - 1];
+                oneColum.setLabel(labelName);
+                oneColum.setOriginalField(labelName);
+                // get if a column is nullable from the temp file genenrated by
+                // GuessSchemaProcess.java
+                oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
+                String talendType = null;
+                // to see if the language is java or perl
+                // String dbType = schemaContent.get(2)[i - 1].toString();
+                try {
+                    if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                        talendType = JavaDataTypeHelper.getTalendTypeOfValue(schemaContent.get(2)[i - 1]);
+                    } else {
+                        talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(2)[i - 1]);
+                    }
+                    oneColum.setTalendType(talendType);
+                    // oneColum.setSourceType(dbType);
+                    // oneColum.setTalendType(JavaTypesManager.STRING.getId());
+                    metadataColumnsValid.add((MetadataColumn) oneColum);
+                } catch (Exception e) {
+                    /*
+                     * the table have no data at all ,to do nothing
+                     */
+                }
+            }
+            tableEditorView.getMetadataEditor().removeAll();
+            tableEditorView.getMetadataEditor().addAll(metadataColumnsValid);
+        } catch (ProcessorException e) {
+            ExceptionHandler.process(e);
+        }
+
     }
 
     /*

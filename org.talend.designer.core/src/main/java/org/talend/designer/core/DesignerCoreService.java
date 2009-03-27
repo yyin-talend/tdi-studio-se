@@ -47,6 +47,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -61,6 +62,7 @@ import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.ConvertRepositoryNodeToProcessNode;
 import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
@@ -69,6 +71,7 @@ import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
@@ -591,5 +594,20 @@ public class DesignerCoreService implements IDesignerCoreService {
             }
         }
         node.getProcess().removeUniqueConnectionName(schemaName);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#convertNode(org.talend.core.model.properties.ConnectionItem,
+     * java.lang.String)
+     */
+    public CsvArray convertNode(ConnectionItem connectionItem, String tableName) throws ProcessorException {
+        ConvertRepositoryNodeToProcessNode convertMove = new ConvertRepositoryNodeToProcessNode(connectionItem, tableName);
+        CsvArray array = null;
+
+        array = convertMove.runMockProcess();
+
+        return array;
     }
 }
