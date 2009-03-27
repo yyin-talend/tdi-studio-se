@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -67,6 +69,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
+        HashMap<String, String> jobMap = new HashMap<String, String>();
 
         boolean needJob = true;
         boolean needSource = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource));
@@ -93,7 +96,13 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
-
+            String jobName = processItem.getProperty().getLabel();
+            String packageName = JavaResourcesHelper.getProjectFolderName(processItem)
+                    + "."
+                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+                            .getVersion());
+            jobMap.put(jobName, packageName);
+            // processItem.
             String selectedJobVersion = processItem.getProperty().getVersion();
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
                 selectedJobVersion = this.getSelectedJobVersion();
@@ -124,6 +133,8 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, needJob));
         }
 
+        establishESBXML(jobMap);
+
         // generate the META-INFO folder
         ExportFileResource metaInfoFolder = genMetaInfoFolder();
         list.add(metaInfoFolder);
@@ -141,6 +152,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
         // copy jbm-queue-service.xml
         String serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
+        // String ESBT
         ArrayList<URL> urlList = new ArrayList<URL>();
         try {
             urlList.add(new File(serverConfigFile).toURL());
@@ -191,10 +203,10 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             targetFileName = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
             FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
 
-            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jboss-esb.xml"), null)) //$NON-NLS-1$
-                    .getFile();
-            targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
-            FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
+            //            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jboss-esb.xml"), null)) //$NON-NLS-1$
+            // .getFile();
+            //            targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
+            // FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
 
             //            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbossesb-listener.jar"), null)) //$NON-NLS-1$
             // .getFile();
@@ -280,5 +292,11 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0");
         a.put(Attributes.Name.IMPLEMENTATION_VENDOR, "Talend Open Studio"); //$NON-NLS-1$        
         return manifest;
+    }
+
+    private void establishESBXML(HashMap<String, String> map) {
+        String targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
+        JbossESBTemplate boss = new JbossESBTemplate(targetFileName);
+        boss.saveProjectSettings(map);
     }
 }
