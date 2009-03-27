@@ -74,6 +74,12 @@ public final class PerlUtils {
 
     public static final String ROUTINE_FILENAME_EXT = ".pm"; //$NON-NLS-1$
 
+    public static final String PERL_RULES_DIRECTORY = "rules"; //$NON-NLS-N$
+
+    public static final String PERL_SRC_DIRECTORY = "src"; //$NON-NLS-1$
+
+    public static final String DRL_EXTENSION = ".drl"; //$NON-NLS-1$
+
     /**
      * Constructs a new PerlUtils.
      */

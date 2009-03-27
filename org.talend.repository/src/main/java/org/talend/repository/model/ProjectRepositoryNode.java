@@ -73,7 +73,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, sqlPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
-            metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataEbcdicConnectionNode;
+            metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataEbcdicConnectionNode,
+            metadataRulesNode;
 
     private RepositoryNode jobletNode;
 
@@ -293,6 +294,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
             metadataNode.getChildren().add(metadataEbcdicConnectionNode);
         }
+        // 7.14 RULES
+        if (PluginChecker.isRulesPluginLoaded() && codeLanguage != ECodeLanguage.PERL) {
+            // hidden for current version until 3.1.2m
+            // metadataRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            // metadataRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_RULES);
+            // metadataRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_RULES);
+            // metadataNode.getChildren().add(metadataRulesNode);
+        }
 
         // Reference Projects
         if (PluginChecker.isTIS() && getParent() != this && !getMergeRefProject()
@@ -315,7 +324,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         initializeChildren(project, parent);
         if (PluginChecker.isTIS() && getMergeRefProject()) {
             getRefProject(project.getEmfProject(), parent);
-
         }
     }
 
@@ -389,6 +397,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataWSDLSchemaNode) {
                 convert(factory.getMetadataWSDLSchema(newProject), metadataWSDLSchemaNode,
                         ERepositoryObjectType.METADATA_WSDL_SCHEMA, recBinNode);
+            } else if (parent == metadataRulesNode) { // feature 6484 added
+                convert(factory.getMetadataRules(newProject), metadataRulesNode, ERepositoryObjectType.METADATA_FILE_RULES,
+                        recBinNode);
             } else if (parent == refProject) {
                 if (!getMergeRefProject()) {
                     handleReferenced(refProject);
@@ -1347,6 +1358,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
         this.mergeRefProject = preferenceStore.getBoolean(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT);
         return this.mergeRefProject;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.nodes.IProjectRepositoryNode#getMetadataRulesNode()
+     */
+    public RepositoryNode getMetadataRulesNode() {
+        return this.metadataRulesNode;
     }
 
 }

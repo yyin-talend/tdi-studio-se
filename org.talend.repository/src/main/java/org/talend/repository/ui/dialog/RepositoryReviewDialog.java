@@ -752,6 +752,16 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataEbcdicConnectionNode();
                 }
             }
+            // added by hyWang
+            if (repositoryType.equals("RULES")) { //$NON-NLS-1$
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider)
+                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES);
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataRulesNode();
+                }
+            }
         }
         return metadataNode;
     }

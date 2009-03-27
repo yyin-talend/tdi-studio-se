@@ -47,6 +47,7 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -79,6 +80,7 @@ import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
@@ -1435,6 +1437,14 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         } catch (SystemException e1) {
             //
         }
+        // rules
+        if (PluginChecker.isRulesPluginLoaded()) {
+            IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
+                    IRulesProviderService.class);
+            if (rulesService != null) {
+                rulesService.syncAllRules();
+            }
+        }
         if (!CommonsPlugin.isHeadless()) {
             CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
         }
@@ -1734,6 +1744,15 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public RootContainer<String, IRepositoryObject> getMetadataEBCDIC() throws PersistenceException {
         return getMetadataEBCDIC(projectManager.getCurrentProject());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataRules(org.talend.core.model.general.Project)
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataRules(Project project) throws PersistenceException {
+        return repositoryFactoryFromProvider.getMetadataRules(project);
     }
 
 }
