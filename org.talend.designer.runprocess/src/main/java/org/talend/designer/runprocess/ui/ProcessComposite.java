@@ -1389,7 +1389,7 @@ public class ProcessComposite extends Composite {
             mess = psMess.getContent().substring(firIndex + 1, secIndex);
         }
         Double extentPro = new Double(0);
-        if ((!"".equals(mess)) && mess != null && processContext.isMonitorPerf()) { //$NON-NLS-1$
+        if ((!"".equals(mess)) && mess != null) { //$NON-NLS-1$    // && processContext.isMonitorPerf()
             extentPro = Math.floor(Double.parseDouble(mess) / 10);
         }
 
