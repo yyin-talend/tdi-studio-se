@@ -12,9 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
@@ -58,7 +62,55 @@ public class ChangeMergeOrderCommand extends Command {
         connectionInNewOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
 
+        if (mergeNode.getComponentName().equalsIgnoreCase("tFileOutputXMLMultiSchema")) {
+            reOrder("ROOT");
+            reOrder("GROUP");
+            reOrder("LOOP");
+        }
         checkProcess();
+    }
+
+    private void reOrder(String paramName) {
+        IElementParameter param = mergeNode.getElementParameter(paramName);
+        if (param != null) {
+            List<Map<String, Object>> reOrder = reOrder((List<Map<String, Object>>) param.getValue());
+            param.setValue(reOrder);
+        }
+    }
+
+    private List<Map<String, Object>> reOrder(List<Map<String, Object>> values) {
+        List<Map<String, Object>> newValues = new ArrayList<Map<String, Object>>();
+        if (values == null || values.isEmpty()) {
+            return newValues;
+        }
+        List<? extends IConnection> incomingConnections = this.mergeNode.getIncomingConnections();
+        for (IConnection conn : incomingConnections) {
+            if (conn.getLineStyle().hasConnectionCategory(org.talend.core.model.process.IConnectionCategory.FLOW)) {
+                String uniqueName = conn.getUniqueName();
+                List<Map<String, Object>> findConnValue = findConnValue(values, uniqueName);
+                if (findConnValue != null) {
+                    newValues.addAll(findConnValue);
+                }
+            }
+        }
+        return newValues;
+    }
+
+    private List<Map<String, Object>> findConnValue(List<Map<String, Object>> values, String row) {
+        List<Map<String, Object>> newValues = new ArrayList<Map<String, Object>>();
+        if (values == null || values.isEmpty()) {
+            return newValues;
+        }
+        for (Map<String, Object> line : values) {
+            String refColumn = (String) line.get("COLUMN");
+            String[] rowAndCol = refColumn.split(":");
+            if (rowAndCol.length > 0) {
+                if (rowAndCol[0].equals(row)) {
+                    newValues.add(line);
+                }
+            }
+        }
+        return newValues;
     }
 
     /*
@@ -66,6 +118,7 @@ public class ChangeMergeOrderCommand extends Command {
      * 
      * @see org.eclipse.gef.commands.Command#undo()
      */
+
     @Override
     public void undo() {
         mergeNode.setIncomingConnections(connectionInOldOrder);

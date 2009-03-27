@@ -75,36 +75,38 @@ public class MultiFOXManager extends FOXManager {
             // build root tree
             List<Map<String, String>> rootTable = (List<Map<String, String>>) foxComponent
                     .getTableList(FileOutputXMLComponent.ROOT);
-            for (Map<String, String> rootMap : rootTable) {
-                String newPath = rootMap.get(FileOutputXMLComponent.PATH);
-                String columnName = rootMap.get(FileOutputXMLComponent.COLUMN);
-                if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
-                    continue;
-                }
-                if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
-                    temp = new Attribute(newPath);
-                    current.addChild(temp);
-                } else if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
-                    temp = new NameSpaceNode(newPath);
-                    current.addChild(temp);
-                } else {
-                    temp = addElement(current, currentPath, newPath);
-                    if (rootNode == null) {
-                        rootNode = temp;
+            if (rootTable != null) {
+                for (Map<String, String> rootMap : rootTable) {
+                    String newPath = rootMap.get(FileOutputXMLComponent.PATH);
+                    String columnName = rootMap.get(FileOutputXMLComponent.COLUMN);
+                    if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
+                        continue;
                     }
-                    if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
-                        temp.setMain(true);
-                        mainNode = temp;
-                        mainPath = newPath;
+                    if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
+                        temp = new Attribute(newPath);
+                        current.addChild(temp);
+                    } else if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
+                        temp = new NameSpaceNode(newPath);
+                        current.addChild(temp);
+                    } else {
+                        temp = addElement(current, currentPath, newPath);
+                        if (rootNode == null) {
+                            rootNode = temp;
+                        }
+                        if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
+                            temp.setMain(true);
+                            mainNode = temp;
+                            mainPath = newPath;
+                        }
+                        current = temp;
+                        currentPath = newPath;
                     }
-                    current = temp;
-                    currentPath = newPath;
-                }
-                temp.setRow(metadataTable.getLabel());
-                if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                    columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
-                    temp.setColumn(metadataTable.getColumn(columnName));
-                    temp.setTable(metadataTable);
+                    temp.setRow(metadataTable.getLabel());
+                    if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
+                        columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
+                        temp.setColumn(metadataTable.getColumn(columnName));
+                        temp.setTable(metadataTable);
+                    }
                 }
             }
 
@@ -114,37 +116,39 @@ public class MultiFOXManager extends FOXManager {
             boolean isFirst = true;
             List<Map<String, String>> groupTable = (List<Map<String, String>>) foxComponent
                     .getTableList(FileOutputXMLComponent.GROUP);
-            for (Map<String, String> groupMap : groupTable) {
-                String newPath = groupMap.get(FileOutputXMLComponent.PATH);
-                String columnName = groupMap.get(FileOutputXMLComponent.COLUMN);
-                if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
-                    continue;
-                }
-                if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
-                    temp = new Attribute(newPath);
-                    current.addChild(temp);
-                } else if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
-                    temp = new NameSpaceNode(newPath);
-                    current.addChild(temp);
-                } else {
-                    temp = this.addElement(current, currentPath, newPath);
-                    if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
-                        temp.setMain(true);
-                        mainNode = temp;
-                        mainPath = newPath;
+            if (groupTable != null) {
+                for (Map<String, String> groupMap : groupTable) {
+                    String newPath = groupMap.get(FileOutputXMLComponent.PATH);
+                    String columnName = groupMap.get(FileOutputXMLComponent.COLUMN);
+                    if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
+                        continue;
                     }
-                    if (isFirst) {
-                        temp.setGroup(true);
-                        isFirst = false;
+                    if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
+                        temp = new Attribute(newPath);
+                        current.addChild(temp);
+                    } else if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
+                        temp = new NameSpaceNode(newPath);
+                        current.addChild(temp);
+                    } else {
+                        temp = this.addElement(current, currentPath, newPath);
+                        if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
+                            temp.setMain(true);
+                            mainNode = temp;
+                            mainPath = newPath;
+                        }
+                        if (isFirst) {
+                            temp.setGroup(true);
+                            isFirst = false;
+                        }
+                        current = temp;
+                        currentPath = newPath;
                     }
-                    current = temp;
-                    currentPath = newPath;
-                }
-                temp.setRow(metadataTable.getLabel());
-                if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                    columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
-                    temp.setColumn(metadataTable.getColumn(columnName));
-                    temp.setTable(metadataTable);
+                    temp.setRow(metadataTable.getLabel());
+                    if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
+                        columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
+                        temp.setColumn(metadataTable.getColumn(columnName));
+                        temp.setTable(metadataTable);
+                    }
                 }
             }
 
@@ -154,47 +158,49 @@ public class MultiFOXManager extends FOXManager {
             isFirst = true;
             List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent
                     .getTableList(FileOutputXMLComponent.LOOP);
-            for (Map<String, String> loopMap : loopTable) {
-                String newPath = loopMap.get(FileOutputXMLComponent.PATH);
-                String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
-                if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
-                    continue;
-                }
-                if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
-                    temp = new Attribute(newPath);
-                    current.addChild(temp);
-                } else if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
-                    temp = new NameSpaceNode(newPath);
-                    current.addChild(temp);
-                } else {
-                    temp = this.addElement(current, currentPath, newPath);
-                    if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
-                        temp.setMain(true);
+            if (loopTable != null) {
+                for (Map<String, String> loopMap : loopTable) {
+                    String newPath = loopMap.get(FileOutputXMLComponent.PATH);
+                    String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
+                    if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
+                        continue;
                     }
-                    if (isFirst) {
-                        temp.setLoop(true);
-                        isFirst = false;
+                    if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
+                        temp = new Attribute(newPath);
+                        current.addChild(temp);
+                    } else if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
+                        temp = new NameSpaceNode(newPath);
+                        current.addChild(temp);
+                    } else {
+                        temp = this.addElement(current, currentPath, newPath);
+                        if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
+                            temp.setMain(true);
+                        }
+                        if (isFirst) {
+                            temp.setLoop(true);
+                            isFirst = false;
+                        }
+                        current = temp;
+                        currentPath = newPath;
                     }
-                    current = temp;
-                    currentPath = newPath;
+                    temp.setRow(metadataTable.getLabel());
+                    if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
+                        columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
+                        temp.setColumn(metadataTable.getColumn(columnName));
+                        temp.setTable(metadataTable);
+                    }
                 }
-                temp.setRow(metadataTable.getLabel());
-                if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                    columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
-                    temp.setColumn(metadataTable.getColumn(columnName));
-                    temp.setTable(metadataTable);
+
+                if (rootNode == null) {
+                    rootNode = new Element("rootTag"); //$NON-NLS-1$
                 }
-            }
 
-            if (rootNode == null) {
-                rootNode = new Element("rootTag"); //$NON-NLS-1$
+                rootNode.setParent(null);
+                treeData.add(rootNode);
+                rootNode.setRow(metadataTable.getLabel());
+                contents.put(metadataTable.getLabel(), treeData);
+                i++;
             }
-
-            rootNode.setParent(null);
-            treeData.add(rootNode);
-            rootNode.setRow(metadataTable.getLabel());
-            contents.put(metadataTable.getLabel(), treeData);
-            i++;
         }
     }
 
