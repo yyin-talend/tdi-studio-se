@@ -88,7 +88,7 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
         }
         FOXTreeNode child = new NameSpaceNode(label);
         // add by wzhang. set the row name
-        child.setRow(foxui.getFoxManager().getCurrentSchema());
+        child.setRow(node.getRow());
         node.addChild(child);
         this.xmlViewer.refresh();
         xmlViewer.expandAll();

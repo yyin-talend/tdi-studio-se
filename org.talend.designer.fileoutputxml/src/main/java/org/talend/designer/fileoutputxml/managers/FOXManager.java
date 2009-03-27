@@ -357,12 +357,28 @@ public class FOXManager {
         if (currentSchema == null) {
             return treeData;
         } else {
-            List<FOXTreeNode> tmpTreeData = new ArrayList<FOXTreeNode>();
-            for (String key : contents.keySet()) {
-                tmpTreeData.addAll(contents.get(key));
-            }
-            return tmpTreeData;
+            return getOriginalNodes();
         }
+    }
+
+    /**
+     * 
+     * DOC wzhang Comment method "getOriginalNodes".
+     * 
+     * @return
+     */
+    protected List<FOXTreeNode> getOriginalNodes() {
+        List<FOXTreeNode> tmpTreeData = new ArrayList<FOXTreeNode>();
+        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(this.getFoxComponent(),
+                IConnectionCategory.FLOW);
+        if (incomingConnections.size() > 0) {
+            for (IConnection conn : incomingConnections) {
+                String uniqueName = conn.getUniqueName();
+                List<FOXTreeNode> list = contents.get(uniqueName);
+                tmpTreeData.addAll(list);
+            }
+        }
+        return tmpTreeData;
     }
 
     public List<IMetadataColumn> getSchemaData() {
@@ -409,7 +425,9 @@ public class FOXManager {
                 if (tmpParent == null) {
                     break;
                 }
+                parent = tmpParent;
             }
+
             if (parent != null)
                 parent.addChild(temp);
         }

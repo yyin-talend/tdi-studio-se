@@ -66,9 +66,6 @@ public class MultiUIManager extends UIManager {
             if (metadataTable != null) {
                 List<IMetadataColumn> schemaData = metadataTable.getListColumns();
                 for (FOXTreeNode node : mappableNodes) {
-                    if (node.getChildren().size() > 0) {
-                        continue;
-                    }
                     for (IMetadataColumn column : schemaData) {
                         if (node.getLabel().equals(column.getLabel())) {
                             node.setTable(metadataTable);

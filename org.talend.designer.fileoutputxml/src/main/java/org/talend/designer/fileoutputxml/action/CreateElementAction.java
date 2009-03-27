@@ -97,7 +97,7 @@ public class CreateElementAction extends SelectionProviderAction {
         }
         FOXTreeNode child = new Element(label);
         // add by wzhang. set the row name
-        child.setRow(foxui.getFoxManager().getCurrentSchema());
+        child.setRow(node.getRow());
         node.addChild(child);
         this.xmlViewer.refresh();
         this.xmlViewer.expandAll();

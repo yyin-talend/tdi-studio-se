@@ -85,8 +85,8 @@ public class CreateAttributeAction extends SelectionProviderAction {
             }
         }
         FOXTreeNode child = new Attribute(label);
-       // add by wzhang. set the row name
-        child.setRow(foxui.getFoxManager().getCurrentSchema());
+        // add by wzhang. set the row name
+        child.setRow(node.getRow());
         node.addChild(child);
         this.xmlViewer.refresh();
         xmlViewer.expandAll();

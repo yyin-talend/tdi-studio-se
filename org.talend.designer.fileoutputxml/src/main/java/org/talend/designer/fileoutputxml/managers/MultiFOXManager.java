@@ -196,7 +196,6 @@ public class MultiFOXManager extends FOXManager {
             contents.put(metadataTable.getLabel(), treeData);
             i++;
         }
-
     }
 
     protected void tableLoaderX(Element element, String parentPath, List<Map<String, String>> table) {
@@ -251,20 +250,11 @@ public class MultiFOXManager extends FOXManager {
         List<Map<String, String>> root = new ArrayList<Map<String, String>>();
         List<Map<String, String>> loop = new ArrayList<Map<String, String>>();
         List<Map<String, String>> group = new ArrayList<Map<String, String>>();
-        // List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(foxComponent,
-        // IConnectionCategory.FLOW);
-        // for (IConnection conn : incomingConnections) {
-        // IMetadataTable metadataTable = conn.getMetadataTable();
-        // String label = metadataTable.getLabel();
-        // currentSchema = label;
-        // root.addAll(getRootTable());
-        // loop.addAll(getLoopTable());
-        // group.addAll(getGroupTable());
-        //        
-        // }
+
         root.addAll(getRootTable());
         loop.addAll(getLoopTable());
         group.addAll(getGroupTable());
+
         if (foxComponent.setTableElementParameter(root, FileOutputXMLComponent.ROOT)) {
             result = true;
         }
@@ -280,15 +270,11 @@ public class MultiFOXManager extends FOXManager {
     @Override
     public List<Map<String, String>> getGroupTable() {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
-        for (String key : this.contents.keySet()) {
-            List<FOXTreeNode> list = contents.get(key);
-            if (list.size() > 0) {
-                FOXTreeNode rootNode = list.get(0);
-                Element groupNode = (Element) TreeUtil.getGroupNode(rootNode);
-                if (groupNode != null) {
-                    String path = TreeUtil.getPath(groupNode);
-                    tableLoader(groupNode, path.substring(0, path.lastIndexOf("/")), result); //$NON-NLS-1$
-                }
+        for (FOXTreeNode rootNode : this.getOriginalNodes()) {
+            Element groupNode = (Element) TreeUtil.getGroupNode(rootNode);
+            if (groupNode != null) {
+                String path = TreeUtil.getPath(groupNode);
+                tableLoader(groupNode, path.substring(0, path.lastIndexOf("/")), result); //$NON-NLS-1$
             }
         }
         return result;
@@ -298,15 +284,11 @@ public class MultiFOXManager extends FOXManager {
     @Override
     public List<Map<String, String>> getLoopTable() {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
-        for (String key : this.contents.keySet()) {
-            List<FOXTreeNode> list = contents.get(key);
-            if (list.size() > 0) {
-                FOXTreeNode rootNode = list.get(0);
-                Element loopNode = (Element) TreeUtil.getLoopNode(rootNode);
-                if (loopNode != null) {
-                    String path = TreeUtil.getPath(loopNode);
-                    tableLoader(loopNode, path.substring(0, path.lastIndexOf("/")), result); //$NON-NLS-1$
-                }
+        for (FOXTreeNode rootNode : this.getOriginalNodes()) {
+            Element loopNode = (Element) TreeUtil.getLoopNode(rootNode);
+            if (loopNode != null) {
+                String path = TreeUtil.getPath(loopNode);
+                tableLoader(loopNode, path.substring(0, path.lastIndexOf("/")), result); //$NON-NLS-1$
             }
         }
         return result;
@@ -315,14 +297,8 @@ public class MultiFOXManager extends FOXManager {
     @Override
     public List<Map<String, String>> getRootTable() {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
-        for (String key : this.contents.keySet()) {
-            List<FOXTreeNode> list = contents.get(key);
-            if (list.size() > 0) {
-                FOXTreeNode rootNode = list.get(0);
-                if (rootNode != null) {
-                    tableLoader((Element) rootNode, "", result); //$NON-NLS-1$
-                }
-            }
+        for (FOXTreeNode rootNode : this.getOriginalNodes()) {
+            tableLoader((Element) rootNode, "", result); //$NON-NLS-1$
         }
         return result;
     }
