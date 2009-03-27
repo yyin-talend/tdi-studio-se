@@ -137,10 +137,10 @@ public class ExportProjectSettings {
      * @param list
      */
     private void savePalette(Document document, Element root, List list) {
+
         for (Object obj : list) {
             Element exportParameter = document.createElement("exportParameter"); //$NON-NLS-1$
             root.appendChild(exportParameter);
-
             Attr typeAttr = document.createAttribute("type");
             typeAttr.setNodeValue("palette");
             exportParameter.setAttributeNode(typeAttr);

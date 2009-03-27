@@ -19,7 +19,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.ExportProjectSettings;
 import org.talend.repository.ui.actions.ImportProjectSettings;
 
@@ -89,8 +91,15 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
         String path = fileDialog.open();
         ImportProjectSettings settings = new ImportProjectSettings(path);
+        // save current project settings
         okPressed();
-        settings.updateProjectSettings();
+        boolean error = false;
+        try {
+            settings.updateProjectSettings();
+        } catch (Exception e) {
+            error = true;
+            showErrorMessage();
+        }
 
         // IPreferenceNode[] rootSubNodes = this.getPreferenceManager().getRootSubNodes();
         // for (IPreferenceNode node : rootSubNodes) {
@@ -98,8 +107,10 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
         // }
 
         // close the projec settings and open it again to get new settings
-        ProjectSettingDialog dialog = new ProjectSettingDialog();
-        dialog.open();
+        if (!error) {
+            ProjectSettingDialog dialog = new ProjectSettingDialog();
+            dialog.open();
+        }
     }
 
     // private void refresh(IPreferenceNode rootSubNodes) {
@@ -125,4 +136,11 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
         settings.saveProjectSettings();
 
     }
+
+    private void showErrorMessage() {
+        MessageBox message = new MessageBox(new Shell(getShell()), SWT.ICON_ERROR | SWT.OK);
+        message.setMessage(Messages.getString("ImportProjectSettings.Error"));
+        message.open();
+    }
+
 }

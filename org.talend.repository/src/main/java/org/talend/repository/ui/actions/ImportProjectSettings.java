@@ -20,7 +20,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.ImplicitContextSettings;
@@ -53,7 +52,7 @@ public class ImportProjectSettings {
         this.pro = ProjectManager.getInstance().getCurrentProject();
     }
 
-    public void updateProjectSettings() {
+    public void updateProjectSettings() throws ParserConfigurationException, SAXException, IOException {
         if (this.path == null) {
             return;
         }
@@ -61,86 +60,80 @@ public class ImportProjectSettings {
         File file = new File(path);
         org.talend.core.model.properties.Project project = pro.getEmfProject();
 
-        try {
-            final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
-            DocumentBuilder analyseur = fabrique.newDocumentBuilder();
-            analyseur.setErrorHandler(new ErrorHandler() {
+        final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
+        DocumentBuilder analyseur = fabrique.newDocumentBuilder();
+        analyseur.setErrorHandler(new ErrorHandler() {
 
-                public void error(final SAXParseException exception) throws SAXException {
-                    throw exception;
+            public void error(final SAXParseException exception) throws SAXException {
+                throw exception;
+            }
+
+            public void fatalError(final SAXParseException exception) throws SAXException {
+                throw exception;
+            }
+
+            public void warning(final SAXParseException exception) throws SAXException {
+                throw exception;
+            }
+
+        });
+
+        final Document document = analyseur.parse(file);
+        final NodeList nodes = document.getElementsByTagName("exportParameter");
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            final Node node = nodes.item(i);
+            final NamedNodeMap attrMap = node.getAttributes();
+            final Node typeAttr = attrMap.getNamedItem("type"); //$NON-NLS-1$
+
+            if ("technicalStatus".equals(typeAttr.getTextContent())) {
+                List technical = project.getTechnicalStatus();
+                updateStatus(node, attrMap, technical, "technicalStatus");
+            } else if ("documentationStatus".equals(typeAttr.getTextContent())) {
+                List documentation = project.getDocumentationStatus();
+                updateStatus(node, attrMap, documentation, "documentationStatus");
+            } else if ("security".equals(typeAttr.getTextContent())) {
+                project.isHidePassword();
+                project.setHidePassword(Boolean.valueOf(node.getTextContent()));
+            } else if ("statAndLogs".equals(typeAttr.getTextContent())) {
+                if (project.getStatAndLogsSettings() == null) {
+                    TalendFileFactory talendF = TalendFileFactory.eINSTANCE;
+                    StatAndLogsSettings stats = PropertiesFactory.eINSTANCE.createStatAndLogsSettings();
+                    project.setStatAndLogsSettings(stats);
+                    stats.setParameters(talendF.createParametersType());
                 }
 
-                public void fatalError(final SAXParseException exception) throws SAXException {
-                    throw exception;
+                List statAndLogs = project.getStatAndLogsSettings().getParameters().getElementParameter();
+                updateParameters(node, attrMap, statAndLogs);
+
+            } else if ("implicitContext".equals(typeAttr.getTextContent())) {
+                if (project.getImplicitContextSettings() == null) {
+                    TalendFileFactory talendF = TalendFileFactory.eINSTANCE;
+
+                    ImplicitContextSettings implicit = PropertiesFactory.eINSTANCE.createImplicitContextSettings();
+                    project.setImplicitContextSettings(implicit);
+                    implicit.setParameters(talendF.createParametersType());
                 }
 
-                public void warning(final SAXParseException exception) throws SAXException {
-                    throw exception;
-                }
+                List implicitContexts = project.getImplicitContextSettings().getParameters().getElementParameter();
+                updateParameters(node, attrMap, implicitContexts);
 
-            });
+            } else if ("palette".equals(typeAttr.getTextContent())) {
+                List componentSettings = project.getComponentsSettings();
 
-            final Document document = analyseur.parse(file);
-            final NodeList nodes = document.getElementsByTagName("exportParameter");
+                for (Object obj : componentSettings) {
+                    ComponentSetting setting = (ComponentSetting) obj;
 
-            for (int i = 0; i < nodes.getLength(); i++) {
-                final Node node = nodes.item(i);
-                final NamedNodeMap attrMap = node.getAttributes();
-                final Node typeAttr = attrMap.getNamedItem("type"); //$NON-NLS-1$
+                    if (setting.getName().equals(attrMap.getNamedItem("name").getTextContent())) {
+                        final Node familyAttr = attrMap.getNamedItem("family");
 
-                if ("technicalStatus".equals(typeAttr.getTextContent())) {
-                    List technical = project.getTechnicalStatus();
-                    updateStatus(node, attrMap, technical, "technicalStatus");
-                } else if ("documentationStatus".equals(typeAttr.getTextContent())) {
-                    List documentation = project.getDocumentationStatus();
-                    updateStatus(node, attrMap, documentation, "documentationStatus");
-                } else if ("security".equals(typeAttr.getTextContent())) {
-                    project.isHidePassword();
-                    project.setHidePassword(Boolean.valueOf(node.getTextContent()));
-                } else if ("statAndLogs".equals(typeAttr.getTextContent())) {
-                    if (project.getStatAndLogsSettings() == null) {
-                        TalendFileFactory talendF = TalendFileFactory.eINSTANCE;
-                        StatAndLogsSettings stats = PropertiesFactory.eINSTANCE.createStatAndLogsSettings();
-                        project.setStatAndLogsSettings(stats);
-                        stats.setParameters(talendF.createParametersType());
-                    }
-
-                    List statAndLogs = project.getStatAndLogsSettings().getParameters().getElementParameter();
-                    updateParameters(node, attrMap, statAndLogs);
-
-                } else if ("implicitContext".equals(typeAttr.getTextContent())) {
-                    if (project.getImplicitContextSettings() == null) {
-                        TalendFileFactory talendF = TalendFileFactory.eINSTANCE;
-
-                        ImplicitContextSettings implicit = PropertiesFactory.eINSTANCE.createImplicitContextSettings();
-                        project.setImplicitContextSettings(implicit);
-                        implicit.setParameters(talendF.createParametersType());
-                    }
-
-                    List implicitContexts = project.getImplicitContextSettings().getParameters().getElementParameter();
-                    updateParameters(node, attrMap, implicitContexts);
-
-                } else if ("palette".equals(typeAttr.getTextContent())) {
-                    List componentSettings = project.getComponentsSettings();
-                    for (Object obj : componentSettings) {
-                        ComponentSetting setting = (ComponentSetting) obj;
-                        if (setting.getName().equals(attrMap.getNamedItem("name").getTextContent())) {
-                            final Node familyAttr = attrMap.getNamedItem("family");
-                            if (familyAttr != null && familyAttr.getTextContent().equals(setting.getFamily())) {
-                                setting.setHidden(Boolean.valueOf(node.getTextContent()));
-                            }
+                        if (familyAttr != null && familyAttr.getTextContent().equals(setting.getFamily())) {
+                            setting.setHidden(Boolean.valueOf(node.getTextContent()));
                         }
                     }
                 }
-
             }
 
-        } catch (ParserConfigurationException e) {
-            ExceptionHandler.process(e);
-        } catch (SAXException e) {
-            ExceptionHandler.process(e);
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
         }
 
     }

@@ -327,6 +327,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
 
     public boolean isComponentVisible(PaletteEntry entry) {
         String label = entry.getLabel();
+
         String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
         List<ComponentSetting> components = getComponentsFromProject();
 
@@ -357,6 +358,9 @@ public class PaletteSettingPage extends ProjectSettingPage {
             }
             if (!restore) {
                 ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
+                if (label.equals("tLogRow")) {
+                    label.getClass();
+                }
                 cs.setName(label);
                 cs.setHidden(!visible);
                 cs.setFamily(family);
