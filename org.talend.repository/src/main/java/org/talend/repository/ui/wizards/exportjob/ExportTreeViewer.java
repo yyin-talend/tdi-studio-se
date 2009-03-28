@@ -20,6 +20,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -107,11 +108,11 @@ public class ExportTreeViewer {
                 if (moveButton.getText().equals("<<")) { //$NON-NLS-1$
                     sash.setWeights(new int[] { 0, 1, 23 });
                     moveButton.setText(">>"); //$NON-NLS-1$
-                    moveButton.setToolTipText("Show job tree"); //$NON-NLS-1$
+                    moveButton.setToolTipText("Show job tree");
                 } else if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
                     sash.setWeights(new int[] { 10, 1, 15 });
                     moveButton.setText("<<"); //$NON-NLS-1$
-                    moveButton.setToolTipText("Hide job tree");//$NON-NLS-1$
+                    moveButton.setToolTipText("Hide job tree");
                 }
             }
         });
@@ -129,7 +130,7 @@ public class ExportTreeViewer {
         GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).hint(400, 200).applyTo(itemComposite);
 
         Label label = new Label(itemComposite, SWT.NONE);
-        label.setText("Select the items to Export:"); //$NON-NLS-1$
+        label.setText("Select the items to Export:");
         GridDataFactory.swtDefaults().span(2, 1).applyTo(label);
 
         createTreeViewer(itemComposite);
@@ -219,6 +220,14 @@ public class ExportTreeViewer {
                 return filterRepositoryNode(node);
             }
         });
+    }
+
+    public void addCheckStateListener(ICheckStateListener listener) {
+        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).addCheckStateListener(listener);
+    }
+
+    public void removeCheckStateListener(ICheckStateListener listener) {
+        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).removeCheckStateListener(listener);
     }
 
     private boolean filterRepositoryNode(RepositoryNode node) {

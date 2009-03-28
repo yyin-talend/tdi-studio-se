@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
+package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,13 +35,13 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
- * DOC Administrator class global comment. Detailled comment
+ * DOC nrousseau class global comment. Detailled comment
  */
-public class JbossESBTemplate {
+public class ESBGenerateDeployment {
 
     private String path;
 
-    public JbossESBTemplate(String path) {
+    public ESBGenerateDeployment(String path) {
         this.path = path;
     }
 

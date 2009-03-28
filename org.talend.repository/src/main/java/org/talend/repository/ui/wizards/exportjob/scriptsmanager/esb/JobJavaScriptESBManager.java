@@ -10,12 +10,18 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
+package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,12 +34,20 @@ import java.util.jar.Manifest;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.io.FilesUtils;
+import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
@@ -41,6 +55,7 @@ import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 
 /**
  * DOC x class global comment. Detailled comment <br/>
@@ -51,11 +66,6 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
     private static Logger log = Logger.getLogger(ExceptionHandler.class);
 
     public static final String EXPORT_METHOD = "runJob"; //$NON-NLS-1$
-
-    private static List<String> axisLib = new ArrayList<String>();
-    static {
-        axisLib.add("jbossesb-listener.jar"); //$NON-NLS-1$
-    }
 
     /*
      * (non-Javadoc)
@@ -87,8 +97,6 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         if (needSource) {
             list.add(srcResource);
         }
-        // list.add(metaResoucre);
-        copyServerConfigFileToTempDir();
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process);
@@ -119,6 +127,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
                         tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)),
                         progressMonitor);
+                generateESBActionFile(processItem, contextName);
             }
 
             // add children jobs
@@ -133,7 +142,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, needJob));
         }
 
-        establishESBXML(jobMap);
+        prepareESBFiles(jobMap);
 
         // generate the META-INFO folder
         ExportFileResource metaInfoFolder = genMetaInfoFolder();
@@ -145,10 +154,6 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         // Gets user routines
         List<URL> userRoutineList = getUserRoutine(true);
         libResource.addResources(userRoutineList);
-
-        // Gets axis libraries
-        List<URL> axisLibList = getLib(axisLib, true);
-        libResource.addResources(axisLibList);
 
         // copy jbm-queue-service.xml
         String serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
@@ -162,6 +167,66 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         libResource.addResources(urlList);
 
         return list;
+    }
+
+    /**
+     * DOC nrousseau Comment method "generateESBActionFile".
+     * 
+     * @param processItem
+     * @param contextName
+     */
+    private void generateESBActionFile(ProcessItem processItem, String contextName) {
+        String packageName = JavaResourcesHelper.getProjectFolderName(processItem)
+                + "."
+                + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+                        .getVersion());
+        String jobName = processItem.getProperty().getLabel();
+        final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
+        try {
+            String file = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/ESBListenerAction.javatemplate"), null))
+                    .getFile();
+
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+            IProject rootProject = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+
+            IFile outputFile = rootProject
+                    .getFile("src/" + packageName.replace(".", "/") + "/" + jobName + "ListenerAction.java");
+
+            String line = br.readLine();
+            StringBuffer stringBuff = new StringBuffer();
+            while (line != null) {
+                line = line.replace("<JobPackage>", packageName).replace("<JobName>", jobName);
+                stringBuff.append(line + "\n");
+                line = br.readLine();
+            }
+            InputStream outputStream = new ByteArrayInputStream(stringBuff.toString().getBytes());
+            if (!outputFile.exists()) {
+                File systemFile = outputFile.getLocation().toFile();
+                if (systemFile.exists()) {
+                    systemFile.delete();
+                    outputFile.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
+                }
+
+                outputFile.create(outputStream, true, null);
+            } else {
+                outputFile.setContents(outputStream, true, false, null);
+            }
+
+            fr.close();
+
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+        try {
+            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
+                    IncrementalProjectBuilder.AUTO_BUILD, null);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     private void addSubJobResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
@@ -189,33 +254,68 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
     }
 
-    private void copyServerConfigFileToTempDir() {
+    private void prepareESBFiles(HashMap<String, String> jobMap) {
+        //        String targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
+        // ESBGenerateJBossESB esbFile = new ESBGenerateJBossESB(targetFileName);
+        // esbFile.saveProjectSettings(jobMap);
+        //        targetFileName = getTmpFolder() + PATH_SEPARATOR + "deployment.xml"; //$NON-NLS-1$
+        // ESBGenerateDeployment deployment = new ESBGenerateDeployment(targetFileName);
+        // deployment.saveProjectSettings(jobMap);
+        //        targetFileName = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
+        // ESBGenerateJbmQueue jbmQueue = new ESBGenerateJbmQueue(targetFileName);
+        // jbmQueue.saveProjectSettings(jobMap);
+
+        String jobName = jobMap.keySet().iterator().next();
+        String jobWithPackageName = jobMap.get(jobName);
+        String jobAlias = jobWithPackageName.replace(".", "_");
+
         final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-        String sourceFileName;
+
         try {
-            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/deployment.xml"), null)) //$NON-NLS-1$
+            String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jboss-esb-template.xml"), null))
                     .getFile();
-            String targetFileName = getTmpFolder() + PATH_SEPARATOR + "deployment.xml"; //$NON-NLS-1$
-            FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
+            String targetFile = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml";
+            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName);
 
-            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbm-queue-service.xml"), null)) //$NON-NLS-1$
+            inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/deployment-template.xml"), null)).getFile();
+            targetFile = getTmpFolder() + PATH_SEPARATOR + "deployment.xml";
+            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName);
+
+            inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbm-queue-service-template.xml"), null))
                     .getFile();
-            targetFileName = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
-            FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
+            targetFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml";
+            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-            //            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jboss-esb.xml"), null)) //$NON-NLS-1$
-            // .getFile();
-            //            targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
-            // FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
+    }
 
-            //            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbossesb-listener.jar"), null)) //$NON-NLS-1$
-            // .getFile();
-            //            targetFileName = getTmpFolder() + PATH_SEPARATOR + "jbossesb-listener.jar"; //$NON-NLS-1$
-            // FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
+    private void readAndReplaceInXmlTemplate(String inputFile, String outputFile, String jobName, String jobAlias,
+            String jobPackage) {
+        FileReader fr;
+        try {
+            fr = new FileReader(inputFile);
+            BufferedReader br = new BufferedReader(fr);
+
+            FileWriter fw = new FileWriter(outputFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            String line = br.readLine();
+            while (line != null) {
+                line = line.replace("#JobName#", jobName).replace("#JobAlias#", jobAlias).replace("#JobPackage#", jobPackage);
+                bw.write(line + "\n");
+                line = br.readLine();
+            }
+            bw.flush();
+            fr.close();
+            fw.close();
+        } catch (FileNotFoundException e) {
+            ExceptionHandler.process(e);
         } catch (IOException e) {
             ExceptionHandler.process(e);
         }
-
     }
 
     protected void getContextScripts(ProcessItem processItem, Boolean needContext, ExportFileResource contextResource,
@@ -292,11 +392,5 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0");
         a.put(Attributes.Name.IMPLEMENTATION_VENDOR, "Talend Open Studio"); //$NON-NLS-1$        
         return manifest;
-    }
-
-    private void establishESBXML(HashMap<String, String> map) {
-        String targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
-        JbossESBTemplate boss = new JbossESBTemplate(targetFileName);
-        boss.saveProjectSettings(map);
     }
 }

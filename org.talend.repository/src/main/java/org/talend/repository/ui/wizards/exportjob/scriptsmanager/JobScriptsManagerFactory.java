@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

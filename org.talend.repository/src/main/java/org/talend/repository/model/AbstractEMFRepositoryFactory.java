@@ -233,7 +233,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
                 ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.JOBLET,
                 ERepositoryObjectType.METADATA_FILE_EBCDIC, ERepositoryObjectType.METADATA_FILE_RULES };// feature6484
-                                                                                                        // added
+        // added
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             if (folder != null) {

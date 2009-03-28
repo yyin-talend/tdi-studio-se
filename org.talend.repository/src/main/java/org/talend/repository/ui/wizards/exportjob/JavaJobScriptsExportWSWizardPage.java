@@ -36,9 +36,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
@@ -57,7 +60,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     public static final String EXPORTTYPE_WSZIP = "Axis WebService (ZIP)"; //$NON-NLS-1$
 
-    public static final String EXPORTTYPE_JBOSSESB = "Job Service (ESB)"; //$NON-NLS-1$
+    public static final String EXPORTTYPE_JBOSSESB = "JBoss ESB"; //$NON-NLS-1$
 
     public static final String EXPORTTYPE_JBI = "JBI (JSR 208)"; //$NON-NLS-1$
 
@@ -238,7 +241,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                     chkButton.setVisible(true);
                     zipOption = String.valueOf(chkButton.getSelection());
                 }
-
+                checkExport();
             }
         });
     }
@@ -250,7 +253,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      */
     @Override
     public JobScriptsManager createJobScriptsManager() {
-        // TODO Auto-generated method stub
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
 
         return JobScriptsManagerFactory.getInstance().createManagerInstance(language, getCurrentExportType());
@@ -260,8 +262,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected String getOutputSuffix() {
         if (getCurrentExportType().equals(EXPORTTYPE_WSWAR)) {
             return ".war"; //$NON-NLS-1$
-        } else if (getCurrentExportType().equals(EXPORTTYPE_WSZIP)) {
-            return ".zip"; //$NON-NLS-1$
         } else if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
             return ".esb"; //$NON-NLS-1$ 
         } else {
@@ -277,6 +277,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         if (getCurrentExportType().equals(EXPORTTYPE_WSWAR)) {
             dialog.setFilterExtensions(new String[] { "*.war", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
+            dialog.setFilterExtensions(new String[] { "*.esb", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -432,10 +434,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             settings.put(STORE_EXPORTTYPE_ID, exportTypeCombo.getText());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
 
+            settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
+            settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
                 settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
-                settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
-                settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
                 settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
                 settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
                 settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
@@ -446,8 +448,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 return;
             } else if (exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
                 settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
-                settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
-                settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
                 settings.put(STORE_WEBXML_ID, webXMLButton.getSelection());
                 settings.put(STORE_CONFIGFILE_ID, configFileButton.getSelection());
                 settings.put(STORE_AXISLIB_ID, axisLibButton.getSelection());
@@ -466,6 +466,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             return JavaJobScriptsExportWSWizardPage.super.getExportChoiceMap();
         }
         Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+        exportChoiceMap.put(ExportChoice.needSource, false);
+
+        if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
+            exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
+            exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
+            exportChoiceMap.put(ExportChoice.needMetaInfo, true);
+            return exportChoiceMap;
+        }
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR)) {
             exportChoiceMap.put(ExportChoice.needMetaInfo, true);
@@ -478,9 +486,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportChoiceMap.put(ExportChoice.needAXISLIB, axisLibButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWSDD, wsddButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWSDL, wsdlButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
-        exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         return exportChoiceMap;
     }
 
@@ -513,6 +518,25 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
             createOptions(left, font);
             restoreWidgetValuesForPOJO();
+        }
+        if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
+            contextButton = new Button(left, SWT.CHECK | SWT.LEFT);
+            contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
+            contextButton.setSelection(true);
+            contextButton.setFont(font);
+
+            contextCombo = new Combo(left, SWT.PUSH);
+            if (process.length > 0) {
+                List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
+                contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
+                if (contextNames.size() > 0) {
+                    contextCombo.select(0);
+                }
+            }
+
+            applyToChildrenButton = new Button(left, SWT.CHECK | SWT.LEFT);
+            applyToChildrenButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ApplyToChildren")); //$NON-NLS-1$
+            applyToChildrenButton.setSelection(true);
         } else {
             createOptionsForWS(left, font);
         }
@@ -597,21 +621,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             axisLibButton.setSelection(true);
             contextButton.setEnabled(false);
             contextButton.setSelection(true);
-        } else if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
-            webXMLButton.setEnabled(false);
-            webXMLButton.setSelection(true);
-            configFileButton.setEnabled(false);
-            configFileButton.setSelection(true);
-            wsddButton.setEnabled(false);
-            wsddButton.setSelection(true);
-            wsdlButton.setEnabled(false);
-            wsdlButton.setSelection(true);
-            sourceButton.setEnabled(true);
-            sourceButton.setSelection(false);
-            axisLibButton.setEnabled(false);
-            axisLibButton.setSelection(true);
-            contextButton.setEnabled(true);
-            contextButton.setSelection(true);
         }
     }
 
@@ -655,6 +664,48 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             return String.valueOf(chkButton.getSelection());
         } else {
             return null;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#checkExport()
+     */
+    @Override
+    public void checkExport() {
+        this.setErrorMessage(null);
+        this.setPageComplete(true);
+        if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
+            if (this.isMultiNodes()) {
+                StringBuffer buff = new StringBuffer();
+                buff.append("This type of export support actually only a single job export.");
+                this.setErrorMessage(buff.toString());
+                this.setPageComplete(false);
+            }
+
+            // check if the needed librairy is installed.
+            String requiredJar = "jbossesb-rosetta.jar";
+
+            List<ModuleNeeded> toCheck = ModulesNeededProvider.getModulesNeeded();
+            for (ModuleNeeded current : toCheck) {
+                if (requiredJar.equals(current.getModuleName())) {
+                    if (current.getStatus() == ELibraryInstallStatus.NOT_INSTALLED) {
+                        StringBuffer buff = new StringBuffer();
+                        buff.append("The jar jbossesb-rosetta.jar is required to export to JBoss ESB.\n");
+                        buff.append("Please find it in your current version of JBoss ESB and add it with the Module View.\n");
+
+                        this.setErrorMessage(buff.toString());
+                        this.setPageComplete(false);
+                    }
+                }
+            }
+        }
+        if (getCheckNodes().length == 0) {
+            StringBuffer buff = new StringBuffer();
+            buff.append("At least one job should be selected for the export.");
+            this.setErrorMessage(buff.toString());
+            this.setPageComplete(false);
         }
     }
 }

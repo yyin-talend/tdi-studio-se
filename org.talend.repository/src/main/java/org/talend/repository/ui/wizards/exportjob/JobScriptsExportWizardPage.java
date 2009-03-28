@@ -31,6 +31,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -119,8 +121,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Button chkButton;
 
-    private boolean isMultiNodes;
-
     private String allVersions = "all"; //$NON-NLS-1$
 
     private String outputFileSuffix = ".zip"; //$NON-NLS-1$
@@ -159,7 +159,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
         int nodeSize = nodes.length;
         if (nodeSize > 1) {
-            this.isMultiNodes = true;
             manager.setMultiNodes(true);
         }
         for (int i = 0; i < nodeSize; i++) {
@@ -305,7 +304,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         composite.setFont(parent.getFont());
 
         createDestinationGroup(composite);
-        if (!isMultiNodes) {
+        if (!isMultiNodes()) {
             createJobVersionGroup(composite);
         }
 
@@ -325,9 +324,23 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     }
 
+    ICheckStateListener checkStateListener = new ICheckStateListener() {
+
+        public void checkStateChanged(CheckStateChangedEvent event) {
+            checkExport();
+        }
+
+    };
+
+    public void checkExport() {
+
+    }
+
     protected SashForm createExportTree(Composite parent) {
         treeViewer = new ExportTreeViewer(selection);
-        return treeViewer.createContents(parent);
+        SashForm sashForm = treeViewer.createContents(parent);
+        treeViewer.addCheckStateListener(checkStateListener);
+        return sashForm;
     }
 
     /**
@@ -620,6 +633,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @returns boolean
      */
     public boolean finish() {
+        treeViewer.removeCheckStateListener(checkStateListener);
         // achen added
         if (getCheckNodes() != null) {
             setNodes(getCheckNodes());
@@ -699,7 +713,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         }
 
-        if (!isMultiNodes) {
+        if (!isMultiNodes()) {
             for (int i = 0; i <= process.length - 1; i++) {
                 process[i].removeAllMap();
                 ProcessItem processItem = (ProcessItem) process[i].getItem();
@@ -768,13 +782,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 } catch (ProcessorException e) {
                     ExceptionHandler.process(e);
                 }
-            } else {
-                try {
-                    reManager.deleteResource(r);
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
             }
+            // else {
+            // try {
+            // reManager.deleteResource(r);
+            // } catch (Exception e) {
+            // ExceptionHandler.process(e);
+            // }
+            // }
         }
         monitor.subTask("Export job sucessfully!");
         // achen modify to fix bug 0006108
@@ -1014,16 +1029,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     public boolean isMultiNodes() {
-        return this.isMultiNodes;
-    }
-
-    /**
-     * ftang Comment method "setMultiNodes".
-     * 
-     * @param isMultiNodes
-     */
-    public void setMultiNodes(boolean isMultiNodes) {
-        this.isMultiNodes = isMultiNodes;
+        if (treeViewer == null) {
+            return false;
+        }
+        return this.getCheckNodes().length > 1;
     }
 
     /**

@@ -973,6 +973,12 @@
             message="%libraryneeded.forpostgresqlconnection"
             name="postgresql-8.3-603.jdbc3.jar"
             required="false"/>
+      <libraryNeeded
+          context="JBoss ESB Export"
+          language="java"
+          message="Library needed to export to JBoss ESB"
+          name="jbossesb-rosetta.jar"
+          required="true"/>
    </extension>
    <!--
    <extension
