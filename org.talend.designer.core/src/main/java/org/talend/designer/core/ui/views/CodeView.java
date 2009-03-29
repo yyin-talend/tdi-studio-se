@@ -36,6 +36,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -278,7 +279,7 @@ public class CodeView extends ViewPart {
                 }
             } catch (SystemException e) {
                 document.set(ERROR_MESSAGE);
-                throw new RuntimeException(e);
+                ExceptionHandler.process(e);
             }
             document.set(generatedCode);
         }
