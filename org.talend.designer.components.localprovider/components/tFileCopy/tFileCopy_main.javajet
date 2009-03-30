@@ -16,6 +16,8 @@
 
 	String destination  = ElementParameterParser.getValue(node, "__DESTINATION__");
 	
+	String sourceDirectory  = ElementParameterParser.getValue(node, "__SOURCE_DIRECTORY__");
+	
 	boolean rename = ElementParameterParser.getValue(node, "__RENAME__").equals("true");
 	
 	String destination_filename  = ElementParameterParser.getValue(node, "__DESTINATION_RENAME__");
@@ -27,7 +29,11 @@
 	boolean rpFile = ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
 
 	boolean creatDir = ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__").equals("true");
-	
+%>
+	globalMap.put("<%=cid %>_FILENAME",<%=fileName%>);
+	globalMap.put("<%=cid %>_DESTINATION",<%=destination%>);
+	globalMap.put("<%=cid %>_SOURCE_DIRECTORY",<%=sourceDirectory%>);
+<%	
 	if (isCopyADir){ // copy a directory
 %>     
 		String srcFileFolderPath_<%=cid %> = <%=ElementParameterParser.getValue(node, "__SOURCE_DERECTORY__")%>;

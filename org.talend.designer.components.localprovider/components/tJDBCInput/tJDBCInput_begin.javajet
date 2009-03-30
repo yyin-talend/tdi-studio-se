@@ -30,10 +30,18 @@ dbquery = dbquery.replaceAll("\n"," ");
 dbquery = dbquery.replaceAll("\r"," ");
 String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
 String cursorSize= ElementParameterParser.getValue(node, "__CURSOR_SIZE__");
-
+String schema = ElementParameterParser.getValue(node, "__SCHEMA__");
+String dbtable= ElementParameterParser.getValue(node, "__TABLE__");
+String queryStore = ElementParameterParser.getValue(node, "__QUERYSTORY__");
 boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
 List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
-
+%>
+	globalMap.put("<%=cid %>_URL",<%=jdbcUrl%>);
+	globalMap.put("<%=cid %>_DRIVER_JAR",<%=driverJar%>);
+	globalMap.put("<%=cid %>_DRIVER_CLASS",<%=driverClass%>);
+	globalMap.put("<%=cid %>_USER",<%=dbuser%>);
+	globalMap.put("<%=cid %>_TABLE",<%=dbtable%>);
+<%
 List<IMetadataTable> metadatas = node.getMetadataList();
 IMetadataTable metadata = null;
 if ((metadatas != null) && (metadatas.size() > 0)) {

@@ -21,7 +21,8 @@
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
 	%>
-
+	globalMap.put("<%=cid %>_DIRECTORY",<%=directory%>);
+	globalMap.put("<%=cid %>_ZIPFILE",<%=zipFile%>);
 
     String sourceDir_<%=cid %> = <%=directory %>;      
     java.io.File file_<%=cid %> = new java.io.File(sourceDir_<%=cid %>);

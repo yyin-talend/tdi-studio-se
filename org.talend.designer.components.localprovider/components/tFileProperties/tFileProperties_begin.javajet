@@ -18,11 +18,15 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+String schema = ElementParameterParser.getValue(node, "__SCHEMA__");
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
 boolean MD5 = new Boolean(ElementParameterParser.getValue(node, "__MD5__"));
+%>
+	globalMap.put("<%=cid %>_SCHEMA",<%=schema%>);
+	globalMap.put("<%=cid %>_FILENAME",<%=filename%>);
 
-
+<%
 String outputConnName = null;
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 if (conns!=null) {

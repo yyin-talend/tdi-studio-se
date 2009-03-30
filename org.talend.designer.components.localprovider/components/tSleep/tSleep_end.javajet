@@ -9,7 +9,9 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 String pause = ElementParameterParser.getValue(node, "__PAUSE__");
 %>
+	globalMap.put("<%=cid %>_PAUSE",<%=pause%>);
     Thread.sleep((<%=pause%>)*1000);
 
