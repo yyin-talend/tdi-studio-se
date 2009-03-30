@@ -252,12 +252,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         metadataFileExcelNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EXCEL);
         metadataNode.getChildren().add(metadataFileExcelNode);
 
-        // 7.8. LDAP schemas
-        metadataLDAPSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataLDAPSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
-        metadataLDAPSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
-        metadataNode.getChildren().add(metadataLDAPSchemaNode);
-
+        ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
+        if (codeLanguage != ECodeLanguage.PERL) {
+            // 7.8. LDAP schemas
+            metadataLDAPSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataLDAPSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
+            metadataLDAPSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
+            metadataNode.getChildren().add(metadataLDAPSchemaNode);
+        }
         // 7.9. Generic schemas
         metadataGenericSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
         metadataGenericSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
@@ -271,7 +273,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
         // 7.11 Salesforce
 
-        ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
         if (codeLanguage != ECodeLanguage.PERL) {
             metadataSalesforceSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             metadataSalesforceSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
