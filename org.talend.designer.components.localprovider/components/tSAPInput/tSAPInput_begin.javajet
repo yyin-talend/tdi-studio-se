@@ -1,5 +1,6 @@
 <%@ jet
 	imports="
+	java.util.Arrays
 	java.util.ArrayList
 	java.util.HashMap
 	java.util.List
@@ -188,6 +189,13 @@ String functionName = ElementParameterParser.getValue(node, "__SAP_FUNCTION__");
 
 String iterate_out_type = ElementParameterParser.getValue(node, "__SAP_ITERATE_OUT_TYPE__");
 String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITERATE_OUT_TABLENAME__");
+String [] iterate_out_multi = iterate_out_tablename.split(",");
+for(int k = 0; k < iterate_out_multi.length; k++){
+	if(iterate_out_multi[k] != null){
+		iterate_out_multi[k] = iterate_out_multi[k].trim();
+	}
+}
+List<String> iterate_out_multi_list = Arrays.asList(iterate_out_multi);
 
 boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
@@ -319,12 +327,17 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 <%
         // "output_structure"
         Map<String, List<SchemaUtil.SAPSchema>> output_structure_map = schemaUtil.extractSchemaMap("output_structure");
+        boolean isFirstLoop = true;
         for (String key : output_structure_map.keySet()) {
-        	if(!iterate_out_tablename.equals(key)) {continue;} //only iterate one table
+        	if(!iterate_out_multi_list.contains(key)) {continue;} //only iterate one table
         	startIterate = true;
 %>          
-		com.sap.mw.jco.JCO.Structure output_structure_structure_<%=cid %> = exportParameterList_<%=cid %>.getStructure(<%=key %>);
+			
+<%if(isFirstLoop){%>
 		for(int k_<%=cid %> = 0; k_<%=cid %> < 1; k_<%=cid %>++) {//block
+			com.sap.mw.jco.JCO.Structure output_structure_structure_<%=cid %> = null;
+<%}%>
+			output_structure_structure_<%=cid %> = exportParameterList_<%=cid %>.getStructure(<%=key %>);
 <%          List<SchemaUtil.SAPSchema> oneTableNamelist = output_structure_map.get(key);
             for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
             IMetadataColumn column = metadata.getColumn(schema.getSchemaName());
@@ -332,7 +345,8 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 %>              
 		<%=firstDataConnName %>.<%=schema.getSchemaName() %> = ParserUtils.parseTo_<%= typeToGenerate %>(output_structure_structure_<%=cid %>.getString(<%=schema.getSapParameterName() %>)); // "output_structure"--<%=schema.getSchemaName() %>
 <%          }
-        }
+			isFirstLoop = false;
+        }        
 %>
 
 <%}else if(iterate_out_type.equals("output_table")){%>
