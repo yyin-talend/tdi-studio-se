@@ -72,10 +72,15 @@ String functionName = ElementParameterParser.getValue(node, "__SAP_FUNCTION__");
 
 String iterate_out_type = ElementParameterParser.getValue(node, "__SAP_ITERATE_OUT_TYPE__");
 String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITERATE_OUT_TABLENAME__");
+
+boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 %>
 
 	  	  com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
-	    
+<%if(useExistingConn){%>	    
+	  client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("conn_<%=connection %>");	
+<%}else{%>    
 	  //Create a client connection to a dedicated R/3 system
 	  client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
 					            				 <%=userid %>,   	// userid
@@ -86,6 +91,7 @@ String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITER
 	        				 
 		// Open the connection
 		client_<%=cid %>.connect();
+<%}%> 	
       
         com.sap.mw.jco.IRepository repository_<%=cid %> = com.sap.mw.jco.JCO.createRepository("REPOSITORY", client_<%=cid %>);
 
