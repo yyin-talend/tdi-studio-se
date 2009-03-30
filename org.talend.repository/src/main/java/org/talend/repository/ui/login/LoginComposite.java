@@ -57,6 +57,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.WarningException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.PasswordHelper;
@@ -136,6 +137,8 @@ public class LoginComposite extends Composite {
     private ComboViewer manageViewer;
 
     private Label manageProjectLabel1;
+
+    private String lastWarnings;
 
     /**
      * Constructs a new LoginComposite.
@@ -685,7 +688,15 @@ public class LoginComposite extends Composite {
         boolean initialized = false;
 
         try {
-            repositoryFactory.checkAvailability();
+            try {
+                repositoryFactory.checkAvailability();
+            } catch (WarningException e) {
+                String warnings = e.getMessage();
+                if (warnings != null && !warnings.equals(lastWarnings)) {
+                    lastWarnings = warnings;
+                    MessageDialog.openWarning(getShell(), "Warning", warnings);
+                }
+            }
 
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
