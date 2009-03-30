@@ -41,7 +41,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean bReadRealValue = ElementParameterParser.getValue(node, "__READ_REAL_VALUE__").equals("true");
 		
 		boolean affect = ElementParameterParser.getValue(node,"__AFFECT_EACH_SHEET__").equals("true");
-		boolean stopOnEmptyRow = ElementParameterParser.getValue(node,"__STOPREAD_ON_EMPTYROW__").equals("true");				    	
+		boolean stopOnEmptyRow = ElementParameterParser.getValue(node,"__STOPREAD_ON_EMPTYROW__").equals("true");
+		boolean notNeedValidateOnCell = ElementParameterParser.getValue(node,"__NOVALIDATE_ON_CELL__").equals("true");
 %>
 
 			class RegexUtil_<%=cid %> {
@@ -90,6 +91,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 		RegexUtil_<%=cid %> regexUtil_<%=cid %> = new RegexUtil_<%=cid %>();
 		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
+<%
+		if(notNeedValidateOnCell==true){
+%>
+		workbookSettings_<%= cid %>.setCellValidationDisabled(true);
+<%
+		}
+%>
         workbookSettings_<%= cid %>.setEncoding(<%=encoding %>);
         final jxl.Workbook workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(new java.io.FileInputStream(
         						<%=ElementParameterParser.getValue(node,"__FILENAME__")%>)), workbookSettings_<%= cid %>);
