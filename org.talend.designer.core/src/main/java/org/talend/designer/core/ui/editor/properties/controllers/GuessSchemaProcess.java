@@ -127,7 +127,10 @@ public class GuessSchemaProcess {
             libNode2.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             process.addNodeContainer(new NodeContainer(libNode2));
         }
-        int fetchSize = 1000; // for sql statement, feature 6622.
+        int fetchSize = maximumRowsToPreview; // for sql statement, feature 6622.
+        if (maximumRowsToPreview > 1000) {
+            fetchSize = 1000;
+        }
         String codeStart, codeMain, codeEnd;
         temppath = (Path) buildTempCSVFilename();
         codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
