@@ -23,6 +23,7 @@ String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 StringBuilder tableName = new StringBuilder();
 StringBuilder tmpTableName = new StringBuilder();
+boolean standardConformingString=ElementParameterParser.getValue(node,"__STANDARD_CONFORMING_STRING__").equals("true");
 %>
 String tableName_<%=cid%> = null;
 <%
@@ -95,7 +96,13 @@ if(fileType.equals("BINARYFILE")) {
         String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");        
         %>
         bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + <%=textEnclosure %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+        <%if(standardConformingString) {
+        %>
+        bulkSQL_<%=cid%> += "ESCAPE AS '" + <%=escapeChar %> + "' "; 
+        <%
+        }else {%>
         bulkSQL_<%=cid%> += "ESCAPE AS '" + <%=escapeChar %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+        <%}%>        
         bulkSQL_<%=cid%> += "<%=notNullColumns.toString().substring(0, notNullColumns.toString().length() - 1)%>";
         <%
     }
@@ -178,11 +185,20 @@ if(dataAction.equals("UPDATE")) {
         if(keyCount_<%=cid%> == 0) {
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
+        
         String tmpTableName_<%=cid%> = tableName_<%=cid%>;
         tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid ;        
         java.sql.Statement stmtCreateTmp_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreateTmp_<%=cid%>.close();
+        
+        
+        <%if(standardConformingString) {
+   		%>
+   		java.sql.CallableStatement cs_<%=cid%> =con_<%=cid %>.prepareCall("set standard_conforming_strings=on");
+   		cs_<%=cid%>.execute();
+   		cs_<%=cid%>.close();
+   		<%}%>        
         
         java.sql.Statement stmtTmpBulk_<%=cid%> = con_<%=cid%>.createStatement();
         stmtTmpBulk_<%=cid%>.execute(bulkSQL_<%=cid%>);
@@ -204,6 +220,13 @@ if(dataAction.equals("UPDATE")) {
     }
 } else if(dataAction.equals("INSERT")) {
     %>
+   <%if(standardConformingString) {
+   %>
+   	java.sql.CallableStatement cs_<%=cid%> =con_<%=cid %>.prepareCall("set standard_conforming_strings=on");
+   	cs_<%=cid%>.execute();
+   	cs_<%=cid%>.close();
+   <%}%>
+    
     java.sql.Statement stmtBulk_<%=cid %> = con_<%=cid %>.createStatement();
     //stmt.execute("SET client_encoding to 'UNICODE'");
     stmtBulk_<%=cid %>.execute(bulkSQL_<%=cid%>);
