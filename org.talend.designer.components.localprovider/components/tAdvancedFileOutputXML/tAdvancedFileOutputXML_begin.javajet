@@ -49,6 +49,7 @@ boolean needRoot_<%=cid%>  = false;
 boolean	needRoot_<%=cid%> = true;
 <%}%>
 String fileName_<%=cid%> = <%=fileName%>;
+String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("."));
 <%
 				if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
 %>
@@ -71,7 +72,6 @@ if(!createFile<%=cid%>.exists()){
 %>
 int currentRowCount_<%=cid%> = 0;
 int currentFileCount_<%=cid%> = 0;
-String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("."));
 String suffix_<%=cid %> = fileName_<%=cid %>.substring(fileName_<%=cid%>.lastIndexOf("."));
 fileName_<%=cid%> = file_<%=cid%>+"0" + suffix_<%=cid %>;
 <%
