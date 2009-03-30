@@ -156,6 +156,7 @@ if(columnList != null && columnList.size() > 0) {
                     break;
                 }
             }
+            rsTable_<%=cid%>.close();
             <%
             if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
                 %>
