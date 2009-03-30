@@ -1,0 +1,45 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List
+    	java.util.Map
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();	
+List<IMetadataTable> metadatas = node.getMetadataList();
+List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+		if (outConns!=null) {
+			if (outConns.size()>0){
+				IConnection conn = outConns.get(0);		
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+					for (IMetadataColumn column: metadata.getListColumns()) {
+						if(column.getLabel().equals("key")){
+%>			
+							<%=conn.getName()%>.<%=column.getLabel()%> = key_<%=cid%>;
+<%
+						}else if(column.getLabel().equals("value")){
+%>
+							<%=conn.getName()%>.<%=column.getLabel()%> = value_<%=cid%>;
+<%
+						}
+					}
+				}
+			}
+		}
+	}
+}
+%>				

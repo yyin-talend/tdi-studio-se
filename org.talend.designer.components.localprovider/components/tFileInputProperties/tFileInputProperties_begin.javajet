@@ -1,0 +1,41 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List
+    	java.util.Map
+	" 
+%>
+<% 
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+		String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+    	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+%>
+		java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
+		java.util.Properties properties_<%=cid%> = null;
+		String key_<%=cid%> =null, value_<%=cid%> = null; 
+		try {
+			properties_<%=cid%> = new java.util.Properties();
+			properties_<%=cid%>.load(new java.io.FileInputStream(file_<%=cid%>));
+			java.util.Enumeration enumeration_<%=cid%> = properties_<%=cid%>.propertyNames();
+			while (enumeration_<%=cid%>.hasMoreElements()) {
+				key_<%=cid%> = (String)enumeration_<%=cid%>.nextElement();
+				value_<%=cid%> = (String)properties_<%=cid%>.getProperty(key_<%=cid%>);
+<%
+	}
+}
+%>
+				
