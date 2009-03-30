@@ -191,7 +191,7 @@
       FIELD="CHECK"
       NUM_ROW="20"
     >
-      <DEFAULT>true</DEFAULT>
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
     <PARAMETER 
