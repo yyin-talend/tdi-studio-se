@@ -217,6 +217,15 @@ private RunTrace runTrace = new RunTrace();
 <%
 	}
 %>
+
+private final java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+private final java.io.PrintStream errorMessagePS = new java.io.PrintStream(new java.io.BufferedOutputStream(baos));
+
+public String getExceptionStackTrace() {
+	errorMessagePS.flush();
+	return baos.toString();
+}
+
 private class TalendException extends Exception {
 	private java.util.Map<String, Object> globalMap = null;
 	private Exception e = null;
@@ -235,7 +244,12 @@ private class TalendException extends Exception {
 	        System.err.println("Exception in component " + currentComponent);
 	    }
 	    if (!(e instanceof TDieException)) {
-	        e.printStackTrace();
+			if(e instanceof TalendException){
+				e.printStackTrace();	
+			}else{
+				e.printStackTrace();
+				e.printStackTrace(errorMessagePS);
+			}
 	    }
 		if (!(e instanceof TalendException)) {
 		try {

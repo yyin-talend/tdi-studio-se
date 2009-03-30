@@ -131,6 +131,8 @@ for (int i=0; i<contextParams.size(); i++) {
 	}else{
 		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
 	}
+	
+	globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
     
     <% 
     	if (dieOnError) {
