@@ -15,12 +15,14 @@ package org.talend.repository.model.actions;
 import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -121,7 +123,16 @@ public class CopyObjectAction {
             if (lastVersion != null) {
                 Item item = lastVersion.getProperty().getItem();
             }
-            factory.copy(originalItem, path);
+            // qli modified to fix the bug 5400 and 6185.
+            Item newItem = factory.copy(originalItem, path);
+            if (newItem instanceof RoutineItem) {
+                ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                        ICodeGeneratorService.class);
+                if (codeGenService != null) {
+                    codeGenService.createRoutineSynchronizer().renameRoutineClass((RoutineItem) newItem);
+                }
+            }
+            factory.save(newItem);
         }
     }
 }

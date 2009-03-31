@@ -59,7 +59,6 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -142,16 +141,9 @@ public class EditPropertiesAction extends AContextualAction {
             IProject project = javaProject.getProject();
             IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
             IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
-            String projectName;
-            if (node.getRoot() != null) {
-                projectName = node.getRoot().getProject().getTechnicalLabel().toLowerCase();
-            } else {
-                ProjectManager pManager = ProjectManager.getInstance();
-                org.talend.core.model.properties.Project p = pManager.getProject(node.getObject().getProperty().getItem());
-                String projectFolderName = p.getTechnicalLabel();
-                projectName = projectFolderName.toLowerCase();
-            }
-            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY + "." + projectName); //$NON-NLS-1$
+
+            // qli modified to fix the bug 5400 and 6185.
+            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY); //$NON-NLS-1$
 
             ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
             if (unit == null) {

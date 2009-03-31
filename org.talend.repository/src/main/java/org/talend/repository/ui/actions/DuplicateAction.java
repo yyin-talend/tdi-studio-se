@@ -32,9 +32,11 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.utils.KeywordsValidator;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -137,11 +139,11 @@ public class DuplicateAction extends AContextualAction {
         InputDialog jobNewNameDialog = new InputDialog(null, Messages.getString("DuplicateAction.dialog.title"), Messages //$NON-NLS-1$
                 .getString("DuplicateAction.dialog.message"), jobNameValue, new IInputValidator() { //$NON-NLS-1$
 
-            public String isValid(String newText) {
-                return validJobName(newText, selectionInClipboard);
-            }
+                    public String isValid(String newText) {
+                        return validJobName(newText, selectionInClipboard);
+                    }
 
-        });
+                });
 
         if (jobNewNameDialog.open() != Dialog.OK) {
             return;
@@ -287,6 +289,14 @@ public class DuplicateAction extends AContextualAction {
                 newItem.getProperty().setVersion(JOB_INIT_VERSION);
                 newItem.getProperty().setLabel(newJobName);
                 factory.saveCopy(originalItem, newItem);
+                // qli modified to fix the bug 5400 and 6185.
+                if (newItem instanceof RoutineItem) {
+                    ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                            ICodeGeneratorService.class);
+                    if (codeGenService != null) {
+                        codeGenService.createRoutineSynchronizer().renameRoutineClass((RoutineItem) newItem);
+                    }
+                }
                 factory.save(newItem);
 
             }

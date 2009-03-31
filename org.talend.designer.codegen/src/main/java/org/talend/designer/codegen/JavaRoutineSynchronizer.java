@@ -279,4 +279,25 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * qli modified to fix the bug 5400 and 6185.
+     * 
+     * @seeorg.talend.designer.codegen.AbstractRoutineSynchronizer#renameRoutineClass(org.talend.core.model.properties.
+     * RoutineItem, java.lang.String)
+     */
+    @Override
+    public void renameRoutineClass(RoutineItem routineItem) {
+        if (routineItem == null) {
+            return;
+        }
+        String routineContent = new String(routineItem.getContent().getInnerContent());
+        String label = routineItem.getProperty().getLabel();
+        //
+        String regexp = "public(\\s)+class(\\s)+\\w+(\\s)+\\{";//$NON-NLS-1$
+        routineContent = routineContent.replaceFirst(regexp, "public class " + label + " {");//$NON-NLS-1$//$NON-NLS-2$
+        routineItem.getContent().setInnerContent(routineContent.getBytes());
+    }
+
 }

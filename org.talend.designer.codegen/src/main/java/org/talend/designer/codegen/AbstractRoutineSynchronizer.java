@@ -31,116 +31,110 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /***/
-public abstract class AbstractRoutineSynchronizer implements
-		ITalendSynchronizer {
+public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer {
 
-	private static Map<String, Date> id2date = new HashMap<String, Date>();
+    private static Map<String, Date> id2date = new HashMap<String, Date>();
 
-	protected List<IRepositoryObject> getRoutines() throws SystemException {
-		List<IRepositoryObject> routineList = getMainProjectRoutine();
-		// list.addAll(getReferencedProjectRoutine());
+    protected List<IRepositoryObject> getRoutines() throws SystemException {
+        List<IRepositoryObject> routineList = getMainProjectRoutine();
+        // list.addAll(getReferencedProjectRoutine());
 
-		// remove routine with same name in reference project
-		Set<String> routineNames = new HashSet<String>();
-		for (IRepositoryObject obj : routineList) {
-			routineNames.add(obj.getProperty().getLabel());
-		}
+        // remove routine with same name in reference project
+        Set<String> routineNames = new HashSet<String>();
+        for (IRepositoryObject obj : routineList) {
+            routineNames.add(obj.getProperty().getLabel());
+        }
 
-		List<IRepositoryObject> refRoutines = getReferencedProjectRoutine();
-		for (IRepositoryObject obj : refRoutines) {
-			String name = obj.getProperty().getLabel();
-			// it does not have a routine with same name
-			if (!routineNames.contains(name)) {
-				routineNames.add(name);
-				routineList.add(obj);
-			}
-		}
-		return routineList;
-	}
+        List<IRepositoryObject> refRoutines = getReferencedProjectRoutine();
+        for (IRepositoryObject obj : refRoutines) {
+            String name = obj.getProperty().getLabel();
+            // it does not have a routine with same name
+            if (!routineNames.contains(name)) {
+                routineNames.add(name);
+                routineList.add(obj);
+            }
+        }
+        return routineList;
+    }
 
-	private List<IRepositoryObject> getMainProjectRoutine()
-			throws SystemException {
-		IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator
-				.getDefault().getRepositoryService()
-				.getProxyRepositoryFactory();
+    private List<IRepositoryObject> getMainProjectRoutine() throws SystemException {
+        IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
 
-		List<IRepositoryObject> routines;
-		try {
-			routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
-		} catch (PersistenceException e) {
-			throw new SystemException(e);
-		}
-		return routines;
-	}
+        List<IRepositoryObject> routines;
+        try {
+            routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
+        } catch (PersistenceException e) {
+            throw new SystemException(e);
+        }
+        return routines;
+    }
 
-	private List<IRepositoryObject> getReferencedProjectRoutine()
-			throws SystemException {
-		List<Project> projects = ProjectManager.getInstance()
-				.getReferencedProjects();
-		IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator
-				.getDefault().getRepositoryService()
-				.getProxyRepositoryFactory();
+    private List<IRepositoryObject> getReferencedProjectRoutine() throws SystemException {
+        List<Project> projects = ProjectManager.getInstance().getReferencedProjects();
+        IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
 
-		List<IRepositoryObject> routines = new LinkedList<IRepositoryObject>();
-		for (Project project : projects) {
-			try {
-				routines.addAll(repositoryFactory.getAll(project,
-						ERepositoryObjectType.ROUTINES));
-			} catch (PersistenceException e) {
-				throw new SystemException(e);
-			}
-		}
+        List<IRepositoryObject> routines = new LinkedList<IRepositoryObject>();
+        for (Project project : projects) {
+            try {
+                routines.addAll(repositoryFactory.getAll(project, ERepositoryObjectType.ROUTINES));
+            } catch (PersistenceException e) {
+                throw new SystemException(e);
+            }
+        }
 
-		return routines;
-	}
+        return routines;
+    }
 
-	public void syncRoutine(RoutineItem routineItem, boolean copyToTemp)
-			throws SystemException {
-		if (!isRoutineUptodate(routineItem) || !getFile(routineItem).exists()) {
-			doSyncRoutine(routineItem, copyToTemp);
-			setRoutineAsUptodate(routineItem);
-		}
-	}
+    public void syncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
+        if (!isRoutineUptodate(routineItem) || !getFile(routineItem).exists()) {
+            doSyncRoutine(routineItem, copyToTemp);
+            setRoutineAsUptodate(routineItem);
+        }
+    }
 
-	protected abstract void doSyncRoutine(RoutineItem routineItem,
-			boolean copyToTemp) throws SystemException;
+    protected abstract void doSyncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException;
 
-	protected boolean isRoutineUptodate(RoutineItem routineItem) {
-		Date refDate = getRefDate(routineItem);
-		if (refDate == null) {
-			return false;
-		}
-		Date date = id2date.get(routineItem.getProperty().getId());
-		return refDate.equals(date);
-	}
+    protected boolean isRoutineUptodate(RoutineItem routineItem) {
+        Date refDate = getRefDate(routineItem);
+        if (refDate == null) {
+            return false;
+        }
+        Date date = id2date.get(routineItem.getProperty().getId());
+        return refDate.equals(date);
+    }
 
-	protected void setRoutineAsUptodate(RoutineItem routineItem) {
-		Date refDate = getRefDate(routineItem);
-		if (refDate == null) {
-			return;
-		}
-		id2date.put(routineItem.getProperty().getId(), refDate);
-	}
+    protected void setRoutineAsUptodate(RoutineItem routineItem) {
+        Date refDate = getRefDate(routineItem);
+        if (refDate == null) {
+            return;
+        }
+        id2date.put(routineItem.getProperty().getId(), refDate);
+    }
 
-	private Date getRefDate(RoutineItem routineItem) {
-		if (routineItem.isBuiltIn()) {
-			// FIXME mhelleboid for now, routines are deleted and recreated on
-			// project logon
-			// change this code, if one day routines are updated
-			return routineItem.getProperty().getCreationDate();
-		} else {
-			return routineItem.getProperty().getModificationDate();
-		}
+    private Date getRefDate(RoutineItem routineItem) {
+        if (routineItem.isBuiltIn()) {
+            // FIXME mhelleboid for now, routines are deleted and recreated on
+            // project logon
+            // change this code, if one day routines are updated
+            return routineItem.getProperty().getCreationDate();
+        } else {
+            return routineItem.getProperty().getModificationDate();
+        }
 
-	}
+    }
 
-	public void forceSyncRoutine(RoutineItem routineItem) {
-		id2date.remove(routineItem.getProperty().getId());
-		try {
-			getFile(routineItem).delete(true, new NullProgressMonitor());
-		} catch (Exception e) {
-			// ignore me
-		}
-	}
+    public void forceSyncRoutine(RoutineItem routineItem) {
+        id2date.remove(routineItem.getProperty().getId());
+        try {
+            getFile(routineItem).delete(true, new NullProgressMonitor());
+        } catch (Exception e) {
+            // ignore me
+        }
+    }
+
+    // qli modified to fix the bug 5400 and 6185.
+    public abstract void renameRoutineClass(RoutineItem routineItem);
 
 }

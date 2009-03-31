@@ -135,4 +135,15 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.talend.designer.codegen.AbstractRoutineSynchronizer#renameRoutineClass(org.talend.core.model.properties.
+     * RoutineItem, java.lang.String)
+     */
+    @Override
+    public void renameRoutineClass(RoutineItem routineItem) {
+        // nothing to do
+    }
+
 }
