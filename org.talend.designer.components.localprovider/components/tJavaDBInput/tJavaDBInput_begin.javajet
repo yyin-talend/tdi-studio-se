@@ -31,17 +31,7 @@ imports="
 		   dbquery = dbquery.replaceAll("\r"," ");
     boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
-	String schema = ElementParameterParser.getValue(node, "__SCHEMA__");
-	String dbtable= ElementParameterParser.getValue(node, "__TABLE__");
-	String queryStore = ElementParameterParser.getValue(node, "__QUERYSTORY__");
-%>
-	globalMap.put("<%=cid %>_HOST",<%=dbhost%>);
-	globalMap.put("<%=cid %>_PORT",<%=dbport%>);
-	globalMap.put("<%=cid %>_DB",<%=db%>);
-	globalMap.put("<%=cid %>_USER",<%=dbuser%>);
-	globalMap.put("<%=cid %>_TABLE",<%=dbtable%>);
-	globalMap.put("<%=cid %>_DBPATH",<%=dbRootPath%>);
-<%
+		   
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas != null) && (metadatas.size() > 0)) {
 		IMetadataTable metadata = metadatas.get(0);

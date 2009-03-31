@@ -31,13 +31,7 @@ imports="
     	   dbquery = dbquery.replaceAll("\r"," ");
     boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
-	String dbtable= ElementParameterParser.getValue(node, "__TABLE__");
-%>
-	globalMap.put("<%=cid %>_PORT",<%=dbport%>);
-	globalMap.put("<%=cid %>_SERVER",<%=dbServer%>);
-	globalMap.put("<%=cid %>_USER",<%=dbuser%>);
-	globalMap.put("<%=cid %>_TABLE",<%=dbtable%>);
-<%
+    	   
 	List<IMetadataTable> metadatas = node.getMetadataList();	
 	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");	
 	if ((metadatas != null) && (metadatas.size() > 0)) {

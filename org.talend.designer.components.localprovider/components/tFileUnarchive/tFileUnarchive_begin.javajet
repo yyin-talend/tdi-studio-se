@@ -15,8 +15,6 @@
 	boolean rootName = ElementParameterParser.getValue(node, "__ROOTNAME__").equals("true");
 	boolean extractPath = ElementParameterParser.getValue(node, "__EXTRACTPATH__").equals("true");	
 %>      
-	globalMap.put("<%=cid %>_ARCHFILE",<%=zipFile%>);
-	globalMap.put("<%=cid %>_DIRECTORY",<%=directory%>);
 		class UnzippedFile_<%=cid %> {
 			public String fileName;
 			public String filePath;

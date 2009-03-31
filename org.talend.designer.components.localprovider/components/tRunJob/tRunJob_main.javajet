@@ -46,7 +46,6 @@ imports="
 	IProcess currentProcess = node.getProcess();
 	
     List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
-    String schema = ElementParameterParser.getValue(node,"__SCHEMA__");
     String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
     String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
     String version = ElementParameterParser.getValue(node,"__PROCESS_TYPE_VERSION__");
@@ -70,10 +69,6 @@ if(commandLine.length > 0) {
 	childJob = commandLine[0];
 }    
 %>
-globalMap.put("<%=cid %>_SCHEMA",<%=schema%>);
-globalMap.put("<%=cid %>_JOB",<%=process%>);
-globalMap.put("<%=cid %>_JOB_CONTEXT",<%=context%>);
-globalMap.put("<%=cid %>_JOB_VERSION",<%=version%>);
 java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 
 <%

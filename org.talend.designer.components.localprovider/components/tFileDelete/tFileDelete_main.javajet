@@ -17,9 +17,6 @@ String failon = ElementParameterParser.getValue(node, "__FAILON__");
 boolean ifFolder = ElementParameterParser.getValue(node, "__FOLDER__").equals("true");
 boolean either = ElementParameterParser.getValue(node, "__FOLDER_FILE__").equals("true");
 %>
-globalMap.put("<%=cid %>_FILENAME",<%=fileName%>);
-globalMap.put("<%=cid %>_DIRECTORY",<%=dirName%>);
-globalMap.put("<%=cid %>_PATH",<%=path%>);
 class DeleteFolder<%=cid%>{
 	 /**
      * delete all the sub-files in 'file'

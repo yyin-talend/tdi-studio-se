@@ -42,9 +42,6 @@ imports="
 	boolean paging =ElementParameterParser.getValue(node, "__ISPAGING__").equals("true");	
 	String pageSize =ElementParameterParser.getValue(node, "__PAGESIZE__");
 %>
-	globalMap.put("<%=cid %>_HOST",<%=host%>);
-	globalMap.put("<%=cid %>_PORT",<%=port%>);
-	globalMap.put("<%=cid %>_BASEDN",<%=baseDN%>);
 	int <%=cid%>_NB_LINE = 0;
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
 	env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -144,7 +141,7 @@ do {
 <%}%>
 
     javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase, <%=filter%>, searchCtls_<%=cid%>);
-    while (answer_<%=cid%> .hasMoreElements()) {
+    while (answer_<%=cid%> .hasMoreElements()) {//a
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 

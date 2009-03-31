@@ -20,15 +20,8 @@
     boolean present = ElementParameterParser.getValue(node, "__INCLUDE_PRESENT__").equals("true");
     String triggerAction = ElementParameterParser.getValue(node, "__ACTION_ON__");
     boolean waitRelease = ElementParameterParser.getValue(node, "__WAIT_RELEASE__").equals("true");
-    String wait = ElementParameterParser.getValue(node, "__WAIT__");
-    String maxIterations = ElementParameterParser.getValue(node, "__MAX_ITERATIONS__");
-    String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
-    String fileMask = ElementParameterParser.getValue(node, "__FILEMASK__");
 %>
-       globalMap.put("<%=cid %>_WAIT",<%=wait%>);
-       globalMap.put("<%=cid %>_MAX_ITERATIONS",<%=maxIterations%>);
-       globalMap.put("<%=cid %>_DIRECTORY",<%=directory%>);
-       globalMap.put("<%=cid %>_FILEMASK",<%=fileMask%>);
+       
         class Util_<%=cid %> {
 
             private boolean flagt = false;
@@ -36,8 +29,8 @@
             private java.util.regex.Pattern fileNamePatternt = null;
 
             java.util.List<java.io.File> getFiles() {
-                String directoryt = <%=directory%>;
-                String filemaskt = <%=fileMask%>+"$";
+                String directoryt = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
+                String filemaskt = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%>+"$";
 
                 if (filemaskt.indexOf("^") == -1) {
                     filemaskt = "^" + filemaskt;
@@ -156,9 +149,9 @@
         int count_<%=cid %> = 0;
         while (true) {
             <%
-            if(!maxIterations.equals("")){
+            if(!ElementParameterParser.getValue(node,"__MAX_ITERATIONS__").equals("")){
                 %>                
-                if (count_<%=cid %> == <%=maxIterations%> ) {
+                if (count_<%=cid %> == <%=ElementParameterParser.getValue(node, "__MAX_ITERATIONS__") %> ) {
                     break;
                 }
                 <%
@@ -324,7 +317,7 @@
             globalMap.put("<%=cid %>_CURRENT_ITERATION", count_<%=cid %>);
             
             if (!found_<%=cid %>) {
-            	Thread.currentThread().sleep(<%=wait%> * 1000);
+            	Thread.currentThread().sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%> * 1000);
                 continue;
             }            
 

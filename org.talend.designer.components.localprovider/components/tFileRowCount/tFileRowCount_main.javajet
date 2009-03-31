@@ -21,7 +21,7 @@ String rowSeparator = ElementParameterParser.getValue(
     "__ROWSEPARATOR__"
 );
 %>
-	globalMap.put("<%=cid %>_FILENAME",<%=filename%>);
+
         java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader
         									(new java.io.InputStreamReader
         									(new java.io.FileInputStream(<%=filename %>)));

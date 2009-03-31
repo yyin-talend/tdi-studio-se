@@ -13,7 +13,6 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String schema = ElementParameterParser.getValue(node, "__SCHEMA__");
 String file = ElementParameterParser.getValue(node, "__FILE__");
 Boolean print = new Boolean(ElementParameterParser.getValue(node, "__PRINT__"));
 String differMessage = ElementParameterParser.getValue(node, "__DIFFER_MESSAGE__");
@@ -22,9 +21,7 @@ String fileRef = ElementParameterParser.getValue(node, "__FILE_REF__");
 String cmpMode = ElementParameterParser.getValue(node, "__COMPARISON_MODE__");
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
-globalMap.put("<%=cid %>_FILE",<%=file%>);
-globalMap.put("<%=cid %>_FILE_REF",<%=fileRef%>);
-globalMap.put("<%=cid %>_SCHEMA",<%=schema%>);
+
 boolean result_<%=cid%> = true;
 	<%
 	if(!cmpMode.equals("TEXT_CMP"))

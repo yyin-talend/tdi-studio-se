@@ -15,7 +15,6 @@
 	boolean createDir=ElementParameterParser.getValue(node, "__CREATEDIR__").equals("true");
    
 %>     
-	globalMap.put("<%=cid %>_FILENAME",<%=fileName%>);
 		java.io.File file_<%=cid %> = new java.io.File((<%=fileName%>));
 <%if(createDir){%>
 		java.io.File dir_<%=cid %> = file_<%=cid %>.getParentFile();
