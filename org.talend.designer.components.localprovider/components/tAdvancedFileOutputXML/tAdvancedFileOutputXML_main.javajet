@@ -222,6 +222,61 @@ class GenerateToolByDom4j{
 		}
 	}
 }
+
+//----------** add by wliu dom4j to genenrate get function for node **-------//
+class GenerateExprCmpByDom4j{
+//	String cid = null;
+	XMLTool tool = null;
+	XMLNode groupNode = null;
+	public void generateCode(XMLNode node, String parentName){
+		String tmpPath = node.path.replaceFirst(groupNode.path,"");
+		String[] arrNames = tmpPath.split("/");
+		if(node==groupNode){
+%>true
+<%
+		}
+		
+		if(node.relatedColumn != null){
+%>
+ <%generateCmnExpr(arrNames, parentName); %>!=null
+ <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
+ <%generateCmnExpr(arrNames, parentName); %>.getText().equals(<%tool.getValue(node); %>)
+<%
+		}
+		
+		//first generate the attribute comparision	
+		if(node.attributes!=null){
+			for(XMLNode attri:node.attributes){
+				if(attri.relatedColumn !=null){
+%>
+ <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>")!=null
+ <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
+ <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals(<%tool.getValue(attri); %>)
+<%
+				}
+			}
+		}	
+		
+		if(node.elements!=null){
+			for(XMLNode child:node.elements){
+				if(!child.isMainNode()){
+					generateCode(child,parentName);
+				}
+			}
+		}		
+	}
+	
+	private void generateCmnExpr(String[] arrNames, String parentName){
+%>
+ && <%=parentName %>
+<%
+		for(int i=1;arrNames != null && i<arrNames.length; i++){
+%>.element("<%=arrNames[i]%>")
+<%
+		}
+	}
+}
+
 // ------------------- *** Dom4j generation mode end *** ------------------- //
 
 // ------------------- *** Null generation mode start *** ------------------- //
@@ -486,6 +541,9 @@ if(groupTable.size()>0){					//init the generate tool.
 <%
 		for( int i=0; i<groupList.size();i++){
 			XMLNode groupNode= groupList.get(i);
+			GenerateExprCmpByDom4j generateExprCmpByDom4j = new GenerateExprCmpByDom4j();
+			generateExprCmpByDom4j.tool = tool;
+			generateExprCmpByDom4j.groupNode = groupNode;
 %>
 		if(bl_<%=cid %>==false){
 			java.util.List<org.dom4j.Element> listNodes= subTreeRootParent_<%=cid %>.elements();
@@ -493,21 +551,9 @@ if(groupTable.size()>0){					//init the generate tool.
 				int j=0;
 				for(j=0;j<listNodes.size();j++){
 					org.dom4j.Element tempElem =listNodes.get(j);
-					if(tempElem.attributes()!=null && tempElem.attributes().size()>0){
-						if(true 
-<%	
-			for(int j=0;j<groupbyNodeList.get(i).size();j++){
-				XMLNode attri = groupbyNodeList.get(i).get(j);
-				if(attri.relatedColumn!=null){
-%> && tempElem.attribute("<%=attri.name%>")!=null && tempElem.attribute("<%=attri.name%>").getText()!=null
- && tempElem.attribute("<%=attri.name%>").getText().equals(<%tool.getValue(attri); %>)
-<%
-				}
-			}
-%>){
-						subTreeRootParent_<%=cid %> =  tempElem;
-						break;
-						}
+					if(<%generateExprCmpByDom4j.generateCode(groupNode, "tempElem"); %>){
+					subTreeRootParent_<%=cid %> =  tempElem;
+					break;
 					}
 				}
 				if(j>=listNodes.size()){
