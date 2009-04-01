@@ -1,0 +1,307 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.Map
+    java.util.List
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+
+
+//List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+//String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__"); 
+
+String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+String rootpath = ElementParameterParser.getValue(node, "__ROOT_LOOP_QUERY__");
+
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
+
+//String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
+
+//=============================add by wliu==================================================================
+class ConnectNode{
+	public List<Map<String,String>> mapping=new java.util.ArrayList<Map<String,String>>();
+	public String loopPath=null;
+	public String strConnCtgr;
+	public boolean hasEmptyRow;
+}
+List<Map<String, String>> map=null;
+List<List<Map<String, String>>> listMapping = new java.util.ArrayList<List<Map<String, String>>>();
+
+List<ConnectNode> listSchemaNodes= new java.util.ArrayList<ConnectNode>();
+
+			List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+			List<IConnection> connections = new java.util.ArrayList<IConnection>();
+			if (conns!=null && conns.size()>0) {
+				
+				for(int i=0;i<conns.size();i++){
+					IConnection connTemp = conns.get(i);
+					if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+						connections.add(connTemp);
+					}
+				}
+				
+				List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+				for(IConnection connection : connections){
+		            for(Map<String, String> schemaMap : schemas){
+		               if(schemaMap.get("SCHEMA").equals(connection.getMetadataTable().getLabel())){
+							ConnectNode connectNode = new ConnectNode();
+							connectNode.strConnCtgr = connection.getUniqueName();
+							connectNode.hasEmptyRow=schemaMap.get("CREATE_EMPTY_ROW").equals("true");
+							connectNode.loopPath=(String)schemaMap.get("LOOP_PATH");
+							String strMapping=(String)schemaMap.get("MAPPING");
+							
+	                        String[] arrXpath = strMapping.split(",");
+	                        int j = 0;
+	                        for (IMetadataColumn column : connection.getMetadataTable().getListColumns()) {
+	                            Map<String, String> tempmap = new java.util.HashMap<String, String>();
+	                            tempmap.put("SCHEMA_COLUMN", column.getLabel());
+	                            tempmap.put("QUERY", arrXpath[j]);
+	
+	                            j++;
+	                            connectNode.mapping.add(tempmap);
+	                        }						
+
+							listSchemaNodes.add(connectNode);
+		                   break;
+		               }
+		            }
+				}				
+				
+			}
+
+
+//=================================end=======================================================================
+%>
+int nb_line_<%=cid%> = 0;
+
+class XML_API_<%=cid%>{
+	public boolean isDefNull(String[] node) throws javax.xml.transform.TransformerException {
+        if(node[0] != null && node[1]!=null && node[1].equals("true")){
+        	return true;
+        }
+        return false;
+    }
+
+    public boolean isMissing(String[] node) throws javax.xml.transform.TransformerException {
+        return node[0] == null ? true : false;
+    }
+
+    public boolean isEmpty(String[] node) throws javax.xml.transform.TransformerException {
+        if(node[0]!=null ){
+        	return node[0].length() == 0;
+        }
+        return false;
+    }
+}
+
+<%
+	for(ConnectNode connNode : listSchemaNodes){
+		String strType=connNode.strConnCtgr+"";
+%>
+XML_API_<%=cid%> xml_api_<%=strType %>_<%=cid%> = new XML_API_<%=cid%>();
+
+String[] queryPaths_<%=connNode.strConnCtgr %>_<%=cid%> = new String[]{
+<%
+		boolean first = true;
+		for(Map<String,String> path : connNode.mapping){
+%>	
+	<%=first?"":","%><%=path.get("QUERY")%>
+<%
+		String query = path.get("QUERY");
+			if(query!=null && query.indexOf("@")<0){
+%>		
+	,<%=query%>+"/@xsi:nil"
+<%
+			}
+		first=false;
+		}//for(path)
+%>
+};
+
+String str_<%=connNode.strConnCtgr %>_<%=cid %> = "";
+String[] node_<%=connNode.strConnCtgr %>_<%=cid%> = null;
+org.talend.xml.sax.SAXLooper looper_<%=connNode.strConnCtgr %>_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=rootpath%>+<%=connNode.loopPath %>,queryPaths_<%=connNode.strConnCtgr %>_<%=cid%>);
+looper_<%=connNode.strConnCtgr %>_<%=cid%>.parse(new java.io.File(<%=filename %>).toURI().toString());
+java.util.Iterator<java.util.Map<String, String>> it_<%=connNode.strConnCtgr %>_<%=cid%>  = looper_<%=connNode.strConnCtgr %>_<%=cid%>.iterator();
+<%
+	}//for(connNode)
+%>
+while (
+<%
+	boolean first =true;
+	for(ConnectNode connNode : listSchemaNodes){
+%>
+<%=first?"":" || "%>it_<%=connNode.strConnCtgr %>_<%=cid%>.hasNext()
+<%
+		first=false;
+	}//for connNode
+%>) {
+		nb_line_<%=cid%>++;
+
+<%
+
+String firstConnName = "";
+//===========================modify by wliu====================================
+if(connections!=null && connections.size()>0){
+	
+	boolean isMetadata=false;
+
+	for(IConnection conn : connections){
+			
+			List<Map<String, String>> mapping=null;
+			String strType="";
+			boolean hasEmptyRow = false;
+			for(ConnectNode connNode: listSchemaNodes){
+				if(conn.getUniqueName().equals(connNode.strConnCtgr)){
+					isMetadata=true;
+					mapping=connNode.mapping;
+					strType=connNode.strConnCtgr + "";
+					hasEmptyRow= connNode.hasEmptyRow;
+					break;
+				}
+			}
+			if(isMetadata==false) continue; //don't find the metadata related to the connector.
+			
+			IMetadataTable metadata = conn.getMetadataTable();
+			
+			if(metadata!=null){
+				if(hasEmptyRow){
+%>
+	<%=conn.getName() %>=new <%=conn.getName() %>Struct();
+	if(it_<%=strType %>_<%=cid %>.hasNext()){
+		java.util.Map<String, String> row_<%=strType %>_<%=cid %> = it_<%=strType %>_<%=cid %>.next();
+<%
+				}else{
+%>
+	<%=conn.getName() %> = null;
+	if(it_<%=strType %>_<%=cid %>.hasNext()){	
+		<%=conn.getName() %>=new <%=conn.getName() %>Struct();		
+		java.util.Map<String, String> row_<%=strType %>_<%=cid %> = it_<%=strType %>_<%=cid %>.next();
+<%				}
+				List<IMetadataColumn> columns=metadata.getListColumns();
+//===================================end========================================
+				firstConnName = conn.getName();
+				for (int i=0;i<mapping.size();i++) { 
+					String query = mapping.get(i).get("QUERY");
+%>
+	str_<%=strType %>_<%=cid %> = row_<%=strType %>_<%=cid %>.get(<%=query %>);
+<% 
+						if(query!=null && query.indexOf("@")<0){
+%>
+	node_<%=strType %>_<%=cid%> = new String[]{str_<%=strType %>_<%=cid %>,row_<%=strType %>_<%=cid %>.get(<%=query %>+"/@xsi:nil")};
+<%
+						}else{
+%>
+	node_<%=strType %>_<%=cid%> = new String[]{str_<%=strType %>_<%=cid %>,null};
+<% 
+						}
+					for(IMetadataColumn column:columns) {
+						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
+							if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+								
+								boolean isNotSetDefault = false;
+								String defaultValue=column.getDefault();
+								if(defaultValue!=null){
+									isNotSetDefault = defaultValue.length()==0;
+								}else{
+									isNotSetDefault=true;
+								}
+								
+								if(javaType == JavaTypesManager.STRING){
+									if(column.isNullable()){
+%>
+									if(xml_api_<%=strType %>_<%=cid %>.isDefNull(node_<%=strType %>_<%=cid %>)){
+											<%=conn.getName() %>.<%=column.getLabel() %> =null;
+									}else if(xml_api_<%=strType %>_<%=cid %>.isEmpty(node_<%=strType %>_<%=cid %>)){
+										<%=conn.getName() %>.<%=column.getLabel() %> ="";
+									}else if(xml_api_<%=strType %>_<%=cid %>.isMissing(node_<%=strType %>_<%=cid %> )){ 
+										<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?null:column.getDefault() %>;
+									}else{
+<%
+									}else{ // column.isNullable()
+%>
+									if(xml_api_<%=strType %>_<%=cid %>.isEmpty(node_<%=strType %>_<%=cid %>)){
+										<%=conn.getName() %>.<%=column.getLabel()%> ="";
+									}else if(xml_api_<%=strType %>_<%=cid %>.isMissing(node_<%=strType %>_<%=cid %> )){ 
+										<%=conn.getName() %>.<%=column.getLabel()%> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault() %>;
+									}else{
+<%
+									}
+								}else{ // other type
+									if(column.isNullable()){
+%>	
+										if(xml_api_<%=strType %>_<%=cid %>.isDefNull(node_<%=strType %>_<%=cid %>)){
+											<%=conn.getName() %>.<%=column.getLabel()%> =null;
+										}else if(xml_api_<%=strType %>_<%=cid%>.isEmpty(node_<%=strType %>_<%=cid%>) || xml_api_<%=strType %>_<%=cid %>.isMissing(node_<%=strType %>_<%=cid %>)){
+											<%=conn.getName() %>.<%=column.getLabel() %>=<%=isNotSetDefault?null:column.getDefault()%>;
+										}else{
+<% 
+								  }else{ // column.isNullable()
+%>
+										if(xml_api_<%=strType %>_<%=cid %>.isMissing(node_<%=strType %>_<%=cid %>) || xml_api_<%=strType %>_<%=cid %>.isEmpty(node_<%=strType %>_<%=cid %>)){
+											<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault() %>;
+										}else{
+<%
+									}
+								}
+								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=strType %>_<%=cid %>;
+<% 
+								} else if (javaType == JavaTypesManager.DATE) {
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=strType %>_<%=cid %>, <%= patternValue %>);
+<%  
+								} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%>							
+		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=strType %>_<%=cid %>.getBytes(<%=encoding %>);
+<%
+								} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(str_<%=strType %>_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+<%
+								} else {
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%=strType %>_<%=cid %>);
+<%
+								}
+%>
+	}
+<%
+							}
+						}
+					}				//for(IMetadataColumn column:columns)
+				}				//for (int i=0;i<mapping.size();i++)
+//===========================modify by wliu=================================
+%>
+	}
+<%
+			}	//if(metadata!=null)	
+		
+		isMetadata=false;
+	}	//for(IConnection)
+}	//if(conns!=null)
+//===============================end========================================
+%>
+			

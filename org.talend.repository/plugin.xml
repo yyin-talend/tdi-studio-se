@@ -922,6 +922,12 @@
                id="org.talend.repository.model.migration.AddDoubleQuoteToAllDBSPNameMigrationTask"
                name="add double quote to DB SP name">
          </projecttask>
+         <projecttask
+               beforeLogon="false"
+               class="org.talend.repository.model.migration.RenameMultiSchemaToMSMigrationTask"
+               id="org.talend.repository.model.migration.renameMultiSchemaToMSMigrationTask"
+               name="Rename the XMLMultiSchema to MSXML">
+         </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
