@@ -215,18 +215,22 @@ public class BusinessAppearanceComposite extends AbstractTabComposite {
 
         if (BusinessType.SHAP.equals(service.getBusinessModelType(obj))) {
             String horizontalAlignment = service.getBusinessItemAlignment(obj, BusinessAlignment.HORIZONTAL);
-            if (horizontalAlignment != null) {
-                leftBtn.setSelection(BusinessAlignment.LEFT.toString().equals(horizontalAlignment));
-                hCentre.setSelection(BusinessAlignment.HCENTRE.toString().equals(horizontalAlignment));
-                rightBtn.setSelection(BusinessAlignment.RIGHT.toString().equals(horizontalAlignment));
+            if (horizontalAlignment == null) {
+                horizontalAlignment = BusinessAlignment.LEFT.toString();
             }
 
+            leftBtn.setSelection(BusinessAlignment.LEFT.toString().equals(horizontalAlignment));
+            hCentre.setSelection(BusinessAlignment.HCENTRE.toString().equals(horizontalAlignment));
+            rightBtn.setSelection(BusinessAlignment.RIGHT.toString().equals(horizontalAlignment));
+
             String verticalAlignment = service.getBusinessItemAlignment(obj, BusinessAlignment.VERTICAL);
-            if (verticalAlignment != null) {
-                topBtn.setSelection(BusinessAlignment.TOP.toString().equals(verticalAlignment));
-                vCentre.setSelection(BusinessAlignment.VCENTRE.toString().equals(verticalAlignment));
-                bottomBtn.setSelection(BusinessAlignment.BOTTOM.toString().equals(verticalAlignment));
+            if (verticalAlignment == null) {
+                verticalAlignment = BusinessAlignment.TOP.toString();
             }
+
+            topBtn.setSelection(BusinessAlignment.TOP.toString().equals(verticalAlignment));
+            vCentre.setSelection(BusinessAlignment.VCENTRE.toString().equals(verticalAlignment));
+            bottomBtn.setSelection(BusinessAlignment.BOTTOM.toString().equals(verticalAlignment));
 
         }
 

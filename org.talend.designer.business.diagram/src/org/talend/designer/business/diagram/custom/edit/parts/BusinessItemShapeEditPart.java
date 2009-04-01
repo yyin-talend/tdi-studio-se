@@ -224,25 +224,33 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                         EObject object = ((Node) getModel()).getElement();
                         if (object instanceof BusinessItem) {
                             BusinessItem item = (BusinessItem) object;
-                            if (BusinessAlignment.HCENTRE.toString().equals(item.getHAlignment())) {
-                                if (BusinessAlignment.TOP.toString().equals(item.getVAlignment())) {
+                            String hAlignment = item.getHAlignment();
+                            if (hAlignment == null) {
+                                hAlignment = BusinessAlignment.LEFT.toString();
+                            }
+                            String vAlignment = item.getVAlignment();
+                            if (vAlignment == null) {
+                                vAlignment = BusinessAlignment.TOP.toString();
+                            }
+                            if (BusinessAlignment.HCENTRE.toString().equals(hAlignment)) {
+                                if (BusinessAlignment.TOP.toString().equals(vAlignment)) {
                                     nameFigure.setAlignment(PositionConstants.TOP);
-                                } else if (BusinessAlignment.BOTTOM.toString().equals(item.getVAlignment())) {
+                                } else if (BusinessAlignment.BOTTOM.toString().equals(vAlignment)) {
                                     nameFigure.setAlignment(PositionConstants.BOTTOM);
                                 } else {
                                     nameFigure.setAlignment(PositionConstants.CENTER);
                                 }
-                            } else if (BusinessAlignment.VCENTRE.toString().equals(item.getVAlignment())) {
-                                if (BusinessAlignment.LEFT.toString().equals(item.getHAlignment())) {
+                            } else if (BusinessAlignment.VCENTRE.toString().equals(vAlignment)) {
+                                if (BusinessAlignment.LEFT.toString().equals(hAlignment)) {
                                     nameFigure.setAlignment(PositionConstants.LEFT);
-                                } else if (BusinessAlignment.RIGHT.toString().equals(item.getHAlignment())) {
+                                } else if (BusinessAlignment.RIGHT.toString().equals(hAlignment)) {
                                     nameFigure.setAlignment(PositionConstants.RIGHT);
                                 } else {
                                     nameFigure.setAlignment(PositionConstants.CENTER);
                                 }
                             } else {
-                                nameFigure.setAlignment(getPosition(item.getHAlignment(), BusinessAlignment.HORIZONTAL, item)
-                                        | getPosition(item.getVAlignment(), BusinessAlignment.VERTICAL, item));
+                                nameFigure.setAlignment(getPosition(hAlignment, BusinessAlignment.HORIZONTAL, item)
+                                        | getPosition(vAlignment, BusinessAlignment.VERTICAL, item));
                             }
 
                         }
