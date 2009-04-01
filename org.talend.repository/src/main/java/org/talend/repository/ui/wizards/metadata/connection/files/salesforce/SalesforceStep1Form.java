@@ -250,8 +250,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 loginOk = checkSalesfoceLogin(endPoint, username, pwd);
                 if (useCostomModuleButton.getSelection()) {
                     getConnection().setModuleName(customModuleCombo.getText().trim());
-                    // // appendCustomModule(customModuleCombo.getText().trim());
-                    setCustomModuleCombo(getConnection().getModuleName());
+                    // appendCustomModule(customModuleCombo.getText().trim());
+                    // qli modified to fix the bug 6627.
+                    // setCustomModuleCombo(getConnection().getModuleName());
                 }
                 checkFieldsValue();
             }
