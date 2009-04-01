@@ -65,6 +65,8 @@ public class DataStringConnection {
 
     public final static String GENERAL_JDBC = "General JDBC"; //$NON-NLS-1$
 
+    public final static String EXASOL = "Exasol"; //$NON-NLS-1$
+
     // private Combo combo;
 
     private int selectionIndex;
@@ -79,6 +81,7 @@ public class DataStringConnection {
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String addParam = "([\\w\\.\\-_=]{0,})"; //$NON-NLS-1$
+        String schema = sid;
 
         dataConnection = new DataConnection[31];
 
@@ -188,6 +191,9 @@ public class DataStringConnection {
         // General jdbc
         dataConnection[30] = new DataConnection(GENERAL_JDBC, "jdbc:xxx://<xxx>:<xxx>", "jdbc:xxx://" + host //$NON-NLS-1$ //$NON-NLS-2$ 
                 + ":" + port, "xxxx"); //$NON-NLS-1$ //$NON-NLS-2$ 
+        // // hshen
+        //        dataConnection[31] = new DataConnection(EXASOL, "jdbc:exa:<host>:<port>:schema=<sid>", "jdbc:exa:" + host //$NON-NLS-1$ //$NON-NLS-2$ 
+        //                + ":" + port + ":schema=" + sid, "8563"); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -500,7 +506,7 @@ public class DataStringConnection {
 
     public String getString(final int dbTypeItemIndex, final String host, final String login, final String password,
             final String port, final String sid, final String filename, final String datasource, String dbrootPath,
-            String addParams) {
+            String addParams, String... schema) {
         String string = getString(dbTypeItemIndex, host, login, password, port, sid, filename, datasource);
         if (string.equals("")) { //$NON-NLS-1$
             return ""; //$NON-NLS-1$
@@ -513,6 +519,9 @@ public class DataStringConnection {
         if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13 || dbTypeItemIndex == 0 || dbTypeItemIndex == 16) {
             string = getStringReplace(string, "<property>", addParams); //$NON-NLS-1$
         }
+        // if (dbTypeItemIndex == 31 && schema != null && schema.length > 0) {
+        //            string = getStringReplace(string, "<schemaname>", schema[0]); //$NON-NLS-1$
+        // }
         this.urlConnectionStr = string;
         return string;
     }
