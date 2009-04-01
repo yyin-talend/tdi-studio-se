@@ -74,6 +74,8 @@ public class Problems {
 
     private static List<IProcess> openJobs = new ArrayList<IProcess>();
 
+    public static List<Node> nodeList = new ArrayList<Node>();
+
     private static String currentTitle = ""; //$NON-NLS-1$
 
     private static Group groupField = null;
@@ -99,7 +101,6 @@ public class Problems {
                 groupField = Group.valueOf(key);
             }
         }
-
         return groupField;
     }
 
@@ -183,6 +184,7 @@ public class Problems {
         Problem problem = new TalendProblem(status, javaUnitName, marker, markerErrorMessage, lineN, uniName, charStart, charEnd,
                 type);
         add(problem);
+        // addErrorMark();
     }
 
     public static void addAll(List<Problem> problems) {
@@ -191,42 +193,8 @@ public class Problems {
         }
     }
 
-    public static void add(Problem problem) {
-        problemList.add(problem);
-
-        List<INode> nodeList = null;
-        for (IProcess process : openJobs) {
-            if (((Process) process).isActivate()) {
-                nodeList = (List<INode>) ((Process) process).getGraphicalNodes();
-                for (INode inode : nodeList) {
-                    if (inode instanceof Node) {
-                        Node node = (Node) inode;
-                        if (node.isActivate()) {
-                            if (problem.getStatus().equals(ProblemStatus.ERROR)) {
-                                if (problem instanceof TalendProblem) {
-                                    TalendProblem tProblem = (TalendProblem) problem;
-                                    if (tProblem.getUnitName().equals(node.getUniqueName())) {
-                                        node.setErrorFlag(true);
-                                        node.setErrorInfo(null);
-                                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                                        node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
-                                    } else {
-                                        node.setErrorFlag(false);
-                                        node.setErrorInfo(null);
-                                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                                        node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
-                                    }
-
-                                }
-                            } else {
-                                node.setErrorFlag(false);
-                                node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    public static void add(Problem pro) {
+        problemList.add(pro);
     }
 
     public static List<String> getStatusList(ProblemStatus status, Element element) {
@@ -496,6 +464,7 @@ public class Problems {
                     }
                 }
             }
+            addErrorMark();
         } catch (org.eclipse.core.runtime.CoreException e) {
             ExceptionHandler.process(e);
         }
@@ -635,6 +604,47 @@ public class Problems {
 
         }
         return uniName;
+    }
+
+    public static void addErrorMark() {
+        nodeList.clear();
+        for (int i = 0; i < problemList.getProblemList().size(); i++) {
+            Problem problem = problemList.getProblemList().get(i);
+            for (IProcess process : openJobs) {
+                if (((Process) process).isActivate()) {
+                    for (INode inode : ((Process) process).getGraphicalNodes()) {
+                        if (inode instanceof Node) {
+                            Node node = (Node) inode;
+                            if (node.isActivate()) {
+                                if (problem.getStatus().equals(ProblemStatus.ERROR)) {
+                                    if (problem instanceof TalendProblem) {
+                                        TalendProblem tProblem = (TalendProblem) problem;
+                                        if (tProblem.getUnitName().equals(node.getUniqueName())) {
+                                            nodeList.add(node);
+                                        } else {
+                                            node.setErrorFlag(false);
+                                            node.setErrorInfo(null);
+                                            node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                            node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                        }
+
+                                    }
+                                } else {
+                                    node.setErrorFlag(false);
+                                    node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (Node node : nodeList) {
+            node.setErrorFlag(true);
+            node.setErrorInfo(null);
+            node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+            node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
+        }
     }
 
 }

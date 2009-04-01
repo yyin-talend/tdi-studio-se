@@ -90,6 +90,7 @@ import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobErrorsChecker;
@@ -1363,14 +1364,25 @@ public class ProcessComposite extends Composite {
                     } else {
                         if (inode instanceof Node) {
                             Node node = (Node) inode;
-                            node.setErrorFlag(false);
-                            node.setErrorInfo(null);
-                            node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
-                            if (node.isFileScaleComponent()) {
-                                refreshProgress(psMess, node, nodeUniqueName);
-                            }
+                            if (Problems.nodeList.size() > 0) {
+                                for (Node no : Problems.nodeList) {
+                                    if (node == no) {
+                                        node.setErrorFlag(true);
+                                        node.setErrorInfo(null);
+                                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                        node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
+                                    }
 
-                            node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
+                                }
+                            } else {
+                                node.setErrorFlag(false);
+                                node.setErrorInfo(null);
+                                node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
+                                if (node.isFileScaleComponent()) {
+                                    refreshProgress(psMess, node, nodeUniqueName);
+                                }
+                                node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
+                            }
                         }
                     }
                 }
