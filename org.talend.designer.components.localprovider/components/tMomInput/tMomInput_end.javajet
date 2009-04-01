@@ -33,10 +33,11 @@ if(serverType.equals("JBoss")){
 
 <%}else{
 %>
-		
+	}	
+		System.out.println("Closing connection");
 		remoteQ<%=cid%>.close();
 		qMgr<%=cid%>.disconnect();
-	}
+	
 	}
 	catch(com.ibm.mq.MQException ex){
 		System.out.println("A WebSphere MQ error occurred : Completion code " + ex.completionCode + " Reason code " + ex.reasonCode);

@@ -381,22 +381,26 @@ else{
 	com.ibm.mq.MQException.log = null;
 	boolean flag<%=cid%>=true;
 
+	qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
+	remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
+
+	<%if(kListen.equals("false")) {
+	%>
+	if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0))
+	{
+		flag<%=cid%>= false;
+	} 	
+	<%}%>	
 	System.out.println("Ready to receive message");
-	System.out.println("Waiting...");
+	System.out.println("Waiting...");	
 	while(flag<%=cid%>){
-		qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
-		remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
 <%
 	if(kListen.equals("false")){
 %>
-		if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0))
+		if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(1))
 		{
-			System.out.println("Closing connection");
-			remoteQ<%=cid%>.close();
-			qMgr<%=cid%>.disconnect();		
-			break;
-		} 
-			
+			flag<%=cid%>= false;
+		} 			
 <%
 	}
 %>
