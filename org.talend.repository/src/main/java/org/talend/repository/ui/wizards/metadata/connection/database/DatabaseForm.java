@@ -1463,6 +1463,14 @@ public class DatabaseForm extends AbstractForm {
         } else {
             sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.database")); //$NON-NLS-1$
             sidOrDatabase = EDBParamName.Database;
+
+        }
+        // hshen
+        if (DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {//$NON-NLS-1$
+            addContextParams(EDBParamName.JdbcUrl, visible);
+            addContextParams(EDBParamName.DriverJar, visible);
+            addContextParams(EDBParamName.MappingFile, visible);
+            addContextParams(EDBParamName.ClassName, visible);
         }
 
         addContextParams(EDBParamName.Login, visible);
@@ -1483,7 +1491,6 @@ public class DatabaseForm extends AbstractForm {
         schemaText.setEditable(false);
         fileField.setEditable(false);
         directoryField.setEditable(false);
-
         if (dbTypeCombo.getSelectionIndex() < 0) {
             urlConnectionStringText.setEditable(false);
         } else {
@@ -1659,10 +1666,24 @@ public class DatabaseForm extends AbstractForm {
         sqlSyntaxCombo.setReadOnly(isContextMode());
         stringQuoteText.setEditable(!isContextMode());
         nullCharText.setEditable(!isContextMode());
+        // hshen
+        generalJdbcUrlText.setEditable(!isContextMode());
+
+        generalJdbcUserText.setEditable(!isContextMode());
+
+        generalJdbcPasswordText.setEditable(!isContextMode());
+
+        generalJdbcClassNameText.setEditable(!isContextMode());
+
+        generalJdbcDriverjarText.setEditable(!isContextMode());
+
+        generalMappingFileText.setEditable(!isContextMode());
         if (isContextMode()) {
             passwordText.getTextControl().setEchoChar('\0');
+            generalJdbcPasswordText.getTextControl().setEchoChar('\0');
         } else {
             passwordText.getTextControl().setEchoChar('*');
+            generalJdbcPasswordText.getTextControl().setEchoChar('*');
         }
     }
 

@@ -45,6 +45,11 @@ public final class DBConnectionContextUtils {
     public enum EDBParamName implements IConnParamName {
         Login,
         Password,
+        // hshen
+        JdbcUrl,
+        DriverJar,
+        ClassName,
+        MappingFile,
         Port,
         Server,
         Schema,
@@ -86,6 +91,19 @@ public final class DBConnectionContextUtils {
                     break;
                 case Password:
                     ConnectionContextHelper.createParameters(varList, paramName, conn.getPassword(), JavaTypesManager.PASSWORD);
+                    break;
+                // hshen
+                case JdbcUrl:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getURL());
+                    break;
+                case DriverJar:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getDriverJarPath());
+                    break;
+                case MappingFile:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getDbmsId());
+                    break;
+                case ClassName:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getDriverClass());
                     break;
                 case Port:
                     ConnectionContextHelper.createParameters(varList, paramName, conn.getPort(), JavaTypesManager.STRING);
@@ -143,6 +161,19 @@ public final class DBConnectionContextUtils {
                     break;
                 case Password:
                     conn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                // hshen
+                case JdbcUrl:
+                    conn.setURL(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case DriverJar:
+                    conn.setDriverJarPath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case MappingFile:
+                    conn.setDbmsId(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case ClassName:
+                    conn.setDriverClass(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
                     break;
                 case Port:
                     conn.setPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
@@ -241,13 +272,18 @@ public final class DBConnectionContextUtils {
         String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
+        // hshen
+        String jdbcUrl = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getURL());
+        String driverJar = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverJarPath());
+        String className = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDbmsId());
+        String mappingFile = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getFileFieldName());
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
         DataStringConnection dataStringConn = new DataStringConnection();
         dataStringConn.setSelectionIndex(dbIndex);
         dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
-                dbRootPath, additionParam);
+                dbRootPath, additionParam, jdbcUrl, driverJar, className, mappingFile);
         return dataStringConn;
 
     }
@@ -277,8 +313,7 @@ public final class DBConnectionContextUtils {
         // get values
         String server = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getServerName());
         String username = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getUsername());
-        String password = ConnectionContextHelper.getOriginalValue(contextType,
-				dbConn.getRawPassword());
+        String password = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getRawPassword());
         String port = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getPort());
         String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSID());
         String datasource = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDatasourceName());
@@ -362,6 +397,11 @@ public final class DBConnectionContextUtils {
         String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, conn.getSchema());
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, conn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, conn.getAdditionalParams());
+        // hshen
+        String jdbcUrl = ConnectionContextHelper.getOriginalValue(contextType, conn.getURL());
+        String driverJar = ConnectionContextHelper.getOriginalValue(contextType, conn.getDriverJarPath());
+        String className = ConnectionContextHelper.getOriginalValue(contextType, conn.getDriverClass());
+        String mappingFile = ConnectionContextHelper.getOriginalValue(contextType, conn.getDbmsId());
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
@@ -370,15 +410,20 @@ public final class DBConnectionContextUtils {
         conn.setDBRootPath(dbRootPath);
         conn.setFileFieldName(filePath);
         try {
-			conn.setPassword(PasswordEncryptUtil.encryptPassword(password));
-		} catch (Exception e) {
-			ExceptionHandler.process(e);
-		}
+            conn.setPassword(PasswordEncryptUtil.encryptPassword(password));
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
         conn.setPort(port);
         conn.setSchema(schemaOracle);
         conn.setServerName(server);
         conn.setSID(sidOrDatabase);
         conn.setUsername(username);
+        // hshen
+        conn.setURL(jdbcUrl);
+        conn.setDriverJarPath(driverJar);
+        conn.setDriverClass(className);
+        conn.setDbmsId(mappingFile);
 
     }
 }
