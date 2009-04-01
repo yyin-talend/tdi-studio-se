@@ -158,7 +158,7 @@ public final class TalendEditorPaletteFactory {
                         drawer.add(noteCreationToolEntry);
                     }
                 } else if (a == 1) {
-                    nodeList.offerFirst(noteCreationToolEntry);
+                    nodeList.add(0, noteCreationToolEntry);
                     // noteCreationToolEntry.setParent(paGroup);
                     // paGroup.add(noteCreationToolEntry);
                 }
@@ -347,7 +347,7 @@ public final class TalendEditorPaletteFactory {
                         }
                     }
                     if (needToAdd == true)
-                        nodeList.offerFirst(noteCreationToolEntry);
+                        nodeList.add(0, noteCreationToolEntry);
                     // noteCreationToolEntry.setParent(paGroup);
                     // paGroup.add(noteCreationToolEntry);
                 }
