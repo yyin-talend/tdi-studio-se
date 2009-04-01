@@ -13,6 +13,7 @@
 package org.talend.designer.business.diagram.custom;
 
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
@@ -25,6 +26,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.business.BusinessType;
@@ -156,6 +159,20 @@ public class DiagramModelService implements IDiagramModelService {
                 if (object instanceof BusinessItemShapeEditPart) {
                     setBusinessItemAlignment(alignment, alignmentGroup, object);
                 }
+            }
+        }
+    }
+
+    public void handleNewEditorAction(IWorkbenchPart editor) {
+        if (editor instanceof BusinessDiagramEditor) {
+            BusinessDiagramEditor diagrmEditor = (BusinessDiagramEditor) editor;
+            if (diagrmEditor.isAlreadyOpened()) {
+                IEditorReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findEditors(
+                        diagrmEditor.getEditorInput(), diagrmEditor.getEditorID(), IWorkbenchPage.MATCH_INPUT);
+                IEditorPart editorPart = ref[0].getEditor(false);
+                editorPart.doSave(new NullProgressMonitor());
+                ((BusinessDiagramEditor) editorPart).setKeepPropertyLocked(true);
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editorPart, false);
             }
         }
     }

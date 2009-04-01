@@ -28,12 +28,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
+import org.eclipse.ui.internal.WorkbenchPage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.BusinessProcessItem;
@@ -65,6 +68,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
      * @generated
      */
     public static final String ID = "org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID"; //$NON-NLS-1$
+
+    protected boolean keepPropertyLocked; // used only if the user try to open more than one editor at a time.
 
     /**
      * @generated
@@ -108,7 +113,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         super.configureGraphicalViewer();
 
         IDiagramGraphicalViewer viewer = getDiagramGraphicalViewer();
-        /* customize popup menu */
+        // customize popup menu
         ContextMenuProvider provider = new BusinessDiagramActionProvider(this, viewer);
         viewer.setContextMenu(provider);
         getSite().registerContextMenu(ActionIds.DIAGRAM_EDITOR_CONTEXT_MENU, provider, viewer);
@@ -142,8 +147,9 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     public void setInput(IEditorInput input) {
         super.setInput(input);
-        if (input instanceof RepositoryEditorInput) {
-            repositoryEditorInput = (RepositoryEditorInput) input;
+        Object obj = input.getAdapter(RepositoryEditorInput.class);
+        if (obj instanceof RepositoryEditorInput) {
+            repositoryEditorInput = (RepositoryEditorInput) obj;
         }
     }
 
@@ -187,7 +193,14 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     }
 
     public void dispose() {
+        getSite().setSelectionProvider(null);
+        getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
+
         super.dispose();
+
+        if (isKeepPropertyLocked()) {
+            return;
+        }
         // Unlock the process :
         IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
@@ -195,11 +208,13 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             repositoryEditorInput.setItem(property.getItem());
             repFactory.unlock(repositoryEditorInput.getItem());
         } catch (PersistenceException e) {
-            // TODO Auto-generated catch block
-            // e.printStackTrace();
             ExceptionHandler.process(e);
         }
         RepositoryNode repositoryNode = repositoryEditorInput.getRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryEditorInput.setRepositoryNode(null); // retrieve the node.
+            repositoryNode = repositoryEditorInput.getRepositoryNode();
+        }
         if (repositoryNode != null) {
             if (repFactory.getStatus(repositoryEditorInput.getItem()) == ERepositoryStatus.DELETED) {
                 RepositoryManager.refreshDeletedNode(null);
@@ -211,8 +226,10 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {
         super.init(site, editorInput);
-        RepositoryEditorInput processEditorInput = (RepositoryEditorInput) editorInput;
-        processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);
+        if (editorInput instanceof RepositoryEditorInput) {
+            RepositoryEditorInput processEditorInput = (RepositoryEditorInput) editorInput;
+            processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);
+        }
     }
 
     private boolean propertyIsDirty;
@@ -265,7 +282,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
         // for Find Assignment
         if (((IStructuredSelection) selection).size() > 0) {
-            DiagramEditPart diagramEditPart = this.getDiagramEditPart();
+            DiagramEditPart diagramEditPart = getDiagramEditPart();
             if (diagramEditPart instanceof BusinessProcessEditPart) {
                 BusinessProcessEditPart processPart = (BusinessProcessEditPart) diagramEditPart;
                 for (Object object : processPart.getChildren()) {
@@ -308,7 +325,60 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     }
 
+    public boolean isAlreadyOpened() {
+        return foundExistEditor(this.getEditorInput());
+    }
+
+    private boolean foundExistEditor(final IEditorInput editorInput) {
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow != null) {
+
+            WorkbenchPage page = (WorkbenchPage) activeWorkbenchWindow.getActivePage();
+            if (page != null) {
+                RepositoryEditorInput repEditorInput = (RepositoryEditorInput) editorInput
+                        .getAdapter(RepositoryEditorInput.class);
+                if (repEditorInput != null) {
+                    int num = 0;
+                    try {
+                        for (IEditorReference ref : page.getEditorReferences()) {
+                            Object tmpInput = ref.getEditorInput().getAdapter(RepositoryEditorInput.class);
+                            if (repEditorInput.equals(tmpInput)) {
+                                num++;
+                            }
+                        }
+                    } catch (PartInitException e) {
+                        ExceptionHandler.process(e);
+                    }
+
+                    return num > 1;
+                }
+            }
+
+        }
+        return false;
+    }
+
     public ISelection getSelection() {
         return this.getDiagramGraphicalViewer().getSelection();
     }
+
+    public String getEditorID() {
+        return this.ID;
+    }
+
+    public boolean isKeepPropertyLocked() {
+        return this.keepPropertyLocked;
+    }
+
+    public void setKeepPropertyLocked(boolean keepPropertyLocked) {
+        this.keepPropertyLocked = keepPropertyLocked;
+    }
+
+    @Override
+    protected void disposeDocumentProvider() {
+        if (!keepPropertyLocked) {
+            super.disposeDocumentProvider();
+        }
+    }
+
 }

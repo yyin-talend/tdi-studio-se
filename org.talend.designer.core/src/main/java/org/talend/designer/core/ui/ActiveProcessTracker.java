@@ -225,6 +225,7 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partOpened(org.eclipse.ui.IWorkbenchPart)
      */
     public void partOpened(IWorkbenchPart part) {
+        boolean existedJobOpened = false;
         if (part instanceof AbstractMultiPageTalendEditor) {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             if (mpte.isJobAlreadyOpened()) {
@@ -236,12 +237,17 @@ public class ActiveProcessTracker implements IPartListener {
                 editorPart.doSave(new NullProgressMonitor());
                 ((AbstractMultiPageTalendEditor) editorPart).setKeepPropertyLocked(true);
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editorPart, false);
+                existedJobOpened = true;
             }
+        } else {
+            CorePlugin.getDefault().getDiagramModelService().handleNewEditorAction(part);
         }
         IProcess process = getJobFromActivatedEditor(part);
         if (process != null && currentProcess != process && lastProcessOpened != process) {
             lastProcessOpened = process;
             addJobInProblemView(process);
+        } else if (existedJobOpened) {
+            currentProcess = process;
         }
 
     }
