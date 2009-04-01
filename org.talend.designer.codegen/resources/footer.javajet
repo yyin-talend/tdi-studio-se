@@ -289,7 +289,7 @@
 						<%for (INode statCatcherNodeInner : process.getNodesOfType("tStatCatcher")) {%>                        
                         	<%=statCatcherNodeInner.getUniqueName() %>.addMessage("end", component, end_Hash.get(component) - start_Hash.get(component));
                             try {
-                                <%=statCatcherNodeInner.getUniqueName() %>Process(globalMap);
+                                <%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }                        	
