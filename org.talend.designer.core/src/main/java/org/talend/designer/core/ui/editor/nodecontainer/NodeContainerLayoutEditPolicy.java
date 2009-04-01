@@ -55,13 +55,20 @@ public class NodeContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      * java.lang.Object)
      */
     protected Command createAddCommand(final EditPart child, final Object constraint) {
-        return null; // no support for adding
+        // only work for moving node. bug 6615, by cli
+        if (child instanceof NodePart && !((Node) child.getModel()).isReadOnly()) {
+
+            MoveNodeCommand locationCommand = new MoveNodeCommand((Node) child.getModel(), ((Rectangle) constraint).getLocation());
+            return locationCommand;
+        }
+        return null;
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
+     * @see
+     * org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
      * java.lang.Object)
      */
     protected Command createChangeConstraintCommand(final EditPart child, final Object constraint) {
