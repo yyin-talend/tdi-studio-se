@@ -225,7 +225,7 @@ public class FOXUI {
     public void redrawLinkers() {
         linker.removeAllLinks();
         TreeItem root = xmlViewer.getTree().getItem(0);
-        if (this.getFoxManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
+        if (this.getFoxManager().getFoxComponent().istFileOutputMSXML()) {
             List<FOXTreeNode> treeData = this.getFoxManager().getTreeData(this.getFoxManager().getCurrentSchema());
             if (treeData != null && treeData.size() > 0) {
                 FOXTreeNode rootTreeData = treeData.get(0);
@@ -403,8 +403,8 @@ public class FOXUI {
             manager.add(removeGroupAction);
             manager.add(new Separator());
         }
-        if (!this.getFoxManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
-            // PTODO will check this for tFileOutputMultiSchema component later.
+        if (!this.getFoxManager().getFoxComponent().istFileOutputMSXML()) {
+            // PTODO will check this for tFileOutputMSXML component later.
             manager.add(importFromXMLAction);
         }
     }
@@ -438,7 +438,7 @@ public class FOXUI {
     private void addSchemaViewer(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("FOXUI.19"), height); //$NON-NLS-1$
-        // add by wzhang. add a combo for tFileOutputXMLMultiSchema.
+        // add by wzhang. add a combo for tFileOutputMSXML.
         createCombo(group);
         schemaViewer = new TableViewer(group);
 

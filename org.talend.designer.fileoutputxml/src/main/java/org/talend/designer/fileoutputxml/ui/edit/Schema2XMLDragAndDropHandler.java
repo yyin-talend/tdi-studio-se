@@ -294,7 +294,7 @@ public class Schema2XMLDragAndDropHandler {
             Control control = dropTarget.getControl();
             // add by wzhang. get current row.
             String row = (String) control.getData("row"); //$NON-NLS-1$
-            if (getManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
+            if (getManager().getFoxComponent().istFileOutputMSXML()) {
                 row = getManager().getCurrentSchema();
             }
             LocalDraggedData draggedData = LocalDataTransfer.getInstance().getDraggedData();
@@ -405,7 +405,7 @@ public class Schema2XMLDragAndDropHandler {
 
                 if (row != null) {
                     targetNode.setRow(row);
-                    if (!getManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
+                    if (!getManager().getFoxComponent().istFileOutputMSXML()) {
                         FOXTreeNode root = (FOXTreeNode) linker.getXMLViewer().getTree().getItem(0).getData();
                         setTreeNodeRow(root, row);
                     }
@@ -423,7 +423,7 @@ public class Schema2XMLDragAndDropHandler {
             }
             if (row != null) {
                 targetNode.setRow(row);
-                if (!getManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
+                if (!getManager().getFoxComponent().istFileOutputMSXML()) {
                     FOXTreeNode root = (FOXTreeNode) linker.getXMLViewer().getTree().getItem(0).getData();
                     setTreeNodeRow(root, row);
                 }

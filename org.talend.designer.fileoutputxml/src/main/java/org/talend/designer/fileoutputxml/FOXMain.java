@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml;
 
+import java.util.List;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -47,8 +49,8 @@ public class FOXMain {
 
     public FOXMain(FileOutputXMLComponent connector) {
         this.connector = connector;
-        // add by wzhang. for component tFileOutputXMLMultiSchema
-        if (connector.istFileOutputXMLMultiSchema()) {
+        // add by wzhang. for component tFileOutputMSXML
+        if (connector.istFileOutputMSXML()) {
             this.foxManager = new MultiFOXManager(connector);
         } else {
             this.foxManager = new FOXManager(connector);
@@ -64,33 +66,42 @@ public class FOXMain {
     public void createUI(Composite parent) {
         if (!connector.istWriteXMLField()) { //$NON-NLS-1$
             IConnection inConn = null;
-            for (IConnection conn : connector.getIncomingConnections()) {
-                if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
-                        || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
-                    inConn = conn;
-                    break;
+            List<? extends IConnection> incomeConnections = connector.getIncomingConnections();
+            if (connector.istFileOutputMSXML() && incomeConnections.size() < 1) {
+                MessageBox message = new MessageBox(parent.getShell(), SWT.APPLICATION_MODAL | SWT.OK);
+                message.setText(Messages.getString("FOXMain.inputlinkError")); //$NON-NLS-1$
+                message.setMessage(Messages.getString("FOXMain.noInputLink")); //$NON-NLS-1$
+                if (message.open() == SWT.OK) {
+                    ((Shell) parent).close();
+                    return;
                 }
-            }
-
-            if (inConn != null) {
-                if (!inConn.getMetadataTable().sameMetadataAs(connector.getMetadataList().get(0))) {
-                    MessageBox messageBox = new MessageBox(parent.getShell(), SWT.APPLICATION_MODAL | SWT.OK);
-                    messageBox.setText(Messages.getString("FOXMain.0")); //$NON-NLS-1$
-                    messageBox.setMessage(Messages.getString("FOXMain.1")); //$NON-NLS-1$
-                    if (messageBox.open() == SWT.OK) {
-                        ((Shell) parent).close();
-                        return;
+                for (IConnection conn : incomeConnections) {
+                    if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
+                            || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                        inConn = conn;
+                        break;
+                    }
+                }
+                if (inConn != null) {
+                    if (!inConn.getMetadataTable().sameMetadataAs(connector.getMetadataList().get(0))) {
+                        MessageBox messageBox = new MessageBox(parent.getShell(), SWT.APPLICATION_MODAL | SWT.OK);
+                        messageBox.setText(Messages.getString("FOXMain.0")); //$NON-NLS-1$
+                        messageBox.setMessage(Messages.getString("FOXMain.1")); //$NON-NLS-1$
+                        if (messageBox.open() == SWT.OK) {
+                            ((Shell) parent).close();
+                            return;
+                        }
                     }
                 }
             }
+            // add by wzhang. for component tFileOutputMSXML
+            if (connector.istFileOutputMSXML()) {
+                generatorUI = new FOXMultiSchemaUI(parent, foxManager);
+            } else {
+                generatorUI = new FOXUI(parent, foxManager);
+            }
+            generatorUI.init();
         }
-        // add by wzhang. for component tFileOutputXMLMultiSchema
-        if (connector.istFileOutputXMLMultiSchema()) {
-            generatorUI = new FOXMultiSchemaUI(parent, foxManager);
-        } else {
-            generatorUI = new FOXUI(parent, foxManager);
-        }
-        generatorUI.init();
     }
 
     /**
@@ -110,8 +121,9 @@ public class FOXMain {
         Rectangle boundsRG = new Rectangle(50, 50, 800, 600);
         shell.setBounds(boundsRG);
         createUI(shell);
-        shell.open();
-
+        if (!shell.isDisposed()) {
+            shell.open();
+        }
         return shell;
     }
 

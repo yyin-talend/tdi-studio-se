@@ -208,7 +208,7 @@ public class MultiFOXManager extends FOXManager {
         if (element.getTable() != null) {
             String schemaId = ""; //$NON-NLS-1$
             // set parent node
-            if (foxComponent.istFileOutputXMLMultiSchema()) {
+            if (foxComponent.istFileOutputMSXML()) {
                 schemaId = element.getTable().getLabel() + ":"; //$NON-NLS-1$
             }
 

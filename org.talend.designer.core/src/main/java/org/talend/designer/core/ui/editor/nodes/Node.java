@@ -1889,8 +1889,8 @@ public class Node extends Element implements INode {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$
-                        checkFileOutputXMLMultiSchemaComponent(param, tableValues);
+                    if ("tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$
+                        checkFileOutputMSXML(param, tableValues);
                     } else {
                         if (tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
@@ -1906,8 +1906,8 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$
-                        checkFileOutputXMLMultiSchemaComponent(param, tableValues);
+                    if ("tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$
+                        checkFileOutputMSXML(param, tableValues);
                     } else {
                         if (tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
@@ -1992,7 +1992,7 @@ public class Node extends Element implements INode {
      * @param param
      * @param tableValues
      */
-    private void checkFileOutputXMLMultiSchemaComponent(IElementParameter param, List<Map<String, String>> tableValues) {
+    private void checkFileOutputMSXML(IElementParameter param, List<Map<String, String>> tableValues) {
         List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode, IConnectionCategory.FLOW);
         List<String> pathList = new ArrayList<String>();
         for (IConnection conn : incomingConnections) {
@@ -2358,8 +2358,8 @@ public class Node extends Element implements INode {
                     }
                 }
             }
-            // add by wzhang. the schema of tFileOutputXMLMultiSchema can be different.
-            if ("tFileOutputXMLMultiSchema".equals(component.getName())) //$NON-NLS-1$
+            // add by wzhang. the schema of tFileOutputMSXML can be different.
+            if ("tFileOutputMSXML".equals(component.getName())) //$NON-NLS-1$
                 return;
 
             if (inputs.size() > 1) {

@@ -168,7 +168,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
             public void run(IProgressMonitor monitor) {
 
                 TreeItem root = xmlViewer.getTree().getItem(0);
-                if (getManager().getFoxComponent().istFileOutputXMLMultiSchema()) {
+                if (getManager().getFoxComponent().istFileOutputMSXML()) {
                     List<FOXTreeNode> treeData = getManager().getTreeData(getManager().getCurrentSchema());
                     if (treeData != null && treeData.size() > 0) {
                         FOXTreeNode rootTreeData = treeData.get(0);
