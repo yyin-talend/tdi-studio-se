@@ -59,8 +59,8 @@ public class RenameMultiSchemaToMSMigrationTask extends AbstractJobMigrationTask
                                         String replaceAll = value.replaceAll("tFileInputXMLMultiSchema", "tFileInputMSXML"); //$NON-NLS-1$ //$NON-NLS-2$
                                         t.setValue(replaceAll);
                                     }
-                                    if (value.contains("tOXMLMS")) {
-                                        String replaceAll = value.replaceAll("tOXMLMS", "tFileOutputMSXML"); //$NON-NLS-1$ //$NON-NLS-2$
+                                    if (value.contains("tFileOutputXMLMultiSchema")) {
+                                        String replaceAll = value.replaceAll("tFileOutputXMLMultiSchema", "tFileOutputMSXML"); //$NON-NLS-1$ //$NON-NLS-2$
                                         t.setValue(replaceAll);
                                     }
                                 }
