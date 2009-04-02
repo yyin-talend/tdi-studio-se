@@ -302,25 +302,49 @@ public class StatsAndLogsManager {
                         dataNode.getElementParameter("USE_EXISTING_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
                         dataNode.getElementParameter("CONNECTION").setValue(connectionUID);//$NON-NLS-1$
 
-                        DataConnection dataConnec = createDataConnection(dataNode, connectionNode);
-                        ((List<IConnection>) connectionNode.getOutgoingConnections()).add(dataConnec);
-                        ((List<IConnection>) dataNode.getIncomingConnections()).add(dataConnec);
+                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get("tPrejob");
+                        DataNode preNode = new DataNode(prejobComponent, "preStaLogCon");
+                        preNode.setStart(true);
+                        preNode.setSubProcessStart(true);
+                        preNode.setActivate(true);
+                        preNode.setProcess(process);
+                        nodeList.add(preNode);
+                        DataConnection dataConnec = createDataConnectionForComponentOK(preNode, connectionNode);
+                        ((List<IConnection>) preNode.getOutgoingConnections()).add(dataConnec);
+                        ((List<IConnection>) connectionNode.getIncomingConnections()).add(dataConnec);
+
+                        // DataConnection dataConnec2 = createDataConnectionForSubJobOK(preNode, dataNode);
+                        // ((List<IConnection>) preNode.getOutgoingConnections()).add(dataConnec2);
+                        // ((List<IConnection>) dataNode.getIncomingConnections()).add(dataConnec2);
                     }
                 }
             }
         }
-        DataConnection dataConnec = createDataConnection(dataNode, commitNode);
+        DataConnection dataConnec = createDataConnectionForSubJobOK(dataNode, commitNode);
         ((List<IConnection>) dataNode.getOutgoingConnections()).add(dataConnec);
         ((List<IConnection>) commitNode.getIncomingConnections()).add(dataConnec);
         return connectionNode;
     }
 
-    private static DataConnection createDataConnection(DataNode dataNode, DataNode commitNode) {
+    private static DataConnection createDataConnectionForComponentOK(DataNode dataNode, DataNode commitNode) {
+        DataConnection dataConnec = new DataConnection();
+        dataConnec.setActivate(true);
+        dataConnec.setLineStyle(EConnectionType.ON_COMPONENT_OK);
+        dataConnec.setTraceConnection(false);
+        dataConnec.setName("after_" + dataNode.getUniqueName() + "_" + commitNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
+        // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
+        dataConnec.setSource(dataNode);
+        dataConnec.setTarget(commitNode);
+        dataConnec.setConnectorName(EConnectionType.ON_COMPONENT_OK.getName());
+        return dataConnec;
+    }
+
+    private static DataConnection createDataConnectionForSubJobOK(DataNode dataNode, DataNode commitNode) {
         DataConnection dataConnec = new DataConnection();
         dataConnec.setActivate(true);
         dataConnec.setLineStyle(EConnectionType.ON_SUBJOB_OK);
         dataConnec.setTraceConnection(false);
-        dataConnec.setName("onOk_" + dataNode.getUniqueName() + "_" + commitNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
+        dataConnec.setName("sub_ok_" + dataNode.getUniqueName() + "_" + commitNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
         // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
         dataConnec.setSource(dataNode);
         dataConnec.setTarget(commitNode);
