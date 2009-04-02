@@ -94,14 +94,15 @@ public class FOXMain {
                     }
                 }
             }
-            // add by wzhang. for component tFileOutputMSXML
-            if (connector.istFileOutputMSXML()) {
-                generatorUI = new FOXMultiSchemaUI(parent, foxManager);
-            } else {
-                generatorUI = new FOXUI(parent, foxManager);
-            }
-            generatorUI.init();
         }
+        // add by wzhang. for component tFileOutputMSXML
+        if (connector.istFileOutputMSXML()) {
+            generatorUI = new FOXMultiSchemaUI(parent, foxManager);
+        } else {
+            generatorUI = new FOXUI(parent, foxManager);
+        }
+        generatorUI.init();
+
     }
 
     /**
