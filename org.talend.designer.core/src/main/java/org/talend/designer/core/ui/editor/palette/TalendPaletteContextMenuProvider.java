@@ -18,6 +18,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.tools.CreationTool;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.palette.PaletteContextMenuProvider;
 import org.eclipse.gef.ui.palette.PaletteViewer;
@@ -33,6 +34,7 @@ import org.talend.core.model.properties.ComponentSetting;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ComponentSearcher;
+import org.talend.designer.core.ui.editor.PaletteComponentFactory;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.ui.actions.ShowFavoriteAction;
 
@@ -59,10 +61,16 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
     public void buildContextMenu(IMenuManager menu) {
         super.buildContextMenu(menu);
         menu.appendToGroup(GEFActionConstants.MB_ADDITIONS, new SearchComponentAction(getPaletteViewer()));
-        if (ShowFavoriteAction.state == true) {
-            menu.appendToGroup(GEFActionConstants.GROUP_COPY, new FavoriteComponentAction(getPaletteViewer()));
+        PaletteEntry element = (PaletteEntry) ((EditPart) getPaletteViewer().getSelectedEditParts().get(0)).getModel();
+        boolean note = element.getLabel().equals("note");//$NON-NLS-1$
+        if (note) {
+
         } else {
-            menu.appendToGroup(GEFActionConstants.GROUP_COPY, new RemoveFavoriteComponentAction(getPaletteViewer()));
+            if (ShowFavoriteAction.state == true) {
+                menu.appendToGroup(GEFActionConstants.GROUP_COPY, new FavoriteComponentAction(getPaletteViewer()));
+            } else {
+                menu.appendToGroup(GEFActionConstants.GROUP_COPY, new RemoveFavoriteComponentAction(getPaletteViewer()));
+            }
         }
         menu.appendToGroup(GEFActionConstants.GROUP_COPY, new HiddenFloderAction(getPaletteViewer()));
         menu.appendToGroup(GEFActionConstants.GROUP_COPY, new DisplayFloderAction(getPaletteViewer()));
@@ -132,7 +140,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 List eleList = ((TalendPaletteDrawer) element).getChildren();
                 addListNotes(eleList, project);
             } else if (element instanceof CombinedTemplateCreationEntry) {
-                addNotes(element, project);
+                addNotes((CombinedTemplateCreationEntry) element, project);
 
             }
 
@@ -170,7 +178,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 List eleList = ((TalendPaletteDrawer) element).getChildren();
                 removeListNotes(eleList, project);
             } else if (element instanceof CombinedTemplateCreationEntry) {
-                removeNotes(element, project);
+                removeNotes((CombinedTemplateCreationEntry) element, project);
 
             }
             ComponentUtilities.updatePalette(true);
@@ -234,10 +242,16 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         }
     }
 
-    public void addNotes(PaletteEntry element, Project project) {
+    public void addNotes(CombinedTemplateCreationEntry element, Project project) {
         String label = element.getLabel();
+        String[] fam = null;
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
+        if ("".equals(family) || family == null) {//$NON-NLS-1$
+            PaletteComponentFactory paCom = (PaletteComponentFactory) element
+                    .getToolProperty(CreationTool.PROPERTY_CREATION_FACTORY);
+            fam = paCom.getCombinedFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+        }
 
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         project = repositoryContext.getProject();
@@ -245,13 +259,46 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
 
         for (ComponentSetting componentSetting : components) {
-            if (componentSetting.getName().equals(label) && componentSetting.getFamily().equals(family)) {
+            if (fam != null) {
+                for (int i = 0; i < fam.length; i++) {
+                    String famName = null;
+                    String familyName = null;
+                    if (fam[i].equals("Data Quality")) {//$NON-NLS-1$
+                        famName = fam[i].trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
+                    } else {
+                        famName = fam[i];
+                    }
+                    if (componentSetting.getFamily().equals("Data Quality")) {//$NON-NLS-1$
+                        familyName = componentSetting.getFamily().trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
+                    } else {
+                        familyName = componentSetting.getFamily();
+                    }
 
-                // componentSetting.setFavoriteFlag(true);
-                // );
-                // family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX
-                String key = componentSetting.getName() + "#" + family; //$NON-NLS-1$
-                DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
+                    if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
+                        String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
+                        DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
+                    }
+                }
+            } else {
+                String famName = null;
+                String familyName = null;
+                if (family.equals("Data Quality")) {//$NON-NLS-1$
+                    famName = family.trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
+                } else {
+                    famName = family;
+                }
+                if (componentSetting.getFamily().equals("Data Quality")) {//$NON-NLS-1$
+                    familyName = componentSetting.getFamily().trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
+                } else {
+                    familyName = componentSetting.getFamily();
+                }
+                if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
+                    // componentSetting.setFavoriteFlag(true);
+                    // );
+                    // family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX
+                    String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
+                    DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
+                }
             }
 
         }
@@ -264,17 +311,22 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 List list = ((TalendPaletteDrawer) elementLi).getChildren();
                 addListNotes(list, project);
             } else if (elementLi instanceof CombinedTemplateCreationEntry) {
-                addNotes(elementLi, project);
+                addNotes((CombinedTemplateCreationEntry) elementLi, project);
             }
 
         }
     }
 
-    public void removeNotes(PaletteEntry element, Project project) {
+    public void removeNotes(CombinedTemplateCreationEntry element, Project project) {
         String label = element.getLabel();
+        String[] fam = null;
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
 
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
-
+        if ("".equals(family) || family == null) {//$NON-NLS-1$
+            PaletteComponentFactory paCom = (PaletteComponentFactory) element
+                    .getToolProperty(CreationTool.PROPERTY_CREATION_FACTORY);
+            fam = paCom.getCombinedFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+        }
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         project = repositoryContext.getProject();
@@ -282,10 +334,43 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
 
         for (ComponentSetting componentSetting : components) {
-            if (componentSetting.getName().equals(label) && componentSetting.getFamily().equals(family)) {
-                String key = componentSetting.getName() + "#" + family; //$NON-NLS-1$
-                // componentSetting.setFavoriteFlag(false);
-                DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
+            if (fam != null) {
+                for (int i = 0; i < fam.length; i++) {
+                    String famName = null;
+                    String familyName = null;
+                    if (fam[i].equals("Data Quality")) {//$NON-NLS-1$
+                        famName = fam[i].trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
+                    } else {
+                        famName = fam[i];
+                    }
+                    if (componentSetting.getFamily().equals("Data Quality")) {//$NON-NLS-1$
+                        familyName = componentSetting.getFamily().trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
+                    } else {
+                        familyName = componentSetting.getFamily();
+                    }
+                    if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
+                        String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
+                        DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
+                    }
+                }
+            } else {
+                String famName = null;
+                String familyName = null;
+                if (family.equals("Data Quality")) {//$NON-NLS-1$
+                    famName = family.trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
+                } else {
+                    famName = family;
+                }
+                if (componentSetting.getFamily().equals("Data Quality")) {//$NON-NLS-1$
+                    familyName = componentSetting.getFamily().trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
+                } else {
+                    familyName = componentSetting.getFamily();
+                }
+                if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
+                    String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
+                    // componentSetting.setFavoriteFlag(false);
+                    DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
+                }
             }
 
         }
@@ -298,7 +383,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 List list = ((TalendPaletteDrawer) elementLi).getChildren();
                 removeListNotes(list, project);
             } else if (elementLi instanceof CombinedTemplateCreationEntry) {
-                removeNotes(elementLi, project);
+                removeNotes((CombinedTemplateCreationEntry) elementLi, project);
             }
 
         }

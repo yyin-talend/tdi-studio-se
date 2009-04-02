@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -78,8 +79,10 @@ public final class TalendEditorPaletteFactory {
         PaletteDrawer componentsDrawer;
         String name, longName;
         String family;
+        String oraFamily;
         LinkedList<CreationToolEntry> nodeList = new LinkedList<CreationToolEntry>();
         List<String> families = new ArrayList<String>();
+        HashMap<String, String> familyMap = new HashMap<String, String>();
         List listName = new ArrayList();
         CombinedTemplateCreationEntry component;
         Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
@@ -109,12 +112,15 @@ public final class TalendEditorPaletteFactory {
 
             if (xmlComponent.isLoaded()) {
                 family = xmlComponent.getTranslatedFamilyName();
+                oraFamily = xmlComponent.getOriginalFamilyName();
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
                     if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
                         continue;
                     }
                     families.add(strings[j]);
+                    familyMap.put(strings[j], oraStrings[j]);
                 }
             }
         }
@@ -123,11 +129,13 @@ public final class TalendEditorPaletteFactory {
         if (a == 0) {
             for (Iterator iter = families.iterator(); iter.hasNext();) {
                 family = (String) iter.next();
-
+                String oraFam = familyMap.get(family);
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
                     componentsDrawer = createComponentDrawer(ht, family);
+                    componentsDrawer.setOriginakName(oraFam);
                 }
+
             }
         }
 
@@ -250,7 +258,9 @@ public final class TalendEditorPaletteFactory {
         PaletteDrawer componentsDrawer;
         String name, longName;
         String family;
+        String oraFamily;
         List<String> families = new ArrayList<String>();
+        HashMap<String, String> familyMap = new HashMap<String, String>();
         boolean favoriteFlag;
         List listName = new ArrayList();
         CombinedTemplateCreationEntry component;
@@ -282,14 +292,23 @@ public final class TalendEditorPaletteFactory {
 
             if (xmlComponent.isLoaded()) {
                 family = xmlComponent.getTranslatedFamilyName();
+                oraFamily = xmlComponent.getOriginalFamilyName();
+
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
                     if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
                         continue;
                     }
-                    String key = xmlComponent.getName() + "#" + strings[j]; //$NON-NLS-1$
+                    String key = null;
+                    if (oraStrings[j].equals("Data Quality")) {//$NON-NLS-1$
+                        key = xmlComponent.getName() + "#" + oraStrings[j].trim().replaceAll(" ", "_"); //$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
+                    } else {
+                        key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
+                    }
+
                     if (a == 0) {
-                        if (!strings[j].equals("Misc")) {
+                        if (!strings[j].equals("Misc")) {//$NON-NLS-1$
                             if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
 
                                 continue;
@@ -297,6 +316,8 @@ public final class TalendEditorPaletteFactory {
                         }
                     }
                     families.add(strings[j]);
+                    familyMap.put(strings[j], oraStrings[j]);
+
                 }
             }
         }
@@ -305,10 +326,11 @@ public final class TalendEditorPaletteFactory {
         if (a == 0) {
             for (Iterator iter = families.iterator(); iter.hasNext();) {
                 family = (String) iter.next();
-
+                String oraFam = familyMap.get(family);
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
                     componentsDrawer = createComponentDrawer(ht, family);
+                    componentsDrawer.setOriginakName(oraFam);
                 }
             }
         }
@@ -342,7 +364,7 @@ public final class TalendEditorPaletteFactory {
                     }
                 } else if ((a == 1)) {
                     for (String s : families) {
-                        if (s.equals("Misc")) {
+                        if (s.equals("Misc")) {//$NON-NLS-1$
                             needToAdd = true;
                         }
                     }
@@ -368,10 +390,17 @@ public final class TalendEditorPaletteFactory {
             }
 
             family = xmlComponent.getTranslatedFamilyName();
-            String[] keys = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-            for (int j = 0; j < keys.length; j++) {
+            oraFamily = xmlComponent.getOriginalFamilyName();
 
-                String key = xmlComponent.getName() + "#" + keys[j]; //$NON-NLS-1$
+            String[] keys = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+            String[] oraKeys = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+            for (int j = 0; j < keys.length; j++) {
+                String key = null;
+                if (oraKeys[j].equals("Data Quality")) {//$NON-NLS-1$
+                    key = xmlComponent.getName() + "#" + oraKeys[j].trim().replaceAll(" ", "_"); //$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
+                } else {
+                    key = xmlComponent.getName() + "#" + oraKeys[j];//$NON-NLS-1$
+                }
                 if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
                     continue;
                 }
@@ -393,11 +422,17 @@ public final class TalendEditorPaletteFactory {
                 }
 
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
                     if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
                         continue;
                     }
-                    String key = xmlComponent.getName() + "#" + strings[j]; //$NON-NLS-1$
+                    String key = null;
+                    if (oraStrings[j].equals("Data Quality")) {//$NON-NLS-1$
+                        key = xmlComponent.getName() + "#" + oraStrings[j].trim().replaceAll(" ", "_"); //$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
+                    } else {
+                        key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
+                    }
                     if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
                         continue;
                     }

@@ -47,4 +47,9 @@ public class PaletteComponentFactory implements CreationFactory {
     public Object getObjectType() {
         return null;
     }
+
+    public String getCombinedFamilyName() {
+        return component.getOriginalFamilyName();
+    }
+
 }
