@@ -328,7 +328,25 @@ public final class DBConnectionContextUtils {
         cloneConn.setDatasourceName(datasource);
         cloneConn.setDBRootPath(dbRootPath);
         cloneConn.setFileFieldName(filePath);
-        cloneConn.setPassword(password);
+
+        // if use context
+        if (contextType != null) {
+            String encryptedPassword = null;
+            boolean encrypted = false;
+            try {
+                if (!encrypted) {
+                    encryptedPassword = PasswordEncryptUtil.encryptPassword(password);
+                    encrypted = true;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            cloneConn.setPassword(encryptedPassword);
+        } else {
+            cloneConn.setPassword(password);
+        }
+
         cloneConn.setPort(port);
         cloneConn.setSchema(schemaOracle);
         cloneConn.setServerName(server);
