@@ -466,35 +466,37 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      */
     private void convertDocumentation(Container fromModel, RepositoryNode parent, ERepositoryObjectType type,
             RepositoryNode recBinNode) {
+        // for folder Documentation/generated
         RepositoryNode generatedFolder = getDocumentationNode(ERepositoryObjectType.GENERATED);
+        String generatedFolderName = ERepositoryObjectType.GENERATED.name().toLowerCase();
         if (generatedFolder == null) {
-            generatedFolder = new StableRepositoryNode(parent, ERepositoryObjectType.GENERATED.toString(),
-                    ECoreImage.FOLDER_CLOSE_ICON);
+            generatedFolder = new StableRepositoryNode(parent, generatedFolderName, ECoreImage.FOLDER_CLOSE_ICON);
             parent.getChildren().add(generatedFolder);
         }
+        // for folder Documentation/generated/jobs
         RepositoryNode jobsFolder = getDocumentationNode(ERepositoryObjectType.JOBS);
+        String jobsFolderName = ERepositoryObjectType.JOBS.name().toLowerCase();
         if (jobsFolder == null) {
-            jobsFolder = new StableRepositoryNode(generatedFolder, ERepositoryObjectType.JOBS.toString(),
-                    ECoreImage.FOLDER_CLOSE_ICON);
+            jobsFolder = new StableRepositoryNode(generatedFolder, jobsFolderName, ECoreImage.FOLDER_CLOSE_ICON);
             generatedFolder.getChildren().add(jobsFolder);
         }
+        // for folder Documentation/generated/joblets
         RepositoryNode jobletsFolder = getDocumentationNode(ERepositoryObjectType.JOBLETS);
-
+        String jobletsFolderName = ERepositoryObjectType.JOBLETS.name().toLowerCase();
         if (jobletsFolder == null) {
-            jobletsFolder = new StableRepositoryNode(generatedFolder, ERepositoryObjectType.JOBLETS.toString(),
-                    ECoreImage.FOLDER_CLOSE_ICON);
+            jobletsFolder = new StableRepositoryNode(generatedFolder, jobletsFolderName, ECoreImage.FOLDER_CLOSE_ICON);
             generatedFolder.getChildren().add(jobletsFolder);
         }
 
-        jobsFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBS.toString());
+        jobsFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBS);
         jobsFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBS);
 
-        jobletsFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLETS.toString());
+        jobletsFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLETS);
         jobletsFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLETS);
 
         Container generatedContainer = null;
         for (Object object : fromModel.getSubContainer()) {
-            if (((Container) object).getLabel().equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
+            if (((Container) object).getLabel().equalsIgnoreCase(generatedFolderName)) {
                 generatedContainer = (Container) object;
                 break;
             }
@@ -503,14 +505,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         Container jobsNode = null;
         Container jobletsNode = null;
         for (Object object : generatedContainer.getSubContainer()) {
-            if (((Container) object).getLabel().equalsIgnoreCase(ERepositoryObjectType.JOBS.toString())) {
+            if (((Container) object).getLabel().equalsIgnoreCase(jobsFolderName)) {
                 jobsNode = (Container) object;
                 break;
             }
         }
 
         for (Object object : generatedContainer.getSubContainer()) {
-            if (((Container) object).getLabel().equalsIgnoreCase(ERepositoryObjectType.JOBLETS.toString())) {
+            if (((Container) object).getLabel().equalsIgnoreCase(jobletsFolderName)) {
                 jobletsNode = (Container) object;
                 break;
             }
@@ -525,7 +527,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             convert(jobletsNode, jobletsFolder, ERepositoryObjectType.JOBLET_DOC, recBinNode);
         }
 
-        generatedFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.GENERATED.toString());
+        generatedFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.GENERATED);
         generatedFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.GENERATED); // ERepositoryObjectType
         // .FOLDER);
 
@@ -579,106 +581,74 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return;
         }
 
-        String label = null;
+        for (Object obj : fromModel.getSubContainer()) {
+            Container container = (Container) obj;
+            Folder oFolder = new Folder((Property) container.getProperty(), type);
+            if (oFolder.getProperty() == null) {
+                continue;
+            }
 
-        if (getMergeRefProject()) {
-            for (Object obj : fromModel.getSubContainer()) {
-                Container container = (Container) obj;
-                Folder oFolder = new Folder((Property) container.getProperty(), type);
-                if (oFolder.getProperty() == null) {
-                    continue;
-                }
+            RepositoryNode folder = null;
 
-                RepositoryNode folder = null;
+            String label = container.getLabel();
 
-                label = container.getLabel();
+            boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1)); //$NON-NLS-1$ //$NON-NLS-2$
+            boolean isPicFolderName = label.equals(IHTMLDocConstants.PIC_FOLDER_NAME);
 
-                boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1)); //$NON-NLS-1$ //$NON-NLS-2$
-                boolean isPicFolderName = label.equals(IHTMLDocConstants.PIC_FOLDER_NAME);
-
-                // Do not show job documentation root folder and Foder "pictures" on the repository view.
-                if (isJobDocRootFolder || isPicFolderName) {
-                    continue;
-                }
-                // system
-                if (label.equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
+            // Do not show job documentation root folder and Foder "pictures" on the repository view.
+            if (isJobDocRootFolder || isPicFolderName) {
+                continue;
+            }
+            // for system folder
+            if (RepositoryConstants.SYSTEM_DIRECTORY.equals(label)) {
+                if (getMergeRefProject()) {
                     List list = parent.getChildren();
                     boolean existSystemFolder = false;
                     for (RepositoryNode node : parent.getChildren()) {
-                        if ("system".equalsIgnoreCase(node.getLabel())) { //$NON-NLS-1$
+                        if (RepositoryConstants.SYSTEM_DIRECTORY.equalsIgnoreCase(node.getLabel())) { //$NON-NLS-1$
                             existSystemFolder = true;
                             break;
                         }
                     }
                     if (!existSystemFolder) {
-                        folder = new StableRepositoryNode(parent, Messages
-                                .getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+                        folder = new StableRepositoryNode(parent, RepositoryConstants.SYSTEM_DIRECTORY,
+                                ECoreImage.FOLDER_CLOSE_ICON);
                         parent.getChildren().add(folder);
                     } else {
                         continue;
                     }
-
-                } else if (label.equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
-                    convertDocumentation(fromModel, parent, type, recBinNode);
-                    continue;
                 } else {
-                    if (label.equalsIgnoreCase("userDefined")) { //$NON-NLS-1$
-                        label.toCharArray();
-                    }
+
+                    folder = new StableRepositoryNode(parent, RepositoryConstants.SYSTEM_DIRECTORY, ECoreImage.FOLDER_CLOSE_ICON);
+
+                }
+
+            } else if (ERepositoryObjectType.GENERATED.name().equalsIgnoreCase(label)) {
+                convertDocumentation(fromModel, parent, type, recBinNode);
+                continue;
+            } else {
+                if (getMergeRefProject()) {
                     String a = parent.getProperties(EProperties.LABEL).toString();
                     folder = getSQLPatternNode(a, label);
                     if (folder == null) {
                         folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
                         parent.getChildren().add(folder);
                     }
-
-                }
-                folder.setProperties(EProperties.LABEL, label);
-                folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
-                convert(container, folder, type, recBinNode);
-
-            }
-
-        } else {
-            for (Object obj : fromModel.getSubContainer()) {
-                Container container = (Container) obj;
-                Folder oFolder = new Folder((Property) container.getProperty(), type);
-                if (oFolder.getProperty() == null) {
-                    continue;
-                }
-
-                RepositoryNode folder = null;
-
-                label = container.getLabel();
-
-                boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1)); //$NON-NLS-1$ //$NON-NLS-2$
-                boolean isPicFolderName = label.equals(IHTMLDocConstants.PIC_FOLDER_NAME);
-
-                // Do not show job documentation root folder and Foder "pictures" on the repository view.
-                if (isJobDocRootFolder || isPicFolderName) {
-                    continue;
-                }
-
-                if (label.equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
-                    // system
-                    folder = new StableRepositoryNode(parent, Messages
-                            .getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
-
-                } else if (label.equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
-                    convertDocumentation(fromModel, parent, type, recBinNode);
-                    continue;
                 } else {
                     folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
                 }
-                folder.setProperties(EProperties.LABEL, label);
-                folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
-                parent.getChildren().add(folder);
-                convert(container, folder, type, recBinNode);
 
             }
+            folder.setProperties(EProperties.LABEL, label);
+            folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
+            if (!getMergeRefProject()) {
+                parent.getChildren().add(folder);
+            }
+            convert(container, folder, type, recBinNode);
 
         }
-        // not folder
+
+        // not folder or folders have no subFolder
         for (Object obj : fromModel.getMembers()) {
             IRepositoryObject repositoryObject = (IRepositoryObject) obj;
             addNode(parent, type, recBinNode, repositoryObject);
@@ -694,7 +664,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
                 ProjectRepositoryNode referencedProjectNode = new ProjectRepositoryNode(
                         new org.talend.core.model.general.Project(emfProject), null, parent, this, ENodeType.REFERENCED_PROJECT);
-                referencedProjectNode.setProperties(EProperties.LABEL, emfProject.getLabel()); // //$NON-NLS-1$
+                referencedProjectNode.setProperties(EProperties.LABEL, emfProject.getLabel()); //$NON-NLS-1$
                 referencedProjectNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                 parent.getChildren().add(referencedProjectNode);
                 referencedProjectNode.initialize();
