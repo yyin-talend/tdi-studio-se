@@ -75,7 +75,7 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
             useProjectSetting.setSelection(v.booleanValue());
             setMainCompositeEnable(!v.booleanValue());
             topComposite.setEnabled(true);
-            if (v.booleanValue() && !isClicked) {
+            if (v.booleanValue()) {
                 if (elem == null) {
                     return;
                 }
@@ -115,7 +115,6 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
                 Boolean.valueOf(flag));
         getCommandStack().execute(cmd);
         if (flag) {
-            isClicked = true;
             useProjectSetting();
         }
     }

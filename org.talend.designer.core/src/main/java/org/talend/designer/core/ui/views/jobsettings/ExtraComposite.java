@@ -73,7 +73,7 @@ public class ExtraComposite extends AbstractPreferenceComposite {
             useProjectSetting.setSelection(v.booleanValue());
             setMainCompositeEnable(!v.booleanValue());
             topComposite.setEnabled(true);
-            if (v.booleanValue() && !isClicked) {
+            if (v.booleanValue()) {
                 if (elem == null) {
                     return;
                 }
@@ -112,7 +112,6 @@ public class ExtraComposite extends AbstractPreferenceComposite {
                 EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), Boolean.valueOf(flag));
         getCommandStack().execute(cmd);
         if (flag) {
-            isClicked = true;
             useProjectSetting();
         }
     }
