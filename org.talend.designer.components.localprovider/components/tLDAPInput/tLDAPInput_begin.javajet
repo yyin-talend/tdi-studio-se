@@ -236,7 +236,7 @@ do {
 <%
                 }
 %>
-                <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
 <%
             } else if(rejectConnName.equals("")){
@@ -246,7 +246,7 @@ do {
 <%
             } else if(rejectConnName.equals(firstConnName)){
 %>
-            	<%=rejectConnName%>.errorMessage = e.getMessage();
+            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 <%
 			}
         }

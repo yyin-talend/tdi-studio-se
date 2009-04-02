@@ -202,7 +202,7 @@ if(temp_<%=cid %>.length() > 0) {
                     <%
                 }
                 %>
-                <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
                 <%
             } else if(rejectConnName.equals("")){
@@ -211,7 +211,7 @@ if(temp_<%=cid %>.length() > 0) {
                 <%=firstConnName %> = null;
                 <%
             } else if(rejectConnName.equals(firstConnName)){%>
-            	<%=rejectConnName%>.errorMessage = e.getMessage();
+            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
             <%}
         } 
         %>
@@ -585,7 +585,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     <%
                 }
                 %>
-                <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
                 <%
             } else if(rejectConnName.equals("")){
@@ -594,7 +594,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%=firstConnName %> = null;
                 <%
             } else if(rejectConnName.equals(firstConnName)){%>
-            	<%=rejectConnName%>.errorMessage = e.getMessage();
+            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
             <%}
         } 
         %>

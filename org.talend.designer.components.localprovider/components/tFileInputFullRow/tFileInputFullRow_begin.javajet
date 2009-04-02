@@ -135,7 +135,7 @@ while (fid_<%=cid %>.nextRecord()) {
                     <%
                 }
                 %>
-                <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
                 <%
             } else if(rejectConnName.equals("")){
@@ -144,7 +144,7 @@ while (fid_<%=cid %>.nextRecord()) {
                 <%=firstConnName %> = null;
                 <%
             } else if(rejectConnName.equals(firstConnName)){%>
-            	<%=rejectConnName%>.errorMessage = e.getMessage();
+            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
             <%}
         } 
         %>

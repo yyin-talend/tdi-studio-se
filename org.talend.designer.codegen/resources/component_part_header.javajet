@@ -168,3 +168,7 @@ currentComponent="<%=node.getUniqueName() %>";
 		}
 	}
 %>
+
+<%if(codePart.equals(ECodePart.BEGIN)){ %>
+	int tos_count_<%=node.getUniqueName() %> = 0;
+<%}%>

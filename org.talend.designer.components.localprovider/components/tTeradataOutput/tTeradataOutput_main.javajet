@@ -130,7 +130,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
-                        <%=rejectConnName%>.errorMessage = e.getMessage();
+                        <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
                         %>
@@ -204,7 +204,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
-                        <%=rejectConnName%>.errorMessage = e.getMessage();
+                        <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
                         %>
@@ -298,7 +298,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     	                        <%
     	                    }
     	                    %>
-    	                    <%=rejectConnName%>.errorMessage = e.getMessage();
+    	                    <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
     	                    <%
     	                } else {
     	                    %>
@@ -356,7 +356,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     	                        <%
     	                    }
     	                    %>
-    	                    <%=rejectConnName%>.errorMessage = e.getMessage();
+    	                    <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
     	                    <%
     	                } else {
     	                    %>
@@ -436,7 +436,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
-                        <%=rejectConnName%>.errorMessage = e.getMessage();
+                        <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
                         %>
@@ -494,7 +494,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 <%
                             }
                             %>
-                            <%=rejectConnName%>.errorMessage = e.getMessage();
+                            <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {
                             %>
@@ -554,7 +554,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
-                        <%=rejectConnName%>.errorMessage = e.getMessage();
+                        <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
                         %>
