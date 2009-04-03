@@ -944,9 +944,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected ConnectionParameters connParameters;
 
-    private void setAllConnectionParameters(Element element) {
-
-        String type = getValueFromRepositoryName(element, "TYPE"); //$NON-NLS-1$
+    private void setAllConnectionParameters(String typ, Element element) {
+        String type = null;
+        if (typ != null && !typ.equals("")) {
+            type = typ;
+        } else {
+            type = getValueFromRepositoryName(element, "TYPE"); //$NON-NLS-1$
+        }
         connParameters.setDbType(type);
         String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE"); //$NON-NLS-1$
         connParameters.setFrameworkType(frameWorkKey);
@@ -1021,7 +1025,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 EConnectionParameterName.DRIVER_JAR.getName(), context)));
 
         if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && "" //$NON-NLS-1$
-                .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
+        .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
             connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
         }
 
@@ -1098,6 +1102,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
 
         Object value = elem.getPropertyValue("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+
         IElementParameter compList = elem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
         if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null) {
             Object compValue = compList.getValue();
@@ -1111,11 +1116,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     }
                 }
                 if (connectionNode != null) {
-                    setAllConnectionParameters(connectionNode);
+
+                    setAllConnectionParameters(type, connectionNode);
                 }
             }
         } else {
-            setAllConnectionParameters(elem);
+            setAllConnectionParameters(null, elem);
         }
         setConnectionParameterNames(elem, connParameters);
     }
