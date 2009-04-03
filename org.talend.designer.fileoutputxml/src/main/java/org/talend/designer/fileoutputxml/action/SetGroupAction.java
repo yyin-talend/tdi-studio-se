@@ -92,8 +92,9 @@ public class SetGroupAction extends SelectionProviderAction {
             return;
         }
         if (((node instanceof Attribute) || node.hasLink()) && this.value) {
-            this.setEnabled(true);
+            this.setEnabled(TreeUtil.checkTreeGoupNode(node));
             return;
+
         }
 
         if (node instanceof NameSpaceNode) {

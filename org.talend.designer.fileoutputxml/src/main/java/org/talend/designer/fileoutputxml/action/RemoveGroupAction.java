@@ -18,6 +18,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
+import org.talend.designer.fileoutputxml.ui.FOXUI;
 
 /**
  * bqian Create a xml node. <br/>
@@ -30,6 +31,8 @@ public class RemoveGroupAction extends SelectionProviderAction {
     // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
+    private FOXUI foxui;
+
     /**
      * CreateNode constructor comment.
      * 
@@ -39,6 +42,12 @@ public class RemoveGroupAction extends SelectionProviderAction {
     public RemoveGroupAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
+    }
+
+    public RemoveGroupAction(TreeViewer xmlViewer, String text, FOXUI foxui) {
+        super(xmlViewer, text);
+        this.xmlViewer = xmlViewer;
+        this.foxui = foxui;
     }
 
     /*
@@ -52,13 +61,17 @@ public class RemoveGroupAction extends SelectionProviderAction {
         node.setGroup(false);
         // TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+
         xmlViewer.refresh();
+        foxui.updateStatus();
+
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {

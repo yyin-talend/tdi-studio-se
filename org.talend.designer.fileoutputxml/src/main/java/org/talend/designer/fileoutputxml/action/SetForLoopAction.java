@@ -35,6 +35,8 @@ public class SetForLoopAction extends SelectionProviderAction {
 
     private FOXUI foxui;
 
+    private boolean value;
+
     /**
      * SetForLoopAction constructor comment.
      * 
@@ -54,10 +56,11 @@ public class SetForLoopAction extends SelectionProviderAction {
      * @param text
      * @param foxui
      */
-    public SetForLoopAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+    public SetForLoopAction(TreeViewer xmlViewer, FOXUI foxui, String text, boolean value) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
         this.foxui = foxui;
+        this.value = value;
     }
 
     /*
@@ -71,6 +74,7 @@ public class SetForLoopAction extends SelectionProviderAction {
         if (node.isLoop()) {
             return;
         }
+
         FOXManager foxManager = foxui.getFoxManager();
 
         FOXTreeNode rootTreeData = foxManager.getRootFOXTreeNode(node);
@@ -86,11 +90,20 @@ public class SetForLoopAction extends SelectionProviderAction {
             node.setGroup(false);
         }
         node.setLoop(true);
-        if (foxui != null) {
-            foxui.updateStatus();
+        if (this.value) {
+            if (foxui != null && node.isGroup()) {
+                foxui.updateStatus();
+            }
+            TreeUtil.upsetMainNode(node);
+            xmlViewer.refresh();
+        } else {
+            if (foxui != null) {
+                foxui.updateStatus();
+            }
+            TreeUtil.upsetMainNode(node);
+            xmlViewer.refresh();
         }
-        TreeUtil.upsetMainNode(node);
-        xmlViewer.refresh();
+        this.foxui.updateStatus();
     }
 
     /*

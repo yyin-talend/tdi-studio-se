@@ -326,7 +326,7 @@ public class TreeUtil {
     /*
      * find the loop node in "treenode" and its children
      */
-    private static FOXTreeNode findDownLoopNode(FOXTreeNode treeNode) {
+    public static FOXTreeNode findDownLoopNode(FOXTreeNode treeNode) {
         if (treeNode instanceof Element) {
             Element e = (Element) treeNode;
             if (e.isLoop()) {

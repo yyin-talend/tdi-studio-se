@@ -409,6 +409,7 @@ public class FOXUI {
         }
     }
 
+    // just judge if select the advance model
     private boolean getValue() {
         IElementParameter elementParameter = externalNode.getElementParameter("MERGE");//$NON-NLS-1$
         if (elementParameter != null) {
@@ -429,9 +430,10 @@ public class FOXUI {
         // importFromXMLAction
         // .setToolTipText("Discard the current tree and then import a hierachy tree from an existing xml file.");
         // guessLoopAction = new GuessLoopAction(xmlViewer, Messages.getString("FOXUI.15")); //$NON-NLS-1$
-        setLoopAction = new SetForLoopAction(xmlViewer, this, Messages.getString("FOXUI.16")); //$NON-NLS-1$
+        setLoopAction = new SetForLoopAction(xmlViewer, this, Messages.getString("FOXUI.16"), this.getValue()); //$NON-NLS-1$
         setGroupAction = new SetGroupAction(xmlViewer, this, Messages.getString("FOXUI.17"), this.getValue()); //$NON-NLS-1$
-        removeGroupAction = new RemoveGroupAction(xmlViewer, Messages.getString("FOXUI.18")); //$NON-NLS-1$
+        //        removeGroupAction = new RemoveGroupAction(xmlViewer, Messages.getString("FOXUI.18")); //$NON-NLS-1$
+        removeGroupAction = new RemoveGroupAction(xmlViewer, Messages.getString("FOXUI.18"), this); //$NON-NLS-1$
 
     }
 
@@ -527,6 +529,7 @@ public class FOXUI {
 
         List<FOXTreeNode> allRootTreeData = foxManager.getTreeData();
         int num = 0, rootNum = 0;
+        int groupNum = 0;
         List<FOXTreeNode> onLoopNodes = new ArrayList<FOXTreeNode>();
         for (FOXTreeNode node : allRootTreeData) {
             FOXTreeNode rootFOXTreeNode = foxManager.getRootFOXTreeNode(node);
@@ -537,23 +540,48 @@ public class FOXUI {
                     onLoopNodes.add(rootFOXTreeNode);
                 }
                 rootNum++;
+                if (existedGroupNode(rootFOXTreeNode)) {
+                    groupNum++;
+                } else {
+                    // onLoopNodes.add(rootFOXTreeNode);
+                }
+            }
+        }
+        if (this.getValue()) {
+            if (num != rootNum || groupNum != rootNum) {
+                String message = Messages.getString("FOXUI.NoLoopOfAdvance"); //$NON-NLS-1$
+                if (rootNum > 1) {
+                    message = ""; //$NON-NLS-1$
+                    for (FOXTreeNode node : onLoopNodes) {
+                        message += node.getRow() + ","; //$NON-NLS-1$
+                    }
+                    message = message.substring(0, message.length() - 1);
+                    message += Messages.getString("FOXUI.needLoop"); //$NON-NLS-1$
+                }
+                header.updateStatus(message);
+            } else {
+                header.clearStatus();
+
+            }
+        } else {
+            if (num != rootNum) {
+                String message = Messages.getString("FOXUI.NoLoop"); //$NON-NLS-1$
+
+                if (rootNum > 1) {
+                    message = ""; //$NON-NLS-1$
+                    for (FOXTreeNode node : onLoopNodes) {
+                        message += node.getRow() + ","; //$NON-NLS-1$
+                    }
+                    message = message.substring(0, message.length() - 1);
+                    message += Messages.getString("FOXUI.needLoop"); //$NON-NLS-1$
+                }
+                header.updateStatus(message);
+            } else {
+                header.clearStatus();
+
             }
         }
 
-        if (num != rootNum) {
-            String message = Messages.getString("FOXUI.NoLoop"); //$NON-NLS-1$
-            if (rootNum > 1) {
-                message = ""; //$NON-NLS-1$
-                for (FOXTreeNode node : onLoopNodes) {
-                    message += node.getRow() + ","; //$NON-NLS-1$
-                }
-                message = message.substring(0, message.length() - 1);
-                message += Messages.getString("FOXUI.needLoop"); //$NON-NLS-1$
-            }
-            header.updateStatus(message);
-        } else {
-            header.clearStatus();
-        }
     }
 
     private boolean existedLoopNode(FOXTreeNode node) {
@@ -563,6 +591,20 @@ public class FOXUI {
             }
             for (FOXTreeNode child : node.getChildren()) {
                 if (existedLoopNode(child)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean existedGroupNode(FOXTreeNode node) {
+        if (node != null) {
+            if (node.isGroup()) {
+                return true;
+            }
+            for (FOXTreeNode child : node.getChildren()) {
+                if (existedGroupNode(child)) {
                     return true;
                 }
             }
