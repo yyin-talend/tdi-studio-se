@@ -53,6 +53,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
@@ -331,40 +332,47 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         String newName = item.getProperty().getLabel();
         propertyIsDirty = false;
         try {
-            JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);
-            processor.setNewElementName(newName + SuffixConstants.SUFFIX_STRING_java);
-            RenameRefactoring ref = new RenameRefactoring(processor);
-            final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
-                    CheckConditionsOperation.ALL_CONDITIONS);
+            boolean noError = true;
+            String newName2 = newName + SuffixConstants.SUFFIX_STRING_java;
+            if (item instanceof RoutineItem && !unit.getElementName().equals(newName2)) {
 
-            IRunnableWithProgress r = new IRunnableWithProgress() {
+                JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);
+                processor.setNewElementName(newName2);
+                RenameRefactoring ref = new RenameRefactoring(processor);
+                final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
+                        CheckConditionsOperation.ALL_CONDITIONS);
 
-                public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    Display.getDefault().asyncExec(new Runnable() {
+                IRunnableWithProgress r = new IRunnableWithProgress() {
 
-                        public void run() {
-                            try {
-                                operation.run(monitor);
-                            } catch (CoreException e) {
-                                ExceptionHandler.process(e);
+                    public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        Display.getDefault().asyncExec(new Runnable() {
+
+                            public void run() {
+                                try {
+                                    operation.run(monitor);
+                                } catch (CoreException e) {
+                                    ExceptionHandler.process(e);
+                                }
                             }
-                        }
-                    });
+                        });
 
-                }
-            };
+                    }
+                };
 
-            PlatformUI.getWorkbench().getProgressService().run(true, true, r);
-            RefactoringStatus conditionStatus = operation.getConditionStatus();
-            if (conditionStatus.hasError()) {
-                String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                RefactoringStatusEntry[] entries = conditionStatus.getEntries();
-                for (int i = 0; i < entries.length; i++) {
-                    RefactoringStatusEntry entry = entries[i];
-                    errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
+                PlatformUI.getWorkbench().getProgressService().run(true, true, r);
+                RefactoringStatus conditionStatus = operation.getConditionStatus();
+                if (conditionStatus != null && conditionStatus.hasError()) {
+                    String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    RefactoringStatusEntry[] entries = conditionStatus.getEntries();
+                    for (int i = 0; i < entries.length; i++) {
+                        RefactoringStatusEntry entry = entries[i];
+                        errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
+                    }
+                    MessageDialog.openError(this.getSite().getShell(), "Warning", errorMessage); //$NON-NLS-1$
+                    noError = false;
                 }
-                MessageDialog.openError(this.getSite().getShell(), "Warning", errorMessage); //$NON-NLS-1$
-            } else {
+            }
+            if (noError) {
                 doSave(null);
             }
             setName();

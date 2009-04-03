@@ -13,6 +13,7 @@
 package org.talend.designer.business.diagram.custom;
 
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -24,14 +25,17 @@ import org.eclipse.gmf.runtime.notation.Node;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.business.BusinessType;
 import org.talend.designer.business.diagram.custom.actions.CreateDiagramAction;
+import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.commands.ChangeBusinessItemAlignmentCommand;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
@@ -175,5 +179,14 @@ public class DiagramModelService implements IDiagramModelService {
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editorPart, false);
             }
         }
+    }
+
+    public void openBusinessDiagramEditor(IWorkbenchPage page, IEditorInput input) throws PartInitException {
+        page.openEditor(input, BusinessDiagramEditor.ID, false);
+    }
+
+    public IFile getDiagramFile(IWorkbenchPage page) {
+        DiagramResourceManager diagramResourceManager = new DiagramResourceManager(page, new NullProgressMonitor());
+        return diagramResourceManager.createDiagramFile();
     }
 }

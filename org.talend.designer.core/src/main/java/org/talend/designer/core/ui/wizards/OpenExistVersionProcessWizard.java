@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.wizards;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IEditorPart;
@@ -22,19 +23,33 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.properties.BusinessProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.codegen.ISQLPatternSynchronizer;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.expressionbuilder.ExpressionPersistance;
+import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.actions.routines.RoutineEditorInput;
 
 /**
  * DOC xye class global comment. Detailled comment
@@ -117,12 +132,13 @@ public class OpenExistVersionProcessWizard extends Wizard {
     public boolean performFinish() {
         if (mainPage.isCreateNewVersionJob()) {
             refreshNewJob();
-            openJob(processObject.getRepositoryNode(), false);
+            openAnotherVersion(processObject.getRepositoryNode(), false);
         } else {
             StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             // Only latest version can be editted
-            openJob(node, !node.getObject().getProperty().getVersion().equals(processObject.getProperty().getVersion()));
+            openAnotherVersion(node, !node.getObject().getProperty().getVersion()
+                    .equals(processObject.getProperty().getVersion()));
         }
         return true;
     }
@@ -142,25 +158,60 @@ public class OpenExistVersionProcessWizard extends Wizard {
         }
     }
 
-    private void openJob(final RepositoryNode node, final boolean readonly) {
-        ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
-
-        IWorkbenchPage page = getActivePage();
-
+    private void openAnotherVersion(final RepositoryNode node, final boolean readonly) {
         try {
-            ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, readonly);
-            IEditorPart editorPart = page.findEditor(fileEditorInput);
+            if (node.getObject() != null) {
+                Item item = node.getObject().getProperty().getItem();
+                IWorkbenchPage page = getActivePage();
+                IEditorPart editorPart = null;
+                RepositoryEditorInput fileEditorInput = null;
+                ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                        ICodeGeneratorService.class);
 
-            if (editorPart == null) {
-                // fileEditorInput.setView(getViewPart());
-                fileEditorInput.setRepositoryNode(node);
-                page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, readonly);
-            } else {
-                page.activate(editorPart);
+                if (item instanceof ProcessItem) {
+                    ProcessItem processItem = (ProcessItem) item;
+                    fileEditorInput = new ProcessEditorInput(processItem, true, readonly);
+
+                } else if (item instanceof BusinessProcessItem) {
+                    BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;
+                    IFile file = CorePlugin.getDefault().getDiagramModelService().getDiagramFile(page);
+                    fileEditorInput = new RepositoryEditorInput(file, businessProcessItem);
+                } else if (item instanceof RoutineItem) {
+                    RoutineItem routineItem = (RoutineItem) item;
+                    ITalendSynchronizer routineSynchronizer = codeGenService.createRoutineSynchronizer();
+                    IFile file = routineSynchronizer.getFile(routineItem);
+                    fileEditorInput = new RoutineEditorInput(file, routineItem);
+                } else if (item instanceof SQLPatternItem) {
+                    SQLPatternItem patternItem = (SQLPatternItem) item;
+                    ISQLPatternSynchronizer routineSynchronizer = codeGenService.getSQLPatternSynchronizer();
+                    IFile file = routineSynchronizer.getSQLPatternFile(patternItem);
+                    fileEditorInput = new RepositoryEditorInput(file, patternItem);
+                }
+
+                editorPart = page.findEditor(fileEditorInput);
+                if (editorPart == null) {
+                    // fileEditorInput.setView(getViewPart());
+                    fileEditorInput.setRepositoryNode(node);
+                    if (item instanceof ProcessItem) {
+                        page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, readonly);
+
+                    } else if (item instanceof BusinessProcessItem) {
+                        CorePlugin.getDefault().getDiagramModelService().openBusinessDiagramEditor(page, fileEditorInput);
+                    } else {
+                        ECodeLanguage lang = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+                        String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor"; //$NON-NLS-1$ //$NON-NLS-2$
+                        page.openEditor(fileEditorInput, talendEditorID);
+                    }
+                } else {
+                    page.activate(editorPart);
+                }
             }
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (PersistenceException e) {
+            MessageBoxExceptionHandler.process(e);
+        } catch (SystemException e) {
             MessageBoxExceptionHandler.process(e);
         }
     }
