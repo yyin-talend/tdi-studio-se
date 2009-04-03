@@ -51,7 +51,7 @@ public class ContextTemplateModifyCommand extends Command {
      */
     private void refreshContextView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view2 = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+        IViewPart view2 = page.findView(ContextsView.ID);
         if (view2 instanceof ContextsView) {
             ((ContextsView) view2).updateContextView(true, false);
         }

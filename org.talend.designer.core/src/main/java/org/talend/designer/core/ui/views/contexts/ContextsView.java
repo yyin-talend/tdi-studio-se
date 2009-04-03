@@ -97,27 +97,11 @@ public class ContextsView extends ViewPart {
     }
 
     public void updateContextView() {
-        getPart();
-        if (part != null) {
-            boolean modified = updateContextFromRepository();
-            if (modified) {
-                part.getTalendEditor().setDirty(true);
-            }
-        }
-        contextComposite.setReadOnly(false);
-        contextComposite.refresh();
+        updateContextView(true, false, true);
     }
 
     public void updateContextView(boolean isBuildIn) {
-        getPart();
-        if (part != null) {
-            boolean modified = updateContextFromRepository();
-            if (modified) {
-                part.getTalendEditor().setDirty(true);
-            }
-        }
-        contextComposite.setReadOnly(!isBuildIn);
-        contextComposite.refresh();
+        updateContextView(isBuildIn, false, true);
     }
 
     public void updateContextView(boolean isBuildIn, boolean isDisposeAll, boolean refreshView) {
@@ -131,7 +115,7 @@ public class ContextsView extends ViewPart {
         contextComposite.setReadOnly(!isBuildIn);
 
         if (refreshView) {
-            contextComposite.refresh();
+            contextComposite.refreshTemplateTab();
         }
 
     }

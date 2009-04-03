@@ -64,7 +64,7 @@ public class ContextRepositoryComposite extends ContextComposite {
             toAdd.setContext(context);
             context.getContextParameterList().add(toAdd);
         }
-        refresh();
+        refreshTemplateTab();
     }
 
     /*
@@ -149,7 +149,8 @@ public class ContextRepositoryComposite extends ContextComposite {
         contextManager.setDefaultContext(newDefault);
         // record the modified operation.
         setModifiedFlag(contextManager);
-        refresh();
+        refreshTableTab();
+        refreshTreeTab();
     }
 
     /*
@@ -162,7 +163,8 @@ public class ContextRepositoryComposite extends ContextComposite {
         propagateType(contextManager, parameter);
         // record the modified operation.
         setModifiedFlag(contextManager);
-        refresh();
+        refreshTableTab();
+        refreshTreeTab();
     }
 
     private void propagateType(IContextManager contextManager, IContextParameter param) {
@@ -273,7 +275,8 @@ public class ContextRepositoryComposite extends ContextComposite {
         }
         // record the modified operation.
         setModifiedFlag(contextManager);
-        refresh();
+        refreshTemplateTab();
 
     }
+
 }

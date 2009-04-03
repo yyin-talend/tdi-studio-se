@@ -68,7 +68,10 @@ public class ContextViewComposite extends ContextComposite {
 
     public void setPart(AbstractMultiPageTalendEditor part) {
         this.part = part;
-        refresh();
+        refreshRelationship();
+        super.refreshTemplateTab();
+        super.refreshTableTab();
+        super.refreshTreeTab();
     }
 
     //
@@ -256,21 +259,36 @@ public class ContextViewComposite extends ContextComposite {
     // }
     // });
     // }
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.ui.context.ContextComposite#refresh()
-     */
-    @Override
-    public void refresh() {
+    private void refreshRelationship() {
         IProcess process = getProcess();
         if (process != null) {
             setReadOnly(process.isReadOnly());
         }
-        super.refresh();
-        super.refreshTableTab();
-        super.refreshTreeTab();
+
         DesignerPlugin.getDefault().getRunProcessService().refreshView();
+    }
+
+    public void refresh() {
+        refreshRelationship();
+        super.refresh();
+    }
+
+    @Override
+    public void refreshTableTab() {
+        refreshRelationship();
+        super.refreshTableTab();
+    }
+
+    @Override
+    public void refreshTemplateTab() {
+        refreshRelationship();
+        super.refreshTemplateTab();
+    }
+
+    @Override
+    public void refreshTreeTab() {
+        refreshRelationship();
+        super.refreshTreeTab();
     }
 
     public CommandStack getCommandStack() {
