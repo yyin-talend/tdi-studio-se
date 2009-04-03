@@ -313,7 +313,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
                 retreiveAllEntry(list, en);
             }
         } else {
-            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
             list.add(family + FAMILY_SPEARATOR + entry.getLabel());
         }
 
@@ -328,7 +328,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
     public boolean isComponentVisible(PaletteEntry entry) {
         String label = entry.getLabel();
 
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
         List<ComponentSetting> components = getComponentsFromProject();
 
         for (ComponentSetting componentSetting : components) {

@@ -62,7 +62,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         super.buildContextMenu(menu);
         menu.appendToGroup(GEFActionConstants.MB_ADDITIONS, new SearchComponentAction(getPaletteViewer()));
         PaletteEntry element = (PaletteEntry) ((EditPart) getPaletteViewer().getSelectedEditParts().get(0)).getModel();
-        boolean note = element.getLabel().equals("note");//$NON-NLS-1$
+        boolean note = element.getLabel().equals(Messages.getString("TalendEditorPaletteFactory.Note"));//$NON-NLS-1$
         if (note) {
 
         } else {
@@ -263,16 +263,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 for (int i = 0; i < fam.length; i++) {
                     String famName = null;
                     String familyName = null;
-                    if (fam[i].equals("Data Quality")) {//$NON-NLS-1$
-                        famName = fam[i].trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
-                    } else {
-                        famName = fam[i];
-                    }
-                    if (componentSetting.getFamily().equals("Data Quality")) {//$NON-NLS-1$
-                        familyName = componentSetting.getFamily().trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
-                    } else {
-                        familyName = componentSetting.getFamily();
-                    }
+                    famName = fam[i];
+                    familyName = componentSetting.getFamily();
 
                     if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
                         String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
@@ -282,16 +274,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             } else {
                 String famName = null;
                 String familyName = null;
-                if (family.equals("Data Quality")) {//$NON-NLS-1$
-                    famName = family.trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
-                } else {
-                    famName = family;
-                }
-                if (componentSetting.getFamily().equals("Data Quality")) {//$NON-NLS-1$
-                    familyName = componentSetting.getFamily().trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
-                } else {
-                    familyName = componentSetting.getFamily();
-                }
+                famName = family;
+                familyName = componentSetting.getFamily();
                 if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
                     // componentSetting.setFavoriteFlag(true);
                     // );
@@ -338,16 +322,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 for (int i = 0; i < fam.length; i++) {
                     String famName = null;
                     String familyName = null;
-                    if (fam[i].equals("Data Quality")) {//$NON-NLS-1$
-                        famName = fam[i].trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
-                    } else {
-                        famName = fam[i];
-                    }
-                    if (componentSetting.getFamily().equals("Data Quality")) {//$NON-NLS-1$
-                        familyName = componentSetting.getFamily().trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
-                    } else {
-                        familyName = componentSetting.getFamily();
-                    }
+                    famName = fam[i];
+                    familyName = componentSetting.getFamily();
                     if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
                         String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
                         DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
@@ -356,16 +332,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             } else {
                 String famName = null;
                 String familyName = null;
-                if (family.equals("Data Quality")) {//$NON-NLS-1$
-                    famName = family.trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
-                } else {
-                    famName = family;
-                }
-                if (componentSetting.getFamily().equals("Data Quality")) {//$NON-NLS-1$
-                    familyName = componentSetting.getFamily().trim().replaceFirst(" ", "_");//$NON-NLS-1$//$NON-NLS-1$
-                } else {
-                    familyName = componentSetting.getFamily();
-                }
+                famName = family;
+                familyName = componentSetting.getFamily();
                 if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
                     String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
                     // componentSetting.setFavoriteFlag(false);

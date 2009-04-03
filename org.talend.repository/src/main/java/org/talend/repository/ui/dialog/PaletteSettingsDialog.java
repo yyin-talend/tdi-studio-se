@@ -336,7 +336,7 @@ public class PaletteSettingsDialog extends Dialog {
                 retreiveAllEntry(list, en);
             }
         } else {
-            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
             list.add(family + FAMILY_SPEARATOR + entry.getLabel());
         }
 
@@ -350,7 +350,7 @@ public class PaletteSettingsDialog extends Dialog {
 
     public boolean isComponentVisible(PaletteEntry entry) {
         String label = entry.getLabel();
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
         List<ComponentSetting> components = getComponentsFromProject();
 
         for (ComponentSetting componentSetting : components) {

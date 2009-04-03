@@ -116,7 +116,7 @@ public final class TalendEditorPaletteFactory {
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
-                    if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j])) {
                         continue;
                     }
                     families.add(strings[j]);
@@ -149,6 +149,7 @@ public final class TalendEditorPaletteFactory {
                 continue;
             }
             family = xmlComponent.getTranslatedFamilyName();
+            oraFamily = xmlComponent.getOriginalFamilyName();
             if (filter != null) {
                 String regex = getFilterRegex();
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
@@ -202,8 +203,9 @@ public final class TalendEditorPaletteFactory {
                 }
 
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
-                    if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j])) {
                         continue;
                     }
 
@@ -297,15 +299,11 @@ public final class TalendEditorPaletteFactory {
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
-                    if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j])) {
                         continue;
                     }
                     String key = null;
-                    if (oraStrings[j].equals("Data Quality")) {//$NON-NLS-1$
-                        key = xmlComponent.getName() + "#" + oraStrings[j].trim().replaceAll(" ", "_"); //$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
-                    } else {
-                        key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
-                    }
+                    key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
 
                     if (a == 0) {
                         if (!strings[j].equals("Misc")) {//$NON-NLS-1$
@@ -396,11 +394,7 @@ public final class TalendEditorPaletteFactory {
             String[] oraKeys = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
             for (int j = 0; j < keys.length; j++) {
                 String key = null;
-                if (oraKeys[j].equals("Data Quality")) {//$NON-NLS-1$
-                    key = xmlComponent.getName() + "#" + oraKeys[j].trim().replaceAll(" ", "_"); //$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
-                } else {
-                    key = xmlComponent.getName() + "#" + oraKeys[j];//$NON-NLS-1$
-                }
+                key = xmlComponent.getName() + "#" + oraKeys[j];//$NON-NLS-1$
                 if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
                     continue;
                 }
@@ -424,15 +418,12 @@ public final class TalendEditorPaletteFactory {
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
-                    if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j])) {
                         continue;
                     }
                     String key = null;
-                    if (oraStrings[j].equals("Data Quality")) {//$NON-NLS-1$
-                        key = xmlComponent.getName() + "#" + oraStrings[j].trim().replaceAll(" ", "_"); //$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
-                    } else {
-                        key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
-                    }
+                    key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
+
                     if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
                         continue;
                     }
