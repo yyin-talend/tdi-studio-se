@@ -508,6 +508,7 @@ public class ProcessComposite extends Composite {
         enableLineLimitButton.setText(Messages.getString("ProcessComposite.lineLimited")); //$NON-NLS-1$
         FormData formData = new FormData();
         enableLineLimitButton.setLayoutData(formData);
+        enableLineLimitButton.setEnabled(false);
         enableLineLimitButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -523,6 +524,7 @@ public class ProcessComposite extends Composite {
         formData.width = 120;
         formData.left = new FormAttachment(enableLineLimitButton, 0, SWT.RIGHT);
         lineLimitText.setLayoutData(formData);
+        lineLimitText.setEnabled(false);
         lineLimitText.addListener(SWT.Verify, new Listener() {
 
             // this text only receive number here.
@@ -834,6 +836,10 @@ public class ProcessComposite extends Composite {
         clearBeforeExec.setEnabled(runnable);
         saveJobBeforeRunButton.setEnabled(runnable);
         watchBtn.setEnabled(runnable);
+
+        enableLineLimitButton.setEnabled(runnable);
+        lineLimitText.setEnabled(runnable);
+
     }
 
     /**
