@@ -332,15 +332,10 @@ public final class DBConnectionContextUtils {
         // if use context
         if (contextType != null) {
             String encryptedPassword = null;
-            boolean encrypted = false;
             try {
-                if (!encrypted) {
-                    encryptedPassword = PasswordEncryptUtil.encryptPassword(password);
-                    encrypted = true;
-                }
-
+                encryptedPassword = PasswordEncryptUtil.encryptPassword(password);
             } catch (Exception e) {
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
             cloneConn.setPassword(encryptedPassword);
         } else {
