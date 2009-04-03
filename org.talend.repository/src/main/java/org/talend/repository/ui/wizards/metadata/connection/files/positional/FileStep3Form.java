@@ -52,6 +52,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
@@ -361,7 +362,8 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         String fieldSeparatorValues = getOriginalValueConnection().getFieldSeparatorValue();
 
         if (fieldSeparatorValues != null && fieldSeparatorValues.length() > 0) {
-            fieldSeparatorValues = fieldSeparatorValues.substring(1, fieldSeparatorValues.length() - 1);
+            // see bug 6617
+            fieldSeparatorValues = TalendTextUtils.removeQuotes(fieldSeparatorValues);
             fieldSeparatorValueArray = fieldSeparatorValues.split(","); //$NON-NLS-1$
         }
 

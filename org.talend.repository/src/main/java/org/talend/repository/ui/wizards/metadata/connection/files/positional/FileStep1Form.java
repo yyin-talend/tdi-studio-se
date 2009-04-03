@@ -377,11 +377,10 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
                     // update the connection
-                    getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
-
-                    if (fieldSeparatorText.getEditable()
-                            && getConnection().getFieldSeparatorValue().equals(fieldSeparatorText.getText())) {
-
+                    // see bug 6617
+                    String separatorValue = TalendTextUtils.addQuotes(fieldSeparatorText.getText());
+                    getConnection().setFieldSeparatorValue(separatorValue);
+                    if (fieldSeparatorText.getEditable() && getConnection().getFieldSeparatorValue().equals(separatorValue)) {
                         // check the value and display the status Error is needed
                         if (!checkFieldSeparatorValue()) {
                             // the value isn't correct => clean markers of the positionalViewer
@@ -392,9 +391,9 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                                 graphicRule.setEnabled(false);
                             }
                         } else {
-                            String value = getValidateFieldSeparator(fieldSeparatorText.getText());
+                            String value = getValidateFieldSeparator(separatorValue);
                             Point selection = fieldSeparatorText.getSelection();
-                            if ((!value.equals(getConnection().getFieldSeparatorValue()))) {
+                            if ((!value.equals(TalendTextUtils.removeQuotes(getConnection().getFieldSeparatorValue())))) {
                                 // the value isn't correct => clean markers of the positionalViewer
                                 fieldPositionText.setEditable(false);
                                 if (filePositionalViewer.getVisible()) {
@@ -536,7 +535,8 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 if (isNewFile && !isContextMode()) {
                     fieldSeparatorText.setText("*"); //$NON-NLS-1$
                     filePositionalViewer.setSeparatorValue("*", true); //$NON-NLS-1$
-                    getConnection().setFieldSeparatorValue("*"); //$NON-NLS-1$
+                    // see bug 6617
+                    getConnection().setFieldSeparatorValue(TalendTextUtils.addQuotes("*")); //$NON-NLS-1$
                 }
 
             } catch (Exception e) {
