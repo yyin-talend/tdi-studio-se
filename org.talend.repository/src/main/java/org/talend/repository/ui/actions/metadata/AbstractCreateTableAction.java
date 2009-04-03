@@ -716,12 +716,14 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
                     IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
                     DataStringConnection dataString = new DataStringConnection();
-                    // modified by wzhang. reset the url.
-                    metadataConnection.setUrl(dataString.getString(dataString.getDBTypes()
-                            .indexOf(metadataConnection.getDbType()), metadataConnection.getServerName(), metadataConnection
-                            .getUsername(), metadataConnection.getPassword(), metadataConnection.getPort(), metadataConnection
-                            .getDatabase(), metadataConnection.getFileFieldName(), metadataConnection.getDataSourceName(),
-                            metadataConnection.getDbRootPath(), metadataConnection.getAdditionalParams()));
+                    if (!metadataConnection.getDbType().equals(DataStringConnection.GENERAL_JDBC)) {
+                        metadataConnection.setUrl(dataString.getString(dataString.getDBTypes().indexOf(
+                                metadataConnection.getDbType()), metadataConnection.getServerName(), metadataConnection
+                                .getUsername(), metadataConnection.getPassword(), metadataConnection.getPort(),
+                                metadataConnection.getDatabase(), metadataConnection.getFileFieldName(), metadataConnection
+                                        .getDataSourceName(), metadataConnection.getDbRootPath(), metadataConnection
+                                        .getAdditionalParams()));
+                    }
 
                     final boolean skipStep = checkConnectStatus(managerConnection, metadataConnection);
                     // if (skipStep) {
