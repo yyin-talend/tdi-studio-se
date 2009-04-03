@@ -25,7 +25,9 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
@@ -75,6 +77,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
     @Override
     public boolean performCancel() {
         restoreVersion();
+        unlockObject();
         return super.performCancel();
     }
 
@@ -91,6 +94,18 @@ public class OpenExistVersionProcessWizard extends Wizard {
         } catch (BusinessException e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    private void unlockObject() {
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        try {
+            if (repositoryFactory.getStatus(processObject).equals(ERepositoryStatus.LOCK_BY_USER)) {
+                repositoryFactory.unlock(processObject);
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
     }
 
     /*

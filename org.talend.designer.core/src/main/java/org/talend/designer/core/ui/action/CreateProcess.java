@@ -31,7 +31,6 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.DesignerPlugin;
@@ -127,7 +126,7 @@ public class CreateProcess extends AContextualAction {
 
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);
         if (dlg.open() == Window.OK) {
-            RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
+
             ProcessEditorInput fileEditorInput;
             try {
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false);

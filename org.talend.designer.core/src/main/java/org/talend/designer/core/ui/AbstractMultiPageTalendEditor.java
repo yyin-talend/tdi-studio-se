@@ -272,6 +272,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         } else {
             setReadOnly(true);
         }
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
         getSite().getWorkbenchWindow().getPartService().addPartListener(partListener);
 
     }
@@ -903,6 +904,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // viewPart.refresh(processEditorInput.getRepositoryNode());
         // }
         RepositoryNode repositoryNode = processEditorInput.getRepositoryNode();
+        if (repositoryNode == null) {
+            processEditorInput.setRepositoryNode(null); // retrieve the node.
+            repositoryNode = processEditorInput.getRepositoryNode();
+        }
         if (repositoryNode != null) {
             if (repFactory.getStatus(designerEditor.getProperty().getItem()) == ERepositoryStatus.DELETED) {
                 RepositoryManager.refreshDeletedNode(null);

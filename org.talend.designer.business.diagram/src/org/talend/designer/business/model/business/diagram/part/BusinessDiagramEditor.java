@@ -342,8 +342,10 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
                     try {
                         for (IEditorReference ref : page.getEditorReferences()) {
                             Object tmpInput = ref.getEditorInput().getAdapter(RepositoryEditorInput.class);
-                            if (repEditorInput.equals(tmpInput)) {
-                                num++;
+                            if (tmpInput != null) {
+                                if (repEditorInput.equals(tmpInput)) {
+                                    num++;
+                                }
                             }
                         }
                     } catch (PartInitException e) {
