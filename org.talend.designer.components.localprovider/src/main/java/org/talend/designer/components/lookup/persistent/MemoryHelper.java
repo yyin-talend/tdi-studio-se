@@ -83,4 +83,12 @@ public final class MemoryHelper {
         
     }
     
+    public static void displayMemory(String label, long bytes) {
+        long memoryKBytes = bytes / 1024;
+        long memoryMBytes = memoryKBytes / 1024;
+        System.out.println(label + " = " + bytes + " bytes, " + memoryKBytes + "KB, "
+                + memoryMBytes + "MB");
+
+    }
+    
 }
