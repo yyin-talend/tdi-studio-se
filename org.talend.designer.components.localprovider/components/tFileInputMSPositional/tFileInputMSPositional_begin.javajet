@@ -417,7 +417,7 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 					nb_line_parseError_<%=cid%>++;
 					<%=rejectConnName%> = new <%=rejectConnName%>Struct();
 					<%=rejectConnName%>.errorCode = 1;
-					<%=rejectConnName%>.errorMessage = e.getMessage();
+					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>; 
 					<%=rejectConnName%>.line = row_<%=cid %>;
 <%
 						} //if rejectConnName is not empty
