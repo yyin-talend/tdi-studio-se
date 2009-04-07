@@ -518,8 +518,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
             createOptions(left, font);
             restoreWidgetValuesForPOJO();
-        }
-        if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
+        } else if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
             contextButton = new Button(left, SWT.CHECK | SWT.LEFT);
             contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
             contextButton.setSelection(true);
