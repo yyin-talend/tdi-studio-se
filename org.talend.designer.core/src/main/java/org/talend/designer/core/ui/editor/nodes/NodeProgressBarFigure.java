@@ -14,9 +14,11 @@ package org.talend.designer.core.ui.editor.nodes;
 
 import java.util.List;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Image;
@@ -74,10 +76,15 @@ public class NodeProgressBarFigure extends Figure {
         baseFigure.setPreferredSize(90, 16);
 
         Figure progressBarFigure = new Figure();
+        progressBarFigure.setBorder(new LineBorder(ColorConstants.black, 1));
         progressBarFigure.setLayoutManager(new ToolbarLayout(true));
-        progressBarFigure.setVisible(true);
         progressBarFigure.setSize(60, 10);
         progressBarFigure.setPreferredSize(60, 10);
+        if (extent != 0) {
+            progressBarFigure.setVisible(true);
+        } else {
+            progressBarFigure.setVisible(false);
+        }
 
         SimpleHtmlFigure dataFigure = new SimpleHtmlFigure();
         dataFigure.setVisible(true);
