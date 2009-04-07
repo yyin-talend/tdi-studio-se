@@ -23,6 +23,7 @@ import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -42,13 +43,15 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
+        ProjectManager instance = ProjectManager.getInstance();
         boolean canWork = false;
         List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
         for (RepositoryNode node : nodes) {
             if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS) {
-                if (node.getObject() != null) {
+                if (node.getObject() != null && instance.isInCurrentMainProject(node)) {
                     canWork = true;
                     break;
+
                 }
 
             }
