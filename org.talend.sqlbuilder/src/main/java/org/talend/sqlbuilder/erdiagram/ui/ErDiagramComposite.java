@@ -15,6 +15,8 @@ package org.talend.sqlbuilder.erdiagram.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.CheckBox;
@@ -259,11 +261,26 @@ public class ErDiagramComposite extends SashForm {
                                     if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
                                         columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                     } else {
-                                        columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
-                                                getCurrentDbType())
-                                                + "." //$NON-NLS-1$
-                                                + TalendTextUtils.addQuotesWithSpaceField(column.getElementName(),
-                                                        getCurrentDbType()));
+                                        // added by hyWang
+                                        String leftQuote = TalendTextUtils.getQuoteByDBType(getCurrentDbType(), true);
+                                        String rightQuote = TalendTextUtils.getQuoteByDBType(getCurrentDbType(), false);
+                                        String columnContent = column.getElementName();
+                                        Pattern pattern = Pattern.compile("\\w+"); //$NON-NLS-N$
+                                        Matcher matcher = pattern.matcher(columnContent);
+
+                                        if (!matcher.matches()) {
+                                            columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
+                                                    getCurrentDbType())
+                                                    + "." //$NON-NLS-1$
+                                                    + TalendTextUtils.addQuotesWithSpaceField(leftQuote + column.getElementName()
+                                                            + rightQuote, getCurrentDbType()));
+                                        } else {
+                                            columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
+                                                    getCurrentDbType())
+                                                    + "." //$NON-NLS-1$
+                                                    + TalendTextUtils.addQuotesWithSpaceField(column.getElementName(),
+                                                            getCurrentDbType()));
+                                        }
                                     }
                                 }
                                 for (Relation rel : (List<Relation>) column.getOutputs()) {

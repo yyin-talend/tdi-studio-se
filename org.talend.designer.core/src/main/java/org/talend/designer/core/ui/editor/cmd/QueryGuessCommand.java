@@ -34,7 +34,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.utils.SQLFormatUtil;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -192,7 +191,8 @@ public class QueryGuessCommand extends Command {
                 this.propName = param.getName();
                 String sql = null;
                 try {
-                    sql = new SQLFormatUtil().formatSQL(newQuery);
+                    // sql = new SQLFormatUtil().formatSQL(newQuery);
+                    sql = fomatQuery(newQuery);
                     node.setPropertyValue(param.getName(), sql);
                 } catch (Exception e) {
                     ExceptionHandler.process(e, Priority.WARN);
@@ -252,5 +252,25 @@ public class QueryGuessCommand extends Command {
         this.realTableId = realTableId;
         this.realTableName = realTableName;
         realDBType = type;
+    }
+
+    /*
+     * 
+     * hyWang Method formatQuery
+     */
+    private String fomatQuery(String query) {
+        StringBuffer buffer = new StringBuffer();
+        String[] s = query.split(","); //$NON-NLS-N$
+        buffer.append(s[0]);
+        for (int i = 1; i < s.length - 1; i++) {
+            s[i] = s[i].trim();
+            buffer.append("," + "\n" + "\t" + "\t" + s[i]);//$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$
+        }
+        String[] last = s[s.length - 1].split("FROM"); //$NON-NLS-N$
+        String lastPartA = last[0].trim() + "\n"; //$NON-NLS-N$
+        String lastPartB = "FROM" + "\t" + last[1].trim(); //$NON-NLS-N$
+        s[s.length - 1] = lastPartA + lastPartB;
+        buffer.append("," + "\n" + "\t" + "\t" + s[s.length - 1]); //$NON-NLS-N$  //$NON-NLS-N$  //$NON-NLS-N$ //$NON-NLS-N$
+        return buffer.toString();
     }
 }

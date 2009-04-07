@@ -18,6 +18,8 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -33,6 +35,8 @@ import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -68,6 +72,10 @@ public final class EMFRepositoryNodeManager {
     private DatabaseMetaData dbMetaData;
 
     private SQLBuilderRepositoryNodeManager rnmanager = new SQLBuilderRepositoryNodeManager();
+
+    private String leftDbQuote;
+
+    private String rightDbQuote;
 
     /**
      * qzhang EMFRepositoryNodeManager constructor comment.
@@ -265,7 +273,7 @@ public final class EMFRepositoryNodeManager {
         String string = queryStrings.get(0).toLowerCase().replaceAll("\n", " "); //$NON-NLS-1$ //$NON-NLS-2$
         string = string.replaceAll("\t", " "); //$NON-NLS-1$ //$NON-NLS-2$
         string = string.replaceAll("\r", " "); //$NON-NLS-1$ //$NON-NLS-2$
-        string = string.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        //        string = string.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
         string = string.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
         if (!string.startsWith("select ")) { //$NON-NLS-1$
             if (isPrompt) {
@@ -308,6 +316,14 @@ public final class EMFRepositoryNodeManager {
 
     @SuppressWarnings("unchecked")
     public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
+        // inital the quote depence on the dbtype
+        IRepositoryObject rObject = currRoot.getObject();
+        DatabaseConnectionItem item = (DatabaseConnectionItem) rObject.getProperty().getItem();
+        DatabaseConnection dbConnection = (DatabaseConnection) item.getConnection();
+        String dbType = dbConnection.getDatabaseType();
+        leftDbQuote = TalendTextUtils.getQuoteByDBType(dbType, true);
+        rightDbQuote = TalendTextUtils.getQuoteByDBType(dbType, false);
+
         sql = initSqlStatement(sql);
         if (sql == null || "".equals(sql) || !sql.startsWith("select ")) { //$NON-NLS-1$ //$NON-NLS-2$
             return Collections.EMPTY_LIST;
@@ -316,7 +332,6 @@ public final class EMFRepositoryNodeManager {
         List<String> columnsNames = new ArrayList<String>();
 
         String[] cols = parseSqlToNameList(sql, tableNames, columnsNames);
-
         List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
         for (RepositoryNode tableNode : currRoot.getChildren()) {
             for (int i = 0; i < tableNames.size(); i++) {
@@ -355,10 +370,14 @@ public final class EMFRepositoryNodeManager {
                         }
                         if (collabel != null) {
                             for (String string : columnsNames) {
-                                if (string.equals(collabel.toLowerCase())) {
+                                if ((string.replaceAll(leftDbQuote, "").replaceAll(rightDbQuote, "")).equals(collabel
+                                        .toLowerCase())) {
                                     nodes.add(colNode);
                                 }
-                                if (string.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) { //$NON-NLS-1$
+
+                                // need get dbtype quotes,if the dbtype is Access,need to delete both left bracket and
+                                // right bracket
+                                if ((string.replaceAll(leftDbQuote, "").replaceAll(rightDbQuote, "")).equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) { //$NON-NLS-1$  //$NON-NLS-N$ //$NON-NLS-N$
                                     if (!nodes.contains(colNode)) {
                                         nodes.add(colNode);
                                     }
@@ -448,14 +467,15 @@ public final class EMFRepositoryNodeManager {
             for (String string : columns) {
                 int dotIndex = string.indexOf("."); //$NON-NLS-1$
                 if (dotIndex != -1) {
-                    tableNames.add(string.substring(0, dotIndex).trim());
+                    tableNames.add(string.substring(0, dotIndex).trim().replaceAll(leftDbQuote, "").replaceAll(rightDbQuote, "")); //$NON-NLS-N$  //$NON-NLS-N$
                 }
                 columnsNames.add(string.trim());
             }
             for (String string : tables) {
                 String tableName = string;
                 if (string.contains(".")) { //$NON-NLS-1$
-                    tableName = string.substring(string.indexOf(".") + 1); //$NON-NLS-1$
+                    tableName = string
+                            .substring(string.indexOf(".") + 1).replaceAll(leftDbQuote, "").replaceAll(rightDbQuote, ""); //$NON-NLS-1$
                 }
                 if (!tableNames.contains(tableName.trim())) {
                     tableNames.add(tableName);
@@ -523,7 +543,8 @@ public final class EMFRepositoryNodeManager {
     private void fixedNamesContainAlias(List<String> tableNames, String prefix) throws Exception {
         for (int i = 0; i < tableNames.size(); i++) {
             String name = tableNames.get(i);
-            String[] aliasNames = name.split(" "); //$NON-NLS-1$
+
+            String[] aliasNames = regExMatch(name);
             List<String> tableContainAlias = new ArrayList<String>();
             String aliasName = ""; //$NON-NLS-1$
             String realName = ""; //$NON-NLS-1$
@@ -534,7 +555,7 @@ public final class EMFRepositoryNodeManager {
                 }
             }
 
-            if (tableContainAlias.size() == 3) {
+            if (tableContainAlias.size() == 3) { // such as "column as Alias"
                 realName = tableContainAlias.get(0);
                 aliasName = tableContainAlias.get(2);
                 if (!tableNames.contains(aliasName)) {
@@ -543,7 +564,7 @@ public final class EMFRepositoryNodeManager {
                     tableNames.set(tableNames.indexOf(aliasName), prefix + realName + "=" + aliasName); //$NON-NLS-1$
                 }
                 tableNames.set(i, realName);
-            } else if (tableContainAlias.size() == 2) {
+            } else if (tableContainAlias.size() == 2) { // such as "column Alias"
                 realName = tableContainAlias.get(0);
                 aliasName = tableContainAlias.get(1);
                 if (!tableNames.contains(aliasName)) {
@@ -580,4 +601,39 @@ public final class EMFRepositoryNodeManager {
         this.isPrompt = isPrompt;
     }
 
+    // method regExMatch added by hyWang
+    private String[] regExMatch(String input) {
+        // try to split the column by a regEx
+        final String regEx = ".+"; //$NON-NLS-N$
+        Pattern p = Pattern.compile(checkRegexp(leftDbQuote + regEx + rightDbQuote));
+        Matcher matcher = p.matcher(input);
+        String tempStr = null;
+        List<String> splits = new ArrayList<String>();
+        if (matcher.find()) {
+            String group = matcher.group();
+            int endIndex = input.indexOf(group) + group.length();
+            splits.add(input.substring(0, endIndex));
+            // PTODO
+            String end = input.substring(endIndex); //
+            end = end.trim();
+            tempStr = end;
+        } else {
+            tempStr = input;
+        }
+        String[] split = tempStr.split(" "); //$NON-NLS-1$
+        for (String s : split) {
+            if (!"".equals(s)) { //$NON-NLS-1$
+                splits.add(s);
+            }
+        }
+        return splits.toArray(new String[0]);
+    }
+
+    private String checkRegexp(String regexp) {
+        regexp = regexp.replace("[", "\\[");
+        regexp = regexp.replace("]", "\\]");
+        regexp = regexp.replace("(", "\\(");
+        regexp = regexp.replace(")", "\\)");
+        return regexp;
+    }
 }
