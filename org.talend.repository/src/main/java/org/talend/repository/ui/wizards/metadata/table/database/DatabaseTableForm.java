@@ -863,12 +863,14 @@ public class DatabaseTableForm extends AbstractForm {
                 String labelName = (schemaContent.get(0))[i - 1];
                 oneColum.setLabel(labelName);
                 oneColum.setOriginalField(labelName);
+                oneColum.setLength(Integer.parseInt(schemaContent.get(2)[i - 1]));
+                oneColum.setPrecision(Integer.parseInt(schemaContent.get(3)[i - 1]));
+                oneColum.setSourceType(schemaContent.get(4)[i - 1]);
                 // get if a column is nullable from the temp file genenrated by
                 // GuessSchemaProcess.java
                 oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
                 String talendType = null;
                 // to see if the language is java or perl
-                // String dbType = schemaContent.get(2)[i - 1].toString();
                 try {
                     if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                         talendType = JavaDataTypeHelper.getTalendTypeOfValue(schemaContent.get(2)[i - 1]);
@@ -876,8 +878,6 @@ public class DatabaseTableForm extends AbstractForm {
                         talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(2)[i - 1]);
                     }
                     oneColum.setTalendType(talendType);
-                    // oneColum.setSourceType(dbType);
-                    // oneColum.setTalendType(JavaTypesManager.STRING.getId());
                     metadataColumnsValid.add((MetadataColumn) oneColum);
                 } catch (Exception e) {
                     /*

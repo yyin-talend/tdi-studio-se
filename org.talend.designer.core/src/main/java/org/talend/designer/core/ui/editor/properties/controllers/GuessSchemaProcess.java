@@ -148,10 +148,18 @@ public class GuessSchemaProcess {
                 + "                            \"ISO-8859-15\")), ';');\r\n" + "                            \r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "csvWriter.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);\r\n" //$NON-NLS-1$
                 + "csvWriter.setTextQualifier('\"');\r\n" + "csvWriter.setForceQualifier(true);\r\n" + "int nbRows = 0;\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + "String[] columnNames = new String[numbOfColumn];\r\n" + "String[] nullables = new String[numbOfColumn];" //$NON-NLS-1$ //$NON-NLS-2$
+                + "String[] columnNames = new String[numbOfColumn];\r\n" + "String[] nullables = new String[numbOfColumn];\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "String[] lengths = new String[numbOfColumn];\r\n" + "String[] precisions = new String[numbOfColumn];\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "String[] dbtypes = new String[numbOfColumn];\r\n" //$NON-NLS-1$
                 + "for(int i = 1;i<=numbOfColumn;i++){\r\n" + "columnNames[i-1] = rsmd.getColumnName(i);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
-                + "nullables[i-1] = rsmd.isNullable(i) == 0? \"false\" : \"true\";" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$
-                + "csvWriter.writeRecord(columnNames);" + "csvWriter.writeRecord(nullables);" + "while (rs.next()) {"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "nullables[i-1] = rsmd.isNullable(i) == 0? \"false\" : \"true\";\r\n" //$NON-NLS-1$
+                + "lengths[i-1] = Integer.toString(rsmd.getScale(i));\r\n" //$NON-NLS-1$
+                + "precisions[i-1] = Integer.toString(rsmd.getPrecision(i));" //$NON-NLS-1$
+                + "dbtypes[i-1] = rsmd.getColumnTypeName(i);\r\n" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+
+                + "csvWriter.writeRecord(columnNames);\r\n" + "csvWriter.writeRecord(nullables);\r\n"
+                + "csvWriter.writeRecord(lengths);\r\n" + "csvWriter.writeRecord(precisions);\r\n"
+                + "csvWriter.writeRecord(dbtypes);\r\n" + "while (rs.next()) {"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         codeMain = "String[] dataOneRow = new String[numbOfColumn];\r\n" + "for (int i = 1; i <= numbOfColumn; i++) {\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "    \r\n" + "    String tempStr = rs.getString(i);\r\n" + "    dataOneRow[i-1] = tempStr;\r\n" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -234,4 +242,22 @@ public class GuessSchemaProcess {
 
         return mockProperty;
     }
+
+    // public static void main(String[] args){
+    // String url="jdbc:mysql://localhost:3306/test?anoDatetimeStringSync=true";
+    // java.sql.Connection conn;
+    // try {
+    // conn = java.sql.DriverManager.getConnection(url,"root","root");
+    // java.sql.Statement stm = conn.createStatement();
+    // java.sql.ResultSet rs = stm.executeQuery(" select * from feature4 ");
+    // java.sql.ResultSetMetaData rsmd = rs.getMetaData();
+    // DatabaseMetaData dbMetaData = null;
+    // dbMetaData = conn.getMetaData();
+    // dbMetaData.getPrimaryKeys(url, url, url);
+    // } catch (SQLException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+    //        
+    // }
 }

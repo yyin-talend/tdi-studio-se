@@ -271,6 +271,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     String labelName = (schemaContent.get(0))[i - 1];
                     oneColum.setLabel(labelName);
                     oneColum.setOriginalDbColumnName(labelName);
+                    oneColum.setLength(Integer.parseInt(schemaContent.get(2)[i - 1]));
+                    oneColum.setPrecision(Integer.parseInt(schemaContent.get(3)[i - 1]));
                     // get if a column is nullable from the temp file genenrated by
                     // GuessSchemaProcess.java
                     oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
@@ -278,9 +280,9 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     // to see if the language is java or perl
                     try {
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                            talendType = JavaDataTypeHelper.getTalendTypeOfValue(schemaContent.get(2)[i - 1]);
+                            talendType = JavaDataTypeHelper.getTalendTypeOfValue(schemaContent.get(5)[i - 1]);
                         } else {
-                            talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(2)[i - 1]);
+                            talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(5)[i - 1]);
                         }
                         oneColum.setTalendType(talendType);
                         // oneColum.setTalendType(JavaTypesManager.STRING.getId());
