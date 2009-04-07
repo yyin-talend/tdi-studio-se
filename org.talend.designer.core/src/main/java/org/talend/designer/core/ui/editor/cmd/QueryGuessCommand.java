@@ -259,18 +259,28 @@ public class QueryGuessCommand extends Command {
      * hyWang Method formatQuery
      */
     private String fomatQuery(String query) {
+        String lastPartA, lastPartB;
         StringBuffer buffer = new StringBuffer();
         String[] s = query.split(","); //$NON-NLS-N$
         buffer.append(s[0]);
-        for (int i = 1; i < s.length - 1; i++) {
-            s[i] = s[i].trim();
-            buffer.append("," + "\n" + "\t" + "\t" + s[i]);//$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$
+        if (s.length > 2) {
+            for (int i = 1; i < s.length - 1; i++) {
+                s[i] = s[i].trim();
+                buffer.append("," + "\n" + "\t" + "\t" + s[i]);//$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$
+            }
+            String[] last = s[s.length - 1].split("FROM"); //$NON-NLS-N$
+            lastPartA = last[0].trim() + "\n"; //$NON-NLS-N$
+            lastPartB = "FROM" + "\t" + last[1].trim(); //$NON-NLS-N$
+            s[s.length - 1] = lastPartA + lastPartB;
+            buffer.append("," + "\n" + "\t" + "\t" + s[s.length - 1]); //$NON-NLS-N$  //$NON-NLS-N$  //$NON-NLS-N$ //$NON-NLS-N$
+        } else {
+            String[] temp = s[0].split("FROM"); //$NON-NLS-N$
+            lastPartA = temp[0] + "\n"; //$NON-NLS-N$
+            lastPartB = "FROM" + "\t" + temp[1]; //$NON-NLS-N$  //$NON-NLS-N$
+            buffer = new StringBuffer();
+            buffer.append(lastPartA);
+            buffer.append(lastPartB);
         }
-        String[] last = s[s.length - 1].split("FROM"); //$NON-NLS-N$
-        String lastPartA = last[0].trim() + "\n"; //$NON-NLS-N$
-        String lastPartB = "FROM" + "\t" + last[1].trim(); //$NON-NLS-N$
-        s[s.length - 1] = lastPartA + lastPartB;
-        buffer.append("," + "\n" + "\t" + "\t" + s[s.length - 1]); //$NON-NLS-N$  //$NON-NLS-N$  //$NON-NLS-N$ //$NON-NLS-N$
         return buffer.toString();
     }
 }
