@@ -182,7 +182,7 @@ if(columnList != null && columnList.size() > 0) {
                 stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");                
             <%
             }
-        } else if(tableAction.equals("CLEAR")) {
+        } else if(tableAction.equals("TRUNCATE")) {
             %>
             java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
@@ -191,6 +191,12 @@ if(columnList != null && columnList.size() > 0) {
             while(rsClearCount_<%=cid%>.next()) {
                 deletedCount_<%=cid%> += rsClearCount_<%=cid%>.getInt(1);
             }
+            <% 
+        } else if (tableAction.equals("CLEAR")){
+            %>
+            java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+            deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+            stmtClear_<%=cid%>.close();
             <%
         }
     }
