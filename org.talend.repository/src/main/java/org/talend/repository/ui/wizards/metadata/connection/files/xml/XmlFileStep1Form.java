@@ -13,11 +13,8 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
@@ -76,8 +73,6 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      * Settings.
      */
     private static final int WIDTH_GRIDDATA_PIXEL = 300;
-
-    private static boolean isUsefulPath = false;
 
     /**
      * Main Fields.
@@ -328,7 +323,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 try {
                     File file = new File(getConnection().getXmlFilePath());
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-                    isUsefulPath = true;
+
                     String str;
                     in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
                             guessedCharset.displayName()));
@@ -353,24 +348,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                         }
                     }
                 } catch (Exception ex) {
-                    isUsefulPath = false;
-                    String fileStr = fileFieldXml.getText();
-                    String msgError = Messages.getString("XmlFileStep1.filepathXml") + " \"" + fileStr.replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                            + "\"\n"; //$NON-NLS-1$
-                    if (ex instanceof FileNotFoundException) {
-                        msgError = msgError + Messages.getString("FileStep1.fileNotFoundException"); //$NON-NLS-1$
-                    } else if (ex instanceof EOFException) {
-                        msgError = msgError + Messages.getString("FileStep1.eofException"); //$NON-NLS-1$
-                    } else if (ex instanceof IOException) {
-                        msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
-                    } else {
-                        msgError = msgError + Messages.getString("FileStep1.noExist"); //$NON-NLS-1$
-                    }
-                    if (!isReadOnly()) {
-                        updateStatus(IStatus.ERROR, msgError);
-                    }
-                    log.error(msgError + " " + ex.getMessage()); //$NON-NLS-1$
-                    // ExceptionHandler.process(ex);
+                    ExceptionHandler.process(ex);
                 } finally {
                     try {
                         if (in != null) {
@@ -380,13 +358,13 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                         ExceptionHandler.process(ex2);
                     }
                 }
-                // getConnection().setEncoding(encoding);
-                //                if (encoding != null && !("").equals(encoding)) { //$NON-NLS-1$
-                // encodingCombo.setText(encoding);
-                // } else {
-                //                    encodingCombo.setText("UTF-8"); //$NON-NLS-1$
-                // }
-                // valid = treePopulator.populateTree(fileFieldXml.getText(), treeNode);
+                getConnection().setEncoding(encoding);
+                if (encoding != null && !("").equals(encoding)) { //$NON-NLS-1$
+                    encodingCombo.setText(encoding);
+                } else {
+                    encodingCombo.setText("UTF-8"); //$NON-NLS-1$
+                }
+                valid = treePopulator.populateTree(fileFieldXml.getText(), treeNode);
                 checkFieldsValue();
             }
         });
@@ -416,10 +394,6 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         }
         if (!valid) {
             updateStatus(IStatus.ERROR, Messages.getString("dataset.error.populateXMLTree")); //$NON-NLS-1$
-            return false;
-        }
-        if (!isUsefulPath) {
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.fileIncomplete")); //$NON-NLS-1$
             return false;
         }
         updateStatus(IStatus.OK, null);

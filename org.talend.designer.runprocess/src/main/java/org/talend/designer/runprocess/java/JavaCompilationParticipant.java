@@ -50,7 +50,9 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jdt.core.compiler.CompilationParticipant#processAnnotations(org.eclipse.jdt.core.compiler.BuildContext[])
+     * @see
+     * org.eclipse.jdt.core.compiler.CompilationParticipant#processAnnotations(org.eclipse.jdt.core.compiler.BuildContext
+     * [])
      */
     @Override
     public void processAnnotations(BuildContext[] files) {
@@ -83,8 +85,13 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             Display.getDefault().asyncExec(new Runnable() {
 
                 public void run() {
-                    Problems.refreshRepositoryView();
-                    Problems.refreshProblemTreeView();
+                    try {
+                        Problems.refreshRepositoryView();
+                        Problems.refreshProblemTreeView();
+                    } catch (Exception e) {
+                        // ignore any exception here, as there is no impact if refresh or not.
+                        // but if don't ignore, exception could be thrown if refresh is done too early.
+                    }
                 }
             });
         }

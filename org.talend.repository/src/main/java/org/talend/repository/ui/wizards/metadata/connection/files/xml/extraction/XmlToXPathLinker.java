@@ -717,7 +717,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                             break;
                         }
 
-                        Node relativeNode = relativeNodeList.get(i);
+                        Node relativeNode = relativeNodeList.get(j);
 
                         if (relativeNode != null) {
                             String absoluteXPathFromNode = nodeRetriever.getAbsoluteXPathFromNode(relativeNode);

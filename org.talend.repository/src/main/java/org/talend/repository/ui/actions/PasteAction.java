@@ -95,6 +95,10 @@ public class PasteAction extends AContextualAction {
             return;
         }
         RepositoryNode target = (RepositoryNode) selection.getFirstElement();
+        if (!(LocalSelectionTransfer.getTransfer().getSelection() instanceof TreeSelection)) {
+            setEnabled(false);
+            return;
+        }
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
         IProxyRepositoryFactory proxyFactory = ProxyRepositoryFactory.getInstance();
         IRepositoryObject object = target.getObject();

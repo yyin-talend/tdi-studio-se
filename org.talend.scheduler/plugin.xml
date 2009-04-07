@@ -14,21 +14,5 @@
    </extension>
    
    
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.talend.rcp.perspective">
-          <view
-                id="org.talend.scheduler.views.Scheduler"
-                relationship="stack"
-                relative="org.talend.designer.codegen.perlmodule.ModulesView"
-                visible="false">
-         </view>
-        
-          <showInPart
-               id="org.talend.scheduler.views.Scheduler">
-         </showInPart>
-      </perspectiveExtension>
-   </extension>
 
 </plugin>

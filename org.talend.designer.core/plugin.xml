@@ -286,28 +286,6 @@
                   
    </extension>
    
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.talend.rcp.perspective">
-          <view
-                id="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart"
-                relationship="stack"
-                relative="org.talend.scheduler.views.Scheduler"
-                visible="false">
-         </view>
-         <view
-					ratio="0.16"
-					relative="org.eclipse.ui.editorss"
-					visible="false"
-					relationship="left"
-					id="org.eclipse.gef.ui.palette_view">
-			</view>
-          <showInPart
-               id="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart">
-         </showInPart>
-      </perspectiveExtension>
-   </extension>
    
    <extension
          point="org.talend.core.repositoryContextualsActions">
