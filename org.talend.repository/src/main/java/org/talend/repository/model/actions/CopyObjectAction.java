@@ -130,6 +130,7 @@ public class CopyObjectAction {
                         ICodeGeneratorService.class);
                 if (codeGenService != null) {
                     codeGenService.createRoutineSynchronizer().renameRoutineClass((RoutineItem) newItem);
+                    codeGenService.createRoutineSynchronizer().syncRoutine((RoutineItem) newItem, true);
                 }
             }
             factory.save(newItem);
