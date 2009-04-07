@@ -307,7 +307,6 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
                 if (!isReadOnly()) {
                     updateStatus(IStatus.ERROR, msgError);
                 }
-                log.error(msgError + " " + e.getMessage()); //$NON-NLS-1$
             } finally {
                 String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileViewerText.getText().replace("\\\\", "\\") + "\"\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 try {
@@ -362,7 +361,6 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);

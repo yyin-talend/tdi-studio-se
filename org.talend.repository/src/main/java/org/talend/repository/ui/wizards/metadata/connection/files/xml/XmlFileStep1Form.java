@@ -13,8 +13,11 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
@@ -317,13 +320,11 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 getConnection().setXmlFilePath(PathUtils.getPortablePath(fileFieldXml.getText()));
-
                 BufferedReader in = null;
 
                 try {
                     File file = new File(getConnection().getXmlFilePath());
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-
                     String str;
                     in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
                             guessedCharset.displayName()));
@@ -348,7 +349,22 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                         }
                     }
                 } catch (Exception ex) {
-                    ExceptionHandler.process(ex);
+                    String fileStr = fileFieldXml.getText();
+                    String msgError = Messages.getString("XmlFileStep1.filepathXml") + " \"" + fileStr.replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                            + "\"\n"; //$NON-NLS-1$
+                    if (ex instanceof FileNotFoundException) {
+                        msgError = msgError + Messages.getString("FileStep1.fileNotFoundException"); //$NON-NLS-1$
+                    } else if (ex instanceof EOFException) {
+                        msgError = msgError + Messages.getString("FileStep1.eofException"); //$NON-NLS-1$
+                    } else if (ex instanceof IOException) {
+                        msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
+                    } else {
+                        msgError = msgError + Messages.getString("FileStep1.noExist"); //$NON-NLS-1$
+                    }
+                    if (!isReadOnly()) {
+                        updateStatus(IStatus.ERROR, msgError);
+                    }
+                    // ExceptionHandler.process(ex);
                 } finally {
                     try {
                         if (in != null) {
@@ -393,7 +409,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             return false;
         }
         if (!valid) {
-            updateStatus(IStatus.ERROR, Messages.getString("dataset.error.populateXMLTree")); //$NON-NLS-1$
+            updateStatus(IStatus.ERROR,
+                    "\"" + fileFieldXml.getText() + "\" " + Messages.getString("FileStep1.fileNotFoundException")); //$NON-NLS-1$
             return false;
         }
         updateStatus(IStatus.OK, null);

@@ -554,7 +554,6 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 }
                 filePositionalViewer.setText("\n" + msgError); //$NON-NLS-1$
                 updateStatus(IStatus.ERROR, msgError);
-                log.error(msgError + " " + e.getMessage()); //$NON-NLS-1$
             } finally {
                 String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileStr.replace("\\\\", "\\") + "\"\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 try {
