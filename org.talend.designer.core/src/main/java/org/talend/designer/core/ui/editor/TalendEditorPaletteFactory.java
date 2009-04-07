@@ -133,7 +133,7 @@ public final class TalendEditorPaletteFactory {
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
                     componentsDrawer = createComponentDrawer(ht, family);
-                    componentsDrawer.setOriginakName(oraFam);
+                    componentsDrawer.setOriginalName(oraFam);
                 }
 
             }
@@ -328,7 +328,7 @@ public final class TalendEditorPaletteFactory {
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
                     componentsDrawer = createComponentDrawer(ht, family);
-                    componentsDrawer.setOriginakName(oraFam);
+                    componentsDrawer.setOriginalName(oraFam);
                 }
             }
         }
