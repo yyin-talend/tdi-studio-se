@@ -37,24 +37,26 @@
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
       <DEFAULT/> 
     </PARAMETER>
-
-    <PARAMETER
-      NAME="SIMPLE_MODE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="2"
-    >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
+    
+	<PARAMETER
+	  NAME="MODE"
+	  FIELD="CLOSED_LIST"
+	  REQUIRED="false"
+	  NUM_ROW="2">
+	  <ITEMS DEFAULT="SIMPLE_MODE">
+		<ITEM NAME="SIMPLE_MODE" VALUE="SIMPLE_MODE" />
+		<ITEM NAME="ADVANCED_MODE" VALUE="ADVANCED_MODE" />
+	  </ITEMS>
+	</PARAMETER>
     
 	<PARAMETER
       NAME="SUPPORT_REGEX"
       FIELD="CHECK"
       REQUIRED="true"
       NUM_ROW="3"
-      NOT_SHOW_IF="(SIMPLE_MODE=='false')"
+      SHOW="false"
     >
-      <DEFAULT>true</DEFAULT>
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -63,7 +65,7 @@
       REQUIRED="false"
       NUM_ROW="4"
       NB_LINES="8"
-      NOT_SHOW_IF="(SIMPLE_MODE=='false')"
+      SHOW_IF="(MODE=='SIMPLE_MODE')"
     >
       <ITEMS>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
@@ -74,25 +76,14 @@
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>
-   </PARAMETERS>
-   
-   <ADVANCED_PARAMETERS>
-   	    <PARAMETER
-      NAME="ADVANCED_MODE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="5"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
+    
     <PARAMETER
       NAME="ADVANCED_SUBST"
       FIELD="TABLE"
       REQUIRED="false"
       NUM_ROW="6"
       NB_LINES="8"
-      NOT_SHOW_IF="(ADVANCED_MODE=='false')"
+      SHOW_IF="(MODE=='ADVANCED_MODE')"
     >
       <ITEMS>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
@@ -101,6 +92,30 @@
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="ADVANCED_MODE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="100"
+      SHOW="false"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SIMPLE_MODE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="100"
+      SHOW="false"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	    
     
    </ADVANCED_PARAMETERS>
 

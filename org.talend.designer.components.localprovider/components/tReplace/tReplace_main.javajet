@@ -171,13 +171,13 @@ List<? extends IConnection> outgoingConns = node.getOutgoingConnections();
 
 
 if(incomingConnName != null && columnList != null && columnList.size() > 0) {
-    String advancedMode = ElementParameterParser.getValue( node, "__ADVANCED_MODE__" );
-    String simpleMode = ElementParameterParser.getValue( node, "__SIMPLE_MODE__" );
-    
+    //String advancedMode = ElementParameterParser.getValue( node, "__ADVANCED_MODE__" );
+    //String simpleMode = ElementParameterParser.getValue( node, "__SIMPLE_MODE__" );
+    String mode = ElementParameterParser.getValue( node, "__MODE__" );
     List<Map<String, String>> patterns = null;
           
     //simple mode Replacement    
-    if(simpleMode.equals("true")) {
+    if(mode.equals("SIMPLE_MODE")) {
         List<Map<String, String>> substitutions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__SUBSTITUTIONS__");
         if(substitutions != null && substitutions.size() > 0) {
             for(Map<String,String> substitution : substitutions) {
@@ -212,7 +212,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     
     
     //advanced mode Replacement
-    if(advancedMode.equals("true")) {
+    if(mode.equals("ADVANCED_MODE")) {
         patterns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADVANCED_SUBST__");
         if(patterns != null && patterns.size() > 0) {
             for(Map<String,String> pattern:patterns){

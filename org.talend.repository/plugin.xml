@@ -928,6 +928,13 @@
                id="org.talend.repository.model.migration.renameMultiSchemaToMSMigrationTask"
                name="Rename the XMLMultiSchema to MSXML">
          </projecttask>
+         <projecttask
+               class="org.talend.repository.model.migration.MigrationTaskForIssue6577"
+               description="Move advancedMode to basic setting, forbid regex in simpleMode"
+               id="org.talend.repository.model.migration.MigrationTaskForIssue6577"
+               name="Move advancedMode to basic setting, forbid regex in simpleMode">
+         </projecttask>
+         
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
