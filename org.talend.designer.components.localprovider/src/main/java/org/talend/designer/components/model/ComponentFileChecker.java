@@ -50,18 +50,26 @@ public class ComponentFileChecker {
         XsdValidationCacheManager xsdValidationCacheManager = XsdValidationCacheManager.getInstance();
 
         long currentCRC = 0;
+        FileInputStream fis = null;
         try {
-            currentCRC = IOUtils.computeCRC(new FileInputStream(xmlMainFile));
+            fis = new FileInputStream(xmlMainFile);
+            currentCRC = IOUtils.computeCRC(fis);
+            if (xsdValidationCacheManager.needCheck(xmlMainFile, currentCRC)) {
+                checkXSD(xmlMainFile);
+                xsdValidationCacheManager.setChecked(xmlMainFile, currentCRC);
+            }
         } catch (FileNotFoundException e) {
-            // ignore here, only print
-            // e.printStackTrace();
             ExceptionHandler.process(e);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    // 
+                }
+            }
         }
 
-        if (xsdValidationCacheManager.needCheck(xmlMainFile, currentCRC)) {
-            checkXSD(xmlMainFile);
-            xsdValidationCacheManager.setChecked(xmlMainFile, currentCRC);
-        }
     }
 
     private static void checkXSD(File file) throws MalformedMainXMLComponentFileException {

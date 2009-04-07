@@ -12,8 +12,18 @@
 // ============================================================================
 package org.talend.designer.components;
 
+import java.io.File;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.talend.commons.exception.BusinessException;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.designer.components.model.ComponentFileChecker;
 import org.talend.designer.components.ui.ComponenttRunJobPreferencePage;
 
 /**
@@ -30,8 +40,8 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
      * @see org.talend.designer.components.IComponentsLocalProviderService#isAvoidToShowJobAfterDoubleClick()
      */
     public boolean isAvoidToShowJobAfterDoubleClick() {
-        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore().getBoolean(
-                ComponenttRunJobPreferencePage.IS_AVOID);
+        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore()
+                .getBoolean(ComponenttRunJobPreferencePage.IS_AVOID);
     }
 
     /*
@@ -52,4 +62,30 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
         return ComponentsLocalProviderPlugin.getDefault();
     }
 
+    public boolean validateComponent(String componentFolder, ECodeLanguage language) {
+        if (componentFolder != null && language != null) {
+            File folder = new File(componentFolder);
+            if (folder.exists() && folder.isDirectory()) {
+                try {
+                    ComponentFileChecker.checkComponentFolder(folder, language.getName().toLowerCase());
+                    return true; // It's ok
+                } catch (BusinessException e) {
+                    final BusinessException tempE = e;
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        public void run() {
+                            Status status = new Status(IStatus.ERROR, ComponentsLocalProviderPlugin.PLUGIN_ID, 1, tempE
+                                    .getMessage(), tempE.getCause());
+                            ErrorDialog dlg = new ErrorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                                    "Talend Exchange Error", "Component load error", status, IStatus.ERROR);
+                            dlg.open();
+                        }
+
+                    });
+
+                }
+            }
+        }
+        return false;
+    }
 }
