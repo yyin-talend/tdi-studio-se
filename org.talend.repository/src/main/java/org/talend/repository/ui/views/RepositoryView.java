@@ -515,7 +515,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
         for (ITreeContextualAction action : contextualsActions) {
             action.init(getViewer(), sel);
-            if (action.isVisible()) {
+            if (action.isVisible() && action.isEnabled()) {
                 manager.add(action);
             }
         }

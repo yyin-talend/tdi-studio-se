@@ -46,10 +46,11 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
         List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
         for (RepositoryNode node : nodes) {
             if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS) {
-                // if(node.getObject()!=null){
-                // if(){}
-                // canWork = true;}
-                break;
+                if (node.getObject() != null) {
+                    canWork = true;
+                    break;
+                }
+
             }
         }
         setEnabled(canWork);
