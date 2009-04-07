@@ -687,6 +687,13 @@ skeleton="../templates/db_output_bulk.skeleton"
         	    commitCounter_<%=cid%>++;
         
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>){
+
+					<%if("INSERT".equals(dataAction)){
+					%>
+					pstmt_<%=cid %>.executeBatch();
+       				pstmt_<%=cid %>.clearBatch();
+					<%
+					}%>
                 
                 	conn_<%=cid%>.commit();
                 	
