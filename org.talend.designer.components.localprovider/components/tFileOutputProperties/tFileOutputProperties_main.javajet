@@ -1,48 +1,30 @@
 <%@ jet 
 	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.IConnectionCategory
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType
-		java.util.List
-    	java.util.Map
+        java.util.List
+        
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();	
-List<IMetadataTable> metadatas = node.getMetadataList();
+String cid = node.getUniqueName();
+
+String inConnName = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
-%>
-String key_<%=cid%> = "";
-<%
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-	IMetadataTable metadata = metadatas.get(0);
-	if (metadata!=null) {
-		for(IConnection conn : inConns){
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-				List<IMetadataColumn> columns = metadata.getListColumns();
-				for (int i = 0; i < columns.size(); i++) {
-					IMetadataColumn column = columns.get(i);
-					if(column.getLabel().equals("key")){
-%>
-						key_<%=cid%> = <%=conn.getName()%>.<%=column.getLabel()%>;
-<%					
-					}else{
-					
-%>
-						properties_<%=cid%>.setProperty(key_<%=cid%>,<%=conn.getName()%>.<%=column.getLabel()%>);
-<%					
-					}
-				}
-			}
-		}
+for(IConnection conn : inConns){
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+		inConnName = conn.getName();
 	}
 }
-%>				
+if(inConnName == null){
+	return ""; //return immediately, generate nothing
+}
+
+%>
+properties_<%=cid%>.setProperty(<%=inConnName %>.key, <%=inConnName %>.value);
