@@ -243,21 +243,4 @@ public class GuessSchemaProcess {
         return mockProperty;
     }
 
-    // public static void main(String[] args){
-    // String url="jdbc:mysql://localhost:3306/test?anoDatetimeStringSync=true";
-    // java.sql.Connection conn;
-    // try {
-    // conn = java.sql.DriverManager.getConnection(url,"root","root");
-    // java.sql.Statement stm = conn.createStatement();
-    // java.sql.ResultSet rs = stm.executeQuery(" select * from feature4 ");
-    // java.sql.ResultSetMetaData rsmd = rs.getMetaData();
-    // DatabaseMetaData dbMetaData = null;
-    // dbMetaData = conn.getMetaData();
-    // dbMetaData.getPrimaryKeys(url, url, url);
-    // } catch (SQLException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    //        
-    // }
 }
