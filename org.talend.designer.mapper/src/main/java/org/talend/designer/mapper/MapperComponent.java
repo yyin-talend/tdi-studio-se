@@ -456,6 +456,15 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                     }
                 }
             }
+            if (table.getGlobalMapKeysValues() != null) {
+                for (ExternalMapperTableEntry entry : table.getGlobalMapKeysValues()) {
+                    String expression = replaceLocation(oldLocation, newLocation, entry.getExpression(), dataMapExpressionParser,
+                            tableRenamed);
+                    if (expression != null) {
+                        entry.setExpression(expression);
+                    }
+                }
+            }
         } // for (ExternalMapperTable table : tables) {
     }
 

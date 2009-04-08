@@ -91,7 +91,7 @@ public class StatusBar extends Composite {
         Image image = null;
         String content = "";
         if (status != STATUS.EMPTY) {
-            if (status != STATUS.INFO) {
+//            if (status != STATUS.INFO) {
                 content = " : " + text;
                 IImage iimage = status.getImage();
                 if (iimage == null) {
@@ -100,9 +100,9 @@ public class StatusBar extends Composite {
                     image = org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                             .getImageDesc(iimage));
                 }
-            } else {
-                content = text;
-            }
+//            } else {
+//                content = text;
+//            }
         }
         statusBarLabel.setText(content);
         statusBarImage.setImage(image);

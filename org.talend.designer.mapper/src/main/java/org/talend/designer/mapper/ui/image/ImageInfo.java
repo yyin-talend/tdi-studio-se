@@ -33,6 +33,7 @@ public enum ImageInfo {
     ARROW_RIGHT("/icons/arrow_right.png"), //$NON-NLS-1$
     ARROW_RIGHT_EDIT("/icons/arrow_right_edit.png"), //$NON-NLS-1$
     REFRESH("/icons/arrow_refresh.png"), //$NON-NLS-1$
+    REFRESH_CACHE("/icons/arrow_refresh_cache.png"), //$NON-NLS-1$
     FIRST_MATCH("/icons/first_match.png"), //$NON-NLS-1$
     UNIQUE_MATCH("/icons/last_match.png"), //$NON-NLS-1$
     LAST_MATCH("/icons/last_match.png"), //$NON-NLS-1$

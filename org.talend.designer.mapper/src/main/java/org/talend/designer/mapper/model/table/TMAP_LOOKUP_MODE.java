@@ -34,7 +34,7 @@ public enum TMAP_LOOKUP_MODE implements IUILookupMode {
            "TMAP_LOOKUP_MODE.RELOAD.tooltip", ImageInfo.REFRESH), //$NON-NLS-1$
            
     CACHE_OR_RELOAD(LOOKUP_MODE.CACHE_OR_RELOAD, "TMAP_LOOKUP_MODE.CACHE_OR_RELOAD.label",//$NON-NLS-1$
-                    "TMAP_LOOKUP_MODE.CACHE_OR_RELOAD.tooltip", ImageInfo.REFRESH), //$NON-NLS-1$
+                    "TMAP_LOOKUP_MODE.CACHE_OR_RELOAD.tooltip", ImageInfo.REFRESH_CACHE), //$NON-NLS-1$
     ;
 
     private String label;

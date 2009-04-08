@@ -572,7 +572,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 menuItem.setImage(ImageProviderMapper.getImage(imageInfo));
             } else {
                 Image image = ImageProviderMapper.getImage(imageInfo);
-                Image modifiedImage = ImageUtils.changeAlpha(image, 30);
+                Image modifiedImage = ImageUtils.changeAlpha(image, 100);
                 menuItem.setImage(modifiedImage);
             }
         } else {
@@ -834,7 +834,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 activatePersistentCheck.setSelection(false);
                 getInputTable().setPersistent(false);
                 String explanation = Messages.getString(
-                        "InputDataMapTableView.buttonTooltip.activatePersistentCheck.disabled", dropDownLookupModeItem.getText()); //$NON-NLS-1$
+                        "InputDataMapTableView.buttonTooltip.activatePersistentCheck.disabled", lookupMode.getLabel()); //$NON-NLS-1$
                 activatePersistentCheck.setToolTipText(baseMessage + explanation); //$NON-NLS-1$
                 break;
             default:
