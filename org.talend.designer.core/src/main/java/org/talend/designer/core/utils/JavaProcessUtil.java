@@ -77,7 +77,11 @@ public class JavaProcessUtil {
                                 }
                                 IContextParameter param = selectedContext.getContextParameter(var);
                                 if (param != null) {
-                                    neededLibraries.add(param.getValue());
+                                    // add only the file name without path
+                                    String paramvalue = param.getValue();
+                                    int a = paramvalue.lastIndexOf("\\");
+                                    String filename = paramvalue.substring(a + 1, paramvalue.length());
+                                    neededLibraries.add(filename);
                                 }
                             }
                         } else {

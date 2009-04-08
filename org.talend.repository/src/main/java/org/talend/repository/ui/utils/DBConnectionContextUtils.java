@@ -236,7 +236,12 @@ public final class DBConnectionContextUtils {
         dataStringConn.getString(dbTypeIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(),
                 datasource, dbRootPath, additionParam);
 
-        String urlConnection = dataStringConn.getUrlConnectionStr();
+        String urlConnection;
+        if (dbConn.getDatabaseType().equals(DataStringConnection.GENERAL_JDBC)) {
+            urlConnection = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getURL());
+        } else {
+            urlConnection = dataStringConn.getUrlConnectionStr();
+        }
 
         if (dbConn.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
             schemaOracle = schemaOracle.toUpperCase();
@@ -321,6 +326,9 @@ public final class DBConnectionContextUtils {
         String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
+        String url = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getURL());
+        String className = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverClass());
+        String jarPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverJarPath());
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
@@ -347,13 +355,12 @@ public final class DBConnectionContextUtils {
         cloneConn.setServerName(server);
         cloneConn.setSID(sidOrDatabase);
         cloneConn.setUsername(username);
+        cloneConn.setDriverJarPath(jarPath);
 
         cloneConn.setComment(dbConn.getComment());
         cloneConn.setDatabaseType(dbConn.getDatabaseType());
         cloneConn.setDbmsId(dbConn.getDbmsId());
         cloneConn.setDivergency(dbConn.isDivergency());
-        cloneConn.setDriverClass(dbConn.getDriverClass());
-        cloneConn.setDriverJarPath(dbConn.getDriverJarPath());
         cloneConn.setDbVersionString(dbConn.getDbVersionString());
         cloneConn.setId(dbConn.getId());
         cloneConn.setLabel(dbConn.getLabel());
@@ -366,6 +373,7 @@ public final class DBConnectionContextUtils {
         cloneConn.setSystemSQL(dbConn.isSystemSQL());
         cloneConn.setVersion(dbConn.getVersion());
         cloneConn.setReadOnly(dbConn.isReadOnly());
+        cloneConn.setDriverClass(className);
 
         // cloneConn.setProperties(dbConn.getProperties());
         // cloneConn.setCdcConns(dbConn.getCdcConns());
@@ -388,7 +396,7 @@ public final class DBConnectionContextUtils {
                 dbRootPath, additionParam);
         if (dbConn.getURL() != null && !dbConn.getURL().equals("")) { //$NON-NLS-1$
             // for general db, url is given directly.
-            cloneConn.setURL(dbConn.getURL());
+            cloneConn.setURL(url);
         } else {
             cloneConn.setURL(dataStringConn.getUrlConnectionStr());
         }

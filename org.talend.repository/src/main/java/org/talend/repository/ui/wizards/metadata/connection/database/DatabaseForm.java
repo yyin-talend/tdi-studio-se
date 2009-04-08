@@ -53,8 +53,10 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.EDatabaseDriver4Version;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.utils.ManagerConnection;
@@ -582,11 +584,17 @@ public class DatabaseForm extends AbstractForm {
         ManagerConnection managerConnection = new ManagerConnection();
 
         if (isContextMode()) { // context mode
-
             String urlStr = DBConnectionContextUtils.setManagerConnectionValues(managerConnection, connectionItem, dbTypeCombo
                     .getItem(dbTypeCombo.getSelectionIndex()), dbTypeCombo.getSelectionIndex());
             if (urlStr == null) {
-                urlStr = getStringConnection();
+                if (dbTypeCombo.getText().equals(DataStringConnection.GENERAL_JDBC)) {
+                    DatabaseConnection dbConn = (DatabaseConnection) connectionItem.getConnection();
+
+                    ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn);
+                    urlStr = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getURL());
+                } else {
+                    urlStr = getStringConnection();
+                }
             }
             urlConnectionStringText.setText(urlStr);
         } else {
