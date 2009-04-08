@@ -22,8 +22,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
- * "tFileInputXMLMultiSchema", "tFileInputMSXML" "tFileOutputXMLMultiSchema", "tFileOutputMSXML" DOC wliu class global
- * comment. Detailled comment <br/> Rename tFileInputXMLMultiSchema to tFileInputMSXML Rename<br/>
+ * DOC wliu class global comment. Detailled comment <br/> Rename tFileInputXMLMultiSchema to tFileInputMSXML Rename<br/>
  * tFileOutputXMLMultiSchema to tFileOutputMSXML <br/> $Id: talend.epf 1 2009-02-31 17:06:40Z wliu $
  * 
  */
