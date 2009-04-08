@@ -929,12 +929,6 @@
                id="org.talend.repository.model.migration.renameMultiSchemaToMSMigrationTask"
                name="Rename the XMLMultiSchema to MSXML">
          </projecttask>
-         <projecttask
-               beforeLogon="false"
-               class="org.talend.repository.model.migration.UpgradeEscapeEnclosurePropertyMigration"
-               id="org.talend.repository.model.migration.upgradeEscapeAndEnclosurePropertyValuesMigration"
-               name="change the values of the properties escape and enclosure">
-         </projecttask>
          
    </extension>
    <extension
