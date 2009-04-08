@@ -127,16 +127,21 @@ my @arguments = (
 
 <%
 }
-
+%>
+use Convert::BaseN;
+my $base_<%=cid%> = 16;
+my $cb_<%=cid%> = Convert::BaseN->new(base => $base_<%=cid%>);
+push @arguments, '--context_param_encoding='.$base_<%=cid%>;
+<%
 if (transmitWholeContext) {
 %>
 foreach my $context_key (keys %_context) {
     push(
         @arguments,
         sprintf(
-            '--context_param %s="%s"',
+            '--context_param %s=%s',
             $context_key,
-            $_context{$context_key}
+            $cb_<%=cid%>->encode($_context{$context_key})
         )
     );
 }
@@ -149,7 +154,7 @@ for (int i=0; i<contextParams.size(); i++) {
     String name = contextParam.get("PARAM_NAME_COLUMN");
     String value = contextParam.get("PARAM_VALUE_COLUMN");
 %>
-push @arguments, '--context_param <%=name%>="'.<%=value%>.'"';
+push @arguments, '--context_param <%=name%>='.$cb_<%=cid%>->encode(<%=value%>);
 <%
 }
 %>

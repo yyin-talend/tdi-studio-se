@@ -102,6 +102,7 @@ GetOptions(
         'father_pid=s',
         'root_pid=s',
         'context_param=s%',
+        'context_param_encoding=s',
     )
 );
 
@@ -157,8 +158,16 @@ if (defined $opt{context}) {
 }
 
 if (defined $opt{context_param}) {
+    my $cb = undef;
+
+    if (defined $opt{context_param_encoding}) {
+        use Convert::BaseN;
+        $cb = Convert::BaseN->new(base => $opt{context_param_encoding});
+    }
+
     foreach my $key (keys %{ $opt{context_param} }) {
-        $_context{$key} = $opt{context_param}{$key};
+        my $raw_value = $opt{context_param}{$key};
+        $_context{$key} = defined $cb ? $cb->decode($raw_value) : $raw_value;
     }
 }
 
