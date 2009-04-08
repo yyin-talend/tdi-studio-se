@@ -271,8 +271,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     String labelName = (schemaContent.get(0))[i - 1];
                     oneColum.setLabel(labelName);
                     oneColum.setOriginalDbColumnName(labelName);
-                    oneColum.setLength(Integer.parseInt(schemaContent.get(2)[i - 1]));
-                    oneColum.setPrecision(Integer.parseInt(schemaContent.get(3)[i - 1]));
+                    oneColum.setPrecision(Integer.parseInt(schemaContent.get(2)[i - 1]));
+                    oneColum.setLength(Integer.parseInt(schemaContent.get(3)[i - 1]));
                     // get if a column is nullable from the temp file genenrated by
                     // GuessSchemaProcess.java
                     oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);

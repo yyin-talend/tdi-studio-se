@@ -59,9 +59,9 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.text.IndiceHelper;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -69,8 +69,6 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
-import org.talend.core.model.metadata.types.JavaDataTypeHelper;
-import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
@@ -83,6 +81,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
+import org.talend.repository.ui.wizards.metadata.connection.GuessSchemaUtil;
 
 /**
  * @author ocarbone
@@ -852,41 +851,59 @@ public class DatabaseTableForm extends AbstractForm {
                 IDesignerCoreService.class);
         String tableName = tableCombo.getText();
         CsvArray array;
-        List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
         try {
             array = designerService.convertNode(connectionItem, tableName);
+            tableEditorView.getMetadataEditor().removeAll();
+
+            List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
+
+            columns = GuessSchemaUtil.guessSchemaFromArray(array, true, tableEditorView, 5);
+
             List<String[]> schemaContent = array.getRows();
             int numbOfColumn = schemaContent.get(0).length;
             for (int i = 1; i <= numbOfColumn; i++) {
-                MetadataColumn oneColum = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                MetadataColumn oneColum = columns.get(i - 1);
                 // get the column name from the temp file genenrated by GuessSchemaProcess.java
                 String labelName = (schemaContent.get(0))[i - 1];
-                oneColum.setLabel(labelName);
-                oneColum.setOriginalField(labelName);
-                oneColum.setLength(Integer.parseInt(schemaContent.get(2)[i - 1]));
-                oneColum.setPrecision(Integer.parseInt(schemaContent.get(3)[i - 1]));
-                oneColum.setSourceType(schemaContent.get(4)[i - 1]);
+                // oneColum.setLabel(labelName);
+                if (!"".equals(labelName)) {
+                    oneColum.setOriginalField(labelName);
+                }
+                if (!"".equals(schemaContent.get(2)[i - 1])) {
+                    oneColum.setPrecision(Integer.parseInt(schemaContent.get(2)[i - 1]));
+                }
+                if (!"".equals(schemaContent.get(3)[i - 1])) {
+                    oneColum.setLength(Integer.parseInt(schemaContent.get(3)[i - 1]));
+                }
+                if (!"".equals(schemaContent.get(4)[i - 1])) {
+                    oneColum.setSourceType(schemaContent.get(4)[i - 1]);
+                    String talendType = MetadataTalendType.getMappingTypeRetriever(tableEditorView.getCurrentDbms())
+                            .getDefaultSelectedTalendType(schemaContent.get(4)[i - 1]);
+                    oneColum.setTalendType(talendType);
+                }
                 // get if a column is nullable from the temp file genenrated by
                 // GuessSchemaProcess.java
-                oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
-                String talendType = null;
-                // to see if the language is java or perl
-                try {
-                    if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                        talendType = JavaDataTypeHelper.getTalendTypeOfValue(schemaContent.get(2)[i - 1]);
-                    } else {
-                        talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(2)[i - 1]);
-                    }
-                    oneColum.setTalendType(talendType);
-                    metadataColumnsValid.add((MetadataColumn) oneColum);
-                } catch (Exception e) {
-                    /*
-                     * the table have no data at all ,to do nothing
-                     */
+                if (!"".equals(schemaContent.get(1)[i - 1])) {
+                    oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
                 }
+                // String talendType = null;
+                // // to see if the language is java or perl
+                // try {
+                // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                // talendType = JavaDataTypeHelper.getTalendTypeOfValue(schemaContent.get(5)[i - 1]);
+                // } else {
+                // talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(5)[i - 1]);
+                // }
+                // oneColum.setTalendType(talendType);
+                // columns.add((MetadataColumn) oneColum);
+                // } catch (Exception e) {
+                // /*
+                // * the table have no data at all ,to do nothing
+                // */
+                // }
             }
-            tableEditorView.getMetadataEditor().removeAll();
-            tableEditorView.getMetadataEditor().addAll(metadataColumnsValid);
+
+            tableEditorView.getMetadataEditor().addAll(columns);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
