@@ -273,24 +273,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	
     	
     	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
-    	if(escapeChar1.equals("")){
-    		escapeChar1 = "\"\"";
-    	}
-    	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
-    	if(escapeChar.equals("'")){
-    		escapeChar = "\\'";
-    	}
+
     	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
-    	if(textEnclosure1.equals("")){
-    		textEnclosure1 = "\"\"";
-    	}
-    	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
-    	if ("".equals(textEnclosure)) textEnclosure = "\0";
-    	if(textEnclosure.equals("'")){
-    		textEnclosure = "\\'";
-    	}%>
-    	
-    	<%
+
     	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
     	
     	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
@@ -333,31 +318,48 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			throw new IllegalArgumentException("Row Separator must be assigned a char."); 
 		}
 		
+		String escapeChar1_<%=cid %>;
+		
+		if(<%=escapeChar1 %>==null){
+			escapeChar1_<%=cid %> = ""; 
+		}else{
+			escapeChar1_<%=cid %> = <%=escapeChar1 %>;
+		}
+		 
+    	char escapeChar_<%=cid %>[] = null;
+    	if( ((String)escapeChar1_<%=cid %>).length() > 0 ){
+    		escapeChar_<%=cid %> = ((String)escapeChar1_<%=cid %>).toCharArray();
+    	}else {
+    		throw new IllegalArgumentException("Escape Char must be assigned a char.");
+    	}
+    	
+    	String textEnclosure1_<%=cid %>;
+    	if(<%=textEnclosure1 %> == null){
+    		textEnclosure1_<%=cid %> = "";
+    	}else{
+    		textEnclosure1_<%=cid %> = <%=textEnclosure1 %>;
+    	}
+    	char textEnclosure_<%=cid %>[] = null;
+    	if( ((String)textEnclosure1_<%=cid %>).length() > 0 ){
+    		textEnclosure_<%=cid %> = ((String)textEnclosure1_<%=cid %>).toCharArray();
+    	}else {
+    		throw new IllegalArgumentException("Text Enclosure must be assigned a char.");
+    	}		
 		
 		com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
                 new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
                 
 		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
         	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
-        	
-        csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
-        csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 
-<%
-        if(escapeChar.equals("\\\\")){
-        %>
+        csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
+        csvReader<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>[0]);
+
+        if(escapeChar_<%=cid %>[0] == '\\'){
             csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
-<%
-        }else if(escapeChar.equals(textEnclosure)){
-        %>
+        }else if(escapeChar_<%=cid%> == textEnclosure_<%=cid %>){
             csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
-<%
-        }else{
-        %>
-            //?????doesn't work for other escapeChar
-<%
         }
-        %>       
 
 		String[] row<%=cid %>=null;
 		
@@ -387,28 +389,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
           
 	 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
 	          new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
-	          
+        
 		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
         	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
-        csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
+        csvReader<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>[0]);
 
-<%
-        if(escapeChar.equals("\\\\")){
-        %>
-            csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
-<%
-        }else if(escapeChar.equals(textEnclosure)){
-        %>
-            csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
-<%
-        }else{
-        %>
-            //?????doesn't work for other escapeChar
-<%
-        }
-        %>  
-          
+
+	        if(escapeChar_<%=cid%>[0] == '\\'){	
+	            csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
+	        }else if(escapeChar_<%=cid%>[0] == textEnclosure_<%=cid%>[0]){
+	            csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
+	        }
+        
         }
         
         
