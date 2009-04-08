@@ -92,7 +92,7 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         ConfigExternalLibWizard wizard = new ConfigExternalLibWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         wizard.init(workbench, (IStructuredSelection) this.getSelection());

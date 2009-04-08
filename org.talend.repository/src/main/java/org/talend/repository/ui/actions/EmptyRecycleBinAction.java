@@ -51,7 +51,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_EMPTY_ICON));
     }
 
-    public void run() {
+    protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;

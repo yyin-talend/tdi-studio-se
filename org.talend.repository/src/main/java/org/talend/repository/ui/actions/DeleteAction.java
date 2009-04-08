@@ -101,7 +101,7 @@ public class DeleteAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         ISelection selection = getSelection();
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 

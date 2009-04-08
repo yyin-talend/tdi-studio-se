@@ -113,7 +113,7 @@ public class DuplicateAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
 
         if (sourceNode == null) {
             return;

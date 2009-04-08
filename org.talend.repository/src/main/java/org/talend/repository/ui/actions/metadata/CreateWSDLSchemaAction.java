@@ -123,7 +123,7 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         return WSDLSchemaConnectionItem.class;
     }
 
-    public void run() {
+    protected void doRun() {
         RepositoryNode wsdlSchemaNode = getCurrentRepositoryNode();
         if (isToolbar()) {
             if (wsdlSchemaNode != null && wsdlSchemaNode.getContentType() != currentNodeType) {

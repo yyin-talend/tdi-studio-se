@@ -43,7 +43,7 @@ public class ExpandAllAction extends AContextualAction {
         setToolTipText(MOVE_TOOLTIP);
     }
 
-    public void run() {
+    protected void doRun() {
         IRepositoryView view = getViewPart();
         ISelection selection = getSelection();
         Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();

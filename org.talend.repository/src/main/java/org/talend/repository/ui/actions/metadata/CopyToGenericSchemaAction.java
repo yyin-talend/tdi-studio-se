@@ -107,7 +107,7 @@ public class CopyToGenericSchemaAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         if (isAllowedRepositoryElement) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {

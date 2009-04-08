@@ -77,7 +77,7 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
         this.setImageDescriptor(defaultImage);
     }
 
-    public void run() {
+    protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode filePositionalNode = metadataNode.getChildren().get(2);
         RepositoryNode filePositionalNode = getCurrentRepositoryNode();

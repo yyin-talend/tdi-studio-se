@@ -83,7 +83,7 @@ public class EditContextAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, getSelection(), false);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();

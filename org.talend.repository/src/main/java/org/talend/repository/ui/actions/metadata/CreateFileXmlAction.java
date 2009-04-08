@@ -76,7 +76,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
         this.setImageDescriptor(defaultImage);
     }
 
-    public void run() {
+    protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileXMLNode = metadataNode.getChildren().get(4);
         RepositoryNode fileXMLNode = getCurrentRepositoryNode();

@@ -83,7 +83,7 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         GenerateDocAsHTMLWizard processWizard = new GenerateDocAsHTMLWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         processWizard.setWindowTitle(GENERATE_DOC_AS_HTML);

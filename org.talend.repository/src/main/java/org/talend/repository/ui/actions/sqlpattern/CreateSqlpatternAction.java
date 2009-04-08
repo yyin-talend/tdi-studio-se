@@ -116,7 +116,7 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         RepositoryNode sqlPatternNode = null;
         if (!isFromSqlPatternComposite) {
             sqlPatternNode = getCurrentRepositoryNode();

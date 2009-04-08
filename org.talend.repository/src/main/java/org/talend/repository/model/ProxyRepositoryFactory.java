@@ -84,6 +84,7 @@ import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;

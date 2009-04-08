@@ -60,7 +60,7 @@ public class CopyAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
 
         // see feature 0001563: Display "Save job" prompt when "copy" action for a job is requested.

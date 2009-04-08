@@ -89,7 +89,7 @@ public class ReadTableAction extends AbstractCreateTableAction {
         }
     }
 
-    public void run() {
+    protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         RepositoryNode metadataNode = getMetadataNode(getCurrentRepositoryNode());
         // Force focus to the repositoryView and open Metadata and DbConnection nodes

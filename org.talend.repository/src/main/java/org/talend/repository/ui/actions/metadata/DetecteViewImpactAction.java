@@ -129,7 +129,7 @@ public class DetecteViewImpactAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         RepositoryNode node = getCurrentRepositoryNode();
         if (node == null) {
             return;

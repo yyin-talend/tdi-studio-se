@@ -104,7 +104,7 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     @Override
-    public void run() {
+    protected void doRun() {
         file = openImportFileDialog();
         if (file == null) {
             return;

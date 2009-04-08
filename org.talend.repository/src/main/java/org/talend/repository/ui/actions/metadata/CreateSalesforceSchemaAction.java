@@ -71,7 +71,7 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
         this.setImageDescriptor(defaultImage);
     }
 
-    public void run() {
+    protected void doRun() {
 
         RepositoryNode salesforceSchema = getCurrentRepositoryNode();
 

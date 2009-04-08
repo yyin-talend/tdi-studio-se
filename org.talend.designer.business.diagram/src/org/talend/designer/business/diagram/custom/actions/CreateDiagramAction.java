@@ -51,7 +51,7 @@ public class CreateDiagramAction extends AContextualAction {
         setText(Messages.getString("CreateDiagramAction.CreateBusinessModel")); //$NON-NLS-1$
     }
 
-    public void run() {
+    protected void doRun() {
         SimpleBusinessCreationWizard wizard = new SimpleBusinessCreationWizard(getActivePage().getWorkbenchWindow()
                 .getWorkbench(), getPath());
 

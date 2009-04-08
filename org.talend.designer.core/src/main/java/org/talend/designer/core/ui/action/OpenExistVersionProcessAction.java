@@ -48,7 +48,7 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;

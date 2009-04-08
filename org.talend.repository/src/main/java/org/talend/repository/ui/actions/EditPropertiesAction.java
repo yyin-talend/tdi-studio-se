@@ -82,7 +82,7 @@ public class EditPropertiesAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EDIT_ICON));
     }
 
-    public void run() {
+    protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;

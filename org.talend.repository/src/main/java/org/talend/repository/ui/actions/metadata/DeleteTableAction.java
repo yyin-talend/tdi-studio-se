@@ -72,7 +72,7 @@ public class DeleteTableAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         ISelection selection = getSelection();
 
         Boolean confirm = null;

@@ -88,7 +88,7 @@ public class CreateContextAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), true, getSelection(), false);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();

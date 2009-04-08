@@ -62,7 +62,7 @@ public class ReadSqlpatternAction extends AbstractSqlpatternAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
         SQLPatternItem sqlpatternItem = (SQLPatternItem) node.getObject().getProperty().getItem();
 

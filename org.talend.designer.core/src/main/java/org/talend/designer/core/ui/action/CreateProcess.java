@@ -103,7 +103,7 @@ public class CreateProcess extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     @Override
-    public void run() {
+    protected void doRun() {
         RepositoryNode node = null;
         NewProcessWizard processWizard = null;
         if (isToolbar()) {

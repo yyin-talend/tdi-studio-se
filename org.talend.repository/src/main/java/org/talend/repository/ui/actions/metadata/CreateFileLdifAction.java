@@ -72,7 +72,7 @@ public class CreateFileLdifAction extends AbstractCreateAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON));
     }
 
-    public void run() {
+    protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileLdifNode = metadataNode.getChildren().get(5);
         RepositoryNode fileLdifNode = getCurrentRepositoryNode();

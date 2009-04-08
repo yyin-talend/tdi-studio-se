@@ -47,7 +47,7 @@ public class ReadQueriesAction extends AContextualAction {
         setImageDescriptor(ImageProvider.getImageDesc(EImage.READ_ICON));
     }
 
-    public void run() {
+    protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
         RepositoryNode node = (RepositoryNode) selection.getFirstElement();
 

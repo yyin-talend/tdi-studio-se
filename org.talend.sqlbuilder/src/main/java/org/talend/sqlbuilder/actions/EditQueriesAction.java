@@ -52,7 +52,7 @@ public class EditQueriesAction extends AContextualAction {
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_QUERY_ICON));
     }
 
-    public void run() {
+    protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
         RepositoryNode node = (RepositoryNode) selection.getFirstElement();
 

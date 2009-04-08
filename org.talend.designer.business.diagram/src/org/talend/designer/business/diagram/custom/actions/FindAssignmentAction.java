@@ -60,7 +60,7 @@ public class FindAssignmentAction extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     @Override
-    public void run() {
+    protected void doRun() {
         RepositoryNode repositoryNode = (RepositoryNode) getFirstSelectedObject();
 
         IEditorPart activeEditor = getActiveEditor();

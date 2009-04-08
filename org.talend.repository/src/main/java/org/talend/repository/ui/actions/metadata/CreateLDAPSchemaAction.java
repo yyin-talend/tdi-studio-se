@@ -79,7 +79,7 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         setToolbar(isToolbar);
     }
 
-    public void run() {
+    protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileLDAPSchemaNode = metadataNode.getChildren().get(6);
         RepositoryNode fileLDAPSchemaNode = getCurrentRepositoryNode();

@@ -295,7 +295,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
             this.problem = problem;
         }
 
-        public void run() {
+        protected void doRun() {
             if (problem != null) {
                 try {
                     RoutineItem routine = getRoutineItem();

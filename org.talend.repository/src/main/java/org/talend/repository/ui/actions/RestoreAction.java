@@ -61,7 +61,7 @@ public class RestoreAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         // used to store the database connection object that are used to notify the sqlBuilder.
         List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
         ISelection selection = getSelection();

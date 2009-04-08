@@ -58,9 +58,9 @@ import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryWorkUnit;
 
 /**
  * ggu class global comment. Detailled comment

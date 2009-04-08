@@ -84,7 +84,7 @@ public class ProjectSettingsAction extends AContextualAction implements IWorkben
 
     }
 
-    public void run() {
+    protected void doRun() {
         // User user = ((RepositoryContext)
         // CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser();
         // UserRole role = user.getRole();

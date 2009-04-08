@@ -26,6 +26,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.RepositoryWorkUnit;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -211,6 +212,6 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     
     @SuppressWarnings("unchecked")
     public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) {
-        workUnit.doRun();
+        workUnit.executeRun();
     }
 }

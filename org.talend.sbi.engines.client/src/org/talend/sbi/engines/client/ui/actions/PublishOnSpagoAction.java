@@ -28,7 +28,6 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.sbi.engines.client.Activator;
-import org.talend.sbi.engines.client.i18n.Messages;
 import org.talend.sbi.engines.client.ui.preferences.SpagoPreferenceInitializer;
 import org.talend.sbi.engines.client.ui.wizards.PublishOnSpagoExportWizard;
 
@@ -78,7 +77,7 @@ public final class PublishOnSpagoAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
     }
 
-    public void run() {
+    protected void doRun() {
         PublishOnSpagoExportWizard publishWizard = new PublishOnSpagoExportWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         publishWizard.setWindowTitle(EXPORTJOBSCRIPTS + " (SpagoBI)"); //$NON-NLS-1$

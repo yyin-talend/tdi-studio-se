@@ -72,7 +72,7 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         this.setImageDescriptor(defaultImage);
     }
 
-    public void run() {
+    protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileDelimitedNode = metadataNode.getChildren().get(1);
         RepositoryNode fileDelimitedNode = getCurrentRepositoryNode();

@@ -75,7 +75,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
         this.node = node;
     }
 
-    public void run() {
+    protected void doRun() {
         RepositoryNode metadataNode = null;
         if (node == null) {
             // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);

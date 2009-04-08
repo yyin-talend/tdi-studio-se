@@ -61,7 +61,7 @@ public class PasteAction extends AContextualAction {
     }
 
     @Override
-    public void run() {
+    protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
         RepositoryNode target = (RepositoryNode) selection.getFirstElement();
 

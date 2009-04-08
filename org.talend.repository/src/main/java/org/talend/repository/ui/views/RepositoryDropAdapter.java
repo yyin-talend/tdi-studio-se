@@ -17,9 +17,9 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.ui.part.PluginDropAdapter;
-import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.LoginException;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.business.BusinessType;
 import org.talend.core.model.properties.Property;
@@ -27,6 +27,8 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.actions.CopyObjectAction;
 import org.talend.repository.model.actions.MoveObjectAction;
@@ -51,24 +53,47 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
     @Override
     public boolean performDrop(Object data) {
         int operation = getCurrentOperation();
-        RepositoryNode targetNode = (RepositoryNode) getCurrentTarget();
+        final RepositoryNode targetNode = (RepositoryNode) getCurrentTarget();
         boolean toReturn = true;
 
         for (Object obj : ((StructuredSelection) data).toArray()) {
-            RepositoryNode sourceNode = (RepositoryNode) obj;
+            final RepositoryNode sourceNode = (RepositoryNode) obj;
             try {
+                RepositoryWorkUnit<Object> repositoryWorkUnit = null;
                 switch (operation) {
                 case DND.DROP_COPY:
-                    CopyObjectAction.getInstance().execute(sourceNode, targetNode);
+                    String copyName = "User action : Copy Object"; //$NON-NLS-1$
+                    repositoryWorkUnit = new RepositoryWorkUnit<Object>(copyName, CopyObjectAction.getInstance()) {
+
+                        @Override
+                        protected void run() throws LoginException, PersistenceException {
+                            try {
+                                CopyObjectAction.getInstance().execute(sourceNode, targetNode);
+                            } catch (Exception e) {
+                                throw new PersistenceException(e);
+                            }
+                        }
+                    };
+                    ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
                     break;
                 case DND.DROP_MOVE:
-                    MoveObjectAction.getInstance().execute(sourceNode, targetNode);
+                    String moveName = "User action : Move Object"; //$NON-NLS-1$
+                    repositoryWorkUnit = new RepositoryWorkUnit<Object>(moveName, MoveObjectAction.getInstance()) {
+
+                        @Override
+                        protected void run() throws LoginException, PersistenceException {
+                            try {
+                                MoveObjectAction.getInstance().execute(sourceNode, targetNode);
+                            } catch (Exception e) {
+                                throw new PersistenceException(e);
+                            }
+                        }
+                    };
+                    ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
                     break;
                 default:
                     // Nothing to do
                 }
-            } catch (BusinessException e) {
-                MessageBoxExceptionHandler.process(e);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }

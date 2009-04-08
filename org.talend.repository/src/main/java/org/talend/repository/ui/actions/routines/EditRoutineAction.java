@@ -73,7 +73,7 @@ public class EditRoutineAction extends AbstractRoutineAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
         RoutineItem routineItem = (RoutineItem) node.getObject().getProperty().getItem();
 

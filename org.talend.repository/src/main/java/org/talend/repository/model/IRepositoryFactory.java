@@ -32,6 +32,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.RepositoryWorkUnit;
 
 /**
  * Defines all methods that a repository provider plug-in must provides to client.<br/>

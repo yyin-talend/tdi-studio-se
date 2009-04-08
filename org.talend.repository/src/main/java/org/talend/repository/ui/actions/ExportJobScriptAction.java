@@ -73,7 +73,7 @@ public class ExportJobScriptAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
     }
 
-    public void run() {
+    protected void doRun() {
         JobScriptsExportWizard processWizard = new JobScriptsExportWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         processWizard.setWindowTitle(EXPORTJOBSCRIPTS);

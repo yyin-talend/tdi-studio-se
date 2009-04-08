@@ -76,7 +76,7 @@ public class OpenDocumentationAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
         Item item = node.getObject().getProperty().getItem();
         if (item == null) {

@@ -94,7 +94,7 @@ public class CreateDocumentationAction extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     @Override
-    public void run() {
+    protected void doRun() {
         DocumentationCreateWizard docWizard = new DocumentationCreateWizard(PlatformUI.getWorkbench(), getPath());
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), docWizard);
         dlg.open();

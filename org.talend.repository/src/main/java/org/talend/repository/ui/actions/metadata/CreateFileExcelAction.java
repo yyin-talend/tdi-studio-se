@@ -70,7 +70,7 @@ public class CreateFileExcelAction extends AbstractCreateAction {
         this.setImageDescriptor(defaultImage);
     }
 
-    public void run() {
+    protected void doRun() {
 
         RepositoryNode fileExcelNode = getCurrentRepositoryNode();
 

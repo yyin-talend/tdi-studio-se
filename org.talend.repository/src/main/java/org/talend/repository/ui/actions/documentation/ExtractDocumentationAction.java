@@ -80,7 +80,7 @@ public class ExtractDocumentationAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
 
         final Item item = node.getObject().getProperty().getItem();

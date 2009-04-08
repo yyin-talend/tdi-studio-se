@@ -78,7 +78,7 @@ public class DeployOnSpagicAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
     }
 
-    public void run() {
+    protected void doRun() {
         SpagicDeployWizard processWizard = new SpagicDeployWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         processWizard.setWindowTitle(DEPLOYONSPAGIC);

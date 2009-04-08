@@ -76,7 +76,7 @@ public class ReadContextAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    public void run() {
+    protected void doRun() {
         ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, getSelection(), true);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();
