@@ -42,6 +42,8 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProvider;
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessContextManager;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -64,6 +66,8 @@ public class ProcessView extends ViewPart {
     public static final int PAUSE_ID = 22;
 
     public static final int RESUME_ID = 23;
+
+    public static final int DEBUG_ID = 24;
 
     private static Logger log = Logger.getLogger(ProcessView.class);
 
@@ -159,10 +163,14 @@ public class ProcessView extends ViewPart {
         // IHandler handler2 = new ActionHandler(runAction);
         // handlerService.activateHandler(runAction.getActionDefinitionId(), handler2);
 
-        Action debugAction = new DebugAction();
-        IHandler handler1 = new ActionHandler(debugAction);
-        handlerService.activateHandler(debugAction.getActionDefinitionId(), handler1);
-
+        IHandler handler1;
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            Action debugAction = new DebugAction();
+            handler1 = new ActionHandler(debugAction);
+            handlerService.activateHandler(debugAction.getActionDefinitionId(), handler1);
+        }
         Action killAction = new KillAction();
         handler1 = new ActionHandler(killAction);
         handlerService.activateHandler(killAction.getActionDefinitionId(), handler1);

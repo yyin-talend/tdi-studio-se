@@ -42,7 +42,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.talend.commons.ui.swt.formtools.LabelText;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.DynamicButtonBean;
 import org.talend.repository.model.DynamicChoiceBean;
@@ -151,8 +153,17 @@ public class ConnectionFormComposite extends Composite {
         descriptionText.setLayoutData(data1);
 
         // User
-        Label userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
-        data1 = new GridData();
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
+        Label userLabel;
+        if (usesMailCheck) {
+            userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
+        } else {
+            userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.usernameNoMail")); //$NON-NLS-1$
+        }
+
+        data1 = new GridData(GridData.FILL_HORIZONTAL);
         data1.horizontalSpan = 1;
         userLabel.setLayoutData(data1);
 
@@ -265,6 +276,9 @@ public class ConnectionFormComposite extends Composite {
     private boolean validateFields() {
         String errorMsg = null;
         boolean valid = true;
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
         if (valid && getRepository() == null) {
             valid = false;
             errorMsg = Messages.getString("connections.form.emptyField.repository"); //$NON-NLS-1$
@@ -274,7 +288,7 @@ public class ConnectionFormComposite extends Composite {
         } else if (valid && getUser().length() == 0) {
             valid = false;
             errorMsg = Messages.getString("connections.form.emptyField.username"); //$NON-NLS-1$
-        } else if (valid && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser())) {
+        } else if (valid && usesMailCheck && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser())) {
             valid = false;
             errorMsg = Messages.getString("connections.form.malformedField.username"); //$NON-NLS-1$
         } else {

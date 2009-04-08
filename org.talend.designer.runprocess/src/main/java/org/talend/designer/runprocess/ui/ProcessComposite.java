@@ -80,9 +80,11 @@ import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.model.components.EParameterName;
@@ -295,7 +297,8 @@ public class ProcessComposite extends Composite {
         toolBar = new ToolBar(execHeader, SWT.FLAT | SWT.RIGHT);
 
         itemDropDown = new ToolItem(toolBar, SWT.ARROW);
-        itemDropDown.setText(" " + Messages.getString("ProcessComposite.exec") + "  ");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        itemDropDown.setText(" " + Messages.getString("ProcessComposite.exec"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        itemDropDown.setData(ProcessView.EXEC_ID);
         itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint"));//$NON-NLS-1$
         itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
 
@@ -311,55 +314,80 @@ public class ProcessComposite extends Composite {
                 } else {
                     ToolItem item = (ToolItem) event.widget;
                     errorMessMap.clear();
-                    if (item.getText().equals(debugMenuItem.getText())) {
+                    if (item.getData().equals(ProcessView.DEBUG_ID)) {
                         debug();
-                    } else
+                    } else {
                         execButtonPressed();
+                    }
                 }
             }
         });
 
         // Run
         final MenuItem menuItem1 = new MenuItem(menu, SWT.PUSH);
-        menuItem1.setText(" " + Messages.getString("ProcessComposite.exec") + "  ");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        menuItem1.setText(" " + Messages.getString("ProcessComposite.exec"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
         menuItem1.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+        menuItem1.setData(ProcessView.EXEC_ID);
         menuItem1.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent event) {
-                String currentText = itemDropDown.getText();
-                if (!currentText.equals(" Pause") && !currentText.equals("Resume")) {//$NON-NLS-1$//$NON-NLS-2$
+                if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID) && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
                     itemDropDown.setText(menuItem1.getText());
+                    itemDropDown.setData(ProcessView.EXEC_ID);
                     itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
                     itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint"));//$NON-NLS-1$
                     toolBar.getParent().layout();
                 }
             }
         });
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            // Debug
+            debugMenuItem = new MenuItem(menu, SWT.PUSH);
+            debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
+            debugMenuItem.setData(ProcessView.DEBUG_ID);
+            debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+            debugMenuItem.addSelectionListener(new SelectionAdapter() {
 
-        // Debug
-        debugMenuItem = new MenuItem(menu, SWT.PUSH);
-        debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
-        debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-        debugMenuItem.addSelectionListener(new SelectionAdapter() {
+                public void widgetSelected(SelectionEvent event) {
+                    if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID)
+                            && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
+                        itemDropDown.setText(debugMenuItem.getText());
+                        itemDropDown.setData(ProcessView.DEBUG_ID);
+                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                        itemDropDown.setToolTipText(Messages.getString("ProcessComposite.debugHint"));//$NON-NLS-1$
+                        toolBar.getParent().layout();
+                    }
 
-            public void widgetSelected(SelectionEvent event) {
-                String currentText = itemDropDown.getText();
-                if (!currentText.equals(" Pause") && !currentText.equals("Resume")) {//$NON-NLS-1$//$NON-NLS-2$
-                    itemDropDown.setText(debugMenuItem.getText());
-                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.debugHint"));//$NON-NLS-1$
-                    toolBar.getParent().layout();
                 }
-
-            }
-        });
+            });
+        }
         toolBar.setEnabled(false);
         FormData formData = new FormData();
         // see the feature 6366,qli comment.
         // make a judge when the text change in diffrent languages.
-        Point size = computeSize(itemDropDown.getText());
+
         formData.left = new FormAttachment(0);
-        formData.right = new FormAttachment(0, size.x + 55);
+        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            // set debug text to judge size
+            itemDropDown.setText(debugMenuItem.getText());
+            Point debugSize = computeSize(itemDropDown.getText());
+
+            // set exec text to judge size
+            itemDropDown.setText(menuItem1.getText());
+            Point execSize = computeSize(itemDropDown.getText());
+            if (debugSize.x > execSize.x) {
+                formData.right = new FormAttachment(0, debugSize.x + 70);
+            } else {
+                formData.right = new FormAttachment(0, execSize.x + 70);
+            }
+        } else {
+            // set exec text to judge size
+            itemDropDown.setText(menuItem1.getText());
+            Point execSize = computeSize(itemDropDown.getText());
+            formData.right = new FormAttachment(0, execSize.x + 70);
+        }
         toolBar.setLayoutData(formData);
 
         killBtn = new Button(execHeader, SWT.PUSH);
@@ -854,6 +882,7 @@ public class ProcessComposite extends Composite {
                 itemDropDown.setText(" " + Messages.getString("ProcessComposite.pause")); //$NON-NLS-1$//$NON-NLS-2$
                 itemDropDown.setToolTipText(Messages.getString("ProcessComposite.pauseJob")); //$NON-NLS-1$
                 itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
+                itemDropDown.setData(ProcessView.PAUSE_ID);
                 toolBar.getParent().layout();
             } else {
                 itemDropDown.setText(" " + Messages.getString("ProcessComposite.exec") + "  "); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
@@ -1332,7 +1361,11 @@ public class ProcessComposite extends Composite {
     }
 
     public void setDebugEnabled(boolean enabled) {
-        debugMenuItem.setEnabled(enabled);
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            debugMenuItem.setEnabled(enabled);
+        }
     }
 
     public void getAllErrorMess(IProcessMessage psMess) {
