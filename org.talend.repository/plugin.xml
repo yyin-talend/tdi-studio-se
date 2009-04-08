@@ -925,6 +925,7 @@
          <projecttask
                beforeLogon="false"
                class="org.talend.repository.model.migration.RenameMultiSchemaToMSMigrationTask"
+               description="rename tFileInputXMLMultiSchema and tFileOutputXMLMultiSchema to tFileInputMSXML and tFileOutputMSXML"
                id="org.talend.repository.model.migration.renameMultiSchemaToMSMigrationTask"
                name="Rename the XMLMultiSchema to MSXML">
          </projecttask>

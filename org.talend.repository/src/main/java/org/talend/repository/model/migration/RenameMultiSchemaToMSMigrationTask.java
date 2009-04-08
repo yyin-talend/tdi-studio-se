@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
@@ -30,16 +31,17 @@ public class RenameMultiSchemaToMSMigrationTask extends AbstractJobMigrationTask
 
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
-        if (processType == null) {
+        if (processType != null && getProject().getLanguage() == ECodeLanguage.JAVA) {
+            try {
+                ModifyComponentsAction.searchAndRename(item, processType, "tFileInputXMLMultiSchema", "tFileInputMSXML"); //$NON-NLS-1$ //$NON-NLS-2$
+                ModifyComponentsAction.searchAndRename(item, processType, "tFileOutputXMLMultiSchema", "tFileOutputMSXML"); //$NON-NLS-1$ //$NON-NLS-2$
+                return ExecutionResult.SUCCESS_WITH_ALERT;
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
+            }
+        } else {
             return ExecutionResult.NOTHING_TO_DO;
-        }
-        try {
-            ModifyComponentsAction.searchAndRename(item, processType, "tFileInputXMLMultiSchema", "tFileInputMSXML"); //$NON-NLS-1$ //$NON-NLS-2$
-            ModifyComponentsAction.searchAndRename(item, processType, "tFileOutputXMLMultiSchema", "tFileOutputMSXML"); //$NON-NLS-1$ //$NON-NLS-2$
-            return ExecutionResult.SUCCESS_WITH_ALERT;
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-            return ExecutionResult.FAILURE;
         }
     }
 
