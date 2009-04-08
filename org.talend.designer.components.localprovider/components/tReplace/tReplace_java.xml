@@ -14,10 +14,10 @@
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
-
+  
   <FAMILIES>
     <FAMILY>Processing</FAMILY>
-  </FAMILIES>
+  </FAMILIES>  
 
   <DOCUMENTATION>
     <URL/>
@@ -37,35 +37,24 @@
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
       <DEFAULT/> 
     </PARAMETER>
-    
-	<PARAMETER
-	  NAME="MODE"
-	  FIELD="CLOSED_LIST"
-	  REQUIRED="false"
-	  NUM_ROW="2">
-	  <ITEMS DEFAULT="SIMPLE_MODE">
-		<ITEM NAME="SIMPLE_MODE" VALUE="SIMPLE_MODE" />
-		<ITEM NAME="ADVANCED_MODE" VALUE="ADVANCED_MODE" />
-	  </ITEMS>
-	</PARAMETER>
-    
-	<PARAMETER
-      NAME="SUPPORT_REGEX"
+
+    <PARAMETER
+      NAME="SIMPLE_MODE"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="3"
-      SHOW="false"
+      NUM_ROW="2"
     >
-      <DEFAULT>false</DEFAULT>
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
+
 
     <PARAMETER
       NAME="SUBSTITUTIONS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="4"
+      NUM_ROW="3"
       NB_LINES="8"
-      SHOW_IF="(MODE=='SIMPLE_MODE')"
+      NOT_SHOW_IF="(SIMPLE_MODE=='false')"
     >
       <ITEMS>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
@@ -73,17 +62,27 @@
         <ITEM NAME="REPLACE_STRING" FIELD="String" VALUE="&quot;default&quot;" />
         <ITEM NAME="WHOLE_WORD" FIELD="CHECK" VALUE="true" />
         <ITEM NAME="CASE_SENSITIVE" FIELD="CHECK" VALUE="false" />
+        <ITEM NAME="USE_GLOB" FIELD="CHECK" VALUE="false" />
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>
     
+   	 <PARAMETER
+      NAME="ADVANCED_MODE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="4"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="ADVANCED_SUBST"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="6"
+      NUM_ROW="5"
       NB_LINES="8"
-      SHOW_IF="(MODE=='ADVANCED_MODE')"
+      NOT_SHOW_IF="(ADVANCED_MODE=='false')"
     >
       <ITEMS>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
@@ -92,34 +91,16 @@
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="ADVANCED_MODE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="100"
-      SHOW="false"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="SIMPLE_MODE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="100"
-      SHOW="false"
-    >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
+        
    </PARAMETERS>
    
-   <ADVANCED_PARAMETERS>
-   	    
-    
-   </ADVANCED_PARAMETERS>
+   	<ADVANCED_PARAMETERS/>
 
-   <CODEGENERATION/>
+	<CODEGENERATION>
+	  <IMPORTS>
+	     <IMPORT NAME="jakarta-oro" MODULE="jakarta-oro-2.0.8.jar" REQUIRED="true" />
+	  </IMPORTS>
+	</CODEGENERATION>
 
    <RETURNS>
      <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER"/>

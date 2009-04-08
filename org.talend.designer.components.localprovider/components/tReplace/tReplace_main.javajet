@@ -16,147 +16,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String incomingConnName = null;
-boolean supportRegex = ElementParameterParser.getValue(node,"__SUPPORT_REGEX__").equals("true");
 List<? extends IConnection> inConns = node.getIncomingConnections();
-if(!supportRegex){
-%>
-class ReplaceUtil {
-
-    public String[] split(String src, String separtor) {
-        java.util.List<String> list = new java.util.ArrayList<String>();
-        int beginIndex = 0, endIndex = 0;
-        while (endIndex != -1) {
-            endIndex = src.indexOf(separtor, beginIndex);
-            if (endIndex != -1) {
-                list.add(src.substring(beginIndex, endIndex));
-            } else {
-                list.add(src.substring(src.lastIndexOf(separtor) + separtor.length(), src.length()));
-            }
-            beginIndex = endIndex + separtor.length();
-        }
-        String[] strs = new String[list.size()];
-        java.util.Iterator<String> it = list.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            strs[i] = it.next();
-            i++;
-        }
-        return strs;
-    }
-
-    public String replaceAll(String src, String target, String replacement, boolean caseSensitive, boolean wholeWord) {
-    	replacement = replacement == null ? "" : replacement;
-        if(src == null || src == ""){
-        	if(target == null || target == ""){
-        		return replacement;
-        	}else{
-	        	src = new String("");
-        	}
-        }
-        if(target == null || target == ""){
-        	return src;
-        }
-        if(src.length() < target.length()){
-        	return src;
-        }
-        if (caseSensitive) {
-            if (wholeWord) {
-                String str = src.replace(target, target);
-                String[] srcs = this.split(src, target);
-                int fromIndex = 0, beginIndex = 0, endIndex = 0;
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < srcs.length; i++) {
-                    endIndex = src.indexOf(target, fromIndex);
-                    if (endIndex != -1) {
-                        sb.append(src.substring(beginIndex, endIndex));
-                        beginIndex = endIndex + target.length();
-                        fromIndex = beginIndex;
-                         if (endIndex == 0 && fromIndex == str.length()) {
-                            sb.append(replacement);
-                        } else if (endIndex == 0) {
-                            if (src.charAt(endIndex + target.length()) == ' ') {
-                                sb.append(replacement);
-                            } else {
-                                sb.append(src.substring(endIndex, endIndex + target.length()));
-                            }
-                        } else if (fromIndex < src.length()) {
-                            if (src.charAt(endIndex + target.length()) == ' ' && src.charAt(endIndex - 1) == ' ') {
-                                sb.append(replacement);
-                            } else {
-                                sb.append(src.substring(endIndex, endIndex + target.length()));
-                            }
-                        } else {
-                            if (src.charAt(endIndex - 1) == ' ') {
-                                sb.append(replacement);
-                            } else {
-                                sb.append(src.substring(endIndex, endIndex + target.length()));
-                            }
-                        }
-                    } else {
-                        sb.append(src.substring(beginIndex, src.length()));
-                    }
-                }
-                return sb.toString();
-            } else {
-                return src.replace(target, replacement);
-            }
-        } else {
-            String srcLC = src.toLowerCase();
-            String targetLC = target.toLowerCase();
-            String str = srcLC.replace(targetLC, target);
-            String[] srcLCs = this.split(srcLC, target.toLowerCase());
-            int fromIndex = 0, beginIndex = 0, endIndex = 0;
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < srcLCs.length; i++) {
-                endIndex = str.indexOf(target, fromIndex);
-                if (wholeWord) {
-                    if (endIndex != -1) {
-                        sb.append(src.substring(beginIndex, endIndex));
-                        beginIndex = endIndex + target.length();
-                        fromIndex = beginIndex;
-                        if (endIndex == 0 && fromIndex == str.length()) {
-                            sb.append(replacement);
-                        } else if (endIndex == 0) {
-                            if (str.charAt(endIndex + target.length()) == ' ') {
-                                sb.append(replacement);
-                            } else {
-                                sb.append(src.substring(endIndex, endIndex + target.length()));
-                            }
-                        } else if (fromIndex < str.length()) {
-                            if (str.charAt(endIndex + target.length()) == ' ' && str.charAt(endIndex - 1) == ' ') {
-                                sb.append(replacement);
-                            } else {
-                                sb.append(src.substring(endIndex, endIndex + target.length()));
-                            }
-                        } else {
-                            if (str.charAt(endIndex - 1) == ' ') {
-                                sb.append(replacement);
-                            } else {
-                                sb.append(src.substring(endIndex, endIndex + target.length()));
-                            }
-                        }
-                    } else {
-                        sb.append(src.substring(beginIndex, str.length()));
-                    }
-                } else {
-                    if (endIndex != -1) {
-                        sb.append(src.substring(beginIndex, endIndex));
-                        beginIndex = endIndex + target.length();
-                        fromIndex = beginIndex;
-                        if (fromIndex <= str.length()) {
-                            sb.append(replacement);
-                        }
-                    } else {
-                        sb.append(src.substring(beginIndex, str.length()));
-                    }
-                }
-            }
-            return sb.toString();
-        }
-    }
-}
-<%
-}
 if(inConns != null && inConns.size() > 0) {
     IConnection inConn = inConns.get(0);
     incomingConnName = inConn.getName();
@@ -171,48 +31,46 @@ List<? extends IConnection> outgoingConns = node.getOutgoingConnections();
 
 
 if(incomingConnName != null && columnList != null && columnList.size() > 0) {
-    //String advancedMode = ElementParameterParser.getValue( node, "__ADVANCED_MODE__" );
-    //String simpleMode = ElementParameterParser.getValue( node, "__SIMPLE_MODE__" );
-    String mode = ElementParameterParser.getValue( node, "__MODE__" );
+    String advancedMode = ElementParameterParser.getValue( node, "__ADVANCED_MODE__" );
+    String simpleMode = ElementParameterParser.getValue( node, "__SIMPLE_MODE__" );
+    
     List<Map<String, String>> patterns = null;
           
     //simple mode Replacement    
-    if(mode.equals("SIMPLE_MODE")) {
+    if(simpleMode.equals("true")) {
         List<Map<String, String>> substitutions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__SUBSTITUTIONS__");
         if(substitutions != null && substitutions.size() > 0) {
-            for(Map<String,String> substitution : substitutions) {
+        	int i = 0;
+            for(Map<String,String> substitution : substitutions) {            	
                 String replaceStr = substitution.get("REPLACE_STRING");
-                if(replaceStr != null && !replaceStr.equals("")) {
+                if(replaceStr != null && !replaceStr.equals("")) {                	
                     String searchStr = substitution.get("SEARCH_PATTERN");
-                    if(!supportRegex){
-                    	String caseSensitive = substitution.get("CASE_SENSITIVE"); 
-	                    String wholeWord = substitution.get("WHOLE_WORD"); 
-%> 
-						<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = new ReplaceUtil().replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, <%=searchStr%>, <%=replaceStr%>,"<%=caseSensitive%>".equals("true")?true:false,"<%=wholeWord%>".equals("true")?true:false);
-<%						 
-                    }else{
-                    	if(substitution.get("CASE_SENSITIVE").equals("false")) {
-	 	                	searchStr = "\"(?i)\" + " + searchStr;
-	 	                }
-	 	                if(substitution.get("WHOLE_WORD").equals("true")) {
-	 	                    searchStr = "\"^\" + " + searchStr + " + \"$\"";
-	 	                }
-	 	%> 
-	 	                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, <%=searchStr%>, <%=replaceStr%>); 
+                    i++;
+%>
+					String searchStr_<%=cid %>_<%=i %> = <%=searchStr %>;
+                <%if(substitution.get("USE_GLOB").equals("true")){%>
+                    searchStr_<%=cid %>_<%=i %> = org.apache.oro.text.GlobCompiler.globToPerl5(searchStr_<%=cid %>_<%=i %>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+                <%}%>
+                <%if(substitution.get("WHOLE_WORD").equals("true")){%>
+                    searchStr_<%=cid %>_<%=i %> = "\\b" + searchStr_<%=cid %>_<%=i %> + "\\b";
+                <%}%>                                
+                <%if(substitution.get("CASE_SENSITIVE").equals("false")){%>
+                    searchStr_<%=cid %>_<%=i %> = "(?i)" + searchStr_<%=cid %>_<%=i %>;
+                <%}%>
+                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%>);                    
 <%
-                    }
                 }
             }
-%>
+            %>
             nb_line_ok_<%=cid%>++;
-<%
+            <%
         }
     }
     
     
     
     //advanced mode Replacement
-    if(mode.equals("ADVANCED_MODE")) {
+    if(advancedMode.equals("true")) {
         patterns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADVANCED_SUBST__");
         if(patterns != null && patterns.size() > 0) {
             for(Map<String,String> pattern:patterns){
