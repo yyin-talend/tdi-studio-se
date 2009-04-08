@@ -59,6 +59,7 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.text.IndiceHelper;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.MetadataTalendType;
@@ -403,9 +404,16 @@ public class DatabaseTableForm extends AbstractForm {
         tableSettingsInfoLabel.setLayoutData(gridData);
 
         // Button guessSchema
+
         guessSchemaButton = new UtilsButton(compositeRetreiveSchemaButton,
                 Messages.getString("DatabaseTableForm.guessSchema"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
         guessSchemaButton.setToolTipText(GUESS_SCHEMA_TOOLTIP);
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+            guessSchemaButton.setVisible(true);
+        } else {
+            guessSchemaButton.setVisible(false);
+        }
+
         // Checkbox streamDetach
         streamDetachCheckbox = new Button(composite1, SWT.CHECK);
         streamDetachCheckbox.setText(Messages.getString("DatabaseTableForm.streamDetach")); //$NON-NLS-1$
