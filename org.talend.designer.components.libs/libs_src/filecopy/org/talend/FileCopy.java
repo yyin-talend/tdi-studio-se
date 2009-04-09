@@ -121,16 +121,34 @@ public class FileCopy {
             in = srcInputStream.getChannel();
             out = new FileOutputStream(dest).getChannel();
 
-            MappedByteBuffer buf = in.map(FileChannel.MapMode.READ_ONLY, 0, in.size());
-
-            out.write(buf);
+            long size = in.size();
+            long position = 0;
+            final long MAP_SIZE = 102400000;
+            MappedByteBuffer buf = null;
+            while (true) {
+                if (position + MAP_SIZE >= size) {
+                    buf = in.map(FileChannel.MapMode.READ_ONLY, position, size - position);
+                    out.write(buf);
+                    if (delSrc) {
+                        // here must clean first, or it can't delete
+                        clean(buf);
+                    }
+                    break;
+                } else {
+                    buf = in.map(FileChannel.MapMode.READ_ONLY, position, MAP_SIZE);
+                    out.write(buf);
+                    if (delSrc) {
+                        // here must clean first, or it can't delete
+                        clean(buf);
+                    }
+                    position += MAP_SIZE;
+                }
+            }
 
             in.close();
             out.close();
 
             if (delSrc) {
-                // here must clean first, or it can't delete
-                clean(buf);
                 source.delete();
             }
 
