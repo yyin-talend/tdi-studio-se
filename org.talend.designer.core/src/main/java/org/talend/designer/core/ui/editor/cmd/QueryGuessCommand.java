@@ -263,7 +263,7 @@ public class QueryGuessCommand extends Command {
         StringBuffer buffer = new StringBuffer();
         String[] s = query.split(","); //$NON-NLS-N$
         buffer.append(s[0]);
-        if (s.length > 2) {
+        if (s.length > 1) {
             for (int i = 1; i < s.length - 1; i++) {
                 s[i] = s[i].trim();
                 buffer.append("," + "\n" + "\t" + "\t" + s[i]);//$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$
