@@ -161,7 +161,7 @@ if (defined $opt{context_param}) {
     my $cb = undef;
 
     if (defined $opt{context_param_encoding}) {
-        use Convert::BaseN;
+        require Convert::BaseN;
         $cb = Convert::BaseN->new(base => $opt{context_param_encoding});
     }
 
