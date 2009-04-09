@@ -50,6 +50,8 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -120,8 +122,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
-        if (!TalendTextUtils.isCommonString(query) || QueryUtil.checkIfIsNoQuotesAtAll(query)) {// if the input query is
-                                                                                                // in context mode
+        ECodeLanguage lang = LanguageManager.getCurrentLanguage();
+        if ((!TalendTextUtils.isCommonString(query) || QueryUtil.checkIfIsNoQuotesAtAll(query)) && (lang == ECodeLanguage.JAVA)) {// if
+            // the input query is in context mode in java
             // String pid = SqlBuilderPlugin.PLUGIN_ID;
             // String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
             // String infoMsg = Messages.getString("SqlMemoController.QueryError.infoMsg",
@@ -139,7 +142,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             return null;
             // return null;
         }
-        // if the input query isn't contextmode
+        // if the input query isn't contextmode or it's a standard query in perl
         query = this.removeStrInQuery(query);
         initConnectionParametersWithContext(elem, part == null ? new EmptyContextManager().getDefaultContext() : part
                 .getTalendEditor().getProcess().getContextManager().getDefaultContext());
