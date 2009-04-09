@@ -52,7 +52,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                     searchStr_<%=cid %>_<%=i %> = org.apache.oro.text.GlobCompiler.globToPerl5(searchStr_<%=cid %>_<%=i %>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
                 <%}%>
                 <%if(substitution.get("WHOLE_WORD").equals("true")){%>
-                    searchStr_<%=cid %>_<%=i %> = "\\b" + searchStr_<%=cid %>_<%=i %> + "\\b";
+                    searchStr_<%=cid %>_<%=i %> = "^" + searchStr_<%=cid %>_<%=i %> + "$";
                 <%}%>                                
                 <%if(substitution.get("CASE_SENSITIVE").equals("false")){%>
                     searchStr_<%=cid %>_<%=i %> = "(?i)" + searchStr_<%=cid %>_<%=i %>;
