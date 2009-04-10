@@ -36,8 +36,6 @@ import org.talend.repository.ProjectManager;
  */
 public class StatsAndLogsComposite extends AbstractPreferenceComposite {
 
-    boolean isClicked;
-
     private ParametersType pType;
 
     /**

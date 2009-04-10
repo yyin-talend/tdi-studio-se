@@ -134,7 +134,13 @@ public class ElementParameter2ParameterType {
                         // it (this will prevent to overwrite the
                         // value)
                     }
-                    String value = pType.getValue();
+                    String value = null;
+                    if (param.getName().equals("STATANDLOG_USE_PROJECT_SETTINGS")
+                            || param.getName().equals("IMPLICITCONTEXT_USE_PROJECT_SETTINGS")) {
+                        value = param.getValue().toString();
+                    } else {
+                        value = pType.getValue();
+                    }
                     if (param.getField().equals(EParameterFieldType.CHECK) || param.getField().equals(EParameterFieldType.RADIO)) {
                         if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
                             Boolean boolean1 = new Boolean(value);

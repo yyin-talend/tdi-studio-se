@@ -138,6 +138,7 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(2);
         param.setShow(!isJoblet);
+        param.setShowIf("(MULTI_THREAD_EXECATION=='true' or MULTI_THREAD_EXECATION=='false')");
         paramList.add(param);
 
         if (PluginChecker.isTIS()) {
@@ -564,7 +565,7 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(82);
         param.setRequired(true);
-        param.setShowIf(CONTEXTLOAD_CONDITION);
+        param.setShowIf("((PRINT_OPERATIONS == 'true' or PRINT_OPERATIONS == 'false') and " + CONTEXTLOAD_CONDITION + ")");
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -578,7 +579,7 @@ public class JobSettingsManager {
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(83);
             param.setRequired(true);
-            param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setShowIf("((DISABLE_ERROR == 'true' or DISABLE_ERROR == 'false') and " + CONTEXTLOAD_CONDITION + ")");
             param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }
@@ -592,7 +593,7 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(83);
         param.setRequired(true);
-        param.setShowIf(CONTEXTLOAD_CONDITION);
+        param.setShowIf("((DISABLE_WARNINGS == 'true' or DISABLE_WARNINGS == 'false') and " + CONTEXTLOAD_CONDITION + ")");
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -606,7 +607,7 @@ public class JobSettingsManager {
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(83);
             param.setRequired(true);
-            param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setShowIf("((DISABLE_INFO == 'true' or DISABLE_INFO == 'false') and " + CONTEXTLOAD_CONDITION + ")");
             param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }
