@@ -69,8 +69,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      */
     private static final String SEPARATOR = "->"; //$NON-NLS-1$
 
-    public static final String VIEW_NAME = Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
-
     public static final String VIEW_NAME_JOBLET = "Joblet"; //$NON-NLS-1$
 
     public static final String MODEL = "Model"; //$NON-NLS-1$
@@ -94,6 +92,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     public JobSettingsView() {
         tabFactory = new HorizontalTabFactory();
         CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(this);
+    }
+
+    public static String getViewNameLable() {
+        return Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
     }
 
     @Override
@@ -341,7 +343,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             title = typeTitle;
         }
 
-        String viewName = VIEW_NAME;
+        String viewName = getViewNameLable();
         if (element instanceof IProcess && AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) element)) {
             viewName = VIEW_NAME_JOBLET;
         }
@@ -458,8 +460,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     String title = activeEditor.getTitle();
                     if (title.startsWith(VIEW_NAME_JOBLET)) {
                         title = title.substring(VIEW_NAME_JOBLET.length() + 1);
-                    } else if (title.startsWith(VIEW_NAME)) {
-                        title = title.substring(VIEW_NAME.length() + 1);
+                    } else if (title.startsWith(getViewNameLable())) {
+                        title = title.substring(getViewNameLable().length() + 1);
 
                     }
 
@@ -545,7 +547,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     if (obj instanceof ERepositoryObjectType) {
                         switch ((ERepositoryObjectType) obj) {
                         case PROCESS:
-                            type = VIEW_NAME;
+                            type = getViewNameLable();
                             break;
                         case JOBLET:
                             type = VIEW_NAME_JOBLET;

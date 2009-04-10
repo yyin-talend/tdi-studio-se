@@ -243,7 +243,7 @@ public class CodeView extends ViewPart {
                 generatingNode = selectedNode;
             }
             if (generatingNode.getComponent().getMultipleComponentManagers().size() > 0) {
-                document.set(MULTIPLE_COMPONENT_ERROR_MESSAGE);
+                document.set(Messages.getString("CodeView.MultipleComponentError"));
                 return;
             }
             String generatedCode = ""; //$NON-NLS-1$
@@ -278,7 +278,7 @@ public class CodeView extends ViewPart {
                 default:
                 }
             } catch (SystemException e) {
-                document.set(ERROR_MESSAGE);
+                document.set(Messages.getString("CodeView.Error"));
                 ExceptionHandler.process(e);
             }
             document.set(generatedCode);

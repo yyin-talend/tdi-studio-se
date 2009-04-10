@@ -197,7 +197,7 @@ public class UpdateCheckResult extends UpdateResult {
             if (isJoblet) {
                 category = JobSettingsView.VIEW_NAME_JOBLET; // joblet
             } else {
-                category = JobSettingsView.VIEW_NAME;
+                category = JobSettingsView.getViewNameLable();
             }
             break;
         case CONTEXT:

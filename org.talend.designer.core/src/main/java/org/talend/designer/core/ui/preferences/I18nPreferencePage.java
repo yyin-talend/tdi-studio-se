@@ -54,6 +54,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.CorePreferencePage;
 import org.talend.core.prefs.ui.OneLineComboFieldEditor;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.views.RefreshView;
 
 /**
  * DOC wzhang class global comment. Detailled comment
@@ -186,7 +187,6 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         }
                         BabiliTool.storeBabiliTranslation(info.getKey(), pluginId, info.getLabel());
                     }
-
                     if (monitor.isCanceled()) {
                         try {
                             throw new InterruptedException(Messages.getString("I18nPreferencePage.operationCancelled")); //$NON-NLS-1$
@@ -234,6 +234,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         boolean ok = super.performOk();
         saveLanguageType();
         CorePlugin.getDefault().savePluginPreferences();
+        RefreshView.refreshAll();
         return ok;
     }
 
