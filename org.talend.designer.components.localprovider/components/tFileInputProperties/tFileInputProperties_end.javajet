@@ -1,7 +1,7 @@
 <%@ jet 
 	imports="
         java.util.List
-        
+        org.talend.core.model.process.ElementParameterParser
         org.talend.core.model.process.IConnection
         org.talend.core.model.process.IConnectionCategory
         org.talend.core.model.process.INode
@@ -12,7 +12,7 @@
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
-    
+    String fileFormat = ElementParameterParser.getValue(node,"__FILE_FORMAT__");
     String outConnName = null;
     List< ? extends IConnection> outConns = node.getOutgoingConnections();
     for(IConnection conn : outConns){
@@ -24,5 +24,17 @@
         return ""; //return immediately, generate nothing
     }   	
 %>
+tos_count_<%=cid %>++;
 }
+<%
+	if(fileFormat.equals("INI_FORMAT")){
+%>
+	    } catch (org.ini4j.InvalidFileFormatException e) {
+	    	throw(e);
+	    } catch (java.io.IOException ex) {
+	    	throw(ex);
+	    }
+<%
+	}
+%>
 globalMap.put("<%=cid %>_NB_LINE", tos_count_<%=cid %>);

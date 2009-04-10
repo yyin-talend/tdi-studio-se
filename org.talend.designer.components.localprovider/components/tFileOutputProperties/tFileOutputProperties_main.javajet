@@ -1,7 +1,7 @@
 <%@ jet 
 	imports="
         java.util.List
-        
+        org.talend.core.model.process.ElementParameterParser
         org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.process.IConnection
@@ -14,7 +14,7 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+String fileFormat = ElementParameterParser.getValue(node,"__FILE_FORMAT__");
 String inConnName = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
 for(IConnection conn : inConns){
@@ -25,6 +25,14 @@ for(IConnection conn : inConns){
 if(inConnName == null){
 	return ""; //return immediately, generate nothing
 }
-
+if(fileFormat.equals("PROPERTIES_FORMAT")){
 %>
-properties_<%=cid%>.setProperty(<%=inConnName %>.key, <%=inConnName %>.value);
+	properties_<%=cid%>.setProperty(<%=inConnName %>.key, <%=inConnName %>.value);
+<%
+}else if(fileFormat.equals("INI_FORMAT")){
+	String sectionName = ElementParameterParser.getValue(node,"__SECTION_NAME__");
+%>
+	ini_<%=cid%>.put("<%=sectionName %>",<%=inConnName %>.key, <%=inConnName %>.value);
+<%
+}
+%>
