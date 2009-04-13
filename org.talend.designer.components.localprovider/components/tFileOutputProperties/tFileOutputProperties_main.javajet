@@ -32,7 +32,7 @@ if(fileFormat.equals("PROPERTIES_FORMAT")){
 }else if(fileFormat.equals("INI_FORMAT")){
 	String sectionName = ElementParameterParser.getValue(node,"__SECTION_NAME__");
 %>
-	ini_<%=cid%>.put("<%=sectionName %>",<%=inConnName %>.key, <%=inConnName %>.value);
+	ini_<%=cid%>.put(<%=sectionName %>,<%=inConnName %>.key, <%=inConnName %>.value);
 <%
 }
 %>

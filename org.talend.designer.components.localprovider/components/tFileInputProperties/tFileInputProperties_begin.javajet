@@ -15,6 +15,7 @@ String cid = node.getUniqueName();
 String fileFormat = ElementParameterParser.getValue(node,"__FILE_FORMAT__");
 String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 String outConnName = null;
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 List< ? extends IConnection> outConns = node.getOutgoingConnections();
 for(IConnection conn : outConns){
 	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -40,13 +41,13 @@ if(fileFormat.equals("PROPERTIES_FORMAT")){
 }else if(fileFormat.equals("INI_FORMAT")){
 	String sectionName = ElementParameterParser.getValue(node,"__SECTION_NAME__");
 %>
-	try {
-	    org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));
-	    org.ini4j.Profile.Section section_<%=cid%> = ini_<%=cid%>.get("<%=sectionName%>");
-	    java.util.Set<String> names_<%=cid%> = section_<%=cid%>.keySet();
-	    java.util.Iterator<String> it_<%=cid%> = names_<%=cid%>.iterator();
-    while (it_<%=cid%>.hasNext()) {
-        String key_<%=cid%> = it_<%=cid%>.next();
+    org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));
+    ini_<%=cid%>.getConfig().setFileEncoding(java.nio.charset.Charset.forName(<%=encoding %>));
+    org.ini4j.Profile.Section section_<%=cid%> = ini_<%=cid%>.get(<%=sectionName%>);
+    java.util.Set<String> names_<%=cid%> = section_<%=cid%>.keySet();
+    java.util.Iterator<String> it_<%=cid%> = names_<%=cid%>.iterator();
+	while (it_<%=cid%>.hasNext()) {
+	    String key_<%=cid%> = it_<%=cid%>.next();
 		<%=outConnName %>.key = key_<%=cid%>;
 		<%=outConnName %>.value = section_<%=cid%>.get(key_<%=cid%>);
 <%

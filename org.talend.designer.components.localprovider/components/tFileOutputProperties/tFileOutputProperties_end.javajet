@@ -18,12 +18,7 @@ if(fileFormat.equals("PROPERTIES_FORMAT")){
 <%
 }else if(fileFormat.equals("INI_FORMAT")){
 %>
-		ini_<%=cid%>.store();
-	} catch (org.ini4j.InvalidFileFormatException e) {
-    	throw(e);
-    } catch (java.io.IOException ex) {
-    	throw(ex);
-    }
+	ini_<%=cid%>.store();
 <%
 }
 %>

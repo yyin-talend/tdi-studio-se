@@ -12,6 +12,7 @@ String cid = node.getUniqueName();
 String fileFormat = ElementParameterParser.getValue(node,"__FILE_FORMAT__");
 String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 String append = ElementParameterParser.getValue(node,"__APPEND__");
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
 java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
 <%
@@ -32,8 +33,8 @@ if(fileFormat.equals("PROPERTIES_FORMAT")){
 }else if(fileFormat.equals("INI_FORMAT")){
 	
 %>
-	try {
-	    org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));
+	org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));
+	ini_<%=cid%>.getConfig().setFileEncoding(java.nio.charset.Charset.forName(<%=encoding %>));
 <%
 }
 %>
