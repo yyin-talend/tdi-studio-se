@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.preferences;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -96,13 +97,33 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
     @Override
     protected void createFieldEditors() {
         // Adds a combo for language selection.
+
+        String spanish = "Espa\u00F1ol"; //$NON-NLS-1$
+        byte[] utf8Bytes;
+        try {
+            utf8Bytes = spanish.getBytes("UTF8"); //$NON-NLS-1$
+            spanish = new String(utf8Bytes, "UTF8"); //$NON-NLS-1$
+        } catch (UnsupportedEncodingException e1) {
+            // could be translated, but it's only in case of error when change UTF8 characters.
+            spanish = "Spanish"; //$NON-NLS-1$
+        }
+
+        String russian = "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"; //$NON-NLS-1$
+        try {
+            utf8Bytes = russian.getBytes("UTF8"); //$NON-NLS-1$
+            russian = new String(utf8Bytes, "UTF8"); //$NON-NLS-1$
+        } catch (UnsupportedEncodingException e1) {
+            // could be translated, but it's only in case of error when change UTF8 characters.
+            russian = "Russian"; //$NON-NLS-1$
+        }
+
         String[][] entryNamesAndValues = { { Locale.ENGLISH.getDisplayLanguage(Locale.ENGLISH), Locale.ENGLISH.getLanguage() },
                 { Locale.FRENCH.getDisplayLanguage(Locale.FRENCH), Locale.FRENCH.getLanguage() },
                 { Locale.CHINESE.getDisplayLanguage(Locale.CHINESE), Locale.CHINESE.getLanguage() },
                 { Locale.GERMAN.getDisplayLanguage(Locale.GERMAN), Locale.GERMAN.getLanguage() },
                 { Locale.JAPANESE.getDisplayLanguage(Locale.JAPANESE), Locale.JAPANESE.getLanguage() },
-                { Locale.ITALIAN.getDisplayLanguage(Locale.ITALIAN), Locale.ITALIAN.getLanguage() }, { "Brasil", "br" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                { "Español", "es" }, { "Русский", "ru" } }; //$NON-NLS-1$ //$NON-NLS-2$
+                { Locale.ITALIAN.getDisplayLanguage(Locale.ITALIAN), Locale.ITALIAN.getLanguage() }, { "Brasil", "pt_BR" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                { spanish, "es" }, { russian, "ru" } }; //$NON-NLS-1$ //$NON-NLS-2$
         languageSelectionEditor = new OneLineComboFieldEditor(ITalendCorePrefConstants.LANGUAGE_SELECTOR, Messages
                 .getString("I18nPreferencePage.needRestart"), entryNamesAndValues, getFieldEditorParent()); //$NON-NLS-1$
         addField(languageSelectionEditor);
