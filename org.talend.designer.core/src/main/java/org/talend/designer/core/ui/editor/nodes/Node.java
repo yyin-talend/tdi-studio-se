@@ -2369,7 +2369,7 @@ public class Node extends Element implements INode {
             }
         }
 
-        if (component.useMerge()) {
+        if (component.useMerge() && !this.getConnectorFromType(EConnectionType.FLOW_MERGE).isMergeAllowDifferentSchema()) {
             if (getMetadataList().get(0).getListColumns().size() == 0) {
                 String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -2384,9 +2384,6 @@ public class Node extends Element implements INode {
                     }
                 }
             }
-            // add by wzhang. the schema of tFileOutputMSXML can be different.
-            if ("tFileOutputMSXML".equals(component.getName())) //$NON-NLS-1$
-                return;
 
             if (inputs.size() > 1) {
                 IMetadataTable firstSchema = inputs.get(0).getMetadataTable();

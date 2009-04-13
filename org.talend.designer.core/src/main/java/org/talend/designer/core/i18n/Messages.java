@@ -50,7 +50,7 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(final String key, final Object... args) {
-        return MessagesCore.getString(key, PLUGIN_ID, RESOURCE_BUNDLE, args);
+        return getString(key, PLUGIN_ID, RESOURCE_BUNDLE, args);
     }
 
 }

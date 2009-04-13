@@ -1793,6 +1793,9 @@ public class EmfComponent implements IComponent {
                 nodeConnector.setBuiltIn(connType.isBUILTIN());
                 nodeConnector.setMultiSchema(connType.isBUILTIN());
             }
+            if (connType.isSetMERGEALLOWDIFFERENTSCHEMA()) {
+                nodeConnector.setMergeAllowDifferentSchema(connType.isMERGEALLOWDIFFERENTSCHEMA());
+            }
             if (connType.isSetMULTISCHEMA()) {
                 nodeConnector.setMultiSchema(connType.isMULTISCHEMA());
             }

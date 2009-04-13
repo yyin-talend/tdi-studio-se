@@ -55,6 +55,6 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(String key, Object... args) {
-        return MessagesCore.getString(key, PLUGIN_ID, resourceBundle, args);
+        return getString(key, PLUGIN_ID, resourceBundle, args);
     }
 }

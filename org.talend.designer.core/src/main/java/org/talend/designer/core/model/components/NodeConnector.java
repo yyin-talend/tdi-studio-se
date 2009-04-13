@@ -61,6 +61,8 @@ public class NodeConnector implements INodeConnector {
 
     private INode parentNode;
 
+    private boolean mergeAllowDifferentSchema;
+
     public NodeConnector(INode parentNode) {
         super();
         this.parentNode = parentNode;
@@ -343,5 +345,23 @@ public class NodeConnector implements INodeConnector {
      */
     public void setMultiSchema(boolean multiSchema) {
         this.multiSchema = multiSchema;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INodeConnector#isMergeAllowDifferentSchema()
+     */
+    public boolean isMergeAllowDifferentSchema() {
+        return mergeAllowDifferentSchema;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INodeConnector#setMergeAllowDifferentSchema(boolean)
+     */
+    public void setMergeAllowDifferentSchema(boolean mergeOption) {
+        this.mergeAllowDifferentSchema = mergeOption;
     }
 }
