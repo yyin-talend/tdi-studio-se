@@ -663,7 +663,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             // create the MetadataDialog
             MetadataDialog metaDialog = null;
             if (inputMetadata != null) {
-                if (inputInfos != null && node.getComponent().useMerge() && inputInfos.size() > 1) {
+                if (inputInfos != null && inputInfos.size() > 1 && connectionName == null) {
                     MetadataDialogForMerge metaDialogForMerge = new MetadataDialogForMerge(composite.getShell(), inputInfos,
                             outputMetaCopy, node, getCommandStack());
                     metaDialogForMerge.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
