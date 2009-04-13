@@ -19,6 +19,8 @@
     boolean useGlob = ElementParameterParser.getValue(node, "__GLOBEXPRESSIONS__").equals("true");
     List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
     
+    boolean toSlash = ElementParameterParser.getValue(node, "__FORMAT_FILEPATH_TO_SLASH__").equals("true");
+    
 %>
 
     String directory_<%=cid%> = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
@@ -154,6 +156,9 @@ for (int i=0; i<files.size(); i++) {
  
         String currentFileName_<%=cid%> = files_<%=cid%>.getName(); 
         String currentFilePath_<%=cid%> = files_<%=cid%>.getAbsolutePath();
+<%if(toSlash){%>
+		currentFilePath_<%=cid%> = currentFilePath_<%=cid%>.replaceAll("\\\\", "/");
+<%}%>   
         NB_FILE<%=cid%>++;
         
         globalMap.put("<%=cid%>_CURRENT_FILE", currentFileName_<%=cid%>);
