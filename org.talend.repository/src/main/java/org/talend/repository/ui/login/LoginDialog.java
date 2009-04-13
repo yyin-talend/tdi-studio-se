@@ -134,7 +134,7 @@ public class LoginDialog extends TrayDialog {
 
         loginComposite = new LoginComposite(container, SWT.NONE, this);
         GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = INNER_LOGIN_COMPOSITE_WIDTH;
+        // data.widthHint = INNER_LOGIN_COMPOSITE_WIDTH;
         loginComposite.setLayoutData(data);
 
         return container;

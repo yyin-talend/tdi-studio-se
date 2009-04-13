@@ -25,7 +25,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -229,13 +228,15 @@ public class RegisterWizardPage extends WizardPage {
 
     protected void createLegalInfos(Composite composite, int columnSpan) {
         Composite localComposite = new Composite(composite, SWT.NONE);
-        localComposite.setLayout(new FormLayout());
+        localComposite.setLayout(new GridLayout());
 
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = columnSpan;
         localComposite.setLayoutData(gd);
 
-        Label legalInfos = new Label(localComposite, SWT.NONE);
+        Label legalInfos = new Label(localComposite, SWT.WRAP);
+        gd = new GridData(GridData.FILL_BOTH);
+        legalInfos.setLayoutData(gd);
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         legalInfos.setText(Messages.getString("RegisterWizardPage.legalinfos", brandingService.getCorporationName())); //$NON-NLS-1$

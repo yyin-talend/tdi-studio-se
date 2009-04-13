@@ -36,10 +36,10 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.repository.i18n.Messages;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.resources.ResourcesPlugin;
+import org.talend.repository.i18n.Messages;
 
 /**
  * This class is used for creating a page for importing demo project.<br/>
@@ -71,7 +71,9 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1#createControl(org.eclipse.swt.widgets.Composite)
+     * @see
+     * org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1#createControl(org.eclipse.swt
+     * .widgets.Composite)
      */
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
@@ -118,9 +120,9 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         for (int i = 0; i < this.demoProjectList.size(); i++) {
             DemoProjectBean demoProject = this.demoProjectList.get(i);
 
-                TableItem tableItem = new TableItem(wizardSelectionViewer.getTable(), i);
-                tableItem.setText(demoProject.getProjectName());
-                tableItem.setImage(getImageForDemoProject(demoProject.getLanguage()));
+            TableItem tableItem = new TableItem(wizardSelectionViewer.getTable(), i);
+            tableItem.setText(demoProject.getProjectName());
+            tableItem.setImage(getImageForDemoProject(demoProject.getLanguage()));
         }
     }
 
@@ -156,7 +158,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         URL url = null;
         String pluginPath = null;
         try {
-            //url = FileLocator.resolve(bundle.getEntry(relatedImagePath)); 
+            //url = FileLocator.resolve(bundle.getEntry(relatedImagePath));
             url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(relatedImagePath), null));
             pluginPath = new Path(url.getFile()).toOSString();
         } catch (IOException e1) {
@@ -169,24 +171,30 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+     * @see
+     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent
+     * )
      */
     public void selectionChanged(SelectionChangedEvent event) {
 
         selectedDemoProjectIndex = ((TableViewer) event.getSource()).getTable().getSelectionIndex();
 
-        Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
-        URL url;
-        try {
-            url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(this.demoProjectList.get(selectedDemoProjectIndex)
-                    .getDescriptionFilePath()), null));
+        // try {
+        // Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
+        // URL url;
+        // url = FileLocator.toFileURL(FileLocator.find(bundle, new
+        // Path(this.demoProjectList.get(selectedDemoProjectIndex)
+        // .getDescriptionFilePath()), null));
+        //
+        // String descriptionFilePath = new Path(url.getFile()).toOSString();
+        // descriptionBrowser.setUrl(descriptionFilePath);
 
-            String descriptionFilePath = new Path(url.getFile()).toOSString();
-
-            descriptionBrowser.setUrl(descriptionFilePath);
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        }
+        ECodeLanguage demoLanguage = this.demoProjectList.get(selectedDemoProjectIndex).getLanguage();
+        String demoDescription = CorePlugin.getDefault().getResourceService().getDemoDescription(demoLanguage);
+        descriptionBrowser.setText(demoDescription);
+        // } catch (IOException e) {
+        // ExceptionHandler.process(e);
+        // }
     }
 
     /**
