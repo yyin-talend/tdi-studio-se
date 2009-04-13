@@ -48,6 +48,7 @@ if(serverType.equals("JBoss")){ // server judgement
 }else if(serverType.equals("ActiveMQ")){
 	boolean topic = ElementParameterParser.getValue(node, "__MSGTYPE__").equals("Topic");
 	String to = ElementParameterParser.getValue(node, "__TO__");
+	String deliverMode = ElementParameterParser.getValue(node, "__DELIVERY_MODE__");
 %>
 	String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
 	System.out.println("Connecting to URL: " + url_<%=cid %>);
@@ -68,7 +69,17 @@ if(serverType.equals("JBoss")){ // server judgement
     	des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
     }
 	javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
-	producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+	
+	<%if ("N_PERSISTENT".equals(deliverMode)) {
+	%>
+		producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+	<%
+	} else if ("PERSISTENT".equals(deliverMode)) {
+	%>
+		producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
+	<%
+	}%>
+	
 
 <%}else{ //server judgement   /***WebSphere MQ*****/
 	String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
