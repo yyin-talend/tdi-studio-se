@@ -538,7 +538,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(2);
         param
-                .setShowIf("(ON_CONSOLE_FLAG == 'true' or ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+                .setShowIf("((ON_CONSOLE_FLAG == 'true' or ON_CONSOLE_FLAG == 'false') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
     }
 
@@ -869,7 +869,8 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(90);
-        param.setShowIf("(CATCH_RUNTIME_ERRORS == 'true' or ON_LOGCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param
+                .setShowIf("((CATCH_RUNTIME_ERRORS == 'true' or CATCH_RUNTIME_ERRORS == 'false') and (ON_LOGCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
 
         // Catch user errors
@@ -880,7 +881,7 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(90);
-        param.setShowIf("(CATCH_USER_ERRORS == 'true' or ON_LOGCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("((CATCH_USER_ERRORS == 'true' or CATCH_USER_ERRORS == 'false') and (ON_LOGCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
 
         // Catch user warning
@@ -891,7 +892,7 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(90);
-        param.setShowIf("(CATCH_USER_WARNING == 'true' or ON_LOGCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("((CATCH_USER_WARNING == 'true' or CATCH_USER_WARNING == 'false') and (ON_LOGCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
 
         // Catch realtime statistics
@@ -903,7 +904,8 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(91);
-        param.setShowIf("(CATCH_REALTIME_STATS == 'true' or ON_STATCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param
+                .setShowIf("((CATCH_REALTIME_STATS == 'true' or CATCH_REALTIME_STATS == 'false') and (ON_STATCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
     }
 
