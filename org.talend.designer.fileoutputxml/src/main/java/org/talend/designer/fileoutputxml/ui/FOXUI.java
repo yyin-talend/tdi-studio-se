@@ -402,9 +402,6 @@ public class FOXUI {
             manager.add(setGroupAction);
             manager.add(removeGroupAction);
             manager.add(new Separator());
-        }
-        if (!this.getFoxManager().getFoxComponent().istFileOutputMSXML()) {
-            // PTODO will check this for tFileOutputMSXML component later.
             manager.add(importFromXMLAction);
         }
     }

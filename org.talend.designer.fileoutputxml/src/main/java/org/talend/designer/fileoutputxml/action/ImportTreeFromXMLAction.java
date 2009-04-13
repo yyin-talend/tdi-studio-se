@@ -20,6 +20,7 @@ import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.fileoutputxml.data.Attribute;
@@ -66,7 +67,8 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         }
         try {
             ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
-            FOXTreeNode root = cloneATreeNode(treeNode);
+            String schemaName = getSelectedSchema();
+            FOXTreeNode root = cloneATreeNode(treeNode, schemaName);
 
             if (!file.toUpperCase().endsWith(".XSD")) { //$NON-NLS-1$
                 root = ((Element) root).getElementChildren().get(0);
@@ -80,25 +82,43 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         return list;
     }
 
-    private FOXTreeNode cloneATreeNode(ATreeNode treeNode) throws Exception {
+    private FOXTreeNode cloneATreeNode(ATreeNode treeNode, String schemaName) throws Exception {
         FOXTreeNode node = null;
         if (treeNode.getType() == ATreeNode.ATTRIBUTE_TYPE) {
             node = new Attribute();
         } else {
             node = new Element();
         }
-
+        
         node.setLabel((String) treeNode.getValue());
-
+        
         Object[] children = treeNode.getChildren();
         if (children != null) {
             for (int i = 0; i < children.length; i++) {
                 ATreeNode child = (ATreeNode) children[i];
-                FOXTreeNode foxChild = cloneATreeNode(child);
+                FOXTreeNode foxChild = cloneATreeNode(child, schemaName);
+                foxChild.setRow(schemaName);
                 node.addChild(foxChild);
             }
         }
         return node;
+    }
+
+    /**
+     * 
+     * wzhang Comment method "getSelectedSchema".
+     * 
+     * @return
+     */
+    private String getSelectedSchema() {
+        TreeItem[] selection = xmlViewer.getTree().getSelection();
+        if (selection.length > 0) {
+            Object data = selection[0].getData();
+            if (data instanceof FOXTreeNode) {
+                return ((FOXTreeNode) data).getRow();
+            }
+        }
+        return foxui.getFoxManager().getCurrentSchema();
     }
 
     /*
@@ -112,7 +132,9 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         if (newInput.size() == 0) {
             return;
         }
-        foxui.getFoxManager().setTreeData(newInput);
+        List<FOXTreeNode> treeData = foxui.getFoxManager().getTreeData(getSelectedSchema());
+        treeData.clear();
+        treeData.addAll(newInput);
         xmlViewer.setInput(foxui.getFoxManager().getTreeData());
         // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         xmlViewer.refresh();
