@@ -139,6 +139,10 @@ public class OpenExistVersionProcessWizard extends Wizard {
             // Only latest version can be editted
             openAnotherVersion(node, !node.getObject().getProperty().getVersion()
                     .equals(processObject.getProperty().getVersion()));
+
+            if (!node.getObject().getProperty().getVersion().equals(processObject.getProperty().getVersion())) {
+                unlockObject();
+            }
         }
         return true;
     }
