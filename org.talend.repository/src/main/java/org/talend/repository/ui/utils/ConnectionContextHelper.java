@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -176,6 +178,11 @@ public final class ConnectionContextHelper {
     private static String convertContextLabel(String label) {
         if (label != null) {
             String newLabel = label.replaceAll("[\\.\\-\\ \\(\\)\\[\\]=]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+            Pattern pattern = Pattern.compile("^[0-9]+.*$");
+            Matcher m = pattern.matcher(newLabel);
+            if (m.matches()) {
+                newLabel = "_" + newLabel;
+            }
             //
             try {
                 ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
