@@ -35,11 +35,13 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -448,8 +450,25 @@ public class NodesPasteCommand extends Command {
                                 String parentName = param.getParentParameter().getName();
                                 pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue()); //$NON-NLS-1$
                             } else {
-                                pastedNode.setPropertyValue(param.getName(), param.getValue());
+                                Object value = param.getValue();
+                                if (value instanceof String) {
+                                    String copiedParamValue = (String) value;
+                                    for (INodeReturn returns : copiedNode.getReturns()) {
+                                        String copiedReturnName = returns.getName();
+                                        String copiedVarName = ElementParameterParser.parse(copiedNode, returns.getVarName());
+                                        if (copiedParamValue.indexOf(copiedVarName) != -1) {
+                                            for (INodeReturn pastedReturn : pastedNode.getReturns()) {
+                                                if (pastedReturn.getName().equals(copiedReturnName)) {
+                                                    copiedParamValue = copiedParamValue.replace(copiedVarName,
+                                                            ElementParameterParser.parse(pastedNode, pastedReturn.getVarName()));
+                                                    value = copiedParamValue;
+                                                }
+                                            }
 
+                                        }
+                                    }
+                                }
+                                pastedNode.setPropertyValue(param.getName(), value);
                                 // See Bug 0005722: the pasted component don't keep the same read-only mode and didn;t
                                 // hide
                                 // the password.
