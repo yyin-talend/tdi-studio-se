@@ -128,7 +128,9 @@ public class StatsAndLogsManager {
         IComponent commitComponent = null;
 
         String subString = null;
-
+        /*
+         * maybe, need create every of committing node for log/stat/metter.
+         */
         String[] javaDbComponents = StatsAndLogsConstants.DB_OUTPUT_COMPONENTS;
         for (String dbComponent : javaDbComponents) {
             String commitComponentName = null;
@@ -144,7 +146,6 @@ public class StatsAndLogsManager {
                 if (commitComponent != null) {
                     connectionUID2 = connectionUID + "_Commit";//$NON-NLS-1$ 
                     commitNode = new DataNode(commitComponent, connectionUID2);
-                    commitNode.setStart(true);
                     commitNode.setSubProcessStart(true);
                     commitNode.setActivate(true);
                     commitNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(connectionUID);
@@ -257,10 +258,10 @@ public class StatsAndLogsManager {
 
     private static DataNode addConnection(DataNode connectionNode, Process process, String connectionUID, DataNode dataNode,
             List<DataNode> nodeList, DataNode commitNode) {
-        if (connectionNode != null) {
-            dataNode.getElementParameter("USE_EXISTING_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
-            dataNode.getElementParameter("CONNECTION").setValue(connectionUID);//$NON-NLS-1$
-        } else {
+        dataNode.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName()).setValue(Boolean.TRUE);
+        dataNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(connectionUID);
+
+        if (connectionNode == null) {
             IComponent component = null;
             String[] javaDbComponents = StatsAndLogsConstants.DB_OUTPUT_COMPONENTS;
             for (String dbComponent : javaDbComponents) {
@@ -276,7 +277,6 @@ public class StatsAndLogsManager {
                     component = ComponentsFactoryProvider.getInstance().get(connectionComponentName);
                     if (component != null) {
                         connectionNode = new DataNode(component, connectionUID);
-                        connectionNode.setStart(true);
                         connectionNode.setSubProcessStart(true);
                         connectionNode.setActivate(true);
                         // check if shared parameter exist, if yes, use it ONLY when use the project settings.
@@ -299,11 +299,8 @@ public class StatsAndLogsManager {
                         connectionNode.setProcess(process);
                         nodeList.add(connectionNode);
 
-                        dataNode.getElementParameter("USE_EXISTING_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
-                        dataNode.getElementParameter("CONNECTION").setValue(connectionUID);//$NON-NLS-1$
-
-                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get("tPrejob");
-                        DataNode preNode = new DataNode(prejobComponent, "preStaLogCon");
+                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get("tPrejob");//$NON-NLS-1$
+                        DataNode preNode = new DataNode(prejobComponent, "preStaLogCon");//$NON-NLS-1$
                         preNode.setStart(true);
                         preNode.setSubProcessStart(true);
                         preNode.setActivate(true);
@@ -313,9 +310,6 @@ public class StatsAndLogsManager {
                         ((List<IConnection>) preNode.getOutgoingConnections()).add(dataConnec);
                         ((List<IConnection>) connectionNode.getIncomingConnections()).add(dataConnec);
 
-                        // DataConnection dataConnec2 = createDataConnectionForSubJobOK(preNode, dataNode);
-                        // ((List<IConnection>) preNode.getOutgoingConnections()).add(dataConnec2);
-                        // ((List<IConnection>) dataNode.getIncomingConnections()).add(dataConnec2);
                     }
                 }
             }
