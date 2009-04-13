@@ -28,6 +28,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.ContextUtils;
@@ -151,8 +152,11 @@ public final class ConnectionContextHelper {
         if (varList == null || varList.isEmpty()) {
             return null;
         }
-        String contextName = connItem.getProperty().getLabel();
+
+        String contextName = convertContextLabel(connItem.getProperty().getLabel());
+
         ISelection selection = getRepositoryContext(contextName, false);
+
         if (selection == null) {
             return null;
         }
@@ -160,16 +164,55 @@ public final class ConnectionContextHelper {
         ContextWizard contextWizard = new ContextWizard(contextName, selection.isEmpty(), selection, varList);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         if (dlg.open() == Window.OK) {
-            return contextWizard.getContextItem();
+            ContextItem contextItem = contextWizard.getContextItem();
+            if (contextItem != null) {
+                contextItem.getProperty().setLabel(contextName);
+            }
+            return contextItem;
         }
         return null;
+    }
+
+    private static String convertContextLabel(String label) {
+        if (label != null) {
+            String newLabel = label.replaceAll("[\\.\\-\\ \\(\\)\\[\\]=]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+            //
+            try {
+                ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                List<IRepositoryObject> contextObjectList = factory.getAll(ERepositoryObjectType.CONTEXT, true);
+
+                int i = 1;
+                String tmpLabel = newLabel;
+                while (!isValidContextName(contextObjectList, tmpLabel)) {
+                    tmpLabel = newLabel + i;
+                    i++;
+                }
+                return tmpLabel;
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+            return newLabel;
+        }
+        return null;
+    }
+
+    private static boolean isValidContextName(List<IRepositoryObject> contextObjectList, String name) {
+        if (contextObjectList != null) {
+            for (IRepositoryObject object : contextObjectList) {
+                Item item = object.getProperty().getItem();
+                if (item.getProperty().getLabel().equals(name)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private static List<IContextParameter> createContextParameters(ConnectionItem connectionItem, Set<IConnParamName> paramSet) {
         if (connectionItem == null) {
             return null;
         }
-        final String label = connectionItem.getProperty().getLabel();
+        final String label = convertContextLabel(connectionItem.getProperty().getLabel());
         Connection conn = connectionItem.getConnection();
 
         List<IContextParameter> varList = null;
@@ -199,7 +242,8 @@ public final class ConnectionContextHelper {
         if (connectionItem == null || contextItem == null) {
             return;
         }
-        final String label = connectionItem.getProperty().getLabel();
+
+        final String label = contextItem.getProperty().getLabel();
         Connection conn = connectionItem.getConnection();
 
         if (conn instanceof DatabaseConnection) {
