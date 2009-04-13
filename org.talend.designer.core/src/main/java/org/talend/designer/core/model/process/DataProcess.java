@@ -495,7 +495,8 @@ public class DataProcess {
                         // notice: here deal with the case, if the tSortRow is in the second branch of the merge node.
                         if (graphicalNode.isThereLinkWithMerge()) {
                             Map<INode, Integer> linkedMergeInfo = graphicalNode.getLinkedMergeInfo();
-                            if (linkedMergeInfo.get(linkedMergeInfo.keySet().toArray()[0]) > 1) {
+                            INode firstMergeNode = NodeUtil.getFirstMergeNode(graphicalNode);
+                            if (linkedMergeInfo.get(firstMergeNode) > 1) {
                                 dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
                                 dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
                                 dataConnec.setName(EConnectionType.ON_SUBJOB_OK.getDefaultLinkName());
@@ -1170,10 +1171,10 @@ public class DataProcess {
 
         // calculate the merge info for every node
         for (INode node : dataNodeList) {
-            int mergeOrder = duplicatedProcess.getMergelinkOrder(node);
-            if (mergeOrder >= 1) {
+            Map<INode, Integer> mergeInfo = duplicatedProcess.getLinkedMergeInfo(node);
+            if (!mergeInfo.isEmpty()) {
                 ((AbstractNode) node).setThereLinkWithMerge(true);
-                ((AbstractNode) node).setLinkedMergeInfo(duplicatedProcess.getLinkedMergeInfo(node));
+                ((AbstractNode) node).setLinkedMergeInfo(mergeInfo);
             }
         }
         checkRefList = null;

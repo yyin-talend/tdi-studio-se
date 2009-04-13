@@ -2300,7 +2300,7 @@ public class Process extends Element implements IProcess2 {
      * @param node
      * @return
      */
-    public int getMergelinkOrder(final INode node, final Set<INode> checkedNode) {
+    private int getMergelinkOrder(final INode node, final Set<INode> checkedNode) {
 
         List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
         int returnValue = -1;
@@ -2330,23 +2330,26 @@ public class Process extends Element implements IProcess2 {
      * @return
      */
     public Map<INode, Integer> getLinkedMergeInfo(final INode node) {
+        Map<INode, Integer> map = new HashMap<INode, Integer>();
 
+        getLinkedMergeInfo(node, map);
+
+        return map;
+    }
+
+    private void getLinkedMergeInfo(final INode node, final Map<INode, Integer> map) {
         List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
-        Map<INode, Integer> map = null;
-        for (int i = 0; (i < outgoingConnections.size()) && (map == null); i++) {
+        for (int i = 0; (i < outgoingConnections.size()); i++) {
             IConnection connec = outgoingConnections.get(i);
             if (connec.isActivate()) {
                 if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
-                    map = new HashMap<INode, Integer>();
                     map.put(connec.getTarget(), connec.getInputId());
-                    break;
+                    getLinkedMergeInfo(connec.getTarget(), map);
                 } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null) {
-                    map = getLinkedMergeInfo(connec.getTarget());
+                    getLinkedMergeInfo(connec.getTarget(), map);
                 }
             }
         }
-
-        return map;
     }
 
     public boolean isThereLinkWithHash(final INode node) {
@@ -2897,9 +2900,11 @@ public class Process extends Element implements IProcess2 {
             if (element instanceof NodeContainer) {
                 Node node = ((NodeContainer) element).getNode();
                 SubjobContainer sjc = mapSubjobStarts.get(node.getDesignSubjobStartNode());
-                sjc.addNodeContainer(node.getNodeContainer());
-                elem.remove(node.getNodeContainer());
-                updatedSubjobContainers.add(sjc);
+                if (sjc != null) {
+                    sjc.addNodeContainer(node.getNodeContainer());
+                    elem.remove(node.getNodeContainer());
+                    updatedSubjobContainers.add(sjc);
+                }
             }
         }
         fireStructureChange(NEED_UPDATE_JOB, elem);

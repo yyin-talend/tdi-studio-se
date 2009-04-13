@@ -1050,7 +1050,7 @@ public class Node extends Element implements INode {
         IElementParameter schemaParamTarget = paramTarget.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
         IElementParameter param = getSchemaParameterFromConnector(connector);
 
-        ChangeMetadataCommand cmc = new ChangeMetadataCommand(nodeTarget, param, null, tableTarget);
+        ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, param, null, tableTarget);
         CommandStack cmdStack = getCommandStack();
         if (cmdStack != null) {
             cmdStack.execute(cmc);
@@ -1064,14 +1064,12 @@ public class Node extends Element implements INode {
              */
             param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
                     repositorySchemaParamTarget.getValue());
-            nodeTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            this.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
         }
     }
 
     private CommandStack getCommandStack() {
         CommandStack cmdStack = null;
-        if (process.getEditor() == null)
-            return null;
         AbstractTalendEditor talendEditor = process.getEditor().getTalendEditor();
         cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
         return cmdStack;
@@ -1753,10 +1751,17 @@ public class Node extends Element implements INode {
         if (targetWithRef == null || targetWithRef.equals(this)) {
             // System.out.println(" ** No Ref Links found from:" + this);
             Map<INode, Integer> mergeInfo = getLinkedMergeInfo();
-            if (mergeInfo != null) {
-                // get the first one as there can be only
-                INode mergeNode = mergeInfo.keySet().iterator().next();
-                return mergeNode;
+            if (mergeInfo.size() > 0) {
+                // if all merge info got 1, then it's the main branch.
+                for (INode node : mergeInfo.keySet()) {
+                    if (mergeInfo.get(node) != 1) {
+                        // get the first merge connection to have the main branch (id 1 for merge connection)
+                        IConnection connection = NodeUtil.getIncomingConnections(node, IConnectionCategory.MERGE).get(0);
+                        return ((Node) connection.getSource()).getMainBranch();
+                    }
+                }
+                // if go here, then this component is on the main branch.
+                return this;
             }
             return this;
         } else {
@@ -1774,8 +1779,29 @@ public class Node extends Element implements INode {
         // Then if there is a lookup, get the main branch
         // Then take the first component of the main branch.
         // >> Can be optimized for simple cases.
-        return (Node) ((Node) getMainBranch().getSubProcessStartNode(false)).getMainBranch().getSubProcessStartNode(
-                withConditions);
+
+        int nbLoops = 0;
+
+        Node mainBranchNode = (Node) getMainBranch().getSubProcessStartNode(false);
+        Node mainSubBranchNode = (Node) mainBranchNode.getMainBranch().getSubProcessStartNode(withConditions);
+        if (mainSubBranchNode == null) {
+            return mainBranchNode;
+        }
+        while (mainBranchNode != mainSubBranchNode && nbLoops < 3) {
+            mainBranchNode = (Node) mainSubBranchNode.getMainBranch().getSubProcessStartNode(withConditions);
+            mainSubBranchNode = (Node) mainBranchNode.getMainBranch().getSubProcessStartNode(withConditions);
+            nbLoops++;
+        }
+        // code bellow is for debug only
+        // if (nbLoops >= 3) {
+        // System.out.println("**pb Start on component:" + this.getUniqueName() + " / mainBranchNode="
+        // + mainBranchNode.getUniqueName() + " / mainSubBranchNode=" + mainSubBranchNode.getUniqueName());
+        // } else {
+        // System.out.println("**component:" + this.getUniqueName() + " set start to " +
+        // mainSubBranchNode.getUniqueName());
+        // }
+
+        return mainSubBranchNode;
     }
 
     public boolean sameProcessAs(Node node, boolean withConditions) {
@@ -2600,8 +2626,7 @@ public class Node extends Element implements INode {
     }
 
     public boolean isThereLinkWithMerge() {
-        // the merge order start from 1
-        return process.getMergelinkOrder(this) >= 1;
+        return !getLinkedMergeInfo().isEmpty();
     }
 
     public Map<INode, Integer> getLinkedMergeInfo() {
@@ -2671,12 +2696,19 @@ public class Node extends Element implements INode {
                     isActivatedConnection = true;
                 }
             }
+            boolean isOnMainBranch = true;
+            Map<INode, Integer> mergeInfo = getLinkedMergeInfo();
+            for (INode node : mergeInfo.keySet()) {
+                if (mergeInfo.get(node) != 1) {
+                    isOnMainBranch = false;
+                }
+            }
             if (!isActivatedConnection) {
-                if (!getProcess().isThereLinkWithHash(this) && (getProcess().getMergelinkOrder(this) <= 1)) {
+                if (!getProcess().isThereLinkWithHash(this) && isOnMainBranch) {
                     canBeStart = true;
                 }
             } else {
-                if (getIncomingConnections().size() == 0 && (getProcess().getMergelinkOrder(this) <= 1)) {
+                if (getIncomingConnections().size() == 0 && isOnMainBranch) {
                     if (!getProcess().isThereLinkWithHash(this)) {
                         canBeStart = true;
                     }

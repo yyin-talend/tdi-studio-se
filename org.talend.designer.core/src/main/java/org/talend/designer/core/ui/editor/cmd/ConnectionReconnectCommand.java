@@ -260,7 +260,8 @@ public class ConnectionReconnectCommand extends Command {
             connection.updateName();
 
             if (newTargetSchemaType != null) {
-                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                        && !connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
                     IMetadataTable targetOldMetadataTable = newTarget.getMetadataFromConnector(connector.getName());
                     if (oldMetadataTable != null && targetOldMetadataTable != null) {
                         boolean sameFlag = oldMetadataTable.sameMetadataAs(targetOldMetadataTable, IMetadataColumn.OPTIONS_NONE);
