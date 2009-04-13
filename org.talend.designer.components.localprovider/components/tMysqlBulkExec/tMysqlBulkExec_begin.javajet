@@ -134,6 +134,7 @@ String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__F
 String escaped_str_<%=cid %> = <%=ElementParameterParser.getValue(node, "__ESCAPED_BY__") %>;
 String enclosed_str_<%=cid %> = <%=ElementParameterParser.getValue(node, "__ENCLOSED_BY__") %>;
 String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
+file_<%=cid %> = file_<%=cid %>.replaceAll("\\\\", "/");
 String replace_<%=cid%> = null;
 <%
 String dataAction = ElementParameterParser.getValue(node, "__DATA_ACTION__");
