@@ -14,6 +14,7 @@ package org.talend.repository.ui.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -80,6 +81,7 @@ public class ImportProjectSettings {
 
         final Document document = analyseur.parse(file);
         final NodeList nodes = document.getElementsByTagName("exportParameter");
+        List addedComponentSetting = new ArrayList();
 
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
@@ -120,21 +122,37 @@ public class ImportProjectSettings {
 
             } else if ("palette".equals(typeAttr.getTextContent())) {
                 List componentSettings = project.getComponentsSettings();
+                boolean existed = false;
+                String name = attrMap.getNamedItem("name").getTextContent();
+                final Node familyAttr = attrMap.getNamedItem("family");
+                Boolean hide = Boolean.valueOf(node.getTextContent());
+
+                if ("tFileInputXML".equals(name)) {
+                    System.out.println("");
+                }
 
                 for (Object obj : componentSettings) {
                     ComponentSetting setting = (ComponentSetting) obj;
 
-                    if (setting.getName().equals(attrMap.getNamedItem("name").getTextContent())) {
-                        final Node familyAttr = attrMap.getNamedItem("family");
-
+                    if (setting.getName().equals(name)) {
                         if (familyAttr != null && familyAttr.getTextContent().equals(setting.getFamily())) {
-                            setting.setHidden(Boolean.valueOf(node.getTextContent()));
+                            existed = true;
+                            setting.setHidden(hide);
                         }
                     }
+                }
+                if (!existed && familyAttr != null) {
+                    ComponentSetting setting = PropertiesFactory.eINSTANCE.createComponentSetting();
+                    setting.setFamily(familyAttr.getTextContent());
+                    setting.setName(name);
+                    setting.setHidden(hide);
+                    addedComponentSetting.add(setting);
                 }
             }
 
         }
+
+        project.getComponentsSettings().addAll(addedComponentSetting);
 
     }
 
@@ -150,6 +168,10 @@ public class ImportProjectSettings {
         for (Object obj : statAndLogs) {
             ElementParameterType type = (ElementParameterType) obj;
             if (type.getName().equals(attrMap.getNamedItem("name").getTextContent())) {
+                if ("HOST".equalsIgnoreCase(type.getName())) {
+                    System.out.println("");
+                }
+
                 type.setValue(node.getTextContent());
                 added = true;
             }

@@ -178,6 +178,10 @@ public class ExportProjectSettings {
             name.setNodeValue(((ElementParameterType) obj).getName());
             exportParameter.setAttributeNode(name);
 
+            if ("STATS_DEFAULT_PROJECTSETTING".equals(((ElementParameterType) obj).getName())) {
+                System.out.println("");
+            }
+
             exportParameter.setTextContent(((ElementParameterType) obj).getValue());
 
         }

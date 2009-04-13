@@ -12,9 +12,18 @@
 // ============================================================================
 package org.talend.repository.ui.dialog;
 
+import java.util.Iterator;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.Policy;
+import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -85,14 +94,12 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
     private void importPressed() {
 
         FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
-        fileDialog.setFileName("ProjectSettings.xml");
         String[] files = new String[] { "*.xml" };
         fileDialog.setFilterExtensions(files);
 
         String path = fileDialog.open();
         ImportProjectSettings settings = new ImportProjectSettings(path);
-        // save current project settings
-        okPressed();
+
         boolean error = false;
         try {
             settings.updateProjectSettings();
@@ -108,6 +115,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
         // close the projec settings and open it again to get new settings
         if (!error) {
+            close();
             ProjectSettingDialog dialog = new ProjectSettingDialog();
             dialog.open();
         }
@@ -126,6 +134,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
     // }
 
     private void exportPressed() {
+        saveCurrentSettings();
         FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE);
         fileDialog.setFileName("ProjectSettings.xml");
         String[] files = new String[] { "*.xml" };
@@ -141,6 +150,62 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
         MessageBox message = new MessageBox(new Shell(getShell()), SWT.ICON_ERROR | SWT.OK);
         message.setMessage(Messages.getString("ImportProjectSettings.Error"));
         message.open();
+    }
+
+    protected void saveCurrentSettings() {
+        SafeRunnable.run(new SafeRunnable() {
+
+            private boolean errorOccurred;
+
+            public void run() {
+                errorOccurred = false;
+                boolean hasFailedOK = false;
+                try {
+                    Iterator nodes = getPreferenceManager().getElements(PreferenceManager.PRE_ORDER).iterator();
+                    while (nodes.hasNext()) {
+                        IPreferenceNode node = (IPreferenceNode) nodes.next();
+                        IPreferencePage page = node.getPage();
+                        if (page != null) {
+                            if (!page.performOk()) {
+                                hasFailedOK = true;
+                                return;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    handleException(e);
+                } finally {
+
+                    if (hasFailedOK) {
+                        setReturnCode(FAILED);
+                        return;
+                    }
+
+                    if (!errorOccurred) {
+
+                        handleSave();
+                    }
+                    setReturnCode(OK);
+                }
+            }
+
+            public void handleException(Throwable e) {
+                errorOccurred = true;
+
+                Policy.getLog().log(new Status(IStatus.ERROR, Policy.JFACE, 0, e.toString(), e));
+
+                clearSelectedNode();
+                String message = JFaceResources.getString("SafeRunnable.errorMessage"); //$NON-NLS-1$
+
+                Policy.getStatusHandler().show(new Status(IStatus.ERROR, Policy.JFACE, message, e),
+                        JFaceResources.getString("Error")); //$NON-NLS-1$                                                             
+
+            }
+        });
+    }
+
+    void clearSelectedNode() {
+        setSelectedNodePreference(null);
     }
 
 }
