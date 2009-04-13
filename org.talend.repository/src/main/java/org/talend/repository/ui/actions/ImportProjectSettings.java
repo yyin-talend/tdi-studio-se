@@ -127,10 +127,6 @@ public class ImportProjectSettings {
                 final Node familyAttr = attrMap.getNamedItem("family");
                 Boolean hide = Boolean.valueOf(node.getTextContent());
 
-                if ("tFileInputXML".equals(name)) {
-                    System.out.println("");
-                }
-
                 for (Object obj : componentSettings) {
                     ComponentSetting setting = (ComponentSetting) obj;
 
@@ -168,10 +164,6 @@ public class ImportProjectSettings {
         for (Object obj : statAndLogs) {
             ElementParameterType type = (ElementParameterType) obj;
             if (type.getName().equals(attrMap.getNamedItem("name").getTextContent())) {
-                if ("HOST".equalsIgnoreCase(type.getName())) {
-                    System.out.println("");
-                }
-
                 type.setValue(node.getTextContent());
                 added = true;
             }
