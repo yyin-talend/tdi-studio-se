@@ -50,6 +50,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.i18n.BabiliInfo;
 import org.talend.commons.i18n.BabiliTool;
 import org.talend.commons.i18n.BabiliUpdateUtil;
+import org.talend.commons.i18n.ImportBabiliCancelException;
 import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.CorePreferencePage;
@@ -185,8 +186,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                     String language = languageSelectionEditor.getFieldValue();
                     String version = getCurrentTosVersion(true);
                     // get list from Babili
-                    List<BabiliInfo> bList = BabiliUpdateUtil.getBabiliList(language, validated, version);
+                    List<BabiliInfo> bList = BabiliUpdateUtil.getBabiliList(language, validated, version, monitor);
                     for (BabiliInfo info : bList) {
+                        BabiliUpdateUtil.checkProcessCancel(monitor);
                         // store to memory
                         String pluginId = info.getFilepath();
                         // for components
@@ -208,16 +210,11 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         }
                         BabiliTool.storeBabiliTranslation(info.getKey(), pluginId, info.getLabel());
                     }
-                    if (monitor.isCanceled()) {
-                        try {
-                            throw new InterruptedException(Messages.getString("I18nPreferencePage.operationCancelled")); //$NON-NLS-1$
-                        } catch (InterruptedException e) {
-                            ExceptionHandler.process(e);
-                        }
-                    }
 
                     updateCompleted = true;
-
+                    
+                } catch (ImportBabiliCancelException e) {
+                    updateCompleted = false;
                 } catch (Exception e1) {
                     ExceptionHandler.process(e1);
                 } finally {
@@ -242,6 +239,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                             Messages.getString("I18nPreferencePage.completeInfo")); //$NON-NLS-1$
                 }
             });
+        } else {
+            BabiliTool.clear();
         }
     }
 
