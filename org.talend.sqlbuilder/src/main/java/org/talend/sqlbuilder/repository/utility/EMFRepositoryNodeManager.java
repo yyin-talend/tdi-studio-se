@@ -201,9 +201,18 @@ public final class EMFRepositoryNodeManager {
                 if (dbMetaData != null && table.getSourceName() != null) {
                     ResultSet resultSet;
                     if (dbMetaData.supportsSchemasInDataManipulation() && !"".equals(iMetadataConnection.getSchema())) { //$NON-NLS-1$
-                        resultSet = dbMetaData.getExportedKeys("", iMetadataConnection.getSchema(), table.getSourceName()); //$NON-NLS-1$
+                        // bug 0006949 added
+                        if (dbMetaData.getCatalogs() != null) {
+                            resultSet = dbMetaData.getExportedKeys(null, iMetadataConnection.getSchema(), table.getSourceName()); //$NON-NLS-1$
+                        } else {
+                            resultSet = dbMetaData.getExportedKeys("", iMetadataConnection.getSchema(), table.getSourceName()); //$NON-NLS-1$
+                        }
                     } else {
-                        resultSet = dbMetaData.getExportedKeys("", null, table.getSourceName()); //$NON-NLS-1$
+                        if (dbMetaData.getCatalogs() != null) {
+                            resultSet = dbMetaData.getExportedKeys(null, iMetadataConnection.getSchema(), table.getSourceName()); //$NON-NLS-1$
+                        } else {
+                            resultSet = dbMetaData.getExportedKeys("", iMetadataConnection.getSchema(), table.getSourceName()); //$NON-NLS-1$
+                        }
                     }
                     ResultSetMetaData metadata = resultSet.getMetaData();
                     int[] relevantIndeces = new int[metadata.getColumnCount()];
