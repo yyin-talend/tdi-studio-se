@@ -16,20 +16,21 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.epic.perleditor.editors.util.TalendPerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
@@ -37,7 +38,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
@@ -46,6 +47,8 @@ import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
  * Check if there is error in jobs before running.
  */
 public class JobErrorsChecker {
+
+    public static List<Node> nodeList = new ArrayList<Node>();
 
     public static boolean hasErrors(Shell shell) {
 
@@ -67,10 +70,6 @@ public class JobErrorsChecker {
             for (ProcessItem item : items) {
                 // get source file
                 IFile sourceFile = synchronizer.getFile(item);
-                if (isPerl) {
-                    // check syntax error in perl. java use auto build to check syntax
-                    validatePerlScript(sourceFile);
-                }
 
                 // See Bug 5421
                 // Get job from editor if it is opened.
@@ -80,6 +79,11 @@ public class JobErrorsChecker {
                     // Get job from file if it is not opened.
                     process = service.getProcessFromProcessItem(item);
                 }//
+
+                if (isPerl) {
+                    // check syntax error in perl. java use auto build to check syntax
+                    validatePerlScript(sourceFile, process);
+                }
 
                 jobNames.add(process.getLabel());
 
@@ -112,13 +116,55 @@ public class JobErrorsChecker {
         return false;
     }
 
-    public static void validatePerlScript(IFile file) {
+    public static void validatePerlScript(IFile file, IProcess process) {
+        nodeList.clear();
         try {
             String sourceCode = getSourceCode(file.getContents());
-            TalendPerlValidator.instance().validate(file, sourceCode);
+            Set<String> set = TalendPerlValidator.instance().validate(file, sourceCode);
+            Iterator<String> ite = set.iterator();
+            if (set.isEmpty()) {
+                for (INode inode : process.getGraphicalNodes()) {
+                    if (inode instanceof Node) {
+                        Node node = (Node) inode;
+                        node.setErrorFlag(false);
+                        node.setErrorInfo(null);
+                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                        node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                    }
+                }
+            } else {
+
+                while (ite.hasNext()) {
+                    String uniName = (String) ite.next();
+                    for (INode inode : process.getGraphicalNodes()) {
+                        if (inode instanceof Node) {
+                            Node node = (Node) inode;
+                            if (node.getUniqueName().equals(uniName)) {
+                                nodeList.add(node);
+                            } else {
+                                node.setErrorFlag(false);
+                                node.setErrorInfo(null);
+                                node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                            }
+                        }
+                    }
+                }
+
+                for (Node node : nodeList) {
+                    node.setErrorFlag(true);
+                    node.setErrorInfo(null);
+                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                    node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
+                }
+            }
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+
+    }
+
+    private static void adderrorMark() {
 
     }
 

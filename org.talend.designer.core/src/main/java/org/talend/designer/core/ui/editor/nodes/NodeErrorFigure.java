@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.nodes;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.ui.images.ECoreImage;
@@ -53,6 +54,8 @@ public class NodeErrorFigure extends Figure {
             this.setSize(errorFig.getSize());
         } else {
             errorFig.setVisible(false);
+            errorFig.setPreferredSize(0, 0);
+            errorFig.setSize(new Dimension(0, 0));
         }
     }
 

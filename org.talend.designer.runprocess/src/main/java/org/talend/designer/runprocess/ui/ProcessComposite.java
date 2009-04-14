@@ -77,10 +77,12 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
+import org.epic.perleditor.editors.util.TalendPerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
@@ -1285,8 +1287,14 @@ public class ProcessComposite extends Composite {
         if (ProcessMessageManager.PROP_MESSAGE_ADD.equals(propName)
                 || ProcessMessageManager.PROP_DEBUG_MESSAGE_ADD.equals(propName)) {
             IProcessMessage psMess = (IProcessMessage) evt.getNewValue();
-            getAllErrorMess(psMess);
-            appendToConsole((IProcessMessage) evt.getNewValue());
+
+            if (!(LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL))) {
+                getAllErrorMess(psMess);
+            } else {
+                addPerlMark(psMess);
+            }
+
+            appendToConsole(psMess);
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
 
@@ -1403,7 +1411,13 @@ public class ProcessComposite extends Composite {
                     } else {
                         if (inode instanceof Node) {
                             Node node = (Node) inode;
-                            if (Problems.nodeList.size() > 0) {
+                            List list = null;
+                            if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+                                list = JobErrorsChecker.nodeList;
+                            } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+                                list = Problems.nodeList;
+                            }
+                            if (list.size() > 0) {
                                 for (Node no : Problems.nodeList) {
                                     if (node == no) {
                                         node.setErrorFlag(true);
@@ -1440,12 +1454,11 @@ public class ProcessComposite extends Composite {
             mess = psMess.getContent().substring(firIndex + 1, secIndex);
         }
         Double extentPro = new Double(0);
-        if ((!"".equals(mess)) && mess != null) { //$NON-NLS-1$    // && processContext.isMonitorPerf()
+        if ((!"".equals(mess)) && mess != null) { //$NON-NLS-1$  
             extentPro = Math.floor(Double.parseDouble(mess) / 10);
         }
 
-        if (((extend != extentPro) && nodeUniqueName.equals(uniqueName))) {// || ((extend != extentPro) && (extentPro ==
-            // 0))
+        if (((extend != extentPro) && nodeUniqueName.equals(uniqueName))) {
             node.getNodeProgressBar().updateState("UPDATE_STATUS", new Double(extentPro)); //$NON-NLS-1$
             extend = extentPro;
         }
@@ -1455,6 +1468,48 @@ public class ProcessComposite extends Composite {
         Pattern pattern = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%");
         Matcher m = pattern.matcher(content);
         return m.find();
+    }
+
+    private void addPerlMark(IProcessMessage psMess) {
+        if (psMess.getType().equals(MsgType.STD_ERR)) {
+            String content = psMess.getContent();
+            String path = null;
+            String uniName = null;
+            int lineNo = -1;
+            Pattern errorPattern = Pattern.compile("(.*) at (\\S+) line (\\d+)[\\.,]");//$NON-NLS-1$
+            Matcher m = errorPattern.matcher(content);
+            String matchContent = null;
+
+            while (m.find()) {
+                path = m.group(2);
+                lineNo = parseInt(m.group(3));
+
+                matchContent = m.group();
+
+                if ((!("".equals(path)) && path != null) && lineNo > 0) {//$NON-NLS-1$ 
+                    uniName = TalendPerlValidator.instance().setErrorMark(path, lineNo);
+                }
+
+                if (uniName != null) {
+                    if (!errorMessMap.containsKey(uniName)) {
+                        errorMessMap.put(uniName, new ProcessMessage(MsgType.STD_ERR, matchContent));
+                    } else {
+                        String uniMess = errorMessMap.get(uniName).getContent();
+                        errorMessMap.put(uniName, new ProcessMessage(MsgType.STD_ERR, uniMess.concat(matchContent)));
+                    }
+                }
+
+            }
+        }
+        refreshNode(psMess);
+    }
+
+    private int parseInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
 }

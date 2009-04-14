@@ -12,11 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -30,7 +25,10 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
+import org.epic.perleditor.editors.util.TalendPerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -459,12 +457,16 @@ public class Problems {
                             continue;
                         }
                     }
-                    if (uniName != null) {
-                        add(status, marker, routineFileName, message, lineNr, uniName, start, end, type);
+                    if ("".equals(uniName) || uniName == null) {
+                        uniName = "uniName";//$NON-NLS-1$
                     }
+                    add(status, marker, routineFileName, message, lineNr, uniName, start, end, type);
                 }
             }
-            addErrorMark();
+            if (!(LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL))) {
+                addErrorMark();
+            }
+
         } catch (org.eclipse.core.runtime.CoreException e) {
             ExceptionHandler.process(e);
         }
@@ -515,69 +517,9 @@ public class Problems {
         return fileName;
     }
 
-    private static String[][] getConFromLineNum(String path, int lineNum) {
-        String start = "*";//$NON-NLS-1$
-        String endhead = "start";//$NON-NLS-1$
-        String endfoot = "stop";//$NON-NLS-1$
-        String[][] result = new String[2][2];
-        File file = new File(path);
-        FileReader fread = null;
-        try {
-            fread = new FileReader(file);
-        } catch (FileNotFoundException e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        }
-        BufferedReader br = new BufferedReader(fread);
-        int point = 0;
-        String str = null;
-        String strtmp = null;
-        int tmp = 0;
-        int min = lineNum;
-        try {
-            while ((str = br.readLine()) != null) {
-                point++;
-                strtmp = str.trim();
-                if (point < lineNum) {
-                    if (strtmp.startsWith(start) && strtmp.endsWith(endhead)) {
-                        tmp = lineNum - point;
-                        if (tmp < min) {
-                            min = tmp;
-                            result[0][0] = String.valueOf(point);
-                            result[0][1] = str;
-                        }
-                    }
-
-                } else if (point > lineNum) {
-                    if (strtmp.startsWith(start) && strtmp.endsWith(endfoot)) {
-                        result[1][0] = String.valueOf(point);
-                        result[1][1] = str;
-                        break;
-                    }
-                } else {
-                }
-            }
-        } catch (IOException e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        } finally {
-            try {
-                br.close();
-                fread.close();
-                file = null;
-            } catch (IOException e) {
-                // e.printStackTrace();
-                ExceptionHandler.process(e);
-            }
-        }
-        return result;
-    }
-
     private static String getNodeUniName(String path, int lineNum) {
         String uniName = null;
-        String[][] s = null;
-
-        s = getConFromLineNum(path, lineNum);
+        String[][] s = TalendPerlValidator.instance().matchString(path, lineNum);
         int first = 0;
         int second = 0;
         if (s != null) {
