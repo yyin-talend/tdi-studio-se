@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Event;
@@ -32,6 +33,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -319,9 +321,24 @@ public class ConnectionCreateAction extends SelectionAction {
     }
 
     private String askForConnectionName(String nodeLabel, String oldName) {
+        final Node node = (Node) nodePart.getModel();
         InputDialog id = new InputDialog(getWorkbenchPart().getSite().getShell(), nodeLabel
                 + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
-                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, null); //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, new IInputValidator() {
+
+                    public String isValid(String newText) {
+                        if (newText != null) {
+                            if (!node.getProcess().checkValidConnectionName(newText, isListenerAttached())
+                                    || KeywordsValidator.isKeyword(newText) || KeywordsValidator.isSqlKeyword(newText)) {
+                                return "Input is invalid."; //$NON-NLS-1$
+                            }
+                            return null;
+                        } else {
+                            return null;
+                        }
+
+                    }
+                }); //$NON-NLS-1$ //$NON-NLS-2$
         id.open();
         if (id.getReturnCode() == InputDialog.CANCEL) {
             return ""; //$NON-NLS-1$

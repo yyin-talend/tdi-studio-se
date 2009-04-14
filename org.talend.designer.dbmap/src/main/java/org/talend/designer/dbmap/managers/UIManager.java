@@ -60,6 +60,7 @@ import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.abstractmap.managers.AbstractMapperManager;
 import org.talend.designer.abstractmap.managers.AbstractUIManager;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -1280,8 +1281,11 @@ public class UIManager extends AbstractUIManager {
                 Messages.getString("UIManager.typeTableName"), outputName, new IInputValidator() { //$NON-NLS-1$
 
                     public String isValid(String newText) {
-                        if (!process.checkValidConnectionName(newText, false)) {
+                        if (KeywordsValidator.isKeyword(newText) || KeywordsValidator.isSqlKeyword(newText)) {
                             return Messages.getString("UIManager.tableNameIsNotValid"); //$NON-NLS-1$
+                        }
+                        if (newText != null && !process.checkValidConnectionName(newText, true)) {
+                            return "The name had existed or is null.";
                         }
                         return null;
                     }

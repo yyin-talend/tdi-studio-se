@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
@@ -81,7 +82,9 @@ public class AliasDialog {
 
                 String selectedPhysicalTable = aliasInternalDialog.getTableName();
 
-                if (newText.length() == 0 && isSameAsVisibleTableName(selectedPhysicalTable)) {// tableManager.getInputTableFromAlias(newText)
+                if (newText.length() == 0 && isSameAsVisibleTableName(selectedPhysicalTable)) {// tableManager.
+                    // getInputTableFromAlias
+                    // (newText)
                     // != null) {
                     // return Messages.getString("AliasDialog.aliasIsInvalid"); //$NON-NLS-1$
                     return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] { selectedPhysicalTable }); //$NON-NLS-1$
@@ -91,6 +94,9 @@ public class AliasDialog {
                 }
                 if (isSameAsVisibleTableName(newText)) {
                     return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] { newText }); //$NON-NLS-1$
+                }
+                if (KeywordsValidator.isKeyword(newText) || KeywordsValidator.isSqlKeyword(newText)) {
+                    return "Input is invalid.";
                 }
                 return null;
             }
@@ -287,8 +293,8 @@ public class AliasDialog {
             if (message != null) {
                 label = new Label(composite, SWT.WRAP);
                 label.setText(message);
-                GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
-                        | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+                GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+                        | GridData.VERTICAL_ALIGN_CENTER);
                 data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
                 label.setLayoutData(data);
                 label.setFont(parent.getFont());
@@ -299,6 +305,7 @@ public class AliasDialog {
 
                 public void modifyText(ModifyEvent e) {
                     validateInput();
+
                 }
             });
             errorMessageText = new Text(composite, SWT.READ_ONLY);

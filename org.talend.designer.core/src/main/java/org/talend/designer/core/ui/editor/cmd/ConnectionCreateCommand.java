@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.GlobalServiceRegister;
@@ -27,6 +28,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -109,9 +111,22 @@ public class ConnectionCreateCommand extends Command {
                 }
             }
         }
-
         InputDialog id = new InputDialog(null, nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
-                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, null); //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, new IInputValidator() { //$NON-NLS-1$ 
+
+                    public String isValid(String newText) {
+                        if (newText != null) {
+                            if (!source.getProcess().checkValidConnectionName(newText, creatingConnection)
+                                    || KeywordsValidator.isKeyword(newText) || KeywordsValidator.isSqlKeyword(newText)) {
+
+                                return "Input is invalid.";
+                            }
+                        }
+
+                        return null;
+                    }
+
+                });
         id.open();
         if (id.getReturnCode() == InputDialog.CANCEL) {
             return ""; //$NON-NLS-1$

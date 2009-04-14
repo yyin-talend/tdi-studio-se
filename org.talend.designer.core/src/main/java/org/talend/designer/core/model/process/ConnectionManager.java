@@ -388,19 +388,15 @@ public class ConnectionManager {
                 List<? extends IConnection> cons = target.getIncomingConnections();
                 for (Iterator iter = cons.iterator(); iter.hasNext();) {
                     Connection conn = (Connection) iter.next();
-                    if (conn.getName().equals(connectionName)) {
+                    if (conn.getName().equals(connectionName) || KeywordsValidator.isKeyword(connectionName)
+                            || KeywordsValidator.isSqlKeyword(connectionName)
+                            || !source.getProcess().checkValidConnectionName(connectionName, canRename)) {
                         canRename = false;
                         break;
                     }
                 }
             }
         }
-        // see bug 0004157: Using specific name for (main) tream
-        if (canRename && connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
-            // This name cannot be keyword in generated code, because it may cause compilation to fail.
-            canRename = !KeywordsValidator.isKeyword(connectionName);
-        }
-
         return canRename;
     }
 

@@ -82,6 +82,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -2114,7 +2115,9 @@ public class Process extends Element implements IProcess2 {
      * @return true if the name is unique
      */
     public boolean checkValidConnectionName(String connectionName, boolean checkExists) {
-        if (checkExists && uniqueConnectionNameList.contains(connectionName)) {
+        // test if name already exist but with ignore case (contains test only with same case)
+
+        if (checkExists && checkIgnoreCase(connectionName)) {
             return false;
         }
         Perl5Matcher matcher = new Perl5Matcher();
@@ -2130,7 +2133,20 @@ public class Process extends Element implements IProcess2 {
             throw new RuntimeException(e);
         }
 
-        return true;
+        return !KeywordsValidator.isKeyword(connectionName);
+    }
+
+    // hshen
+    public boolean checkIgnoreCase(String connectionName) {
+        if (uniqueConnectionNameList != null) {
+            for (String value : uniqueConnectionNameList) {
+                if (value.equalsIgnoreCase(connectionName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
