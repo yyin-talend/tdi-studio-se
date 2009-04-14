@@ -27,11 +27,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
-import org.talend.core.CorePlugin;
-import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -55,7 +54,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
 
     public PerformancePreferencePage() {
         super(GRID);
-        setPreferenceStore(CorePlugin.getDefault().getPreferenceStore());
+        setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
     }
 
     /*
@@ -180,9 +179,6 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
      */
 
     public void init(IWorkbench workbench) {
-        isDocumentationPluginLoaded = PluginChecker.isPerformancePluginLoaded();
-        setPreferenceStore(RepositoryManager.getPreferenceStore());
-        checkDBTimeout();
     }
 
     @Override
