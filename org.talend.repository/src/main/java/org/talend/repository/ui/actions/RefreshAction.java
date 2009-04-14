@@ -15,6 +15,8 @@ package org.talend.repository.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -40,5 +42,9 @@ public class RefreshAction extends Action {
 
     public void run() {
         view.refresh();
+        // qli modified to fix the bug 6659.
+        RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.ROUTINES);
+        RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.JOBLET);
+
     }
 }
