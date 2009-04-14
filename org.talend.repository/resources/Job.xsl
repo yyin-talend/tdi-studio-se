@@ -606,6 +606,7 @@
 						</div>
 					</xsl:if>
 					<br />
+					
 					<b class="FONTSTYLE">Component Parameters:</b>
 					<br />
 					<table class="cols" width="90%" border="1"
@@ -814,6 +815,7 @@
 						</div>
 					</xsl:if>
 					<br />
+					<xsl:for-each select="parameters">
 					<b class="FONTSTYLE">Component Parameters:</b>
 					<br />
 					<table width="90%" class="FONTSTYLE" border="1"
@@ -843,6 +845,7 @@
 							</tr>
 						</xsl:for-each>
 					</table>
+					</xsl:for-each>
 					<br />
 					<xsl:for-each select="schemas/schema">
 						<b class="FONTSTYLE">

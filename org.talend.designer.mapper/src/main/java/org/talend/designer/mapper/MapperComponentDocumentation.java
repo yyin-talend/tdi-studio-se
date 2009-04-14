@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -33,7 +34,11 @@ import org.talend.core.model.genhtml.HTMLHandler;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.genhtml.XMLHandler;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IComponentDocumentation;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -53,6 +58,8 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
     private ExternalMapperData externalData;
 
     private String previewPicPath;
+
+    private INode externalNode;
 
     /*
      * (non-Javadoc)
@@ -75,10 +82,9 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
-
         String xslFilePath = xslFileUrl.getPath();
 
-        generateXMLInfo();
+        generateXMLInfo(getExternalNode());
 
         XMLHandler.generateXMLFile(tempFolderPath, xmlFilepath, document);
         HTMLHandler.generateHTMLFile(this.tempFolderPath, xslFilePath, xmlFilepath, htmlFilePath);
@@ -124,12 +130,15 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
     /**
      * Generates all information which for XML file.
      */
-    private void generateXMLInfo() {
+    private void generateXMLInfo(INode externalNode) {
         document = DocumentHelper.createDocument();
         Element externalNodeElement = document.addElement("externalNode"); //$NON-NLS-1$
         externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName)); //$NON-NLS-1$
-
         externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath)); //$NON-NLS-1$
+
+        Element parametersElement = externalNodeElement.addElement("parameters"); //$NON-NLS-1$
+        List elementParameterList = externalNode.getElementParameters();
+        generateParameters(parametersElement, elementParameterList);
 
         List<ExternalMapperTable> inputTables = externalData.getInputTables();
         List<ExternalMapperTable> outputTables = externalData.getOutputTables();
@@ -138,6 +147,32 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
         handleMapperTablesInfo(inputTables, externalNodeElement, IHTMLDocConstants.MAPPER_TABLE_INPUT);
         handleMapperTablesInfo(outputTables, externalNodeElement, IHTMLDocConstants.MAPPER_TABLE_OUPUT);
         handleMapperTablesInfo(varTables, externalNodeElement, IHTMLDocConstants.MAPPER_TABLE_VAR);
+    }
+
+    private void generateParameters(Element parametersElement, List elementParameterList) {
+        List<IElementParameter> copyElementParameterList = new ArrayList(elementParameterList);
+        if (elementParameterList != null && elementParameterList.size() != 0) {
+            for (int j = 0; j < elementParameterList.size(); j++) {
+                IElementParameter elemparameter = (IElementParameter) elementParameterList.get(j);
+                if ((!elemparameter.isShow(copyElementParameterList) && (!elemparameter.getName().equals(
+                        EParameterFieldType.SCHEMA_TYPE.getName())))
+                        || elemparameter.getCategory().equals(EComponentCategory.VIEW)
+                        || elemparameter.getName().equals("ACTIVATE") //$NON-NLS-1$
+                        || elemparameter.getName().equals("MAP") //$NON-NLS-1$
+                        || elemparameter.getName().equals("PREVIEW")) {//$NON-NLS-1$
+                    continue;
+                }
+                Element columnElement = parametersElement.addElement("column"); //$NON-NLS-1$
+                columnElement.addAttribute("name", HTMLDocUtils.checkString(elemparameter.getDisplayName())); //$NON-NLS-1$
+                Object eleObj = elemparameter.getValue();
+                String value = ""; //$NON-NLS-1$
+                if (eleObj != null) {
+                    value = eleObj.toString();
+                    columnElement.setText(value);
+                }
+
+            }
+        }
     }
 
     /**
@@ -169,30 +204,28 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
             generateTableSummaryInfo(mapperTableElement, tableElement, table);
 
             List<ExternalMapperTableEntry> globalMapKeysValuesEntries = table.getGlobalMapKeysValues();
-            if (!HTMLDocUtils.checkList(globalMapKeysValuesEntries)) {
-                continue;
-            }
-            Element globalMapKeysValuesElement = tableElement.addElement("globalMapKeysValues"); //$NON-NLS-1$
-            for (ExternalMapperTableEntry entry : globalMapKeysValuesEntries) {
-                generateTablesEntriesInfo(globalMapKeysValuesElement, entry);
-            }
+            if (HTMLDocUtils.checkList(globalMapKeysValuesEntries)) {
 
+                Element globalMapKeysValuesElement = tableElement.addElement("globalMapKeysValues"); //$NON-NLS-1$
+                for (ExternalMapperTableEntry entry : globalMapKeysValuesEntries) {
+                    generateTablesEntriesInfo(globalMapKeysValuesElement, entry);
+                }
+            }
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
-            if (!HTMLDocUtils.checkList(metadataTableEntries)) {
-                continue;
-            }
-            Element metadataTableEntriesElement = tableElement.addElement("metadataTableEntries"); //$NON-NLS-1$
-            for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                generateTablesEntriesInfo(metadataTableEntriesElement, entry);
-            }
+            if (HTMLDocUtils.checkList(metadataTableEntries)) {
 
-            List<ExternalMapperTableEntry> constraintTableEntries = table.getConstraintTableEntries();
-            if (!HTMLDocUtils.checkList(constraintTableEntries)) {
-                continue;
+                Element metadataTableEntriesElement = tableElement.addElement("metadataTableEntries"); //$NON-NLS-1$
+                for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                    generateTablesEntriesInfo(metadataTableEntriesElement, entry);
+                }
             }
-            Element constraintTableEntriesElement = tableElement.addElement("constraintTableEntries"); //$NON-NLS-1$
-            for (ExternalMapperTableEntry entry : constraintTableEntries) {
-                generateTablesEntriesInfo(constraintTableEntriesElement, entry);
+            List<ExternalMapperTableEntry> constraintTableEntries = table.getConstraintTableEntries();
+            if (HTMLDocUtils.checkList(constraintTableEntries)) {
+
+                Element constraintTableEntriesElement = tableElement.addElement("constraintTableEntries"); //$NON-NLS-1$
+                for (ExternalMapperTableEntry entry : constraintTableEntries) {
+                    generateTablesEntriesInfo(constraintTableEntriesElement, entry);
+                }
             }
         }
     }
@@ -245,5 +278,13 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
     public void setPreviewPicPath(String previewPicPath) {
         this.previewPicPath = previewPicPath;
 
+    }
+
+    public INode getExternalNode() {
+        return this.externalNode;
+    }
+
+    public void setExternalNode(INode externalNode) {
+        this.externalNode = externalNode;
     }
 }

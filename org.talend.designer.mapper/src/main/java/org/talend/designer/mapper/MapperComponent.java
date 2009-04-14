@@ -520,6 +520,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         componentDocumentation.setTempFolderPath(tempFolderPath);
         componentDocumentation.setExternalData(this.externalData);
         componentDocumentation.setPreviewPicPath(HTMLDocUtils.getPreviewPicPath(this));
+        componentDocumentation.setExternalNode(getExternalNode());
 
         return componentDocumentation;
     }
