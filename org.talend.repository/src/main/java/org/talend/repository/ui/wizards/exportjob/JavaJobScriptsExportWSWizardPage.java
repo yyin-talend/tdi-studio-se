@@ -103,9 +103,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     public static final String EXTRACT_ZIP_FILE = "JavaJobScriptsExportWizardPage.EXTRACT_ZIP_FILE"; //$NON-NLS-1$
 
-    public JavaJobScriptsExportWSWizardPage(IStructuredSelection selection) {
+    protected String exportTypeFixed;
+
+    public JavaJobScriptsExportWSWizardPage(IStructuredSelection selection, String exportType) {
         super(selection);
         // there assign the manager again
+        exportTypeFixed = exportType;
         manager = createJobScriptsManager();
         manager.setMultiNodes(isMultiNodes());
     }
@@ -128,13 +131,22 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         initializeDialogUnits(parent);
         GridLayout layout = new GridLayout();
 
-        SashForm sash = createExportTree(parent);
+        if (exportTypeFixed == null || !exportTypeFixed.equals(EXPORTTYPE_JBOSSESB)) {
+            SashForm sash = createExportTree(parent);
 
-        pageComposite = new Group(sash, 0);
-        pageComposite.setLayout(layout);
-        pageComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
-        pageComposite.setFont(parent.getFont());
-
+            pageComposite = new Group(sash, 0);
+            pageComposite.setLayout(layout);
+            pageComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
+            pageComposite.setFont(parent.getFont());
+            setControl(sash);
+            sash.setWeights(new int[] { 0, 1, 23 });
+        } else {
+            pageComposite = new Group(parent, 0);
+            pageComposite.setLayout(layout);
+            pageComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
+            pageComposite.setFont(parent.getFont());
+            setControl(parent);
+        }
         layout = new GridLayout();
         destinationNameFieldComposite = new Composite(pageComposite, SWT.NONE);
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
@@ -162,8 +174,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         setPageComplete(determinePageCompletion());
         setErrorMessage(null); // should not initially have error message
 
-        setControl(sash);
-        sash.setWeights(new int[] { 0, 1, 23 });
         giveFocusToDestination();
 
     }
@@ -198,6 +208,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         // exportTypeCombo.add("JBI (JSR 208)");
 
         exportTypeCombo.setText(getCurrentExportType());
+        if (exportTypeFixed != null) {
+            left.setVisible(false);
+            optionsGroup.setVisible(false);
+            exportTypeCombo.setText(exportTypeFixed);
+        }
+
         chkButton = new Button(left, SWT.CHECK);
         chkButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.extractZipFile")); //$NON-NLS-1$
         if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR)) {

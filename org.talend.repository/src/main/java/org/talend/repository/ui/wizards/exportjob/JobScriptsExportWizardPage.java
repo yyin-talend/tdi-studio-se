@@ -635,11 +635,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @returns boolean
      */
     public boolean finish() {
-        treeViewer.removeCheckStateListener(checkStateListener);
-        // achen added
-        if (getCheckNodes() != null) {
-            setNodes(getCheckNodes());
+        if (treeViewer != null) {
+            treeViewer.removeCheckStateListener(checkStateListener);
+            // achen added
+            if (getCheckNodes() != null) {
+                setNodes(getCheckNodes());
+            }
         }
+
         manager = createJobScriptsManager();
         manager.setMultiNodes(isMultiNodes());
         // achen modify to fix bug 0006222

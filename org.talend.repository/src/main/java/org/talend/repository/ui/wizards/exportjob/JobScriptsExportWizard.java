@@ -44,6 +44,8 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
 
     private WizardFileSystemResourceExportPage1 mainPage;
 
+    protected String exportType;
+
     /**
      * Creates a wizard for exporting workspace resources to a zip file.
      */
@@ -91,7 +93,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
         switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage()) {
         case JAVA:
-            mainPage = new JavaJobScriptsExportWSWizardPage(selection);
+            mainPage = new JavaJobScriptsExportWSWizardPage(selection, exportType);
             break;
         case PERL:
             mainPage = new PerlJobScriptsExportWizardPage(selection);
