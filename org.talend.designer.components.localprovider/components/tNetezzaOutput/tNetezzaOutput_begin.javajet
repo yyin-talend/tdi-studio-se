@@ -133,7 +133,6 @@ else
 	String dbUser_<%=cid %> = <%=dbuser%>;
 	String dbPwd_<%=cid %> = <%=dbpwd%>;
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
-	conn_<%=cid%>.setAutoCommit(false);
 	<%
 }	
 
@@ -207,6 +206,11 @@ if(columnList != null && columnList.size() > 0) {
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
     
+    if(!useExistingConn.equals("true")){
+    %>
+    	conn_<%=cid%>.setAutoCommit(false);
+    <%
+    }
 	if(dataAction.equals("INSERT")){
 	    if(!extendedInsert){
 	        %>      	    
