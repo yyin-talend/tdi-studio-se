@@ -88,14 +88,14 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      * java.lang.String, int, int, java.lang.String[])
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
         boolean needJob = true;
-        boolean needSource = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource));
-        boolean needContext = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext));
+        boolean needSource = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource));
+        boolean needContext = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
         ExportFileResource libResource = new ExportFileResource(null, "WEB-INF/lib"); //$NON-NLS-1$
         ExportFileResource contextResource = new ExportFileResource(null, "WEB-INF/classes"); //$NON-NLS-1$
         ExportFileResource srcResource = new ExportFileResource(null, "WEB-INF"); //$NON-NLS-1$
@@ -130,14 +130,14 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)),
-                        progressMonitor);
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue((Boolean) exportChoice
+                                .get(ExportChoice.applyToChildren)), progressMonitor);
             }
             // generate the WSDL file
-            ExportFileResource wsdlFile = getWSDLFile(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needWSDL)),
-                    talendLibraries);
+            ExportFileResource wsdlFile = getWSDLFile(processItem, BooleanUtils.isTrue((Boolean) exportChoice
+                    .get(ExportChoice.needWSDL)), talendLibraries);
             list.add(wsdlFile);
 
             // edit the WSDD file
@@ -156,20 +156,21 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         }
 
         // generate Server Config file
-        ExportFileResource serverConfigFile = getServerConfigFile(BooleanUtils.isTrue(exportChoice
+        ExportFileResource serverConfigFile = getServerConfigFile(BooleanUtils.isTrue((Boolean) exportChoice
                 .get(ExportChoice.needCONFIGFILE)));
         list.add(serverConfigFile);
 
         // generate the WSDD file
-        ExportFileResource wsddFile = getWSDDFile(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needWSDD)));
+        ExportFileResource wsddFile = getWSDDFile(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needWSDD)));
         list.add(wsddFile);
 
         // generate the WEB-INFO folder
-        ExportFileResource webInfoFolder = getWebXMLFile(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needWEBXML)));
+        ExportFileResource webInfoFolder = getWebXMLFile(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needWEBXML)));
         list.add(webInfoFolder);
 
         // generate the META-INFO folder
-        ExportFileResource metaInfoFolder = genMetaInfoFolder(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needMetaInfo)));
+        ExportFileResource metaInfoFolder = genMetaInfoFolder(BooleanUtils.isTrue((Boolean) exportChoice
+                .get(ExportChoice.needMetaInfo)));
         list.add(metaInfoFolder);
 
         // Gets system routines
@@ -180,7 +181,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         libResource.addResources(userRoutineList);
 
         // Gets axis libraries
-        List<URL> axisLibList = getLib(axisLib, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needAXISLIB)));
+        List<URL> axisLibList = getLib(axisLib, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needAXISLIB)));
         libResource.addResources(axisLibList);
 
         // check the list avoid duplication
@@ -189,7 +190,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
     }
 
     private void addSubJobResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
-            Map<ExportChoice, Boolean> exportChoice, ExportFileResource libResource, ExportFileResource contextResource,
+            Map<ExportChoice, Object> exportChoice, ExportFileResource libResource, ExportFileResource contextResource,
             ExportFileResource srcResource, String selectedJobVersion) {
 
         List<JobInfo> list = new ArrayList<JobInfo>();

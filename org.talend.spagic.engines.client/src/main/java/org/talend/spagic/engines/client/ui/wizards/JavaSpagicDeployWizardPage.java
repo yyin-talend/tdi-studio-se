@@ -27,7 +27,8 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07 bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07
+ * bqian
  * 
  */
 public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
@@ -84,13 +85,13 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
     // return resourcesToExportxx[0];
     // }
     protected List<ExportFileResource> getExportResources() {
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "all", //$NON-NLS-1$
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
     }
 
-    protected Map<ExportChoice, Boolean> getExportChoiceMap() {
-        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+    protected Map<ExportChoice, Object> getExportChoiceMap() {
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
         exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());

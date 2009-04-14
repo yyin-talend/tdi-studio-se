@@ -378,10 +378,11 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
 
         manager = createJobScriptsManager();
 
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
         for (ExportChoice choice : ExportChoice.values()) {
-            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice)) {
+            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice) instanceof Boolean
+                    && (Boolean) exportChoiceMap.get(choice)) {
                 canExport = true;
                 break;
             }
@@ -505,14 +506,14 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
      */
     protected List<ExportFileResource> getExportResources() {
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
 
     }
 
-    protected Map<ExportChoice, Boolean> getExportChoiceMap() {
-        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+    protected Map<ExportChoice, Object> getExportChoiceMap() {
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
         exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());

@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -85,6 +86,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected Button wsdlButton;
 
     protected Button chkButton;
+
+    protected Text queueMessageName;
 
     public static final String STORE_EXPORTTYPE_ID = "JavaJobScriptsExportWizardPage.STORE_EXPORTTYPE_ID"; //$NON-NLS-1$
 
@@ -460,18 +463,20 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     @Override
-    protected Map<ExportChoice, Boolean> getExportChoiceMap() {
+    protected Map<ExportChoice, Object> getExportChoiceMap() {
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
             return JavaJobScriptsExportWSWizardPage.super.getExportChoiceMap();
         }
-        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needSource, false);
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
+            exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
             exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
             exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
             exportChoiceMap.put(ExportChoice.needMetaInfo, true);
+            exportChoiceMap.put(ExportChoice.queueMessageName, queueMessageName.getText());
             return exportChoiceMap;
         }
 
@@ -524,8 +529,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             contextButton.setSelection(true);
             contextButton.setFont(font);
 
+            String jobLabel = "";
             contextCombo = new Combo(left, SWT.PUSH);
             if (process.length > 0) {
+                jobLabel = (process[0].getItem()).getProperty().getLabel();
                 List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
                 contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
                 if (contextNames.size() > 0) {
@@ -536,6 +543,40 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             applyToChildrenButton = new Button(left, SWT.CHECK | SWT.LEFT);
             applyToChildrenButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ApplyToChildren")); //$NON-NLS-1$
             applyToChildrenButton.setSelection(true);
+
+            sourceButton = new Button(left, SWT.CHECK | SWT.LEFT);
+            sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
+            sourceButton.setSelection(true);
+            sourceButton.setFont(font);
+            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 1;
+            sourceButton.setLayoutData(gd);
+
+            exportDependencies = new Button(left, SWT.CHECK);
+            exportDependencies.setText("Export Dependencies"); //$NON-NLS-1$
+            exportDependencies.setFont(font);
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 2;
+            sourceButton.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+
+                    exportDependencies.setEnabled(sourceButton.getSelection());
+                    if (!sourceButton.getSelection()) {
+                        exportDependencies.setSelection(false);
+                    }
+                }
+            });
+            exportDependencies.setLayoutData(gd);
+
+            Label queueLabel = new Label(left, SWT.None);
+            queueLabel.setText("Message Queue Name:");
+
+            queueMessageName = new Text(left, SWT.BORDER);
+            queueMessageName.setText(jobLabel + "_action_Request");
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 2;
+            queueMessageName.setLayoutData(gd);
         } else {
             createOptionsForWS(left, font);
         }
@@ -630,7 +671,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      */
     @Override
     public List<ExportFileResource> getExportResources() {
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
             return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                     IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);

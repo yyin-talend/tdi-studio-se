@@ -75,7 +75,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME); //$NON-NLS-1$ //$NON-NLS-2$
@@ -87,18 +87,20 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 selectedJobVersion = process[i].getItem().getProperty().getVersion();
             }
             if (progressMonitor != null) {
-                progressMonitor.subTask(Messages.getString("JobPerlScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + selectedJobVersion); //$NON-NLS-1$
+                progressMonitor
+                        .subTask(Messages.getString("JobPerlScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + selectedJobVersion); //$NON-NLS-1$
             }
-            if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren), progressMonitor);
+                        statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice.get(ExportChoice.applyToChildren),
+                        progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
-                    escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+            resources.addAll(getLauncher((Boolean) exportChoice.get(ExportChoice.needLauncher), processItem,
+                    escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             // Gets system routines.
-            List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
+            List<URL> systemRoutineList = getSystemRoutine((Boolean) exportChoice.get(ExportChoice.needSystemRoutine));
             if (systemRoutineList.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
                         + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
@@ -106,7 +108,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             // Gets user routines.
             String projectName = getCorrespondingProjectName(processItem);
             try {
-                List<URL> userRoutineList = getUserRoutine(projectName, exportChoice.get(ExportChoice.needUserRoutine));
+                List<URL> userRoutineList = getUserRoutine(projectName, (Boolean) exportChoice.get(ExportChoice.needUserRoutine));
                 if (userRoutineList.size() > 0) {
                     process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
                             + PATH_SEPARATOR + projectName, userRoutineList);
@@ -115,16 +117,18 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 ExceptionHandler.process(e);
             }
 
-            addSource(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
+            addSource(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource)), process[i],
                     JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
-            List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
+            List<URL> talendLibraries = getTalendLibraries((Boolean) exportChoice.get(ExportChoice.needTalendLibraries));
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
             }
-            resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
-            addDepencies(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), process[i]);
-            resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
-            boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
+            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJob)));
+            addDepencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
+                    process[i]);
+            resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
+            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needJob)
+                    && (Boolean) exportChoice.get(ExportChoice.needContext);
             addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
             process[i].addResources(resources);
         }
@@ -319,7 +323,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     }
 
     private void addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
-            ExportFileResource curResource, Map<ExportChoice, Boolean> exportChoice, String contextName,
+            ExportFileResource curResource, Map<ExportChoice, Object> exportChoice, String contextName,
             String... selectedJobVersion) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
@@ -340,16 +344,17 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
     private void getChildrenJobAndContextName(ExportFileResource[] allResources, String rootName, List<String> list,
             ProcessItem process, String projectName, List<ProcessItem> processedJob, ExportFileResource curResource,
-            Map<ExportChoice, Boolean> exportChoice, String fatherContext, String... selectedJobVersion) {
+            Map<ExportChoice, Object> exportChoice, String fatherContext, String... selectedJobVersion) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
         addComponentModules(process, curResource);
-        addSource(allResources, process, exportChoice.get(ExportChoice.needSource), curResource, JOB_SOURCE_FOLDER_NAME,
-                selectedJobVersion);
-        addDepencies(allResources, process, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), curResource);
+        addSource(allResources, process, (Boolean) exportChoice.get(ExportChoice.needSource), curResource,
+                JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
+        addDepencies(allResources, process, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
+                curResource);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {
@@ -360,7 +365,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
                     .getJobVersion());
             String contextName = null;
-            if (exportChoice.get(ExportChoice.applyToChildren)) {
+            if ((Boolean) exportChoice.get(ExportChoice.applyToChildren)) {
                 // see bug 0003862: Export job with the flag "Apply to children" if the child don't have the
                 // same context fails.
                 ProcessItem processItem = ItemCacheManager.getProcessItem(subjobInfo.getJobId(), subjobInfo.getJobVersion());

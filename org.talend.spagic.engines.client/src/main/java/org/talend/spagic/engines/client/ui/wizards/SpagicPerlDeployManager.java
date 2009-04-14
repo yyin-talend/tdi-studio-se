@@ -76,30 +76,30 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
      * @return
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME); //$NON-NLS-1$ //$NON-NLS-2$
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
-            if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
-                        statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
+                        statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice.get(ExportChoice.applyToChildren));
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
-                    escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+            resources.addAll(getLauncher((Boolean) exportChoice.get(ExportChoice.needLauncher), processItem,
+                    escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             // Gets system routines.
-            List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
+            List<URL> systemRoutineList = getSystemRoutine((Boolean) exportChoice.get(ExportChoice.needSystemRoutine));
             if (systemRoutineList.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
                         + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
             }
             // Gets user routines.
             try {
-                List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
+                List<URL> userRoutineList = getUserRoutine((Boolean) exportChoice.get(ExportChoice.needUserRoutine));
                 if (userRoutineList.size() > 0) {
                     process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
                             + PATH_SEPARATOR + this.getCorrespondingProjectName(null), userRoutineList);
@@ -108,14 +108,15 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
                 ExceptionHandler.process(e);
             }
 
-            List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
+            List<URL> talendLibraries = getTalendLibraries((Boolean) exportChoice.get(ExportChoice.needTalendLibraries));
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
             }
-            resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
-            resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
+            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJob)));
+            resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
             resources.addAll(getProperties(processItem, contextName));
-            boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
+            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needJob)
+                    && (Boolean) exportChoice.get(ExportChoice.needContext);
             addChildrenResources(process, processItem, needChildren, process[i], exportChoice);
             process[i].addResources(resources);
         }
@@ -245,7 +246,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
     }
 
     private void addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
-            ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
+            ExportFileResource resource, Map<ExportChoice, Object> exportChoice) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
             String projectName = getCorrespondingProjectName(null);
@@ -288,14 +289,14 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
 
     private void getChildrenJobAndContextName(ExportFileResource[] allResources, String rootName, List<String> list,
             ProcessItem process, String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice) {
+            Map<ExportChoice, Object> exportChoice) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
         addComponentModules(process, resource);
-        addSource(allResources, process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
+        addSource(allResources, process, (Boolean) exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         String rootProjectName = PerlResourcesHelper.getRootProjectName(resource.getItem());

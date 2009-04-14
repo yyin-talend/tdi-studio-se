@@ -89,8 +89,8 @@ public abstract class JobScriptsManager {
 
     protected IProgressMonitor progressMonitor; // achen added to fix bug 0006222
 
-    public Map<ExportChoice, Boolean> getDefaultExportChoiseMap() {
-        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+    public Map<ExportChoice, Object> getDefaultExportChoiseMap() {
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needLauncher, true);
         exportChoiceMap.put(ExportChoice.needSystemRoutine, true);
         exportChoiceMap.put(ExportChoice.needUserRoutine, true);
@@ -130,7 +130,8 @@ public abstract class JobScriptsManager {
         needContext,
         applyToChildren,
         doNotCompileCode,
-        needDependencies
+        needDependencies,
+        queueMessageName
     }
 
     /**
@@ -147,7 +148,7 @@ public abstract class JobScriptsManager {
      */
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
+            Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
             String... codeOptions);
 
     protected String getTmpFolder() {

@@ -47,7 +47,7 @@ import org.talend.repository.documentation.ExportFileResource;
 public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager {
 
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         for (int i = 0; i < process.length; i++) {
@@ -59,25 +59,26 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)));
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue((Boolean) exportChoice
+                                .get(ExportChoice.applyToChildren)));
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem,
+            resources.addAll(getLauncher(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needLauncher)), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            addSource(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
+            addSource(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource)), process[i],
                     JOB_SOURCE_FOLDER_NAME);
 
-            resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))));
+            resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJob))));
             // resources.addAll(getProperties(processItem, srcList));
             resources.addAll(getProperties(processItem, contextName));
-            addContextScripts(process[i], BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext)));
+            addContextScripts(process[i], BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext)));
 
             // add children jobs
-            boolean needChildren = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))
-                    && BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext));
+            boolean needChildren = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJob))
+                    && BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
             List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice);
             resources.addAll(childrenList);
             process[i].addResources(resources);
@@ -96,22 +97,23 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
 
         list.add(spagicResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSystemRoutine)));
+        List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue((Boolean) exportChoice
+                .get(ExportChoice.needSystemRoutine)));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needUserRoutine)));
+        List<URL> userRoutineList = getUserRoutine(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needUserRoutine)));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needTalendLibraries)),
-                process);
+        List<URL> talendLibraries = getExternalLibraries(BooleanUtils.isTrue((Boolean) exportChoice
+                .get(ExportChoice.needTalendLibraries)), process);
         rootResource.addResources(talendLibraries);
 
         return list;
     }
 
     private List<URL> addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
-            ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
+            ExportFileResource resource, Map<ExportChoice, Object> exportChoice) {
         List<JobInfo> list = new ArrayList<JobInfo>();
         String projectName = getCorrespondingProjectName(process);
         if (needChildren) {
@@ -128,10 +130,10 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         List<URL> allJobScripts = new ArrayList<URL>();
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
-            allJobScripts.addAll(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
+            allJobScripts.addAll(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), (Boolean) exportChoice
                     .get(ExportChoice.needJob)));
-            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
-                    .get(ExportChoice.needContext));
+            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
+                    (Boolean) exportChoice.get(ExportChoice.needContext));
         }
 
         return allJobScripts;

@@ -80,7 +80,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * .ProcessItem[], boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         for (int i = 0; i < process.length; i++) {
@@ -99,27 +99,29 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)),
-                        progressMonitor);
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue((Boolean) exportChoice
+                                .get(ExportChoice.applyToChildren)), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem,
+            resources.addAll(getLauncher(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needLauncher)), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            addSource(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
+            addSource(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource)), process[i],
                     JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
 
-            addDepencies(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), process[i]);
-            resources.addAll(getJobScripts(processItem, selectedJobVersion, BooleanUtils.isTrue(exportChoice
+            addDepencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
+                    process[i]);
+            resources.addAll(getJobScripts(processItem, selectedJobVersion, BooleanUtils.isTrue((Boolean) exportChoice
                     .get(ExportChoice.needJob))));
 
-            addContextScripts(process[i], selectedJobVersion, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext)));
+            addContextScripts(process[i], selectedJobVersion, BooleanUtils.isTrue((Boolean) exportChoice
+                    .get(ExportChoice.needContext)));
 
             // add children jobs
-            boolean needChildren = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))
-                    && BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext));
+            boolean needChildren = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJob))
+                    && BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
             List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice,
                     selectedJobVersion);
             resources.addAll(childrenList);
@@ -136,15 +138,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         list.add(rootResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSystemRoutine)));
+        List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue((Boolean) exportChoice
+                .get(ExportChoice.needSystemRoutine)));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needUserRoutine)));
+        List<URL> userRoutineList = getUserRoutine(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needUserRoutine)));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needTalendLibraries)),
-                process);
+        List<URL> talendLibraries = getExternalLibraries(BooleanUtils.isTrue((Boolean) exportChoice
+                .get(ExportChoice.needTalendLibraries)), process);
         rootResource.addResources(talendLibraries);
 
         return list;
@@ -286,31 +289,24 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
             IPath path = getSrcRootLocation();
-            path = path.append(projectName).append(jobFolderName).append(jobName + ".java"); //$NON-NLS-1$
+            path = path.append(projectName).append(jobFolderName); //$NON-NLS-1$
+
+            FilenameFilter filter = new FilenameFilter() {
+
+                public boolean accept(File dir, String name) {
+                    return name.toLowerCase().endsWith(".java"); //$NON-NLS-1$
+                }
+            };
             List<URL> javaFileUrls = new ArrayList<URL>();
-            javaFileUrls.add(FileLocator.toFileURL(path.toFile().toURL()));
+            for (File curFile : path.toFile().listFiles(filter)) {
+                javaFileUrls.add(FileLocator.toFileURL(curFile.toURL()));
+            }
+
             resource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName, javaFileUrls);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
     }
-
-    // /**
-    // * ftang Comment method "getItemResource".
-    // *
-    // * @param processItem
-    // * @param resource
-    // * @param basePath
-    // * @param selectedJobVersion
-    // */
-    // private void getItemResource(ProcessItem processItem, ExportFileResource resource, String basePath,
-    // String[] selectedJobVersion) {
-    // String jobVersion = processItem.getProperty().getVersion();
-    // if (selectedJobVersion != null && selectedJobVersion.length == 1) {
-    // jobVersion = selectedJobVersion[0];
-    // }
-    //
-    // }
 
     protected String calculateLibraryPathFromDirectory(String directory) {
         int nb = directory.split(PATH_SEPARATOR).length - 1;
@@ -322,7 +318,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     private List<URL> addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
-            ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice, String... selectedJobVersion) {
+            ExportFileResource resource, Map<ExportChoice, Object> exportChoice, String... selectedJobVersion) {
         List<JobInfo> list = new ArrayList<JobInfo>();
         String projectName = getCorrespondingProjectName(process);
         if (needChildren) {
@@ -345,11 +341,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (project != null) {
                 childProjectName = project.getLabel().toLowerCase();
             }
-            allJobScripts.addAll(getJobScripts(childProjectName, jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
-                    .get(ExportChoice.needJob)));
-            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
-                    .get(ExportChoice.needContext));
-            addDepencies(allResources, jobInfo.getProcessItem(), BooleanUtils.isTrue(exportChoice
+            allJobScripts.addAll(getJobScripts(childProjectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
+                    (Boolean) exportChoice.get(ExportChoice.needJob)));
+            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
+                    (Boolean) exportChoice.get(ExportChoice.needContext));
+            addDepencies(allResources, jobInfo.getProcessItem(), BooleanUtils.isTrue((Boolean) exportChoice
                     .get(ExportChoice.needDependencies)), resource);
         }
 
@@ -358,13 +354,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected void getChildrenJobAndContextName(ExportFileResource[] allResources, String rootName, List<JobInfo> list,
             ProcessItem process, String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice, String... selectedJobVersion) {
+            Map<ExportChoice, Object> exportChoice, String... selectedJobVersion) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
-        addSource(allResources, process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
+        addSource(allResources, process, (Boolean) exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {

@@ -75,15 +75,15 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
      * java.lang.String, int, int, java.lang.String[])
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
         HashMap<String, String> jobMap = new HashMap<String, String>();
 
         boolean needJob = true;
-        boolean needSource = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource));
-        boolean needContext = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext));
+        boolean needSource = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource));
+        boolean needContext = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
         ExportFileResource libResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         ExportFileResource contextResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         ExportFileResource srcResource = new ExportFileResource(null, ""); //$NON-NLS-1$
@@ -123,10 +123,10 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)),
-                        progressMonitor);
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue((Boolean) exportChoice
+                                .get(ExportChoice.applyToChildren)), progressMonitor);
                 generateESBActionFile(processItem, contextName);
             }
 
@@ -142,7 +142,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, needJob));
         }
 
-        prepareESBFiles(jobMap);
+        prepareESBFiles(jobMap, exportChoice);
 
         // generate the META-INFO folder
         ExportFileResource metaInfoFolder = genMetaInfoFolder();
@@ -230,7 +230,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
     }
 
     private void addSubJobResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
-            Map<ExportChoice, Boolean> exportChoice, ExportFileResource libResource, ExportFileResource contextResource,
+            Map<ExportChoice, Object> exportChoice, ExportFileResource libResource, ExportFileResource contextResource,
             ExportFileResource srcResource, String selectedJobVersion) {
 
         List<JobInfo> list = new ArrayList<JobInfo>();
@@ -254,7 +254,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
     }
 
-    private void prepareESBFiles(HashMap<String, String> jobMap) {
+    private void prepareESBFiles(HashMap<String, String> jobMap, Map<ExportChoice, Object> exportChoice) {
         //        String targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
         // ESBGenerateJBossESB esbFile = new ESBGenerateJBossESB(targetFileName);
         // esbFile.saveProjectSettings(jobMap);
@@ -275,25 +275,24 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jboss-esb-template.xml"), null))
                     .getFile();
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml";
-            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName);
+            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName, exportChoice);
 
             inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/deployment-template.xml"), null)).getFile();
             targetFile = getTmpFolder() + PATH_SEPARATOR + "deployment.xml";
-            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName);
+            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName, exportChoice);
 
             inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbm-queue-service-template.xml"), null))
                     .getFile();
             targetFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml";
-            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName);
+            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName, exportChoice);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
     }
 
     private void readAndReplaceInXmlTemplate(String inputFile, String outputFile, String jobName, String jobAlias,
-            String jobPackage) {
+            String jobPackage, Map<ExportChoice, Object> exportChoice) {
         FileReader fr;
         try {
             fr = new FileReader(inputFile);
@@ -304,7 +303,8 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
             String line = br.readLine();
             while (line != null) {
-                line = line.replace("#JobName#", jobName).replace("#JobAlias#", jobAlias).replace("#JobPackage#", jobPackage);
+                line = line.replace("#JobName#", jobName).replace("#JobAlias#", jobAlias).replace("#JobPackage#", jobPackage)
+                        .replace("#QueueName#", (String) exportChoice.get(ExportChoice.queueMessageName));
                 bw.write(line + "\n");
                 line = br.readLine();
             }

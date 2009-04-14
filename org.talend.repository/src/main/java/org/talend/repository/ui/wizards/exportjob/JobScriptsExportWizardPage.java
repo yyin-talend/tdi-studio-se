@@ -491,31 +491,33 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         jobButton.setSelection(true);
         jobButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 1;
+        gd.horizontalSpan = 3;
         jobButton.setLayoutData(gd);
-        jobButton.addSelectionListener(new SelectionAdapter() {
 
-            public void widgetSelected(SelectionEvent e) {
-
-                exportDependencies.setEnabled(jobButton.getSelection());
-                if (!jobButton.getSelection()) {
-                    exportDependencies.setSelection(false);
-                }
-            }
-        });
-        exportDependencies = new Button(optionsGroup, SWT.CHECK);
-        exportDependencies.setText("Export Dependencies"); //$NON-NLS-1$
-        exportDependencies.setFont(font);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        exportDependencies.setLayoutData(gd);
         sourceButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
         sourceButton.setSelection(true);
         sourceButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 3;
+        gd.horizontalSpan = 1;
         sourceButton.setLayoutData(gd);
+
+        exportDependencies = new Button(optionsGroup, SWT.CHECK);
+        exportDependencies.setText("Export Dependencies"); //$NON-NLS-1$
+        exportDependencies.setFont(font);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        sourceButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+
+                exportDependencies.setEnabled(sourceButton.getSelection());
+                if (!sourceButton.getSelection()) {
+                    exportDependencies.setSelection(false);
+                }
+            }
+        });
+        exportDependencies.setLayoutData(gd);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
@@ -684,13 +686,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     private boolean exportJobScript(String version, IProgressMonitor monitor) {
         manager.setJobVersion(version);
         // monitor.subTask("Init export choices...");
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
         for (ExportChoice choice : ExportChoice.values()) {
             // if (choice.equals(ExportChoice.needGenerateCode)) {
             // continue;
             // }
-            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice)) {
+            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice) instanceof Boolean
+                    && (Boolean) exportChoiceMap.get(choice)) {
                 canExport = true;
                 break;
             }
@@ -916,13 +919,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
      */
     public List<ExportFileResource> getExportResources() {
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
     }
 
-    protected Map<ExportChoice, Boolean> getExportChoiceMap() {
-        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+    protected Map<ExportChoice, Object> getExportChoiceMap() {
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
         exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());

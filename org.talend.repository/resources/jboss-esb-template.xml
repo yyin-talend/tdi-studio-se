@@ -6,7 +6,7 @@
 		<jms-provider name="JBossMQ" connection-factory="ConnectionFactory">
 			<jms-bus busid="#JobAlias#GwChannel">
 				<jms-message-filter dest-type="QUEUE"
-					dest-name="queue/#JobAlias#_action_Request" />
+					dest-name="queue/#QueueName#" />
 			</jms-bus>
 			<jms-bus busid="#JobAlias#EsbChannel">
 				<jms-message-filter dest-type="QUEUE" dest-name="queue/B" />

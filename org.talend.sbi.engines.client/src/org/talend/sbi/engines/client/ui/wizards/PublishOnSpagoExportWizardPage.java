@@ -370,13 +370,12 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     public boolean finish() {
 
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
         for (ExportChoice choice : ExportChoice.values()) {
-            // if (choice.equals(ExportChoice.needGenerateCode)) {
-            // continue;
-            // }
-            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice)) {
+
+            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice) instanceof Boolean
+                    && (Boolean) exportChoiceMap.get(choice)) {
                 canExport = true;
                 break;
             }
@@ -543,13 +542,13 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
      */
     protected List<ExportFileResource> getExportResources() {
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "All", IProcessor.NO_STATISTICS, //$NON-NLS-1$
                 IProcessor.NO_TRACES);
     }
 
-    private Map<ExportChoice, Boolean> getExportChoiceMap() {
-        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+    private Map<ExportChoice, Object> getExportChoiceMap() {
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         // exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
         // exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
         // exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());

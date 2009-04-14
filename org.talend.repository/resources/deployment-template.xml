@@ -1,5 +1,4 @@
 <jbossesb-deployment>
-  <depends>jboss.esb.#JobPackage#:service=Queue,name=#JobAlias#_action_Request</depends>
-  <depends>jboss.esb.#JobPackage#:service=Queue,name=#JobAlias#_action_Response</depends>
+  <depends>jboss.esb.#JobPackage#:service=Queue,name=#QueueName#</depends>
 </jbossesb-deployment>
 
