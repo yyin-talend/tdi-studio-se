@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -1394,73 +1393,88 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @throws PersistenceException
      * @throws LoginException
      */
-    public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException,
-            OperationCanceledException {
-        LanguageManager.reset();
-        getRepositoryContext().setProject(project);
-
-        monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.initializeProjectConnection")); //$NON-NLS-1$
-        monitorWrap.worked(1);
-        this.repositoryFactoryFromProvider.beforeLogon(project);
-
-        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
-                IMigrationToolService.class);
-        service.executeProjectTasks(project, true, monitorWrap);
-
-        monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.logonInProgress")); //$NON-NLS-1$
-        monitorWrap.worked(1);
-        this.repositoryFactoryFromProvider.logOnProject(project);
-
-        emptyTempFolder(project);
-
-        // i18n
-        // log.info(getRepositoryContext().getUser() + " logged on " + projectManager.getCurrentProject());
-        String str[] = new String[] { getRepositoryContext().getUser() + "", projectManager.getCurrentProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
-        log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
-
-        monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.synchronizeLibraries")); //$NON-NLS-1$
-        monitorWrap.worked(1);
-
-        service.executeProjectTasks(project, false, monitorWrap);
-
-        // clean workspace
-        IRunProcessService runProcessService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
-                IRunProcessService.class);
-        runProcessService.deleteAllJobs(false);
-
-        ComponentsFactoryProvider.getInstance().reset();
-        CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
-
-        ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
-                ICodeGeneratorService.class);
+    public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException {
         try {
-            codeGenService.createRoutineSynchronizer().syncAllRoutines();
-        } catch (SystemException e1) {
-            //
-        }
-        // rules
-        if (PluginChecker.isRulesPluginLoaded()) {
-            IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
-                    IRulesProviderService.class);
-            if (rulesService != null) {
-                rulesService.syncAllRules();
+            LanguageManager.reset();
+            getRepositoryContext().setProject(project);
+
+            monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.initializeProjectConnection")); //$NON-NLS-1$
+            monitorWrap.worked(1);
+            this.repositoryFactoryFromProvider.beforeLogon(project);
+
+            IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
+                    IMigrationToolService.class);
+            service.executeProjectTasks(project, true, monitorWrap);
+
+            monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.logonInProgress")); //$NON-NLS-1$
+            monitorWrap.worked(1);
+            this.repositoryFactoryFromProvider.logOnProject(project);
+
+            emptyTempFolder(project);
+
+            // i18n
+            // log.info(getRepositoryContext().getUser() + " logged on " + projectManager.getCurrentProject());
+            String str[] = new String[] { getRepositoryContext().getUser() + "", projectManager.getCurrentProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
+            log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
+
+            monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.synchronizeLibraries")); //$NON-NLS-1$
+            monitorWrap.worked(1);
+
+            service.executeProjectTasks(project, false, monitorWrap);
+
+            // clean workspace
+            IRunProcessService runProcessService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
+            runProcessService.deleteAllJobs(false);
+
+            ComponentsFactoryProvider.getInstance().reset();
+            CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
+
+            ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                    ICodeGeneratorService.class);
+            try {
+                codeGenService.createRoutineSynchronizer().syncAllRoutines();
+            } catch (SystemException e1) {
+                //
             }
-        }
-        if (!CommonsPlugin.isHeadless()) {
-            CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
-        }
+            // rules
+            if (PluginChecker.isRulesPluginLoaded()) {
+                IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
+                        IRulesProviderService.class);
+                if (rulesService != null) {
+                    rulesService.syncAllRules();
+                }
+            }
+            if (!CommonsPlugin.isHeadless()) {
+                CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
+            }
 
-        // remove the auto-build to enhance the build speed and application's use
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IWorkspaceDescription description = workspace.getDescription();
-        description.setAutoBuilding(false);
-        try {
-            workspace.setDescription(description);
-        } catch (CoreException e) {
-            // do nothing
+            // remove the auto-build to enhance the build speed and application's use
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            IWorkspaceDescription description = workspace.getDescription();
+            description.setAutoBuilding(false);
+            try {
+                workspace.setDescription(description);
+            } catch (CoreException e) {
+                // do nothing
+            }
+        } catch (LoginException e) {
+            logOffProject();
+            throw e;
+        } catch (PersistenceException e) {
+            logOffProject();
+            throw e;
+        } catch (RuntimeException e) {
+            logOffProject();
+            throw e;
         }
     }
 
+    public void logOffProject() {
+        getRepositoryContext().setProject(null);
+        repositoryFactoryFromProvider.logOffProject();
+    }
+    
     public boolean setAuthorByLogin(Item item, String login) throws PersistenceException {
         return repositoryFactoryFromProvider.setAuthorByLogin(item, login);
     }

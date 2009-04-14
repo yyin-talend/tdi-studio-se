@@ -301,4 +301,6 @@ public interface IRepositoryFactory {
 
     @SuppressWarnings("unchecked")
     public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit);
+
+    public void logOffProject();
 }

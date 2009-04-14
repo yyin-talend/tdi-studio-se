@@ -214,4 +214,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) {
         workUnit.executeRun();
     }
+    
+    public void logOffProject() {
+        // do nothing by default
+    }
 }
