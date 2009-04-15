@@ -112,7 +112,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
 
         BooleanFieldEditor antialiasing;
         antialiasing = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_ANTIALIASING,
-                "Use antialiasing and interpolation in the Job Designer", getFieldEditorParent()); //$NON-NLS-1$
+                Messages.getString("DesignerPreferencePage.actionInJobDesigner"), getFieldEditorParent()); //$NON-NLS-1$
         addField(antialiasing);
 
         DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
@@ -120,8 +120,8 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         addField(compDefaultFileDir);
 
         RadioGroupFieldEditor largeIconsSizeField = new RadioGroupFieldEditor(TalendDesignerPrefConstants.LARGE_ICONS_SIZE,
-                Messages.getString("DesignerPreferencePage.largeIconsSize"), 2, new String[][] { { "24 pixels", "" + 24 }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                        { "32 pixels", "" + 32 } }, getFieldEditorParent()); //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.getString("DesignerPreferencePage.largeIconsSize"), 2, new String[][] { { Messages.getString("DesignerPreferencePage.iconSize24"), "" + 24 }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+                        { Messages.getString("DesignerPreferencePage.iconSize32"), "" + 32 } }, getFieldEditorParent()); //$NON-NLS-1$ //$NON-NLS-2$
         addField(largeIconsSizeField);
 
         // disable this feature 1722 for the M1 release as it's not used yet in Perl or Java.
@@ -134,9 +134,9 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         // //$NON-NLS-2$
         // addField(schemaOptions);
 
-        RadioGroupFieldEditor viewOptions = new RadioGroupFieldEditor(TalendDesignerPrefConstants.VIEW_OPTIONS, Messages
-                .getString("DesignerPreferencePage.viewOptions"), 2, new String[][] { { "compact view", "default" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                { "table view", "table view" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
+         RadioGroupFieldEditor viewOptions = new RadioGroupFieldEditor(TalendDesignerPrefConstants.VIEW_OPTIONS, Messages
+                .getString("DesignerPreferencePage.viewOptions"), 2, new String[][] { { Messages.getString("DesignerPreferencePage.compactView"), "default" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                { Messages.getString("DesignerPreferencePage.tableView"), "table view" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
         addField(viewOptions);
 
         // BooleanFieldEditor viewSubjobs = new BooleanFieldEditor(TalendDesignerPrefConstants.DISPLAY_SUBJOBS,

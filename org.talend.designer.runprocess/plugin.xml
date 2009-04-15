@@ -109,12 +109,12 @@
           category="org.talend.core.prefs"
           class="org.talend.designer.runprocess.prefs.RunProcessPreferencePage"
           id="org.talend.designer.runprocess"
-          name="Run/Debug"/>
+          name="%runAndDebug"/>
     <page
           category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
           class="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
           id="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
-          name="Shell Setting">
+          name="%shellSetting">
     </page>
  </extension>
  <extension

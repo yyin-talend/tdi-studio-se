@@ -43,19 +43,19 @@
             category="org.talend.designer.core.ui.preferences.FontPreferencePage"
             class="org.talend.designer.core.ui.preferences.PropertiesPreferencePage"
             id="org.talend.designer.core.properties.memo.text.font"
-            name="Memo Text Font">
+            name="%memoTextFont">
       </page>
       <page
             category="org.talend.designer.core.ui.preferences.TalendPreferencePage"
             class="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
             id="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
-            name="Colors">
+            name="%colors">
       </page>
       <page
             category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.PerformancePreferencePage"
             id="org.talend.designer.core.ui.preferences.PerformancePreferencePage"
-            name="Performance">
+            name="%performance">
       </page>
       <page
             category="org.talend.core.prefs"
@@ -67,43 +67,43 @@
             category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.SpecificSettingPreferencePage"
             id="org.talend.designer.core.ui.preferences.SpecificSettingPreferencePage"
-            name="Specific Setting">
+            name="%specificSetting">
       </page>
       <page
             category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
             id="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
-            name="Import/Export">
+            name="%importExport">
       </page>
       <page
             category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
             id="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
-            name="Appearance">
+            name="%appearance">
       </page>
       <page
             category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
             class="org.talend.designer.core.ui.preferences.ContextPreferencePage"
             id="org.talend.designer.core.ui.preferences.ContextPreferencePage"
-            name="Context">
+            name="%context">
       </page>
       <page
             category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
             class="org.talend.designer.core.ui.preferences.FontPreferencePage"
             id="org.talend.designer.core.ui.preferences.FontPreferencePage"
-            name="Font">
+            name="%font">
       </page>
       <page
             category="org.talend.designer.core.ui.preferences.FontPreferencePage"
             class="org.talend.designer.core.ui.preferences.OutputConsolePreferencePage"
             id="org.talend.designer.core.ui.preferences.OutputConsolePreferencePage"
-            name="Output Console">
+            name="%outputConsole">
       </page>
       <page
             category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.I18nPreferencePage"
             id="org.talend.designer.core.internationalization"
-            name="Internationalization">
+            name="%internationalization">
       </page>
       
    </extension>
@@ -260,7 +260,7 @@
                   </view>
                   <view
 			    	allowMultiple="false"
-					name="Palette"
+					name="%palette"
 					icon="icons/palette_view.gif"
 					category="org.eclipse.ui"
 					class="org.talend.designer.core.ui.editor.palette.TalendPaletteView"

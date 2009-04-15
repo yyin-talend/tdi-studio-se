@@ -41,9 +41,10 @@ public class ComponenttRunJobPreferencePage extends FieldEditorPreferencePage im
     @Override
     public void createFieldEditors() {
 
-        doNotShowJobAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IS_AVOID, Messages
-                .getString("ComponenttRunJobPreferencePage.label"), getFieldEditorParent()); //$NON-NLS-1$
-
+        // doNotShowJobAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IS_AVOID, Messages
+        //                .getString("ComponenttRunJobPreferencePage.label"), getFieldEditorParent()); //$NON-NLS-1$
+        doNotShowJobAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IS_AVOID,
+                Messages.getString("ComponenttRunJobPreferencePage.showCorrespondingJob"), getFieldEditorParent()); //$NON-NLS-1$
         addField(doNotShowJobAfterDoubleClickCheckBoxField);
     }
 

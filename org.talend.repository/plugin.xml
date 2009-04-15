@@ -1109,7 +1109,7 @@
       <page
             class="org.talend.repository.preference.SecurityProjectSettingPage"
             id="org.talend.repository.securityPage"
-            title="Security">
+            title="%projectsetting.Security">
       </page>        
    </extension>
 
