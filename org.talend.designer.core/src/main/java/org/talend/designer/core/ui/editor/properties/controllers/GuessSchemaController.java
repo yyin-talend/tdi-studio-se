@@ -317,6 +317,9 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
     private void runShadowProcess(final Property property, final Node inputNode, final IContext selectContext,
             final IElementParameter switchParam) {
+        SQLBuilderRepositoryNodeManager sqlManager = new SQLBuilderRepositoryNodeManager();
+        DatabaseConnection connt = sqlManager.createConnection(connParameters);
+        String dbmsId = connt.getDbmsId();
 
         GuessSchemaProcess gsp = new GuessSchemaProcess(property, inputNode, selectContext, memoSQL, info);
         try {
@@ -344,13 +347,14 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         // to see if the language is java or perl
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                             if (schemaContent.size() > 5) {
-                                talendType = JavaDataTypeHelper.getTalendTypeOfValue(schemaContent.get(5)[i - 1]);
+                                talendType = MetadataTalendType.getMappingTypeRetriever(dbmsId).getDefaultSelectedTalendType(
+                                        schemaContent.get(4)[i - 1]);
                             } else {
                                 talendType = JavaTypesManager.STRING.getId();
                             }
                         } else {
                             if (schemaContent.size() > 5) {
-                                talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(5)[i - 1]);
+                                talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(4)[i - 1]);
                             } else {
                                 talendType = PerlTypesManager.STRING;
                             }
@@ -736,7 +740,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             connParameters.setConnectionComment(testConnection.getMessageException());
             return testConnection.getResult();
         } catch (Exception e) {
-            log.error("" + "\n" + e.toString());  //$NON-NLS-2$
+            log.error("" + "\n" + e.toString()); //$NON-NLS-2$
         }
         return false;
     }
