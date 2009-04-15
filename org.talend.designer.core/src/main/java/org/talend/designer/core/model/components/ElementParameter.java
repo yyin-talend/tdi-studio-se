@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
@@ -109,9 +109,9 @@ public class ElementParameter implements IElementParameter {
 
     private String labelFromRepository;
 
-    private Color color;
+    private RGB color;
 
-    private Color backgroundColor;
+    private RGB backgroundColor;
 
     private boolean dynamicSettings = false;
 
@@ -663,7 +663,7 @@ public class ElementParameter implements IElementParameter {
      * 
      * @return the color
      */
-    public Color getColor() {
+    public RGB getColor() {
         return this.color;
     }
 
@@ -672,7 +672,7 @@ public class ElementParameter implements IElementParameter {
      * 
      * @param color the color to set
      */
-    public void setColor(Color color) {
+    public void setColor(RGB color) {
         this.color = color;
     }
 
@@ -681,7 +681,7 @@ public class ElementParameter implements IElementParameter {
      * 
      * @return the backgroundColor
      */
-    public Color getBackgroundColor() {
+    public RGB getBackgroundColor() {
         return this.backgroundColor;
     }
 
@@ -690,7 +690,7 @@ public class ElementParameter implements IElementParameter {
      * 
      * @param backgroundColor the backgroundColor to set
      */
-    public void setBackgroundColor(Color backgroundColor) {
+    public void setBackgroundColor(RGB backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 

@@ -17,8 +17,6 @@ import java.io.File;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
@@ -51,7 +49,8 @@ public class ImageController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -68,14 +67,7 @@ public class ImageController extends AbstractElementPropertySectionController {
             }
             final Composite compositeImage = new Composite(subComposite, SWT.BORDER);
             final Image image = new Image(subComposite.getDisplay(), filePath);
-            compositeImage.addDisposeListener(new DisposeListener() {
-
-                public void widgetDisposed(DisposeEvent e) {
-                    image.dispose();
-                    compositeImage.removeDisposeListener(this);
-                }
-
-            });
+            addResourceDisposeListener(compositeImage, image);
 
             CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName() + " :"); //$NON-NLS-1$
             FormData formDataLabel = new FormData();
@@ -107,8 +99,9 @@ public class ImageController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -122,7 +115,9 @@ public class ImageController extends AbstractElementPropertySectionController {
                 return 0;
             }
             final Image image = new Image(subComposite.getDisplay(), filePath);
-            return image.getImageData().height;
+            int height = image.getImageData().height;
+            image.dispose();
+            return height;
         }
 
         return 0;

@@ -141,8 +141,9 @@ public class ColorController extends AbstractElementPropertySectionController {
         // *********************
         data = new FormData();
         int currentLabelWidth = STANDARD_LABEL_WIDTH;
-        Point labelSize = new GC(labelLabel).stringExtent(param.getDisplayName());
-
+        GC gc = new GC(labelLabel);
+        Point labelSize = gc.stringExtent(param.getDisplayName());
+        gc.dispose();
         if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
             currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
         }
@@ -232,6 +233,7 @@ public class ColorController extends AbstractElementPropertySectionController {
 
         ImageData id = createColorImage(colorBtn, rgb);
         Image image = new Image(colorBtn.getDisplay(), id, id.getTransparencyMask());
+        addResourceDisposeListener(colorBtn, image);
         colorBtn.setImage(image);
     }
 

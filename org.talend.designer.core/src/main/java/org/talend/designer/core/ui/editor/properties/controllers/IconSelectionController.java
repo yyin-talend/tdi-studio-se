@@ -138,6 +138,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
      */
     private void refreshIcon(ImageData imageData) {
         Image image = new Image(composite.getShell().getDisplay(), imageData);
+        addResourceDisposeListener(filePathText, image);
         filePathText.setImage(image);
 
     }
@@ -303,8 +304,12 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
         if (element instanceof IProcess) {
 
             if (findProcessProvider != null) {
-                Image image = findProcessProvider.getIcons((IProcess) element);
-                filePathText.setImage(image);
+                ImageDescriptor icon = findProcessProvider.getIcons((IProcess) element);
+                if (icon != null) {
+                    Image image = icon.createImage();
+                    addResourceDisposeListener(filePathText, image);
+                    filePathText.setImage(image);
+                }
             }
         }
     }
@@ -329,8 +334,8 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
         @Override
         public void execute() {
             if (findProcessProvider != null) {
-                oldImage = ImageDescriptor.createFromImage(findProcessProvider.getIcons(process));
-                findProcessProvider.setIcons((IProcess) elem, newImage.createImage());
+                oldImage = findProcessProvider.getIcons(process);
+                findProcessProvider.setIcons((IProcess) elem, newImage);
             }
             if (changeCmd != null) {
                 changeCmd.execute();
@@ -340,7 +345,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
         @Override
         public void undo() {
             if (findProcessProvider != null) {
-                findProcessProvider.setIcons((IProcess) elem, oldImage.createImage());
+                findProcessProvider.setIcons((IProcess) elem, oldImage);
             }
             if (changeCmd != null) {
                 changeCmd.undo();

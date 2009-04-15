@@ -22,6 +22,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.properties.tabbed.ITypeMapper;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -108,7 +110,7 @@ public class GefEditorLabelProvider extends LabelProvider {
         if (lastNode != node) {
             lastNode = node;
         }
-        return ImageProvider.getImage(node.getIcon24());
+        return CoreImageProvider.getComponentIcon(node.getComponent(), ICON_SIZE.ICON_24);
     }
 
     /*

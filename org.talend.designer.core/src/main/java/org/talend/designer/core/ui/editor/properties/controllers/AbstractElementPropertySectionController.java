@@ -33,6 +33,8 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
@@ -41,6 +43,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -1385,5 +1388,26 @@ public abstract class AbstractElementPropertySectionController implements Proper
             process = part.getTalendEditor().getProcess();
         }
         return process;
+    }
+
+    /**
+     * 
+     * cli Comment method "addResourceDisposeListener".
+     * 
+     * When dispose the control, dispose resource at the same time. (bug 6916)
+     */
+    protected void addResourceDisposeListener(final Control parent, final Resource res) {
+        if (parent != null) {
+            parent.addDisposeListener(new DisposeListener() {
+
+                public void widgetDisposed(DisposeEvent e) {
+                    if (res != null && !res.isDisposed()) {
+                        res.dispose();
+                    }
+                    parent.removeDisposeListener(this);
+                }
+            });
+        }
+
     }
 }

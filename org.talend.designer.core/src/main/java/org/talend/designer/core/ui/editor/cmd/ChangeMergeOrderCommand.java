@@ -62,7 +62,7 @@ public class ChangeMergeOrderCommand extends Command {
         connectionInNewOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
 
-        if (mergeNode.getComponentName().equalsIgnoreCase("tFileOutputMSXML")) {
+        if (mergeNode.getComponent().getName().equalsIgnoreCase("tFileOutputMSXML")) {
             reOrder("ROOT");
             reOrder("GROUP");
             reOrder("LOOP");

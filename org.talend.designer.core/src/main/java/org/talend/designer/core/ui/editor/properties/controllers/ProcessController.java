@@ -117,8 +117,9 @@ public class ProcessController extends AbstractElementPropertySectionController 
         // *********************
         data = new FormData();
         int currentLabelWidth = STANDARD_LABEL_WIDTH;
-        Point labelSize = new GC(labelLabel).stringExtent(param.getDisplayName());
-
+        GC gc = new GC(labelLabel);
+        Point labelSize = gc.stringExtent(param.getDisplayName());
+        gc.dispose();
         if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
             currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
         }
@@ -443,7 +444,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
             if (elem != null && elem instanceof Node) {
                 Node runJobNode = (Node) elem;
                 String paramName = (String) button.getData(PARAMETER_NAME);
-                String jobId = (String) runJobNode.getPropertyValue(paramName); // .getElementParameter(name).getValue();
+                String jobId = (String) runJobNode.getPropertyValue(paramName); //.getElementParameter(name).getValue();
                 if (StringUtils.isNotEmpty(jobId)) {
                     // if user have selected job
                     ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
@@ -460,8 +461,9 @@ public class ProcessController extends AbstractElementPropertySectionController 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {

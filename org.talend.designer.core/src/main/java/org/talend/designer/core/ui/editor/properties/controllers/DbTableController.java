@@ -216,8 +216,9 @@ public class DbTableController extends AbstractElementPropertySectionController 
         // *********************
         data = new FormData();
         int currentLabelWidth = STANDARD_LABEL_WIDTH;
-        Point labelSize = new GC(labelLabel).stringExtent(param.getDisplayName());
-
+        GC gc = new GC(labelLabel);
+        Point labelSize = gc.stringExtent(param.getDisplayName());
+        gc.dispose();
         if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
             currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
         }

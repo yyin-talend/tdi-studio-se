@@ -39,12 +39,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -500,8 +502,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             if (!label.equals(uniqueName)) {
                 label = label + "(" + uniqueName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
-
-            image = new Image(Display.getDefault(), ((Node) elem).getComponent().getIcon24().getImageData());
+            image = CoreImageProvider.getComponentIcon(((Node) elem).getComponent(), ICON_SIZE.ICON_24);
         } else if (elem instanceof Connection) {
             label = ((Connection) elem).getElementName();
             image = ImageProvider.getImage(EImage.RIGHT_ICON);

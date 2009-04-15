@@ -479,7 +479,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     private ColorStyledText createColorStyledText(final Composite parent, final int style) {
         ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(), "tsql"); //$NON-NLS-1$
-        Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+        Font font = new Font(null, "courier", 8, SWT.NONE); //$NON-NLS-1$
+        addResourceDisposeListener(colorText, font);
         colorText.setFont(font);
         return colorText;
     }

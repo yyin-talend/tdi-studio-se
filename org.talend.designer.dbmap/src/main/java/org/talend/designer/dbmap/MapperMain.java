@@ -21,12 +21,13 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.external.converter.ExternalDataConverter;
@@ -72,17 +73,16 @@ public class MapperMain {
      * @return the created shell
      */
     public Shell createUI(Display display) {
-        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
-                | SWT.MAX | SWT.TITLE);
+        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
+                | SWT.TITLE);
 
         if (!MapperMain.isStandAloneMode()) {
             IComponent component = connector.getComponent();
-            shell.setImage(ImageProvider.getImage(component.getIcon32()));
+            shell.setImage(CoreImageProvider.getComponentIcon(component, ICON_SIZE.ICON_32));
         }
         // Shell shell = new Shell(display);
         // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
-        shell.setText(Messages.getString(
-                "MapperMain.title", connector.getComponent().getName(), connector.getUniqueName())); //$NON-NLS-1$
+        shell.setText(Messages.getString("MapperMain.title", connector.getComponent().getName(), connector.getUniqueName())); //$NON-NLS-1$
         ExternalDbMapUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {
@@ -153,8 +153,7 @@ public class MapperMain {
             List<IMetadataTable> outputMetadataTables, boolean checkProblems) {
         ioInputConnections = createIOConnections(incomingConnections);
         ioOutputConnections = createIOConnections(outgoingConnections);
-        createModelFromExternalData(ioInputConnections, ioOutputConnections, outputMetadataTables, externalData,
-                checkProblems);
+        createModelFromExternalData(ioInputConnections, ioOutputConnections, outputMetadataTables, externalData, checkProblems);
     }
 
     /**
@@ -171,8 +170,8 @@ public class MapperMain {
         return Collections.unmodifiableList(ioConnections);
     }
 
-    public void createModelFromExternalData(IODataComponentContainer ioDataContainer,
-            List<IMetadataTable> outputMetadataTables, ExternalDbMapData externalData, boolean checkProblems) {
+    public void createModelFromExternalData(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables,
+            ExternalDbMapData externalData, boolean checkProblems) {
         List<IODataComponent> inputsData = ioDataContainer.getInputs();
         List<IODataComponent> ouputsData = ioDataContainer.getOuputs();
 

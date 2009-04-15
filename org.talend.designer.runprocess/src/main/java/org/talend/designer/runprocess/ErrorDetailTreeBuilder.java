@@ -18,12 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 
 /**
@@ -147,7 +148,7 @@ public class ErrorDetailTreeBuilder {
 
         private List<Problem> errors = new ArrayList<Problem>();
 
-        private ImageDescriptor icon;
+        private Image icon;
 
         public void setLabel(String label) {
             this.label = label;
@@ -161,7 +162,7 @@ public class ErrorDetailTreeBuilder {
             errors.add(problem);
             if (icon == null && problem.getElement() != null && problem.getElement() instanceof INode) {
                 INode node = (INode) problem.getElement();
-                icon = node.getComponent().getIcon16();
+                icon = CoreImageProvider.getComponentIcon(node.getComponent(), ICON_SIZE.ICON_16);
             }
         }
 
@@ -178,7 +179,7 @@ public class ErrorDetailTreeBuilder {
             if (label.equals(GENERAL_ERROR)) {
                 return ImageProvider.getImage(ECoreImage.UNKNOWN);
             } else if (icon != null) {
-                return ImageProvider.getImage(icon);
+                return icon;
             }
             return null;
         }

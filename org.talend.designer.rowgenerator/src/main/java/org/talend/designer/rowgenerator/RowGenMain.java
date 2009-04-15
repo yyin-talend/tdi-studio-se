@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
@@ -34,6 +34,7 @@ import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
@@ -139,7 +140,7 @@ public class RowGenMain {
             }
             dialog.setSize(boundsRG);
         }
-        dialog.setIcon(ImageProvider.getImage(component.getIcon32()));
+        dialog.setIcon(CoreImageProvider.getComponentIcon(component, ICON_SIZE.ICON_32));
         dialog.setTitle(Messages.getString("RowGenMain.ShellTitle", productName, connector.getUniqueName())); //$NON-NLS-1$
 
         return dialog;
@@ -156,7 +157,7 @@ public class RowGenMain {
         Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
                 | SWT.TITLE);
         IComponent component = connector.getComponent();
-        shell.setImage(ImageProvider.getImage(component.getIcon32()));
+        shell.setImage(CoreImageProvider.getComponentIcon(component, ICON_SIZE.ICON_32));
 
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);

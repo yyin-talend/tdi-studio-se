@@ -96,7 +96,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -113,6 +114,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                 FontData fontData = new FontData(fontType);
                 Font font = new Font(parent.getDisplay(), fontData);
+                addResourceDisposeListener(control, font);
                 control.setFont(font);
                 return control;
             }
@@ -374,8 +376,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -390,6 +393,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                     FontData fontData = new FontData(fontType);
                     Font font = new Font(parent.getDisplay(), fontData);
+                    addResourceDisposeListener(colorText, font);
                     colorText.setFont(font);
                     return colorText;
                 }
@@ -420,7 +424,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize
+     * ()
      */
     @Override
     public boolean hasDynamicRowSize() {

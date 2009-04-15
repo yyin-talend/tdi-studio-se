@@ -134,12 +134,7 @@ public class Node extends Element implements INode {
 
     protected Point location = new Point(0, 0);
 
-    protected String name, label, componentName;
-
-    // add setter for componentName by hyWang
-    public String getComponentName() {
-        return this.componentName;
-    }
+    protected String name, label;
 
     private final List<IConnection> outputs = new ArrayList<IConnection>();
 
@@ -252,7 +247,6 @@ public class Node extends Element implements INode {
     private void init(IComponent newComponent) {
         this.component = newComponent;
         this.label = component.getName();
-        this.componentName = this.label;
 
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 

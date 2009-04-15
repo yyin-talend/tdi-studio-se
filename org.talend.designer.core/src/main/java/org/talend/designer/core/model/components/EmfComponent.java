@@ -31,7 +31,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
@@ -1303,7 +1302,7 @@ public class EmfComponent implements IComponent {
      * @param param
      * @param color
      */
-    private Color getColor(ElementParameter param, String color) {
+    private RGB getColor(ElementParameter param, String color) {
         if (CommonsPlugin.isHeadless()) {
             return null;
         }
@@ -1314,7 +1313,7 @@ public class EmfComponent implements IComponent {
                 throw new RuntimeException(Messages.getString("EmfComponent.RGBNotCorrect" //$NON-NLS-1$
                         , param.getDisplayName()));
             }
-            return new Color(null, TalendTextUtils.stringToRGB(color));
+            return TalendTextUtils.stringToRGB(color);
         }
         return null;
     }

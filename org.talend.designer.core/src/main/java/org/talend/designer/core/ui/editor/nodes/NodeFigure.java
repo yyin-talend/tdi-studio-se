@@ -32,10 +32,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -83,7 +84,7 @@ public class NodeFigure extends Figure {
     public NodeFigure(Node node) {
         this.node = node;
         fig = new ImageFigure();
-        fig.setImage(ImageProvider.getImage(node.getComponent().getIcon32()));
+        fig.setImage(CoreImageProvider.getComponentIcon(node.getComponent(), ICON_SIZE.ICON_32));
         fig.setSize(new Dimension(Node.DEFAULT_SIZE, Node.DEFAULT_SIZE));
         add(fig);
 

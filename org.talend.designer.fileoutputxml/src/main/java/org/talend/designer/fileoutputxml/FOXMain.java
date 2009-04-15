@@ -14,7 +14,6 @@ package org.talend.designer.fileoutputxml;
 
 import java.util.List;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -22,9 +21,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.managers.MultiFOXManager;
@@ -115,8 +116,7 @@ public class FOXMain {
         Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
                 | SWT.TITLE);
         IComponent component = connector.getComponent();
-        ImageDescriptor imageDescriptor = component.getIcon32();
-        Image createImage = imageDescriptor.createImage();
+        Image createImage = CoreImageProvider.getComponentIcon(component, ICON_SIZE.ICON_32);
         shell.setImage(createImage);
         shell.setText(connector.getUniqueName());
         Rectangle boundsRG = new Rectangle(50, 50, 800, 600);

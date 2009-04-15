@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.palette.PaletteEntry;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.INode;
@@ -165,9 +165,9 @@ public abstract class AbstractProcessProvider {
 
     public abstract boolean hasJobletComponent(Process process);
 
-    public abstract Image getIcons(IProcess process);
+    public abstract ImageDescriptor getIcons(IProcess process);
 
-    public abstract void setIcons(IProcess process, Image image);
+    public abstract void setIcons(IProcess process, ImageDescriptor image);
 
     /**
      * DOC qzhang Comment method "canCreate".

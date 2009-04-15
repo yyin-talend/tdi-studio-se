@@ -17,7 +17,6 @@ import java.util.List;
 import org.dom4j.Element;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -43,7 +42,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.alfrescooutput.AlfrescoOutputManager;
 import org.talend.designer.alfrescooutput.data.AlfrescoModelElements;
 import org.talend.designer.alfrescooutput.data.AlfrescoOutputModelManager;
@@ -355,8 +356,7 @@ public class AlfrescoModelDialog extends Dialog {
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         IComponent component = alfrescoOutputManager.getAlfrescoOutputComponent().getComponent();
-        ImageDescriptor imageDescriptor = component.getIcon32();
-        Image createImage = imageDescriptor.createImage();
+        Image createImage = CoreImageProvider.getComponentIcon(component, ICON_SIZE.ICON_32);
         newShell.setImage(createImage);
         newShell.setText(alfrescoOutputManager.getAlfrescoOutputComponent().getUniqueName());
         Rectangle boundsRG = new Rectangle(50, 50, 800, 600);

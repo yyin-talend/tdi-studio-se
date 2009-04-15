@@ -134,8 +134,9 @@ public class TextController extends AbstractElementPropertySectionController {
         // *********************
         data = new FormData();
         int currentLabelWidth = STANDARD_LABEL_WIDTH;
-        Point labelSize = new GC(labelLabel).stringExtent(param.getDisplayName());
-
+        GC gc = new GC(labelLabel);
+        Point labelSize = gc.stringExtent(param.getDisplayName());
+        gc.dispose();
         if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
             currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
         }
@@ -239,8 +240,11 @@ public class TextController extends AbstractElementPropertySectionController {
         // job settings extra (feature 2710)
         if (param.getCategory() == EComponentCategory.STATSANDLOGS || param.getCategory() == EComponentCategory.EXTRA) {
             Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+            /*
+             * Need dipose the system color or not? later, check it again.
+             */
+            // addResourceDisposeListener(labelText, red);
             // Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
-
             if ((value instanceof String) && param.isRequired()) {
 
                 String str = (String) value;
@@ -279,4 +283,5 @@ public class TextController extends AbstractElementPropertySectionController {
         return parameter.getName().equals(EParameterName.PASS.getName())
                 || (parameter.getRepositoryValue() != null && parameter.getRepositoryValue().equals("PASSWORD")); //$NON-NLS-1$
     }
+
 }

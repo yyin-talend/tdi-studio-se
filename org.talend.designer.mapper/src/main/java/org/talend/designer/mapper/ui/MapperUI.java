@@ -45,14 +45,15 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.MapperComponent;
@@ -254,7 +255,7 @@ public class MapperUI {
 
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
 
-        mapperShell.setImage(ImageProvider.getImage(component.getComponent().getIcon32()));
+        mapperShell.setImage(CoreImageProvider.getComponentIcon(component.getComponent(), ICON_SIZE.ICON_32));
 
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
@@ -375,16 +376,15 @@ public class MapperUI {
         updateBackgroundEnabled = true;
         updateBackground(true, false);
 
-//        List<DataMapTableView> inputsTablesView = uiManager.getInputsTablesView();
-//        for (DataMapTableView table : inputsTablesView) {
-//            
-//            table.showTableGlobalMap(false);
-//            table.showTableGlobalMap(true);
-//            
-////            table.updateGridDataHeightForTableGlobalMap();
-////            table.resizeAtExpandedSize();
-//        }
-
+        // List<DataMapTableView> inputsTablesView = uiManager.getInputsTablesView();
+        // for (DataMapTableView table : inputsTablesView) {
+        //            
+        // table.showTableGlobalMap(false);
+        // table.showTableGlobalMap(true);
+        //            
+        // // table.updateGridDataHeightForTableGlobalMap();
+        // // table.resizeAtExpandedSize();
+        // }
 
     }
 
@@ -1025,14 +1025,15 @@ public class MapperUI {
     /**
      * 
      * DOC amaumont Comment method "getStatusBarLabel".
+     * 
      * @return null if label is not created
      */
     public StatusBar getStatusBar() {
-        if(footerComposite != null) {
+        if (footerComposite != null) {
             return footerComposite.getStatusBar();
         } else {
             return null;
         }
     }
-    
+
 }

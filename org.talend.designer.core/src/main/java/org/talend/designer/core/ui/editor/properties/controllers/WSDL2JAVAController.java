@@ -296,10 +296,18 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             stream = initFile.toURL().openStream();
             byte[] innerContent = new byte[stream.available()];
             stream.read(innerContent);
-            stream.close();
+
             byteArray.setInnerContent(innerContent);
         } catch (IOException e) {
             ExceptionHandler.process(e);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    // 
+                }
+            }
         }
 
         routineItem.setContent(byteArray);

@@ -19,6 +19,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.IImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage.EPosition;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
@@ -194,7 +195,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
         if (node == null) {
             return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
         }
-        return node.getComponent().getIcon16().createImage();
+        return CoreImageProvider.getComponentIcon(node.getComponent(), ICON_SIZE.ICON_16);
     }
 
     /**

@@ -59,12 +59,14 @@ public class MemoController extends AbstractElementPropertySectionController {
      */
     public MemoController(IDynamicProperty dp) {
         super(dp);
+
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -95,10 +97,10 @@ public class MemoController extends AbstractElementPropertySectionController {
         cLayout.setBackground(subComposite.getBackground());
         text.setEnabled(!param.isReadOnly());
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-
         String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
         FontData fontData = new FontData(fontType);
-        Font font = new Font(subComposite.getDisplay(), fontData); //$NON-NLS-1$
+        Font font = new Font(null, fontData);
+        addResourceDisposeListener(text, font);
         text.setFont(font);
         if (elem instanceof Node) {
             text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
@@ -153,8 +155,9 @@ public class MemoController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -178,7 +181,9 @@ public class MemoController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize
+     * ()
      */
     @Override
     public boolean hasDynamicRowSize() {
@@ -213,4 +218,5 @@ public class MemoController extends AbstractElementPropertySectionController {
             checkErrorsForPropertiesOnly(text);
         }
     }
+
 }

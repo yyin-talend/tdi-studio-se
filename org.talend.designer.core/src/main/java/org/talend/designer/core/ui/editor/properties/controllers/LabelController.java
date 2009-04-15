@@ -19,6 +19,7 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
@@ -48,8 +49,10 @@ public class LabelController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
@@ -63,13 +66,17 @@ public class LabelController extends AbstractElementPropertySectionController {
             labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE);
         }
 
-        Color color = param.getColor();
-        if (color != null) {
+        RGB rgb = param.getColor();
+        if (rgb != null) {
+            Color color = new Color(null, rgb);
+            addResourceDisposeListener(labelLabel, color);
             labelLabel.setForeground(color);
         }
 
-        Color bgColor = param.getBackgroundColor();
-        if (bgColor != null) {
+        RGB bgRgb = param.getBackgroundColor();
+        if (bgRgb != null) {
+            Color bgColor = new Color(null, bgRgb);
+            addResourceDisposeListener(labelLabel, bgColor);
             labelLabel.setBackground(bgColor);
         }
 
@@ -145,8 +152,9 @@ public class LabelController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {

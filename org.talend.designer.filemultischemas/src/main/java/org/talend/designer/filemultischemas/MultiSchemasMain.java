@@ -16,8 +16,9 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.filemultischemas.data.ExternalMultiSchemasUIProperties;
 import org.talend.designer.filemultischemas.managers.MultiSchemasManager;
 import org.talend.designer.filemultischemas.ui.dialog.MultiSchemaDialog;
@@ -45,7 +46,7 @@ public class MultiSchemasMain {
         MultiSchemaDialog dialog = new MultiSchemaDialog(parentShell, this);
 
         IComponent component = connector.getComponent();
-        dialog.setIcon(ImageProvider.getImage(component.getIcon32()));
+        dialog.setIcon(CoreImageProvider.getComponentIcon(component, ICON_SIZE.ICON_32));
         dialog.setTitle("Talend Open Studio - " + connector.getUniqueName());
 
         Rectangle boundsMapper = ExternalMultiSchemasUIProperties.getBoundsMapper();
