@@ -453,7 +453,9 @@ public class NodesPasteCommand extends Command {
                                 Object value = param.getValue();
                                 if (value instanceof String) {
                                     String copiedParamValue = (String) value;
-                                    for (INode node : copiedNode.getProcess().getGraphicalNodes()) {
+                                    // noly rename global variables that exist in copied nodes
+                                    for (NodePart part : nodeParts) {
+                                        Node node = (Node) part.getModel();
                                         for (INodeReturn returns : node.getReturns()) {
                                             String copiedVarName = ElementParameterParser.parse(node, returns.getVarName());
                                             if (copiedParamValue.indexOf(copiedVarName) != -1) {
