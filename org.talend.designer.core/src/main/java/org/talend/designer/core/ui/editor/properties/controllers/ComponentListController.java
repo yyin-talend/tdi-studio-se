@@ -300,7 +300,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                 } else { // removed the old value.
                     newValue = "";//$NON-NLS-1$
                 }
-                if (newValue != null) {
+                if (!("".equals(newValue)) && newValue != null) {
                     IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
                     if (part instanceof AbstractMultiPageTalendEditor) {
                         AbstractTalendEditor te = ((AbstractMultiPageTalendEditor) part).getTalendEditor();
