@@ -688,7 +688,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>){
 
-					<%if("INSERT".equals(dataAction)){
+					<%if("INSERT".equals(dataAction) && !extendedInsert){
 					%>
 					pstmt_<%=cid %>.executeBatch();
        				pstmt_<%=cid %>.clearBatch();
