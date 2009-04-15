@@ -453,18 +453,15 @@ public class NodesPasteCommand extends Command {
                                 Object value = param.getValue();
                                 if (value instanceof String) {
                                     String copiedParamValue = (String) value;
-                                    for (INodeReturn returns : copiedNode.getReturns()) {
-                                        String copiedReturnName = returns.getName();
-                                        String copiedVarName = ElementParameterParser.parse(copiedNode, returns.getVarName());
-                                        if (copiedParamValue.indexOf(copiedVarName) != -1) {
-                                            for (INodeReturn pastedReturn : pastedNode.getReturns()) {
-                                                if (pastedReturn.getName().equals(copiedReturnName)) {
-                                                    copiedParamValue = copiedParamValue.replace(copiedVarName,
-                                                            ElementParameterParser.parse(pastedNode, pastedReturn.getVarName()));
-                                                    value = copiedParamValue;
-                                                }
+                                    for (INode node : copiedNode.getProcess().getGraphicalNodes()) {
+                                        for (INodeReturn returns : node.getReturns()) {
+                                            String copiedVarName = ElementParameterParser.parse(node, returns.getVarName());
+                                            if (copiedParamValue.indexOf(copiedVarName) != -1) {
+                                                String newValue = copiedVarName.replace(node.getUniqueName(), pastedNode
+                                                        .getUniqueName());
+                                                copiedParamValue = copiedParamValue.replace(copiedVarName, newValue);
+                                                value = copiedParamValue;
                                             }
-
                                         }
                                     }
                                 }
