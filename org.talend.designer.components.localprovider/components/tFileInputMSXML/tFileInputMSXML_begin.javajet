@@ -32,274 +32,307 @@ String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
-
-//String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
-
-//=============================add by wliu==================================================================
-class ConnectNode{
-	public List<Map<String,String>> mapping=new java.util.ArrayList<Map<String,String>>();
-	public String loopPath=null;
-	public String strConnCtgr;
-	public boolean hasEmptyRow;
-}
-List<Map<String, String>> map=null;
-List<List<Map<String, String>>> listMapping = new java.util.ArrayList<List<Map<String, String>>>();
-
-List<ConnectNode> listSchemaNodes= new java.util.ArrayList<ConnectNode>();
-
-			List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-			List<IConnection> connections = new java.util.ArrayList<IConnection>();
-			if (conns!=null && conns.size()>0) {
-				
-				for(int i=0;i<conns.size();i++){
-					IConnection connTemp = conns.get(i);
-					if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-						connections.add(connTemp);
-					}
-				}
-				
-				List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
-				for(IConnection connection : connections){
-		            for(Map<String, String> schemaMap : schemas){
-		               if(schemaMap.get("SCHEMA").equals(connection.getMetadataTable().getLabel())){
-							ConnectNode connectNode = new ConnectNode();
-							connectNode.strConnCtgr = connection.getUniqueName();
-							connectNode.hasEmptyRow=schemaMap.get("CREATE_EMPTY_ROW").equals("true");
-							connectNode.loopPath=(String)schemaMap.get("LOOP_PATH");
-							String strMapping=(String)schemaMap.get("MAPPING");
-							
-	                        String[] arrXpath = strMapping.split(",");
-	                        int j = 0;
-	                        for (IMetadataColumn column : connection.getMetadataTable().getListColumns()) {
-	                            Map<String, String> tempmap = new java.util.HashMap<String, String>();
-	                            tempmap.put("SCHEMA_COLUMN", column.getLabel());
-	                            tempmap.put("QUERY", arrXpath[j]);
-	
-	                            j++;
-	                            connectNode.mapping.add(tempmap);
-	                        }						
-
-							listSchemaNodes.add(connectNode);
-		                   break;
-		               }
-		            }
-				}				
-				
-			}
-
-
-//=================================end=======================================================================
+List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
 %>
-int nb_line_<%=cid%> = 0;
+int nb_line_<%=cid %> = 0;
 
-class XML_API_<%=cid%>{
-	public boolean isDefNull(String[] node) throws javax.xml.transform.TransformerException {
-        if(node[0] != null && node[1]!=null && node[1].equals("true")){
-        	return true;
+class NameSpaceTool_<%=cid %> {
+
+    public java.util.HashMap<String, String> xmlNameSpaceMap = new java.util.HashMap<String, String>();
+    
+	private java.util.List<String> defualtNSPath = new java.util.ArrayList<String>();
+
+    public void countNSMap(org.dom4j.Element el) {
+        for (org.dom4j.Namespace ns : (java.util.List<org.dom4j.Namespace>) el.declaredNamespaces()) {
+            if (ns.getPrefix().trim().length() == 0) {
+                xmlNameSpaceMap.put("pre"+defualtNSPath.size(), ns.getURI());
+                String path = "";
+                org.dom4j.Element elTmp = el;
+                while (elTmp != null) {
+                	if (elTmp.getNamespacePrefix() != null && elTmp.getNamespacePrefix().length() > 0) {
+                        path = "/" + elTmp.getNamespacePrefix() + ":" + elTmp.getName() + path;
+                    } else {
+                        path = "/" + elTmp.getName() + path;
+                    }
+                    elTmp = elTmp.getParent();
+                }
+                defualtNSPath.add(path);
+            } else {
+                xmlNameSpaceMap.put(ns.getPrefix(), ns.getURI());
+            }
+
+        }
+        for (org.dom4j.Element e : (java.util.List<org.dom4j.Element>) el.elements()) {
+            countNSMap(e);
+        }
+    }
+    
+    public String addDefaultNSPrefix(String path, String loopPath) {
+        if (defualtNSPath.size() > 0) {
+        	String fullPath = loopPath;
+        	if(!path.equals(fullPath)){
+            	for (String tmp : path.split("/")) {
+            		if (tmp.equals("..")) {
+                        fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
+                    } else {
+                        fullPath += "/" + tmp;
+                    }
+            	}
+            }
+        	int[] indexs = new int[fullPath.split("/").length - 1];
+            java.util.Arrays.fill(indexs, -1);
+            int length = 0;
+            for (int i = 0; i < defualtNSPath.size(); i++) {
+                if (defualtNSPath.get(i).length() > length && fullPath.startsWith(defualtNSPath.get(i))) {
+                    java.util.Arrays.fill(indexs, defualtNSPath.get(i).split("/").length - 2, indexs.length, i);
+                    length = defualtNSPath.get(i).length();
+                }
+            }
+
+            StringBuilder newPath = new StringBuilder();
+            String[] pathStrs = path.split("/");
+            for (int i = 0; i < pathStrs.length; i++) {
+                String tmp = pathStrs[i];
+                if (newPath.length() > 0) {
+                    newPath.append("/");
+                }
+                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 && tmp.indexOf("@") == -1) {
+                    int index = indexs[i + indexs.length - pathStrs.length];
+                    if (index >= 0) {
+                        newPath.append("pre").append(index).append(":").append(tmp);
+                    } else {
+                        newPath.append(tmp);
+                    }
+                } else {
+                    newPath.append(tmp);
+                }
+            }
+            return newPath.toString();
+        }
+        return path;
+    }
+}
+
+class XML_API_<%=cid %>{
+	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null && node instanceof org.dom4j.Element) {
+        	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
+        	if(attri != null && attri.getText().equals("true")){
+            	return true;
+            }
         }
         return false;
     }
 
-    public boolean isMissing(String[] node) throws javax.xml.transform.TransformerException {
-        return node[0] == null ? true : false;
+    public boolean isMissing(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        return node == null ? true : false;
     }
 
-    public boolean isEmpty(String[] node) throws javax.xml.transform.TransformerException {
-        if(node[0]!=null ){
-        	return node[0].length() == 0;
+    public boolean isEmpty(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null) {
+            return node.getText().length() == 0;
         }
         return false;
     }
 }
 
-<%
-	for(ConnectNode connNode : listSchemaNodes){
-		String strType=connNode.strConnCtgr+"";
-%>
-XML_API_<%=cid%> xml_api_<%=strType %>_<%=cid%> = new XML_API_<%=cid%>();
+org.dom4j.io.SAXReader reader_<%=cid %> = new org.dom4j.io.SAXReader();
 
-String[] queryPaths_<%=connNode.strConnCtgr %>_<%=cid%> = new String[]{
-<%
-		boolean first = true;
-		for(Map<String,String> path : connNode.mapping){
-%>	
-	<%=first?"":","%><%=path.get("QUERY")%>
-<%
-		String query = path.get("QUERY");
-			if(query!=null && query.indexOf("@")<0){
-%>		
-	,<%=query%>+"/@xsi:nil"
-<%
-			}
-		first=false;
-		}//for(path)
-%>
-};
+org.dom4j.Document doc_<%=cid %>= reader_<%=cid %>.read(new java.io.File(<%=filename %>).toURI().toString());
 
-String str_<%=connNode.strConnCtgr %>_<%=cid %> = "";
-String[] node_<%=connNode.strConnCtgr %>_<%=cid%> = null;
-org.talend.xml.sax.SAXLooper looper_<%=connNode.strConnCtgr %>_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=rootpath%>+<%=connNode.loopPath %>,queryPaths_<%=connNode.strConnCtgr %>_<%=cid%>);
-looper_<%=connNode.strConnCtgr %>_<%=cid%>.parse(new java.io.File(<%=filename %>).toURI().toString());
-java.util.Iterator<java.util.Map<String, String>> it_<%=connNode.strConnCtgr %>_<%=cid%>  = looper_<%=connNode.strConnCtgr %>_<%=cid%>.iterator();
-<%
-	}//for(connNode)
-%>
-while (
-<%
-	boolean first =true;
-	for(ConnectNode connNode : listSchemaNodes){
-%>
-<%=first?"":" || "%>it_<%=connNode.strConnCtgr %>_<%=cid%>.hasNext()
-<%
-		first=false;
-	}//for connNode
-%>) {
+NameSpaceTool_<%=cid %> nsTool_<%=cid %> = new NameSpaceTool_<%=cid %>();
+nsTool_<%=cid %>.countNSMap(doc_<%=cid %>.getRootElement());
+java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid %> = nsTool_<%=cid %>.xmlNameSpaceMap;  
+
+String rootpath_<%=cid %> = <%=rootpath %>;
+if(rootpath_<%=cid %>.endsWith("/")){
+	rootpath_<%=cid %> = rootpath_<%=cid %>.substring(0,rootpath_<%=cid %>.length()-1);
+}
+
+org.dom4j.XPath x_<%=cid %> = doc_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(rootpath_<%=cid %>,rootpath_<%=cid %>));  
+x_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>);
+
+java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid %> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid %>.selectNodes(doc_<%=cid %>);	
+XML_API_<%=cid %> xml_api_<%=cid %> = new XML_API_<%=cid %>();
+String str_<%=cid %> = "";
+org.dom4j.Node node_<%=cid %> = null;
+
+for (org.dom4j.tree.AbstractNode loop_<%=cid %>: nodeList_<%=cid %>) {
 		nb_line_<%=cid%>++;
 
 <%
+List< ? extends IConnection> connections = node.getOutgoingSortedConnections();
 
-String firstConnName = "";
-//===========================modify by wliu====================================
 if(connections!=null && connections.size()>0){
 	
-	boolean isMetadata=false;
-
+	//get all the children collections of the loop node.
 	for(IConnection conn : connections){
-			
-			List<Map<String, String>> mapping=null;
-			String strType="";
-			boolean hasEmptyRow = false;
-			for(ConnectNode connNode: listSchemaNodes){
-				if(conn.getUniqueName().equals(connNode.strConnCtgr)){
-					isMetadata=true;
-					mapping=connNode.mapping;
-					strType=connNode.strConnCtgr + "";
-					hasEmptyRow= connNode.hasEmptyRow;
-					break;
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+			String query = null;
+			for(Map<String, String> schemaMap : schemas){
+				if(schemaMap.get("SCHEMA").equals(conn.getName())){
+					query = schemaMap.get("LOOP_PATH");
 				}
 			}
-			if(isMetadata==false) continue; //don't find the metadata related to the connector.
-			
-			IMetadataTable metadata = conn.getMetadataTable();
-			
-			if(metadata!=null){
-				if(hasEmptyRow){
 %>
-	<%=conn.getName() %>=new <%=conn.getName() %>Struct();
-	if(it_<%=strType %>_<%=cid %>.hasNext()){
-		java.util.Map<String, String> row_<%=strType %>_<%=cid %> = it_<%=strType %>_<%=cid %>.next();
+	String query_<%=conn.getName() %> = <%=query %>;
+	if(query_<%=conn.getName() %>.startsWith("/")){
+		query_<%=conn.getName() %> = query_<%=conn.getName() %>.substring(1, query_<%=conn.getName() %>.length());
+	}
+	org.dom4j.XPath xSub<%=conn.getName() %>_<%=cid %> = loop_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(query_<%=conn.getName() %>,rootpath_<%=cid %>));
+    xSub<%=conn.getName() %>_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>); 
+    java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=conn.getName() %>_<%=cid %> = (java.util.List<org.dom4j.tree.AbstractNode>)xSub<%=conn.getName() %>_<%=cid %>.selectNodes(loop_<%=cid %>);
+    java.util.Iterator<org.dom4j.tree.AbstractNode> it_<%=conn.getName() %>_<%=cid %> = nodeList_<%=conn.getName() %>_<%=cid %>.iterator();
+<% 
+		}
+	}
+%>
+	while(
 <%
-				}else{
+	boolean b_tmp_while = true;
+	for(IConnection conn : connections){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+%>
+<%=b_tmp_while?"": " || "%>it_<%=conn.getName() %>_<%=cid %>.hasNext()
+<%
+			b_tmp_while = false;
+		}
+	}
+%>){
+<%
+	for(IConnection conn : connections){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+			boolean hasEmptyRow = false;
+			Map<String, String> mapping = null;
+			String tmpQuery = null;
+			for(Map<String, String> schemaMap : schemas){
+				if(schemaMap.get("SCHEMA").equals(conn.getName())){
+					hasEmptyRow = schemaMap.get("CREATE_EMPTY_ROW").equals("true");
+					mapping = schemaMap;
+					tmpQuery = schemaMap.get("LOOP_PATH");
+				}
+			}
+			IMetadataTable metadata = conn.getMetadataTable();
+			if(metadata!=null){
 %>
 	<%=conn.getName() %> = null;
-	if(it_<%=strType %>_<%=cid %>.hasNext()){	
-		<%=conn.getName() %>=new <%=conn.getName() %>Struct();		
-		java.util.Map<String, String> row_<%=strType %>_<%=cid %> = it_<%=strType %>_<%=cid %>.next();
-<%				}
-				List<IMetadataColumn> columns=metadata.getListColumns();
-//===================================end========================================
-				firstConnName = conn.getName();
-				for (int i=0;i<mapping.size();i++) { 
-					String query = mapping.get(i).get("QUERY");
-%>
-	str_<%=strType %>_<%=cid %> = row_<%=strType %>_<%=cid %>.get(<%=query %>);
-<% 
-						if(query!=null && query.indexOf("@")<0){
-%>
-	node_<%=strType %>_<%=cid%> = new String[]{str_<%=strType %>_<%=cid %>,row_<%=strType %>_<%=cid %>.get(<%=query %>+"/@xsi:nil")};
 <%
-						}else{
+				if(hasEmptyRow){
 %>
-	node_<%=strType %>_<%=cid%> = new String[]{str_<%=strType %>_<%=cid %>,null};
+	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
+	if(it_<%=conn.getName() %>_<%=cid %>.hasNext()){
 <% 
-						}
-					for(IMetadataColumn column:columns) {
-						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
-							if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
-								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-								
-								boolean isNotSetDefault = false;
-								String defaultValue=column.getDefault();
-								if(defaultValue!=null){
-									isNotSetDefault = defaultValue.length()==0;
-								}else{
-									isNotSetDefault=true;
-								}
-								
-								if(javaType == JavaTypesManager.STRING){
-									if(column.isNullable()){
+				}else{
 %>
-									if(xml_api_<%=strType %>_<%=cid %>.isDefNull(node_<%=strType %>_<%=cid %>)){
+	if(it_<%=conn.getName() %>_<%=cid %>.hasNext()){	
+		<%=conn.getName() %>=new <%=conn.getName() %>Struct();	
+<% 
+				}
+%>		
+		String tmpQuery_<%=conn.getName() %> = <%=tmpQuery %>;
+		if(tmpQuery_<%=conn.getName() %>.startsWith("/")){
+			tmpQuery_<%=conn.getName() %> = tmpQuery_<%=conn.getName() %>.substring(1, tmpQuery_<%=conn.getName() %>.length());
+		}
+		String subLoop_<%=conn.getName() %> = rootpath_<%=cid %> + "/" + tmpQuery_<%=conn.getName() %>;
+
+		org.dom4j.tree.AbstractNode temp_<%=conn.getName() %>_<%=cid %> = it_<%=conn.getName() %>_<%=cid %>.next();
+<% 
+				List<IMetadataColumn> columns = metadata.getListColumns();
+				String[] arrXpath = ((String)mapping.get("MAPPING")).split(",");
+				for (int i=0;i < arrXpath.length;i++) {
+					String query = arrXpath[i];
+%>
+		org.dom4j.XPath xTmp<%=conn.getName() + i %>_<%=cid %> = temp_<%=conn.getName() %>_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(<%=query %>, subLoop_<%=conn.getName() %>));
+	    xTmp<%=conn.getName() + i %>_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>); 
+	    node_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.selectSingleNode(temp_<%=conn.getName() %>_<%=cid %>);
+	    str_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.valueOf(temp_<%=conn.getName() %>_<%=cid %>);
+<% 					int j = 0;
+					for(IMetadataColumn column:columns) {
+						if (i == j) {
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+							
+							boolean isNotSetDefault = false;
+							String defaultValue=column.getDefault();
+							if(defaultValue!=null){
+								isNotSetDefault = defaultValue.length()==0;
+							}else{
+								isNotSetDefault=true;
+							}
+							
+							if(javaType == JavaTypesManager.STRING){
+								if(column.isNullable()){
+%>
+									if(xml_api_<%=cid %>.isDefNull(node_<%=cid %>)){
 											<%=conn.getName() %>.<%=column.getLabel() %> =null;
-									}else if(xml_api_<%=strType %>_<%=cid %>.isEmpty(node_<%=strType %>_<%=cid %>)){
+									}else if(xml_api_<%=cid %>.isEmpty(node_<%=cid %>)){
 										<%=conn.getName() %>.<%=column.getLabel() %> ="";
-									}else if(xml_api_<%=strType %>_<%=cid %>.isMissing(node_<%=strType %>_<%=cid %> )){ 
+									}else if(xml_api_<%=cid %>.isMissing(node_<%=cid %> )){ 
 										<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?null:column.getDefault() %>;
 									}else{
-<%
-									}else{ // column.isNullable()
+<% 
+								}else{ // column.isNullable()
 %>
-									if(xml_api_<%=strType %>_<%=cid %>.isEmpty(node_<%=strType %>_<%=cid %>)){
-										<%=conn.getName() %>.<%=column.getLabel()%> ="";
-									}else if(xml_api_<%=strType %>_<%=cid %>.isMissing(node_<%=strType %>_<%=cid %> )){ 
-										<%=conn.getName() %>.<%=column.getLabel()%> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault() %>;
+									if(xml_api_<%=cid %>.isEmpty(node_<%=cid %>)){
+										<%=conn.getName() %>.<%=column.getLabel() %> ="";
+									}else if(xml_api_<%=cid %>.isMissing(node_<%=cid %> )){ 
+										<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault() %>;
 									}else{
-<%
-									}
-								}else{ // other type
-									if(column.isNullable()){
+<% 
+								}
+							}else{ // other type
+								if(column.isNullable()){
 %>	
-										if(xml_api_<%=strType %>_<%=cid %>.isDefNull(node_<%=strType %>_<%=cid %>)){
-											<%=conn.getName() %>.<%=column.getLabel()%> =null;
-										}else if(xml_api_<%=strType %>_<%=cid%>.isEmpty(node_<%=strType %>_<%=cid%>) || xml_api_<%=strType %>_<%=cid %>.isMissing(node_<%=strType %>_<%=cid %>)){
+										if(xml_api_<%=cid %>.isDefNull(node_<%=cid %>)){
+											<%=conn.getName() %>.<%=column.getLabel() %> =null;
+										}else if(xml_api_<%=cid %>.isEmpty(node_<%=cid %>) || xml_api_<%=cid %>.isMissing(node_<%=cid %>)){
 											<%=conn.getName() %>.<%=column.getLabel() %>=<%=isNotSetDefault?null:column.getDefault()%>;
 										}else{
-<% 
-								  }else{ // column.isNullable()
+<%
+							  	}else{ // column.isNullable()
 %>
-										if(xml_api_<%=strType %>_<%=cid %>.isMissing(node_<%=strType %>_<%=cid %>) || xml_api_<%=strType %>_<%=cid %>.isEmpty(node_<%=strType %>_<%=cid %>)){
+										if(xml_api_<%=cid %>.isMissing(node_<%=cid %>) || xml_api_<%=cid %>.isEmpty(node_<%=cid %>)){
 											<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault() %>;
 										}else{
 <%
-									}
 								}
-								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+							}
+							if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=strType %>_<%=cid %>;
+		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
 <% 
-								} else if (javaType == JavaTypesManager.DATE) {
+							} else if (javaType == JavaTypesManager.DATE) {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=strType %>_<%=cid %>, <%= patternValue %>);
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=cid %>, <%= patternValue %>);
 <%  
-								} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>							
-		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=strType %>_<%=cid %>.getBytes(<%=encoding %>);
+		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>.getBytes(<%=encoding %>);
 <%
-								} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
+							} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(str_<%=strType %>_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(str_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%
-								} else {
+							} else {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%=strType %>_<%=cid %>);
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%=cid %>);
 <%
-								}
+							}
 %>
 	}
 <%
-							}
+							break;//jump out of the for loop
 						}
+						j++;
 					}				//for(IMetadataColumn column:columns)
 				}				//for (int i=0;i<mapping.size();i++)
 //===========================modify by wliu=================================
 %>
 	}
-<%
+<% 
 			}	//if(metadata!=null)	
-		
-		isMetadata=false;
+		}//if(conn) 
 	}	//for(IConnection)
 }	//if(conns!=null)
 //===============================end========================================
