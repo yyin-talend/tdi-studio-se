@@ -23,11 +23,21 @@ imports="
 	
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     
+    String dbversion = ElementParameterParser.getValue(node, "__DB_VERSION__");
+    
 %>
 
 java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 
-String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=" + <%=dbname%>;
+<%if ("Access_2003".equalsIgnoreCase(dbversion)) {
+%>
+	String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + <%=dbname%>;
+<%
+}else if ("Access_2007".equalsIgnoreCase(dbversion)) {
+%>
+	String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=" + <%=dbname%>;
+<%
+}%>
 
 String userName_<%=cid %> = <%=username%>;
 

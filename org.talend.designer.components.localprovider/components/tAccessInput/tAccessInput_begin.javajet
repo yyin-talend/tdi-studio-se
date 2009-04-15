@@ -26,7 +26,11 @@ imports="
 		   dbquery = dbquery.replaceAll("\n"," ");
 		   dbquery = dbquery.replaceAll("\r"," ");		   
     boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
+    String dbversion = ElementParameterParser.getValue(node, "__DB_VERSION__");
+    
+    
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
+    
 		   
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -35,7 +39,16 @@ imports="
 		    %>
             int nb_line_<%=cid%> = 0;
             java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=" + <%=dbname%>;
+            
+            <%if ("Access_2003".equalsIgnoreCase(dbversion)){
+            %>
+	            String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + <%=dbname%>;
+            <%
+            }else if ("Access_2007".equalsIgnoreCase(dbversion)){
+            %>
+	            String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=" + <%=dbname%>;            
+            <%
+            }%>
             String userName_<%=cid %> = <%=username%>;
             String password_<%=cid %> = <%=password%>;
             java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid %>,password_<%=cid %>);
