@@ -299,7 +299,6 @@
 
 	  <IMPORTS>
         <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="true" />
-	    <IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="true" />
 	  </IMPORTS>
 
 	</CODEGENERATION>
