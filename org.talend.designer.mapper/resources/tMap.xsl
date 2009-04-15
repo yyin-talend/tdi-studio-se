@@ -41,7 +41,9 @@
 									<xsl:value-of select="$propname" />
 								</td>
 								<td class="FONTSTYLE" align="left">
-									<xsl:value-of select="text()" />
+								 <pre>
+									<xsl:value-of select="text()" disable-output-escaping="yes"/>
+									</pre>
 								</td>
 							</tr>
 						</xsl:for-each>

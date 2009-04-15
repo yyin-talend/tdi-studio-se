@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -35,7 +36,11 @@ import org.talend.core.model.genhtml.XMLHandler;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IComponentDocumentation;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 
 /**
@@ -53,6 +58,8 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
     private Document document;
 
     private String previewPicPath;
+
+    private INode externalNode;
 
     /*
      * (non-Javadoc)
@@ -78,7 +85,7 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
 
         String xslFilePath = xslFileUrl.getPath();
 
-        generateXMLInfo();
+        generateXMLInfo(getExternalNode());
 
         XMLHandler.generateXMLFile(tempFolderPath, xmlFilepath, document);
         HTMLHandler.generateHTMLFile(this.tempFolderPath, xslFilePath, xmlFilepath, htmlFilePath);
@@ -124,13 +131,48 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
     /**
      * Generates all information which for XML file.
      */
-    private void generateXMLInfo() {
+    private void generateXMLInfo(INode externalNode) {
         document = DocumentHelper.createDocument();
         Element externalNodeElement = document.addElement("externalNode"); //$NON-NLS-1$
         externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName)); //$NON-NLS-1$
         externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath)); //$NON-NLS-1$
 
+        Element parametersElement = externalNodeElement.addElement("parameters"); //$NON-NLS-1$
+        List elementParameterList = externalNode.getElementParameters();
+        generateParameters(parametersElement, elementParameterList);
+
         generateColumnInfo(externalNodeElement);
+    }
+
+    private void generateParameters(Element parametersElement, List elementParameterList) {
+        List<IElementParameter> copyElementParameterList = new ArrayList(elementParameterList);
+        if (elementParameterList != null && elementParameterList.size() != 0) {
+            for (int j = 0; j < elementParameterList.size(); j++) {
+                IElementParameter elemparameter = (IElementParameter) elementParameterList.get(j);
+                if ((!elemparameter.isShow(copyElementParameterList) && (!elemparameter.getName().equals(
+                        EParameterFieldType.SCHEMA_TYPE.getName())))
+                        || elemparameter.getCategory().equals(EComponentCategory.VIEW)
+                        || elemparameter.getName().equals("ACTIVATE")//$NON-NLS-1$
+                        || elemparameter.getName().equals("MAP") //$NON-NLS-1$
+                        || elemparameter.getName().equals("SCHEMA")) {//$NON-NLS-1$
+                    continue;
+                }
+
+                Element columnElement = parametersElement.addElement("column"); //$NON-NLS-1$
+                columnElement.addAttribute("name", HTMLDocUtils.checkString(elemparameter.getDisplayName())); //$NON-NLS-1$
+                Object eleObj = elemparameter.getValue();
+                String value = ""; //$NON-NLS-1$
+                if (eleObj != null) {
+                    value = eleObj.toString();
+                    if (elemparameter.getName().equals("COMMENT")) {//$NON-NLS-1$
+                        columnElement.addCDATA(value);
+                    } else {
+                        columnElement.setText(value);
+                    }
+                }
+
+            }
+        }
     }
 
     /**
@@ -194,5 +236,13 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
     public void setPreviewPicPath(String previewPicPath) {
         this.previewPicPath = previewPicPath;
 
+    }
+
+    public INode getExternalNode() {
+        return this.externalNode;
+    }
+
+    public void setExternalNode(INode externalNode) {
+        this.externalNode = externalNode;
     }
 }

@@ -168,7 +168,11 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
                 String value = ""; //$NON-NLS-1$
                 if (eleObj != null) {
                     value = eleObj.toString();
-                    columnElement.setText(value);
+                    if (elemparameter.getName().equals("COMMENT")) {//$NON-NLS-1$
+                        columnElement.addCDATA(value);
+                    } else {
+                        columnElement.setText(value);
+                    }
                 }
 
             }

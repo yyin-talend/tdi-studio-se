@@ -509,6 +509,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         componentDocumentation.setComponentName(componentName);
         componentDocumentation.setTempFolderPath(tempFolderPath);
         componentDocumentation.setPreviewPicPath(HTMLDocUtils.getPreviewPicPath(this));
+        componentDocumentation.setExternalNode(getExternalNode());
 
         // Added parameters, preview and functions value.
         for (IMetadataTable table : this.metadataListOut) {

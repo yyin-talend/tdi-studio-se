@@ -13,6 +13,41 @@
 			</div>
 			<br />
 		</xsl:if>
+		
+		<b class="FONTSTYLE">Component Parameters:</b>
+					<br />
+					<table class="cols" width="90%" border="1"
+						cellpadding="0" cellspacing="0"
+						style="border-collapse: collapse; padding-left:10mm;"
+						bordercolor="#111111" frame="box" summary="">
+						<tr>
+							<th align="left" width="30%"
+								class="TABLECOLUMNSTYLE">
+								Properties
+							</th>
+							<th align="left" width="70%"
+								class="TABLECOLUMNSTYLE">
+								Values
+							</th>
+						</tr>
+						<xsl:for-each select="/externalNode/parameters/column">
+							<tr>
+								<td class="FONTSTYLE" align="left">
+									<xsl:variable name="propname"
+										select="@name" />
+									<xsl:value-of select="$propname" />
+								</td>
+								<td class="FONTSTYLE" align="left">
+								 <pre>
+									<xsl:value-of select="text()" disable-output-escaping="yes"/>
+									</pre>
+								</td>
+							</tr>
+						</xsl:for-each>
+					</table>
+					<br />
+		
+		
 		<b class="FONTSTYLE">
 			Row generator information for
 			<xsl:value-of select="/externalNode/@name" />
