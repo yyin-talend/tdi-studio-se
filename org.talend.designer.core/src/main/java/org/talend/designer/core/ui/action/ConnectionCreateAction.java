@@ -36,6 +36,7 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.dialog.mergeorder.ConnectionTableAndSchemaNameDialog;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -263,8 +264,36 @@ public class ConnectionCreateAction extends SelectionAction {
                     removeQuotes = name2 + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ // //$NON-NLS-2$
                 }
             }
+            if (removeQuotes != null && node.isELTComponent() && node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
+                if (getDefaultSchemaName() != null) {
+                    removeQuotes = getDefaultSchemaName() + "." + removeQuotes;
+                }
+            }
         }
         return removeQuotes;
+    }
+
+    /**
+     * DOC gcui Comment method "getDefaultSchemaName".
+     * 
+     * @param node
+     * @param removeQuotes
+     * @return
+     */
+    private String getDefaultSchemaName() {
+        Node node = (Node) nodePart.getModel();
+        String schemaNameRemoveQuotes = null;
+        IElementParameter elementParam = node.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
+        if (node.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
+            String name2 = elementParam.getValue().toString();
+            if (name2 != null) {
+                name2 = TalendTextUtils.removeQuotes(name2);
+                if (!"".equals(name2)) { //$NON-NLS-1$
+                    schemaNameRemoveQuotes = name2;
+                }
+            }
+        }
+        return schemaNameRemoveQuotes;
     }
 
     public List<INodeConnector> getConnectors() {
@@ -344,6 +373,31 @@ public class ConnectionCreateAction extends SelectionAction {
             return ""; //$NON-NLS-1$
         }
         return id.getValue();
+    }
+
+    /**
+     * DOC gcui Comment method "askForConnectionNameAndSchema".
+     * 
+     * @param nodeLabel
+     * @param oldName
+     * @return
+     */
+    private String askForConnectionNameAndSchema(String nodeLabel, String oldName) {
+        String outName = "";
+        ConnectionTableAndSchemaNameDialog id = new ConnectionTableAndSchemaNameDialog(getWorkbenchPart().getSite().getShell(),
+                nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
+                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName); //$NON-NLS-1$ 
+        id.open();
+        if (id.getReturnCode() == InputDialog.CANCEL) {
+            return ""; //$NON-NLS-1$
+        }
+        if (id.getSchemaName() != null && !id.getTableName().equals("")) { //$NON-NLS-1$
+            outName = id.getSchemaName() + "." + id.getTableName(); //$NON-NLS-1$
+        } else if (id.getSchemaName() == null && !id.getTableName().equals("")) { //$NON-NLS-1$
+            outName = id.getTableName();
+        }
+
+        return outName;
     }
 
     /*
@@ -454,7 +508,14 @@ public class ConnectionCreateAction extends SelectionAction {
                     meta = node.getMetadataList().get(0);
                     meta.setAttachedConnector(curNodeConnector.getName());
                 } else {
-                    connectionName = askForConnectionName(node.getLabel(), null);
+                    // gcui:see bug 6781.if is tELT*Input then add a schema name.
+                    // if (node.isELTComponent() && node.getComponentName().endsWith("Input"))
+                    if (node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
+                        connectionName = askForConnectionNameAndSchema(node.getLabel(), getDefaultSchemaName());
+                    } else {
+                        connectionName = askForConnectionName(node.getLabel(), null);
+                    }
+
                 }
             } else {
                 if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)) {
