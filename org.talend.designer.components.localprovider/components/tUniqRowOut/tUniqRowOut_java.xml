@@ -12,7 +12,6 @@
     SCHEMA_AUTO_PROPAGATE="true"
     DATA_AUTO_PROPAGATE="false"
     HAS_CONDITIONAL_OUTPUTS="true"
-    VISIBLE="false"
     TECHNICAL="true"
   >
     <SIGNATURE />
