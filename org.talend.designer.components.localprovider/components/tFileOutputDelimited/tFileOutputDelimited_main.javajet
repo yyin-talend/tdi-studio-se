@@ -163,8 +163,18 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		                splitedFileNo_<%=cid%>++;
     		                out<%=cid %>.close(); 
     		                //close original outputStream
+    		                java.io.FileOutputStream fos_main_<%=cid%> = new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%= isAppend%>);
+<%
+							if(encoding.equals("\"UTF-8\"")){
+%>   
+				    		    fos_main_<%=cid %>.write((byte) 0xEF); 
+				    		    fos_main_<%=cid %>.write((byte) 0xBB); 
+				    		    fos_main_<%=cid %>.write((byte) 0xBF); 
+<%
+							}
+%>
     		                out<%=cid %> = new <%=isInRowMode?"routines.system.BufferedOutput":"java.io.BufferedWriter"%>(new java.io.OutputStreamWriter(
-    		                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%= isAppend%>),<%= encoding%>));
+    		                        fos_main_<%=cid%>,<%= encoding%>));
     		                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);  					
     
     		                <%
