@@ -1011,31 +1011,45 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
-        Boolean value = (Boolean) element.getElementParameter("USE_EXISTING_CONNECTION").getValue();
+        Boolean value = false;
+
+        IElementParameter existingConn = element.getElementParameter("USE_EXISTING_CONNECTION");
+        IElementParameter dbName = element.getElementParameter("DBNAME");
+        IElementParameter tableSchema = element.getElementParameter("TABLESCHEMA");
+        IElementParameter user = element.getElementParameter("USER");
+        IElementParameter pass = element.getElementParameter("PASS");
+        IElementParameter type = element.getElementParameter("TYPE");
+        IElementParameter port = element.getElementParameter("PORT");
+        IElementParameter host = element.getElementParameter("HOST");
+        IElementParameter dbVersion = element.getElementParameter("DB_VERSION");
+
+        if (existingConn != null) {
+            value = (Boolean) existingConn.getValue();
+        }
         if (value) {
-            if (element.getElementParameter("DBNAME") != null) {
-                element.getElementParameter("DBNAME").setValue(connParameters.getDbName());
+            if (dbName != null) {
+                dbName.setValue(connParameters.getDbName());
             }
-            if (element.getElementParameter("TABLESCHEMA") != null) {
-                element.getElementParameter("TABLESCHEMA").setValue(connParameters.getSchema());
+            if (tableSchema != null) {
+                tableSchema.setValue(connParameters.getSchema());
             }
-            if (element.getElementParameter("USER") != null) {
-                element.getElementParameter("USER").setValue(connParameters.getUserName());
+            if (user != null) {
+                user.setValue(connParameters.getUserName());
             }
-            if (element.getElementParameter("PASS") != null) {
-                element.getElementParameter("PASS").setValue(connParameters.getPassword());
+            if (pass != null) {
+                pass.setValue(connParameters.getPassword());
             }
-            if (element.getElementParameter("TYPE") != null) {
-                element.getElementParameter("TYPE").setValue(connParameters.getDbType());
+            if (type != null) {
+                type.setValue(connParameters.getDbType());
             }
-            if (element.getElementParameter("PORT") != null) {
-                element.getElementParameter("PORT").setValue(connParameters.getPort());
+            if (port != null) {
+                port.setValue(connParameters.getPort());
             }
-            if (element.getElementParameter("HOST") != null) {
-                element.getElementParameter("HOST").setValue(connParameters.getHost());
+            if (host != null) {
+                host.setValue(connParameters.getHost());
             }
-            if (element.getElementParameter("DB_VERSION") != null) {
-                element.getElementParameter("DB_VERSION").setValue(connParameters.getDriverJar());
+            if (dbVersion != null) {
+                dbVersion.setValue(connParameters.getDriverJar());
             }
         }
         connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
@@ -1056,7 +1070,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && "" //$NON-NLS-1$
         .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
             if (EDatabaseTypeName.SQLITE.getDisplayName().equals(connParameters.getDbType()) && Boolean.valueOf(value)) {
-                element.getElementParameter("DBNAME").setValue(connParameters.getFilename());
+                dbName.setValue(connParameters.getFilename());
             }
             connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
         }
