@@ -3,11 +3,6 @@
 <plugin>
    <extension
          point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.talend.designer.components.localprovider.page1"
-            class="org.talend.designer.abstractmap.ui.prefs.MapPreferencePage"
-            id="org.talend.designer.abstractmap"
-            name="Map components"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

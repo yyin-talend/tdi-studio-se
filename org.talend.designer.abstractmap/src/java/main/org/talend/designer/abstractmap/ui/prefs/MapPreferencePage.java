@@ -34,12 +34,15 @@ import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
  * 
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
+ * @deprecated moved to ComponentsPreferencePage
  */
 public class MapPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     /**
      * This class exists to provide visibility to the <code>refreshValidState</code> method and to perform more
      * intelligent clearing of the error message.
+     * 
+     * 
      */
     protected class ConsoleIntegerFieldEditor extends IntegerFieldEditor {
 
@@ -67,9 +70,6 @@ public class MapPreferencePage extends FieldEditorPreferencePage implements IWor
 
     // private BooleanFieldEditor2 fWrapEditor = null;
     private IntegerFieldEditor fClientComPortEditor = null;
-
-    // private BooleanFieldEditor2 fUseBufferSize = null;
-    private ConsoleIntegerFieldEditor fBufferSizeEditor = null;
 
     private ConsoleIntegerFieldEditor fTabSizeEditor = null;
 

@@ -16,6 +16,9 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+/**
+ * @deprecated moved to AppearancePreferencePage
+ */
 public class FontPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     /*

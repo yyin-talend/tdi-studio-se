@@ -24,6 +24,8 @@ import org.talend.designer.components.i18n.Messages;
  * 
  * @author ftang, 17/08, 2007<br/>
  * 
+ * @deprecated moved to ComponentsPreferencePage
+ * 
  */
 public class ComponenttRunJobPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 

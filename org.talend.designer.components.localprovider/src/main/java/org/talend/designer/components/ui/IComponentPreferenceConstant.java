@@ -10,15 +10,20 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.abstractmap.ui.prefs;
+package org.talend.designer.components.ui;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
+ * DOC zli class global comment. Detailled comment
  * 
- * @deprecated moved to ComponentsPreferencePage
+ * 
  */
-public class MapPrefsConstants {
+public interface IComponentPreferenceConstant {
+
+    public static final String LIMIT = "previewDataLimit"; //$NON-NLS-1$
+
+    public static final String IS_AVOID = "isAvoidShowJobAfterDoulbleClick"; //$NON-NLS-1$
+
+    public static final String USER_COMPONENTS_FOLDER = "USER_COMPONENTS_FOLDER"; //$NON-NLS-1$
 
     public static final String LINK_STYLE = "LINK_STYLE"; //$NON-NLS-1$
-
 }

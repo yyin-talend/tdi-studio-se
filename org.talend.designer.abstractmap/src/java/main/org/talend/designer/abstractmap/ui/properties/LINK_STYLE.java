@@ -5,6 +5,8 @@ import org.talend.designer.abstractmap.i18n.Messages;
 /**
  * 
  * Style of links. <br/>
+ * 
+ * @deprecated
  */
 public enum LINK_STYLE {
     AUTO(Messages.getString("prefs.configuration.LINK_STYLE.AUTO")), //$NON-NLS-1$

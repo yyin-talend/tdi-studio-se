@@ -13,15 +13,11 @@
 package org.talend.designer.components.model;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
-import org.talend.designer.components.ui.ComponentsPreferencePage;
+import org.talend.designer.components.ui.IComponentPreferenceConstant;
 
 /***/
 public class UserComponentsProvider extends AbstractComponentsProvider {
@@ -32,7 +28,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
 
     protected File getExternalComponentsLocation() {
         IPreferenceStore prefStore = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
-        String path = prefStore.getString(ComponentsPreferencePage.USER_COMPONENTS_FOLDER);
+        String path = prefStore.getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
         return (path == null || path.length() == 0 ? null : new File(path));
     }
 }

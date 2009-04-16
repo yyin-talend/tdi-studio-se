@@ -23,6 +23,9 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.repository.ui.views.IRepositoryView;
 
+/**
+ * @deprecated moved to AppearancePreferencePage
+ */
 public class ContextPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     public ContextPreferencePage() {

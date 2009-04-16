@@ -21,6 +21,7 @@ import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
  * 
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
+ * @deprecated moved to ComponentsPreferencePage
  */
 public class MapPreferenceInitializer extends AbstractPreferenceInitializer {
 

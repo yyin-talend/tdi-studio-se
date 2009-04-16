@@ -40,12 +40,6 @@
             name="%designer">
       </page>
       <page
-            category="org.talend.designer.core.ui.preferences.FontPreferencePage"
-            class="org.talend.designer.core.ui.preferences.PropertiesPreferencePage"
-            id="org.talend.designer.core.properties.memo.text.font"
-            name="%memoTextFont">
-      </page>
-      <page
             category="org.talend.designer.core.ui.preferences.TalendPreferencePage"
             class="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
             id="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
@@ -80,24 +74,6 @@
             class="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
             id="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
             name="%appearance">
-      </page>
-      <page
-            category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
-            class="org.talend.designer.core.ui.preferences.ContextPreferencePage"
-            id="org.talend.designer.core.ui.preferences.ContextPreferencePage"
-            name="%context">
-      </page>
-      <page
-            category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
-            class="org.talend.designer.core.ui.preferences.FontPreferencePage"
-            id="org.talend.designer.core.ui.preferences.FontPreferencePage"
-            name="%font">
-      </page>
-      <page
-            category="org.talend.designer.core.ui.preferences.FontPreferencePage"
-            class="org.talend.designer.core.ui.preferences.OutputConsolePreferencePage"
-            id="org.talend.designer.core.ui.preferences.OutputConsolePreferencePage"
-            name="%outputConsole">
       </page>
       <page
             category="org.talend.core.prefs"

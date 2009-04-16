@@ -22,6 +22,11 @@ import org.eclipse.swt.widgets.Group;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 
+/**
+ * 
+ * @deprecated moved to AppearancePreferencePage
+ */
+
 public class OutputConsolePreferencePage extends AbstractPreferencePage {
 
     private FontFieldEditor consoleFontField = null;

@@ -19,11 +19,6 @@
             name="%components"/>
       <page
             category="org.talend.designer.components.localprovider.page1"
-            class="org.talend.designer.components.ui.ComponenttRunJobPreferencePage"
-            id="org.talend.designer.components.ui.trunjobpreferencepage"
-            name="%trunjob"/>
-      <page
-            category="org.talend.designer.components.localprovider.page1"
             class="org.talend.designer.components.preference.labelformat.ComponentsFormatPreferencePage"
             id="org.talend.designer.components.localprovider.page1"
             name="%format">
@@ -36,6 +31,12 @@
             folderName="user"
             id="org.talend.designer.components.model.UserComponentsProvider">
       </ComponentsProvider>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.talend.designer.components.ui.ComponentPreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>

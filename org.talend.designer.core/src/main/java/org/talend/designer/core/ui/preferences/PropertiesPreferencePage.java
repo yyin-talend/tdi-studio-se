@@ -27,6 +27,7 @@ import org.talend.designer.core.i18n.Messages;
  * 
  * $Id: PropertiesPreferencePage.java 下午02:13:35 2007-8-24 +0000 (2007-8-24) yzhang $
  * 
+ * @deprecated moved to AppearancePreferencePage
  */
 public class PropertiesPreferencePage extends AbstractPreferencePage {
 
