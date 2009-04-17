@@ -66,8 +66,26 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	
 				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>					
-					java.util.List<com.sforce.soap.partner.sobject.SObject> list_<%=cid%> = sfMgr_<%=cid%>.query(<%=sql%>);
-					
+					com.sforce.soap.partner.QueryResult  qr = null;
+					com.sforce.soap.partner.QueryOptions qo = new com.sforce.soap.partner.QueryOptions();
+					qo.setBatchSize(new Integer(250));
+					        
+					qr = binding.query(<%=sql%>);
+					binding.queryMore(qr.getQueryLocator());
+							
+					boolean bContinue = true;
+					java.util.List<com.sforce.soap.partner.sobject.SObject> list_<%=cid%> = new java.util.ArrayList<com.sforce.soap.partner.sobject.SObject>();
+					while (bContinue && qr != null && qr.getRecords() != null) {
+					         for (int i = 0; i < qr.getRecords().length; i++) {
+					           list_<%=cid%>.add(qr.getRecords()[i]);	                
+					          }
+					          if (qr.isDone()) {
+					              bContinue = false;
+					          } else {
+					              qr = binding.queryMore(qr.getQueryLocator());
+					          }
+					      }
+				        					
 					for (com.sforce.soap.partner.sobject.SObject sobj_<%=cid%> : list_<%=cid%>){
 						nb_line_<%=cid%> ++;
 						org.apache.axis.message.MessageElement[] fields_<%=cid%> = sobj_<%=cid%>.get_any();
