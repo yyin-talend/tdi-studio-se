@@ -48,7 +48,7 @@ public class ElementParameter2ParameterType {
         EList listParamType = pType.getElementParameter();
         listParamType.clear();
 
-        List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParameters();
+        List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParametersWithChildrens();
         for (IElementParameter param : paramList) {
             ElementParameterType type = getElemeterParameterType(param);
             listParamType.add(type);
@@ -121,6 +121,9 @@ public class ElementParameter2ParameterType {
      */
     public static void loadElementParameters(Element elemParam, ParametersType paType) {
         EList listParamType = paType.getElementParameter();
+        ElementParameterType repositoryParam = findElementParameterType(paType, EParameterName.PROPERTY_TYPE.getName() + ":"
+                + EParameterName.PROPERTY_TYPE.getName());
+
         for (int j = 0; j < listParamType.size(); j++) {
             ElementParameterType pType = (ElementParameterType) listParamType.get(j);
             if (pType != null) {
@@ -214,6 +217,13 @@ public class ElementParameter2ParameterType {
                         elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
                     } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                        if (param.getRepositoryValue() != null && !param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+                            if (repositoryParam != null && EmfComponent.REPOSITORY.equals(repositoryParam.getValue())) {
+                                param.setRepositoryValueUsed(true);
+                            } else {
+                                param.setRepositoryValueUsed(false);
+                            }
+                        }
                         elemParam.setPropertyValue(pType.getName(), value);
                     }
                 } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
@@ -224,6 +234,17 @@ public class ElementParameter2ParameterType {
                 }
             }
         }
+    }
+
+    public static ElementParameterType findElementParameterType(ParametersType paType, String name) {
+        EList listParamType = paType.getElementParameter();
+        for (int j = 0; j < listParamType.size(); j++) {
+            ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+            if (pType.getName().equals(name)) {
+                return pType;
+            }
+        }
+        return null;
     }
 
     public static ElementParameterType getElemeterParameterType(IElementParameter param) {

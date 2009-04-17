@@ -39,13 +39,17 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -165,24 +169,37 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     protected void setMainCompositeEnable(boolean enabled) {
         Control[] controls = getComposite().getChildren();
         for (int i = 0; i < controls.length; i++) {
-            if (controls[i] != topComposite) {
-                if (controls[i] instanceof Composite) {
-                    setEditable((Composite) controls[i], enabled);
+            Control control = controls[i];
+            if (control != topComposite) {
+                if (control instanceof Composite) {
+                    setEditable((Composite) control, enabled);
                 } else {
-                    if (controls[i] instanceof Text) {
-                        Text t = (Text) controls[i];
-                        t.setEditable(enabled);
-                        if (!t.getEditable()) {
-                            t.removeMouseListener(listenerSelection);
-                            t.addMouseListener(listenerSelection);
-                        } else {
-                            t.removeMouseListener(listenerSelection);
-                        }
-                    } else {
-                        controls[i].setEnabled(enabled);
-                    }
+                    setTextEnable(control, enabled, enabled);
                 }
             }
+        }
+    }
+
+    /**
+     * wchen Comment method "setTextEnable".
+     */
+    private void setTextEnable(Control control, boolean enabled, boolean flag) {
+        if (control instanceof Text) {
+            Text t = (Text) control;
+            Object data = t.getData(TypedTextCommandExecutor.PARAMETER_NAME);
+            if (useRepository((String) data)) {
+                t.setEditable(false);
+            } else {
+                t.setEditable(enabled);
+            }
+            if (!t.getEditable()) {
+                t.removeMouseListener(listenerSelection);
+                t.addMouseListener(listenerSelection);
+            } else {
+                t.removeMouseListener(listenerSelection);
+            }
+        } else {
+            control.setEnabled(flag);
         }
     }
 
@@ -192,20 +209,41 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             if (children[i] instanceof Composite) {
                 setEditable((Composite) children[i], editable);
             } else {
-                if (children[i] instanceof Text) {
-                    Text t = (Text) children[i];
-                    t.setEditable(editable);
-                    if (!t.getEditable()) {
-                        t.removeMouseListener(listenerSelection);
-                        t.addMouseListener(listenerSelection);
-                    } else {
-                        t.removeMouseListener(listenerSelection);
-                    }
-                } else {
-                    children[i].setEnabled(true);
-                }
+                setTextEnable(children[i], editable, true);
             }
         }
+    }
+
+    protected boolean useRepository(String paramName) {
+        if (elem == null) {
+            return false;
+        }
+        IElementParameter param = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
+        if (param == null) {
+            return false;
+        }
+        param = param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName());
+        if (param == null) {
+            return false;
+        }
+
+        if (!EmfComponent.REPOSITORY.equals(param.getValue())) {
+            return false;
+        }
+        if (EParameterName.PROPERTY_TYPE.getName().equals(paramName)) {
+            return true;
+        }
+        IElementParameter elementParameter = elem.getElementParameter(paramName); // ?
+        if (elementParameter != null && elementParameter.getCategory() == section
+                && elementParameter.getRepositoryValue() != null) {
+            return true;
+        }
+        return false;
+
+    }
+
+    private String implicitParamName(String parameterName) {
+        return parameterName + "_IMPLICIT_CONTEXT";
     }
 
     MouseListener listenerSelection = new MouseAdapter() {
