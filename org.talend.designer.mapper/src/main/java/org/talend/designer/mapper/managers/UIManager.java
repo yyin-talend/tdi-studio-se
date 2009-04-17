@@ -1985,10 +1985,13 @@ public class UIManager extends AbstractUIManager {
             if (columnEntries.indexOf(entrySource) < columnEntries.indexOf(entryTarget)) {
                 return true;
             }
-        } else if (entrySource instanceof InputColumnTableEntry
-                && (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent()
-                        || entryTarget instanceof ExpressionFilterEntry || entryTarget instanceof GlobalMapEntry
-                        && entryTarget.getParent() instanceof InputTable)) {
+        } else if (
+                entrySource instanceof InputColumnTableEntry
+                && (
+                        (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent())
+                        || entryTarget.getParent() instanceof InputTable && (entryTarget instanceof ExpressionFilterEntry || entryTarget instanceof GlobalMapEntry))
+                        
+        ) {
             List<InputTable> inputTables = mapperManager.getInputTables();
             int indexTableSource = inputTables.indexOf(entrySource.getParent());
             int indexTableTarget = inputTables.indexOf(entryTarget.getParent());
@@ -1996,9 +1999,10 @@ public class UIManager extends AbstractUIManager {
                     && indexTableSource <= indexTableTarget) {
                 return true;
             }
-        } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
+        } else if ((entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
                 || entryTarget instanceof FilterTableEntry || entryTarget instanceof ExpressionFilterEntry
-                && entryTarget.getParent() instanceof OutputTable) {
+                
+                && entryTarget.getParent() instanceof OutputTable)) {
             if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry) {
                 return true;
             }
