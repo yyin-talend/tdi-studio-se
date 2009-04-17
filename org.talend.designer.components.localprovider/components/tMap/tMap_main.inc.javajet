@@ -133,6 +133,7 @@
 
 		ExternalMapperTable mainInputTable = null;
 		String mainInputTableName = null;
+		IConnection realMainConnection = null;
 		
 		if(sizeInputTables > 0) { // T_TM_M_199
 
@@ -144,6 +145,7 @@
             	mainInputTable = externalTable;
             	mainInputTableName = mainInputTable.getName();
 	            previousMainNodeIsVirtual = connection.getSource() != null ? connection.getSource().isVirtualGenerateNode() : false;
+	            realMainConnection = org.talend.core.model.utils.NodeUtil.getRealConnectionTypeBased(connection);
             }
 
 		} // T_TM_M_199
@@ -337,7 +339,7 @@
 			
 			%>
 			if(<%= mainInputTableName %> == null) {
-				<%= mainInputTableName %> = new <%= mainInputTableName %>Struct();
+				<%= mainInputTableName %> = new <%= realMainConnection.getName() %>Struct();
 			}
     	    <%
 		} // T_TM_M_291
@@ -549,6 +551,7 @@
                		
                			String comma = "";
 		         		for(IConnection aConnection : cumulatedInputConnections) {
+		         		
 			         		%><%=comma%> <%= aConnection.getName() %><%
 		         			comma = ", ";
 		         		}

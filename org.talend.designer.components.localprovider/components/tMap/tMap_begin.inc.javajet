@@ -30,6 +30,9 @@
 
 <%
 
+//org.talend.core.model.utils.NodeUtil
+
+
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
 	boolean stats = codeGenArgument.isStatistics();
@@ -388,7 +391,10 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		         
 			        comma = "";
 		         	for(IConnection connection : cumulatedInputConnections) {
-			        	%><%=comma%> <%= connection.getName() %>Struct <%= connection.getName() %><%
+		         	
+		         		IConnection realConnection = org.talend.core.model.utils.NodeUtil.getRealConnectionTypeBased(connection);
+		         	
+			        	%><%=comma%> <%= realConnection.getName() %>Struct <%= connection.getName() %><%
 		         		comma = ", ";
 		         	}
                     int sizeNextColumns = nextColumnsKeys.size();
@@ -428,7 +434,10 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		         
 		         comma = "";
 		         for(IConnection connection : cumulatedInputConnections) {
-			         %><%=comma%><%= connection.getName() %>Struct <%= connection.getName() %><%
+
+		            IConnection realConnection = org.talend.core.model.utils.NodeUtil.getRealConnectionTypeBased(connection);
+
+			         %><%=comma%><%= realConnection.getName() %>Struct <%= connection.getName() %><%
 		         	comma = ", ";
 		         }
 		         %>) {
