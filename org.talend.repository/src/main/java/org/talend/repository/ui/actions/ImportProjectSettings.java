@@ -80,7 +80,7 @@ public class ImportProjectSettings {
         });
 
         final Document document = analyseur.parse(file);
-        final NodeList nodes = document.getElementsByTagName("exportParameter");
+        final NodeList nodes = document.getElementsByTagName("exportParameter"); //$NON-NLS-1$
         List addedComponentSetting = new ArrayList();
 
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -88,16 +88,16 @@ public class ImportProjectSettings {
             final NamedNodeMap attrMap = node.getAttributes();
             final Node typeAttr = attrMap.getNamedItem("type"); //$NON-NLS-1$
 
-            if ("technicalStatus".equals(typeAttr.getTextContent())) {
+            if ("technicalStatus".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
                 List technical = project.getTechnicalStatus();
-                updateStatus(node, attrMap, technical, "technicalStatus");
-            } else if ("documentationStatus".equals(typeAttr.getTextContent())) {
+                updateStatus(node, attrMap, technical, "technicalStatus"); //$NON-NLS-1$
+            } else if ("documentationStatus".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
                 List documentation = project.getDocumentationStatus();
-                updateStatus(node, attrMap, documentation, "documentationStatus");
-            } else if ("security".equals(typeAttr.getTextContent())) {
+                updateStatus(node, attrMap, documentation, "documentationStatus"); //$NON-NLS-1$
+            } else if ("security".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
                 project.isHidePassword();
                 project.setHidePassword(Boolean.valueOf(node.getTextContent()));
-            } else if ("statAndLogs".equals(typeAttr.getTextContent())) {
+            } else if ("statAndLogs".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
                 if (project.getStatAndLogsSettings() == null) {
                     TalendFileFactory talendF = TalendFileFactory.eINSTANCE;
                     StatAndLogsSettings stats = PropertiesFactory.eINSTANCE.createStatAndLogsSettings();
@@ -108,7 +108,7 @@ public class ImportProjectSettings {
                 List statAndLogs = project.getStatAndLogsSettings().getParameters().getElementParameter();
                 updateParameters(node, attrMap, statAndLogs);
 
-            } else if ("implicitContext".equals(typeAttr.getTextContent())) {
+            } else if ("implicitContext".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
                 if (project.getImplicitContextSettings() == null) {
                     TalendFileFactory talendF = TalendFileFactory.eINSTANCE;
 
@@ -120,11 +120,11 @@ public class ImportProjectSettings {
                 List implicitContexts = project.getImplicitContextSettings().getParameters().getElementParameter();
                 updateParameters(node, attrMap, implicitContexts);
 
-            } else if ("palette".equals(typeAttr.getTextContent())) {
+            } else if ("palette".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
                 List componentSettings = project.getComponentsSettings();
                 boolean existed = false;
-                String name = attrMap.getNamedItem("name").getTextContent();
-                final Node familyAttr = attrMap.getNamedItem("family");
+                String name = attrMap.getNamedItem("name").getTextContent(); //$NON-NLS-1$
+                final Node familyAttr = attrMap.getNamedItem("family"); //$NON-NLS-1$
                 Boolean hide = Boolean.valueOf(node.getTextContent());
 
                 for (Object obj : componentSettings) {
@@ -163,7 +163,7 @@ public class ImportProjectSettings {
         boolean added = false;
         for (Object obj : statAndLogs) {
             ElementParameterType type = (ElementParameterType) obj;
-            if (type.getName().equals(attrMap.getNamedItem("name").getTextContent())) {
+            if (type.getName().equals(attrMap.getNamedItem("name").getTextContent())) { //$NON-NLS-1$
                 type.setValue(node.getTextContent());
                 added = true;
             }
@@ -173,7 +173,7 @@ public class ImportProjectSettings {
         if (added == false) {
 
             ElementParameterType type = talendF.createElementParameterType();
-            type.setName(attrMap.getNamedItem("name").getTextContent());
+            type.setName(attrMap.getNamedItem("name").getTextContent()); //$NON-NLS-1$
             type.setValue(node.getTextContent());
             statAndLogs.add(type);
         }
@@ -191,7 +191,7 @@ public class ImportProjectSettings {
 
         for (int j = 0; j < status.size(); j++) {
             Status s = (Status) status.get(j);
-            if (s.getCode().equals(attrMap.getNamedItem("name").getTextContent())) {
+            if (s.getCode().equals(attrMap.getNamedItem("name").getTextContent())) { //$NON-NLS-1$
                 s.setLabel(node.getTextContent());
                 update = true;
             }
@@ -200,7 +200,7 @@ public class ImportProjectSettings {
         // add new status and logs
         if (update == false) {
             Status newOne = PropertiesFactoryImpl.init().createStatus();
-            newOne.setCode(attrMap.getNamedItem("name").getTextContent());
+            newOne.setCode(attrMap.getNamedItem("name").getTextContent()); //$NON-NLS-1$
             newOne.setLabel(node.getTextContent());
             status.add(newOne);
         }

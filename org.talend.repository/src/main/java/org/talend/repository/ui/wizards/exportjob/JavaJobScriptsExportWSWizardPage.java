@@ -284,7 +284,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         } else if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
             return ".esb"; //$NON-NLS-1$ 
         } else {
-            return ".zip";
+            return ".zip"; //$NON-NLS-1$
         }
     }
 
@@ -545,7 +545,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             contextButton.setSelection(true);
             contextButton.setFont(font);
 
-            String jobLabel = "";
+            String jobLabel = ""; //$NON-NLS-1$
             contextCombo = new Combo(left, SWT.PUSH);
             if (process.length > 0) {
                 jobLabel = (process[0].getItem()).getProperty().getLabel();
@@ -586,10 +586,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportDependencies.setLayoutData(gd);
 
             Label queueLabel = new Label(left, SWT.None);
-            queueLabel.setText("Message Queue Name:");
+            queueLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.queueName")); //$NON-NLS-1$
 
             queueMessageName = new Text(left, SWT.BORDER);
-            queueMessageName.setText(jobLabel + "_action_Request");
+            queueMessageName.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.actionRequest", jobLabel)); //$NON-NLS-1$
             gd = new GridData(GridData.FILL_HORIZONTAL);
             gd.horizontalSpan = 2;
             queueMessageName.setLayoutData(gd);
@@ -735,21 +735,21 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
             if (this.isMultiNodes()) {
                 StringBuffer buff = new StringBuffer();
-                buff.append("This type of export support actually only a single job export.");
+                buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport")); //$NON-NLS-1$
                 this.setErrorMessage(buff.toString());
                 this.setPageComplete(false);
             }
 
             // check if the needed librairy is installed.
-            String requiredJar = "jbossesb-rosetta.jar";
+            String requiredJar = "jbossesb-rosetta.jar"; //$NON-NLS-1$
 
             List<ModuleNeeded> toCheck = ModulesNeededProvider.getModulesNeeded();
             for (ModuleNeeded current : toCheck) {
                 if (requiredJar.equals(current.getModuleName())) {
                     if (current.getStatus() == ELibraryInstallStatus.NOT_INSTALLED) {
                         StringBuffer buff = new StringBuffer();
-                        buff.append("The jar jbossesb-rosetta.jar is required to export to JBoss ESB.\n");
-                        buff.append("Please find it in your current version of JBoss ESB and add it with the Module View.\n");
+                        buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.exportForJBoss")); //$NON-NLS-1$
+                        buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.checkVersion")); //$NON-NLS-1$
 
                         this.setErrorMessage(buff.toString());
                         this.setPageComplete(false);
@@ -759,7 +759,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
         if (getCheckNodes().length == 0) {
             StringBuffer buff = new StringBuffer();
-            buff.append("At least one job should be selected for the export.");
+            buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.needOneJobSelected")); //$NON-NLS-1$
             this.setErrorMessage(buff.toString());
             this.setPageComplete(false);
         }

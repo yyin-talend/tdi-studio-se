@@ -38,7 +38,7 @@ public class OrderedBeanLookupAll<B extends Comparable<B> & IPersistableLookupRo
      */
     public void lookup(B key) throws IOException {
 
-        throw new UnsupportedOperationException("No sense to use this method");
+        throw new UnsupportedOperationException("No sense to use this method"); //$NON-NLS-1$
 
     }
 

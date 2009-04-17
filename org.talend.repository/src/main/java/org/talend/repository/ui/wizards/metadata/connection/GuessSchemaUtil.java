@@ -36,7 +36,7 @@ import org.talend.repository.ui.utils.ColumnNameValidator;
  */
 public class GuessSchemaUtil {
 
-    private static final String DEFAULT_LABEL = "Column"; //$NON-NLS-N$
+    private static final String DEFAULT_LABEL = "Column"; //$NON-NLS-1$
 
     public static List<MetadataColumn> guessSchemaFromArray(final CsvArray csvArray, boolean isFirstLineCaption,
             MetadataEmfTableEditorView tableEditorView, int header) {

@@ -695,7 +695,7 @@ public class LoginComposite extends Composite {
                 String warnings = e.getMessage();
                 if (warnings != null && !warnings.equals(lastWarnings)) {
                     lastWarnings = warnings;
-                    MessageDialog.openWarning(getShell(), "Warning", warnings);
+                    MessageDialog.openWarning(getShell(), "Warning", warnings); //$NON-NLS-1$
                 }
             }
 

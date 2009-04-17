@@ -79,7 +79,7 @@ public class JavaProcessUtil {
                                 if (param != null) {
                                     // add only the file name without path
                                     String paramvalue = param.getValue();
-                                    int a = paramvalue.lastIndexOf("\\");
+                                    int a = paramvalue.lastIndexOf("\\"); //$NON-NLS-1$
                                     String filename = paramvalue.substring(a + 1, paramvalue.length());
                                     neededLibraries.add(filename);
                                 }

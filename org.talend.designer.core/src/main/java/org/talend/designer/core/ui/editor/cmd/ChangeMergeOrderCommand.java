@@ -62,10 +62,10 @@ public class ChangeMergeOrderCommand extends Command {
         connectionInNewOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
 
-        if (mergeNode.getComponent().getName().equalsIgnoreCase("tFileOutputMSXML")) {
-            reOrder("ROOT");
-            reOrder("GROUP");
-            reOrder("LOOP");
+        if (mergeNode.getComponent().getName().equalsIgnoreCase("tFileOutputMSXML")) { //$NON-NLS-1$
+            reOrder("ROOT"); //$NON-NLS-1$
+            reOrder("GROUP"); //$NON-NLS-1$
+            reOrder("LOOP"); //$NON-NLS-1$
         }
         checkProcess();
     }
@@ -102,8 +102,8 @@ public class ChangeMergeOrderCommand extends Command {
             return newValues;
         }
         for (Map<String, Object> line : values) {
-            String refColumn = (String) line.get("COLUMN");
-            String[] rowAndCol = refColumn.split(":");
+            String refColumn = (String) line.get("COLUMN"); //$NON-NLS-1$
+            String[] rowAndCol = refColumn.split(":"); //$NON-NLS-1$
             if (rowAndCol.length > 0) {
                 if (rowAndCol[0].equals(row)) {
                     newValues.add(line);

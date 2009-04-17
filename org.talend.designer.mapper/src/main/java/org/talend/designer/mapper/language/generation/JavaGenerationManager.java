@@ -128,9 +128,9 @@ public class JavaGenerationManager extends GenerationManager {
      * 
      */
     public enum PROBLEM_KEY_FIELD {
-        GLOBAL_MAP("globalMap variable"),
-        METADATA_COLUMN("column"),
-        FILTER("filter"),
+        GLOBAL_MAP("globalMap variable"), //$NON-NLS-1$
+        METADATA_COLUMN("column"), //$NON-NLS-1$
+        FILTER("filter"), //$NON-NLS-1$
         ;
         
         private String label;

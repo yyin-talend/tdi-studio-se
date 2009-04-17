@@ -158,8 +158,8 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                                         if (talendItem.getLabel().equals(object.getLabel())) {
                                             img = ImageDescriptor.createFromFile(ECoreImage.class,
                                                     ECoreImage.METADATA_SQLPATTERN_ICON.getPath()).createImage();
-                                            label = new Label(talendItem.getLabel() + " ("
-                                                    + provider.getColumnText(assignment, 0) + ")", img);
+                                            label = new Label(talendItem.getLabel() + " (" //$NON-NLS-1$
+                                                    + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$
                                             labels.add(label);
                                         }
                                     }
@@ -171,8 +171,8 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                                         if (talendItem.getLabel().equals(object.getLabel())) {
                                             img = ImageDescriptor.createFromFile(ECoreImage.class,
                                                     ECoreImage.ROUTINE_ICON.getPath()).createImage();
-                                            label = new Label(talendItem.getLabel() + " ("
-                                                    + provider.getColumnText(assignment, 0) + ")", img);
+                                            label = new Label(talendItem.getLabel() + " (" //$NON-NLS-1$
+                                                    + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$
                                             labels.add(label);
                                         }
                                     }

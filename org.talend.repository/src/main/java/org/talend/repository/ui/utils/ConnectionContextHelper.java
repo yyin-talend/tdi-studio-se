@@ -178,10 +178,10 @@ public final class ConnectionContextHelper {
     private static String convertContextLabel(String label) {
         if (label != null) {
             String newLabel = label.replaceAll("[\\.\\-\\ \\(\\)\\[\\]=]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-            Pattern pattern = Pattern.compile("^[0-9]+.*$");
+            Pattern pattern = Pattern.compile("^[0-9]+.*$"); //$NON-NLS-1$
             Matcher m = pattern.matcher(newLabel);
             if (m.matches()) {
-                newLabel = "_" + newLabel;
+                newLabel = "_" + newLabel; //$NON-NLS-1$
             }
             //
             try {

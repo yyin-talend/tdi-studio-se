@@ -338,17 +338,17 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
             String relativeXpath = schema.getRelativeXPathQuery();
             String fullPath = schema.getSchema().getAbsoluteXPathQuery();
             // adapt relative path
-            String[] relatedSplitedPaths = relativeXpath.split("\\.\\./");
+            String[] relatedSplitedPaths = relativeXpath.split("\\.\\./"); //$NON-NLS-1$
             if (relatedSplitedPaths.length > 1) {
                 int pathsToRemove = relatedSplitedPaths.length - 1;
-                String[] fullPathSplited = fullPath.split("/");
-                fullPath = "";
+                String[] fullPathSplited = fullPath.split("/"); //$NON-NLS-1$
+                fullPath = ""; //$NON-NLS-1$
                 for (int i = 1; i < (fullPathSplited.length - pathsToRemove); i++) {
-                    fullPath += "/" + fullPathSplited[i];
+                    fullPath += "/" + fullPathSplited[i]; //$NON-NLS-1$
                 }
-                fullPath += "/" + relatedSplitedPaths[pathsToRemove];
+                fullPath += "/" + relatedSplitedPaths[pathsToRemove]; //$NON-NLS-1$
             } else {
-                fullPath += "/" + relativeXpath;
+                fullPath += "/" + relativeXpath; //$NON-NLS-1$
             }
             TreeItem treeItem = treePopulator.getTreeItem(fullPath);
             if (treeItem != null) {
@@ -360,7 +360,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                     metadataColumn.setTalendType(MetadataTalendType.getDefaultTalendType());
                 } else {
 
-                    metadataColumn.setTalendType(retriever.getDefaultSelectedTalendType("xs:" + curNode.getOriginalDataType()));
+                    metadataColumn.setTalendType(retriever.getDefaultSelectedTalendType("xs:" + curNode.getOriginalDataType())); //$NON-NLS-1$
                 }
                 columns.add(metadataColumn);
             }
@@ -382,7 +382,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
 
         String file = ((XmlFileConnection) this.connectionItem.getConnection()).getXmlFilePath();
 
-        if (file != null && file.endsWith(".xsd")) {
+        if (file != null && file.endsWith(".xsd")) { //$NON-NLS-1$
             prepareColumnsFromXSD(file, columns, schemaTarget);
 
             tableEditorView.getMetadataEditor().addAll(columns);

@@ -286,7 +286,7 @@ public class StatsAndLogsManager {
                             if ((Boolean) process.getElementParameter(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName())
                                     .getValue()) {
                                 connectionNode.getElementParameter("USE_SHARED_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
-                                connectionNode.getElementParameter("SHARED_CONNECTION_NAME").setValue("\"STATSLOGS_CONNECTION\"");//$NON-NLS-1$//$NON-NLS-1$
+                                connectionNode.getElementParameter("SHARED_CONNECTION_NAME").setValue("\"STATSLOGS_CONNECTION\"");//$NON-NLS-1$//$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                         setConnectionParameter(connectionNode, process, connectionUID, dataNode, nodeList);

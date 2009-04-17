@@ -53,7 +53,7 @@ public class ESBGenerateJBossESB {
         // support actually only export job one by one.
         String jobName = nodeMap.keySet().iterator().next();
         String jobWithPackageName = nodeMap.get(jobName);
-        String jobAlias = jobWithPackageName.replace(".", "_");
+        String jobAlias = jobWithPackageName.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 
         File xmlFile = new File(path);
 
@@ -181,7 +181,7 @@ public class ESBGenerateJBossESB {
             name.setNodeValue(key);
 
             Attr cla = document.createAttribute("class");//$NON-NLS-1$
-            cla.setNodeValue(value + "." + key + "Action");//$NON-NLS-1$//$NON-NLS-1$
+            cla.setNodeValue(value + "." + key + "Action");//$NON-NLS-1$//$NON-NLS-1$ //$NON-NLS-2$
 
             Attr process = document.createAttribute("process");//$NON-NLS-1$
             process.setNodeValue(key);

@@ -73,10 +73,10 @@ public class KeyForMap {
      */
     public String toString() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("KeyForMap[");
-        buffer.append("cursorPosition = ").append(cursorPosition);
-        buffer.append(" hashcode = ").append(hashcode);
-        buffer.append("]");
+        buffer.append("KeyForMap["); //$NON-NLS-1$
+        buffer.append("cursorPosition = ").append(cursorPosition); //$NON-NLS-1$
+        buffer.append(" hashcode = ").append(hashcode); //$NON-NLS-1$
+        buffer.append("]"); //$NON-NLS-1$
         return buffer.toString();
     }
 

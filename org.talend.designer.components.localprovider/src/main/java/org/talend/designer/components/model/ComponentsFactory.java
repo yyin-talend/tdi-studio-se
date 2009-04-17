@@ -410,7 +410,7 @@ public class ComponentsFactory implements IComponentsFactory {
         String translated = Messages.getString(text);
 
         // if text translated is not in local provider, look into other providers.
-        if (translated.startsWith("!!")) {
+        if (translated.startsWith("!!")) { //$NON-NLS-1$
             if (componentToProviderMap.containsKey(component)) {
                 String translatedFromProvider = componentToProviderMap.get(component).getFamilyTranslation(text);
                 if (translatedFromProvider != null) {

@@ -619,7 +619,7 @@ public class InputDataMapTableView extends DataMapTableView {
         if (useTextForMatching) {
             dropDownMatchingModeItem.setText(matchingMode.getLabel());
         } else {
-            dropDownMatchingModeItem.setText("");
+            dropDownMatchingModeItem.setText(""); //$NON-NLS-1$
         }
 
         dropDownMatchingModeItem.setToolTipText(matchingMode.getLabel());
@@ -643,7 +643,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
         if (replaceLabelsByImagesForLookupMode) {
             dropDownLookupModeItem.setImage(ImageProviderMapper.getImage(lookupMode.getImageInfo()));
-            dropDownLookupModeItem.setText("");
+            dropDownLookupModeItem.setText(""); //$NON-NLS-1$
         } else {
             dropDownLookupModeItem.setText(lookupMode.getLabel());
         }
@@ -681,7 +681,7 @@ public class InputDataMapTableView extends DataMapTableView {
                     if (useTextForMatching) {
                         dropDownMatchingModeItem.setText(previousMatchingModeSelected.getLabel());
                     } else {
-                        dropDownMatchingModeItem.setText("");
+                        dropDownMatchingModeItem.setText(""); //$NON-NLS-1$
                     }
                     dropDownMatchingModeItem.setToolTipText(previousMatchingModeSelected.getLabel());
                     getInputTable().setMatchingMode(previousMatchingModeSelected);
@@ -694,10 +694,10 @@ public class InputDataMapTableView extends DataMapTableView {
                     TMAP_MATCHING_MODE matchingMode = TMAP_MATCHING_MODE.ALL_ROWS;
 
                     if (getInputTable().getLookupMode() == TMAP_LOOKUP_MODE.CACHE_OR_RELOAD) {
-                        String errorMessage = "Invalid configuration, choose an other lookup mode or set an expression into the column key into the lookup \""
-                                + getInputTable().getName() + "\"";
+                        String errorMessage = Messages.getString("InputDataMapTableView.invalidConfiguration", getInputTable() //$NON-NLS-1$
+                                .getName());
                         mapperManager.getUiManager().setStatusBarValues(STATUS.ERROR, errorMessage);
-                        dropDownMatchingModeItem.setText("<Invalid>");
+                        dropDownMatchingModeItem.setText(Messages.getString("InputDataMapTableView.invalid")); //$NON-NLS-1$
                         if (useImagesForMatching) {
                             dropDownMatchingModeItem.setImage(ImageProviderMapper.getImage(matchingMode.getImageInfo()));
                         }
@@ -710,7 +710,7 @@ public class InputDataMapTableView extends DataMapTableView {
                         if (useTextForMatching) {
                             dropDownMatchingModeItem.setText(matchingMode.getLabel());
                         } else {
-                            dropDownMatchingModeItem.setText("");
+                            dropDownMatchingModeItem.setText(""); //$NON-NLS-1$
                         }
                         dropDownMatchingModeItem.setToolTipText(matchingMode.getLabel());
                         selectMatchingModeMenuItem(matchingMode);
@@ -1014,7 +1014,7 @@ public class InputDataMapTableView extends DataMapTableView {
         column.setResizable(true);
 
         column = new TableViewerCreatorColumn<GlobalMapEntry, String>(tableViewerCreatorForGlobalMap);
-        column.setTitle("globalMap Key");
+        column.setTitle(Messages.getString("InputDataMapTableView.globalMapKey")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_NAME_COLUMN);
         column.setModifiable(true);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<GlobalMapEntry, String>() {
@@ -1052,7 +1052,7 @@ public class InputDataMapTableView extends DataMapTableView {
              */
             public void widgetSelected(SelectionEvent arg0) {
 
-                getInputTable().addGlobalMapEntry(new GlobalMapEntry(getInputTable(), "\"myKey\"", ""));
+                getInputTable().addGlobalMapEntry(new GlobalMapEntry(getInputTable(), "\"myKey\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
 
                 updateGridDataHeightForTableGlobalMap();
                 resizeAtExpandedSize();

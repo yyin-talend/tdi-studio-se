@@ -43,6 +43,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
@@ -108,11 +109,11 @@ public class ExportTreeViewer {
                 if (moveButton.getText().equals("<<")) { //$NON-NLS-1$
                     sash.setWeights(new int[] { 0, 1, 23 });
                     moveButton.setText(">>"); //$NON-NLS-1$
-                    moveButton.setToolTipText("Show job tree");
+                    moveButton.setToolTipText(Messages.getString("ExportTreeViewer.showJobTree")); //$NON-NLS-1$
                 } else if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
                     sash.setWeights(new int[] { 10, 1, 15 });
                     moveButton.setText("<<"); //$NON-NLS-1$
-                    moveButton.setToolTipText("Hide job tree");
+                    moveButton.setToolTipText(Messages.getString("ExportTreeViewer.hideJobTree")); //$NON-NLS-1$
                 }
             }
         });
@@ -130,7 +131,7 @@ public class ExportTreeViewer {
         GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).hint(400, 200).applyTo(itemComposite);
 
         Label label = new Label(itemComposite, SWT.NONE);
-        label.setText("Select the items to Export:");
+        label.setText(Messages.getString("ExportTreeViewer.selectItems")); //$NON-NLS-1$
         GridDataFactory.swtDefaults().span(2, 1).applyTo(label);
 
         createTreeViewer(itemComposite);

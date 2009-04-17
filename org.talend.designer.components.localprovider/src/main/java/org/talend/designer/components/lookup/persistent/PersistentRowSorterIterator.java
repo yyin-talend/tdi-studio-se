@@ -229,7 +229,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
     }
 
     private String buildFilePath() {
-        return container + "_TEMP_" + count + ".bin";
+        return container + "_TEMP_" + count + ".bin"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void initGet() {
@@ -425,7 +425,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
     }
 
     public static void main(String[] args) throws IOException {
-        new PersistentRowSorterIterator<IPersistableRow>("/home/amaumont/data/dev/projets/Talend/hashfile/sort") {
+        new PersistentRowSorterIterator<IPersistableRow>("/home/amaumont/data/dev/projets/Talend/hashfile/sort") { //$NON-NLS-1$
 
             protected IPersistableRow createRowInstance() {
                 return null;

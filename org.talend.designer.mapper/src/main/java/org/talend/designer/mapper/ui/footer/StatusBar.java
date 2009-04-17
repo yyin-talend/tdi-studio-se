@@ -32,10 +32,10 @@ public class StatusBar extends Composite {
      * DOC amaumont UIManager class global comment. Detailled comment
      */
     public enum STATUS {
-        EMPTY("", null),
-        WARN("Warning", EImage.WARNING_ICON),
-        INFO("Info", EImage.INFORMATION_ICON),
-        ERROR("Error", EImage.ERROR_ICON), ;
+        EMPTY("", null), //$NON-NLS-1$
+        WARN("Warning", EImage.WARNING_ICON), //$NON-NLS-1$
+        INFO("Info", EImage.INFORMATION_ICON), //$NON-NLS-1$
+        ERROR("Error", EImage.ERROR_ICON), ; //$NON-NLS-1$
 
         String label;
 
@@ -79,7 +79,7 @@ public class StatusBar extends Composite {
         statusBarImage = new Label(this, SWT.NONE);
 
         statusBarLabel = new Label(this, SWT.NONE);
-        statusBarLabel.setText("");
+        statusBarLabel.setText(""); //$NON-NLS-1$
 
         FormData labelData = new FormData();
         labelData.left = new FormAttachment(statusBarImage);
@@ -89,10 +89,10 @@ public class StatusBar extends Composite {
 
     public void setValues(STATUS status, String text) {
         Image image = null;
-        String content = "";
+        String content = ""; //$NON-NLS-1$
         if (status != STATUS.EMPTY) {
 //            if (status != STATUS.INFO) {
-                content = " : " + text;
+                content = " : " + text; //$NON-NLS-1$
                 IImage iimage = status.getImage();
                 if (iimage == null) {
                     image = null;

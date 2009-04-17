@@ -129,7 +129,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         this.treePopulator = treePopulator;
         this.loopTableEditorView = loopTableEditorView;
         this.fieldsTableEditorView = fieldsTableEditorView;
-        isXSDFile = treePopulator.getFilePath().toLowerCase().endsWith(".xsd");
+        isXSDFile = treePopulator.getFilePath().toLowerCase().endsWith(".xsd"); //$NON-NLS-1$
         if (isXSDFile) {
             this.nodeRetriever = new XsdNodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
             ((XsdNodeRetriever) nodeRetriever).setTreePopulator(treePopulator);
@@ -145,7 +145,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     public void init(TreePopulator treePopulator) {
         this.treePopulator = treePopulator;
-        isXSDFile = treePopulator.getFilePath().toLowerCase().endsWith(".xsd");
+        isXSDFile = treePopulator.getFilePath().toLowerCase().endsWith(".xsd"); //$NON-NLS-1$
         if (isXSDFile) {
             this.nodeRetriever = new XsdNodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
             ((XsdNodeRetriever) nodeRetriever).setTreePopulator(treePopulator);
@@ -786,21 +786,21 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
             }
         } else {
-            String fullPath = "";
+            String fullPath = ""; //$NON-NLS-1$
             if (!expressionIsAbsolute) {
                 if (loopXpathNodes.size() > 0) {
-                    fullPath = loopXpathNodes.get(0) + "/";
+                    fullPath = loopXpathNodes.get(0) + "/"; //$NON-NLS-1$
                 }
                 // adapt relative path
-                String[] relatedSplitedPaths = relativeXpath.split("\\.\\./");
+                String[] relatedSplitedPaths = relativeXpath.split("\\.\\./"); //$NON-NLS-1$
                 if (relatedSplitedPaths.length > 1) {
                     int pathsToRemove = relatedSplitedPaths.length - 1;
-                    String[] fullPathSplited = fullPath.split("/");
-                    fullPath = "";
+                    String[] fullPathSplited = fullPath.split("/"); //$NON-NLS-1$
+                    fullPath = ""; //$NON-NLS-1$
                     for (int i = 1; i < (fullPathSplited.length - pathsToRemove); i++) {
-                        fullPath += "/" + fullPathSplited[i];
+                        fullPath += "/" + fullPathSplited[i]; //$NON-NLS-1$
                     }
-                    fullPath += "/" + relatedSplitedPaths[pathsToRemove];
+                    fullPath += "/" + relatedSplitedPaths[pathsToRemove]; //$NON-NLS-1$
                 } else {
                     fullPath += relativeXpath;
                 }

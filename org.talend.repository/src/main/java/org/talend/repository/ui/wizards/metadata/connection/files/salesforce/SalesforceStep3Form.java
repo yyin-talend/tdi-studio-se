@@ -513,11 +513,11 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                 }
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
-                if (talendType.equals("id_Date")) {
+                if (talendType.equals("id_Date")) { //$NON-NLS-1$
                     if (metadataColumn.getLength() > 10) {
-                        metadataColumn.setPattern("\"yyyy-MM-dd'T'HH:mm:ss'.000Z'\"");
+                        metadataColumn.setPattern("\"yyyy-MM-dd'T'HH:mm:ss'.000Z'\""); //$NON-NLS-1$
                     } else
-                        metadataColumn.setPattern("\"yyyy-MM-dd\"");
+                        metadataColumn.setPattern("\"yyyy-MM-dd\""); //$NON-NLS-1$
                 }
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));

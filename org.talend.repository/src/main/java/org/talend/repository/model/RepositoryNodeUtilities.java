@@ -364,7 +364,7 @@ public class RepositoryNodeUtilities {
         ERepositoryObjectType type = connection.getObject().getType();
         if (repType == ERepositoryObjectType.METADATA_CON_QUERY) {
             for (RepositoryNode node : connection.getChildren()) {
-                if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(node.getLabel())) {
+                if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(node.getLabel())) { //$NON-NLS-1$
                     for (RepositoryNode query : node.getChildren()) {
                         if (tableName.equals(query.getProperties(EProperties.LABEL))) {
                             return query;
@@ -375,7 +375,7 @@ public class RepositoryNodeUtilities {
         } else {
             if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
                 for (RepositoryNode child : connection.getChildren()) {
-                    if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(child.getLabel())) {
+                    if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(child.getLabel())) { //$NON-NLS-1$
                         continue;
                     }
                     for (RepositoryNode node : child.getChildren()) {

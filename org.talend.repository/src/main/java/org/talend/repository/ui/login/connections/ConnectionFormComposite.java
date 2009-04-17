@@ -242,7 +242,7 @@ public class ConnectionFormComposite extends Composite {
             }
 
             for (final DynamicButtonBean currentButtonBean : current.getButtons()) {
-                Label label = toolkit.createLabel(formBody, "");
+                Label label = toolkit.createLabel(formBody, ""); //$NON-NLS-1$
                 label.setVisible(false);
                 data = new GridData();
                 data.horizontalSpan = 1;

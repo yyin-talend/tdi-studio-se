@@ -598,7 +598,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
 
         previewInformationLabel.setText(""); //$NON-NLS-1$
 
-        if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().toLowerCase().endsWith(".xsd")) {
+        if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$
             previewButton.setEnabled(false);
         } else {
             previewButton.setEnabled(true);
@@ -784,9 +784,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             }
             checkFilePathAndManageIt();
 
-            if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xsd")) {
+            if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xsd")) { //$NON-NLS-1$
                 previewButton.setEnabled(false);
-                previewButton.setText("No preview available for XSD file");
+                previewButton.setText(Messages.getString("XmlFileStep2Form.previewNotAvailable")); //$NON-NLS-1$
                 previewButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
                 previewButton.getParent().layout();
             }

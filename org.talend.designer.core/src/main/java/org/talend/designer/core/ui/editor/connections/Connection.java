@@ -171,7 +171,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
             createTraceParamters();
-            IComponent component = ComponentsFactoryProvider.getInstance().get("tFlowMeter");
+            IComponent component = ComponentsFactoryProvider.getInstance().get("tFlowMeter"); //$NON-NLS-1$
             if (component != null) { // only if tFlowMeter is available
                 createMeterParameters((Process) source.getProcess());
             }

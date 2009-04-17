@@ -457,7 +457,7 @@ public class Problems {
                             continue;
                         }
                     }
-                    if ("".equals(uniName) || uniName == null) {
+                    if ("".equals(uniName) || uniName == null) { //$NON-NLS-1$
                         uniName = "uniName";//$NON-NLS-1$
                     }
                     add(status, marker, routineFileName, message, lineNr, uniName, start, end, type);

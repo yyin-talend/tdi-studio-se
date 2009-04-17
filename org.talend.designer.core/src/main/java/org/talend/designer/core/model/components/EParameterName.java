@@ -116,7 +116,7 @@ public enum EParameterName {
     TRACES_CONNECTION_FILTER("Filter the traces"), //$NON-NLS-1$ Hidden parameter so no translation needed
     TRACES_SHOW_ENABLE("Traces show"), //$NON-NLS-1$ Hidden parameter so no translation needed
     VARIABLES("VARIABLES"), //$NON-NLS-1$
-    USE_EXISTING_CONNECTION("Use an existing connection"),
+    USE_EXISTING_CONNECTION(Messages.getString("EParameterName.useExistConn")), //$NON-NLS-1$
     /**
      * For stats & logs parameters.
      */

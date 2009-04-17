@@ -234,7 +234,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             column.setDisplayedValue(""); //$NON-NLS-1$
             column.setResizable(false);
             CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
-            String nullable = Messages.getString("VarsDataMapTableView.nullable");
+            String nullable = Messages.getString("VarsDataMapTableView.nullable"); //$NON-NLS-1$
             checkboxTableEditorContent.setToolTipText(nullable); //$NON-NLS-1$
             column.setTableEditorContent(checkboxTableEditorContent);
             column.setToolTipHeader(nullable); //$NON-NLS-1$

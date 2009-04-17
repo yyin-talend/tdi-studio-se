@@ -1018,7 +1018,7 @@ public class UIManager extends AbstractUIManager {
             Point point = new Point(-dataMapTableView.getBorderWidth(), 16);
             pointFromTableViewOrigin = display.map(expressionFilterText, dataMapTableView, point);
         } else {
-            throw new IllegalStateException("Case not found");
+            throw new IllegalStateException("Case not found"); //$NON-NLS-1$
         }
 
         if (pointFromTableViewOrigin.y > tableViewBounds.height - TableEntriesManager.HEIGHT_REACTION) {

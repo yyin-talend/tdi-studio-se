@@ -119,7 +119,7 @@ public class ConnectionCreateCommand extends Command {
                             if (!source.getProcess().checkValidConnectionName(newText, creatingConnection)
                                     || KeywordsValidator.isKeyword(newText) || KeywordsValidator.isSqlKeyword(newText)) {
 
-                                return "Input is invalid.";
+                                return Messages.getString("ConnectionCreateCommand.inputValid"); //$NON-NLS-1$
                             }
                         }
 

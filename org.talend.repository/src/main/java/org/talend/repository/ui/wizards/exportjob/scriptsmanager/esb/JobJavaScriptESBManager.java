@@ -106,7 +106,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String jobName = processItem.getProperty().getLabel();
             String packageName = JavaResourcesHelper.getProjectFolderName(processItem)
-                    + "."
+                    + "." //$NON-NLS-1$
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
                             .getVersion());
             jobMap.put(jobName, packageName);
@@ -177,13 +177,13 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
      */
     private void generateESBActionFile(ProcessItem processItem, String contextName) {
         String packageName = JavaResourcesHelper.getProjectFolderName(processItem)
-                + "."
+                + "." //$NON-NLS-1$
                 + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
                         .getVersion());
         String jobName = processItem.getProperty().getLabel();
         final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         try {
-            String file = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/ESBListenerAction.javatemplate"), null))
+            String file = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/ESBListenerAction.javatemplate"), null)) //$NON-NLS-1$
                     .getFile();
 
             FileReader fr = new FileReader(file);
@@ -192,13 +192,13 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             IProject rootProject = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
 
             IFile outputFile = rootProject
-                    .getFile("src/" + packageName.replace(".", "/") + "/" + jobName + "ListenerAction.java");
+                    .getFile("src/" + packageName.replace(".", "/") + "/" + jobName + "ListenerAction.java"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
             String line = br.readLine();
             StringBuffer stringBuff = new StringBuffer();
             while (line != null) {
-                line = line.replace("<JobPackage>", packageName).replace("<JobName>", jobName);
-                stringBuff.append(line + "\n");
+                line = line.replace("<JobPackage>", packageName).replace("<JobName>", jobName); //$NON-NLS-1$ //$NON-NLS-2$
+                stringBuff.append(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
             }
             InputStream outputStream = new ByteArrayInputStream(stringBuff.toString().getBytes());
@@ -267,23 +267,23 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
         String jobName = jobMap.keySet().iterator().next();
         String jobWithPackageName = jobMap.get(jobName);
-        String jobAlias = jobWithPackageName.replace(".", "_");
+        String jobAlias = jobWithPackageName.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 
         final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
 
         try {
-            String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jboss-esb-template.xml"), null))
+            String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jboss-esb-template.xml"), null)) //$NON-NLS-1$
                     .getFile();
-            String targetFile = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml";
+            String targetFile = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
             readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName, exportChoice);
 
-            inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/deployment-template.xml"), null)).getFile();
-            targetFile = getTmpFolder() + PATH_SEPARATOR + "deployment.xml";
+            inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/deployment-template.xml"), null)).getFile(); //$NON-NLS-1$
+            targetFile = getTmpFolder() + PATH_SEPARATOR + "deployment.xml"; //$NON-NLS-1$
             readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName, exportChoice);
 
-            inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbm-queue-service-template.xml"), null))
+            inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbm-queue-service-template.xml"), null)) //$NON-NLS-1$
                     .getFile();
-            targetFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml";
+            targetFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
             readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName, exportChoice);
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -303,9 +303,9 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
             String line = br.readLine();
             while (line != null) {
-                line = line.replace("#JobName#", jobName).replace("#JobAlias#", jobAlias).replace("#JobPackage#", jobPackage)
-                        .replace("#QueueName#", (String) exportChoice.get(ExportChoice.queueMessageName));
-                bw.write(line + "\n");
+                line = line.replace("#JobName#", jobName).replace("#JobAlias#", jobAlias).replace("#JobPackage#", jobPackage) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        .replace("#QueueName#", (String) exportChoice.get(ExportChoice.queueMessageName)); //$NON-NLS-1$
+                bw.write(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
             }
             bw.flush();
@@ -389,7 +389,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
     private Manifest getManifest() throws IOException {
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
-        a.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+        a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
         a.put(Attributes.Name.IMPLEMENTATION_VENDOR, "Talend Open Studio"); //$NON-NLS-1$        
         return manifest;
     }

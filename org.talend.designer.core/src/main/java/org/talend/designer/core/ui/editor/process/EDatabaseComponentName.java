@@ -112,7 +112,7 @@ public enum EDatabaseComponentName {
     LDAP(LDAPSchemaConnectionItem.class, "tLDAPInput", "tLDAPOutput", "LDAP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null, "WSDL"), //$NON-NLS-1$ //$NON-NLS-2$
-    SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", "tSalesforceOutput", "SALESFORCE"), //$NON-NLS-1$ //$NON-NLS-2$
+    SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", "tSalesforceOutput", "SALESFORCE"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     // RunJob
     RunJob(ProcessItem.class, "tRunJob", "tRunJob"); //$NON-NLS-1$ //$NON-NLS-2$

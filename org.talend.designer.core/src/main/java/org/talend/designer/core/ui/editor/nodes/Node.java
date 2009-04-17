@@ -1909,7 +1909,7 @@ public class Node extends Element implements INode {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$
+                    if ("tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$ //$NON-NLS-2$
                         checkFileOutputMSXML(param, tableValues);
                     } else {
                         if (tableValues.size() == 0) {
@@ -1926,7 +1926,7 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$
+                    if ("tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$ //$NON-NLS-2$
                         checkFileOutputMSXML(param, tableValues);
                     } else {
                         if (tableValues.size() == 0) {
@@ -2019,10 +2019,10 @@ public class Node extends Element implements INode {
             String uniqueName = conn.getUniqueName();
             boolean isFirst = true;
             for (Map<String, String> loopMap : tableValues) {
-                String newPath = loopMap.get("PATH");
-                String columnName = loopMap.get("COLUMN");
+                String newPath = loopMap.get("PATH"); //$NON-NLS-1$
+                String columnName = loopMap.get("COLUMN"); //$NON-NLS-1$
                 if (columnName != null && columnName.startsWith(uniqueName)) {
-                    if (loopMap.get("ATTRIBUTE").equals("main")) {
+                    if (loopMap.get("ATTRIBUTE").equals("main")) { //$NON-NLS-1$ //$NON-NLS-2$
                         if (isFirst) {
                             pathList.add(newPath);
                         }

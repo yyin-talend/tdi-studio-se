@@ -964,13 +964,13 @@ public class ProcessComposite extends Composite {
 
         StyleRange style = new StyleRange();
         style.start = consoleText.getText().length();
-        Pattern patternP = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%");
+        Pattern patternP = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%"); //$NON-NLS-1$
         Matcher mP = patternP.matcher(content);
-        Pattern pattern = Pattern.compile("\\[\\s*\\d+(\\.\\d*)?%\\]");
+        Pattern pattern = Pattern.compile("\\[\\s*\\d+(\\.\\d*)?%\\]"); //$NON-NLS-1$
         Matcher m = pattern.matcher(content);
         if (mP.find() || m.find()) {
-            consoleText.append("");
-            content = "";
+            consoleText.append(""); //$NON-NLS-1$
+            content = ""; //$NON-NLS-1$
         } else {
             consoleText.append(content);
         }
@@ -1465,7 +1465,7 @@ public class ProcessComposite extends Composite {
     }
 
     private boolean isPattern(String content) {
-        Pattern pattern = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%");
+        Pattern pattern = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%"); //$NON-NLS-1$
         Matcher m = pattern.matcher(content);
         return m.find();
     }

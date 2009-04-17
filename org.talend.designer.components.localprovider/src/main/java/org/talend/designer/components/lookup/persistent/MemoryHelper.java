@@ -76,9 +76,9 @@ public final class MemoryHelper {
             long usedMemoryBytes = usedMemory() - startValue;
             long usedMemoryKBytes = usedMemoryBytes / 1024;
             long usedMemoryMBytes = usedMemoryKBytes / 1024;
-            System.out.println(key + ": usedMemory = " + usedMemoryBytes + " bytes, " + usedMemoryKBytes + "KB, "+  usedMemoryMBytes + "MB");
+            System.out.println(key + ": usedMemory = " + usedMemoryBytes + " bytes, " + usedMemoryKBytes + "KB, "+  usedMemoryMBytes + "MB"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         } else {
-            System.err.println("Keys for memory measure do not match: currentKey=" + currentKey + " != " + key);
+            System.err.println("Keys for memory measure do not match: currentKey=" + currentKey + " != " + key); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
     }
@@ -86,8 +86,8 @@ public final class MemoryHelper {
     public static void displayMemory(String label, long bytes) {
         long memoryKBytes = bytes / 1024;
         long memoryMBytes = memoryKBytes / 1024;
-        System.out.println(label + " = " + bytes + " bytes, " + memoryKBytes + "KB, "
-                + memoryMBytes + "MB");
+        System.out.println(label + " = " + bytes + " bytes, " + memoryKBytes + "KB, " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + memoryMBytes + "MB"); //$NON-NLS-1$
 
     }
     

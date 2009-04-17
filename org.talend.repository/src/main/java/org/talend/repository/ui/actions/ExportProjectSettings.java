@@ -86,34 +86,34 @@ public class ExportProjectSettings {
 
             // status
             List technicals = project.getTechnicalStatus();
-            createStatus(technicals, document, root, "technicalStatus");
+            createStatus(technicals, document, root, "technicalStatus"); //$NON-NLS-1$
             List documentation = project.getDocumentationStatus();
-            createStatus(documentation, document, root, "documentationStatus");
+            createStatus(documentation, document, root, "documentationStatus"); //$NON-NLS-1$
 
             // security
 
-            Element security = document.createElement("exportParameter");
+            Element security = document.createElement("exportParameter"); //$NON-NLS-1$
             root.appendChild(security);
 
-            Attr typeAttr = document.createAttribute("type");
-            typeAttr.setNodeValue("security");
+            Attr typeAttr = document.createAttribute("type"); //$NON-NLS-1$
+            typeAttr.setNodeValue("security"); //$NON-NLS-1$
             security.setAttributeNode(typeAttr);
 
-            Attr name = document.createAttribute("name");
-            name.setNodeValue("hidePassword");
+            Attr name = document.createAttribute("name"); //$NON-NLS-1$
+            name.setNodeValue("hidePassword"); //$NON-NLS-1$
             security.setAttributeNode(name);
             security.setTextContent(String.valueOf(project.isHidePassword()));
 
             // stats and logs
             if (project.getStatAndLogsSettings() != null) {
                 List statAndLogs = project.getStatAndLogsSettings().getParameters().getElementParameter();
-                saveParameters(document, root, statAndLogs, "statAndLogs");
+                saveParameters(document, root, statAndLogs, "statAndLogs"); //$NON-NLS-1$
             }
 
             // implicit context
             if (project.getImplicitContextSettings() != null) {
                 List implicit = project.getImplicitContextSettings().getParameters().getElementParameter();
-                saveParameters(document, root, implicit, "implicitContext");
+                saveParameters(document, root, implicit, "implicitContext"); //$NON-NLS-1$
             }
 
             // palette
@@ -141,15 +141,15 @@ public class ExportProjectSettings {
         for (Object obj : list) {
             Element exportParameter = document.createElement("exportParameter"); //$NON-NLS-1$
             root.appendChild(exportParameter);
-            Attr typeAttr = document.createAttribute("type");
-            typeAttr.setNodeValue("palette");
+            Attr typeAttr = document.createAttribute("type"); //$NON-NLS-1$
+            typeAttr.setNodeValue("palette"); //$NON-NLS-1$
             exportParameter.setAttributeNode(typeAttr);
 
-            Attr name = document.createAttribute("name");
+            Attr name = document.createAttribute("name"); //$NON-NLS-1$
             name.setNodeValue(((ComponentSetting) obj).getName());
             exportParameter.setAttributeNode(name);
 
-            Attr family = document.createAttribute("family");
+            Attr family = document.createAttribute("family"); //$NON-NLS-1$
             family.setNodeValue(((ComponentSetting) obj).getFamily());
             exportParameter.setAttributeNode(family);
 
@@ -170,11 +170,11 @@ public class ExportProjectSettings {
             Element exportParameter = document.createElement("exportParameter"); //$NON-NLS-1$
             root.appendChild(exportParameter);
 
-            Attr typeAttr = document.createAttribute("type");
+            Attr typeAttr = document.createAttribute("type"); //$NON-NLS-1$
             typeAttr.setNodeValue(type);
             exportParameter.setAttributeNode(typeAttr);
 
-            Attr name = document.createAttribute("name");
+            Attr name = document.createAttribute("name"); //$NON-NLS-1$
             name.setNodeValue(((ElementParameterType) obj).getName());
             exportParameter.setAttributeNode(name);
             exportParameter.setTextContent(((ElementParameterType) obj).getValue());
@@ -194,11 +194,11 @@ public class ExportProjectSettings {
             Element exportParameter = document.createElement("exportParameter"); //$NON-NLS-1$
             root.appendChild(exportParameter);
 
-            Attr name = document.createAttribute("name");
+            Attr name = document.createAttribute("name"); //$NON-NLS-1$
             name.setNodeValue(((Status) obj).getCode());
             exportParameter.setAttributeNode(name);
 
-            Attr typeAttr = document.createAttribute("type");
+            Attr typeAttr = document.createAttribute("type"); //$NON-NLS-1$
             typeAttr.setNodeValue(type);
             exportParameter.setAttributeNode(typeAttr);
 
@@ -215,13 +215,13 @@ public class ExportProjectSettings {
      */
     private void createElementParameters(List list, Document document, Element element) {
         for (Object obj : list) {
-            Element elementParameter = document.createElement("elementParameter");
+            Element elementParameter = document.createElement("elementParameter"); //$NON-NLS-1$
             element.appendChild(elementParameter);
             ElementParameterType type = (ElementParameterType) obj;
-            Attr name = document.createAttribute("name");
+            Attr name = document.createAttribute("name"); //$NON-NLS-1$
             name.setNodeValue(type.getName());
             elementParameter.setAttributeNode(name);
-            Attr value = document.createAttribute("value");
+            Attr value = document.createAttribute("value"); //$NON-NLS-1$
             value.setNodeValue(type.getValue());
             elementParameter.setAttributeNode(value);
         }

@@ -39,7 +39,7 @@ public class ProjectSettingNode extends PreferenceNode {
     }
 
     public ProjectSettingNode(IConfigurationElement element) {
-        this(element.getAttribute("id"), element.getAttribute("title"), null, element.getAttribute("class")); //$NON-NLS-1$
+        this(element.getAttribute("id"), element.getAttribute("title"), null, element.getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         category = element.getAttribute("category"); //$NON-NLS-1$
         order = element.getAttribute("order"); //$NON-NLS-1$
     }

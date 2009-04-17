@@ -96,7 +96,7 @@ public class AliasDialog {
                     return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] { newText }); //$NON-NLS-1$
                 }
                 if (KeywordsValidator.isKeyword(newText) || KeywordsValidator.isSqlKeyword(newText)) {
-                    return "Input is invalid.";
+                    return Messages.getString("AliasDialog.inputValid"); //$NON-NLS-1$
                 }
                 return null;
             }

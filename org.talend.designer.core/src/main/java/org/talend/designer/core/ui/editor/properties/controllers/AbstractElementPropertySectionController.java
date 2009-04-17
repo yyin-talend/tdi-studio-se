@@ -949,7 +949,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     private void setAllConnectionParameters(String typ, Element element) {
         String type = null;
-        if (typ != null && !typ.equals("")) {
+        if (typ != null && !typ.equals("")) { //$NON-NLS-1$
             type = typ;
         } else {
             type = getValueFromRepositoryName(element, "TYPE"); //$NON-NLS-1$
@@ -1013,15 +1013,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
         Boolean value = false;
 
-        IElementParameter existingConn = element.getElementParameter("USE_EXISTING_CONNECTION");
-        IElementParameter dbName = element.getElementParameter("DBNAME");
-        IElementParameter tableSchema = element.getElementParameter("TABLESCHEMA");
-        IElementParameter user = element.getElementParameter("USER");
-        IElementParameter pass = element.getElementParameter("PASS");
-        IElementParameter type = element.getElementParameter("TYPE");
-        IElementParameter port = element.getElementParameter("PORT");
-        IElementParameter host = element.getElementParameter("HOST");
-        IElementParameter dbVersion = element.getElementParameter("DB_VERSION");
+        IElementParameter existingConn = element.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+        IElementParameter dbName = element.getElementParameter("DBNAME"); //$NON-NLS-1$
+        IElementParameter tableSchema = element.getElementParameter("TABLESCHEMA"); //$NON-NLS-1$
+        IElementParameter user = element.getElementParameter("USER"); //$NON-NLS-1$
+        IElementParameter pass = element.getElementParameter("PASS"); //$NON-NLS-1$
+        IElementParameter type = element.getElementParameter("TYPE"); //$NON-NLS-1$
+        IElementParameter port = element.getElementParameter("PORT"); //$NON-NLS-1$
+        IElementParameter host = element.getElementParameter("HOST"); //$NON-NLS-1$
+        IElementParameter dbVersion = element.getElementParameter("DB_VERSION"); //$NON-NLS-1$
 
         if (existingConn != null) {
             value = (Boolean) existingConn.getValue();

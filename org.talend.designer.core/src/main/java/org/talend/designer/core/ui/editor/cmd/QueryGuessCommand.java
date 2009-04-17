@@ -261,22 +261,22 @@ public class QueryGuessCommand extends Command {
     private String fomatQuery(String query) {
         String lastPartA, lastPartB;
         StringBuffer buffer = new StringBuffer();
-        String[] s = query.split(","); //$NON-NLS-N$
+        String[] s = query.split(","); //$NON-NLS-1$
         buffer.append(s[0]);
         if (s.length > 1) {
             for (int i = 1; i < s.length - 1; i++) {
                 s[i] = s[i].trim();
-                buffer.append("," + "\n" + "\t" + "\t" + s[i]);//$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$ //$NON-NLS-N$
+                buffer.append("," + "\n" + "\t" + "\t" + s[i]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             }
-            String[] last = s[s.length - 1].split("FROM"); //$NON-NLS-N$
-            lastPartA = last[0].trim() + "\n"; //$NON-NLS-N$
-            lastPartB = "FROM" + "\t" + last[1].trim(); //$NON-NLS-N$
+            String[] last = s[s.length - 1].split("FROM"); //$NON-NLS-1$
+            lastPartA = last[0].trim() + "\n"; //$NON-NLS-1$
+            lastPartB = "FROM" + "\t" + last[1].trim(); //$NON-NLS-1$ //$NON-NLS-2$
             s[s.length - 1] = lastPartA + lastPartB;
-            buffer.append("," + "\n" + "\t" + "\t" + s[s.length - 1]); //$NON-NLS-N$  //$NON-NLS-N$  //$NON-NLS-N$ //$NON-NLS-N$
+            buffer.append("," + "\n" + "\t" + "\t" + s[s.length - 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         } else {
-            String[] temp = s[0].split("FROM"); //$NON-NLS-N$
-            lastPartA = temp[0] + "\n"; //$NON-NLS-N$
-            lastPartB = "FROM" + "\t" + temp[1]; //$NON-NLS-N$  //$NON-NLS-N$
+            String[] temp = s[0].split("FROM"); //$NON-NLS-1$
+            lastPartA = temp[0] + "\n"; //$NON-NLS-1$
+            lastPartB = "FROM" + "\t" + temp[1]; //$NON-NLS-1$ //$NON-NLS-2$
             buffer = new StringBuffer();
             buffer.append(lastPartA);
             buffer.append(lastPartB);

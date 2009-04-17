@@ -69,7 +69,7 @@ public class PersistentLookupManager<B extends IPersistableRow<B>> implements IP
     }
 
     private String buildDataFilePath() {
-        return container + "_Data.bin";
+        return container + "_Data.bin"; //$NON-NLS-1$
     }
 
     public void put(B bean) throws IOException {

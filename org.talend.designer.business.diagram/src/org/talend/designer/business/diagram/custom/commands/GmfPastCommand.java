@@ -125,7 +125,7 @@ public class GmfPastCommand extends AbstractTransactionalCommand {
                         n++;
                     }
                     RepositoryNode node = null;
-                    if (talendId.split(" - ").length == 1) {
+                    if (talendId.split(" - ").length == 1) { //$NON-NLS-1$
                         node = RepositoryNodeUtilities.getRepositoryNode(talendId);
                     } else {
                         node = RepositoryNodeUtilities.getMetadataTableFromConnection(talendId);

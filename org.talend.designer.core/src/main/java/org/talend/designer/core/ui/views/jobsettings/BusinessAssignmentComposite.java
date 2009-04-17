@@ -274,7 +274,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                     } else if (item instanceof TableMetadata) {
                         MetadataTable table = MetadataTool.getMetadataTableFromRepository(item.getId());
                         if (table != null) {
-                            String id = item.getId().split(" - ")[0];
+                            String id = item.getId().split(" - ")[0]; //$NON-NLS-1$
 
                             RepositoryNode node = RepositoryNodeUtilities.getMetadataTableFromConnection(item.getId());
 
@@ -287,7 +287,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                         org.talend.core.model.metadata.builder.connection.Query query = MetadataTool.getQueryFromRepository(item
                                 .getId());
                         if (query != null) {
-                            String id = item.getId().split(" - ")[0];
+                            String id = item.getId().split(" - ")[0]; //$NON-NLS-1$
                             IRepositoryView view = getRepositoryView();
                             RepositoryNode node = RepositoryNodeUtilities.getQueryFromConnection(item.getId());
                             RepositoryNodeUtilities.expandParentNode(view, node);

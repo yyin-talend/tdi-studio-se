@@ -129,7 +129,7 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
                     } else {
                         bufferMarkLimit = (int) v10P;
                     }
-                    System.out.println("Buffer marked at index (1-Lookup) " + bufferMarkLimit);
+                    System.out.println("Buffer marked at index (1-Lookup) " + bufferMarkLimit); //$NON-NLS-1$
                     bufferIsMarked = true;
                 }
             }
@@ -193,11 +193,11 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
     }
 
     private String buildValuesFilePath(int i) {
-        return container + "ValuesData_" + i + ".bin";
+        return container + "ValuesData_" + i + ".bin"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String buildKeysFilePath(int i) {
-        return container + "KeysData_" + i + ".bin";
+        return container + "KeysData_" + i + ".bin"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void initGet() throws IOException {

@@ -203,7 +203,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // labelIsGuess.setText(Messages.getString("XmlFileStep1.checkBoxIsGuess"));
 
         // file Field XML
-        String[] xmlExtensions = { "*.xml", "*.xsd", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String[] xmlExtensions = { "*.xml", "*.xsd", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"), //$NON-NLS-1$
                 xmlExtensions);
 
@@ -350,7 +350,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                     }
                 } catch (Exception ex) {
                     String fileStr = fileFieldXml.getText();
-                    String msgError = Messages.getString("XmlFileStep1.filepathXml") + " \"" + fileStr.replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    String msgError = "XML" + " \"" + fileStr.replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                             + "\"\n"; //$NON-NLS-1$
                     if (ex instanceof FileNotFoundException) {
                         msgError = msgError + Messages.getString("FileStep1.fileNotFoundException"); //$NON-NLS-1$
@@ -409,8 +409,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             return false;
         }
         if (!valid) {
-            updateStatus(IStatus.ERROR,
-                    "\"" + fileFieldXml.getText() + "\" " + Messages.getString("FileStep1.fileNotFoundException")); //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, Messages.getString("XmlFileStep1Form.notFound", fileFieldXml.getText())); //$NON-NLS-1$
             return false;
         }
         updateStatus(IStatus.OK, null);

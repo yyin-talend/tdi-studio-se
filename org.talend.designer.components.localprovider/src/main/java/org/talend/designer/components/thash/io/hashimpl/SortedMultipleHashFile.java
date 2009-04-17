@@ -74,7 +74,7 @@ public class SortedMultipleHashFile implements IMapHashFile {
 
     private String container = null;
 
-    private String mergeRepository = "/home/amaumont/hash_benchs/external_sort/lookup_merge_";
+    private String mergeRepository = "/home/amaumont/hash_benchs/external_sort/lookup_merge_"; //$NON-NLS-1$
 
     // private String mergeRepository = "/home/amaumont/abc/a/lookup_merge_";
 
@@ -105,11 +105,11 @@ public class SortedMultipleHashFile implements IMapHashFile {
      * @return
      */
     private String getFilePath(String container, int i, int j) {
-        return container + "_" + i + "_" + j;
+        return container + "_" + i + "_" + j; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void initPut(String container) throws IOException {
-        System.out.println("Hash file bufferSize=" + bufferSize + " objects");
+        System.out.println("Hash file bufferSize=" + bufferSize + " objects"); //$NON-NLS-1$ //$NON-NLS-2$
         this.container = container;
         buffer = new ILightSerializable[bufferSize];
     }
@@ -326,7 +326,7 @@ public class SortedMultipleHashFile implements IMapHashFile {
         lastRetrievedObjectArray = new Object[numberFiles];
         nextObjectsArray = new Object[numberFiles];
         for (int i = 0; i < numberFiles; i++) {
-            raArray[i] = new RandomAccessFile(mergeRepository + i, "r");
+            raArray[i] = new RandomAccessFile(mergeRepository + i, "r"); //$NON-NLS-1$
             disArray[i] = new DataInputStream(new BufferedInputStream(new FileInputStream(mergeRepository + i)));
             next(i);
             lastRetrievedCursorPositionArray[i] = -1;
@@ -336,7 +336,7 @@ public class SortedMultipleHashFile implements IMapHashFile {
     public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException {
 
         if (raArray == null) {
-            throw new IllegalStateException("Call initGet(..) one time before all call on get(..) method");
+            throw new IllegalStateException("Call initGet(..) one time before all call on get(..) method"); //$NON-NLS-1$
         }
 
         // System.out.println("GET cursorPosition="+cursorPosition + " hashcode="+hashcode);

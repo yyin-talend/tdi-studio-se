@@ -574,7 +574,7 @@ class JobTypeProcessor implements ITypeProcessor {
      * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
      */
     public String getDialogTitle() {
-        return Messages.getString("OpenJobSelectionDialog.findJob");
+        return Messages.getString("OpenJobSelectionDialog.findJob"); //$NON-NLS-1$
     }
 }
 

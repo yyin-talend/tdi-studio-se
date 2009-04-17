@@ -46,9 +46,9 @@ public class JavaJobExportReArchieveCreator {
 
     private File shFile;
 
-    private static final String CLASSPATH_JAR = "classpath.jar"; // the output new jar filename
+    private static final String CLASSPATH_JAR = "classpath.jar"; // the output new jar filename //$NON-NLS-1$
 
-    private static final String LIB = "lib"; // lib folder
+    private static final String LIB = "lib"; // lib folder //$NON-NLS-1$
 
     public JavaJobExportReArchieveCreator(String zipFile, String jobFolderName) {
         this.zipFile = zipFile;
@@ -64,7 +64,7 @@ public class JavaJobExportReArchieveCreator {
             if (jobFolder == null) {
                 return;
             }
-            String newJarPath = jobFolder.getAbsolutePath() + "/" + CLASSPATH_JAR;
+            String newJarPath = jobFolder.getAbsolutePath() + "/" + CLASSPATH_JAR; //$NON-NLS-1$
             NewJarBuilder jarBuilder = new NewJarBuilder(tmpFoler, newJarPath);
             jarBuilder.buildJar();
 
@@ -119,28 +119,28 @@ public class JavaJobExportReArchieveCreator {
             String line = br.readLine();
             // get java command line
             String line1 = br.readLine().trim();
-            String[] strs = line1.split("\\s");
+            String[] strs = line1.split("\\s"); //$NON-NLS-1$
             int pos = -1;
             for (int i = 0; i < strs.length; i++) {
-                if ("-cp".equalsIgnoreCase(strs[i]) || "-classpath".equalsIgnoreCase(strs[i])) {
+                if ("-cp".equalsIgnoreCase(strs[i]) || "-classpath".equalsIgnoreCase(strs[i])) { //$NON-NLS-1$ //$NON-NLS-2$
                     pos = i;
                 }
             }
             if (pos != -1) {
-                if (file.getName().endsWith(".sh")) {
-                    strs[pos + 1] = CLASSPATH_JAR + ":";
+                if (file.getName().endsWith(".sh")) { //$NON-NLS-1$
+                    strs[pos + 1] = CLASSPATH_JAR + ":"; //$NON-NLS-1$
                 }
-                if (file.getName().endsWith(".bat")) {
-                    strs[pos + 1] = CLASSPATH_JAR + ";";
+                if (file.getName().endsWith(".bat")) { //$NON-NLS-1$
+                    strs[pos + 1] = CLASSPATH_JAR + ";"; //$NON-NLS-1$
                 }
             }
             StringBuffer changedContent = new StringBuffer();
             for (String s : strs) {
-                changedContent.append(s).append(" ");
+                changedContent.append(s).append(" "); //$NON-NLS-1$
             }
             // rewrite the changed content to file
             bw = new BufferedWriter(new FileWriter(file));
-            bw.write(line + "\n");
+            bw.write(line + "\n"); //$NON-NLS-1$
             bw.write(changedContent.toString());
             bw.flush();
             // br.close();
@@ -209,10 +209,10 @@ public class JavaJobExportReArchieveCreator {
                 jobFolder = fs[i];
                 File[] fs1 = jobFolder.listFiles();
                 for (File f : fs1) {
-                    if (f.getName().toLowerCase().endsWith(".bat")) {
+                    if (f.getName().toLowerCase().endsWith(".bat")) { //$NON-NLS-1$
                         batFile = f;
                     }
-                    if (f.getName().toLowerCase().endsWith(".sh")) {
+                    if (f.getName().toLowerCase().endsWith(".sh")) { //$NON-NLS-1$
                         shFile = f;
                     }
                 }
@@ -227,18 +227,18 @@ public class JavaJobExportReArchieveCreator {
         StringBuffer sb = new StringBuffer();
         String[] fs = getJobFolderJarFilenames();
         for (int i = 0; i < fs.length; i++) {
-            sb.append(fs[i] + " ");
+            sb.append(fs[i] + " "); //$NON-NLS-1$
         }
         String[] fn = getLibJarFilenames();
         for (int i = 0; i < fn.length; i++) {
-            sb.append("../" + LIB + "/" + fn[i] + " ");
+            sb.append("../" + LIB + "/" + fn[i] + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         // sb.append("\n");
         return sb.toString();
     }
 
     public static String getTmpFolder() {
-        String tmp = System.getProperty("user.dir") + "/newjarFolder";
+        String tmp = System.getProperty("user.dir") + "/newjarFolder"; //$NON-NLS-1$ //$NON-NLS-2$
         tmp = tmp.replace('\\', '/');
         File f = new File(tmp);
         if (!f.exists()) {
@@ -289,7 +289,7 @@ public class JavaJobExportReArchieveCreator {
         private Manifest getManifest() throws IOException {
             Manifest manifest = new Manifest();
             Attributes a = manifest.getMainAttributes();
-            a.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+            a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
             a.put(Attributes.Name.IMPLEMENTATION_VENDOR, "Talend Open Studio"); //$NON-NLS-1$
             a.put(Attributes.Name.CLASS_PATH, getClasspath());
             return manifest;

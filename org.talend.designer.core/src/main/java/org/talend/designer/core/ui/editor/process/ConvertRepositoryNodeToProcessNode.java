@@ -87,7 +87,7 @@ public class ConvertRepositoryNodeToProcessNode {
         String propertyId = connectionItem.getProperty().getId();
         String schema = databaseConnection.getSchema();
         String dbType = databaseConnection.getDatabaseType();
-        String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
+        String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
 
         CompoundCommand cc = new CompoundCommand();
         // inital parameters command
@@ -109,7 +109,7 @@ public class ConvertRepositoryNodeToProcessNode {
         // execute the commands
         cc.execute();
 
-        IElementParameter query = node.getElementParameter("QUERY"); //$NON-NLS-N$
+        IElementParameter query = node.getElementParameter("QUERY"); //$NON-NLS-N$ //$NON-NLS-1$
 
         memoSQL = query.getValue().toString();
 

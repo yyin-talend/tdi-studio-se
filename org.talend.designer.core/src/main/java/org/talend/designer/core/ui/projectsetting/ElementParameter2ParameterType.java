@@ -135,8 +135,8 @@ public class ElementParameter2ParameterType {
                         // value)
                     }
                     String value = null;
-                    if (param.getName().equals("STATANDLOG_USE_PROJECT_SETTINGS")
-                            || param.getName().equals("IMPLICITCONTEXT_USE_PROJECT_SETTINGS")) {
+                    if (param.getName().equals("STATANDLOG_USE_PROJECT_SETTINGS") //$NON-NLS-1$
+                            || param.getName().equals("IMPLICITCONTEXT_USE_PROJECT_SETTINGS")) { //$NON-NLS-1$
                         value = param.getValue().toString();
                     } else {
                         value = pType.getValue();

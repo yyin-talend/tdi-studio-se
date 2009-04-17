@@ -358,7 +358,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
             }
             if (!restore) {
                 ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
-                if (label.equals("tLogRow")) {
+                if (label.equals("tLogRow")) { //$NON-NLS-1$
                     label.getClass();
                 }
                 cs.setName(label);

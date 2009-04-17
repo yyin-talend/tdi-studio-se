@@ -32,15 +32,15 @@ public final class FileUtils {
         if (!parentFile.isDirectory()) {
             boolean createFolder = parentFile.mkdirs();
             if (!createFolder) {
-                throw new RuntimeException("The following directory can't be created : '"
-                        + parentFile.getAbsolutePath() + "'");
+                throw new RuntimeException("The following directory can't be created : '" //$NON-NLS-1$
+                        + parentFile.getAbsolutePath() + "'"); //$NON-NLS-1$
             }
         }
 
     }
 
     public static void main(String[] args) throws IOException {
-        createParentFolderIfNotExists("/home/amaumont/temp/folder/test");
+        createParentFolderIfNotExists("/home/amaumont/temp/folder/test"); //$NON-NLS-1$
     }
 
 }

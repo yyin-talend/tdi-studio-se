@@ -81,7 +81,7 @@ public class FlowSorterIterator<V extends ILightSerializable> implements IMapHas
 
     private ArrayList<File> files = new ArrayList<File>();
 
-    public String workDirectory = "/home/amaumont/hash_benchs/external_sort/";
+    public String workDirectory = "/home/amaumont/hash_benchs/external_sort/"; //$NON-NLS-1$
 
     // public String workDirectory = "/home/amaumont/abc/c/";
 
@@ -98,7 +98,7 @@ public class FlowSorterIterator<V extends ILightSerializable> implements IMapHas
     // ///////////////////////
 
     public void initPut(String container) throws IOException {
-        System.out.println("bufferSize=" + bufferSize + " objects");
+        System.out.println("bufferSize=" + bufferSize + " objects"); //$NON-NLS-1$ //$NON-NLS-2$
         this.container = container;
         buffer = new ILightSerializable[bufferSize];
     }
@@ -227,20 +227,20 @@ public class FlowSorterIterator<V extends ILightSerializable> implements IMapHas
      */
     public void writeBuffer(ILightSerializable[] list, int length) throws FileNotFoundException, IOException {
         long time1 = System.currentTimeMillis();
-        System.out.println("Sorting buffer...");
+        System.out.println("Sorting buffer..."); //$NON-NLS-1$
 
         Arrays.sort(list, 0, length);
 
         long time2 = System.currentTimeMillis();
         long deltaTimeSort = (time2 - time1);
         int itemsPerSecSort = (int) ((float) length / (float) deltaTimeSort * 1000f);
-        System.out.println(deltaTimeSort + " milliseconds for " + length + " objects to sort in memory. "
-                + itemsPerSecSort + "  items/s ");
+        System.out.println(deltaTimeSort + " milliseconds for " + length + " objects to sort in memory. " //$NON-NLS-1$ //$NON-NLS-2$
+                + itemsPerSecSort + "  items/s "); //$NON-NLS-1$
 
         time1 = System.currentTimeMillis();
-        System.out.println("Writing ordered buffer in file...");
+        System.out.println("Writing ordered buffer in file..."); //$NON-NLS-1$
 
-        File file = new File(workDirectory + "TEMP_" + count);
+        File file = new File(workDirectory + "TEMP_" + count); //$NON-NLS-1$
         count++;
         DataOutputStream rw = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
         byte[] bytes = null;
@@ -255,8 +255,8 @@ public class FlowSorterIterator<V extends ILightSerializable> implements IMapHas
         time2 = System.currentTimeMillis();
         long deltaTimeWrite = (time2 - time1);
         int itemsPerSecWrite = (int) ((float) length / (float) deltaTimeWrite * 1000f);
-        System.out.println(deltaTimeWrite + " milliseconds for " + length + " objects to write in file. "
-                + itemsPerSecWrite + "  items/s ");
+        System.out.println(deltaTimeWrite + " milliseconds for " + length + " objects to write in file. " //$NON-NLS-1$ //$NON-NLS-2$
+                + itemsPerSecWrite + "  items/s "); //$NON-NLS-1$
 
     }
 

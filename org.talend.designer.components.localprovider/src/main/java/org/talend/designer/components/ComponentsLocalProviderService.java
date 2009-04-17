@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.designer.components.i18n.Messages;
 import org.talend.designer.components.model.ComponentFileChecker;
 import org.talend.designer.components.ui.ComponenttRunJobPreferencePage;
 
@@ -77,7 +78,7 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
                             Status status = new Status(IStatus.ERROR, ComponentsLocalProviderPlugin.PLUGIN_ID, 1, tempE
                                     .getMessage(), tempE.getCause());
                             ErrorDialog dlg = new ErrorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                                    "Talend Exchange Error", "Component load error", status, IStatus.ERROR);
+                                    Messages.getString("ComponentsLocalProviderService.talendExchangeError"), Messages.getString("ComponentsLocalProviderService.componentLoadError"), status, IStatus.ERROR); //$NON-NLS-1$ //$NON-NLS-2$
                             dlg.open();
                         }
 

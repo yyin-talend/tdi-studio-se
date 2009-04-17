@@ -265,7 +265,7 @@ public class ErDiagramComposite extends SashForm {
                                         String leftQuote = TalendTextUtils.getQuoteByDBType(getCurrentDbType(), true);
                                         String rightQuote = TalendTextUtils.getQuoteByDBType(getCurrentDbType(), false);
                                         String columnContent = column.getElementName();
-                                        Pattern pattern = Pattern.compile("\\w+"); //$NON-NLS-N$
+                                        Pattern pattern = Pattern.compile("\\w+"); //$NON-NLS-1$
                                         Matcher matcher = pattern.matcher(columnContent);
 
                                         if (!matcher.matches()) {

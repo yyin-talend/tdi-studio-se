@@ -162,7 +162,7 @@ public class DataProcess {
         dataNode.setProcess(graphicalNode.getProcess());
 
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
-            IComponent component = ComponentsFactoryProvider.getInstance().get("tDummyRow");
+            IComponent component = ComponentsFactoryProvider.getInstance().get("tDummyRow"); //$NON-NLS-1$
             if (component != null) { // only if component is available
                 dataNode = new DataNode(component, uniqueName); //$NON-NLS-1$
                 dataNode.setActivate(true);
@@ -288,7 +288,7 @@ public class DataProcess {
     private INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
             List<? extends IElementParameter> parameters) {
 
-        if (ComponentsFactoryProvider.getInstance().get("tFlowMeter") == null) {
+        if (ComponentsFactoryProvider.getInstance().get("tFlowMeter") == null) { //$NON-NLS-1$
             return targetNode;
         }
         // from current node to vFlowMeter node.
@@ -949,7 +949,7 @@ public class DataProcess {
         }
 
         String[] fsNodeNeedReplace = new String[] {
-                "tFSFilterRow", "tFSFilterColumns", "tFSSort", "tFSUniq", "tFSTransform", "tFSCheck", "tFSGeneric" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "tFSFilterRow", "tFSFilterColumns", "tFSSort", "tFSUniq", "tFSTransform", "tFSCheck", "tFSGeneric" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
         Node currentComponent = (Node) graphicalNode;
         AbstractNode dataNode;

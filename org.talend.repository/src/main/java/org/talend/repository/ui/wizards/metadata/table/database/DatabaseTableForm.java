@@ -105,9 +105,9 @@ public class DatabaseTableForm extends AbstractForm {
 
     private static final boolean STREAM_DETACH_IS_VISIBLE = false;
 
-    private static final String GUESS_SCHEMA_TOOLTIP = "Push this button to get a rough schema.."; //$NON-NLS-N$
+    private static final String GUESS_SCHEMA_TOOLTIP = Messages.getString("DatabaseTableForm.getRoughSchema"); //$NON-NLS-1$
 
-    private static final String RETRIEVE_SCHEMA_TOOLTIP = "Push this button to get a detailed schema.."; //$NON-NLS-N$
+    private static final String RETRIEVE_SCHEMA_TOOLTIP = Messages.getString("DatabaseTableForm.getDetailedSchema"); //$NON-NLS-1$
 
     /**
      * FormTable Var.
@@ -394,11 +394,10 @@ public class DatabaseTableForm extends AbstractForm {
                 .getString("DatabaseTableForm.retreiveSchema"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
         retreiveSchemaButton.setToolTipText(RETRIEVE_SCHEMA_TOOLTIP);
         // Button Check Connection
-        checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, "" /*
-                                                                                   * Messages.getString(
-                                                                                   * "DatabaseTableForm.checkConnection"
-                                                                                   * )
-                                                                                   */, false); //$NON-NLS-1$
+        checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, "" //$NON-NLS-1$
+                /*
+                 * Messages.getString( "DatabaseTableForm.checkConnection" )
+                 */, false); //$NON-NLS-1$
 
         tableSettingsInfoLabel = new Label(composite1, SWT.NONE);
         tableSettingsInfoLabel.setLayoutData(gridData);
@@ -874,16 +873,16 @@ public class DatabaseTableForm extends AbstractForm {
                 // get the column name from the temp file genenrated by GuessSchemaProcess.java
                 String labelName = (schemaContent.get(0))[i - 1];
                 // oneColum.setLabel(labelName);
-                if (!"".equals(labelName)) {
+                if (!"".equals(labelName)) { //$NON-NLS-1$
                     oneColum.setOriginalField(labelName);
                 }
-                if (!"".equals(schemaContent.get(2)[i - 1])) {
+                if (!"".equals(schemaContent.get(2)[i - 1])) { //$NON-NLS-1$
                     oneColum.setPrecision(Integer.parseInt(schemaContent.get(2)[i - 1]));
                 }
-                if (!"".equals(schemaContent.get(3)[i - 1])) {
+                if (!"".equals(schemaContent.get(3)[i - 1])) { //$NON-NLS-1$
                     oneColum.setLength(Integer.parseInt(schemaContent.get(3)[i - 1]));
                 }
-                if (!"".equals(schemaContent.get(4)[i - 1])) {
+                if (!"".equals(schemaContent.get(4)[i - 1])) { //$NON-NLS-1$
                     oneColum.setSourceType(schemaContent.get(4)[i - 1]);
                     String talendType = MetadataTalendType.getMappingTypeRetriever(tableEditorView.getCurrentDbms())
                             .getDefaultSelectedTalendType(schemaContent.get(4)[i - 1]);
@@ -891,7 +890,7 @@ public class DatabaseTableForm extends AbstractForm {
                 }
                 // get if a column is nullable from the temp file genenrated by
                 // GuessSchemaProcess.java
-                if (!"".equals(schemaContent.get(1)[i - 1])) {
+                if (!"".equals(schemaContent.get(1)[i - 1])) { //$NON-NLS-1$
                     oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
                 }
                 // String talendType = null;

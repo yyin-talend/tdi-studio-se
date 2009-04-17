@@ -1285,7 +1285,7 @@ public class UIManager extends AbstractUIManager {
                             return Messages.getString("UIManager.tableNameIsNotValid"); //$NON-NLS-1$
                         }
                         if (newText != null && !process.checkValidConnectionName(newText, true)) {
-                            return "The name had existed or is null.";
+                            return Messages.getString("UIManager.nameExistOrNull"); //$NON-NLS-1$
                         }
                         return null;
                     }

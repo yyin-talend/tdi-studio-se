@@ -740,7 +740,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             connParameters.setConnectionComment(testConnection.getMessageException());
             return testConnection.getResult();
         } catch (Exception e) {
-            log.error("" + "\n" + e.toString()); //$NON-NLS-2$
+            log.error("" + "\n" + e.toString());  //$NON-NLS-1$//$NON-NLS-2$
         }
         return false;
     }
@@ -791,7 +791,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     if (columns != null) {
                         columns.clear();
                     }
-                    monitor.beginTask("Waiting for opening Database ...", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("GuessSchemaController.waitOpenDatabase"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
                     if (connParameters == null) {
                         initConnectionParameters();
@@ -860,7 +860,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    MessageDialog.openWarning(composite.getShell(), "Connection error", strExcepton);
+                                    MessageDialog.openWarning(composite.getShell(), Messages.getString("GuessSchemaController.connError"), strExcepton); //$NON-NLS-1$
                                 }
                             });
                         }

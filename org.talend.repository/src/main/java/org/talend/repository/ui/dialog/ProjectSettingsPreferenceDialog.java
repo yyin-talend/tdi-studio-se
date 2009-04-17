@@ -59,8 +59,8 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        importButton = createButton(parent, IMPORT, "Import", false);
-        exportButton = createButton(parent, EXPORT, "Export", false);
+        importButton = createButton(parent, IMPORT, "Import", false); //$NON-NLS-1$
+        exportButton = createButton(parent, EXPORT, "Export", false); //$NON-NLS-1$
         super.createButtonsForButtonBar(parent);
 
     }
@@ -94,7 +94,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
     private void importPressed() {
 
         FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
-        String[] files = new String[] { "*.xml" };
+        String[] files = new String[] { "*.xml" }; //$NON-NLS-1$
         fileDialog.setFilterExtensions(files);
 
         String path = fileDialog.open();
@@ -136,8 +136,8 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
     private void exportPressed() {
         saveCurrentSettings();
         FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE);
-        fileDialog.setFileName("ProjectSettings.xml");
-        String[] files = new String[] { "*.xml" };
+        fileDialog.setFileName("ProjectSettings.xml"); //$NON-NLS-1$
+        String[] files = new String[] { "*.xml" }; //$NON-NLS-1$
         fileDialog.setFilterExtensions(files);
 
         String path = fileDialog.open();
@@ -148,7 +148,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
     private void showErrorMessage() {
         MessageBox message = new MessageBox(new Shell(getShell()), SWT.ICON_ERROR | SWT.OK);
-        message.setMessage(Messages.getString("ImportProjectSettings.Error"));
+        message.setMessage(Messages.getString("ImportProjectSettings.Error")); //$NON-NLS-1$
         message.open();
     }
 
@@ -198,7 +198,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
                 String message = JFaceResources.getString("SafeRunnable.errorMessage"); //$NON-NLS-1$
 
                 Policy.getStatusHandler().show(new Status(IStatus.ERROR, Policy.JFACE, message, e),
-                        JFaceResources.getString("Error")); //$NON-NLS-1$                                                             
+                        JFaceResources.getString("Error")); //$NON-NLS-1$ 
 
             }
         });

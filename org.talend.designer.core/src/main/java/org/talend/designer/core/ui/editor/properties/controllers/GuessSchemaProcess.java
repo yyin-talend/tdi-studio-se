@@ -157,8 +157,8 @@ public class GuessSchemaProcess {
                 + "precisions[i-1] = Integer.toString(rsmd.getPrecision(i));" //$NON-NLS-1$
                 + "dbtypes[i-1] = rsmd.getColumnTypeName(i);\r\n" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$
 
-                + "csvWriter.writeRecord(columnNames);\r\n" + "csvWriter.writeRecord(nullables);\r\n"
-                + "csvWriter.writeRecord(lengths);\r\n" + "csvWriter.writeRecord(precisions);\r\n"
+                + "csvWriter.writeRecord(columnNames);\r\n" + "csvWriter.writeRecord(nullables);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "csvWriter.writeRecord(lengths);\r\n" + "csvWriter.writeRecord(precisions);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "csvWriter.writeRecord(dbtypes);\r\n" + "while (rs.next()) {"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         codeMain = "String[] dataOneRow = new String[numbOfColumn];\r\n" + "for (int i = 1; i <= numbOfColumn; i++) {\r\n" //$NON-NLS-1$ //$NON-NLS-2$

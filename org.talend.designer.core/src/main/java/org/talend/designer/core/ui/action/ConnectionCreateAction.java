@@ -266,7 +266,7 @@ public class ConnectionCreateAction extends SelectionAction {
             }
             if (removeQuotes != null && node.isELTComponent() && node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
                 if (getDefaultSchemaName() != null) {
-                    removeQuotes = getDefaultSchemaName() + "." + removeQuotes;
+                    removeQuotes = getDefaultSchemaName() + "." + removeQuotes; //$NON-NLS-1$
                 }
             }
         }
@@ -353,7 +353,7 @@ public class ConnectionCreateAction extends SelectionAction {
         final Node node = (Node) nodePart.getModel();
         InputDialog id = new InputDialog(getWorkbenchPart().getSite().getShell(), nodeLabel
                 + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
-                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, new IInputValidator() {
+                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, new IInputValidator() { //$NON-NLS-1$
 
                     public String isValid(String newText) {
                         if (newText != null) {
@@ -383,7 +383,7 @@ public class ConnectionCreateAction extends SelectionAction {
      * @return
      */
     private String askForConnectionNameAndSchema(String nodeLabel, String oldName) {
-        String outName = "";
+        String outName = ""; //$NON-NLS-1$
         ConnectionTableAndSchemaNameDialog id = new ConnectionTableAndSchemaNameDialog(getWorkbenchPart().getSite().getShell(),
                 nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
                 Messages.getString("ConnectionCreateAction.dialogMessage"), oldName); //$NON-NLS-1$ 
