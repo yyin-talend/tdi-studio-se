@@ -663,23 +663,20 @@ skeleton="../templates/db_output_bulk.skeleton"
     		if(!batchSize.equals("") && !batchSize.equals("0")) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if (rejectConnName==null) {
+                <%if (rejectConnName==null && (dataAction.equals("INSERT") || dataAction.equals("UPDATE") || dataAction.equals("DELETE"))) {
                 %>                                                
                 try {
-                	
+						pstmt_<%=cid %>.executeBatch();                	
             	    	<%if (dataAction.equals("INSERT")) {
             	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
             	    		insertedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
             	    	<%
             	    	}else if (dataAction.equals("UPDATE")) {
             	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
             	    		updatedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
             	    	<%
             	    	}else if (dataAction.equals("DELETE")) {
             	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
             	    	<%
             	    	}%>                          	                	                	
@@ -713,23 +710,20 @@ skeleton="../templates/db_output_bulk.skeleton"
     		    commitCounter_<%=cid%>++;            
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
                 
-                <%if (rejectConnName==null) {
+                <%if (rejectConnName==null && (dataAction.equals("INSERT") || dataAction.equals("UPDATE") || dataAction.equals("DELETE")) ) {
                 %>
                 try {
-                	
+                		pstmt_<%=cid %>.executeBatch();
             	    	<%if (dataAction.equals("INSERT")) {
             	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
             	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    	}else if (dataAction.equals("UPDATE")) {
-            	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
+            	    	%>            	    		
             	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    	}else if (dataAction.equals("DELETE")) {
             	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    	}%>            	    

@@ -63,23 +63,20 @@ imports="
         <%
     } else { // dataAction equals "INSERT" or "UPDATE" or "DELETE" 
         %>
-                <%if (rejectConnName==null) {
+                <%if (rejectConnName==null && (dataAction.equals("INSERT") || dataAction.equals("UPDATE") || dataAction.equals("DELETE"))) {
                 %>                
                 try {
-                	
+						pstmt_<%=cid %>.executeBatch();                	
             	    	<%if (dataAction.equals("INSERT")) {
             	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
             	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
             	    	<%
             	    	}else if (dataAction.equals("UPDATE")) {
             	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
             	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    	}else if (dataAction.equals("DELETE")) {
             	    	%>
-            	    		pstmt_<%=cid %>.executeBatch();
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    	}%>            	    
