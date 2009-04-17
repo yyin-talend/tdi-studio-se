@@ -75,7 +75,7 @@
       FIELD="DIRECTORY"
       NUM_ROW="15"
     >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>
+      <DEFAULT/>
     </PARAMETER>
     
   </PARAMETERS>

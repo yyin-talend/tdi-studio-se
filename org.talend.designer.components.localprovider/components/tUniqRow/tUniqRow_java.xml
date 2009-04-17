@@ -93,7 +93,7 @@
       NUM_ROW="8"
       SHOW_IF="IS_VIRTUAL_COMPONENT == 'true'"
     >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>
+      <DEFAULT/>
     </PARAMETER>
     
   </ADVANCED_PARAMETERS>
