@@ -21,8 +21,10 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
@@ -40,15 +42,15 @@ import org.talend.designer.components.i18n.Messages;
  */
 public class ComponentsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    // private IntegerFieldEditor rowLimit;
-
-    private IntegerFieldEditor fClientComPortEditor = null;
-
     private CheckBoxFieldEditor doNotShowJobAfterDoubleClickCheckBoxField;
 
     private DirectoryFieldEditor filePathTemp;
 
-    private static final String TITLE = "tRunJob"; //$NON-NLS-1$
+    private final String dataViewer = "Data Viewer"; //$NON-NLS-1$
+
+    private final String mapper = "Mapper "; //$NON-NLS-1$
+
+    private final String tRunJob = "tRunJob"; //$NON-NLS-1$
 
     /**
      * This class exists to provide visibility to the <code>refreshValidState</code> method and to perform more
@@ -83,7 +85,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         setPreferenceStore(ComponentsLocalProviderPlugin.getDefault().getPreferenceStore());
     }
 
-    public void createFieldEditors2() {
+    public void createFieldEditors2(Composite composite) {
 
         LINK_STYLE[] linkStyles = LINK_STYLE.values();
         String[][] strComboValues = new String[linkStyles.length][2];
@@ -94,7 +96,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         }
 
         ComboFieldEditor dbTypeField = new ComboFieldEditor(IComponentPreferenceConstant.LINK_STYLE, Messages
-                .getString("ComponentsPreferencePage.configuration.LINK_STYLE"), strComboValues, getFieldEditorParent()); //$NON-NLS-1$
+                .getString("ComponentsPreferencePage.configuration.LINK_STYLE"), strComboValues, composite); //$NON-NLS-1$
         addField(dbTypeField);
     }
 
@@ -118,13 +120,6 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         }
     }
 
-    protected void createSpacer(Composite composite, int columnSpan) {
-        Label label = new Label(composite, SWT.NONE);
-        GridData gd = new GridData();
-        gd.horizontalSpan = columnSpan;
-        label.setLayoutData(gd);
-    }
-
     protected boolean canClearErrorMessage() {
         return true;
     }
@@ -135,23 +130,98 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         super.performApply();
     }
 
+    protected Composite createForMapper(Composite parent) {
+        Group group = createGroup(parent);
+        group.setText(mapper);
+        Composite composite = createComposite(group);
+        addFontAndColorFieldsForMapper(composite);
+        GridLayout layout = createLayout();
+        composite.setLayout(layout);
+        return group;
+    }
+
+    protected Composite createForDataViewer(Composite parent) {
+        Group group = createGroup(parent);
+        group.setText(dataViewer);
+        Composite composite = createComposite(group);
+        addFontAndColorFieldsForDataViewer(composite);
+        GridLayout layout = createLayout();
+        composite.setLayout(layout);
+        return group;
+    }
+
+    protected Composite createFortRunJob(Composite parent) {
+        Group group = createGroup(parent);
+        group.setText(tRunJob);
+        Composite composite = createComposite(group);
+        addFontAndColorFieldsFortRunJob(composite);
+        GridLayout layout = createLayout();
+        composite.setLayout(layout);
+        return group;
+    }
+
+    protected Group createGroup(Composite parent) {
+        Group group = new Group(parent, SWT.NONE);
+        GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 3;
+        group.setLayoutData(layoutData);
+        group.setLayout(new GridLayout(3, false));
+        return group;
+    }
+
+    protected Composite createComposite(Group group) {
+        Composite composite = new Composite(group, SWT.NONE);
+        GridLayout gridLayout = new GridLayout(3, false);
+        composite.setLayout(gridLayout);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalSpan = 3;
+        composite.setLayoutData(gridData);
+        return composite;
+    }
+
+    protected GridLayout createLayout() {
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 8;
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+        layout.horizontalSpacing = 8;
+        return layout;
+    }
+
+    protected void addFontAndColorFieldsForDataViewer(Composite composite) {
+        IntegerFieldEditor rowLimit = new IntegerFieldEditor(IComponentPreferenceConstant.LIMIT, Messages
+                .getString("ComponentsPreferencePage.rowLimit"), composite);//$NON-NLS-1$ 
+        addField(rowLimit);
+        Text textControl = rowLimit.getTextControl(composite);
+        GridData layoutData = new GridData();
+        layoutData.widthHint = 200;
+        textControl.setLayoutData(layoutData);
+    }
+
+    protected void addFontAndColorFieldsForMapper(Composite composite) {
+        createFieldEditors2(composite);
+    }
+
+    protected void addFontAndColorFieldsFortRunJob(Composite composite) {
+        doNotShowJobAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IComponentPreferenceConstant.IS_AVOID, Messages
+                .getString("ComponenttRunJobPreferencePage.label"), composite); //$NON-NLS-1$
+        addField(doNotShowJobAfterDoubleClickCheckBoxField);
+    }
+
     public void createFieldEditors() {
+        Composite parent = getFieldEditorParent();
         filePathTemp = new DirectoryFieldEditor(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, Messages
                 .getString("ComponentsPreferencePage.directoryFieldLabel"), //$NON-NLS-1$
-                getFieldEditorParent());
+                parent);
         addField(filePathTemp);
+
         if (PluginChecker.isPreviewPluginLoaded()) {
-            IntegerFieldEditor rowLimit = new IntegerFieldEditor(IComponentPreferenceConstant.LIMIT, Messages
-                    .getString("ComponentsPreferencePage.rowLimit"), //$NON-NLS-1$
-                    getFieldEditorParent());
-            addField(rowLimit);
+            createForDataViewer(parent);
         }
-        createFieldEditors2();
-
-        doNotShowJobAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IComponentPreferenceConstant.IS_AVOID, Messages
-                .getString("ComponenttRunJobPreferencePage.label"), getFieldEditorParent()); //$NON-NLS-1$
-
-        addField(doNotShowJobAfterDoubleClickCheckBoxField);
+        createForMapper(parent);
+        createFortRunJob(parent);
+        parent.pack();
     }
 
     public void propertyChangeForComponents(PropertyChangeEvent event) {
