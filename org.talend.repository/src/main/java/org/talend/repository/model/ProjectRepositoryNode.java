@@ -1298,6 +1298,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.metadataLDAPSchemaNode;
         case METADATA_WSDL_SCHEMA:
             return this.metadataWSDLSchemaNode;
+        case METADATA_FILE_RULES:
+            return this.metadataRulesNode;
         case REFERENCED_PROJECTS:
             return this.refProject;
         case JOBLET:

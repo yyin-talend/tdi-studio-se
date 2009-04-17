@@ -870,6 +870,8 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getMetadataWSDLSchemaNode());
             container.add(contentProvider.getMetadataSalesforceSchemaNode());
             container.add(contentProvider.getMetadataSAPConnectionNode());
+            container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
+            container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
 
             container.add(contentProvider.getMetadataConNode());
 
@@ -911,7 +913,9 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getMetadataLDAPSchemaNode());
                         refContainer.add(refProject.getMetadataWSDLSchemaNode());
                         refContainer.add(refProject.getMetadataSalesforceSchemaNode());
-                        refContainer.add(contentProvider.getMetadataSAPConnectionNode());
+                        refContainer.add(refProject.getMetadataSAPConnectionNode());
+                        refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
+                        refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
 
                         refContainer.add(refProject.getMetadataConNode());
 
