@@ -96,6 +96,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
+import org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
@@ -1327,7 +1328,21 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     public void addRepositoryPropertyListener(Control control) {
-        control.addMouseListener(listenerSelection);
+        boolean flag = false;
+
+        if (this.curParameter != null) {
+            final EComponentCategory category = this.curParameter.getCategory();
+            final IElement element = this.curParameter.getElement();
+            if (AbstractPreferenceComposite.inUseProjectSettingMode(element, category,
+                    EParameterName.STATANDLOG_USE_PROJECT_SETTINGS)
+                    || AbstractPreferenceComposite.inUseProjectSettingMode(element, category,
+                            EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS)) {
+                flag = true; // don't add the listener.
+            }
+        }
+        if (!flag) {
+            control.addMouseListener(listenerSelection);
+        }
     }
 
     MouseListener listenerSelection = new MouseAdapter() {

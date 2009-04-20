@@ -249,20 +249,23 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     MouseListener listenerSelection = new MouseAdapter() {
 
         public void mouseDown(MouseEvent e) {
+            if (inUseProjectSettingMode(elem, section, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS)
+                    || inUseProjectSettingMode(elem, section, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS)) {
 
-            UseProjectSettingDialog modelSelect = new UseProjectSettingDialog(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell());
+                UseProjectSettingDialog modelSelect = new UseProjectSettingDialog(PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getShell());
 
-            if (modelSelect.open() == UseProjectSettingDialog.OK) {
-                if (modelSelect.getOptionValue().equals("noUseProjectSettings")) { //$NON-NLS-1$
-                    useProjectSetting.setSelection(false);
-                    useProjectSettingButtonClick();
+                if (modelSelect.open() == UseProjectSettingDialog.OK) {
+                    if (modelSelect.getOptionValue().equals("noUseProjectSettings")) { //$NON-NLS-1$
+                        useProjectSetting.setSelection(false);
+                        useProjectSettingButtonClick();
+                    }
+                    if (modelSelect.getOptionValue().equals("updateProjectSettings")) {//$NON-NLS-1$
+                        useProjectSetting.setSelection(true);
+                        useProjectSettingButtonClick();
+                    }
+
                 }
-                if (modelSelect.getOptionValue().equals("updateProjectSettings")) {//$NON-NLS-1$
-                    useProjectSetting.setSelection(true);
-                    useProjectSettingButtonClick();
-                }
-
             }
         }
     };
@@ -533,6 +536,22 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                 applyToChildrenJob.setEnabled(!process.isReadOnly());
             }
         }
+    }
+
+    public static boolean inUseProjectSettingMode(final IElement element, final EComponentCategory category,
+            final EParameterName paramName) {
+        if (element != null
+                && category != null
+                && element instanceof IProcess
+                && (paramName == EParameterName.STATANDLOG_USE_PROJECT_SETTINGS || paramName == EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS)) {
+
+            IElementParameter tmpParam = element.getElementParameter(paramName.getName());
+            if (tmpParam != null && tmpParam.getCategory() == category && tmpParam.getValue() instanceof Boolean
+                    && (Boolean) tmpParam.getValue()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
