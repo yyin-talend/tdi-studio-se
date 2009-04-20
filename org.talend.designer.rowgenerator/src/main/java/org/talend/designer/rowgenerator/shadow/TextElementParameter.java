@@ -713,4 +713,106 @@ public class TextElementParameter implements IElementParameter {
         // TODO Auto-generated method stub
 
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getListItemsNotReadOnlyIf()
+     */
+    public String[] getListItemsNotReadOnlyIf() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getListItemsReadOnlyIf()
+     */
+    public String[] getListItemsReadOnlyIf() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getNotReadOnlyIf()
+     */
+    public String getNotReadOnlyIf() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getReadOnlyIf()
+     */
+    public String getReadOnlyIf() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isReadOnly(java.util.List)
+     */
+    public boolean isReadOnly(List<? extends IElementParameter> listParam) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isReadOnly(java.lang.String, java.lang.String,
+     * java.util.List)
+     */
+    public boolean isReadOnly(String conditionReadOnlyIf, String conditionNotReadOnlyIf,
+            List<? extends IElementParameter> listParams) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setListItemsNotReadOnlyIf(java.lang.String[])
+     */
+    public void setListItemsNotReadOnlyIf(String[] list) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setListItemsReadOnlyIf(java.lang.String[])
+     */
+    public void setListItemsReadOnlyIf(String[] list) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setNotReadOnlyIf(java.lang.String)
+     */
+    public void setNotReadOnlyIf(String notShowIf) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setReadOnlyIf(java.lang.String)
+     */
+    public void setReadOnlyIf(String showIf) {
+        // TODO Auto-generated method stub
+
+    }
 }

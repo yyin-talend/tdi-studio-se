@@ -72,6 +72,11 @@ public class ElementParameter implements IElementParameter {
     // used for CLOSED_LIST
     private Object defaultClosedListValue;
 
+    // hshen 6930
+    private String[] itemsNotReadOnlyIf;
+
+    private String[] itemsReadOnlyIf;
+
     private boolean basedOnSchema = false;
 
     private boolean basedOnSubjobStarts = false;
@@ -88,6 +93,11 @@ public class ElementParameter implements IElementParameter {
     private String showIf = null;
 
     private String notShowIf = null;
+
+    // hshen 6930
+    private String readonlyIf = null;
+
+    private String notReadonlyIf = null;
 
     private List<IElementParameterDefaultValue> defaultValues = new ArrayList<IElementParameterDefaultValue>();
 
@@ -374,9 +384,9 @@ public class ElementParameter implements IElementParameter {
 
         if (((showIf != null) || (notShowIf != null)) && show) {
             if (showIf != null) {
-                showParameter = Expression.evaluate(showIf, listParam);
+                showParameter = Expression.evaluate(showIf, listParam, this);
             } else {
-                showParameter = !Expression.evaluate(notShowIf, listParam);
+                showParameter = !Expression.evaluate(notShowIf, listParam, this);
             }
         } else {
             showParameter = show;
@@ -728,5 +738,123 @@ public class ElementParameter implements IElementParameter {
      */
     public void setDynamicSettings(boolean dynamicSettings) {
         this.dynamicSettings = dynamicSettings;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getListItemsNotReadOnlyIf()
+     */
+    public String[] getListItemsNotReadOnlyIf() {
+        return this.itemsNotReadOnlyIf;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getListItemsReadOnlyIf()
+     */
+    public String[] getListItemsReadOnlyIf() {
+        return this.itemsReadOnlyIf;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getNotReadOnlyIf()
+     */
+    public String getNotReadOnlyIf() {
+        // TODO Auto-generated method stub
+        return this.notReadonlyIf;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getReadOnlyIf()
+     */
+    public String getReadOnlyIf() {
+        // TODO Auto-generated method stub
+        return this.readonlyIf;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isReadOnly(java.util.List)
+     */
+    public boolean isReadOnly(List<? extends IElementParameter> listParam) {
+        boolean readonlyParameter = false;
+
+        if (((readonlyIf != null) || (this.notReadonlyIf != null)) && !readOnly) {
+            if (readonlyIf != null) {
+                readonlyParameter = Expression.evaluate(readonlyIf, listParam, this);
+            } else {
+                readonlyParameter = !Expression.evaluate(this.notReadonlyIf, listParam, this);
+            }
+        } else {
+            readonlyParameter = readOnly;
+        }
+        return readonlyParameter;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isReadOnly(java.lang.String, java.lang.String,
+     * java.util.Map)
+     */
+    public boolean isReadOnly(String conditionReadOnlyIf, String conditionNotReadOnlyIf,
+            List<? extends IElementParameter> listParam) {
+        boolean readonlyParameter = false;
+
+        if (((conditionReadOnlyIf != null) || (conditionNotReadOnlyIf != null)) && !readOnly) {
+            if (conditionReadOnlyIf != null) {
+                readonlyParameter = Expression.evaluate(conditionReadOnlyIf, listParam, this);
+            } else {
+                readonlyParameter = !Expression.evaluate(conditionNotReadOnlyIf, listParam, this);
+            }
+        } else {
+            readonlyParameter = readOnly;
+        }
+        return readonlyParameter;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setListItemsNotReadOnlyIf(java.lang.String[])
+     */
+    public void setListItemsNotReadOnlyIf(String[] list) {
+        itemsNotReadOnlyIf = list;
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setListItemsReadOnlyIf(java.lang.String[])
+     */
+    public void setListItemsReadOnlyIf(String[] list) {
+        itemsReadOnlyIf = list;
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setNotReadOnlyIf(java.lang.String)
+     */
+    public void setNotReadOnlyIf(String notReadOnly) {
+        this.notReadonlyIf = notReadOnly;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setReadOnlyIf(java.lang.String)
+     */
+    public void setReadOnlyIf(String readOnly) {
+        this.readonlyIf = readOnly;
     }
 }

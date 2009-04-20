@@ -1182,6 +1182,8 @@ public class EmfComponent implements IComponent {
             param.setFilter(xmlParam.getFILTER());
             param.setShowIf(xmlParam.getSHOWIF());
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
+            param.setReadOnlyIf(xmlParam.getREADONLYIF());
+            param.setNotReadOnlyIf(xmlParam.getNOTREADONLYIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
             param.setGroup(xmlParam.getGROUP());
             param.setContext(xmlParam.getCONTEXT());
@@ -1542,6 +1544,8 @@ public class EmfComponent implements IComponent {
         String[] listItemsShowIf = new String[nbItems];
         String[] listItemsNotShowIf = new String[nbItems];
         String[] listField = new String[nbItems];
+        String[] listReadonlyIf = new String[nbItems];
+        String[] listNotReadonlyIf = new String[nbItems];
 
         for (int k = 0; k < nbItems; k++) {
             int currentItem = k;
@@ -1593,6 +1597,10 @@ public class EmfComponent implements IComponent {
                 newParam.setDisplayName(""); //$NON-NLS-1$
                 newParam.setField(currentField);
                 newParam.setContext(item.getCONTEXT());
+                newParam.setShowIf(item.getSHOWIF());
+                newParam.setNotShowIf(item.getNOTSHOWIF());
+                newParam.setReadOnlyIf(item.getREADONLYIF());
+                newParam.setNotReadOnlyIf(item.getNOTREADONLYIF());
                 if (item.isSetREADONLY()) {
                     newParam.setReadOnly(item.isREADONLY());
                 }
@@ -1640,6 +1648,8 @@ public class EmfComponent implements IComponent {
             listRepositoryItem[k] = item.getREPOSITORYITEM();
             listItemsShowIf[k] = item.getSHOWIF();
             listItemsNotShowIf[k] = item.getNOTSHOWIF();
+            listReadonlyIf[k] = item.getREADONLYIF();
+            listNotReadonlyIf[k] = item.getNOTREADONLYIF();
         }
 
         param.setListItemsDisplayName(listItemsDisplayValue);
@@ -1648,6 +1658,9 @@ public class EmfComponent implements IComponent {
         param.setListRepositoryItems(listRepositoryItem);
         param.setListItemsShowIf(listItemsShowIf);
         param.setListItemsNotShowIf(listItemsNotShowIf);
+        // hshen 6930
+        param.setListItemsNotReadOnlyIf(listNotReadonlyIf);
+        param.setListItemsReadOnlyIf(listReadonlyIf);
         if (type != EParameterFieldType.TABLE) {
             Object defaultValue = ""; //$NON-NLS-1$
             if (items != null) {

@@ -35,6 +35,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
@@ -44,7 +45,6 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -53,7 +53,9 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.metadata.celleditor.SchemaCellEditor;
 import org.talend.core.ui.metadata.celleditor.SchemaXPathQuerysCellEditor;
+import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.proposal.TalendProposalProvider;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 
 /**
@@ -153,18 +155,26 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         final IElement element = model.getElement();
         for (int i = 0; i < titles.length; i++) {
             final int curCol = i;
-            if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], element.getElementParameters())) {
-                IElementParameter tmpParam = (IElementParameter) itemsValue[i];
-                if (!tmpParam.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], element.getElementParameters())) {
-                    continue;
+            final IElementParameter currentParam = (IElementParameter) itemsValue[i];
+
+            boolean toDisplay = false;
+            List<Map<String, Object>> fullTable = (List<Map<String, Object>>) param.getValue();
+            for (int curLine = 0; curLine < fullTable.size(); curLine++) {
+                ((ElementParameter) currentParam).setCurrentRow(curLine);
+                if (currentParam.isShow(element.getElementParameters())) {
+                    toDisplay = true;
+                    break;
                 }
+            }
+
+            if (toDisplay) {
                 TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
                 column.setTitle(titles[i]);
                 column.setModifiable(true);
                 column.setMinimumWidth(100);
                 column.setWeight(20);
-                
-                switch (tmpParam.getField()) {
+
+                switch (currentParam.getField()) {
                 case CONTEXT_PARAM_NAME_LIST:
                 case CLOSED_LIST:
                 case LOOKUP_COLUMN_LIST:
@@ -173,11 +183,11 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case DBTYPE_LIST:
                 case COMPONENT_LIST:
                 case PREV_COLUMN_LIST:
-                    final ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
-                    final IElementParameter copyOfTmpParam = tmpParam;
+                    final ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, currentParam.getListItemsDisplayName());
+                    final IElementParameter copyOfTmpParam = currentParam;
                     ((CCombo) cellEditor.getControl()).setEditable(false);
                     ((CCombo) cellEditor.getControl())
-                            .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || tmpParam.isReadOnly()));
+                            .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || currentParam.isReadOnly()));
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         @Override
@@ -225,7 +235,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case COLOR:
-                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!currentParam.isReadOnly()));
                     // column.setDisplayedValue("");
 
                     column.setLabelProvider(null);
@@ -269,12 +280,14 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case CHECK:
-                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!currentParam.isReadOnly()));
                     column.setTableEditorContent(new CheckboxTableEditorContent());
                     column.setDisplayedValue(""); //$NON-NLS-1$
                     break;
                 case SCHEMA_TYPE:
-                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!currentParam.isReadOnly()));
                     final INode node = (INode) element;
                     // List<IMetadataTable> tables = node.getMetadataList();
 
@@ -315,7 +328,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
                 case SCHEMA_XPATH_QUERYS:
 
-                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!currentParam.isReadOnly()));
                     final INode node2 = (INode) element;
                     SchemaXPathQuerysCellEditor schemaXPathEditor = new SchemaXPathQuerysCellEditor(table, node2);
                     schemaXPathEditor.setTableEditorView(this);
@@ -326,14 +340,48 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
                     if (((i == 0) && (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()))
-                            || (param.isRepositoryValueUsed()) || (param.isReadOnly()) || tmpParam.isReadOnly()) {
+                            || (param.isRepositoryValueUsed()) || (param.isReadOnly()) || currentParam.isReadOnly()) {
                         // read only cell
                     } else {
                         // writable cell
                         column.setCellEditor(textCellEditor);
                     }
-
                 }
+                // for all kinds of column, check if read only or not when edit the field.
+                column.setColumnCellModifier(new ColumnCellModifier(column) {
+
+                    @Override
+                    public boolean canModify(Object bean) {
+                        boolean canModify = super.canModify(bean);
+                        if (canModify) {
+                            Map<String, Object> valueMap = (Map<String, Object>) bean;
+                            List<Map<String, Object>> fullValues = (List<Map<String, Object>>) param.getValue();
+                            ((ElementParameter) currentParam).setCurrentRow(fullValues.indexOf(valueMap));
+                            if (currentParam.isReadOnly(element.getElementParameters())) {
+                                return false;
+                            }
+                        }
+                        return canModify;
+                    }
+
+                });
+                column.setColorProvider(new IColumnColorProvider<B>() {
+
+                    public Color getBackgroundColor(B bean) {
+                        Map<String, Object> valueMap = (Map<String, Object>) bean;
+                        List<Map<String, Object>> fullValues = (List<Map<String, Object>>) param.getValue();
+                        ((ElementParameter) currentParam).setCurrentRow(fullValues.indexOf(valueMap));
+                        if (currentParam.isReadOnly(element.getElementParameters())) {
+                            return AbstractMetadataTableEditorView.READONLY_CELL_BG_COLOR;
+                        }
+                        return null;
+                    }
+
+                    public Color getForegroundColor(B bean) {
+                        return null;
+                    }
+
+                });
                 column.setBeanPropertyAccessors(new IBeanPropertyAccessors<B, Object>() {
 
                     public Object get(B bean) {
@@ -388,6 +436,14 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 }
                                 return value; // already RGB
                             default: // TEXT
+                                // Map<String, Object> valueMap = (Map<String, Object>) bean;
+                                // List<Map<String, Object>> fullValues = (List<Map<String, Object>>) param.getValue();
+                                // int index = fullValues.indexOf(valueMap);
+                                // ((ElementParameter) currentParam).setCurrentRow(index);
+                                // if (currentParam.isReadOnly(element.getElementParameters())) {
+                                // return "#####";
+                                // }
+
                                 return value;
                             }
                         }
@@ -397,6 +453,39 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     public void set(B bean, Object value) {
                         Object finalValue = value;
                         IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
+                        // TODO should test if this parameter is contained in any other show if / not show if, etc..
+                        boolean included = false;
+                        for (Object object : param.getListItemsValue()) {
+                            if (object instanceof IElementParameter) {
+                                if (((IElementParameter) object).getShowIf() != null
+                                        && ((IElementParameter) object).getShowIf().contains(tmpParam.getName())) {
+                                    included = true;
+                                    break;
+                                }
+                                if (((IElementParameter) object).getNotShowIf() != null
+                                        && ((IElementParameter) object).getNotShowIf().contains(tmpParam.getName())) {
+                                    included = true;
+                                    break;
+                                }
+                                if (((IElementParameter) object).getReadOnlyIf() != null
+                                        && ((IElementParameter) object).getReadOnlyIf().contains(tmpParam.getName())) {
+                                    included = true;
+                                    break;
+                                }
+                                if (((IElementParameter) object).getNotReadOnlyIf() != null
+                                        && ((IElementParameter) object).getNotReadOnlyIf().contains(tmpParam.getName())) {
+                                    included = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (included) {
+                            IElementParameter param = element.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName());
+                            if (param != null) {
+                                param.setValue(Boolean.TRUE);
+                            }
+                        }
+
                         switch (tmpParam.getField()) {
                         case CONTEXT_PARAM_NAME_LIST:
                         case CLOSED_LIST:
