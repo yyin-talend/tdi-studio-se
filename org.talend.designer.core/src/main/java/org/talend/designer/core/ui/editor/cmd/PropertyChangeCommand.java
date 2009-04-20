@@ -29,6 +29,8 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.CodeView;
+import org.talend.designer.core.ui.views.jobsettings.JobSettings;
+import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ItemCacheManager;
 
 /**
@@ -351,6 +353,8 @@ public class PropertyChangeCommand extends Command {
             changeMetadataCommand.undo();
         }
         CodeView.refreshCodeView(elem);
+        ComponentSettings.switchToCurComponentSettingsView();
+        JobSettings.switchToCurJobSettingsView();
         refreshTraceConnections();
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
@@ -405,6 +409,8 @@ public class PropertyChangeCommand extends Command {
             changeMetadataCommand.redo();
         }
         CodeView.refreshCodeView(elem);
+        ComponentSettings.switchToCurComponentSettingsView();
+        JobSettings.switchToCurJobSettingsView();
         refreshTraceConnections();
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
