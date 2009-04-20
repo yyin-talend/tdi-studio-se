@@ -21,7 +21,10 @@ import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.ui.images.ECoreImage;
@@ -72,8 +75,6 @@ public class NodeProgressBarFigure extends Figure {
         Figure baseFigure = new Figure();
         baseFigure.setLayoutManager(new ToolbarLayout(true));
         baseFigure.setVisible(true);
-        baseFigure.setSize(90, 16);
-        baseFigure.setPreferredSize(90, 16);
 
         Figure progressBarFigure = new Figure();
         progressBarFigure.setBorder(new LineBorder(ColorConstants.black, 1));
@@ -88,11 +89,16 @@ public class NodeProgressBarFigure extends Figure {
 
         SimpleHtmlFigure dataFigure = new SimpleHtmlFigure();
         dataFigure.setVisible(true);
+        Font font = new Font(Display.getDefault(), "Courier", 12, SWT.NORMAL);
+        dataFigure.setFont(font);
         if (extent == 0) {
             dataFigure.setText("");//$NON-NLS-1$
         } else {
             dataFigure.setText(extent + "0%");//$NON-NLS-1$
         }
+
+        dataFigure.setSize(27, 12);
+        dataFigure.setPreferredSize(27, 12);
 
         int nodeX = progressBarFigure.getLocation().x;
         int nodeY = progressBarFigure.getLocation().y;
@@ -133,6 +139,10 @@ public class NodeProgressBarFigure extends Figure {
             }
         }
 
+        baseFigure.setSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width, dataFigure
+                .getPreferredSize().height);
+        baseFigure.setPreferredSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width, dataFigure
+                .getPreferredSize().height);
         baseFigure.add(progressBarFigure);
         baseFigure.add(dataFigure);
 
