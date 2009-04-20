@@ -944,13 +944,14 @@ public class SchemaTypeController extends AbstractRepositoryController {
             if (node.getMetadataFromConnector(param.getContext()) != null) {
                 isReadOnly = node.getMetadataFromConnector(param.getContext()).isReadOnly();
             }
-            if (value.equals(EmfComponent.BUILTIN) && isReadOnly) {
+            if (value.equals(EmfComponent.BUILTIN) && isReadOnly && !"tLogCatcher".equals(node.getComponent().getName())) {
                 boolean hasMetadataInput = false;
                 if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
                         || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
                     hasMetadataInput = true;
                 }
                 repositoryMetadata = new MetadataTable();
+
                 if (hasMetadataInput) {
                     for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                         if (connec.isActivate()
