@@ -28,6 +28,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "FIELDSEPARATOR"
         );
         
+        String rowSeparator = ElementParameterParser.getValueWithUIFieldKey(
+            node,
+            "__ROWSEPARATOR__",
+            "ROWSEPARATOR"
+        );
+
         String encoding = ElementParameterParser.getValue(
             node,
             "__ENCODING__"
@@ -62,7 +68,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
 		
-		final String OUT_DELIM_ROWSEP_<%=cid %> = "\r\n";
+		final String OUT_DELIM_ROWSEP_<%=cid %> = <%=rowSeparator%>;
 		
 		final String OUT_DELIM_ROWSEP_WITH_LOB_<%=cid %> = "|";
 				
