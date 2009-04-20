@@ -19,6 +19,14 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String directory = ElementParameterParser.getValue(node, "__TEMP_DIRECTORY__");
+String buffer = ElementParameterParser.getValue(node, "__BUFFER_SIZE__");
+String bufferSize = "1000000";
+if(buffer.equals("S")){
+	bufferSize = "500000";
+}else if(buffer.equals("B")){
+	bufferSize = "2000000";
+}
+
 if (directory.equals("")) { 
 	directory=ElementParameterParser.getValue(node.getProcess(), "__COMP_DEFAULT_FILE_DIR__") + "/temp"; 
 } 
@@ -50,7 +58,7 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !connName.equals("")) {//HSS_____
 //////////////////////////
 int nb_<%=cid %> = 0;
 
-int bufferSize_<%=cid %> = 1000000;
+int bufferSize_<%=cid %> = <%=bufferSize %>;
 
 class rowStruct_<%=cid %> extends <%=connName %>Struct {
 
@@ -510,7 +518,7 @@ class Comparator_1_<%=cid %> implements Comparator<rowStruct_<%=cid %>> {
 
 }
 
-int bufferSize_1_<%=cid %> = bufferSize_<%=cid %> * 2;
+int bufferSize_1_<%=cid %> = bufferSize_<%=cid %>;
 
 rowStruct_<%=cid %>[] buffer_1_<%=cid %> = new rowStruct_<%=cid %>[bufferSize_1_<%=cid %>];
 

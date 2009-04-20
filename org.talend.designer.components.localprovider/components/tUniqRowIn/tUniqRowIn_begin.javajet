@@ -249,7 +249,7 @@ if(mode == UNIQUE){//HSS_____0
             }
 
             // For second sort init begin
-            int bufferSize_2_<%=cid %> = bufferSize_<%=cid %>;
+            int bufferSize_2_<%=cid %> = bufferSize_<%=cid %>/2;
             rowStruct_<%=cid %>[] buffer_2_<%=cid %> = new rowStruct_<%=cid %>[bufferSize_1_<%=cid %>];
             int rowsInBuffer_2_<%=cid %> = 0;
             Comparator<rowStruct_<%=cid %>> comparator_2_<%=cid %> = new Comparator_2_<%=cid %>();
@@ -258,7 +258,7 @@ if(mode == UNIQUE){//HSS_____0
             // For second sort init end
 
             // For second sort duplicate init begin
-            int bufferSize_3_<%=cid %> = bufferSize_<%=cid %>;
+            int bufferSize_3_<%=cid %> = bufferSize_<%=cid %>/2;
             rowStruct_<%=cid %>[] buffer_3_<%=cid %> = new rowStruct_<%=cid %>[bufferSize_3_<%=cid %>];
             int rowsInBuffer_3_<%=cid %> = 0;
             Comparator<rowStruct_<%=cid %>> comparator_3_<%=cid %> = new Comparator_2_<%=cid %>();
@@ -662,7 +662,7 @@ if(mode == UNIQUE){//HSS_____0
             }
 
             // For second sort init begin
-            int bufferSize_2_<%=cid %> = bufferSize_<%=cid %>;
+            int bufferSize_2_<%=cid %> = bufferSize_<%=cid %>/2;
             rowStruct_<%=cid %>[] buffer_2_<%=cid %> = new rowStruct_<%=cid %>[bufferSize_1_<%=cid %>];
             int rowsInBuffer_2_<%=cid %> = 0;
             Comparator<rowStruct_<%=cid %>> comparator_2_<%=cid %> = new Comparator_2_<%=cid %>();
@@ -671,7 +671,7 @@ if(mode == UNIQUE){//HSS_____0
             // For second sort init end
 
             // For second sort duplicate init begin
-            int bufferSize_3_<%=cid %> = bufferSize_<%=cid %>;
+            int bufferSize_3_<%=cid %> = bufferSize_<%=cid %>/2;
             rowStruct_<%=cid %>[] buffer_3_<%=cid %> = new rowStruct_<%=cid %>[bufferSize_3_<%=cid %>];
             int rowsInBuffer_3_<%=cid %> = 0;
             Comparator<rowStruct_<%=cid %>> comparator_3_<%=cid %> = new Comparator_2_<%=cid %>();
