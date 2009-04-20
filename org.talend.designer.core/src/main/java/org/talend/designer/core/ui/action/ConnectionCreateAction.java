@@ -146,7 +146,7 @@ public class ConnectionCreateAction extends SelectionAction {
             }
 
             if (!curNodeConnector.isMultiSchema()) {
-                setText(curNodeConnector.getMenuName());
+                // setText(curNodeConnector.getMenuName());
             }
 
             if (curNodeConnector.isMultiSchema()) {
@@ -239,7 +239,7 @@ public class ConnectionCreateAction extends SelectionAction {
         String removeQuotes = getDefaultTableName();
         if (removeQuotes != null) {
             menuList.add(removeQuotes);
-            setText(removeQuotes);
+            // setText(removeQuotes);
             return true;
         }
         return false;
@@ -342,6 +342,10 @@ public class ConnectionCreateAction extends SelectionAction {
     }
 
     public List<String> getMenuList() {
+        // // gcui:remove *New Output* if have defaultTable name.
+        // if (menuList.size() > 1 && getDefaultTableName() != null) {
+        // menuList.remove(getNewOutputMenuName());
+        // }
         return menuList;
     }
 
@@ -507,6 +511,12 @@ public class ConnectionCreateAction extends SelectionAction {
                     connectionName = getText().substring(start, end);
                     meta = node.getMetadataList().get(0);
                     meta.setAttachedConnector(curNodeConnector.getName());
+                } else if (getText().equals(getNewOutputMenuName()) && getDefaultTableName() != null) {
+                    if (node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
+                        connectionName = askForConnectionNameAndSchema(node.getLabel(), null);
+                    } else {
+                        connectionName = askForConnectionName(node.getLabel(), null);
+                    }
                 } else {
                     // gcui:see bug 6781.if is tELT*Input then add a schema name.
                     // if (node.isELTComponent() && node.getComponentName().endsWith("Input"))

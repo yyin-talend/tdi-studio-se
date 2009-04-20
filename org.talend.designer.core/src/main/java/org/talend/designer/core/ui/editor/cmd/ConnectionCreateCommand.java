@@ -31,6 +31,7 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.ConnectionManager;
+import org.talend.designer.core.ui.dialog.mergeorder.ConnectionTableAndSchemaNameDialog;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -134,6 +135,68 @@ public class ConnectionCreateCommand extends Command {
         return id.getValue();
     }
 
+    /**
+     * DOC gcui Comment method "askForConnectionSchemaAndTableName".
+     * 
+     * @param nodeLabel
+     * @param oldName
+     * @return
+     */
+    private String askForConnectionSchemaAndTableName(String nodeLabel, String oldName) {
+
+        // check if the source got the ELT Table parameter, if yes, take the name by default
+        IElementParameter elementTableParam = source.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
+        IElementParameter elementSchemaParam = source.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
+        String schemaName = null;
+        if (source.isELTComponent() && elementTableParam != null && elementTableParam.getField().equals(EParameterFieldType.TEXT)) {
+            if (elementSchemaParam != null && elementSchemaParam.getField().equals(EParameterFieldType.TEXT)) {
+                schemaName = elementSchemaParam.getValue().toString();
+                String name2 = elementTableParam.getValue().toString();
+                if (schemaName != null && name2 != null) {
+                    schemaName = TalendTextUtils.removeQuotes(schemaName);
+                    name2 = TalendTextUtils.removeQuotes(name2);
+                    if (!name2.equals("") && !schemaName.equals("")) {
+                        return schemaName + "." + name2;
+                    }
+                }
+            }
+            String name2 = elementTableParam.getValue().toString();
+            if (name2 != null) {
+                name2 = TalendTextUtils.removeQuotes(name2);
+                if (!name2.equals("")) { //$NON-NLS-1$
+                    return name2;
+                }
+            }
+        }
+
+        // check if the target got the ELT Table parameter, if yes, take the name by default
+        elementTableParam = target.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
+        if (target.isELTComponent() && elementTableParam != null && elementTableParam.getField().equals(EParameterFieldType.TEXT)) {
+            String name2 = elementTableParam.getValue().toString();
+            if (name2 != null) {
+                name2 = TalendTextUtils.removeQuotes(name2);
+                if (!name2.equals("")) { //$NON-NLS-1$
+                    return name2;
+                }
+            }
+        }
+        String outName = "";
+        ConnectionTableAndSchemaNameDialog id = new ConnectionTableAndSchemaNameDialog(null, nodeLabel
+                + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
+                Messages.getString("ConnectionCreateAction.dialogMessage"), schemaName);
+        id.open();
+        if (id.getReturnCode() == InputDialog.CANCEL) {
+            return ""; //$NON-NLS-1$
+        }
+        if (id.getSchemaName() != null && !id.getTableName().equals("")) { //$NON-NLS-1$
+            outName = id.getSchemaName() + "." + id.getTableName(); //$NON-NLS-1$
+        } else if (id.getSchemaName() == null && !id.getTableName().equals("")) { //$NON-NLS-1$
+            outName = id.getTableName();
+        }
+
+        return outName;
+    }
+
     public boolean canExecute() {
 
         if (target != null) {
@@ -191,7 +254,11 @@ public class ConnectionCreateCommand extends Command {
                 newMetadata = null;
 
                 if (source.isELTComponent()) {
-                    connectionName = askForConnectionName(source.getLabel(), connectionName);
+                    if (source.getComponent().getName().equals("tELTOracleInput")) {
+                        connectionName = askForConnectionSchemaAndTableName(source.getLabel(), connectionName);
+                    } else {
+                        connectionName = askForConnectionName(source.getLabel(), connectionName);
+                    }
                 } else {
                     metaName = source.getMetadataFromConnector(mainConnector.getName()).getTableName();
                     String baseName = source.getConnectionName();
