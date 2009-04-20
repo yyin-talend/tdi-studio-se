@@ -85,7 +85,12 @@ public final class FileConnectionContextUtils {
                     ConnectionContextHelper.createParameters(varList, paramName, filePath, JavaTypesManager.FILE);
                     break;
                 case Encoding:
-                    ConnectionContextHelper.createParameters(varList, paramName, conn.getEncoding());
+                    // qli modified to fix the bug 6995.
+                    String encoding = conn.getEncoding();
+                    if (LANGUAGE.equals(ECodeLanguage.PERL)) {
+                        encoding = TalendTextUtils.addQuotes(encoding);
+                    }
+                    ConnectionContextHelper.createParameters(varList, paramName, encoding);
                     break;
                 case Limit:
                     ConnectionContextHelper.createParameters(varList, paramName, conn.getLimitValue(), JavaTypesManager.INTEGER);
@@ -268,6 +273,8 @@ public final class FileConnectionContextUtils {
             String limitValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getLimitValue());
 
             filePath = TalendTextUtils.removeQuotes(filePath);
+            // qli modified to fix the bug 6995.
+            encoding = TalendTextUtils.removeQuotes(encoding);
             cloneConn.setFilePath(filePath);
             cloneConn.setEncoding(encoding);
             cloneConn.setHeaderValue(headValue);
@@ -355,6 +362,8 @@ public final class FileConnectionContextUtils {
         String limitValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getLimitValue());
 
         filePath = TalendTextUtils.removeQuotes(filePath);
+        // qli modified to fix the bug 6995.
+        encoding = TalendTextUtils.removeQuotes(encoding);
         fileConn.setFilePath(filePath);
         fileConn.setEncoding(encoding);
         fileConn.setHeaderValue(headValue);
