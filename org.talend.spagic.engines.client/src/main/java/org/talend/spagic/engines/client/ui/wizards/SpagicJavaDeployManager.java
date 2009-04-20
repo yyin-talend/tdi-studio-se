@@ -68,8 +68,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             resources.addAll(getLauncher(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needLauncher)), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            addSource(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource)), process[i],
-                    JOB_SOURCE_FOLDER_NAME);
+            addSource(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource)), process[i]);
 
             resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJob))));
             // resources.addAll(getProperties(processItem, srcList));

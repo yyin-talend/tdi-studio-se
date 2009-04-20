@@ -118,7 +118,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             }
 
             addSource(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource)), process[i],
-                    JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
+                    selectedJobVersion);
             List<URL> talendLibraries = getTalendLibraries((Boolean) exportChoice.get(ExportChoice.needTalendLibraries));
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
@@ -351,8 +351,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         }
         processedJob.add(process);
         addComponentModules(process, curResource);
-        addSource(allResources, process, (Boolean) exportChoice.get(ExportChoice.needSource), curResource,
-                JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
+        addSource(allResources, process, (Boolean) exportChoice.get(ExportChoice.needSource), curResource, selectedJobVersion);
         addDepencies(allResources, process, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
                 curResource);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
@@ -447,7 +446,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      */
     @Override
     protected void addSource(ExportFileResource[] allResources, ProcessItem processItem, boolean needSource,
-            ExportFileResource curResource, String basePath, String... selectedJobVersion) {
+            ExportFileResource curResource, String... selectedJobVersion) {
         if (!needSource) {
             return;
         }
@@ -475,14 +474,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             // project file
-            checkAndAddProjectResource(allResources, curResource, basePath + PATH_SEPARATOR + projectName, FileLocator
-                    .toFileURL(projectFilePath.toFile().toURL()));
+            checkAndAddProjectResource(allResources, curResource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
+                    FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
             List<URL> emfFileUrls = new ArrayList<URL>();
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-            curResource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + typeFolderPath.toOSString(),
-                    emfFileUrls);
+            curResource.addResources(JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
+                    + typeFolderPath.toOSString(), emfFileUrls);
 
         } catch (Exception e) {
             ExceptionHandler.process(e);

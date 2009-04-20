@@ -332,13 +332,19 @@ public class LoginComposite extends Composite {
     private ManageItem[] getManageElements() {
         List<ManageItem> toReturn = new ArrayList<ManageItem>();
 
-        toReturn.add(new ManageItem(ImportDemoProjectAction.getInstance().getToolTipText()) {
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        boolean usesDemoProjects = brandingService.getBrandingConfiguration().isUseDemoProjects();
 
-            @Override
-            public void run() {
-                importDemoProject();
-            }
-        });
+        if (usesDemoProjects) {
+            toReturn.add(new ManageItem(ImportDemoProjectAction.getInstance().getToolTipText()) {
+
+                @Override
+                public void run() {
+                    importDemoProject();
+                }
+            });
+        }
 
         toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.newProject.desc")) { //$NON-NLS-1$
 

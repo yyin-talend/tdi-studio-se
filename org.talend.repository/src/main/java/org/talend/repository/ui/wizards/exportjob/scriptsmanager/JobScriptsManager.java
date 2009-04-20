@@ -83,6 +83,8 @@ public abstract class JobScriptsManager {
 
     protected static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
 
+    protected static final String JOB_ITEMS_FOLDER_NAME = "items"; //$NON-NLS-1$
+
     public static final String JOB_CONTEXT_FOLDER = "contexts"; //$NON-NLS-1$
 
     private String selectedJobVersion; //$NON-NLS-1$
@@ -392,7 +394,7 @@ public abstract class JobScriptsManager {
     }
 
     protected void addSource(ExportFileResource[] resources, ProcessItem processItem, boolean needChoice,
-            ExportFileResource curResource, String basePath, String... selectedJobVersion) {
+            ExportFileResource curResource, String... selectedJobVersion) {
         List<URL> list = new ArrayList<URL>();
         if (needChoice) {
             try {
@@ -400,7 +402,7 @@ public abstract class JobScriptsManager {
                 for (File file : files) {
                     list.add(file.toURI().toURL());
                 }
-                curResource.addResources(basePath, list);
+                curResource.addResources(JOB_SOURCE_FOLDER_NAME, list);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
