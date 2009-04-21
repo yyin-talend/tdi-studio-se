@@ -647,10 +647,14 @@ public class Problems {
                                                 nodeList.add(node);
                                             } else {
                                                 if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
-                                                    node.setErrorFlag(false);
-                                                    node.setErrorInfo(null);
-                                                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                                                    node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                                    if (node.isErrorFlag() == true) {
+                                                        node.setErrorFlag(false);
+                                                        node.setErrorInfo(null);
+                                                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                                        node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                                    } else {
+                                                        continue;
+                                                    }
                                                 } else {
                                                     continue;
                                                 }
@@ -658,8 +662,12 @@ public class Problems {
 
                                         }
                                     } else {
-                                        node.setErrorFlag(false);
-                                        node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                        if (node.isErrorFlag() == true) {
+                                            node.setErrorFlag(false);
+                                            node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                        } else {
+                                            continue;
+                                        }
                                     }
                                 } else {
                                     continue;
@@ -667,10 +675,14 @@ public class Problems {
                             }
                         } else {
                             if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
-                                node.setErrorFlag(false);
-                                node.setErrorInfo(null);
-                                node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                                node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                if (node.isErrorFlag() == true) {
+                                    node.setErrorFlag(false);
+                                    node.setErrorInfo(null);
+                                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                    node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                } else {
+                                    continue;
+                                }
                             } else {
                                 continue;
                             }
@@ -682,10 +694,18 @@ public class Problems {
             }
         }
         for (Node node : nodeList) {
-            node.setErrorFlag(true);
-            node.setErrorInfo(null);
-            node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-            node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
+            if (node.isErrorFlag() == false) {
+                node.setErrorFlag(true);
+                node.setErrorInfo(null);
+                node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
+            } else {
+                if (node.getErrorInfo() != null) {
+                    node.setErrorInfo(null);
+                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                }
+            }
+
         }
     }
 }

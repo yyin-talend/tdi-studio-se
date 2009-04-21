@@ -1441,13 +1441,18 @@ public class ProcessComposite extends Composite {
 
                                 }
                             } else {
-                                node.setErrorFlag(false);
-                                node.setErrorInfo(null);
-                                node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
+                                if (node.isErrorFlag() == true) {
+                                    node.setErrorFlag(false);
+                                    node.setErrorInfo(null);
+                                    node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
+                                }
+
                                 if (node.isFileScaleComponent()) {
                                     refreshProgress(psMess, node, nodeUniqueName);
                                 }
-                                node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
+                                if (node.isErrorFlag() == true) {
+                                    node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
+                                }
                             }
                         }
                     }
