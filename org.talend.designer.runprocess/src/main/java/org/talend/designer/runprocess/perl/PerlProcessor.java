@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.runprocess.perl;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
@@ -56,6 +59,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -448,6 +452,49 @@ public class PerlProcessor extends Processor {
         this.checkableEditor = editor;
     }
 
+    /**
+     * 
+     * DOC wzhang Comment method "getPerlPathCommand". see bug 6972.
+     * 
+     * @return
+     * @throws IOException
+     */
+    private static String getPerlPathCommand() throws IOException {
+        Process p = null;
+        Properties envVars = new Properties();
+        Runtime r = Runtime.getRuntime();
+        String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
+        if (os.indexOf("windows 9") > -1) { //$NON-NLS-1$
+            p = r.exec("command.com /c path"); //$NON-NLS-1$
+        } else if ((os.indexOf("nt") > -1) || (os.indexOf("windows 2000") > -1) || (os.indexOf("windows xp") > -1)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            p = r.exec("cmd.exe /c path"); //$NON-NLS-1$
+        } else {
+            p = r.exec("env"); //$NON-NLS-1$
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        while ((line = br.readLine()) != null) {
+            int idx = line.indexOf('=');
+            String key = line.substring(0, idx);
+            String value = line.substring(idx + 1);
+            envVars.setProperty(key.toUpperCase(), value);
+        }
+
+        String perlPath = Platform.getInstallLocation().getURL().getFile().substring(1)
+                + CorePreferenceInitializer.PERL_EMBEDDED_INTERPRETER_DIRECTORY;
+        File perlDir = new File(perlPath);
+        if (!perlDir.exists()) {
+            perlPath = CorePreferenceInitializer.PERL_WIN32_INTERPRETER_PATH;
+        }
+        perlPath = new File(perlPath).getParentFile().getAbsolutePath();
+
+        String oldPath = envVars.getProperty("PATH"); //$NON-NLS-1$
+        if (!oldPath.contains(perlPath)) {
+            oldPath = perlPath + ";" + oldPath; //$NON-NLS-1$
+        }
+        return oldPath;
+    }
+
     public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
             String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
@@ -491,7 +538,22 @@ public class PerlProcessor extends Processor {
     private static String[] getCommandLineByCondition(String perlInterpreter, IPath absCodePath, String perlInterpreterLibOption,
             String perlModuleDirectoryOption) throws ProcessorException {
         assert (absCodePath != null);
-        String[] cmd = new String[] { perlInterpreter };
+        String[] cmd = new String[] {};
+        // see bug 6972
+        String os = Platform.getOS();
+        if (os.equals(Platform.OS_WIN32)) {
+            cmd = (String[]) ArrayUtils.add(cmd, "cmd.exe"); //$NON-NLS-1$
+            cmd = (String[]) ArrayUtils.add(cmd, "/c"); //$NON-NLS-1$
+            cmd = (String[]) ArrayUtils.add(cmd, "set"); //$NON-NLS-1$
+            try {
+                cmd = (String[]) ArrayUtils.add(cmd, "path=" + getPerlPathCommand()); //$NON-NLS-1$
+            } catch (IOException e) {
+                throw new ProcessorException(e);
+            }
+            cmd = (String[]) ArrayUtils.add(cmd, "&"); //$NON-NLS-1$
+        }
+        cmd = (String[]) ArrayUtils.add(cmd, perlInterpreter);
+
         if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
             cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
         }
