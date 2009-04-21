@@ -90,7 +90,6 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -111,6 +110,7 @@ import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
+import org.talend.designer.runprocess.ui.actions.SaveJobBeforeRunAction;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 
 /**
@@ -408,7 +408,7 @@ public class ProcessComposite extends Composite {
         saveJobBeforeRunButton = new Button(execHeader, SWT.CHECK);
         saveJobBeforeRunButton.setText(Messages.getString("ProcessComposite.saveBeforeRun")); //$NON-NLS-1$
         saveJobBeforeRunButton.setToolTipText(Messages.getString("ProcessComposite.saveBeforeRunHint")); //$NON-NLS-1$
-        saveJobBeforeRunButton.setEnabled(false);
+        // saveJobBeforeRunButton.setEnabled(false);
         saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
                 RunProcessPrefsConstants.ISSAVEBEFORERUN));
         data = new GridData();
@@ -1062,8 +1062,7 @@ public class ProcessComposite extends Composite {
         if (getProcessContext() == null) {
             return;
         }
-
-        CorePlugin.getDefault().getDesignerCoreService().saveJobBeforeRun(getProcessContext().getProcess());
+        CorePlugin.getDefault().getRunProcessService().saveJobBeforeRun(getProcessContext().getProcess());
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();
         }

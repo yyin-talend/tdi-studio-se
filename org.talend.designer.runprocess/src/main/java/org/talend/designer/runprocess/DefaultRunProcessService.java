@@ -229,4 +229,14 @@ public class DefaultRunProcessService implements IRunProcessService {
     public boolean enableTraceForActiveRunProcess() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#saveJobBeforeRun(org.talend.core.model.process.IProcess)
+     */
+    public void saveJobBeforeRun(IProcess activeProcess) {
+        // TODO Auto-generated method stub
+
+    }
 }

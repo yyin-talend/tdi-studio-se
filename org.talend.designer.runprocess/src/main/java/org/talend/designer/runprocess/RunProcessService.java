@@ -22,6 +22,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
 
@@ -210,5 +211,14 @@ public class RunProcessService implements IRunProcessService {
             return activeContext.isMonitorTrace();
         }
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#saveJobBeforeRun(org.talend.core.model.process.IProcess)
+     */
+    public void saveJobBeforeRun(IProcess activeProcess) {
+        new SaveJobBeforeRunAction(activeProcess).run();
     }
 }
