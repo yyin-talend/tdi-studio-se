@@ -12,9 +12,20 @@
 // ============================================================================
 package org.talend.designer.codegen.model;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.io.FilesUtils;
+import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.codegen.additionaljet.AbstractJetFileProvider;
+import org.talend.designer.codegen.additionaljet.CustomizeJetFilesProviderManager;
 import org.talend.designer.codegen.config.EInternalTemplate;
 import org.talend.designer.codegen.config.TemplateUtil;
 
@@ -40,9 +51,51 @@ public class CodeGeneratorInternalTemplatesFactory {
     public void init() {
         templates = new ArrayList<TemplateUtil>();
 
+        // 0. clear the content of the "header_additional.javajet"
+        copyStubAdditionalJetFile();
+
+        // 1. copy additional jet file from extension point: additional_jetfile
+        copyAdditionalJetFileFromProviderExtension();
+
+        // 2. Load system frame:
+        loadSystemFrame();
+
+    }
+
+    private void copyStubAdditionalJetFile() {
+        try {
+            File stubForder = null;
+            URL url = null;
+            url = FileLocator.find(Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID), new Path("jet_stub"), null); //$NON-NLS-1$
+            stubForder = new File(FileLocator.toFileURL(url).getPath());
+
+            File installationFolder = null;
+            url = FileLocator.find(Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID), new Path("resources"), null); //$NON-NLS-1$
+            installationFolder = new File(FileLocator.toFileURL(url).getPath());
+
+            FilesUtils.copyFolder(stubForder, installationFolder, false, null, null, true);
+
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+
+    }
+
+    private void loadSystemFrame() {
         for (EInternalTemplate utilTemplate : EInternalTemplate.values()) {
             TemplateUtil template = new TemplateUtil(utilTemplate);
             templates.add(template);
+        }
+    }
+
+    private void copyAdditionalJetFileFromProviderExtension() {
+        CustomizeJetFilesProviderManager componentsProviderManager = CustomizeJetFilesProviderManager.getInstance();
+        for (AbstractJetFileProvider componentsProvider : componentsProviderManager.getProviders()) {
+            try {
+                componentsProvider.overwriteStubAdditionalFile();
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
         }
     }
 

@@ -204,6 +204,7 @@ public class CodeGenerator implements ICodeGenerator {
             headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
                     org.osgi.framework.Constants.BUNDLE_VERSION));
             componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
+            componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER_ADDITIONAL, headerArgument));
             // ####
             if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
 
@@ -759,6 +760,7 @@ public class CodeGenerator implements ICodeGenerator {
 
                 try {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER_ADDITIONAL, headerArgument));
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
                         INode subTreeNode = subTree.getNode(nodeName);
 

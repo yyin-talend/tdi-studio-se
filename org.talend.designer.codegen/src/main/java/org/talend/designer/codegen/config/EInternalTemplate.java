@@ -33,7 +33,9 @@ public enum EInternalTemplate {
     PROCESSINFO("footer_process_info", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     ITERATE_SUBPROCESS_HEADER("iterate_subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     ITERATE_SUBPROCESS_FOOTER("iterate_subprocess_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
-    DEFAULT_TEMPLATE("default_template", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
+    DEFAULT_TEMPLATE("default_template", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+
+    HEADER_ADDITIONAL("header_additional", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private String templateName;
 
