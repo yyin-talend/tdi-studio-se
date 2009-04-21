@@ -201,11 +201,11 @@ parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema", t
 parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
 parser_<%=cid%>.setFeature("http://xml.org/sax/features/namespaces", true);
 parser_<%=cid%>.setErrorHandler(null);
-String filename = <%=filename %>;
-if(filename != null && filename.startsWith("//")){
-	filename = filename.replaceFirst("//","/");
+String filename_<%=cid %> = <%=filename %>;
+if(filename_<%=cid %> != null && filename_<%=cid %>.startsWith("//")){
+	filename_<%=cid %> = filename_<%=cid %>.replaceFirst("//","/");
 }
-parser_<%=cid%>.parse(new java.io.File(filename).toURI().toString());
+parser_<%=cid%>.parse(new java.io.File(filename_<%=cid %>).toURI().toString());
 org.w3c.dom.Document doc_<%=cid%> = parser_<%=cid%>.getDocument();
 
 xml_api_<%=cid%>.initXPath(doc_<%=cid%>);
@@ -320,11 +320,11 @@ class XML_API_<%=cid%>{
 }
 
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
-String filename = <%=filename %>;
-if(filename != null && filename.startsWith("//")){
-	filename = filename.replaceFirst("//","/");
+String filename_<%=cid %> = <%=filename %>;
+if(filename_<%=cid %> != null && filename_<%=cid %>.startsWith("//")){
+	filename_<%=cid %> = filename_<%=cid %>.replaceFirst("//","/");
 }
-org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.File(filename).toURI().toString());
+org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.File(filename_<%=cid %>).toURI().toString());
 
 NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
@@ -385,11 +385,11 @@ String[] queryPaths_<%=cid%> = new String[]{
 String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=loopQuery%>,queryPaths_<%=cid%>);
-String filename = <%=filename %>;
-if(filename != null && filename.startsWith("//")){
-	filename = filename.replaceFirst("//","/");
+String filename_<%=cid %> = <%=filename %>;
+if(filename_<%=cid %> != null && filename_<%=cid %>.startsWith("//")){
+	filename_<%=cid %> = filename_<%=cid %>.replaceFirst("//","/");
 }
-looper_<%=cid%>.parse(new java.io.File(filename).toURI().toString());
+looper_<%=cid%>.parse(new java.io.File(filename_<%=cid %>).toURI().toString());
 java.util.Iterator<java.util.Map<String, String>> it_<%=cid%>  = looper_<%=cid%>.iterator();
 while (it_<%=cid%>.hasNext()) {
 	java.util.Map<String, String> row_<%=cid%> = it_<%=cid%>.next();
