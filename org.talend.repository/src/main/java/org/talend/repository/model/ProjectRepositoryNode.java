@@ -124,6 +124,91 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // this.getChildren().removeAll(hiddens);
         for (RepositoryNode node : hiddens) {
             removeNode(this, node);
+            switch (node.getContentType()) {
+            case BUSINESS_PROCESS:
+                this.businessProcessNode = null;
+                break;
+            case PROCESS:
+                this.processNode = null;
+                break;
+            case CONTEXT:
+                this.contextNode = null;
+                break;
+            case ROUTINES:
+                this.routineNode = null;
+                break;
+            case SNIPPETS:
+                this.snippetsNode = null;
+                break;
+            case GENERATED:
+            case JOBS:
+            case JOB_DOC:
+            case JOBLETS:
+            case JOBLET_DOC:
+            case DOCUMENTATION:
+                this.docNode = null;
+                break;
+            // case METADATA_CON_TABLE:
+            case METADATA:
+                this.metadataNode = null;
+                break;
+            case METADATA_CON_VIEW:
+            case METADATA_CON_SYNONYM:
+            case METADATA_CON_QUERY:
+            case METADATA_CON_CDC:
+            case METADATA_CONNECTIONS:
+                this.metadataConNode = null;
+                break;
+            case METADATA_SAPCONNECTIONS:
+                this.metadataSAPConnectionNode = null;
+                break;
+            case SQLPATTERNS:
+                this.sqlPatternNode = null;
+                break;
+            case METADATA_FILE_DELIMITED:
+                this.metadataFileNode = null;
+                break;
+            case METADATA_FILE_POSITIONAL:
+                this.metadataFilePositionalNode = null;
+                break;
+            case METADATA_FILE_REGEXP:
+                this.metadataFileRegexpNode = null;
+                break;
+            case METADATA_FILE_XML:
+                this.metadataFileXmlNode = null;
+                break;
+            case METADATA_FILE_LDIF:
+                this.metadataFileLdifNode = null;
+                break;
+            case METADATA_FILE_EXCEL:
+                this.metadataFileExcelNode = null;
+                break;
+            case METADATA_FILE_EBCDIC:
+                this.metadataEbcdicConnectionNode = null;
+                break;
+            case METADATA_SALESFORCE_SCHEMA:
+                this.metadataSalesforceSchemaNode = null;
+                break;
+            case METADATA_GENERIC_SCHEMA:
+                this.metadataGenericSchemaNode = null;
+                break;
+            case METADATA_LDAP_SCHEMA:
+                this.metadataLDAPSchemaNode = null;
+                break;
+            case METADATA_WSDL_SCHEMA:
+                this.metadataWSDLSchemaNode = null;
+                break;
+            case METADATA_FILE_RULES:
+                this.metadataRulesNode = null;
+                break;
+            case REFERENCED_PROJECTS:
+                this.refProject = null;
+                break;
+            case JOBLET:
+                this.jobletNode = null;
+                break;
+            default:
+            }
         }
     }
 

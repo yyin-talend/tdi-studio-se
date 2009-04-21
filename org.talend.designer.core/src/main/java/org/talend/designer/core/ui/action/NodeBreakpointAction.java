@@ -18,9 +18,11 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -69,6 +71,12 @@ public class NodeBreakpointAction extends SelectionAction {
      * @return true / false
      */
     private boolean canPerformAction() {
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (!brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            return false;
+        }
+
         if (getSelectedObjects().isEmpty()) {
             return false;
         }

@@ -86,7 +86,6 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
@@ -766,5 +765,15 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public Action getDoubleClickAction() {
         return this.doubleClickAction;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.talend.repository.ui.views.IRepositoryView#containsRepositoryType(org.talend.core.model.repository.
+     * ERepositoryObjectType)
+     */
+    public boolean containsRepositoryType(ERepositoryObjectType type) {
+        return researchRootRepositoryNode(type) != null;
     }
 }

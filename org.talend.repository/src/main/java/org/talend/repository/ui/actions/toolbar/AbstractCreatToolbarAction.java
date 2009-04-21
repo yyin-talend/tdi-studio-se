@@ -36,6 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WWinPluginPulldown;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.actions.metadata.CreateConnectionAction;
 import org.talend.repository.ui.actions.metadata.CreateFileDelimitedAction;
@@ -145,62 +146,91 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
     }
 
     protected void fillMenu(Menu menu) {
-        addToMenu(menu, CorePlugin.getDefault().getDesignerCoreService().getCreateProcessAction(true), -1);
-        addSeparator(menu);
-        addToMenu(menu, CorePlugin.getDefault().getDiagramModelService().getCreateDiagramAction(true), -1);
-        addSeparator(menu);
 
         IRepositoryView repositoryView = getRepositoryView();
 
-        final CreateConnectionAction createConnectionAction = new CreateConnectionAction(true);
-        createConnectionAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createConnectionAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.PROCESS)) {
+            addToMenu(menu, CorePlugin.getDefault().getDesignerCoreService().getCreateProcessAction(true), -1);
+            addSeparator(menu);
+        }
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.BUSINESS_PROCESS)) {
+            addToMenu(menu, CorePlugin.getDefault().getDiagramModelService().getCreateDiagramAction(true), -1);
+            addSeparator(menu);
+        }
 
-        final CreateFileDelimitedAction createFileDelimitedAction = new CreateFileDelimitedAction(true);
-        createFileDelimitedAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createFileDelimitedAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_CONNECTIONS)) {
+            final CreateConnectionAction createConnectionAction = new CreateConnectionAction(true);
+            createConnectionAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createConnectionAction, -1);
+        }
 
-        final CreateFilePositionalAction createFilePositionalAction = new CreateFilePositionalAction(true);
-        createFilePositionalAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createFilePositionalAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_FILE_DELIMITED)) {
+            final CreateFileDelimitedAction createFileDelimitedAction = new CreateFileDelimitedAction(true);
+            createFileDelimitedAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createFileDelimitedAction, -1);
+        }
 
-        final CreateFileRegexpAction createFileRegexpAction = new CreateFileRegexpAction(true);
-        createFileRegexpAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createFileRegexpAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_FILE_POSITIONAL)) {
+            final CreateFilePositionalAction createFilePositionalAction = new CreateFilePositionalAction(true);
+            createFilePositionalAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createFilePositionalAction, -1);
+        }
 
-        final CreateFileXmlAction createFileXmlAction = new CreateFileXmlAction(true);
-        createFileXmlAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createFileXmlAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_FILE_REGEXP)) {
+            final CreateFileRegexpAction createFileRegexpAction = new CreateFileRegexpAction(true);
+            createFileRegexpAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createFileRegexpAction, -1);
+        }
 
-        final CreateFileExcelAction createFileExcelAction = new CreateFileExcelAction(true);
-        createFileExcelAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createFileExcelAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_FILE_XML)) {
+            final CreateFileXmlAction createFileXmlAction = new CreateFileXmlAction(true);
+            createFileXmlAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createFileXmlAction, -1);
+        }
 
-        final CreateFileLdifAction createFileLdifAction = new CreateFileLdifAction(true);
-        createFileLdifAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createFileLdifAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_FILE_EXCEL)) {
+            final CreateFileExcelAction createFileExcelAction = new CreateFileExcelAction(true);
+            createFileExcelAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createFileExcelAction, -1);
+        }
 
-        final CreateLDAPSchemaAction createLDAPSchemaAction = new CreateLDAPSchemaAction(true);
-        createLDAPSchemaAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createLDAPSchemaAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_FILE_LDIF)) {
+            final CreateFileLdifAction createFileLdifAction = new CreateFileLdifAction(true);
+            createFileLdifAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createFileLdifAction, -1);
+        }
 
-        final CreateSalesforceSchemaAction createSalesforceSchemaAction = new CreateSalesforceSchemaAction(true);
-        createSalesforceSchemaAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createSalesforceSchemaAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_LDAP_SCHEMA)) {
+            final CreateLDAPSchemaAction createLDAPSchemaAction = new CreateLDAPSchemaAction(true);
+            createLDAPSchemaAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createLDAPSchemaAction, -1);
+        }
 
-        final CreateGenericSchemaAction createGenericSchemaAction = new CreateGenericSchemaAction(true);
-        createGenericSchemaAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createGenericSchemaAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA)) {
+            final CreateSalesforceSchemaAction createSalesforceSchemaAction = new CreateSalesforceSchemaAction(true);
+            createSalesforceSchemaAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createSalesforceSchemaAction, -1);
+        }
 
-        final CreateWSDLSchemaAction createWSDLSchemaAction = new CreateWSDLSchemaAction(true);
-        createWSDLSchemaAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createWSDLSchemaAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_GENERIC_SCHEMA)) {
+            final CreateGenericSchemaAction createGenericSchemaAction = new CreateGenericSchemaAction(true);
+            createGenericSchemaAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createGenericSchemaAction, -1);
+        }
+
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_WSDL_SCHEMA)) {
+            final CreateWSDLSchemaAction createWSDLSchemaAction = new CreateWSDLSchemaAction(true);
+            createWSDLSchemaAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createWSDLSchemaAction, -1);
+        }
 
         addSeparator(menu);
 
-        final CreateRoutineAction createRoutineAction = new CreateRoutineAction(true);
-        createRoutineAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createRoutineAction, -1);
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.ROUTINES)) {
+            final CreateRoutineAction createRoutineAction = new CreateRoutineAction(true);
+            createRoutineAction.setWorkbenchPart(repositoryView);
+            addToMenu(menu, createRoutineAction, -1);
+        }
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] configurationElements = registry
