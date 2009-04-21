@@ -350,7 +350,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createListTablesCommand(Button button, IContextManager manager) {
         initConnectionParameters();
         if (this.connParameters != null) {
-            initConnectionParametersWithContext(elem, manager.getDefaultContext());
+            Boolean value = (Boolean) elem.getElementParameter("USE_EXISTING_CONNECTION").getValue();
+            if (value) {
+                initConnectionParametersWithContext(connectionNode, manager.getDefaultContext());
+            } else {
+                initConnectionParametersWithContext(elem, manager.getDefaultContext());
+            }
             openDbTableSelectorJob(button);
         } else {
             MessageDialog

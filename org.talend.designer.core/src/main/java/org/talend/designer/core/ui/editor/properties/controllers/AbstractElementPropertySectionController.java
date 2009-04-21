@@ -1012,47 +1012,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
-        Boolean value = false;
 
-        IElementParameter existingConn = element.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
-        IElementParameter dbName = element.getElementParameter("DBNAME"); //$NON-NLS-1$
-        IElementParameter tableSchema = element.getElementParameter("TABLESCHEMA"); //$NON-NLS-1$
-        IElementParameter user = element.getElementParameter("USER"); //$NON-NLS-1$
-        IElementParameter pass = element.getElementParameter("PASS"); //$NON-NLS-1$
-        IElementParameter type = element.getElementParameter("TYPE"); //$NON-NLS-1$
-        IElementParameter port = element.getElementParameter("PORT"); //$NON-NLS-1$
-        IElementParameter host = element.getElementParameter("HOST"); //$NON-NLS-1$
-        IElementParameter dbVersion = element.getElementParameter("DB_VERSION"); //$NON-NLS-1$
-
-        if (existingConn != null) {
-            value = (Boolean) existingConn.getValue();
-        }
-        if (value) {
-            if (dbName != null) {
-                dbName.setValue(connParameters.getDbName());
-            }
-            if (tableSchema != null) {
-                tableSchema.setValue(connParameters.getSchema());
-            }
-            if (user != null) {
-                user.setValue(connParameters.getUserName());
-            }
-            if (pass != null) {
-                pass.setValue(connParameters.getPassword());
-            }
-            if (type != null) {
-                type.setValue(connParameters.getDbType());
-            }
-            if (port != null) {
-                port.setValue(connParameters.getPort());
-            }
-            if (host != null) {
-                host.setValue(connParameters.getHost());
-            }
-            if (dbVersion != null) {
-                dbVersion.setValue(connParameters.getDriverJar());
-            }
-        }
         connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
         connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context));
         connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context));
@@ -1070,9 +1030,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && "" //$NON-NLS-1$
         .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
-            if (EDatabaseTypeName.SQLITE.getDisplayName().equals(connParameters.getDbType()) && Boolean.valueOf(value)) {
-                dbName.setValue(connParameters.getFilename());
-            }
             connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
         }
 
@@ -1115,6 +1072,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
     }
 
+    Node connectionNode = null;
+
     protected void initConnectionParameters() {
 
         connParameters = null;
@@ -1153,7 +1112,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         IElementParameter compList = elem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
         if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null) {
             Object compValue = compList.getValue();
-            Node connectionNode = null;
+
             if (compValue != null && !compValue.equals("")) { //$NON-NLS-1$
                 List<? extends INode> nodes = part.getProcess().getGraphicalNodes();
                 for (INode node : nodes) {
@@ -1170,7 +1129,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
         } else {
             setAllConnectionParameters(null, elem);
         }
-        setConnectionParameterNames(elem, connParameters);
+
+        if (connectionNode != null) {
+            setConnectionParameterNames(connectionNode, connParameters);
+        } else {
+            setConnectionParameterNames(elem, connParameters);
+        }
     }
 
     private void setConnectionParameterNames(Element element, ConnectionParameters connParameters) {
