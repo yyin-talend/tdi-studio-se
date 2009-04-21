@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 /**
  * 
@@ -35,14 +36,14 @@ public class TOSDelimitedReader {
 
     private boolean debug = false;
 
-    /*--------------1------------------- */
+    /* --------------1------------------- */
     private BufferedReader inputStream = null;
 
     private StreamBuffer streamBuffer = null;
 
     private ColumnBuffer4Joiner columnBuffer = null;
 
-    /*--------------2------------------- */
+    /* --------------2------------------- */
 
     private String[] values = new String[StaticSettings.INITIAL_COLUMN_COUNT];
 
@@ -52,7 +53,7 @@ public class TOSDelimitedReader {
 
     private boolean skipEmptyRecord = false;
 
-    /*--------------3------------------- */
+    /* --------------3------------------- */
     private boolean hasReadRecord = false;
 
     private boolean autoReallocateForHuge = true;
@@ -61,11 +62,11 @@ public class TOSDelimitedReader {
 
     private boolean closed = false;
 
-    /*--------------4------------------- */
+    /* --------------4------------------- */
 
     public boolean splitRecord = false;
 
-    /*--------------5------------------- */
+    /* --------------5------------------- */
 
     public TOSDelimitedReader(String fileName, String encoding, String fieldDelimiter, String recordDelimiter,
             boolean needSkipEmptyRecord) throws IOException {
@@ -73,7 +74,28 @@ public class TOSDelimitedReader {
             throw new IllegalArgumentException("Parameter can't be null.");
         }
 
-        inputStream = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), encoding));
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(fileName), encoding);
+
+        init(inputStreamReader, fieldDelimiter, recordDelimiter, needSkipEmptyRecord);
+
+    }
+
+    public TOSDelimitedReader(Reader reader, String fieldDelimiter, String recordDelimiter, boolean needSkipEmptyRecord)
+            throws IOException {
+        if (reader == null || fieldDelimiter == null || recordDelimiter == null) {
+            throw new IllegalArgumentException("Parameter can't be null.");
+        }
+
+        init(reader, fieldDelimiter, recordDelimiter, needSkipEmptyRecord);
+    }
+
+    public void init(Reader reader, String fieldDelimiter, String recordDelimiter, boolean needSkipEmptyRecord)
+            throws IOException {
+        if (reader == null || fieldDelimiter == null || recordDelimiter == null) {
+            throw new IllegalArgumentException("Parameter can't be null.");
+        }
+
+        inputStream = new BufferedReader(reader);
 
         columnBuffer = new ColumnBuffer4Joiner();
         streamBuffer = new StreamBuffer(fieldDelimiter, recordDelimiter);
@@ -141,7 +163,11 @@ public class TOSDelimitedReader {
         }
 
         if (!hasReadRecord) {
-            if (!StaticSettings.ignoreFileEndWithOneRecordDelimiter && streamBuffer.fileEndWithRecordDelimiter) {// aaa;bbb#111;222#
+            if (!StaticSettings.ignoreFileEndWithOneRecordDelimiter && streamBuffer.fileEndWithRecordDelimiter) {// aaa;
+                // bbb
+                // #111
+                // ;
+                // 222#
                 streamBuffer.fileEndWithRecordDelimiter = false;
                 endColumn();
                 endRecord();
@@ -203,7 +229,11 @@ public class TOSDelimitedReader {
         }
 
         if (!hasReadRecord) {
-            if (!StaticSettings.ignoreFileEndWithOneRecordDelimiter && streamBuffer.fileEndWithRecordDelimiter) {// aaa;bbb#111;222#
+            if (!StaticSettings.ignoreFileEndWithOneRecordDelimiter && streamBuffer.fileEndWithRecordDelimiter) {// aaa;
+                // bbb
+                // #111
+                // ;
+                // 222#
                 streamBuffer.fileEndWithRecordDelimiter = false;
                 endColumn();
                 endRecord();
@@ -388,8 +418,8 @@ public class TOSDelimitedReader {
      * <p>
      * the default limit is:
      * </p>
-     * <li>public static final int MAX_CHARS_IN_ONE_COLUMN = 100000; </li>
-     * <li>public static final int MAX_COLUMNS_IN_ONE_RECORD = 100000;</li>
+     * <li>public static final int MAX_CHARS_IN_ONE_COLUMN = 100000;</li> <li>public static final int
+     * MAX_COLUMNS_IN_ONE_RECORD = 100000;</li>
      * 
      */
     public void setAutoReallocateForHuge(boolean autoReallocateForHuge) {
@@ -400,8 +430,8 @@ public class TOSDelimitedReader {
      * <p>
      * if the input datas like this: 111;222;#aaa;bbb;# (row separator: ;# field separator: ; )
      * </p>
-     * <li>if FirstSplit_RecordSeparator, there will get (2 records, 2 columns)</li>
-     * <li>if FirstSplit_FieldSeparator, there will get (2 records, 3 columns)</li>
+     * <li>if FirstSplit_RecordSeparator, there will get (2 records, 2 columns)</li> <li>if FirstSplit_FieldSeparator,
+     * there will get (2 records, 3 columns)</li>
      * <p>
      * The default value is false, it means split the field first.
      * </p>
@@ -531,7 +561,7 @@ public class TOSDelimitedReader {
             }
         }
 
-        /*--------------1------------------- */
+        /* --------------1------------------- */
         private char[] buffer;
 
         private char[] fieldDelimiter;
@@ -541,7 +571,7 @@ public class TOSDelimitedReader {
         // aaa;bbb#111;222#
         private boolean fileEndWithRecordDelimiter = false;
 
-        /*--------------2------------------- */
+        /* --------------2------------------- */
 
         private boolean lineFeedAll = false;
 
@@ -549,7 +579,7 @@ public class TOSDelimitedReader {
         // only used to adjust the skipRecordDelimiter()
         private int variableLineFeed = 0;
 
-        /*--------------3------------------- */
+        /* --------------3------------------- */
 
         private int maxLimit;// maxLimit = Math.max(fieldDelimiter.length, recordDelimiter.length);
 
@@ -562,7 +592,7 @@ public class TOSDelimitedReader {
 
         private int columnStart;
 
-        /*--------------4------------------- */
+        /* --------------4------------------- */
         // end of the file
         private boolean streamEndMeet = false;
 

@@ -22,6 +22,7 @@
 package org.talend.fileprocess;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
@@ -95,6 +96,76 @@ public class FileInputDelimited {
                 int count = (int) this.delimitedDataReader.getAvailableRowCount(footer);
                 this.delimitedDataReader.close();
                 this.delimitedDataReader = new TOSDelimitedReader(file, encoding, fieldSeparator, rowSeparator, skipEmptyRow);
+                this.delimitedDataReader.setSplitRecord(splitRecord);
+
+                this.delimitedDataReader.skipHeaders(header);
+                if (limit > 0 && random < 0) {
+                    this.loopCount = limit < count ? limit : count;
+                } else if (limit < 0 && random > 0) {
+                    if (random >= count) {
+                        this.loopCount = count;
+                    } else {
+                        setRandoms(random, count);
+                        this.loopCount = random;
+                    }
+                } else if (limit > 0 && random > 0) {
+                    if (random >= limit) {
+                        random = limit;
+                    }
+                    if (random >= count) {
+                        this.loopCount = count;
+                    } else {
+                        setRandoms(random, count);
+                        this.loopCount = random;
+                    }
+                } else {
+                    this.loopCount = count;
+                }
+            }
+        } else {
+            loopCount = 0;
+        }
+    }
+
+    /**
+     *In order to support InGest to parse String as content directly
+     * 
+     * @param content
+     * @param fieldSeparator
+     * @param rowSeparator
+     * @param skipEmptyRow
+     * @param header
+     * @param footer
+     * @param limit
+     * @param random
+     * @throws IOException
+     */
+    public FileInputDelimited(String content, String fieldSeparator, String rowSeparator, boolean skipEmptyRow, int header,
+            int footer, int limit, int random, boolean splitRecord) throws IOException {
+        if (header < 0) {
+            header = 0;
+        }
+        if (footer < 0) {
+            footer = 0;
+        }
+        if (random != 0 && limit != 0) {
+            StringReader stringReaderOne = new StringReader(content);
+            this.delimitedDataReader = new TOSDelimitedReader(stringReaderOne, fieldSeparator, rowSeparator, skipEmptyRow);
+            this.delimitedDataReader.setSplitRecord(splitRecord);
+
+            this.delimitedDataReader.skipHeaders(header);
+            if (random < 0 && footer == 0) {
+                if (limit > 0) {
+                    this.loopCount = limit;
+                } else {
+                    this.loopCount = Integer.MAX_VALUE;
+                }
+                this.countNeedAdjust = true;
+            } else {
+                int count = (int) this.delimitedDataReader.getAvailableRowCount(footer);
+                this.delimitedDataReader.close();
+                StringReader stringReaderTwo = new StringReader(content);
+                this.delimitedDataReader = new TOSDelimitedReader(stringReaderTwo, fieldSeparator, rowSeparator, skipEmptyRow);
                 this.delimitedDataReader.setSplitRecord(splitRecord);
 
                 this.delimitedDataReader.skipHeaders(header);
