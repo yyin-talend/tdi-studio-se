@@ -13,6 +13,7 @@
 package org.talend.designer.codegen.additionaljet;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 
@@ -45,7 +46,13 @@ public abstract class AbstractJetFileProvider {
         if (externalFrameLocation != null) {
             if (externalFrameLocation.exists()) {
                 try {
-                    FilesUtils.copyFolder(externalFrameLocation, installationFolder, false, null, null, true);
+                    final FileFilter sourceFolderFilter = new FileFilter() {
+
+                        public boolean accept(File pathname) {
+                            return false;
+                        }
+                    };
+                    FilesUtils.copyFolder(externalFrameLocation, installationFolder, false, sourceFolderFilter, null, true);
                 } catch (Throwable e) {
                     ExceptionHandler.process(e);
                 }

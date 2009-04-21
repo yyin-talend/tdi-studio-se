@@ -13,6 +13,7 @@
 package org.talend.designer.codegen.model;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -73,7 +74,14 @@ public class CodeGeneratorInternalTemplatesFactory {
             url = FileLocator.find(Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID), new Path("resources"), null); //$NON-NLS-1$
             installationFolder = new File(FileLocator.toFileURL(url).getPath());
 
-            FilesUtils.copyFolder(stubForder, installationFolder, false, null, null, true);
+            final FileFilter sourceFolderFilter = new FileFilter() {
+
+                public boolean accept(File pathname) {
+                    return false;
+                }
+            };
+
+            FilesUtils.copyFolder(stubForder, installationFolder, false, sourceFolderFilter, null, true);
 
         } catch (IOException e) {
             ExceptionHandler.process(e);
