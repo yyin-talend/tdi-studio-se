@@ -22,6 +22,7 @@ class="LDAPInput"
 	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
 	String advanced=ElementParameterParser.getValue(node, "__ADVANCEDCA__");
 	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
+	String storepwd = ElementParameterParser.getValue(node, "__STORECAPWD__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
 	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
 	String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
@@ -53,7 +54,10 @@ class="LDAPInput"
 		if(advanced.equals("true")){
 %>
 	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
+		  <%if(storepwd !=null && storepwd.length() !=0 ){%>
+	talend.ssl.AdvancedSocketFactory.setCertStorePassword(<%=storepwd %>);
 <%
+			}
 		}
     }else if(protocol.equals("TLS")){
     	if(advanced.equals("true")){
