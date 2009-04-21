@@ -117,6 +117,9 @@ public class DesignerCoreService implements IDesignerCoreService {
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
         // achen modify to fix 0006107
         Process process = null;
+        if (createdProcessMap.size() > 50) {
+            createdProcessMap.clear();
+        }
         String id = processItem.getProperty().getModificationDate() + processItem.getProperty().getId();
         if (createdProcessMap.get(id) == null) {
             process = new Process(processItem.getProperty());
