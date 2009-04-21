@@ -53,9 +53,10 @@ public class NodeErrorFigure extends Figure {
             errorFig.setSize(errorFig.getPreferredSize());
             this.setSize(errorFig.getSize());
         } else {
-            errorFig.setVisible(false);
+
             errorFig.setPreferredSize(0, 0);
             errorFig.setSize(new Dimension(0, 0));
+            errorFig.setVisible(false);
         }
     }
 

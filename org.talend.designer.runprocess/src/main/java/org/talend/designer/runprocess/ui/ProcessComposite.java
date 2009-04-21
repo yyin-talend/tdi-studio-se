@@ -77,7 +77,6 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
-import org.epic.perleditor.editors.util.TalendPerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
@@ -1378,11 +1377,29 @@ public class ProcessComposite extends Composite {
     public void getAllErrorMess(IProcessMessage psMess) {
         if (psMess.getType().equals(MsgType.STD_ERR)) {
             String mess = psMess.getContent();
-            String firstline = mess.split("\n")[0]; //$NON-NLS-1$
-            String[] allwords = firstline.split("\\s"); //$NON-NLS-1$
-            String componentName = allwords[allwords.length - 1];
-            errorMessMap.put(componentName, psMess);
+            String[] linesMess = mess.split("\n");//$NON-NLS-1$
+            StringBuffer currentMess = new StringBuffer();
+            for (int i = 0; i < linesMess.length; i++) {
+                String linemess = linesMess[i].trim(); //$NON-NLS-1$
+                Pattern pattern = Pattern.compile("^Exception\\s*in\\s*component\\s*(\\w)+_\\d$");//$NON-NLS-1$
+                Matcher m = pattern.matcher(linemess);
+                if (m.find()) {
+                    String[] allwords = linemess.split("\\s"); //$NON-NLS-1$
+                    String componentName = allwords[allwords.length - 1];
+                    if (i == 0) {
+                        errorMessMap.put(componentName, psMess);
+                    } else {
+                        for (int j = i; j < linesMess.length; j++) {
+                            currentMess.append(linesMess[j] + "\n"); //$NON-NLS-1$
+                        }
+                        IProcessMessage currentProMess = new ProcessMessage(MsgType.STD_ERR, currentMess.toString());
+                        errorMessMap.put(componentName, currentProMess);
+                    }
 
+                    break;
+                }
+
+            }
         }
         refreshNode(psMess);
     }
@@ -1395,6 +1412,9 @@ public class ProcessComposite extends Composite {
                 List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
                 for (INode inode : nodeList) {
                     String nodeUniqueName = inode.getUniqueName();
+                    if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL) && Problems.nodeList.size() > 0) {
+                        errorMessMap.clear();
+                    }
                     if (errorMessMap.get(nodeUniqueName) != null) {
                         if (inode instanceof Node) {
                             IProcessMessage messPro = errorMessMap.get(nodeUniqueName);
@@ -1410,13 +1430,7 @@ public class ProcessComposite extends Composite {
                     } else {
                         if (inode instanceof Node) {
                             Node node = (Node) inode;
-                            List list = null;
-                            if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
-                                list = JobErrorsChecker.nodeList;
-                            } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-                                list = Problems.nodeList;
-                            }
-                            if (list.size() > 0) {
+                            if (Problems.nodeList.size() > 0) {
                                 for (Node no : Problems.nodeList) {
                                     if (node == no) {
                                         node.setErrorFlag(true);
@@ -1486,7 +1500,7 @@ public class ProcessComposite extends Composite {
                 matchContent = m.group();
 
                 if ((!("".equals(path)) && path != null) && lineNo > 0) {//$NON-NLS-1$ 
-                    uniName = TalendPerlValidator.instance().setErrorMark(path, lineNo);
+                    uniName = Problems.setErrorMark(path, lineNo);
                 }
 
                 if (uniName != null) {

@@ -12,10 +12,17 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -25,10 +32,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
-import org.epic.perleditor.editors.util.TalendPerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -433,7 +437,7 @@ public class Problems {
                     status = ProblemStatus.ERROR;
                     information.setLevel(InformationLevel.ERROR_LITERAL);
                     String path = file.getLocation().toString();
-                    uniName = getNodeUniName(path, lineNr);
+                    uniName = setErrorMark(path, lineNr);
                     break;
                 // case IMarker.SEVERITY_WARNING:
                 // status = ProblemStatus.WARNING;
@@ -463,9 +467,7 @@ public class Problems {
                     add(status, marker, routineFileName, message, lineNr, uniName, start, end, type);
                 }
             }
-            if (!(LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL))) {
-                addErrorMark();
-            }
+            addErrorMark();
 
         } catch (org.eclipse.core.runtime.CoreException e) {
             ExceptionHandler.process(e);
@@ -517,68 +519,166 @@ public class Problems {
         return fileName;
     }
 
-    private static String getNodeUniName(String path, int lineNum) {
+    public static String setErrorMark(String path, int lineNum) {
         String uniName = null;
-        String[][] s = TalendPerlValidator.instance().matchString(path, lineNum);
+
+        String[][] result = matchString(path, lineNum);
+
         int first = 0;
         int second = 0;
-        if (s != null) {
-            if (s[0][0] != null) {
-                first = Integer.parseInt(s[0][0]);
+        if (result != null) {
+            if (result[0][0] != null) {
+                first = Integer.parseInt(result[0][0]);
             }
-            if (s[1][0] != null) {
-                second = Integer.parseInt(s[1][0]);
+            if (result[1][0] != null) {
+                second = Integer.parseInt(result[1][0]);
 
             }
         }
 
-        if (lineNum > first && lineNum < second && s != null) {
-            int index1 = s[1][1].indexOf("[");//$NON-NLS-1$
-            int index2 = s[1][1].indexOf("]");//$NON-NLS-1$
+        if (lineNum > first && lineNum < second && result != null) {
+            int index1 = result[1][1].indexOf("[");//$NON-NLS-1$
+            int index2 = result[1][1].indexOf("]");//$NON-NLS-1$
+
+            int inde1 = result[0][1].indexOf("[");//$NON-NLS-1$
+            int inde2 = result[0][1].indexOf("]");//$NON-NLS-1$
+
+            String uniNameFir = null;
+            String uniNameSec = null;
             if (index1 > 0 && index2 > index1) {
-                String nodeAllName = s[1][1].substring(index1, index2);
+                String nodeAllName = result[1][1].substring(index1, index2);
                 int index3 = nodeAllName.indexOf(" ");//$NON-NLS-1$
                 if (index3 > 0) {
-                    uniName = nodeAllName.substring(1, index3);
+                    uniNameSec = nodeAllName.substring(1, index3);
                 }
 
+            }
+
+            if (inde1 > 0 && inde2 > inde1) {
+                String nodeAllName = result[0][1].substring(inde1, inde2);
+                int index3 = nodeAllName.indexOf(" ");//$NON-NLS-1$
+                if (index3 > 0) {
+                    uniNameFir = nodeAllName.substring(1, index3);
+                }
+
+            }
+
+            if (uniNameFir.equals(uniNameSec)) {
+                uniName = uniNameFir;
             }
 
         }
         return uniName;
     }
 
+    public static String[][] matchString(String path, int lineNum) {
+        String[][] result = new String[2][2];
+        Pattern patternStart = Pattern.compile("\\[\\s*(\\w)+_\\d+\\s*\\w+\\s*\\]\\s*start");//$NON-NLS-1$
+        Pattern patternStop = Pattern.compile("\\[\\s*(\\w)+_\\d+\\s*\\w+\\s*\\]\\s*stop");//$NON-NLS-1$
+        File file = new File(path);
+        FileReader fread = null;
+        try {
+            fread = new FileReader(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        BufferedReader br = new BufferedReader(fread);
+        int point = 0;
+        String str = null;
+        String strtmp = null;
+        int tmp = 0;
+        int min = lineNum;
+        try {
+            while ((str = br.readLine()) != null) {
+                point++;
+                strtmp = str.trim();
+                if (point < lineNum) {
+                    Matcher matchStart = patternStart.matcher(strtmp);
+                    if (matchStart.find()) {
+                        tmp = lineNum - point;
+                        if (tmp < min) {
+                            min = tmp;
+                            result[0][0] = String.valueOf(point);
+                            result[0][1] = str;
+                        }
+                    }
+
+                } else if (point > lineNum) {
+                    Matcher matchStop = patternStop.matcher(strtmp);
+                    if (matchStop.find()) {
+                        result[1][0] = String.valueOf(point);
+                        result[1][1] = str;
+                        break;
+                    }
+                } else {
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+                fread.close();
+                file = null;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
     public static void addErrorMark() {
         nodeList.clear();
-        for (int i = 0; i < problemList.getProblemList().size(); i++) {
-            Problem problem = problemList.getProblemList().get(i);
-            for (IProcess process : openJobs) {
-                if (((Process) process).isActivate()) {
-                    for (INode inode : ((Process) process).getGraphicalNodes()) {
-                        if (inode instanceof Node) {
-                            Node node = (Node) inode;
-                            if (node.isActivate()) {
-                                if (problem.getStatus().equals(ProblemStatus.ERROR)) {
-                                    if (problem instanceof TalendProblem) {
-                                        TalendProblem tProblem = (TalendProblem) problem;
-                                        if (tProblem.getUnitName().equals(node.getUniqueName())) {
-                                            nodeList.add(node);
-                                        } else {
-                                            node.setErrorFlag(false);
-                                            node.setErrorInfo(null);
-                                            node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                                            node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
-                                        }
+        for (IProcess process : openJobs) {
+            if (((Process) process).isActivate()) {
+                for (INode inode : ((Process) process).getGraphicalNodes()) {
+                    if (inode instanceof Node) {
+                        Node node = (Node) inode;
+                        if (problemList.getProblemList().size() > 0) {
+                            for (int i = 0; i < problemList.getProblemList().size(); i++) {
+                                Problem problem = problemList.getProblemList().get(i);
 
+                                if (node.isActivate()) {
+                                    if (problem.getStatus().equals(ProblemStatus.ERROR)) {
+                                        if (problem instanceof TalendProblem) {
+                                            TalendProblem tProblem = (TalendProblem) problem;
+                                            if (tProblem.getUnitName().equals(node.getUniqueName())) {
+                                                nodeList.add(node);
+                                            } else {
+                                                if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
+                                                    node.setErrorFlag(false);
+                                                    node.setErrorInfo(null);
+                                                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                                    node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                                } else {
+                                                    continue;
+                                                }
+                                            }
+
+                                        }
+                                    } else {
+                                        node.setErrorFlag(false);
+                                        node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                                     }
                                 } else {
-                                    node.setErrorFlag(false);
-                                    node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                                    continue;
                                 }
+                            }
+                        } else {
+                            if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
+                                node.setErrorFlag(false);
+                                node.setErrorInfo(null);
+                                node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                            } else {
+                                continue;
                             }
                         }
                     }
                 }
+            } else {
+                continue;
             }
         }
         for (Node node : nodeList) {
@@ -588,5 +688,4 @@ public class Problems {
             node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
         }
     }
-
 }

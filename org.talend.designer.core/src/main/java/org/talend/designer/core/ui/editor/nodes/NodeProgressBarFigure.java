@@ -138,11 +138,16 @@ public class NodeProgressBarFigure extends Figure {
                 }
             }
         }
+        if (extent != 0) {
+            baseFigure.setSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width, dataFigure
+                    .getPreferredSize().height);
+            baseFigure.setPreferredSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width,
+                    dataFigure.getPreferredSize().height);
+        } else {
+            baseFigure.setSize(0, 0);
+            baseFigure.setPreferredSize(0, 0);
+        }
 
-        baseFigure.setSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width, dataFigure
-                .getPreferredSize().height);
-        baseFigure.setPreferredSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width, dataFigure
-                .getPreferredSize().height);
         baseFigure.add(progressBarFigure);
         baseFigure.add(dataFigure);
 

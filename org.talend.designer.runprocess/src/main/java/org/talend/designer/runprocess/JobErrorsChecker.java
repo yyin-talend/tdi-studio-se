@@ -16,9 +16,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +28,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
@@ -38,7 +35,6 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
@@ -47,8 +43,6 @@ import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
  * Check if there is error in jobs before running.
  */
 public class JobErrorsChecker {
-
-    public static List<Node> nodeList = new ArrayList<Node>();
 
     public static boolean hasErrors(Shell shell) {
 
@@ -117,47 +111,9 @@ public class JobErrorsChecker {
     }
 
     public static void validatePerlScript(IFile file, IProcess process) {
-        nodeList.clear();
         try {
             String sourceCode = getSourceCode(file.getContents());
-            Set<String> set = TalendPerlValidator.instance().validate(file, sourceCode);
-            Iterator<String> ite = set.iterator();
-            if (set.isEmpty()) {
-                for (INode inode : process.getGraphicalNodes()) {
-                    if (inode instanceof Node) {
-                        Node node = (Node) inode;
-                        node.setErrorFlag(false);
-                        node.setErrorInfo(null);
-                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                        node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
-                    }
-                }
-            } else {
-
-                while (ite.hasNext()) {
-                    String uniName = (String) ite.next();
-                    for (INode inode : process.getGraphicalNodes()) {
-                        if (inode instanceof Node) {
-                            Node node = (Node) inode;
-                            if (node.getUniqueName().equals(uniName)) {
-                                nodeList.add(node);
-                            } else {
-                                node.setErrorFlag(false);
-                                node.setErrorInfo(null);
-                                node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                                node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
-                            }
-                        }
-                    }
-                }
-
-                for (Node node : nodeList) {
-                    node.setErrorFlag(true);
-                    node.setErrorInfo(null);
-                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                    node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
-                }
-            }
+            TalendPerlValidator.instance().validate(file, sourceCode);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }

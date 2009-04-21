@@ -54,6 +54,11 @@ public class ClearTraceAction extends Action {
             if (psNode instanceof Node) {
                 Node node = (Node) psNode;
                 node.getNodeProgressBar().updateState("UPDATE_STATUS", new Double(0)); //$NON-NLS-1$
+
+                node.setErrorFlag(false);
+                node.setErrorInfo(null);
+                node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
+                node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
             }
 
             for (IConnection connec : psNode.getOutgoingConnections()) {
