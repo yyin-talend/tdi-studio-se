@@ -1101,4 +1101,11 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         addContextParams(EFileParamName.Footer, rowsToSkipFooterCheckboxCombo.isChecked());
         addContextParams(EFileParamName.Limit, rowsToSkipLimitCheckboxCombo.isChecked());
     }
+
+    @Override
+    protected void processWhenDispose() {
+        if (processor != null) {
+            processor.forceStop();
+        }
+    }
 }

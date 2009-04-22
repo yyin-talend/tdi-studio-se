@@ -1082,4 +1082,11 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         addContextParams(EFileParamName.Footer, rowsToSkipFooterCheckboxCombo.isChecked());
         addContextParams(EFileParamName.Limit, rowsToSkipLimitCheckboxCombo.isChecked());
     }
+
+    @Override
+    protected void processWhenDispose() {
+        if (processor != null) {
+            processor.forceStop();
+        }
+    }
 }

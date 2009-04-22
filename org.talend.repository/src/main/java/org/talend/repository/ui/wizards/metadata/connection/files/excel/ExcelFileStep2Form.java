@@ -1211,4 +1211,10 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         addContextParams(EFileParamName.DecimalSeparator, isJava);
     }
 
+    @Override
+    protected void processWhenDispose() {
+        if (processor != null) {
+            processor.forceStop();
+        }
+    }
 }

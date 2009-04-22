@@ -56,6 +56,18 @@ public class ShadowProcessHelper {
 
     private static Logger log = Logger.getLogger(ShadowProcessHelper.class);
 
+    /*
+     * record the current preview.
+     */
+    private static IPreview currentPreview = null;
+
+    public static void forceStopPreview() {
+        if (currentPreview != null) {
+            currentPreview.stopLoading();
+            currentPreview = null;
+        }
+    }
+
     /**
      * Create a ProcessDescription and set it width the value of FileConnection. Particularity : field FieldSeparator,
      * RowSeparator, EscapeChar and TextEnclosure are surround by double quote.
@@ -244,8 +256,8 @@ public class ShadowProcessHelper {
 
                 IMetadataColumn iMetadataColumn = new MetadataColumn();
                 String name = iterate.next();
-				iMetadataColumn.setLabel(name.replaceAll("-", "_")); //$NON-NLS-1$ //$NON-NLS-2$
-				iMetadataColumn.setOriginalDbColumnName(name);
+                iMetadataColumn.setLabel(name.replaceAll("-", "_")); //$NON-NLS-1$ //$NON-NLS-2$
+                iMetadataColumn.setOriginalDbColumnName(name);
                 iMetadataColumn.setKey(false);
                 iMetadataColumn.setLength(0);
                 iMetadataColumn.setNullable(false);
@@ -341,6 +353,8 @@ public class ShadowProcessHelper {
         // use the org.talend.repository.filepreview_provider
         IConfigurationElement[] configurationElements = registry
                 .getConfigurationElementsFor("org.talend.core.filepreview_provider"); //$NON-NLS-1$
+        // When start a new preview. need stop before preview.
+        forceStopPreview();
 
         IPreview preview = null;
         if (configurationElements.length > 0) {
@@ -350,7 +364,7 @@ public class ShadowProcessHelper {
             log.error(Messages.getString("ShadowProcessHelper.logError.previewIsNull01") //$NON-NLS-1$
                     + Messages.getString("ShadowProcessHelper.logError.previewIsNull02")); //$NON-NLS-1$
         }
-
+        currentPreview = preview;
         return preview;
     }
 
@@ -379,8 +393,8 @@ public class ShadowProcessHelper {
             while (iterate.hasNext()) {
                 IMetadataColumn iMetadataColumn = new MetadataColumn();
                 String name = iterate.next();
-				iMetadataColumn.setLabel(name.replaceAll("-", "_")); //$NON-NLS-1$ //$NON-NLS-2$
-				iMetadataColumn.setOriginalDbColumnName(name);
+                iMetadataColumn.setLabel(name.replaceAll("-", "_")); //$NON-NLS-1$ //$NON-NLS-2$
+                iMetadataColumn.setOriginalDbColumnName(name);
                 iMetadataColumn.setKey(false);
                 iMetadataColumn.setLength(0);
                 iMetadataColumn.setNullable(false);
@@ -461,7 +475,7 @@ public class ShadowProcessHelper {
         } else {
 
             IMetadataColumn iMetadataDn = new MetadataColumn();
-            iMetadataDn.setLabel(connection.getMethodName()); 
+            iMetadataDn.setLabel(connection.getMethodName());
             iMetadataDn.setKey(false);
             iMetadataDn.setLength(0);
             iMetadataDn.setNullable(false);
@@ -491,7 +505,7 @@ public class ShadowProcessHelper {
         bean.setProxyPassword(TalendTextUtils.addQuotes(connection.getProxyPassword()));
         processDescription.setWsdlSchemaBean(bean);
         if (connection.getEncoding() != null && !connection.getEncoding().equals("")) { //$NON-NLS-1$
-            processDescription.setEncoding(connection.getEncoding()); 
+            processDescription.setEncoding(connection.getEncoding());
         } else {
             processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
         }

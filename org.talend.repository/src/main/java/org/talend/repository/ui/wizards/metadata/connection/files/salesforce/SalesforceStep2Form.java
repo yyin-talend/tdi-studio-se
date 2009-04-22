@@ -661,4 +661,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         }
     }
 
+    @Override
+    protected void processWhenDispose() {
+        if (processor != null) {
+            processor.forceStop();
+        }
+    }
 }

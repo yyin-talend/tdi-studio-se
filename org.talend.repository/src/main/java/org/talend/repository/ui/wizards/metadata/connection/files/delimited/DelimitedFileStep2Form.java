@@ -1319,7 +1319,6 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
@@ -1393,4 +1392,12 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         addContextParams(EFileParamName.Footer, rowsToSkipFooterCheckboxCombo.isChecked());
         addContextParams(EFileParamName.Limit, rowsToSkipLimitCheckboxCombo.isChecked());
     }
+
+    @Override
+    protected void processWhenDispose() {
+        if (processor != null) {
+            processor.forceStop();
+        }
+    }
+
 }

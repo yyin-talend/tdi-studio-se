@@ -656,4 +656,10 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         filterText.setEditable(!isContextMode());
     }
 
+    @Override
+    protected void processWhenDispose() {
+        if (processor != null) {
+            processor.forceStop();
+        }
+    }
 }

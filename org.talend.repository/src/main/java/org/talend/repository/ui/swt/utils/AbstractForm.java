@@ -21,6 +21,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -45,6 +47,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IConnParamName;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -152,6 +155,7 @@ public abstract class AbstractForm extends Composite {
      */
     protected void setupForm(boolean hasContextBtn) {
         this.hasContextBtn = hasContextBtn;
+        setDisposeListener();
         addComponents();
         // statusLabel is only use to SWT form / not use to Wizard
         if (!isInWizard) {
@@ -506,4 +510,29 @@ public abstract class AbstractForm extends Composite {
         }
     }
 
+    /**
+     * 
+     * cli Comment method "setDisposeListener".
+     * 
+     * (bug 6976)
+     */
+    private void setDisposeListener() {
+        this.addDisposeListener(new DisposeListener() {
+
+            public void widgetDisposed(DisposeEvent e) {
+                processWhenDispose();
+                ShadowProcessHelper.forceStopPreview();
+            }
+        });
+    }
+
+    /**
+     * 
+     * cli Comment method "processWhenDispose".
+     * 
+     * (bug 6976)
+     */
+    protected void processWhenDispose() {
+        //
+    }
 }

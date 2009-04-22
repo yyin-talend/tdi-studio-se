@@ -26,9 +26,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -60,6 +57,7 @@ import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.text.IndiceHelper;
+import org.talend.commons.utils.threading.TalendCustomThreadPoolExecutor;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -275,6 +273,7 @@ public class SelectorTableForm extends AbstractForm {
 
         scrolledCompositeFileViewer.setContent(table);
         scrolledCompositeFileViewer.setMinSize(table.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
     }
 
     private final Collator col = Collator.getInstance(Locale.getDefault());
@@ -619,7 +618,7 @@ public class SelectorTableForm extends AbstractForm {
      * 
      * 
      */
-    class CustomThreadPoolExecutor extends ThreadPoolExecutor {
+    class CustomThreadPoolExecutor extends TalendCustomThreadPoolExecutor {
 
         // This map is used to store the tableItems that are selected or unselected by the user.
         // see afterExecute() and beforeExecute(). If an item is in the map, it means that the item's
@@ -627,17 +626,8 @@ public class SelectorTableForm extends AbstractForm {
         Map<TableItem, RetrieveColumnRunnable> map = Collections
                 .synchronizedMap(new HashMap<TableItem, RetrieveColumnRunnable>());
 
-        /**
-         * bqian CustomThreadPoolExecutor constructor.
-         * 
-         * @param corePoolSize
-         * @param maximumPoolSize
-         * @param keepAliveTime
-         * @param unit
-         * @param workQueue
-         */
         public CustomThreadPoolExecutor(int queueCapacity) {
-            super(5, 10, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(queueCapacity));
+            super(queueCapacity);
         }
 
         /*
@@ -670,10 +660,6 @@ public class SelectorTableForm extends AbstractForm {
          */
         public boolean isThreadRunning(TableItem item) {
             return map.containsKey(item);
-        }
-
-        public boolean hasThreadRunning() {
-            return getQueue().size() != 0;
         }
 
         /**
@@ -983,26 +969,11 @@ public class SelectorTableForm extends AbstractForm {
         return this.table;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.swt.widgets.Widget#dispose()
-     */
-    @Override
-    public void dispose() {
-        super.dispose();
-        if (threadExecutor != null) {
-            threadExecutor.shutdownNow();
-        }
-    }
-
     /**
      * DOC nrousseau Comment method "performCancel".
      */
     public void performCancel() {
-        if (threadExecutor != null) {
-            threadExecutor.shutdownNow();
-        }
+        processWhenDispose();
     }
 
     /**
@@ -1020,6 +991,13 @@ public class SelectorTableForm extends AbstractForm {
 
     public void setIMetadataConnection(IMetadataConnection metadataConnection) {
         this.iMetadataConnection = metadataConnection;
+    }
+
+    @Override
+    protected void processWhenDispose() {
+        if (threadExecutor != null) {
+            threadExecutor.clearThreads();
+        }
     }
 
 }

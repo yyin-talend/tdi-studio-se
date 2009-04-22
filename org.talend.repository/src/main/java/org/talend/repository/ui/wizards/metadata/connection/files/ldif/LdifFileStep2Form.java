@@ -165,7 +165,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+             * @see
+             * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions
+             * (org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
              */
             @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<String> newTableViewerCreator) {
@@ -634,7 +636,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);
@@ -688,6 +689,13 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         super.exportAsContext();
         if (getContextModeManager() != null) {
             getContextModeManager().setDefaultContextType(getConnection());
+        }
+    }
+
+    @Override
+    protected void processWhenDispose() {
+        if (processor != null) {
+            processor.forceStop();
         }
     }
 }

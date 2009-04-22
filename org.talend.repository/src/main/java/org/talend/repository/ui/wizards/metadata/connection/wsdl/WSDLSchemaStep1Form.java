@@ -931,4 +931,10 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
         }
     }
 
+    @Override
+    protected void processWhenDispose() {
+        if (processor != null) {
+            processor.forceStop();
+        }
+    }
 }
