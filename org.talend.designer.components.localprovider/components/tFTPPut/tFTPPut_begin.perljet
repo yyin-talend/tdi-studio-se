@@ -17,6 +17,7 @@ String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String user = ElementParameterParser.getValue(node, "__USERNAME__");
 String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
+String mode = ElementParameterParser.getValue(node, "__MODE__");
 %>
 
 use Net::FTP;
@@ -33,3 +34,11 @@ my $ftp_<%=cid%> = Net::FTP->new(
 
 $ftp_<%=cid%>->login(<%=user%>, <%=pass%>)
     or die "Cannot login ", $ftp_<%=cid%>->message;
+
+<%
+if (mode.equals("binary")) {
+%>
+$ftp_<%=cid%>->binary;
+<%
+}
+%>

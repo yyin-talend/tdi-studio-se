@@ -61,6 +61,14 @@
         <ITEM NAME="FILEMASK" />
       </ITEMS>
     </PARAMETER>
+
+    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="70">
+      <ITEMS DEFAULT="ascii">
+     	<ITEM NAME="ASCII"  VALUE="ascii" />
+        <ITEM NAME="BINARY"  VALUE="binary" />        
+      </ITEMS>
+    </PARAMETER>
+
   </PARAMETERS>
 
   <CODEGENERATION/>
