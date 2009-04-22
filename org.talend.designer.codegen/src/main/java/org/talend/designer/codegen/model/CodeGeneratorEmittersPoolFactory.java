@@ -122,6 +122,10 @@ public final class CodeGeneratorEmittersPoolFactory {
                     monitorWrap = new NullProgressMonitor();
                 }
 
+                CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
+                        .getInstance();
+                templatesFactory.init();
+                
                 IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
                 // do not call init because it may be already loaded by
                 // ComponentsFactoryProvider.saveComponentVisibilityStatus
@@ -136,10 +140,6 @@ public final class CodeGeneratorEmittersPoolFactory {
                         + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT;
 
                 List<JetBean> jetBeans = new ArrayList<JetBean>();
-
-                CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
-                        .getInstance();
-                templatesFactory.init();
 
                 List<TemplateUtil> templates = templatesFactory.getTemplates();
                 List<IComponent> components = componentsFactory.getComponents();
