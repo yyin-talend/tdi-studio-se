@@ -29,6 +29,7 @@ import org.apache.axis.message.MessageElement;
 import com.sforce.soap.partner.DeleteResult;
 import com.sforce.soap.partner.Field;
 import com.sforce.soap.partner.SaveResult;
+import com.sforce.soap.partner.SoapBindingStub;
 import com.sforce.soap.partner.UpsertResult;
 import com.sforce.soap.partner.sobject.SObject;
 
@@ -64,4 +65,6 @@ public interface SforceManagement {
     public List<SObject> query(String queryString) throws Exception;
 
     public abstract Calendar getServerTimestamp() throws Exception;
+
+    public SoapBindingStub getBinding();
 }

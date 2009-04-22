@@ -54,6 +54,10 @@ public class SforceManagementImpl implements SforceManagement {
 
     private SoapBindingStub binding;
 
+    public SoapBindingStub getBinding() {
+        return binding;
+    }
+
     private String endPoint;
 
     private LoginResult loginResult = null;

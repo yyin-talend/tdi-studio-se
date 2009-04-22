@@ -34,7 +34,14 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
-					}
+            }
+            // handle the loop + 1 problem by checking the most recent queryResult
+            if (qr.isDone()) {
+                bContinue = false;
+            } else {
+                qr = binding.queryMore(qr.getQueryLocator());
+            }
+        }
 <%
 				}
 			}
