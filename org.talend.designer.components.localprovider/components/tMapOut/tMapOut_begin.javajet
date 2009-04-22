@@ -23,6 +23,7 @@
     org.talend.core.model.process.ElementParameterParser
 	org.talend.core.model.process.EConnectionType
 	org.talend.core.model.process.INode
+	org.talend.core.model.utils.TalendTextUtils
 	" 
 	skeleton="../tMap/tMap_commons.skeleton"
 %>
