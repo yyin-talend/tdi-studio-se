@@ -17,6 +17,10 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -326,6 +330,8 @@ public class SchedulerTaskPropertyDialog extends Dialog {
 
         private TalendJobManager jobManager;
 
+        private ComboViewer jobComboViewer;
+
         /**
          * Sets the changeListener.
          * 
@@ -469,7 +475,12 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             label = new Label(container, SWT.NONE);
             label.setText(Messages.getString("SchedulerTaskPropertyDialog.jobLabel")); //$NON-NLS-1$
 
-            jobCombo = new Combo(container, SWT.PUSH);
+            // see bug 7030
+            jobComboViewer = new ComboViewer(container, SWT.NONE);
+            jobComboViewer.setContentProvider(new ArrayContentProvider());
+            jobComboViewer.setLabelProvider(new LabelProvider());
+            jobComboViewer.setSorter(new ViewerSorter());
+            jobCombo = jobComboViewer.getCombo();
 
             gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
             // gridData_1.widthHint = 525;
@@ -545,8 +556,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
                 return;
             }
             String[] jobItems = jobs.toArray(new String[jobs.size()]);
-
-            jobCombo.setItems(jobItems);
+            jobComboViewer.setInput(jobItems);
 
             if (dialogType.equals(DialogType.ADD)) {
 
