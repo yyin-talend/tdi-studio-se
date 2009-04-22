@@ -67,7 +67,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								<%
 								} else {
 								%>
-									FormatterUtils.format_Number(String.valueOf( (new BigDecimal(<%=conn.getName() %>.<%=column.getLabel() %>).toPlainString()) ), <%= thousandsSeparator %>, <%= decimalSeparator %>)
+									FormatterUtils.format_Number(String.valueOf( (new BigDecimal(""+<%=conn.getName() %>.<%=column.getLabel() %>).toPlainString()) ), <%= thousandsSeparator %>, <%= decimalSeparator %>)
 								<%
 								}							
 							} else {
@@ -77,7 +77,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								<%
 								} else {
 								%>
-	                   				(new BigDecimal(<%=conn.getName() %>.<%=column.getLabel() %>).toPlainString())
+	                   				(new BigDecimal(""+<%=conn.getName() %>.<%=column.getLabel() %>).toPlainString())
 								<%
 								}
 							}
