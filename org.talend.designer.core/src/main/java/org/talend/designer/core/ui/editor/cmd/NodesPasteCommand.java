@@ -35,13 +35,11 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
-import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -450,24 +448,8 @@ public class NodesPasteCommand extends Command {
                                 String parentName = param.getParentParameter().getName();
                                 pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue()); //$NON-NLS-1$
                             } else {
-                                Object value = param.getValue();
-                                if (value instanceof String) {
-                                    String copiedParamValue = (String) value;
-                                    // noly rename global variables that exist in copied nodes
-                                    for (NodePart part : nodeParts) {
-                                        Node node = (Node) part.getModel();
-                                        for (INodeReturn returns : node.getReturns()) {
-                                            String copiedVarName = ElementParameterParser.parse(node, returns.getVarName());
-                                            if (copiedParamValue.indexOf(copiedVarName) != -1) {
-                                                String newValue = copiedVarName.replace(node.getUniqueName(), pastedNode
-                                                        .getUniqueName());
-                                                copiedParamValue = copiedParamValue.replace(copiedVarName, newValue);
-                                                value = copiedParamValue;
-                                            }
-                                        }
-                                    }
-                                }
-                                pastedNode.setPropertyValue(param.getName(), value);
+                                pastedNode.setPropertyValue(param.getName(), param.getValue());
+
                                 // See Bug 0005722: the pasted component don't keep the same read-only mode and didn;t
                                 // hide
                                 // the password.
@@ -628,8 +610,7 @@ public class NodesPasteCommand extends Command {
             Node currentNode = nodeContainer.getNode();
             String uniqueName = currentNode.getUniqueName();
             for (String oldName : oldNameTonewNameMap.keySet()) {
-                if (usedDataMap != null && usedDataMap.get(uniqueName) != null
-                        && !oldName.equals(oldNameTonewNameMap.get(oldName)) && currentNode.useData(oldName)) {
+                if (!oldName.equals(oldNameTonewNameMap.get(oldName)) && currentNode.useData(oldName)) {
                     Set<String> oldNameSet = usedDataMap.get(uniqueName);
                     if (oldNameSet == null) {
                         oldNameSet = new HashSet<String>();
@@ -645,8 +626,7 @@ public class NodesPasteCommand extends Command {
         for (Connection connection : connections) {
             String uniqueName = connection.getUniqueName();
             for (String oldName : oldNameTonewNameMap.keySet()) {
-                if (oldNameTonewNameMap != null && oldNameTonewNameMap.get(oldName) != null && oldName != null
-                        && !oldName.equals(oldNameTonewNameMap.get(oldName))
+                if (oldName != null && !oldName.equals(oldNameTonewNameMap.get(oldName))
                         && UpgradeElementHelper.isUseData(connection, oldName)) {
                     Set<String> oldNameSet = usedDataMapForConnections.get(uniqueName);
                     if (oldNameSet == null) {
