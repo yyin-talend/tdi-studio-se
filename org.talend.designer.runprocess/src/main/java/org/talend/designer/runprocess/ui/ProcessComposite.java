@@ -186,7 +186,7 @@ public class ProcessComposite extends Composite {
 
     private Double extend = new Double(0);
 
-    private HashMap<String, IProcessMessage> errorMessMap = new HashMap<String, IProcessMessage>();
+    public HashMap<String, IProcessMessage> errorMessMap = new HashMap<String, IProcessMessage>();
 
     /**
      * DOC chuger ProcessComposite2 constructor comment.
@@ -314,7 +314,7 @@ public class ProcessComposite extends Composite {
                     menu.setVisible(true);
                 } else {
                     ToolItem item = (ToolItem) event.widget;
-                    errorMessMap.clear();
+                    // errorMessMap.clear();
                     if (item.getData().equals(ProcessView.DEBUG_ID)) {
                         debug();
                     } else {

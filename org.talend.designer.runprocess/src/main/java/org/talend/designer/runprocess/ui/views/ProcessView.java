@@ -304,6 +304,7 @@ public class ProcessView extends ViewPart {
             }
 
             if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {
+                processComposite.errorMessMap.clear();
                 processComposite.setCurRunMode(EXEC_ID);
                 processComposite.exec();
             }
