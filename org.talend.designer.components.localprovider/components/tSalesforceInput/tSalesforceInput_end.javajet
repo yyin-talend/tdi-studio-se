@@ -34,12 +34,18 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
+                // (for salesforce wizard preview)
+                if(limit_<%=cid %> > 0 && nb_line_<%=cid%> >= limit_<%=cid %>){ 
+                	bContinue_<%=cid %> = false;
+                	break;
+                }
+            
             }
             // handle the loop + 1 problem by checking the most recent queryResult
-            if (qr.isDone()) {
-                bContinue = false;
+            if (qr_<%=cid %>.isDone()) {
+                bContinue_<%=cid %> = false;
             } else {
-                qr = binding.queryMore(qr.getQueryLocator());
+                qr_<%=cid %> = binding_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator());
             }
         }
 <%

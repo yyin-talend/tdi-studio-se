@@ -25,9 +25,12 @@ INode node = (INode)codeGenArgument.getArgument();
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 
 String cid = node.getUniqueName();
+
+   	String limit = ElementParameterParser.getValue(node,"__LIMIT__");
 %>
 
 int nb_line_<%=cid%> = 0;
+int limit_<%=cid %> = <%=limit %>;
 
 <%
 if(useProxy){
@@ -100,23 +103,23 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>					
 					
-com.sforce.soap.partner.SoapBindingStub binding = sfMgr_<%=cid%>.getBinding();
-com.sforce.soap.partner.QueryResult qr = null;
-com.sforce.soap.partner.QueryOptions qo = new com.sforce.soap.partner.QueryOptions();
-qo.setBatchSize(new Integer(250));
-binding.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "QueryOptions", qo);
+com.sforce.soap.partner.SoapBindingStub binding_<%=cid %> = sfMgr_<%=cid%>.getBinding();
+com.sforce.soap.partner.QueryResult qr_<%=cid %> = null;
+com.sforce.soap.partner.QueryOptions qo_<%=cid %> = new com.sforce.soap.partner.QueryOptions();
+qo_<%=cid %>.setBatchSize(new Integer(250));
+binding_<%=cid %>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "QueryOptions", qo_<%=cid %>);
 
-qr = binding.query(<%=sql %>);
+qr_<%=cid %> = binding_<%=cid %>.query(<%=sql %>);
 
-boolean bContinue = true;
+boolean bContinue_<%=cid %> = true;
 
-while (bContinue && qr != null && qr.getRecords() != null) {
+while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
 
     // process the query results
-    for (int i = 0; i < qr.getRecords().length; i++) {					
+    for (int i_<%=cid %> = 0; i_<%=cid %> < qr_<%=cid %>.getRecords().length; i_<%=cid %>++) {					
 					
 						nb_line_<%=cid%> ++;
-						org.apache.axis.message.MessageElement[] fields_<%=cid%> = qr.getRecords()[i].get_any();
+						org.apache.axis.message.MessageElement[] fields_<%=cid%> = qr_<%=cid %>.getRecords()[i_<%=cid %>].get_any();
 						int len_<%=cid%> = fields_<%=cid%>.length;
 <%
 						for( int i = 0; i < columnList.size(); i++) {
