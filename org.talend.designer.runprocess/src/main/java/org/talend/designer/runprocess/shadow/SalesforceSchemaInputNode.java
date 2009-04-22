@@ -54,6 +54,9 @@ public class SalesforceSchemaInputNode extends FileInputNode {
             }
             addParameter(param);
         }
+
+        // set the limit for tSalesforceInput, only preview the first 100 records in wizard
+        addParameter(new TextElementParameter("LIMIT", "100")); //$NON-NLS-1$ //$NON-NLS-1$
     }
 
     /**
