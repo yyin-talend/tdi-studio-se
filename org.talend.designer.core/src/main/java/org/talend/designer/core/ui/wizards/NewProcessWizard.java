@@ -20,6 +20,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
@@ -30,6 +31,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.designer.joblet.ui.IJobCheckService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -94,6 +96,15 @@ public class NewProcessWizard extends Wizard {
     @Override
     public boolean performFinish() {
         try {
+            IJobCheckService jobCheckService = (IJobCheckService) GlobalServiceRegister.getDefault().getService(
+                    IJobCheckService.class);
+            if (!jobCheckService.checkJob(property.getLabel())) {
+                processItem = null;
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        try {
 
             property.setId(repositoryFactory.getNextId());
 
@@ -108,7 +119,6 @@ public class NewProcessWizard extends Wizard {
                     .getString("NewProcessWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$
             ExceptionHandler.process(e);
         }
-
         return processItem != null;
     }
 

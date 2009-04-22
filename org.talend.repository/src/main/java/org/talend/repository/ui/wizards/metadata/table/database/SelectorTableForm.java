@@ -228,7 +228,7 @@ public class SelectorTableForm extends AbstractForm {
         checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
                 .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
-        metadataEditor = new MetadataEmfTableEditor(Messages.getString("DatabaseTableForm.metadataDescription")); //$NON-NLS-1$
+        metadataEditor = new MetadataEmfTableEditor(""); //$NON-NLS-1$
         // addUtilsButtonListeners();
     }
 

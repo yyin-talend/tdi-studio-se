@@ -126,6 +126,9 @@ public class CreateProcess extends AContextualAction {
 
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);
         if (dlg.open() == Window.OK) {
+            if (processWizard.getProcess() == null) {
+                return;
+            }
 
             ProcessEditorInput fileEditorInput;
             try {

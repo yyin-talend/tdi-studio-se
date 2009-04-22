@@ -427,7 +427,7 @@ public class DatabaseTableForm extends AbstractForm {
         Composite compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, rightCompositeWidth,
                 tableCompositeHeight);
         compositeTable.setLayout(new FillLayout());
-        metadataEditor = new MetadataEmfTableEditor(Messages.getString("DatabaseTableForm.metadataDescription")); //$NON-NLS-1$
+        metadataEditor = new MetadataEmfTableEditor(""); //$NON-NLS-1$
         tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
         tableEditorView.setShowDbTypeColumn(true, true, false);
         tableEditorView.setShowDbColumnName(true, false);

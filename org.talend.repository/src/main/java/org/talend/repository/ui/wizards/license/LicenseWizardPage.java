@@ -55,7 +55,7 @@ public class LicenseWizardPage extends WizardPage {
         super("WizardPage"); //$NON-NLS-1$
 
         setTitle(Messages.getString("LicenseWizard.title")); //$NON-NLS-1$
-        setDescription(Messages.getString("LicenseWizard.description")); //$NON-NLS-1$
+        setDescription(""); //$NON-NLS-1$
     }
 
     /**
