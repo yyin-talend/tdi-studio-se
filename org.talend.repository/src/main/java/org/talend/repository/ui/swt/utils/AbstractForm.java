@@ -34,9 +34,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -519,9 +521,16 @@ public abstract class AbstractForm extends Composite {
     private void setDisposeListener() {
         this.addDisposeListener(new DisposeListener() {
 
-            public void widgetDisposed(DisposeEvent e) {
-                processWhenDispose();
-                ShadowProcessHelper.forceStopPreview();
+            public void widgetDisposed(DisposeEvent event) {
+                try {
+                    processWhenDispose();
+                    ShadowProcessHelper.forceStopPreview();
+                    //
+                    ExtractMetaDataUtils.isReconnect = false; // seems only use for cdc
+                    ExtractMetaDataUtils.closeConnection();
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
             }
         });
     }
