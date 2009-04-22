@@ -35,12 +35,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 					}
-					if (qr.isDone()) {
-					              bContinue = false;
-					          } else {
-					              qr = binding.queryMore(qr.getQueryLocator());
-					          }
-				}
 <%
 				}
 			}

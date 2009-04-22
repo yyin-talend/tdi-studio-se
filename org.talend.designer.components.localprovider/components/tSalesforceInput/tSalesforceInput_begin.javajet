@@ -58,15 +58,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 %>
 			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
-
-			com.sforce.soap.partner.LoginResult loginResult;
-			com.sforce.soap.partner.SoapBindingStub binding;
-	        java.net.URL soapAddress = new java.net.URL(<%=endpoint%>);
-	        binding = (com.sforce.soap.partner.SoapBindingStub) new com.sforce.soap.partner.SforceServiceLocator().getSoap(soapAddress);
-
-	        loginResult = binding.login(<%=username%>, <%=password%>);
-
-	        binding._setProperty(com.sforce.soap.partner.SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
 <%
 		}
 
