@@ -314,7 +314,7 @@ public class ProcessComposite extends Composite {
                     menu.setVisible(true);
                 } else {
                     ToolItem item = (ToolItem) event.widget;
-                    // errorMessMap.clear();
+                    errorMessMap.clear();
                     if (item.getData().equals(ProcessView.DEBUG_ID)) {
                         debug();
                     } else {

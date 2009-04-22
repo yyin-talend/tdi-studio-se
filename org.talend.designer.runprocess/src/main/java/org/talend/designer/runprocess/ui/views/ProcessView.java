@@ -330,7 +330,9 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
+
             if (processComposite.hasProcess()) {
+                processComposite.errorMessMap.clear();
                 processComposite.debug();
             }
         }
