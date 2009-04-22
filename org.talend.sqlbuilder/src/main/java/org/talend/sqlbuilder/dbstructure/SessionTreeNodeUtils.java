@@ -87,8 +87,16 @@ public class SessionTreeNodeUtils {
 
     public static SessionTreeNode getSessionTreeNode(DatabaseConnection dbconnection, RepositoryNode repositoryNode)
             throws Exception {
+        // hyWang add for bug 0007014
+        IMetadataConnection iMetadataConnection = null;
+        iMetadataConnection = ConvertionHelper.convert(dbconnection);
+        String url = dbconnection.getURL();
+         if (url == null || url.equals("")) {
+         url = iMetadataConnection.getUrl();
+         }
+
         SQLConnection connection = createSQLConnection(dbconnection);
-        ISQLAlias alias = createSQLAlias("Repository Name", dbconnection.getURL(), dbconnection.getUsername(), dbconnection //$NON-NLS-1$
+        ISQLAlias alias = createSQLAlias("Repository Name", url, dbconnection.getUsername(), dbconnection //$NON-NLS-1$
                 .getPassword(), dbconnection.getSID().length() == 0 ? dbconnection.getDatasourceName() : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
