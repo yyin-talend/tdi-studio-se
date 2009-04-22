@@ -25,6 +25,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.diagram.custom.figures.BusinessItemShapeFigure;
@@ -32,6 +33,11 @@ import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.BusinessProcess;
+import org.talend.designer.business.model.business.Query;
+import org.talend.designer.business.model.business.Routine;
+import org.talend.designer.business.model.business.SQLPattern;
+import org.talend.designer.business.model.business.SapFunctionMetadata;
+import org.talend.designer.business.model.business.TableMetadata;
 import org.talend.designer.business.model.business.TalendItem;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.repository.model.RepositoryNode;
@@ -85,8 +91,16 @@ public class FindAssignmentAction extends AContextualAction {
                 for (Iterator iterator = businessItem.getAssignments().iterator(); iterator.hasNext();) {
                     BusinessAssignment businessAssignment = (BusinessAssignment) iterator.next();
                     TalendItem talendItem = businessAssignment.getTalendItem();
+                    IRepositoryObject obj = repositoryNode.getObject();
                     if (talendItem.getId().equals(repositoryNode.getId())) {
                         list.add(businessItem);
+                    } else if (talendItem instanceof SQLPattern || talendItem instanceof Routine
+                            || talendItem instanceof TableMetadata || talendItem instanceof Query
+                            || talendItem instanceof SapFunctionMetadata) {
+                        if (talendItem.getLabel().equals(repositoryNode.getProperties(EProperties.LABEL))) {
+                            list.add(businessItem);
+                        }
+
                     }
                 }
             }
@@ -103,6 +117,7 @@ public class FindAssignmentAction extends AContextualAction {
             }
 
             diagramGraphicalViewer.deselectAll();
+            // add a frame when use findAassignment
             for (Iterator iter = editParts.iterator(); iter.hasNext();) {
                 EditPart editPart = (EditPart) iter.next();
                 if (editPart instanceof BusinessItemShapeEditPart) {
