@@ -261,6 +261,9 @@ public class Problems {
      * DOC xhuang refresh the structure of problems view
      */
     public static void refreshProblemTreeView() {
+        if (!PlatformUI.isWorkbenchRunning())
+            return;
+
         if (getProblemView() != null) {
             Display.getDefault().syncExec(new Runnable() {
 
@@ -283,6 +286,9 @@ public class Problems {
      * DOC xtan Comment method "refreshRepositoryView".
      */
     public static void refreshRepositoryView() {
+        if (!PlatformUI.isWorkbenchRunning())
+            return;
+
         Display.getDefault().syncExec(new Runnable() {
 
             /*
