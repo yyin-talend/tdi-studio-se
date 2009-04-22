@@ -408,6 +408,9 @@ public class TableController extends AbstractElementPropertySectionController {
         if (tableViewerCreator != null) {
             List colList = tableViewerCreator.getColumns();
             for (int j = 0; j < itemsValue.length; j++) {
+                if ((j + 1) >= colList.size()) {
+                    break;
+                }
                 if (itemsValue[j] instanceof IElementParameter) {
                     IElementParameter tmpParam = (IElementParameter) itemsValue[j];
                     if (tmpParam.getField() == EParameterFieldType.CONNECTION_LIST) {
@@ -461,6 +464,9 @@ public class TableController extends AbstractElementPropertySectionController {
         if (tableViewerCreator != null) {
             List colList = tableViewerCreator.getColumns();
             for (int j = 0; j < itemsValue.length; j++) {
+                if ((j + 1) >= colList.size()) {
+                    break;
+                }
                 if (itemsValue[j] instanceof IElementParameter) {
                     IElementParameter tmpParam = (IElementParameter) itemsValue[j];
                     if (tmpParam.getField() == EParameterFieldType.COMPONENT_LIST) {
@@ -553,6 +559,9 @@ public class TableController extends AbstractElementPropertySectionController {
         if (tableViewerCreator != null) {
             List colList = tableViewerCreator.getColumns();
             for (int j = 0; j < itemsValue.length; j++) {
+                if ((j + 1) >= colList.size()) {
+                    break;
+                }
                 if (itemsValue[j] instanceof IElementParameter) {
                     IElementParameter tmpParam = (IElementParameter) itemsValue[j];
                     if (tmpParam.getField() == EParameterFieldType.CONTEXT_PARAM_NAME_LIST) {
