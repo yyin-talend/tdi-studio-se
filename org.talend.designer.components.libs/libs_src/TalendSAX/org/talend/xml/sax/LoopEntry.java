@@ -111,6 +111,10 @@ public class LoopEntry {
         return this.rows;
     }
 
+    public void clearRows() {
+        this.rows.clear();
+    }
+
     private Map<String, Function> listFuncs = new HashMap<String, Function>();
 
     private List<Map<String, String>> results = new ArrayList<Map<String, String>>();

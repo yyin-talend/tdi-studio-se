@@ -256,6 +256,7 @@ public class SAXLoopHandler extends DefaultHandler {
                 entry.getRows().add(currentRow);
             }
         }
+
         currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
     }
 
@@ -268,4 +269,9 @@ public class SAXLoopHandler extends DefaultHandler {
         }
         return false;
     }
+
+    public void clearEntryRows() {
+        this.entry.clearRows();
+    }
+
 }
