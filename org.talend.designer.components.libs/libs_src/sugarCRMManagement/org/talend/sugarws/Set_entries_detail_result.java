@@ -1,5 +1,5 @@
 /**
- * Set_entries_result.java
+ * Set_entries_detail_result.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
@@ -7,44 +7,44 @@
 
 package org.talend.sugarws;
 
-public class Set_entries_result  implements java.io.Serializable {
-    private java.lang.String[] ids;
+public class Set_entries_detail_result  implements java.io.Serializable {
+    private org.talend.sugarws.Name_value[][] name_value_lists;
 
     private org.talend.sugarws.Error_value error;
 
-    public Set_entries_result() {
+    public Set_entries_detail_result() {
     }
 
-    public Set_entries_result(
-           java.lang.String[] ids,
+    public Set_entries_detail_result(
+           org.talend.sugarws.Name_value[][] name_value_lists,
            org.talend.sugarws.Error_value error) {
-           this.ids = ids;
+           this.name_value_lists = name_value_lists;
            this.error = error;
     }
 
 
     /**
-     * Gets the ids value for this Set_entries_result.
+     * Gets the name_value_lists value for this Set_entries_detail_result.
      * 
-     * @return ids
+     * @return name_value_lists
      */
-    public java.lang.String[] getIds() {
-        return ids;
+    public org.talend.sugarws.Name_value[][] getName_value_lists() {
+        return name_value_lists;
     }
 
 
     /**
-     * Sets the ids value for this Set_entries_result.
+     * Sets the name_value_lists value for this Set_entries_detail_result.
      * 
-     * @param ids
+     * @param name_value_lists
      */
-    public void setIds(java.lang.String[] ids) {
-        this.ids = ids;
+    public void setName_value_lists(org.talend.sugarws.Name_value[][] name_value_lists) {
+        this.name_value_lists = name_value_lists;
     }
 
 
     /**
-     * Gets the error value for this Set_entries_result.
+     * Gets the error value for this Set_entries_detail_result.
      * 
      * @return error
      */
@@ -54,7 +54,7 @@ public class Set_entries_result  implements java.io.Serializable {
 
 
     /**
-     * Sets the error value for this Set_entries_result.
+     * Sets the error value for this Set_entries_detail_result.
      * 
      * @param error
      */
@@ -64,8 +64,8 @@ public class Set_entries_result  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof Set_entries_result)) return false;
-        Set_entries_result other = (Set_entries_result) obj;
+        if (!(obj instanceof Set_entries_detail_result)) return false;
+        Set_entries_detail_result other = (Set_entries_detail_result) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -74,9 +74,9 @@ public class Set_entries_result  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.ids==null && other.getIds()==null) || 
-             (this.ids!=null &&
-              java.util.Arrays.equals(this.ids, other.getIds()))) &&
+            ((this.name_value_lists==null && other.getName_value_lists()==null) || 
+             (this.name_value_lists!=null &&
+              java.util.Arrays.equals(this.name_value_lists, other.getName_value_lists()))) &&
             ((this.error==null && other.getError()==null) || 
              (this.error!=null &&
               this.error.equals(other.getError())));
@@ -91,11 +91,11 @@ public class Set_entries_result  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getIds() != null) {
+        if (getName_value_lists() != null) {
             for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getIds());
+                 i<java.lang.reflect.Array.getLength(getName_value_lists());
                  i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getIds(), i);
+                java.lang.Object obj = java.lang.reflect.Array.get(getName_value_lists(), i);
                 if (obj != null &&
                     !obj.getClass().isArray()) {
                     _hashCode += obj.hashCode();
@@ -111,14 +111,14 @@ public class Set_entries_result  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Set_entries_result.class, true);
+        new org.apache.axis.description.TypeDesc(Set_entries_detail_result.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.sugarcrm.com/sugarcrm", "set_entries_result"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.sugarcrm.com/sugarcrm", "set_entries_detail_result"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("ids");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "ids"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setFieldName("name_value_lists");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "name_value_lists"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.sugarcrm.com/sugarcrm", "name_value_list"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

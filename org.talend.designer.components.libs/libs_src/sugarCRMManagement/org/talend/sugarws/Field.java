@@ -2,7 +2,7 @@
  * Field.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
 package org.talend.sugarws;
@@ -18,6 +18,8 @@ public class Field  implements java.io.Serializable {
 
     private org.talend.sugarws.Name_value[] options;
 
+    private java.lang.String default_value;
+
     public Field() {
     }
 
@@ -26,12 +28,14 @@ public class Field  implements java.io.Serializable {
            java.lang.String type,
            java.lang.String label,
            int required,
-           org.talend.sugarws.Name_value[] options) {
+           org.talend.sugarws.Name_value[] options,
+           java.lang.String default_value) {
            this.name = name;
            this.type = type;
            this.label = label;
            this.required = required;
            this.options = options;
+           this.default_value = default_value;
     }
 
 
@@ -134,6 +138,26 @@ public class Field  implements java.io.Serializable {
         this.options = options;
     }
 
+
+    /**
+     * Gets the default_value value for this Field.
+     * 
+     * @return default_value
+     */
+    public java.lang.String getDefault_value() {
+        return default_value;
+    }
+
+
+    /**
+     * Sets the default_value value for this Field.
+     * 
+     * @param default_value
+     */
+    public void setDefault_value(java.lang.String default_value) {
+        this.default_value = default_value;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Field)) return false;
@@ -158,7 +182,10 @@ public class Field  implements java.io.Serializable {
             this.required == other.getRequired() &&
             ((this.options==null && other.getOptions()==null) || 
              (this.options!=null &&
-              java.util.Arrays.equals(this.options, other.getOptions())));
+              java.util.Arrays.equals(this.options, other.getOptions()))) &&
+            ((this.default_value==null && other.getDefault_value()==null) || 
+             (this.default_value!=null &&
+              this.default_value.equals(other.getDefault_value())));
         __equalsCalc = null;
         return _equals;
     }
@@ -190,6 +217,9 @@ public class Field  implements java.io.Serializable {
                     _hashCode += obj.hashCode();
                 }
             }
+        }
+        if (getDefault_value() != null) {
+            _hashCode += getDefault_value().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -229,6 +259,12 @@ public class Field  implements java.io.Serializable {
         elemField.setFieldName("options");
         elemField.setXmlName(new javax.xml.namespace.QName("", "options"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.sugarcrm.com/sugarcrm", "name_value"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("default_value");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "default_value"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

@@ -1,5 +1,5 @@
 /**
- * Set_entries_result.java
+ * Get_entries_count_result.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
@@ -7,44 +7,44 @@
 
 package org.talend.sugarws;
 
-public class Set_entries_result  implements java.io.Serializable {
-    private java.lang.String[] ids;
+public class Get_entries_count_result  implements java.io.Serializable {
+    private int result_count;
 
     private org.talend.sugarws.Error_value error;
 
-    public Set_entries_result() {
+    public Get_entries_count_result() {
     }
 
-    public Set_entries_result(
-           java.lang.String[] ids,
+    public Get_entries_count_result(
+           int result_count,
            org.talend.sugarws.Error_value error) {
-           this.ids = ids;
+           this.result_count = result_count;
            this.error = error;
     }
 
 
     /**
-     * Gets the ids value for this Set_entries_result.
+     * Gets the result_count value for this Get_entries_count_result.
      * 
-     * @return ids
+     * @return result_count
      */
-    public java.lang.String[] getIds() {
-        return ids;
+    public int getResult_count() {
+        return result_count;
     }
 
 
     /**
-     * Sets the ids value for this Set_entries_result.
+     * Sets the result_count value for this Get_entries_count_result.
      * 
-     * @param ids
+     * @param result_count
      */
-    public void setIds(java.lang.String[] ids) {
-        this.ids = ids;
+    public void setResult_count(int result_count) {
+        this.result_count = result_count;
     }
 
 
     /**
-     * Gets the error value for this Set_entries_result.
+     * Gets the error value for this Get_entries_count_result.
      * 
      * @return error
      */
@@ -54,7 +54,7 @@ public class Set_entries_result  implements java.io.Serializable {
 
 
     /**
-     * Sets the error value for this Set_entries_result.
+     * Sets the error value for this Get_entries_count_result.
      * 
      * @param error
      */
@@ -64,8 +64,8 @@ public class Set_entries_result  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof Set_entries_result)) return false;
-        Set_entries_result other = (Set_entries_result) obj;
+        if (!(obj instanceof Get_entries_count_result)) return false;
+        Get_entries_count_result other = (Get_entries_count_result) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -74,9 +74,7 @@ public class Set_entries_result  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.ids==null && other.getIds()==null) || 
-             (this.ids!=null &&
-              java.util.Arrays.equals(this.ids, other.getIds()))) &&
+            this.result_count == other.getResult_count() &&
             ((this.error==null && other.getError()==null) || 
              (this.error!=null &&
               this.error.equals(other.getError())));
@@ -91,17 +89,7 @@ public class Set_entries_result  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getIds() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getIds());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getIds(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
+        _hashCode += getResult_count();
         if (getError() != null) {
             _hashCode += getError().hashCode();
         }
@@ -111,14 +99,14 @@ public class Set_entries_result  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Set_entries_result.class, true);
+        new org.apache.axis.description.TypeDesc(Get_entries_count_result.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.sugarcrm.com/sugarcrm", "set_entries_result"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.sugarcrm.com/sugarcrm", "get_entries_count_result"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("ids");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "ids"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setFieldName("result_count");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "result_count"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

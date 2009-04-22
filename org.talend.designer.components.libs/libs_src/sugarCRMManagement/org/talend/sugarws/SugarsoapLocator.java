@@ -2,7 +2,7 @@
  * SugarsoapLocator.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
 package org.talend.sugarws;
@@ -22,7 +22,7 @@ public class SugarsoapLocator extends org.apache.axis.client.Service implements 
     }
 
     // Use to get a proxy class for sugarsoapPort
-    private java.lang.String sugarsoapPort_address = "http://intranet/sugarcrm/soap.php";
+    private java.lang.String sugarsoapPort_address = "http://127.0.0.1:80/sugarcrm/soap.php";
 
     public java.lang.String getsugarsoapPortAddress() {
         return sugarsoapPort_address;
