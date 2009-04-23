@@ -526,8 +526,7 @@ public abstract class AbstractForm extends Composite {
                     processWhenDispose();
                     ShadowProcessHelper.forceStopPreview();
                     //
-                    ExtractMetaDataUtils.isReconnect = false; // seems only use for cdc
-                    ExtractMetaDataUtils.closeConnection();
+                    ExtractMetaDataUtils.closeConnection(true);
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
