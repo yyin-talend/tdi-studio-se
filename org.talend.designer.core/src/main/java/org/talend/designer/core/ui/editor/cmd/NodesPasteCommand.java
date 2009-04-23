@@ -453,7 +453,9 @@ public class NodesPasteCommand extends Command {
                                 // See Bug 0005722: the pasted component don't keep the same read-only mode and didn;t
                                 // hide
                                 // the password.
-                                elementParameter.setReadOnly(param.isReadOnly());
+
+                                elementParameter.setReadOnly(param.getOriginalityReadOnly());
+
                                 elementParameter.setRepositoryValueUsed(param.isRepositoryValueUsed());
                             }
                         }

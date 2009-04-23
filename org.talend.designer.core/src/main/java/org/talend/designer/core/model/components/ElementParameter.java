@@ -331,6 +331,10 @@ public class ElementParameter implements IElementParameter {
         return this.readOnly;
     }
 
+    public boolean getOriginalityReadOnly() {
+        return this.readOnly;
+    }
+
     public void setReadOnly(final boolean readOnly) {
         this.readOnly = readOnly;
     }
