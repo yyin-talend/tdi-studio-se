@@ -56,32 +56,70 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 		}
 	}
-%>	
-	currentRowKey<%=cid %> = ""
+	
+	for (int i=0; i<metadata.getListColumns().size();i++) {
+		IMetadataColumn column = metadata.getListColumns().get(i);
+		Map<String,String> keyColumn = keyColumns.get(i);
+		if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+			boolean caseSensitive = keyColumn.get("CASE_SENSITIVE").equals("true");
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			if(javaType == JavaTypesManager.STRING) {
+				if(caseSensitive){
+		%>
+finder_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
 <%
-		for (IMetadataColumn column: metadata.getListColumns()) {
-			Map<String, String> keyColumn = keyColumns.get(ii);
-			if (keyColumn.get("KEY_ATTRIBUTE").equals("true")) {
-				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType()); 
+				}else{
 %>
-	+ <% 
-		if (!javaType.isPrimitive()) { 
-	%>
-		((<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%> + <%=connName %>.<%=column.getLabel() %>.toString().length():null)
-	<% 
-		} else {
-	%>
-		<%=connName %>.<%=column.getLabel() %>
-	<% 
-		}
-	%>
+if(<%=connName %>.<%=column.getLabel() %> == null){
+	finder_<%=cid %>.<%=column.getLabel() %> = null;
+}else{
+	finder_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>.toLowerCase();
+}
+<%
+				}
+			}else{
+%>
+finder_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
 <%
 			}
-			ii++;
-		} 
-%>;
-	if (!keys<%=cid %>.contains(currentRowKey<%=cid %>)) {
-		keys<%=cid %>.add(currentRowKey<%=cid %>);
+		}
+	}
+%>	
+finder_<%=cid %>.hashCodeDirty = true;
+if (!keys<%=cid %>.contains(finder_<%=cid %>)) {
+		KeyStruct_<%=cid %> new_<%=cid %> = new KeyStruct_<%=cid %>();
+
+		<%
+	for (int ij=0; ij<metadata.getListColumns().size();ij++) {
+		IMetadataColumn column = metadata.getListColumns().get(ij);
+		Map<String,String> keyColumn = keyColumns.get(ij);
+		if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+			boolean caseSensitive = keyColumn.get("CASE_SENSITIVE").equals("true");
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			if(javaType == JavaTypesManager.STRING) {
+				if(caseSensitive){
+		%>
+new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
+<%
+				}else{
+%>
+if(<%=connName %>.<%=column.getLabel() %> == null){
+	new_<%=cid %>.<%=column.getLabel() %> = null;
+}else{
+	new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>.toLowerCase();
+}
+<%
+				}
+			}else{
+%>
+new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
+<%
+			}
+		}
+	}
+		%>
+		
+		keys<%=cid %>.add(new_<%=cid %>);
 <%
 	if (connsUnique!=null) {
 		if (connsUnique.size()>0) {
@@ -110,8 +148,39 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 					if(onlyOnceEachDuplicatedKey.equals("true")){
 					%>
-if (!keysForDuplicated<%=cid %>.contains(currentRowKey<%=cid %>)) {
-	keysForDuplicated<%=cid %>.add(currentRowKey<%=cid %>);
+if (!keysForDuplicated<%=cid %>.contains(finder_<%=cid %>)) {
+		KeyStruct_<%=cid %> new_<%=cid %> = new KeyStruct_<%=cid %>();
+
+		<%
+	for (int ik=0; ik<metadata.getListColumns().size();ik++) {
+		IMetadataColumn column = metadata.getListColumns().get(ik);
+		Map<String,String> keyColumn = keyColumns.get(ik);
+		if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+			boolean caseSensitive = keyColumn.get("CASE_SENSITIVE").equals("true");
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			if(javaType == JavaTypesManager.STRING) {
+				if(caseSensitive){
+		%>
+new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
+<%
+				}else{
+%>
+if(<%=connName %>.<%=column.getLabel() %> == null){
+	new_<%=cid %>.<%=column.getLabel() %> = null;
+}else{
+	new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>.toLowerCase();
+}
+<%
+				}
+			}else{
+%>
+new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
+<%
+			}
+		}
+	}
+		%>
+	keysForDuplicated<%=cid %>.add(new_<%=cid %>);
 					<%
 					}
 %>
