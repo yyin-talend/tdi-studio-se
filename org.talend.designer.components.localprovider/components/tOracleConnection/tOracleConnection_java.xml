@@ -42,6 +42,8 @@
       NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:ORACLE"
     />
+	
+	
     
     <PARAMETER
       NAME="CONNECTION_TYPE"
@@ -66,9 +68,9 @@
 		</ITEMS>
 	</PARAMETER>
 
-	<PARAMETER NAME="USE_TNS_FILE" FIELD="CHECK"
+	<!--PARAMETER NAME="USE_TNS_FILE" FIELD="CHECK"
 		NUM_ROW="28"
-		SHOW_IF="IS_USE_SYS_CONNECTION =='false'"
+		SHOW_IF="USE_SHARED_CONNECTION =='false'"
 		>
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -80,7 +82,7 @@
       SHOW_IF="(USE_TNS_FILE == 'true') AND (USE_SHARED_CONNECTION =='false') "
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>	
+    </PARAMETER-->	
 
     <PARAMETER
       NAME="HOST"
@@ -178,6 +180,7 @@
       NUM_ROW="90"
       REQUIRED="true"
     >      
+	<DEFAULT>false</DEFAULT>
     </PARAMETER>
 	
 	<PARAMETER
