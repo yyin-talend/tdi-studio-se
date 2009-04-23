@@ -230,7 +230,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 table, metaTable);
                         param.setRepositoryValueUsed(true);
                     } else if (param.getField().equals(EParameterFieldType.TABLE)
-                            && param.getRepositoryValue().equals("WSDL_PARAMS")) { //$NON-NLS-1$
+                            && param.getRepositoryValue().equals("WSDL_PARAMS") && connection != null) { //$NON-NLS-1$
                         List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                         table.clear();
                         ArrayList parameters = ((WSDLSchemaConnection) connection).getParameters();
