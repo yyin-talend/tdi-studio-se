@@ -171,6 +171,7 @@ public class FilterTraceColumnAction extends SelectionAction {
             tableColumn.setText(Messages.getString("FilterTraceColumnAction.Column")); //$NON-NLS-1$
             tableColumn.setWidth(100);
 
+            // PTODO if enable trace condition, only active this.
             // tableColumn = new TableColumn(tab, SWT.NONE);
             // tableColumn.setText(Messages.getString("FilterTraceColumnAction.Condition")); //$NON-NLS-1$
             // tableColumn.setWidth(200);
