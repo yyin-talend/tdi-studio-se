@@ -13,14 +13,12 @@
 package org.talend.scheduler.ui;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -38,9 +36,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 import org.talend.scheduler.SchedulerPlugin;
 import org.talend.scheduler.core.CommandModeType;
 import org.talend.scheduler.core.ExceptionHandler;
@@ -318,19 +319,19 @@ public class SchedulerTaskPropertyDialog extends Dialog {
 
         private Text text;
 
-        private Combo contextCombo;
+        private Text jobText;
 
-        private Combo jobCombo;
+        private Combo contextCombo;
 
         private Combo projectCombo;
 
         private Button button;
 
+        private Button jobButton;
+
         private TabFolder tf;
 
         private TalendJobManager jobManager;
-
-        private ComboViewer jobComboViewer;
 
         /**
          * Sets the changeListener.
@@ -347,12 +348,12 @@ public class SchedulerTaskPropertyDialog extends Dialog {
          * @param taskInput ScheduleTask
          */
         public void updateTaskProperty(ScheduleTask taskInput) {
-            String[] splitedJobName = jobCombo.getText().split(String.valueOf(IPath.SEPARATOR));
+            String[] splitedJobName = jobText.getText().split(String.valueOf(IPath.SEPARATOR));
             String jobName = splitedJobName[splitedJobName.length - 1];
 
             JobInfo jobInfo = jobManager.getMainJobInfoByName(jobName);
 
-            taskInput.setFullJobNameAndPath(jobCombo.getText());
+            taskInput.setFullJobNameAndPath(jobText.getText());
             taskInput.setJobInfo(jobInfo);
             taskInput.setContext(contextCombo.getText());
             taskInput.setProject(projectCombo.getText());
@@ -381,7 +382,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             } else {
                 tf.setSelection(CommandModeType.TalendJob.ordinal());
                 projectCombo.setText(taskInput.getProject());
-                jobCombo.setText(taskInput.getJob().getJobName());
+                jobText.setText(taskInput.getJob().getJobName());
                 contextCombo.setText(taskInput.getContext());
             }
         }
@@ -457,9 +458,9 @@ public class SchedulerTaskPropertyDialog extends Dialog {
          * @return Composite
          */
         private Composite createTalendCommand(Composite parent) {
-            Composite container = new Composite(parent, SWT.NONE);
+            final Composite container = new Composite(parent, SWT.NONE);
             GridLayout layout = new GridLayout();
-            layout.numColumns = 6;
+            layout.numColumns = 7;
             layout.horizontalSpacing = 20;
             container.setLayout(layout);
 
@@ -475,16 +476,29 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             label = new Label(container, SWT.NONE);
             label.setText(Messages.getString("SchedulerTaskPropertyDialog.jobLabel")); //$NON-NLS-1$
 
-            // see bug 7030
-            jobComboViewer = new ComboViewer(container, SWT.NONE);
-            jobComboViewer.setContentProvider(new ArrayContentProvider());
-            jobComboViewer.setLabelProvider(new LabelProvider());
-            jobComboViewer.setSorter(new ViewerSorter());
-            jobCombo = jobComboViewer.getCombo();
+            jobText = new Text(container, SWT.READ_ONLY | SWT.BORDER);
+
+            jobButton = new Button(container, SWT.PUSH);
+            jobButton.setText("...");
+            jobButton.setToolTipText("Open job hierarchy");
+
+            jobButton.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+                    RepositoryReviewDialog jobRevieDialog = new RepositoryReviewDialog(container.getShell(),
+                            ERepositoryObjectType.PROCESS);
+                    if (jobRevieDialog.open() == Window.OK) {
+                        RepositoryNode result = jobRevieDialog.getResult();
+                        if (result != null) {
+                            jobText.setText(jobManager.getJobPathString(result.getObject().getProperty().getLabel()));
+                        }
+                    }
+                }
+
+            });
 
             gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
             // gridData_1.widthHint = 525;
-            jobCombo.setLayoutData(gd);
 
             label = new Label(container, SWT.NONE);
             label.setText(Messages.getString("SchedulerTaskPropertyDialog.contextLabel")); //$NON-NLS-1$
@@ -506,13 +520,13 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             };
 
             projectCombo.addModifyListener(genCommandListener);
-            jobCombo.addModifyListener(genCommandListener);
+            jobText.addModifyListener(genCommandListener);
             contextCombo.addModifyListener(genCommandListener);
 
             ModifyListener syncJobAndContextListener = new ModifyListener() {
 
                 public void modifyText(ModifyEvent e) {
-                    String jobName = jobCombo.getText();
+                    String jobName = jobText.getText();
                     jobName = jobName.substring(jobName.lastIndexOf("/") + 1); //$NON-NLS-1$
 
                     List<String> contextList = jobManager.updateContextList(jobName);
@@ -524,7 +538,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
                 }
             };
 
-            jobCombo.addModifyListener(syncJobAndContextListener);
+            jobText.addModifyListener(syncJobAndContextListener);
 
             return container;
         }
@@ -534,8 +548,13 @@ public class SchedulerTaskPropertyDialog extends Dialog {
          */
         private void refreshTalendJobCommand() {
             try {
-                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobCombo.getText(), contextCombo
-                        .getText());
+                // if no job exist in text, will not refresh
+                String jobTextValue = jobText.getText();
+                String contextCombotext = contextCombo.getText();
+                if (jobTextValue == null || "".equals(jobTextValue) || contextCombotext == null || "".equals(contextCombotext)) {
+                    return;
+                }
+                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobTextValue, contextCombotext);
                 refreshCommandDiaplay(command);
             } catch (Exception ex) {
                 SchedulerPlugin.log(ex);
@@ -551,18 +570,13 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             projectCombo.setItems(new String[] { (jobManager.getCurrentProject().getLabel()) });
             projectCombo.select(0);
 
-            List<String> jobs = jobManager.getCurrentProjectJobs();
+            Map<String, String> jobs = jobManager.getCurrentProjectJobs();
             if (jobs.isEmpty()) {
                 return;
             }
-            String[] jobItems = jobs.toArray(new String[jobs.size()]);
-            jobComboViewer.setInput(jobItems);
 
             if (dialogType.equals(DialogType.ADD)) {
-
-                jobCombo.select(0);
-
-                String selectedJobName = jobItems[0];
+                String selectedJobName = jobs.values().iterator().next();
                 selectedJobName = selectedJobName.substring(selectedJobName.lastIndexOf("/") + 1); //$NON-NLS-1$
                 // change context's value
                 List<String> contextList = jobManager.updateContextList(selectedJobName);
@@ -579,7 +593,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
 
                 String selectedJobName = task.getFullJobNameAndPath();
 
-                jobCombo.setText(selectedJobName);
+                jobText.setText(selectedJobName);
 
                 selectedJobName = selectedJobName.substring(selectedJobName.lastIndexOf("/") + 1); //$NON-NLS-1$
 
@@ -679,7 +693,8 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             button.setEnabled(enabled);
             text.setEnabled(enabled);
             contextCombo.setEnabled(enabled);
-            jobCombo.setEnabled(enabled);
+            jobText.setEnabled(enabled);
+            jobButton.setEnabled(enabled);
             projectCombo.setEnabled(enabled);
         }
     }

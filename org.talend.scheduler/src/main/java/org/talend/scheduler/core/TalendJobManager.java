@@ -60,6 +60,8 @@ public class TalendJobManager {
 
     private Map<String, JobInfo> mainJobInfoByName;
 
+    private Map<String, String> processNameList = new HashMap<String, String>();
+
     /**
      * 
      * Default constructor.
@@ -151,8 +153,8 @@ public class TalendJobManager {
      * @return a List of jobs
      * @exception
      */
-    public List<String> getCurrentProjectJobs() {
-        List<String> processNameList = new ArrayList<String>();
+    public Map<String, String> getCurrentProjectJobs() {
+        processNameList.clear();
 
         for (String string : runjobInfosByName.keySet()) {
             runjobInfosByName.remove(string);
@@ -171,17 +173,23 @@ public class TalendJobManager {
                 Item item = process.getProperty().getItem();
                 if (item instanceof ProcessItem) {
                     List<JobInfo> jobInfos = new ArrayList<JobInfo>();
-                    JobInfo mainJobInfo = new JobInfo((ProcessItem) item, ((ProcessItem) item).getProcess()
-                            .getDefaultContext());
+                    JobInfo mainJobInfo = new JobInfo((ProcessItem) item, ((ProcessItem) item).getProcess().getDefaultContext());
                     // jobInfos.add(mainJobInfo);
                     jobInfos.addAll(ProcessorUtilities.getChildrenJobInfo((ProcessItem) item));
                     mainJobInfoByName.put(process.getLabel(), mainJobInfo);
                     runjobInfosByName.put(process.getLabel(), jobInfos);
                 }
-                processNameList.add(name);
+                processNameList.put(process.getLabel(), name);
             }
         }
         return processNameList;
+    }
+
+    public String getJobPathString(String jobLable) {
+        if (jobLable != null) {
+            return processNameList.get(jobLable);
+        }
+        return null;
     }
 
     /**
