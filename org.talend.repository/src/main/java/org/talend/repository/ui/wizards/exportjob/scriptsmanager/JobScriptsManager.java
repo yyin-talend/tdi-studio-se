@@ -587,9 +587,8 @@ public abstract class JobScriptsManager {
                                         // project file
                                         IPath projectFilePath = getCorrespondingProjectRootPath(item2).append(
                                                 FileConstants.LOCAL_PROJECT_FILENAME);
-                                        checkAndAddProjectResource(allResources, resource, JOB_SOURCE_FOLDER_NAME
-                                                + PATH_SEPARATOR + projectName, FileLocator.toFileURL(projectFilePath.toFile()
-                                                .toURL()));
+                                        checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR
+                                                + projectName, FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                                         IPath itemFilePath = projectRootPath.append(typeFolderPath).append(metadataPath).append(
                                                 metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
@@ -599,7 +598,7 @@ public abstract class JobScriptsManager {
                                         List<URL> metadataNameFileUrls = new ArrayList<URL>();
                                         metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
                                         metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-                                        String basePath = JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
+                                        String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
                                                 + typeFolderPath.toOSString();
                                         resource.addResources(basePath, metadataNameFileUrls);
                                     }
@@ -646,7 +645,7 @@ public abstract class JobScriptsManager {
                             // project file
                             IPath projectFilePath = getCorrespondingProjectRootPath(item2).append(
                                     FileConstants.LOCAL_PROJECT_FILENAME);
-                            checkAndAddProjectResource(allResources, resource, JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR
+                            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR
                                     + projectName, FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                             IPath itemFilePath = emfContextRootPath.append(contextPath).append(
@@ -656,7 +655,7 @@ public abstract class JobScriptsManager {
                             List<URL> contextFileUrls = new ArrayList<URL>();
                             contextFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
                             contextFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-                            String basePath = JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
+                            String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
                                     + JOB_CONTEXT_FOLDER;
                             resource.addResources(basePath, contextFileUrls);
                         }
