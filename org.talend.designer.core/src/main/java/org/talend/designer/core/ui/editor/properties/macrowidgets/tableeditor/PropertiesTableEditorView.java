@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -157,13 +158,16 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
             final int curCol = i;
             final IElementParameter currentParam = (IElementParameter) itemsValue[i];
 
-            boolean toDisplay = false;
-            List<Map<String, Object>> fullTable = (List<Map<String, Object>>) param.getValue();
-            for (int curLine = 0; curLine < fullTable.size(); curLine++) {
-                ((ElementParameter) currentParam).setCurrentRow(curLine);
-                if (currentParam.isShow(element.getElementParameters())) {
-                    toDisplay = true;
-                    break;
+            boolean toDisplay = !StringUtils.isEmpty(currentParam.getShowIf())
+                    && !StringUtils.isEmpty(currentParam.getNotShowIf());
+            if (!toDisplay) {
+                List<Map<String, Object>> fullTable = (List<Map<String, Object>>) param.getValue();
+                for (int curLine = 0; curLine < fullTable.size(); curLine++) {
+                    ((ElementParameter) currentParam).setCurrentRow(curLine);
+                    if (currentParam.isShow(element.getElementParameters())) {
+                        toDisplay = true;
+                        break;
+                    }
                 }
             }
 
@@ -436,14 +440,6 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 }
                                 return value; // already RGB
                             default: // TEXT
-                                // Map<String, Object> valueMap = (Map<String, Object>) bean;
-                                // List<Map<String, Object>> fullValues = (List<Map<String, Object>>) param.getValue();
-                                // int index = fullValues.indexOf(valueMap);
-                                // ((ElementParameter) currentParam).setCurrentRow(index);
-                                // if (currentParam.isReadOnly(element.getElementParameters())) {
-                                // return "#####";
-                                // }
-
                                 return value;
                             }
                         }
