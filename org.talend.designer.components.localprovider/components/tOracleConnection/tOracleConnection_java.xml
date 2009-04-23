@@ -68,9 +68,9 @@
 		</ITEMS>
 	</PARAMETER>
 
-	<!--PARAMETER NAME="USE_TNS_FILE" FIELD="CHECK"
+	<PARAMETER NAME="USE_TNS_FILE" FIELD="CHECK"
 		NUM_ROW="28"
-		SHOW_IF="USE_SHARED_CONNECTION =='false'"
+		SHOW="false"
 		>
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -79,10 +79,10 @@
       NAME="TNS_FILE"
       FIELD="FILE"
       NUM_ROW="29"
-      SHOW_IF="(USE_TNS_FILE == 'true') AND (USE_SHARED_CONNECTION =='false') "
+      SHOW="false"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER-->	
+    </PARAMETER>	
 
     <PARAMETER
       NAME="HOST"
