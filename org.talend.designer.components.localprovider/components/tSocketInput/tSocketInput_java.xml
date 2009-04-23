@@ -34,12 +34,21 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
+  
     <PARAMETER
-      NAME="HOSTNAME"
-      FIELD="TEXT"
+      NAME="BIND_HOSTNAME"
+      FIELD="CHECK"
       SHOW="true"
       NUM_ROW="10" 
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>  
+
+    <PARAMETER
+      NAME="SERVERHOSTNAME"
+      FIELD="TEXT"
+      SHOW_IF="BIND_HOSTNAME == 'true'"
+      NUM_ROW="12" 
     >
     	<DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
@@ -48,7 +57,7 @@
       NAME="PORT"
       FIELD="TEXT"
       SHOW="true"
-      NUM_ROW="10" 
+      NUM_ROW="15" 
     >
     	<DEFAULT>3456</DEFAULT>
     </PARAMETER>

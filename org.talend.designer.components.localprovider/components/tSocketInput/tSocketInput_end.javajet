@@ -24,7 +24,7 @@
             //in<%=cid %>.close(); 
             socket<%=cid %>.close();
             done<%=cid %> = false;
-            } 
+
         }
         globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
 <%
