@@ -630,17 +630,25 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 return null;
             }
 
+            IMetadataTable originaleMetadataTable = getMetadataTableFromXml(node);
             // check if the outputMetadata is readonly
             IMetadataTable originaleOutputTable = node.getMetadataFromConnector(param.getContext());
-
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
                 IMetadataColumn columnCopied = outputMetaCopy.getColumn(column.getLabel());
                 columnCopied.setCustom(column.isCustom());
                 columnCopied.setReadOnly(column.isReadOnly());
+                if (("tLogCatcher".equals(node.getComponent().getName()) || "tStatCatcher".equals(node.getComponent().getName()))
+                        && !outputMetaCopy.sameMetadataAs(originaleMetadataTable, IMetadataColumn.OPTIONS_NONE)) {
+                    columnCopied.setReadOnly(false);
+                }
                 // setColumnLength(node, param, columnCopied);
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
+            if (("tLogCatcher".equals(node.getComponent().getName()) || "tStatCatcher".equals(node.getComponent().getName()))
+                    && !outputMetaCopy.sameMetadataAs(originaleMetadataTable, IMetadataColumn.OPTIONS_NONE)) {
+                outputMetaCopy.setReadOnly(false);
+            }
 
             IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE"); //$NON-NLS-1$
             List<IElementParameterDefaultValue> defaultValues = schemaTypeParam.getDefaultValues();
@@ -909,6 +917,15 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
         }
 
+        return null;
+    }
+
+    private IMetadataTable getMetadataTableFromXml(Node node) {
+        IElementParameter param = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+        if (param.getValue() instanceof IMetadataTable) {
+            IMetadataTable table = (IMetadataTable) param.getValue();
+            return table;
+        }
         return null;
     }
 
