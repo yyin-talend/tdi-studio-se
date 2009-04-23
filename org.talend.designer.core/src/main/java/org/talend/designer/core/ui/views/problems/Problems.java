@@ -261,9 +261,9 @@ public class Problems {
      * DOC xhuang refresh the structure of problems view
      */
     public static void refreshProblemTreeView() {
-        if (!PlatformUI.isWorkbenchRunning())
+        if (!isWorkbenchStarted())
             return;
-
+        
         if (getProblemView() != null) {
             Display.getDefault().syncExec(new Runnable() {
 
@@ -278,6 +278,20 @@ public class Problems {
             });
         }
     }
+    /***
+     * workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=49316
+     */
+    private static boolean isWorkbenchStarted() {
+        if (!PlatformUI.isWorkbenchRunning())
+            return false;
+        try {
+            PlatformUI.getWorkbench();
+            PlatformUI.getWorkbench().getWorkbenchWindows();
+        } catch (Exception e) {
+            return false;
+        }
+        return PlatformUI.getWorkbench().getWorkbenchWindows().length > 0;
+    }
 
     public static void refreshEditorTitleImage() {
     }
@@ -286,9 +300,9 @@ public class Problems {
      * DOC xtan Comment method "refreshRepositoryView".
      */
     public static void refreshRepositoryView() {
-        if (!PlatformUI.isWorkbenchRunning())
+        if (!isWorkbenchStarted())
             return;
-
+        
         Display.getDefault().syncExec(new Runnable() {
 
             /*
