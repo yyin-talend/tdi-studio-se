@@ -133,8 +133,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         passwordText = new LabelledText(group, "Password ", 2); //$NON-NLS-1$
         passwordText.getTextControl().setEchoChar(pwdEhcoChar);
 
-        moduleNameCombo = new LabelledCombo(group,
-                "Module name", Messages.getString("SalesforceStep1Form.selectModuleName"), null, 2, false); //$NON-NLS-1$ //$NON-NLS-2$
+        moduleNameCombo = new LabelledCombo(group, Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
+                null, 2, false);
 
         initModuleNames();
 
