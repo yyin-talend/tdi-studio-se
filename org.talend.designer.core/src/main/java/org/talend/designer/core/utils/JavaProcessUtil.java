@@ -14,8 +14,10 @@ package org.talend.designer.core.utils;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.hsqldb.lib.StringUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EParameterFieldType;
@@ -171,6 +173,16 @@ public class JavaProcessUtil {
 
             for (String jar : path.split(separator)) {
                 neededLibraries.add(jar);
+            }
+        }
+        if (curParam.getName().equals("HOTLIBS")) { //$NON-NLS-1$
+            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
+
+            for (Map<String, Object> line : tableValues) {
+                if (line.containsKey("LIBPATH") && !StringUtil.isEmpty((String) line.get("LIBPATH"))) {
+                    String path = (String) line.get("LIBPATH");
+                    neededLibraries.add(TalendTextUtils.removeQuotes(path));
+                }
             }
         }
     }
