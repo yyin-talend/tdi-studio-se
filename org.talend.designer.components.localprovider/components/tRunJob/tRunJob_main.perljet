@@ -141,7 +141,7 @@ foreach my $context_key (keys %_context) {
         sprintf(
             '--context_param %s=%s',
             $context_key,
-            $cb_<%=cid%>->encode($_context{$context_key})
+            $cb_<%=cid%>->encode($_context{$context_key}, '')
         )
     );
 }
@@ -154,7 +154,7 @@ for (int i=0; i<contextParams.size(); i++) {
     String name = contextParam.get("PARAM_NAME_COLUMN");
     String value = contextParam.get("PARAM_VALUE_COLUMN");
 %>
-push @arguments, '--context_param <%=name%>='.$cb_<%=cid%>->encode(<%=value%>);
+push @arguments, '--context_param <%=name%>='.$cb_<%=cid%>->encode(<%=value%>, '');
 <%
 }
 %>
