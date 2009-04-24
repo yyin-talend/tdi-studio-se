@@ -24,7 +24,8 @@ public enum SurrogateCreationType {
     AUTO_INCREMENT(0, "Auto increment", ScdParameterConstants.AUTO_INCREMENT), //$NON-NLS-1$
     INPUT_FIELD(1, "Input field", ScdParameterConstants.INPUT_FIELD), //$NON-NLS-1$
     ROUTINE(2, "Routine", ScdParameterConstants.ROUTINE), //$NON-NLS-1$
-    TABLE_MAX(3, "Table max + 1", ScdParameterConstants.TABLE_MAX); //$NON-NLS-1$
+    TABLE_MAX(3, "Table max + 1", ScdParameterConstants.TABLE_MAX), //$NON-NLS-1$
+    DB_SEQUENCE(4, "DB Sequence", ScdParameterConstants.DB_SEQUENCE); //$NON-NLS-1$
 
     int index;
 

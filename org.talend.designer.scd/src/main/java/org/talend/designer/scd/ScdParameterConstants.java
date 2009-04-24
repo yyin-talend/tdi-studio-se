@@ -91,7 +91,11 @@ public class ScdParameterConstants {
 
     public static final String TABLE_MAX = "TABLE_MAX"; //$NON-NLS-1$
 
+    public static final String DB_SEQUENCE = "DB_SEQUENCE";//$NON-NLS-1$
+
     public static final String SK_INPUT_FIELD = "SK_INPUT_FIELD"; //$NON-NLS-1$
 
     public static final String SK_ROUTINE = "SK_ROUTINE"; //$NON-NLS-1$
+
+    public static final String SK_DB_SEQUENCE = "SK_DB_SEQUENCE";//$NON-NLS-1$
 }

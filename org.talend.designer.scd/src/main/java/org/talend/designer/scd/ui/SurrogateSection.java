@@ -61,7 +61,11 @@ public class SurrogateSection extends ScdSection {
 
     private Text routineText;
 
+    private Text dbSequenceText;
+
     private Runnable creationSwitch;
+
+    private Composite dbSequenceComp;
 
     /**
      * DOC hcw SurrogateSection constructor comment.
@@ -116,7 +120,7 @@ public class SurrogateSection extends ScdSection {
         GridDataFactory.swtDefaults().applyTo(creationLabel);
 
         creationCombo = new CCombo(composite, SWT.READ_ONLY | SWT.BORDER);
-        creationCombo.setItems(SurrogateCreationType.getAllTypeNames());
+        creationCombo.setItems(getScdManager().getSurrogateCreationTypeNames());
         GridDataFactory.swtDefaults().hint(SURROGATE_FIELD_WIDTH + 3, SWT.DEFAULT).applyTo(creationCombo);
 
         // row 3
@@ -139,6 +143,29 @@ public class SurrogateSection extends ScdSection {
         IDragDropDelegate delegate = createDragDropDelegate(inputFieldLabel);
         dragDropManager.addDragSupport(inputFieldLabel, delegate);
         dragDropManager.addDropSupport(inputFieldLabel, delegate);
+
+        // show DB_SEQUENCE in OraleSCD
+        final boolean enableOracle = getScdManager().enableOracle();
+        if (enableOracle) {
+            dbSequenceComp = new Composite(complementComp, SWT.NONE);
+            GridLayoutFactory.fillDefaults().applyTo(dbSequenceComp);
+            dbSequenceText = new Text(dbSequenceComp, SWT.BORDER);
+            dbSequenceText.addModifyListener(new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    if (StringUtils.isEmpty(dbSequenceText.getText())) {
+                        dbSequenceText.setBackground(ERROR_COLOR);
+                    } else {
+                        dbSequenceText.setBackground(white);
+                    }
+                    if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
+                        key.setComplement(dbSequenceText.getText());
+                    }
+                }
+            });
+            GridDataFactory.fillDefaults().hint(SURROGATE_FIELD_WIDTH, SWT.DEFAULT).applyTo(dbSequenceText);
+            TalendProposalUtils.installOn(dbSequenceText, null);
+        }
 
         final Composite routineFieldComp = new Composite(complementComp, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(routineFieldComp);
@@ -181,9 +208,10 @@ public class SurrogateSection extends ScdSection {
                     } else {
                         routineText.setBackground(white);
                     }
-
                     inputFieldLabel.setText(""); //$NON-NLS-1$
-
+                    if (enableOracle) {
+                        dbSequenceText.setText("");//$NON-NLS-1$
+                    }
                 } else if (type == SurrogateCreationType.INPUT_FIELD) {
                     stack.topControl = inputFieldComp; // inputFieldLabel;
                     if (StringUtils.isEmpty(inputFieldLabel.getText())) {
@@ -193,10 +221,26 @@ public class SurrogateSection extends ScdSection {
                         inputFieldLabel.setBackground(null);
                     }
                     routineText.setText(""); //$NON-NLS-1$
+                    if (enableOracle) {
+                        dbSequenceText.setText("");//$NON-NLS-1$
+                    }
+                } else if (type == SurrogateCreationType.DB_SEQUENCE && enableOracle) {
+                    stack.topControl = dbSequenceComp; // dbSequenceText;
+                    if (StringUtils.isEmpty(dbSequenceText.getText())) {
+                        dbSequenceText.setBackground(ERROR_COLOR);
+                        key.setComplement(""); //$NON-NLS-1$
+                    } else {
+                        dbSequenceText.setBackground(white);
+                    }
+                    inputFieldLabel.setText(""); //$NON-NLS-1$
+                    routineText.setText("");
                 } else {
                     stack.topControl = emptyLabel;
                     routineText.setText(""); //$NON-NLS-1$
                     inputFieldLabel.setText(""); //$NON-NLS-1$
+                    if (enableOracle) {
+                        dbSequenceText.setText("");//$NON-NLS-1$     
+                    }
                     key.setComplement(""); //$NON-NLS-1$
                 }
                 scdManager.fireFieldChange();
@@ -238,6 +282,8 @@ public class SurrogateSection extends ScdSection {
             inputFieldLabel.setText(key.getComplement());
         } else if (key.getCreation() == SurrogateCreationType.ROUTINE) {
             routineText.setText(key.getComplement());
+        } else if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
+            dbSequenceText.setText(key.getComplement());
         }
         creationCombo.select(key.getCreation().getIndex());
         // activate event to switch component in stack layout

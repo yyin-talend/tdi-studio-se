@@ -173,6 +173,10 @@ public class ScdSection {
         this.scdManager = scdManager;
     }
 
+    public ScdManager getScdManager() {
+        return scdManager;
+    }
+
     /**
      * DOC hcw Comment method "adjustIndicesDown".
      * 

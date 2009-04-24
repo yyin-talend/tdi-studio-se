@@ -305,7 +305,7 @@ public class MultipleSurrogateSection extends ScdSection {
         // });
         editor.layout();
 
-        TableEditor comboEditor = editorManager.createComboEditor(table, SurrogateCreationType.getAllTypeNames(), item,
+        TableEditor comboEditor = editorManager.createComboEditor(table, getScdManager().getSurrogateCreationTypeNames(), item,
                 CREATION_INDEX, key.getCreation().getIndex(), new IPropertySetter<Integer>() {
 
                     public void set(Integer value) {
@@ -432,6 +432,16 @@ public class MultipleSurrogateSection extends ScdSection {
 
         if (value == SurrogateCreationType.ROUTINE.getIndex()) {
             // create routine editor
+            editor = editorManager.createTextEditor(editor, table, key.getComplement(), item, COMPLEMENT_INDEX,
+                    new IPropertySetter<String>() {
+
+                        public void set(String value) {
+                            key.setComplement(value);
+                        }
+                    });
+            // add content proposal
+            TalendProposalUtils.installOn(editor.getEditor(), null);
+        } else if (value == SurrogateCreationType.DB_SEQUENCE.getIndex()) {
             editor = editorManager.createTextEditor(editor, table, key.getComplement(), item, COMPLEMENT_INDEX,
                     new IPropertySetter<String>() {
 
