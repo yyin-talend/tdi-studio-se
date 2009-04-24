@@ -930,6 +930,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         if (cmdStack != null) {
             cmdStack.removeCommandStackEventListener(commandStackEventListener);
         }
+        disposeChildren();
         super.dispose();
         process = null;
         elem = null;

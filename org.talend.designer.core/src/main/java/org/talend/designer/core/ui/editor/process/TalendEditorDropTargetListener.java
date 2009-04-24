@@ -599,9 +599,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     if (node.getMetadataList().size() == 0) {
                         queryGuessCommand = new QueryGuessCommand(node, null, schema, dbType);
                     } else {
-                        queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType);
+                        if (node.getMetadataList().get(0).getListColumns().size() != 0) {
+                            queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType);
+                        }
                     }
-                    list.add(queryGuessCommand);
+                    if (queryGuessCommand != null) {
+                        list.add(queryGuessCommand);
+                    }
                 }
             }
             // context, moved to ChangeValuesFromRepository(bug 5198)

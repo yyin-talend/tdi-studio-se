@@ -1150,18 +1150,21 @@ public class DatabaseForm extends AbstractForm {
         boolean isOracle = oracleVersionEnable();
         boolean isAS400 = as400VersionEnable();
 
+        String selectedVersion = getConnection().getDbVersionString();
         dbVersionCombo.removeAll();
         dbVersionCombo.setHideWidgets(true);
         if (dbTypeCombo.getText().startsWith("Oracle")) { //$NON-NLS-1$
             dbVersionCombo.getCombo().setItems(versions);
-            dbVersionCombo.select(0);
             dbVersionCombo.setHideWidgets(!isOracle);
         } else if (dbTypeCombo.getText().startsWith("AS400")) { //$NON-NLS-1$
             dbVersionCombo.getCombo().setItems(versions);
-            dbVersionCombo.select(0);
             dbVersionCombo.setHideWidgets(!isAS400);
         }
-
+        if (selectedVersion != null) {
+            dbVersionCombo.setText(selectedVersion);
+        } else {
+            dbVersionCombo.select(0);
+        }
     }
 
     /**
