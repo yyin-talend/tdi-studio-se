@@ -182,9 +182,9 @@ public class Problems {
     }
 
     public static void add(ProblemStatus status, IMarker marker, String javaUnitName, String markerErrorMessage, Integer lineN,
-            String uniName, Integer charStart, Integer charEnd, ProblemType type) {
+            String uniName, Integer charStart, Integer charEnd, ProblemType type, String version) {
         Problem problem = new TalendProblem(status, javaUnitName, marker, markerErrorMessage, lineN, uniName, charStart, charEnd,
-                type);
+                type, version);
         add(problem);
         // addErrorMark();
     }
@@ -429,10 +429,12 @@ public class Problems {
 
         String routineFileName = null;
         String uniName = null;
+        String version = null;
         if (property == null) {
             routineFileName = getFileName(file);
         } else {
             routineFileName = property.getLabel();
+            version = property.getVersion();
         }
 
         List<Information> informations = new ArrayList<Information>();
@@ -484,7 +486,7 @@ public class Problems {
                     if ("".equals(uniName) || uniName == null) { //$NON-NLS-1$
                         uniName = "uniName";//$NON-NLS-1$
                     }
-                    add(status, marker, routineFileName, message, lineNr, uniName, start, end, type);
+                    add(status, marker, routineFileName, message, lineNr, uniName, start, end, type, version);
                 }
             }
             addErrorMark();
@@ -658,11 +660,18 @@ public class Problems {
                         if (problemList.getProblemList().size() > 0) {
                             for (int i = 0; i < problemList.getProblemList().size(); i++) {
                                 Problem problem = problemList.getProblemList().get(i);
-
                                 if (node.isActivate()) {
                                     if (problem.getStatus().equals(ProblemStatus.ERROR)) {
                                         if (problem instanceof TalendProblem) {
                                             TalendProblem tProblem = (TalendProblem) problem;
+                                            if (!tProblem.getJavaUnitName().equals(node.getProcess().getLabel())) {
+                                                continue;
+                                            }
+                                            if (tProblem.getVersion() != null) {
+                                                if (!tProblem.getVersion().equals(node.getProcess().getVersion())) {
+                                                    continue;
+                                                }
+                                            }
                                             if (tProblem.getUnitName().equals(node.getUniqueName())) {
                                                 nodeList.add(node);
                                             } else {
