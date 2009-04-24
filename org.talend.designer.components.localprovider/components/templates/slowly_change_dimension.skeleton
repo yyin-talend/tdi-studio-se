@@ -905,7 +905,8 @@ public class CLASS {
             }
             if(scdConfiger.getSurrogateKeyValueType().equals("DB_SEQUENCE")) {
                 insertColumns = getLProtectedChar() + surrogateKeyField + getRProtectedChar();
-                insertValues = getSequence(scdConfiger.getSurrogateKeySequence());
+                insertValues = "\" + ((schema_" + cid +"!= null && schema_" +cid+".trim()!=\"\")?schema_"+cid+" +\".\":\"\")" +     
+                    getSequence(scdConfiger.getSurrogateKeySequence());
             }
             if(isEqualWithSK) {
                 for(Column column : sourceKeys) {
@@ -1620,7 +1621,7 @@ public class CLASS {
             return "";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "\" + " + surrogateKeySequence + " + \".nextval";
+            return "+ \"" + surrogateKeySequence + "\" + \".nextval";
         }
         protected String getIncrement() {
             return "";
