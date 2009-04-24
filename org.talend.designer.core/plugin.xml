@@ -81,6 +81,12 @@
             id="org.talend.designer.core.internationalization"
             name="%internationalization">
       </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.DocumentationPreferencePage"
+            id="org.talend.repository.prefs.documentation"
+            name="%documentation">
+      </page>
       
    </extension>
    <extension

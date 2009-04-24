@@ -50,8 +50,6 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
 
     private IntegerFieldEditor dbConnTimeout;
 
-    private boolean isDocumentationPluginLoaded = true;
-
     public PerformancePreferencePage() {
         super(GRID);
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
@@ -125,10 +123,6 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                 .getString("PerformancePreferencePage.addOrDeleteVariable"),//$NON-NLS-1$
                 getFieldEditorParent()));
 
-        BooleanFieldEditor booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
-                .getString("PerformancePreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
-        addField(booleanFieldEditor);
-        booleanFieldEditor.setEnabled(isDocumentationPluginLoaded, getFieldEditorParent());
         dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, Messages
                 .getString("PerformancePreferencePage.ActivedTimeoutSetting"), getFieldEditorParent()); //$NON-NLS-1$
         dbConnTimeoutActive.getButton().addSelectionListener(new SelectionAdapter() {
