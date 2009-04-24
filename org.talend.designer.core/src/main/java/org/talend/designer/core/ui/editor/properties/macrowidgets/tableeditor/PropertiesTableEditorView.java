@@ -157,9 +157,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         for (int i = 0; i < titles.length; i++) {
             final int curCol = i;
             final IElementParameter currentParam = (IElementParameter) itemsValue[i];
-
-            boolean toDisplay = !StringUtils.isEmpty(currentParam.getShowIf())
-                    && !StringUtils.isEmpty(currentParam.getNotShowIf());
+            // if all is empty, show it always.
+            boolean toDisplay = StringUtils.isEmpty(currentParam.getShowIf()) && StringUtils.isEmpty(currentParam.getNotShowIf());
             if (!toDisplay) {
                 List<Map<String, Object>> fullTable = (List<Map<String, Object>>) param.getValue();
                 for (int curLine = 0; curLine < fullTable.size(); curLine++) {
