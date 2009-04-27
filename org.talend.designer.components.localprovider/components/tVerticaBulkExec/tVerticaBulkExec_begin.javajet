@@ -30,6 +30,7 @@ String pas = ElementParameterParser.getValue(node, "__PASS__");
 String tableName = ElementParameterParser.getValue(node, "__TABLE__");
 boolean ros = ElementParameterParser.getValue(node, "__ROS__").equals("true");
 boolean exitOnNoRows = ElementParameterParser.getValue(node, "__EXIT_ON_NO_ROWS__").equals("true");
+boolean hasNullString = !null_string.matches("(\"\\s+\"|\"\")");
 List<IMetadataColumn> columnList = getColumnList(node);    
 %>
 String tableName_<%=cid%> = <%=tableName%>;
@@ -128,7 +129,11 @@ if(dataAction.equals("UPDATE")) {
         stmtCreateTmp_<%=cid%>.execute("CREATE PROJECTION " + tableName_<%=cid%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + tableName_<%=cid%>);
         stmtCreateTmp_<%=cid%>.close();
         java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtTmpBulk_<%=cid%>.execute("COPY " + <%=db%> + "." + tableName_<%=cid%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' NULL '" + <%=null_string%> + "'"<%if(ros){%> + " DIRECT"<%}%>);
+        stmtTmpBulk_<%=cid%>.execute("COPY " + <%=db%> + "." + tableName_<%=cid%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" +<%=field_separator%> + "'" 
+        <%if(hasNullString) {
+        %> + " NULL '" +<%=null_string%> + "'"
+        <%}%>
+        <%if(ros){%> + " DIRECT"<%}%>);
         stmtTmpBulk_<%=cid%>.close();
         tableName_<%=cid%> = <%=tableName%>;
         String tmpTableName_<%=cid%> = "tmp_<%=cid%>";
@@ -143,7 +148,11 @@ if(dataAction.equals("UPDATE")) {
     }
 } else if(dataAction.equals("INSERT")) {
     %>
-	String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM STDIN DELIMITER '" + <%=field_separator%> + "' NULL '\\\\n'"<%if(ros){%> + " DIRECT"<%}%>;
+	String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM '"+<%=file%>+"' DELIMITER '" +<%=field_separator%> + "'" 
+    <%if(hasNullString){
+	%> + " NULL '"  + <%=null_string%> + "'"
+	<%}%>
+	<%if(ros){%> + " DIRECT"<%}%>;
     java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
     java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
     int nbLineBeforeLoad_<%=cid %> = 0;
