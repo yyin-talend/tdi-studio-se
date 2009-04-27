@@ -68,15 +68,17 @@ public class SessionTreeNodeManager {
 
         if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connection.getDatabaseType())) {
             if (connection.getURL().lastIndexOf("=") != connection.getURL().length() - 1) { //$NON-NLS-1$
-                connection.setDatasourceName(connection.getURL().substring(
-                        connection.getURL().lastIndexOf(File.separator) + 1, connection.getURL().length()));
+                connection.setDatasourceName(connection.getURL().substring(connection.getURL().lastIndexOf(File.separator) + 1,
+                        connection.getURL().length()));
                 connection.setSID(connection.getURL().substring(connection.getURL().lastIndexOf(File.separator) + 1,
                         connection.getURL().length()));
             }
         }
 
         SessionTreeNode sessionTreeNode = map.get(connection);
-        if (sessionTreeNode != null) {
+
+        // hyWang modified for bug 0007062
+        if (sessionTreeNode != null && !sessionTreeNode.isConnectionClosed()) {
             return sessionTreeNode;
         }
         // If the node is not existent,creates one and cache it.

@@ -26,6 +26,7 @@ import net.sourceforge.squirrel_sql.fw.sql.SQLDatabaseMetaData;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.widgets.Table;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.model.RepositoryNode;
@@ -120,13 +121,12 @@ public class SessionTreeNode implements ISessionTreeNode {
      * @return database connection.
      */
     public DatabaseConnection getDatabaseConnection() {
-        if (repositoryNode == null || repositoryNode.getObject() == null
-                || repositoryNode.getObject().getProperty() == null
+        if (repositoryNode == null || repositoryNode.getObject() == null || repositoryNode.getObject().getProperty() == null
                 || repositoryNode.getObject().getProperty().getItem() == null) {
             return null;
         }
-        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty()
-                .getItem()).getConnection();
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty().getItem())
+                .getConnection();
 
         return connection;
     }
@@ -234,6 +234,18 @@ public class SessionTreeNode implements ISessionTreeNode {
             SqlBuilderPlugin.log(Messages.getString("SessionTreeNode.logMessage3"), e); //$NON-NLS-1$
         }
 
+    }
+
+    // hyWang added for bug 0007062
+    public synchronized boolean isConnectionClosed() {
+        if (backgroundConnection != null) {
+            try {
+                return backgroundConnection.getConnection().isClosed();
+            } catch (SQLException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return true;
     }
 
     /**
