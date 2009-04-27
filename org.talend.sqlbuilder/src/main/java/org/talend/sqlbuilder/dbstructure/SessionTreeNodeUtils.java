@@ -91,18 +91,20 @@ public class SessionTreeNodeUtils {
         IMetadataConnection iMetadataConnection = null;
         iMetadataConnection = ConvertionHelper.convert(dbconnection);
         String url = dbconnection.getURL();
-         if (url == null || url.equals("")) {
-         url = iMetadataConnection.getUrl();
-         }
+        if (url == null || url.equals("")) {
+            url = iMetadataConnection.getUrl();
+        }
 
         SQLConnection connection = createSQLConnection(dbconnection);
         ISQLAlias alias = createSQLAlias("Repository Name", url, dbconnection.getUsername(), dbconnection //$NON-NLS-1$
-                .getPassword(), dbconnection.getSID().length() == 0 ? dbconnection.getDatasourceName() : dbconnection.getSID());
+                .getPassword(),
+        // fix bug for 7014,added by hyWang
+                dbconnection.getSID().length() == 0 ? (dbconnection.getDatasourceName().length() == 0 ? "Database" //$NON-NLS-1$  
+                        : dbconnection.getDatasourceName()) : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
         session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, dbconnection
-                .getPassword(), //$NON-NLS-1$
-                repositoryNode);
+                .getPassword(), repositoryNode);
         return session;
     }
 
