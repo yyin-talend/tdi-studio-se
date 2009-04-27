@@ -259,7 +259,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createOpenSQLCommand(Button button, IContextManager manager) {
         initConnectionParameters();
         if (this.connParameters != null) {
-            initConnectionParametersWithContext(elem, manager.getDefaultContext());
+            if (!isUseExistingConnection()) {
+                initConnectionParametersWithContext(elem, manager.getDefaultContext());
+            } else {
+                initConnectionParametersWithContext(connectionNode, manager.getDefaultContext());
+            }
             openSQLBuilderWithParamer(button);
         } else {
             MessageDialog
@@ -350,8 +354,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createListTablesCommand(Button button, IContextManager manager) {
         initConnectionParameters();
         if (this.connParameters != null) {
-            IElementParameter param = elem.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName());
-            if (param != null && param.getValue() instanceof Boolean && (Boolean) param.getValue()) {
+            if (isUseExistingConnection()) {
                 initConnectionParametersWithContext(connectionNode, manager.getDefaultContext());
             } else {
                 initConnectionParametersWithContext(elem, manager.getDefaultContext());

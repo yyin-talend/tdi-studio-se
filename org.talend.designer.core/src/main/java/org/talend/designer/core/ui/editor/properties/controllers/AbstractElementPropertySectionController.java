@@ -1192,6 +1192,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return true;
     }
 
+    protected boolean isUseExistingConnection() {
+        Boolean value = (Boolean) elem.getElementParameter("USE_EXISTING_CONNECTION").getValue();
+        return value;
+    }
+
     /**
      * DOC qzhang Comment method "openSQLBuilder".
      * 
@@ -1203,8 +1208,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
             connParameters.setQuery(query);
             if (connParameters.isShowConfigParamDialog()) {
-                initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager()
-                        .getDefaultContext());
+                if (!isUseExistingConnection()) {
+                    initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager()
+                            .getDefaultContext());
+                } else {
+                    initConnectionParametersWithContext(connectionNode, part.getTalendEditor().getProcess().getContextManager()
+                            .getDefaultContext());
+                }
             }
 
             openSqlBuilderBuildIn(connParameters, propertyName);
