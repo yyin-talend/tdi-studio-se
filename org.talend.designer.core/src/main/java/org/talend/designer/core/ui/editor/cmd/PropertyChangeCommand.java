@@ -12,13 +12,16 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.properties.ProcessItem;
@@ -147,6 +150,20 @@ public class PropertyChangeCommand extends Command {
                 processIdParam.setLinkedRepositoryItem(processItem);
                 currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
             }
+        }
+        if (propName.contains(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+            if (elem instanceof Node) {
+                Node node = (Node) elem;
+                List<IContext> listContext = node.getProcess().getContextManager().getListContext();
+                List<String> values = new ArrayList<String>();
+                for (IContext context : listContext) {
+                    values.add(context.getName());
+                }
+                currentParam.setListItemsDisplayName(values.toArray(new String[0]));
+                currentParam.setListItemsValue(values.toArray(new String[0]));
+                currentParam.setValue(newValue);
+            }
+
         }
 
         if (!toUpdate

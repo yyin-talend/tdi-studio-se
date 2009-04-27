@@ -112,6 +112,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     private boolean fromPalette; // only for palette dnd, feature 6457
 
+    private List<Node> dragedNodes = new ArrayList<Node>();
+
     /**
      * TalendEditorDropTargetListener constructor comment.
      * 
@@ -176,19 +178,28 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     }
 
     public void dragOver(DropTargetEvent event) {
-        // when the job that selected is the same one in the current editor, the drag event should be disabled.
+        // multi-drag for job only
         IStructuredSelection selection = getSelection();
-        if (selection.size() != 1) {
-            event.detail = DND.DROP_NONE;
-            return;
-        }
-
-        if (selection.getFirstElement() instanceof RepositoryNode) {
-            RepositoryNode sourceNode = (RepositoryNode) selection.getFirstElement();
-            if (equalsJobInCurrentEditor(sourceNode)) {
-                event.detail = DND.DROP_NONE;
+        boolean allowed = true;
+        Iterator iter = selection.iterator();
+        selection.size();
+        while (iter.hasNext()) {
+            Object next = iter.next();
+            if (next instanceof RepositoryNode) {
+                RepositoryNode sourceNode = (RepositoryNode) next;
+                IRepositoryObject object = sourceNode.getObject();
+                if (object != null) {
+                    Item item = object.getProperty().getItem();
+                    if (!(item instanceof ProcessItem)) {
+                        allowed = false;
+                    }
+                }
             }
         }
+        if (selection.size() > 1 && !allowed) {
+            event.detail = DND.DROP_NONE;
+        }
+
     }
 
     @Override
@@ -376,104 +387,109 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     public void createNewComponent(DropTargetEvent event1) {
         boolean quickCreateInput = event1.detail == DND.DROP_LINK;
         boolean quickCreateOutput = event1.detail == DND.DROP_COPY;
+        Iterator iterator = getSelection().iterator();
         List<TempStore> list = new ArrayList<TempStore>();
-
-        Object obj = getSelection().getFirstElement();
-        if (obj instanceof RepositoryNode) {
-            RepositoryNode sourceNode = (RepositoryNode) obj;
-            if (equalsJobInCurrentEditor(sourceNode)) {
-                return;
-            }
-
-            Item item = sourceNode.getObject().getProperty().getItem();
-            ERepositoryObjectType type = sourceNode.getObjectType();
-            if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem) && !(item instanceof JobletProcessItem)) {
-                return;
-            }
-            TempStore store = new TempStore();
-            store.seletetedNode = sourceNode;
-            getAppropriateComponent(item, quickCreateInput, quickCreateOutput, store, type);
-            if (store.component != null) {
-                list.add(store);
-            } else {
-                MessageDialog.openInformation(editor.getEditorSite().getShell(), Messages
-                        .getString("TalendEditorDropTargetListener.dngsupportdialog.title"), //$NON-NLS-1$
-                        Messages.getString("TalendEditorDropTargetListener.dngsupportdialog.content")); //$NON-NLS-1$
-            }
-        }
-
-        org.eclipse.swt.graphics.Point swtLocation = new org.eclipse.swt.graphics.Point(event1.x, event1.y);
-        Canvas canvas = (Canvas) editor.getViewer().getControl();
-
-        /*
-         * translate to Canvas coordinate
-         */
-        swtLocation = canvas.toControl(swtLocation);
-        org.eclipse.swt.graphics.Point size = canvas.getSize();
-        /*
-         * translate to Viewport coordinate with zoom
-         */
-        org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x, swtLocation.y);
-
-        /*
-         * calcule the view port position. Take into acounte the scroll position
-         */
-        ProcessPart part = (ProcessPart) editor.getViewer().getRootEditPart().getRoot().getChildren().get(0);
-
-        IFigure targetFigure = part.getFigure();
-        translateAbsolateToRelative(targetFigure, draw2dPosition);
-
-        // creates every node
-        for (Iterator<TempStore> iter = list.iterator(); iter.hasNext();) {
-            TempStore store = iter.next();
-
-            RepositoryNode selectedNode = store.seletetedNode;
-            IComponent element = store.component;
-            Node node = new Node(element);
-            // for bug4564(metadata label format)
-            // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-            // if (preferenceStore.getBoolean(TalendDesignerPrefConstants.USE_REPOSITORY_NAME)) {
-            // node.setPropertyValue(EParameterName.LABEL.getName(), selectedNode.getObject().getLabel());
-            // }
-            IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-            if (preferenceStore.getBoolean(TalendDesignerPrefConstants.USE_REPOSITORY_NAME)) {
-                String LabelValue = null;
-                RepositoryNode repositoryNode = null;
-                repositoryNode = (RepositoryNode) getSelection().getFirstElement();
-                // dnd a table
-                IElementParameter dbTableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
-                boolean hasDbTableField = dbTableParam != null;
-
-                if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE
-                        && repositoryNode.getObject() != null
-                        && repositoryNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem
-                        && hasDbTableField) {
-                    LabelValue = DesignerUtilities.getParameterVar(dbTableParam.getName());
-                } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS) { // dnd a job
-                    LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
-                } else if (CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
-                        TalendDesignerPrefConstants.DEFAULT_LABEL).equals( //$NON-NLS-1$
-                        node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
-                    LabelValue = selectedNode.getObject().getLabel();
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            if (obj instanceof RepositoryNode) {
+                RepositoryNode sourceNode = (RepositoryNode) obj;
+                if (equalsJobInCurrentEditor(sourceNode)) {
+                    continue;
                 }
-                if (LabelValue != null) {
-                    node.setPropertyValue(EParameterName.LABEL.getName(), LabelValue);
+
+                Item item = sourceNode.getObject().getProperty().getItem();
+                ERepositoryObjectType type = sourceNode.getObjectType();
+                if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem) && !(item instanceof JobletProcessItem)) {
+                    return;
+                }
+                TempStore store = new TempStore();
+                store.seletetedNode = sourceNode;
+                getAppropriateComponent(item, quickCreateInput, quickCreateOutput, store, type);
+                if (store.component != null) {
+                    list.add(store);
+                } else {
+                    MessageDialog.openInformation(editor.getEditorSite().getShell(), Messages
+                            .getString("TalendEditorDropTargetListener.dngsupportdialog.title"), //$NON-NLS-1$
+                            Messages.getString("TalendEditorDropTargetListener.dngsupportdialog.content")); //$NON-NLS-1$
                 }
             }
-            processSpecificDBTypeIfSameProduct(store.componentName, node);
-            NodeContainer nc = new NodeContainer(node);
 
-            // create the node on the design sheet
-            execCommandStack(new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition));
-            // initialize the propertiesView
+            org.eclipse.swt.graphics.Point swtLocation = new org.eclipse.swt.graphics.Point(event1.x, event1.y);
+            Canvas canvas = (Canvas) editor.getViewer().getControl();
 
-            List<Command> commands = createRefreshingPropertiesCommand(selectedNode, node);
-            for (Command command : commands) {
-                execCommandStack(command);
+            /*
+             * translate to Canvas coordinate
+             */
+            swtLocation = canvas.toControl(swtLocation);
+            org.eclipse.swt.graphics.Point size = canvas.getSize();
+            /*
+             * translate to Viewport coordinate with zoom
+             */
+            org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x, swtLocation.y);
+
+            /*
+             * calcule the view port position. Take into acounte the scroll position
+             */
+            ProcessPart part = (ProcessPart) editor.getViewer().getRootEditPart().getRoot().getChildren().get(0);
+
+            IFigure targetFigure = part.getFigure();
+            translateAbsolateToRelative(targetFigure, draw2dPosition);
+
+            // creates every node
+            for (Iterator<TempStore> iter = list.iterator(); iter.hasNext();) {
+                TempStore store = iter.next();
+
+                RepositoryNode selectedNode = store.seletetedNode;
+                IComponent element = store.component;
+                Node node = new Node(element);
+                // for bug4564(metadata label format)
+                // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                // if (preferenceStore.getBoolean(TalendDesignerPrefConstants.USE_REPOSITORY_NAME)) {
+                // node.setPropertyValue(EParameterName.LABEL.getName(), selectedNode.getObject().getLabel());
+                // }
+                IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                if (preferenceStore.getBoolean(TalendDesignerPrefConstants.USE_REPOSITORY_NAME)) {
+                    String LabelValue = null;
+                    RepositoryNode repositoryNode = null;
+                    repositoryNode = (RepositoryNode) getSelection().getFirstElement();
+                    // dnd a table
+                    IElementParameter dbTableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
+                    boolean hasDbTableField = dbTableParam != null;
+
+                    if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE
+                            && repositoryNode.getObject() != null
+                            && repositoryNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem
+                            && hasDbTableField) {
+                        LabelValue = DesignerUtilities.getParameterVar(dbTableParam.getName());
+                    } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS) { // dnd a job
+                        LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
+                    } else if (CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
+                            TalendDesignerPrefConstants.DEFAULT_LABEL).equals( //$NON-NLS-1$
+                            node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
+                        LabelValue = selectedNode.getObject().getLabel();
+                    }
+                    if (LabelValue != null) {
+                        node.setPropertyValue(EParameterName.LABEL.getName(), LabelValue);
+                    }
+                }
+                processSpecificDBTypeIfSameProduct(store.componentName, node);
+
+                NodeContainer nc = new NodeContainer(node);
+                // create the node on the design sheet
+                execCommandStack(new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition));
+                // initialize the propertiesView
+
+                List<Command> commands = createRefreshingPropertiesCommand(selectedNode, node);
+                for (Command command : commands) {
+                    execCommandStack(command);
+                }
+                draw2dPosition = draw2dPosition.getCopy();
+                draw2dPosition.x += TalendEditor.GRID_SIZE;
+                draw2dPosition.y += TalendEditor.GRID_SIZE;
+
+                node.checkNode();
+
             }
-            draw2dPosition = draw2dPosition.getCopy();
-            draw2dPosition.x += TalendEditor.GRID_SIZE;
-            draw2dPosition.y += TalendEditor.GRID_SIZE;
 
         }
 
@@ -616,6 +632,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             String value = processItem.getProperty().getId();
             PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS.getName(), value);
             list.add(command4);
+            PropertyChangeCommand command5 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_CONTEXT.getName(), node
+                    .getProcess().getContextManager().getDefaultContext().getName());
+            list.add(command5);
         }
 
         return list;
