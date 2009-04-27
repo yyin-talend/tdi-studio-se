@@ -3,6 +3,8 @@ package org.talend.designer.core.ui.dialog.mergeorder;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -92,6 +94,7 @@ public class ConnectionTableAndSchemaNameDialog extends Dialog {
         schemaNamelabel.setText("Default Schema Name: "); //$NON-NLS-1$
         schemaName = createText(composite);
 
+        this.addListener();
         applyDialogFont(composite);
         return composite;
     }
@@ -111,6 +114,20 @@ public class ConnectionTableAndSchemaNameDialog extends Dialog {
             schemaNameValue = null;
         }
         super.buttonPressed(buttonId);
+    }
+
+    private void addListener() {
+        tableName.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                String result = tableName.getText();
+                if (result.length() != 0) {
+                    ConnectionTableAndSchemaNameDialog.this.getButton(IDialogConstants.OK_ID).setEnabled(true);
+                } else {
+                    ConnectionTableAndSchemaNameDialog.this.getButton(IDialogConstants.OK_ID).setEnabled(false);
+                }
+            }
+        });
     }
 
     public String getTableName() {

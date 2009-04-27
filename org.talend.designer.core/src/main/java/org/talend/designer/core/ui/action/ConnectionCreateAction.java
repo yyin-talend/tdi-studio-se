@@ -395,9 +395,9 @@ public class ConnectionCreateAction extends SelectionAction {
         if (id.getReturnCode() == InputDialog.CANCEL) {
             return ""; //$NON-NLS-1$
         }
-        if (id.getSchemaName() != null && !id.getTableName().equals("")) { //$NON-NLS-1$
+        if (id.getSchemaName().length() != 0 && id.getTableName().length() != 0) {
             outName = id.getSchemaName() + "." + id.getTableName(); //$NON-NLS-1$
-        } else if (id.getSchemaName() == null && !id.getTableName().equals("")) { //$NON-NLS-1$
+        } else if (id.getSchemaName().length() == 0 && id.getTableName().length() != 0) {
             outName = id.getTableName();
         }
 

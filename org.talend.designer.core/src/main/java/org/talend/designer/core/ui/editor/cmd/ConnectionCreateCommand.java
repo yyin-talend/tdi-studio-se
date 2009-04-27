@@ -155,8 +155,8 @@ public class ConnectionCreateCommand extends Command {
                 if (schemaName != null && name2 != null) {
                     schemaName = TalendTextUtils.removeQuotes(schemaName);
                     name2 = TalendTextUtils.removeQuotes(name2);
-                    if (!name2.equals("") && !schemaName.equals("")) {
-                        return schemaName + "." + name2;
+                    if (!name2.equals("") && !schemaName.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        return schemaName + "." + name2; //$NON-NLS-1$
                     }
                 }
             }
@@ -180,17 +180,17 @@ public class ConnectionCreateCommand extends Command {
                 }
             }
         }
-        String outName = "";
+        String outName = ""; //$NON-NLS-1$
         ConnectionTableAndSchemaNameDialog id = new ConnectionTableAndSchemaNameDialog(null, nodeLabel
                 + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
-                Messages.getString("ConnectionCreateAction.dialogMessage"), schemaName);
+                Messages.getString("ConnectionCreateAction.dialogMessage"), schemaName); //$NON-NLS-1$
         id.open();
         if (id.getReturnCode() == InputDialog.CANCEL) {
             return ""; //$NON-NLS-1$
         }
-        if (id.getSchemaName() != null && !id.getTableName().equals("")) { //$NON-NLS-1$
+        if (id.getSchemaName().length() != 0 && id.getTableName().length() != 0) {
             outName = id.getSchemaName() + "." + id.getTableName(); //$NON-NLS-1$
-        } else if (id.getSchemaName() == null && !id.getTableName().equals("")) { //$NON-NLS-1$
+        } else if (id.getSchemaName().length() == 0 && id.getTableName().length() != 0) {
             outName = id.getTableName();
         }
 
