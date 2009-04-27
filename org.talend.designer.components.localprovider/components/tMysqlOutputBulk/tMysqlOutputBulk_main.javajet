@@ -42,19 +42,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
                 			if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
                 			    %>
-                			    <%if (javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.FLOAT) {
-                			    %>
-                			    	row_<%=cid%>[<%=i%>]=(new BigDecimal(""+<%=conn.getName() %>.<%=column.getLabel() %>).toPlainString());
-                			    <%
-                			    }else if (javaType == JavaTypesManager.BIGDECIMAL) {
-                			    %>
-                			    	row_<%=cid%>[<%=i%>]=<%=conn.getName() %>.<%=column.getLabel() %>.toPlainString();
-                			    <%
-                			    }else {
-                			    %>
                 			    	row_<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
-                			    <%
-                			    }%>
                 			    <%
                 			}else {
                 			    %>
@@ -72,16 +60,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 			            %>
                 			            row_<%=cid%>[<%=i%>] = java.nio.charset.Charset.forName(<%=encoding %>).decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
                 			            <%
-                			        }else if (javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.FLOAT) {
-									%>
-	                   					row_<%=cid%>[<%=i%>]=(new BigDecimal(<%=conn.getName() %>.<%=column.getLabel() %>.toString()).toPlainString()); 									                			        
-                			        <%
-                			        } else if (javaType == JavaTypesManager.BIGDECIMAL) {
-                			        %>
-									    
-	                   					row_<%=cid%>[<%=i%>]=<%=conn.getName() %>.<%=column.getLabel() %>.toPlainString();     			                        			        
-                			        <%
-                			        }                			        
+                			        }             			        
                 			        else{
                 			            %>
                 			            row_<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
