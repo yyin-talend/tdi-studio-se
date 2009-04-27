@@ -98,26 +98,25 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				sql = sb.toString();
 			}
 
-			for(IConnection outgoingConn : outgoingConns) {
-	
-				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
+			IConnection outgoingConn = outgoingConns.get(0);
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>					
 					
-com.sforce.soap.partner.SoapBindingStub binding_<%=cid %> = sfMgr_<%=cid%>.getBinding();
-com.sforce.soap.partner.QueryResult qr_<%=cid %> = null;
-com.sforce.soap.partner.QueryOptions qo_<%=cid %> = new com.sforce.soap.partner.QueryOptions();
-qo_<%=cid %>.setBatchSize(new Integer(250));
-binding_<%=cid %>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "QueryOptions", qo_<%=cid %>);
+				com.sforce.soap.partner.SoapBindingStub binding_<%=cid %> = sfMgr_<%=cid%>.getBinding();
+				com.sforce.soap.partner.QueryResult qr_<%=cid %> = null;
+				com.sforce.soap.partner.QueryOptions qo_<%=cid %> = new com.sforce.soap.partner.QueryOptions();
+				qo_<%=cid %>.setBatchSize(new Integer(250));
+				binding_<%=cid %>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "QueryOptions", qo_<%=cid %>);
+				
+				qr_<%=cid %> = binding_<%=cid %>.query(<%=sql %>);
+				
+				boolean bContinue_<%=cid %> = true;
+				
+				while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
 
-qr_<%=cid %> = binding_<%=cid %>.query(<%=sql %>);
-
-boolean bContinue_<%=cid %> = true;
-
-while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
-
-    // process the query results
-    for (int i_<%=cid %> = 0; i_<%=cid %> < qr_<%=cid %>.getRecords().length; i_<%=cid %>++) {					
-					
+				    // process the query results
+				    for (int i_<%=cid %> = 0; i_<%=cid %> < qr_<%=cid %>.getRecords().length; i_<%=cid %>++) {					
+								
 						nb_line_<%=cid%> ++;
 						org.apache.axis.message.MessageElement[] fields_<%=cid%> = qr_<%=cid %>.getRecords()[i_<%=cid %>].get_any();
 						int len_<%=cid%> = fields_<%=cid%>.length;
@@ -161,12 +160,10 @@ while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() 
 					// ending port of for... (move to tSalesforceInput_end.javajet)
 					
 				}// end 1
-			}
 %>
 				
 <%
 		}
-
 	}
 }
 %>
