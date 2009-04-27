@@ -26,21 +26,10 @@ module = (module.equals("CustomModule")) ? customModulename.replaceAll("\"","") 
 String endPoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 %>
 
-try {
     binding_<%=cid%> = (com.sforce.soap.partner.SoapBindingStub) new com.sforce.soap.partner.SforceServiceLocator().getSoap(new java.net.URL(<%=endPoint%>));
     loginResult_<%=cid%> = binding_<%=cid%>.login(<%=username%>, <%=password%>);
     binding_<%=cid%>._setProperty(com.sforce.soap.partner.SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult_<%=cid%>.getServerUrl());
-} catch (javax.xml.rpc.ServiceException e) {
-    throw(e);
-} catch (com.sforce.soap.partner.fault.UnexpectedErrorFault e) {
-    throw(e);
-} catch (com.sforce.soap.partner.fault.InvalidIdFault e) {
-    throw(e);
-} catch (com.sforce.soap.partner.fault.LoginFault e) {
-    throw(e);
-} catch (java.rmi.RemoteException e) {
-    throw(e);
-}
+
 com.sforce.soap.partner.SessionHeader sh_<%=cid%> = new com.sforce.soap.partner.SessionHeader();
 sh_<%=cid%>.setSessionId(loginResult_<%=cid%>.getSessionId());
 binding_<%=cid%>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh_<%=cid%>);
@@ -65,7 +54,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		for(IConnection outgoingConn : outgoingConns) {
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>				
-				try {
+
 					com.sforce.soap.partner.GetUpdatedResult mr_<%=cid%> = binding_<%=cid%>.getUpdated("<%=module%>", startDate_<%=cid%>, endDate_<%=cid%>);
             		com.sforce.soap.partner.sobject.SObject[] so_<%=cid%> = null;
             		if (mr_<%=cid%>.getIds() != null && mr_<%=cid%>.getIds().length > 0) {

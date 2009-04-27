@@ -27,13 +27,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 				}
 				}
-			} catch (com.sforce.soap.partner.fault.ApiFault af) {
-            	System.out.println("\nApiFault Failed to get updated records, error message was: \n" + af.getExceptionMessage());
-            	af.printStackTrace();
-        	} catch (Exception ex) {
-            	System.out.println("\nException Failed to get updated records, error message was: \n" + ex.getMessage());
-            	ex.printStackTrace();
-        	}
 <%
 			}
 		}
