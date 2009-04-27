@@ -214,7 +214,7 @@
     	NUM_ROW="8"
     	SHOW_IF="DATA_ACTION == 'INSERT'"
     >
-    	<DEFAULT>false</DEFAULT>
+    	<DEFAULT>true</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

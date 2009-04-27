@@ -929,6 +929,14 @@
                id="org.talend.repository.model.migration.renameMultiSchemaToMSMigrationTask"
                name="Rename the XMLMultiSchema to MSXML">
          </projecttask>
+	      <projecttask
+	            beforeLogon="false"
+	            class="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
+	            description="change the tMysqlOutput'extend insert default value&quot;&quot; from &quot;false&quot; to &quot;true&quot;"
+	            id="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
+	            name="ChangeExtendInsertDefaultValueMigrationTask">
+	      </projecttask>
+
          
    </extension>
    <extension
