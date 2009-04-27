@@ -523,7 +523,7 @@ if(mode.equals("Dom4j")){
 	}
 <%
 	}
-//==================================add by wliu======================================
+
 if(groupTable.size()>0){					//init the generate tool.
 	if(isMerge==true){//merge into the file
 	    String firstGroupPath = groupList.get(0).path;
@@ -574,12 +574,12 @@ if(groupTable.size()>0){					//init the generate tool.
  		}//for
  	}else{//last group code
 %>
-	boolean isNewElememt = false;
+	boolean isNewElememt_<%=cid %> = false;
 <% 
 		for(int i=0;i<groupList.size();i++){
 			XMLNode groupRootNode = groupList.get(i);
 %>
-	if(isNewElememt || groupbyList_<%=cid%>.size()<=<%=i%> || groupbyList_<%=cid%>.get(<%=i%>)==null
+	if(isNewElememt_<%=cid %> || groupbyList_<%=cid%>.size()<=<%=i%> || groupbyList_<%=cid%>.get(<%=i%>)==null
 <% 
 			for(int j=0;j<groupbyNodeList.get(i).size();j++){
 				XMLNode attr = groupbyNodeList.get(i).get(j);
@@ -609,7 +609,7 @@ if(groupTable.size()>0){					//init the generate tool.
 <% 
 			}
 %>
-        isNewElememt=true;
+        isNewElememt_<%=cid %>=true;
         if(groupElementList_<%=cid%>.size()<=<%=i%>){
 			groupElementList_<%=cid%>.add(group<%=i%>__<%=cid%>);
         }else{
@@ -624,7 +624,7 @@ if(groupTable.size()>0){					//init the generate tool.
 		}//for
  	}//if merge=true 	
 }
-//=============================================end=================================================
+
 %>
 	// build loop xml tree
 <%
@@ -722,7 +722,7 @@ else if(mode.equals("Null")){
 <%
 	if(groupTable.size()>0){
 %>
-	boolean isNewElememt = false;
+	boolean isNewElememt_<%=cid %> = false;
 	//The index of group element which is the first new group in groups.
 	int newTabIndex_<%=cid%> = -1;
 	//Buffer all group tab XML, then set to startTabBuffer.
@@ -734,7 +734,7 @@ else if(mode.equals("Null")){
 %>
 
 	// need a new group element <%=groupRootNode.name%> or not
-	if(isNewElememt || groupbyList_<%=cid%>.size()<=<%=i%> || groupbyList_<%=cid%>.get(<%=i%>)==null
+	if(isNewElememt_<%=cid %> || groupbyList_<%=cid%>.size()<=<%=i%> || groupbyList_<%=cid%>.get(<%=i%>)==null
 <%
 		for(int j=0;j<groupbyNodeList.get(i).size();j++){
 			XMLNode attr = groupbyNodeList.get(i).get(j);
@@ -749,7 +749,7 @@ else if(mode.equals("Null")){
 %>
 	){
 		// Is the first new element in groups.
-		if(isNewElememt == false && groupbyList_<%=cid%>.size()><%=i%>){
+		if(isNewElememt_<%=cid %> == false && groupbyList_<%=cid%>.size()><%=i%>){
 			newTabIndex_<%=cid%> = <%=i%>;
 		}
 
@@ -767,7 +767,7 @@ else if(mode.equals("Null")){
 <%
 		}
 %>
-        isNewElememt=true;
+        isNewElememt_<%=cid %>=true;
 	}
 	
 	// subtree XML string generate

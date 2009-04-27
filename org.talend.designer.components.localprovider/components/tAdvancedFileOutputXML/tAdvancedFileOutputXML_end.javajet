@@ -219,9 +219,11 @@ if(currentRowCount_<%=cid %> > 0){
 		}else{
 			if(loopTable.size()>0){
 %>
-	for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
-        out_<%=cid%>.newLine();
-        out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
+	if(nb_line_<%=cid %> > 0){
+		for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
+	        out_<%=cid%>.newLine();
+	        out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
+	    }
     }
 <%
 			}
