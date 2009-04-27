@@ -81,6 +81,7 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.joblet.ui.IJobCheckService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
@@ -974,6 +975,17 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public void create(Project project, Item item, IPath path, boolean... isImportItem) throws PersistenceException {
+        if (item instanceof ProcessItem) {
+            try {
+                IJobCheckService jobCheckService = (IJobCheckService) GlobalServiceRegister.getDefault().getService(
+                        IJobCheckService.class);
+                if (jobCheckService != null) {
+                    jobCheckService.checkJob(item.getProperty().getLabel());
+                }
+            } catch (Exception e) {
+                throw new PersistenceException(e);
+            }
+        }
         checkFileNameAndPath(project, item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false);
         this.repositoryFactoryFromProvider.create(project, item, path);
         if ((item instanceof ProcessItem || item instanceof JobletProcessItem)
@@ -1022,6 +1034,18 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath)
      */
     public Item copy(Item sourceItem, IPath targetPath) throws PersistenceException, BusinessException {
+        if (sourceItem instanceof ProcessItem) {
+            try {
+                IJobCheckService jobCheckService = (IJobCheckService) GlobalServiceRegister.getDefault().getService(
+                        IJobCheckService.class);
+                if (jobCheckService != null) {
+                    jobCheckService.checkJob(sourceItem.getProperty().getLabel());
+                }
+            } catch (Exception e) {
+                throw new BusinessException(e);
+            }
+        }
+
         Item targetItem = this.repositoryFactoryFromProvider.copy(sourceItem, targetPath);
 
         if (sourceItem instanceof ProcessItem || sourceItem instanceof JobletProcessItem) {
@@ -1033,6 +1057,18 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     public Item copy(Item sourceItem, IPath targetPath, boolean changeLabelWithCopyPrefix) throws PersistenceException,
             BusinessException {
+
+        if (sourceItem instanceof ProcessItem) {
+            try {
+                IJobCheckService jobCheckService = (IJobCheckService) GlobalServiceRegister.getDefault().getService(
+                        IJobCheckService.class);
+                if (jobCheckService != null) {
+                    jobCheckService.checkJob(sourceItem.getProperty().getLabel());
+                }
+            } catch (Exception e) {
+                throw new BusinessException(e);
+            }
+        }
         Item targetItem = this.repositoryFactoryFromProvider.copy(sourceItem, targetPath, changeLabelWithCopyPrefix);
         // if ((sourceItem instanceof ProcessItem || sourceItem instanceof JobletProcessItem)) {
         // fireRepositoryPropertyChange(ERepositoryActionName.JOB_COPY.getName(), sourceItem, targetItem);
@@ -1474,7 +1510,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         getRepositoryContext().setProject(null);
         repositoryFactoryFromProvider.logOffProject();
     }
-    
+
     public boolean setAuthorByLogin(Item item, String login) throws PersistenceException {
         return repositoryFactoryFromProvider.setAuthorByLogin(item, login);
     }
