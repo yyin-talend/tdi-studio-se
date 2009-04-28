@@ -13,11 +13,15 @@
 package org.talend.designer.codegen;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
+import org.talend.designer.core.IDesignerCoreService;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC bqian class global comment. Provides services for CodeGenerator plugin. <br/>
@@ -88,9 +92,16 @@ public class CodeGeneratorService implements ICodeGeneratorService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.codegen.ICodeGeneratorService#initializeTemplates(org.eclipse.core.runtime.IProgressMonitor)
+     * @see
+     * org.talend.designer.codegen.ICodeGeneratorService#initializeTemplates(org.eclipse.core.runtime.IProgressMonitor)
      */
     public Job initializeTemplates() {
-        return CodeGeneratorEmittersPoolFactory.initialize();
+        ComponentsFactoryProvider.getInstance().reset();
+        Job job = CodeGeneratorEmittersPoolFactory.initialize();
+        CorePlugin.getDefault().getLibrariesService().syncLibraries();
+        IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                IDesignerCoreService.class);
+        designerCoreService.getLastGeneratedJobsDateMap().clear();
+        return job;
     }
 }
