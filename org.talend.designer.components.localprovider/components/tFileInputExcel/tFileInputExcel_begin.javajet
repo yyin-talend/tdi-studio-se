@@ -42,8 +42,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		boolean affect = ElementParameterParser.getValue(node,"__AFFECT_EACH_SHEET__").equals("true");
 		boolean stopOnEmptyRow = ElementParameterParser.getValue(node,"__STOPREAD_ON_EMPTYROW__").equals("true");
-		boolean notNeedValidateOnCell = ElementParameterParser.getValue(node,"__NOVALIDATE_ON_CELL__").equals("true");
-		boolean suppressWarn = ElementParameterParser.getValue(node,"__SUPPRESS_WARN__").equals("true");
+		boolean notNeedValidateOnCell = !ElementParameterParser.getValue(node,"__NOVALIDATE_ON_CELL__").equals("false");//make wizard work
+		boolean suppressWarn = !ElementParameterParser.getValue(node,"__SUPPRESS_WARN__").equals("false");//make wizard work
 %>
 
 			class RegexUtil_<%=cid %> {

@@ -57,8 +57,10 @@ public class ExcelReader {
 
     private void init() throws BiffException, IOException {
         WorkbookSettings worksetting = new WorkbookSettings();
-        worksetting.setEncoding("ISO-8859-15"); //$NON-NLS-1$
-        workbook = Workbook.getWorkbook(new File(excelPath));
+        //worksetting.setEncoding("ISO-8859-15"); //$NON-NLS-1$
+        worksetting.setCellValidationDisabled(true); //$NON-NLS-1$
+        worksetting.setSuppressWarnings(true); //$NON-NLS-1$
+        workbook = Workbook.getWorkbook(new File(excelPath), worksetting);
     }
 
     public String[] getSheetNames() {
