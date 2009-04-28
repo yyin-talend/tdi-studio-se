@@ -245,7 +245,8 @@ public class VersionManagementDialog extends Dialog {
         }
         if (node.getObject() != null) {
             ERepositoryStatus status = FACTORY.getStatus(node.getObject());
-            if (status == ERepositoryStatus.LOCK_BY_OTHER || status == ERepositoryStatus.LOCK_BY_USER) {
+            if (status == ERepositoryStatus.LOCK_BY_OTHER
+                    || (status == ERepositoryStatus.LOCK_BY_USER && RepositoryManager.isOpenedItemInEditor(node.getObject()))) {
                 return false;
             }
             // table
