@@ -260,6 +260,41 @@ public class LoginComposite extends Composite {
 
         FormLayout groupLayout = new FormLayout();
         group.setLayout(groupLayout);
+
+        // go
+        manageProjectsButton = toolkit.createButton(group, null, SWT.PUSH);
+        manageProjectsButton.setText(Messages.getString("LoginComposite.manageProjectsButton")); //$NON-NLS-1$
+
+        manageViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
+        manageViewer.setContentProvider(new ArrayContentProvider());
+        manageViewer.setInput(getManageElements());
+
+        data = new FormData();
+        data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
+        data.left = new FormAttachment(manageViewer.getControl(), HORIZONTAL_SPACE);
+        manageProjectsButton.setLayoutData(data);
+
+        // TODO select
+        manageProjectLabel1 = toolkit.createLabel(group, Messages.getString("LoginComposite.existing")); //$NON-NLS-1$
+        data = new FormData();
+        data.top = new FormAttachment(0, HORIZONTAL_SPACE);
+        data.left = new FormAttachment(0, HORIZONTAL_SPACE);
+        // data.bottom = new FormAttachment(manageViewer.getControl(), 0, SWT.CENTER);
+
+        manageProjectLabel1.setLayoutData(data);
+        // data for managerViewer
+        data = new FormData();
+        data.left = new FormAttachment(manageProjectLabel1, HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
+        manageViewer.getControl().setLayoutData(data);
+
+        // TODO or
+        Label existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(manageProjectLabel1, 0, SWT.CENTER);
+        data.top = new FormAttachment(manageProjectLabel1, 40);
+        existingLabel.setLayoutData(data);
+
         // open
         openProjectBtn = toolkit.createButton(group, null, SWT.PUSH);
         openProjectBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
@@ -267,7 +302,9 @@ public class LoginComposite extends Composite {
         Image image = ImageProvider.getImage(ERepositoryImages.OPEN_PROJECT_ICON);
         openProjectBtn.setImage(image);
         data = new FormData();
+
         data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(existingLabel, VERTICAL_SPACE, SWT.CENTER);
         openProjectBtn.setLayoutData(data);
         // refresh
         fillProjectsBtn = toolkit.createButton(group, null, SWT.PUSH);
@@ -276,47 +313,19 @@ public class LoginComposite extends Composite {
         fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
         data = new FormData();
         data.right = new FormAttachment(openProjectBtn, -HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(openProjectBtn, VERTICAL_SPACE, SWT.CENTER);
         fillProjectsBtn.setLayoutData(data);
 
         projectViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
 
         projectViewer.setContentProvider(new ArrayContentProvider());
         projectViewer.setLabelProvider(new ProjectLabelProvider());
-        // TODO selsect
-        Label existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.existing")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, HORIZONTAL_SPACE);
-        data.bottom = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
-        existingLabel.setLayoutData(data);
 
         data = new FormData();
-        data.left = new FormAttachment(existingLabel, HORIZONTAL_SPACE);
+        data.left = new FormAttachment(manageViewer.getControl(), 0, SWT.LEFT);
         data.right = new FormAttachment(fillProjectsBtn, -HORIZONTAL_SPACE);
         data.bottom = new FormAttachment(fillProjectsBtn, 0, SWT.CENTER);
         projectViewer.getControl().setLayoutData(data);
-        // TODO or
-        manageProjectLabel1 = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
-        FormData formData = new FormData();
-        formData.right = new FormAttachment(existingLabel, 0, SWT.CENTER);
-        formData.top = new FormAttachment(existingLabel, 40);
-        manageProjectLabel1.setLayoutData(formData);
-        // go
-        manageProjectsButton = toolkit.createButton(group, null, SWT.PUSH);
-        manageProjectsButton.setText(Messages.getString("LoginComposite.manageProjectsButton")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(openProjectBtn, 0, SWT.LEFT);
-        data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
-        data.right = new FormAttachment(openProjectBtn, 0, SWT.RIGHT);
-        manageProjectsButton.setLayoutData(data);
-
-        manageViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
-        data = new FormData();
-        data.left = new FormAttachment(projectViewer.getControl(), 0, SWT.LEFT);
-        data.right = new FormAttachment(fillProjectsBtn, 0, SWT.RIGHT);
-        data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
-        manageViewer.getControl().setLayoutData(data);
-        manageViewer.setContentProvider(new ArrayContentProvider());
-        manageViewer.setInput(getManageElements());
 
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         if (prefManipulator.getBoolean(ImportDemoProjectAction.DEMO_ALREADY_IMPORTED)) {
