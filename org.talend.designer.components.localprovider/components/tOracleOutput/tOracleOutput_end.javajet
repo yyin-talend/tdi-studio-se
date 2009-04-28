@@ -18,6 +18,9 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
+	String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__"); 
+	boolean isUseBatchByDBVersion = !"ojdbc12-8i.jar".equalsIgnoreCase(dbVersion);	
+	
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 
@@ -63,7 +66,7 @@ imports="
         <%
     } else { // dataAction equals "INSERT" or "UPDATE" or "DELETE" 
         %>
-                <%if (rejectConnName==null && (dataAction.equals("INSERT") || dataAction.equals("UPDATE") || dataAction.equals("DELETE"))) {
+                <%if ((rejectConnName==null && isUseBatchByDBVersion) && (dataAction.equals("INSERT") || dataAction.equals("UPDATE") || dataAction.equals("DELETE"))) {
                 %>                
                 try {
 						pstmt_<%=cid %>.executeBatch();                	
