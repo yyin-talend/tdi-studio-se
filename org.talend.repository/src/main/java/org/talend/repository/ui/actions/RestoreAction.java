@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
@@ -32,6 +33,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -63,23 +65,31 @@ public class RestoreAction extends AContextualAction {
     @Override
     protected void doRun() {
         // used to store the database connection object that are used to notify the sqlBuilder.
-        List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
         ISelection selection = getSelection();
-        boolean needToUpdatePalette = false;
-        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+
+        final List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
+        final Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+        Map<String, Item> procItems = new HashMap<String, Item>();
+
         RestoreFolderUtil restoreFolder = new RestoreFolderUtil();
+        boolean needToUpdatePalette = false;
+
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 try {
                     RepositoryNode node = (RepositoryNode) obj;
                     ERepositoryObjectType nodeType = (ERepositoryObjectType) (node).getProperties(EProperties.CONTENT_TYPE);
                     if (nodeType.isSubItem()) {
-                        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                         AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) node.getObject())
                                 .getAbstractMetadataObject();
                         SubItemHelper.setDeleted(abstractMetadataObject, false);
-                        factory.save(item);
+
+                        final String id = item.getProperty().getId();
+                        Item tmpItem = procItems.get(id);
+                        if (tmpItem == null) {
+                            procItems.put(id, item);
+                        }
                         connections.add(node.getObject());
                     } else {
                         IPath path = restoreFolder.resotreFolderIfNotExists(nodeType, node);
@@ -97,18 +107,34 @@ public class RestoreAction extends AContextualAction {
                         nodeType = parent.getObjectType();
                     }
                     types.add(nodeType);
-                    RepositoryManager.refreshDeletedNode(types);
+
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                     // e.printStackTrace();
                 }
             }
         }
-
-        if (needToUpdatePalette) {
-            ComponentUtilities.updatePalette();
+        try {
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            for (String id : procItems.keySet()) {
+                Item item = procItems.get(id);
+                factory.save(item);
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
         }
-        notifySQLBuilder(connections);
+
+        final boolean updatePalette = needToUpdatePalette;
+        Display.getCurrent().syncExec(new Runnable() {
+
+            public void run() {
+                RepositoryManager.refreshDeletedNode(types);
+                if (updatePalette) {
+                    ComponentUtilities.updatePalette();
+                }
+                notifySQLBuilder(connections);
+            }
+        });
     }
 
     /*

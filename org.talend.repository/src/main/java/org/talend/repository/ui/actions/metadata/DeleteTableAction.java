@@ -13,8 +13,10 @@
 package org.talend.repository.ui.actions.metadata;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -74,60 +76,73 @@ public class DeleteTableAction extends AContextualAction {
     @Override
     protected void doRun() {
         ISelection selection = getSelection();
-
         Boolean confirm = null;
 
         // used to store the database connection object that are used to notify the sqlBuilder.
-        List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
-        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+        final List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
+        final Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+        Map<String, Item> procItems = new HashMap<String, Item>();
+
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                 if (node.getType() == ENodeType.REPOSITORY_ELEMENT && nodeType.isSubItem()) {
-                    try {
-                        Connection connection = null;
-                        ERepositoryObjectType parentNodeType = (ERepositoryObjectType) node.getParent().getProperties(
-                                EProperties.CONTENT_TYPE);
-                        if (parentNodeType == null) {
-                            parentNodeType = node.getParent().getParent().getObjectType(); // for db connection
-                        }
-                        if (parentNodeType != null) {
-                            types.add(parentNodeType);
-                        }
-                        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                        ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
-                        connection = (item).getConnection();
-                        ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) node.getObject();
-                        AbstractMetadataObject abstractMetadataObject = subRepositoryObject.getAbstractMetadataObject();
-                        if (abstractMetadataObject instanceof SubscriberTable) {
-                            return;
-                        }
-                        if (SubItemHelper.isDeleted(abstractMetadataObject)) {
-                            if (confirm == null) {
-                                String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
-                                String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                                        + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
-                                confirm = (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), title, message));
-                            }
-                            if (confirm) {
-                                subRepositoryObject.removeFromParent();
-                            }
-                        } else {
-                            SubItemHelper.setDeleted(abstractMetadataObject, true);
-                        }
-                        factory.save(item);
-                        connections.add(node.getObject());
-
-                        RepositoryManager.refreshDeletedNode(types);
-                    } catch (PersistenceException e) {
-                        // e.printStackTrace();
-                        ExceptionHandler.process(e);
+                    Connection connection = null;
+                    ERepositoryObjectType parentNodeType = (ERepositoryObjectType) node.getParent().getProperties(
+                            EProperties.CONTENT_TYPE);
+                    if (parentNodeType == null) {
+                        parentNodeType = node.getParent().getParent().getObjectType(); // for db connection
                     }
+                    if (parentNodeType != null) {
+                        types.add(parentNodeType);
+                    }
+                    ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
+                    connection = (item).getConnection();
+                    ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) node.getObject();
+                    AbstractMetadataObject abstractMetadataObject = subRepositoryObject.getAbstractMetadataObject();
+                    if (abstractMetadataObject instanceof SubscriberTable) {
+                        return;
+                    }
+                    if (SubItemHelper.isDeleted(abstractMetadataObject)) {
+                        if (confirm == null) {
+                            String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
+                            String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                                    + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
+                            confirm = (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), title, message));
+                        }
+                        if (confirm) {
+                            subRepositoryObject.removeFromParent();
+                        }
+                    } else {
+                        SubItemHelper.setDeleted(abstractMetadataObject, true);
+                    }
+                    final String id = item.getProperty().getId();
+                    Item tmpItem = procItems.get(id);
+                    if (tmpItem == null) {
+                        procItems.put(id, item);
+                    }
+                    connections.add(node.getObject());
+
                 }
             }
         }
-        notifySQLBuilder(connections);
+        try {
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            for (String id : procItems.keySet()) {
+                Item item = procItems.get(id);
+                factory.save(item);
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        Display.getCurrent().syncExec(new Runnable() {
+
+            public void run() {
+                RepositoryManager.refreshDeletedNode(types);
+                notifySQLBuilder(connections);
+            }
+        });
         // IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
         // RepositoryView.VIEW_ID);
         // IRepositoryView repositoryView = (IRepositoryView) viewPart;

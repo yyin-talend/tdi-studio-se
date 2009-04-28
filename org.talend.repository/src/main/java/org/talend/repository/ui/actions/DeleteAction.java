@@ -104,9 +104,13 @@ public class DeleteAction extends AContextualAction {
     protected void doRun() {
         ISelection selection = getSelection();
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        final DeleteActionCache deleteActionCache = DeleteActionCache.getInstance();
+        deleteActionCache.setGetAlways(false);
+        deleteActionCache.setDocRefresh(false);
+        deleteActionCache.createRecords();
 
         boolean needToUpdataPalette = false;
-        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+        final Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
@@ -117,7 +121,7 @@ public class DeleteAction extends AContextualAction {
                     }
 
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                        boolean needReturn = deleteElements(factory, node);
+                        boolean needReturn = deleteElements(factory, deleteActionCache, node);
                         if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET) {
                             needToUpdataPalette = true;
                         }
@@ -143,14 +147,27 @@ public class DeleteAction extends AContextualAction {
                 }
             }
         }
-        if (needToUpdataPalette) {
-            ComponentUtilities.updatePalette();
+
+        final boolean updatePalette = needToUpdataPalette;
+        Display.getCurrent().syncExec(new Runnable() {
+
+            public void run() {
+                if (updatePalette) {
+                    ComponentUtilities.updatePalette();
+                }
+                RepositoryManager.refreshDeletedNode(types);
+                IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                for (IEditorReference editors : page.getEditorReferences()) {
+                    CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
+                }
+
+            }
+        });
+
+        if (!deleteActionCache.isDocRefresh()) { // not refresh in JobDeleteListener
+            RepositoryManager.refreshCreatedNode(ERepositoryObjectType.DOCUMENTATION);
         }
-        RepositoryManager.refreshDeletedNode(types);
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        for (IEditorReference editors : page.getEditorReferences()) {
-            CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
-        }
+        deleteActionCache.revertParameters();
     }
 
     /**
@@ -190,7 +207,6 @@ public class DeleteAction extends AContextualAction {
 
     private void deleteRepositoryNode(RepositoryNode repositoryNode, IProxyRepositoryFactory factory)
             throws PersistenceException, BusinessException {
-        // TODO Auto-generated method stub
         if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER) {
             IPath path = RepositoryNodeUtilities.getPath(repositoryNode);
             ERepositoryObjectType objectType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
@@ -235,50 +251,23 @@ public class DeleteAction extends AContextualAction {
         return (openProcessMap.get(property.getId(), property.getLabel(), property.getVersion()) != null);
     }
 
-    private static MultiKeyMap createOpenProcessMap(List<IProcess> openedProcessList) {
-        MultiKeyMap map = new MultiKeyMap();
-        if (openedProcessList != null) {
-            for (IProcess process : openedProcessList) {
-                map.put(process.getId(), process.getLabel(), process.getVersion(), process);
-            }
-        }
-        return map;
-    }
-
     public static List<JobletReferenceBean> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory,
-            RepositoryNode currentJobNode) {
+            DeleteActionCache deleteActionCache, RepositoryNode currentJobNode) {
         IRepositoryObject object = currentJobNode.getObject();
         List<JobletReferenceBean> list = new ArrayList<JobletReferenceBean>();
 
-        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(getEditors());
-        MultiKeyMap openProcessMap = createOpenProcessMap(openedProcessList);
-        Item item = null;
+        if (deleteActionCache == null) {
+            deleteActionCache = DeleteActionCache.getInstance();
+            deleteActionCache.createRecords();
+        }
         if (object != null) {
             Property property = object.getProperty();
             if (property != null) {
-                item = property.getItem();
-
                 String label = property.getLabel();
                 String version = property.getVersion();
 
-                // List<UpdateResult> resultList = new ArrayList<UpdateResult>();
-                List<IRepositoryObject> processList = null;
-                try {
-                    processList = factory.getAll(ERepositoryObjectType.PROCESS, true);
-                    if (processList == null) {
-                        processList = new ArrayList<IRepositoryObject>();
-                    }
-                    List<IRepositoryObject> jobletList = factory.getAll(ERepositoryObjectType.JOBLET, true);
-                    if (jobletList != null) {
-                        processList.addAll(jobletList);
-                    }
-                } catch (PersistenceException e) {
-                    // TODO Auto-generated catch block
-                    // e.printStackTrace();
-                    ExceptionHandler.process(e);
-                }
                 EList nodesList = null;
-                for (IRepositoryObject process : processList) {
+                for (IRepositoryObject process : deleteActionCache.getProcessList()) {
                     // node = (EList) process.getGraphicalNodes();
                     Property property2 = process.getProperty();
 
@@ -286,7 +275,7 @@ public class DeleteAction extends AContextualAction {
                     boolean isJob = true;
 
                     Item item2 = property2.getItem();
-                    if (!isOpenedItem(item2, openProcessMap)) {
+                    if (!isOpenedItem(item2, deleteActionCache.getOpenProcessMap())) {
                         if (item2 instanceof ProcessItem) {
                             nodesList = ((ProcessItem) item2).getProcess().getNode();
                         } else if (item2 instanceof JobletProcessItem) {
@@ -324,7 +313,7 @@ public class DeleteAction extends AContextualAction {
                         }
                     }
                 }
-                for (IProcess openedProcess : openedProcessList) {
+                for (IProcess openedProcess : deleteActionCache.getOpenedProcessList()) {
                     for (INode node : openedProcess.getGraphicalNodes()) {
                         boolean equals = node.getComponent().getName().equals(label)
                                 && node.getComponent().getVersion().equals(version);
@@ -423,13 +412,13 @@ public class DeleteAction extends AContextualAction {
      * @throws PersistenceException
      * @throws BusinessException
      */
-    private boolean deleteElements(IProxyRepositoryFactory factory, RepositoryNode currentJobNode) throws PersistenceException,
-            BusinessException {
+    private boolean deleteElements(IProxyRepositoryFactory factory, DeleteActionCache deleteActionCache,
+            RepositoryNode currentJobNode) throws PersistenceException, BusinessException {
         Boolean confirm = null;
         boolean needReturn = false;
         IRepositoryObject objToDelete = currentJobNode.getObject();
 
-        List<JobletReferenceBean> checkRepository = checkRepositoryNodeFromProcess(factory, currentJobNode);
+        List<JobletReferenceBean> checkRepository = checkRepositoryNodeFromProcess(factory, deleteActionCache, currentJobNode);
         if (checkRepository.size() > 0) {
             JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .getShell(), objToDelete, checkRepository);

@@ -36,6 +36,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.DeleteAction;
+import org.talend.repository.ui.actions.DeleteActionCache;
 import org.talend.repository.ui.actions.metadata.CopyToGenericSchemaHelper;
 import org.talend.repository.ui.dialog.JobletReferenceDialog;
 
@@ -151,7 +152,9 @@ public class MoveObjectAction {
                 boolean isBin = targetNode instanceof BinRepositoryNode;
                 if (isBin && isJoblet) {
                     IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                    List<JobletReferenceBean> checkRepository = DeleteAction.checkRepositoryNodeFromProcess(factory, sourceNode);
+                    List<JobletReferenceBean> checkRepository = DeleteAction.checkRepositoryNodeFromProcess(factory, null,
+                            sourceNode);
+                    DeleteActionCache.getInstance().clearRecords();
                     if (checkRepository.size() > 0) {
                         JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench()
                                 .getActiveWorkbenchWindow().getShell(), sourceNode.getObject(), checkRepository);
