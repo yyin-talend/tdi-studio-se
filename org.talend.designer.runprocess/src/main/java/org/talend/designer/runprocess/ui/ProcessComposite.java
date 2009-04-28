@@ -1239,7 +1239,7 @@ public class ProcessComposite extends Composite {
                                             String welcomeMsg = mf.format(new Object[] { processContext.getProcess().getName(),
                                                     new Date() });
                                             processContext.addDebugResultToConsole(new ProcessMessage(MsgType.CORE_OUT,
-                                                    welcomeMsg));
+                                                    welcomeMsg + "\r\n"));//$NON-NLS-1$
                                         }
                                     }
                                 });

@@ -439,7 +439,7 @@ public class RunProcessContext {
                                                     String welcomeMsg = mf
                                                             .format(new Object[] { process.getLabel(), new Date() });
                                                     processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT,
-                                                            welcomeMsg));
+                                                            welcomeMsg + "\r\n")); //$NON-NLS-1$
                                                     processMonitorThread = new Thread(psMonitor);
                                                     processMonitorThread.start();
                                                 } else {
