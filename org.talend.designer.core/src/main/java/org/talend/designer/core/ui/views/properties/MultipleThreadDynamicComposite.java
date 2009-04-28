@@ -143,7 +143,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         return aliasName;
     }
 
-    private void updateRepositoryList() {
+    public void updateRepositoryList() {
 
         ProgressDialog progressDialog = new ProgressDialog(this.getShell(), 1000) {
 

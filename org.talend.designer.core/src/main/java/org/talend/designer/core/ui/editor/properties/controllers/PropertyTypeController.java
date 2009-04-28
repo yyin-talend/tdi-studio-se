@@ -48,6 +48,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
@@ -310,6 +311,10 @@ public class PropertyTypeController extends AbstractRepositoryController {
                                     .getName()
                                     + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
                             executeCommand(cmd);
+                            // see bug in feature 5998.refresh repositoryList.
+                            if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
+                                ((MultipleThreadDynamicComposite) dynamicProperty).updateRepositoryList();
+                            }
                         }
                     }
 
