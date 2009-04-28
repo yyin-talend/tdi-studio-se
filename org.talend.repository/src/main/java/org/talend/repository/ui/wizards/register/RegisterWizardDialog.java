@@ -46,4 +46,15 @@ public class RegisterWizardDialog extends WizardDialog {
             button.setText(Messages.getString("RegisterWizardDialog.ok_button")); //$NON-NLS-1$);
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.wizard.WizardDialog#configureShell(org.eclipse.swt.widgets.Shell)
+     */
+    @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setSize(800, 400);
+    }
 }
