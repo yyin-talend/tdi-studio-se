@@ -168,4 +168,5 @@ for (int i=0; i<files.size(); i++) {
         
         globalMap.put("<%=cid%>_CURRENT_FILE", currentFileName_<%=cid%>);
         globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+        globalMap.put("<%=cid%>_NB_FILE", NB_FILE<%=cid%>);
         
