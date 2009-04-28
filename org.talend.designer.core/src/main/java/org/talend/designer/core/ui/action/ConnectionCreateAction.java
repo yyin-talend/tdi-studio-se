@@ -117,18 +117,17 @@ public class ConnectionCreateAction extends SelectionAction {
             if (connecType.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                 if (!(Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())
                         || (!node.getProcessStartNode(false).equals(node))) {
-                    // boolean jobletOk = false;
-                    // if (PluginChecker.isJobLetPluginLoaded()) {
-                    // IJobletProviderService service = (IJobletProviderService)
-                    // GlobalServiceRegister.getDefault().getService(
-                    // IJobletProviderService.class);
-                    // if (service != null && service.isJobletComponent(node)) {
-                    // jobletOk = true;
-                    // }
-                    // }
-                    // if (!jobletOk) {
-                    return false;
-                    // }
+                    boolean jobletOk = false;
+                    if (PluginChecker.isJobLetPluginLoaded()) {
+                        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                                IJobletProviderService.class);
+                        if (service != null && service.isJobletComponent(node)) {
+                            jobletOk = true;
+                        }
+                    }
+                    if (!jobletOk) {
+                        return false;
+                    }
                 }
             }
             menuList = new ArrayList<String>();
