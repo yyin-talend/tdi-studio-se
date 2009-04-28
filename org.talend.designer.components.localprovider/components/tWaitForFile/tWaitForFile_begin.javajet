@@ -252,7 +252,7 @@
                         break;
                     }
                 }
-                for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
+                for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(!originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
            	<%	
            		if(waitRelease){
