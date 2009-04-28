@@ -57,20 +57,20 @@ public class OpenExistVersionProcessPage extends WizardPage {
 
     private boolean createNewVersionJob = false;
 
-    private boolean alreadyLockedByUser = false;
+    private boolean alreadyEditedByUser = false;
 
     /**
      * DOC xye OpenExistVersionProcessPage constructor comment.
      * 
      * @param pageName
      */
-    protected OpenExistVersionProcessPage(final boolean alreadyLockedByUser, final IRepositoryObject processObject) {
+    protected OpenExistVersionProcessPage(final boolean alreadyEditedByUser, final IRepositoryObject processObject) {
         super("OpenExistVersionProcessPage"); //$NON-NLS-1$
         setTitle(TITLE);
         setMessage(Messages.getString("OpenExistVersionProcessPage.messageCreated")); //$NON-NLS-1$
         this.processObject = processObject;
         originVersion = getProperty().getVersion();
-        this.alreadyLockedByUser = alreadyLockedByUser;
+        this.alreadyEditedByUser = alreadyEditedByUser;
     }
 
     /*
@@ -88,7 +88,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
 
         createNewVersionButton = new Button(parent, SWT.CHECK);
         createNewVersionButton.setText(Messages.getString("OpenExistVersionProcessPage.textContent")); //$NON-NLS-1$
-        createNewVersionButton.setEnabled(!alreadyLockedByUser);
+        createNewVersionButton.setEnabled(!alreadyEditedByUser);
 
         Composite bc = new Composite(parent, SWT.NULL);
         bc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

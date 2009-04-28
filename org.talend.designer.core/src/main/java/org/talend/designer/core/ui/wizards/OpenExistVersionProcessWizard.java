@@ -60,7 +60,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     private final IRepositoryObject processObject;
 
-    private boolean alreadyLockedByUser = false;
+    private boolean alreadyEditedByUser = false;
 
     private String originaleObjectLabel = null;
 
@@ -75,7 +75,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     @Override
     public void addPages() {
-        mainPage = new OpenExistVersionProcessPage(alreadyLockedByUser, processObject);
+        mainPage = new OpenExistVersionProcessPage(alreadyEditedByUser, processObject);
         addPage(mainPage);
         setWindowTitle(Messages.getString("NewProcessWizard.windowTitle")); //$NON-NLS-1$
     }
@@ -99,8 +99,9 @@ public class OpenExistVersionProcessWizard extends Wizard {
     private void lockObject() {
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
-            if (repositoryFactory.getStatus(processObject).equals(ERepositoryStatus.LOCK_BY_USER)) {
-                alreadyLockedByUser = true;
+            if (repositoryFactory.getStatus(processObject).equals(ERepositoryStatus.LOCK_BY_USER)
+                    && RepositoryManager.isOpenedItemInEditor(processObject)) {
+                alreadyEditedByUser = true;
             } else {
                 repositoryFactory.lock(processObject);
             }
@@ -148,7 +149,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
     }
 
     private boolean refreshNewJob() {
-        if (alreadyLockedByUser) {
+        if (alreadyEditedByUser) {
             return false;
         }
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();

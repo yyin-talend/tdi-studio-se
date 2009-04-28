@@ -33,6 +33,7 @@ import org.talend.core.i18n.Messages;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -52,7 +53,7 @@ public class PropertiesWizard extends Wizard {
 
     private final IPath path;
 
-    private boolean alreadyLockedByUser = false;
+    private boolean alreadyEditedByUser = false;
 
     private final String originaleObjectLabel;
 
@@ -72,8 +73,9 @@ public class PropertiesWizard extends Wizard {
     private void lockObject() {
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
-            if (repositoryFactory.getStatus(object).equals(ERepositoryStatus.LOCK_BY_USER)) {
-                alreadyLockedByUser = true;
+            if (repositoryFactory.getStatus(object).equals(ERepositoryStatus.LOCK_BY_USER)
+                    && RepositoryManager.isOpenedItemInEditor(object)) {
+                alreadyEditedByUser = true;
             } else {
                 repositoryFactory.lock(object);
             }
@@ -85,7 +87,7 @@ public class PropertiesWizard extends Wizard {
     }
 
     private void unlockObject() {
-        if (!alreadyLockedByUser) {
+        if (!alreadyEditedByUser) {
             IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
                     .getProxyRepositoryFactory();
             try {
@@ -110,7 +112,7 @@ public class PropertiesWizard extends Wizard {
 
     private boolean isReadOnly() {
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-        return !repositoryFactory.getStatus(object).isEditable() || alreadyLockedByUser;
+        return !repositoryFactory.getStatus(object).isEditable() || alreadyEditedByUser;
     }
 
     @Override
@@ -123,7 +125,7 @@ public class PropertiesWizard extends Wizard {
                 GridLayout layout = new GridLayout(2, false);
                 container.setLayout(layout);
 
-                if (alreadyLockedByUser) {
+                if (alreadyEditedByUser) {
                     Label label = new Label(container, SWT.NONE);
                     label.setForeground(ColorConstants.red);
                     label.setText(Messages.getString("PropertiesWizard.alreadyLockedByUser")); //$NON-NLS-1$
@@ -151,7 +153,7 @@ public class PropertiesWizard extends Wizard {
 
     @Override
     public boolean performFinish() {
-        if (alreadyLockedByUser) {
+        if (alreadyEditedByUser) {
             return false;
         }
 
@@ -223,7 +225,7 @@ public class PropertiesWizard extends Wizard {
     // }
     @Override
     public boolean performCancel() {
-        if (!alreadyLockedByUser) {
+        if (!alreadyEditedByUser) {
             try {
                 reloadProperty();
             } catch (PersistenceException e) {
