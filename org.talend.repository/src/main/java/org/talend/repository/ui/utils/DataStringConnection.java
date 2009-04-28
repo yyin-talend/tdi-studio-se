@@ -394,8 +394,20 @@ public class DataStringConnection {
      * @param string label
      */
     public int getIndexOfLabel(String label) {
-        for (int i = 0; i < dataConnection.length; i++) {
-            if (dataConnection[i].getLabel().equals(label)) {
+        // for (int i = 0; i < dataConnection.length; i++) {
+        // if (dataConnection[i].getLabel().equals(label)) {
+        // return i;
+        // }
+        // }
+        // return -1;
+        return getDbIndex(label);
+    }
+
+    private int getDbIndex(String dbtype) {
+        List<String> types = getDBTypes();
+        for (int i = 0; i < types.size(); i++) {
+            String type = types.get(i);
+            if (type.equals(dbtype)) {
                 return i;
             }
         }

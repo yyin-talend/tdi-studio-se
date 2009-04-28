@@ -1516,17 +1516,23 @@ public class DatabaseForm extends AbstractForm {
                 }
             }
 
-            if (s.contains("<host>")) { //$NON-NLS-1$
-                serverText.setEditable(visible);
-                addContextParams(EDBParamName.Server, visible);
+            if (s.contains("<host>")) {
+                if (!DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {
+                    serverText.setEditable(visible);
+                    addContextParams(EDBParamName.Server, visible);
+                }
+
             }
             if (s.contains("<port>")) { //$NON-NLS-1$
                 portText.setEditable(visible);
                 addContextParams(EDBParamName.Port, visible);
             }
             if (s.contains("<sid>") || s.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
-                sidOrDatabaseText.setEditable(visible);
-                addContextParams(sidOrDatabase, visible);
+                if (!urlDataStringConnection.isSchemaNeeded() && !DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {
+                    sidOrDatabaseText.setEditable(visible);
+                    addContextParams(sidOrDatabase, visible);
+                }
+
             }
             if (s.contains("<filename>")) { // && //$NON-NLS-1$
                 // urlDataStringConnection.getStringConnectionTemplate().contains
@@ -1576,8 +1582,11 @@ public class DatabaseForm extends AbstractForm {
                 addContextParams(EDBParamName.Schema, visible);
             }
             if (urlDataStringConnection.isAddtionParamsNeeded()) {
-                additionParamText.setEditable(visible);
-                addContextParams(EDBParamName.AdditionalParams, visible);
+                if (!DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {
+                    additionParamText.setEditable(visible);
+                    addContextParams(EDBParamName.AdditionalParams, visible);
+                }
+
             }
         }
         compositeDbSettings.layout();
