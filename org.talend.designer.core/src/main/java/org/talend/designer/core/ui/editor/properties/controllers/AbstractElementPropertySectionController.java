@@ -1193,8 +1193,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     protected boolean isUseExistingConnection() {
-        Boolean value = (Boolean) elem.getElementParameter("USE_EXISTING_CONNECTION").getValue();
-        return value;
+        IElementParameter elementParameter = elem.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName());
+        if (elementParameter != null) {
+            Boolean value = (Boolean) elementParameter.getValue();
+            return value;
+        }
+        return false;
     }
 
     /**
