@@ -267,6 +267,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         JobSettingsView view = (JobSettingsView) page.findView(JobSettingsView.ID);
 
+        getDiagramEditorInput().getItem().getProperty().eAdapters().remove(dirtyListener);
+
         if (view == null) {
             return;
         }
@@ -322,6 +324,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             }
 
         }
+        getDiagramEditorInput().getItem().getProperty().eAdapters().add(dirtyListener);
 
     }
 
@@ -381,6 +384,13 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         if (!keepPropertyLocked) {
             super.disposeDocumentProvider();
         }
+    }
+
+    @Override
+    public void setFocus() {
+        ISelection selection = getSelection();
+
+        super.setFocus();
     }
 
 }
