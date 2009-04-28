@@ -149,7 +149,11 @@ public class StatsAndLogsManager {
                     commitNode.setSubProcessStart(true);
                     commitNode.setActivate(true);
                     commitNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(connectionUID);
-                    commitNode.getElementParameter("CLOSE").setValue(Boolean.FALSE); //$NON-NLS-1$
+                    IElementParameter elementParameter = commitNode.getElementParameter("CLOSE");
+                    if (elementParameter != null) {
+                        elementParameter.setValue(Boolean.FALSE); //$NON-NLS-1$
+                    }
+
                     commitNode.setProcess(process);
                     nodeList.add(commitNode);
                 }
@@ -282,10 +286,11 @@ public class StatsAndLogsManager {
                         // check if shared parameter exist, if yes, use it ONLY when use the project settings.
                         // name for shared connection can be always the same, as we use only when project settings is
                         // activated.
-                        if (connectionNode.getElementParameter("USE_SHARED_CONNECTION").getName() != null) {//$NON-NLS-1$
+                        IElementParameter elementParameter = connectionNode.getElementParameter("USE_SHARED_CONNECTION");
+                        if (elementParameter != null && elementParameter.getName() != null) {//$NON-NLS-1$
                             if ((Boolean) process.getElementParameter(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName())
                                     .getValue()) {
-                                connectionNode.getElementParameter("USE_SHARED_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
+                                elementParameter.setValue(Boolean.TRUE);//$NON-NLS-1$
                                 connectionNode.getElementParameter("SHARED_CONNECTION_NAME").setValue("\"STATSLOGS_CONNECTION\"");//$NON-NLS-1$//$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
