@@ -61,6 +61,8 @@ public class NodeContainer extends Element {
 
     private Point parallelLocation = new Point();
 
+    private Point markLocation = new Point();
+
     private SubjobContainer subjobContainer;
 
     private Dimension breakpointSize;
@@ -104,7 +106,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, trianRectangle, parallelLocationRectangle;
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, parallelLocationRectangle;
 
         breakpointLocation.x = nodeLocation.x - breakpointSize.width;
         breakpointLocation.y = nodeLocation.y - breakpointSize.height;
@@ -126,6 +128,9 @@ public class NodeContainer extends Element {
         infoRectangle = new Rectangle(infoLocation, infoSize);
         statusRectangle.union(infoRectangle);
 
+        markLocation.x = statusRectangle.x;
+        markLocation.y = statusRectangle.y;
+
         parallelLocation.x = nodeLocation.x - nodeSize.width / 2 - parallelSize.width;
         parallelLocation.y = nodeLocation.y - parallelSize.height;
         parallelLocationRectangle = new Rectangle(parallelLocation, parallelSize);
@@ -134,6 +139,47 @@ public class NodeContainer extends Element {
 
         return statusRectangle;
     }
+
+    private Rectangle prepareCleanStatus(Point nodeLocation, Dimension nodeSize) {
+        Rectangle statusRectangle = new Rectangle();
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle;
+
+        breakpointLocation.x = nodeLocation.x - breakpointSize.width;
+        breakpointLocation.y = nodeLocation.y - breakpointSize.height;
+        breakpointRectangle = new Rectangle(breakpointLocation, breakpointSize);
+        statusRectangle = breakpointRectangle;
+
+        errorLocation.x = nodeLocation.x + nodeSize.width;
+        errorLocation.y = nodeLocation.y - errorSize.height;
+        errorRectangle = new Rectangle(errorLocation, errorSize);
+        statusRectangle.union(errorRectangle);
+
+        warningLocation.x = nodeLocation.x + nodeSize.width;
+        warningLocation.y = nodeLocation.y - warningSize.height;
+        warningRectangle = new Rectangle(warningLocation, warningSize);
+        statusRectangle.union(warningRectangle);
+
+        infoLocation.x = nodeLocation.x + nodeSize.width;
+        infoLocation.y = nodeLocation.y - infoSize.height;
+        infoRectangle = new Rectangle(infoLocation, infoSize);
+        statusRectangle.union(infoRectangle);
+
+        markLocation.x = statusRectangle.x;
+        markLocation.y = statusRectangle.y;
+
+        return statusRectangle;
+    }
+
+    //
+    // private Rectangle cleanRectangle;
+    //
+    // public Rectangle getCleanRectangle() {
+    // return this.cleanRectangle;
+    // }
+    //
+    // public void setCleanRectangle(Rectangle cleanRectangle) {
+    // this.cleanRectangle = cleanRectangle;
+    // }
 
     public Rectangle getNodeContainerRectangle() {
         Point nodeLocation;
@@ -179,6 +225,38 @@ public class NodeContainer extends Element {
         if (node.isFileScaleComponent()) {
             finalRect = finalRect.getUnion(progressNodeRectangle);// finalRect.height += progressNodeSize.height;//
         }
+        return finalRect;
+    }
+
+    public Rectangle getNodeMarkRectangle() {
+        Point nodeLocation;
+        nodeLocation = node.getLocation();
+
+        Dimension nodeSize;
+        Dimension labelSize;
+        Dimension errorNodeSize;
+        Dimension progressNodeSize;
+        nodeSize = node.getSize();
+        Rectangle nodeRectangle = new Rectangle(nodeLocation, nodeSize);
+
+        Rectangle statusRectangle = prepareCleanStatus(nodeLocation, nodeSize);
+
+        labelSize = nodeLabel.getLabelSize();
+
+        errorNodeSize = nodeError.getErrorSize();
+
+        progressNodeSize = nodeProgressBar.getProgressSize();
+
+        Dimension perfSize = nodePerformance.getSize();
+        Point perfLocation = nodePerformance.getLocation();
+
+        Rectangle perfRectangle = new Rectangle(perfLocation, perfSize);
+
+        Rectangle finalRect;
+        finalRect = nodeRectangle.getUnion(perfRectangle).getUnion(statusRectangle);
+        finalRect.height += labelSize.height;
+        finalRect.height += errorNodeSize.height;
+        finalRect.height += progressNodeSize.height;
         return finalRect;
     }
 
@@ -282,6 +360,15 @@ public class NodeContainer extends Element {
      */
     public Point getErrorLocation() {
         return this.errorLocation;
+    }
+
+    /**
+     * Getter for markLocation.
+     * 
+     * @return the markLocation
+     */
+    public Point getMarkLocation() {
+        return this.markLocation;
     }
 
     /**

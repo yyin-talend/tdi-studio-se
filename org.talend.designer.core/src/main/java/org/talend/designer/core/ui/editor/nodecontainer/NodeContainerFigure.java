@@ -70,7 +70,6 @@ public class NodeContainerFigure extends Figure {
         this.setLayoutManager(new FreeformLayout());
         // this.setOpaque(true);
         // this.setBackgroundColor(new Color(null, new RGB(200, 100, 200)));
-
         rectFig = new RoundedRectangle() {
 
             @Override
@@ -113,7 +112,7 @@ public class NodeContainerFigure extends Figure {
 
         htmlStatusHint = new SimpleHtmlFigure();
 
-        initializeNodeContainer(nodeContainer.getNodeContainerRectangle());
+        initializeNodeContainer(nodeContainer.getNodeMarkRectangle());
         rectFig.setVisible(false);
     }
 
@@ -246,7 +245,7 @@ public class NodeContainerFigure extends Figure {
         if (parallelFigure != null) {
             parallelFigure.setLocation(nodeContainer.getParallelLocation());
         }
-
+        rectFig.setLocation(nodeContainer.getMarkLocation());
         super.paint(graphics);
     }
 
@@ -259,8 +258,7 @@ public class NodeContainerFigure extends Figure {
     }
 
     public void initializeNodeContainer(Rectangle rectangle) {
-        Point location = this.getLocation();
-        rectFig.setLocation(new Point(location.x, location.y));
+        rectFig.setLocation(new Point(rectangle.x, rectangle.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height));
         rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(255, 102, 102)));
     }

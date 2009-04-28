@@ -109,8 +109,9 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
 
     protected void refreshVisuals() {
         Rectangle rectangle = ((NodeContainer) this.getModel()).getNodeContainerRectangle();
+        Rectangle cleanRectangle = ((NodeContainer) this.getModel()).getNodeMarkRectangle();
         ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
-        ((NodeContainerFigure) getFigure()).initializeNodeContainer(rectangle);
+        ((NodeContainerFigure) getFigure()).initializeNodeContainer(cleanRectangle);
     }
 
     protected List getModelChildren() {
