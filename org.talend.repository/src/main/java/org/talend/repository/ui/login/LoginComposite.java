@@ -272,14 +272,14 @@ public class LoginComposite extends Composite {
         data = new FormData();
         data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
         data.left = new FormAttachment(manageViewer.getControl(), HORIZONTAL_SPACE);
+        data.top = new FormAttachment(0, HORIZONTAL_SPACE);
         manageProjectsButton.setLayoutData(data);
 
         // TODO select
         manageProjectLabel1 = toolkit.createLabel(group, Messages.getString("LoginComposite.existing")); //$NON-NLS-1$
         data = new FormData();
-        data.top = new FormAttachment(0, HORIZONTAL_SPACE);
         data.left = new FormAttachment(0, HORIZONTAL_SPACE);
-        // data.bottom = new FormAttachment(manageViewer.getControl(), 0, SWT.CENTER);
+        data.bottom = new FormAttachment(manageProjectsButton, VERTICAL_SPACE, SWT.CENTER);
 
         manageProjectLabel1.setLayoutData(data);
         // data for managerViewer
