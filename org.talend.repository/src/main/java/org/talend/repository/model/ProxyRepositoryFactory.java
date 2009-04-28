@@ -982,8 +982,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 if (jobCheckService != null) {
                     jobCheckService.checkJob(item.getProperty().getLabel());
                 }
-            } catch (Exception e) {
+            } catch (BusinessException e) {
                 throw new PersistenceException(e);
+            } catch (RuntimeException e) {
+                // don't do anything
             }
         }
         checkFileNameAndPath(project, item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false);
@@ -1041,8 +1043,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 if (jobCheckService != null) {
                     jobCheckService.checkJob(sourceItem.getProperty().getLabel());
                 }
-            } catch (Exception e) {
-                throw new BusinessException(e);
+            } catch (BusinessException e) {
+                throw new PersistenceException(e);
+            } catch (RuntimeException e) {
+                // don't do anything
             }
         }
 
@@ -1065,8 +1069,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 if (jobCheckService != null) {
                     jobCheckService.checkJob(sourceItem.getProperty().getLabel());
                 }
-            } catch (Exception e) {
-                throw new BusinessException(e);
+            } catch (BusinessException e) {
+                throw new PersistenceException(e);
+            } catch (RuntimeException e) {
+                // don't do anything
             }
         }
         Item targetItem = this.repositoryFactoryFromProvider.copy(sourceItem, targetPath, changeLabelWithCopyPrefix);
