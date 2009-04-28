@@ -229,6 +229,10 @@ public class RepositoryNodeUtilities {
         return null;
     }
 
+    public static void expandNode(IRepositoryView view, RepositoryNode curNode) {
+        getRepositoryNode(view.getRoot(), curNode.getObject(), view, true);
+    }
+
     private static void expandNode(RepositoryNode rootNode, IRepositoryObject curNode, IRepositoryView view) {
         if (rootNode == null || curNode == null || view == null) {
             return;
