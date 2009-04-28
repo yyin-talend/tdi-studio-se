@@ -39,14 +39,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
       try {
          talendAcpXmlWriter_<%=cid%>.close();
-      } catch (fr.talend.talendalfresco.acpxml.AcpXmlException e) {
-         throw new fr.talend.talendalfresco.rest.client.RestClientException("Error creating XML result", e);
+      } catch (fr.openwide.talendalfresco.acpxml.AcpXmlException e) {
+         throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error creating XML result", e);
       }
       
       String content_<%=cid%> = talendAcpXmlWriter_<%=cid%>.toString();
       ByteArrayInputStream acpXmlIs_<%=cid%> = new ByteArrayInputStream(content_<%=cid%>.getBytes());
       
-      fr.talend.talendalfresco.rest.client.ClientImportCommand importCmd_<%=cid%> = new fr.talend.talendalfresco.rest.client.ClientImportCommand("<%=targetLocationBase%>", acpXmlIs_<%=cid%>);
+      fr.openwide.talendalfresco.rest.client.ClientImportCommand importCmd_<%=cid%> = new fr.openwide.talendalfresco.rest.client.ClientImportCommand("<%=targetLocationBase%>", acpXmlIs_<%=cid%>);
       importCmd_<%=cid%>.setDocumentMode("<%=documentMode%>");
       importCmd_<%=cid%>.setContainerMode("<%=containerMode%>");
    
@@ -56,8 +56,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       // logout
       try {
       	alfrescoRestClient_<%=cid%>.logout();
-      } catch (fr.talend.talendalfresco.rest.client.RestClientException e) {
-         throw new fr.talend.talendalfresco.rest.client.RestClientException("Error initing client", e);
+      } catch (fr.openwide.talendalfresco.rest.client.RestClientException e) {
+         throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error initing client", e);
       }
       
       // setting global var NB_LINE for further components
