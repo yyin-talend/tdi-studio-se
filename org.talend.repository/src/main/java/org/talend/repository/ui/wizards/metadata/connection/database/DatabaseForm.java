@@ -1528,7 +1528,7 @@ public class DatabaseForm extends AbstractForm {
                 addContextParams(EDBParamName.Port, visible);
             }
             if (s.contains("<sid>") || s.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
-                if (!urlDataStringConnection.isSchemaNeeded() && !DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {
+                if (!DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {
                     sidOrDatabaseText.setEditable(visible);
                     addContextParams(sidOrDatabase, visible);
                 }
