@@ -84,9 +84,10 @@ import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
 /**
- * Composite login.<br/>
+ * labe Composite login.<br/>
  * 
- * $Id$
+ * $Id: /talend/tos/trunk/org.talend.repository/src/main/java/org/talend/repository/ui/login/LoginComposite.java 24167
+ * 2009-04-28T09:55:53.574018Z wchen $
  * 
  */
 public class LoginComposite extends Composite {
@@ -139,6 +140,8 @@ public class LoginComposite extends Composite {
     private Label manageProjectLabel1;
 
     private String lastWarnings;
+
+    private Label existingLabel;
 
     /**
      * Constructs a new LoginComposite.
@@ -288,8 +291,7 @@ public class LoginComposite extends Composite {
         data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
         manageViewer.getControl().setLayoutData(data);
 
-        // TODO or
-        Label existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
+        existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre"));
         data = new FormData();
         data.left = new FormAttachment(manageProjectLabel1, 0, SWT.CENTER);
         data.top = new FormAttachment(manageProjectLabel1, 40);
@@ -665,10 +667,12 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setVisible(false);
             manageProjectLabel1.setVisible(false);
             manageProjectsButton.setVisible(false);
+            existingLabel.setVisible(false);
         } else {
             manageViewer.getControl().setVisible(true);
             manageProjectLabel1.setVisible(true);
             manageProjectsButton.setVisible(true);
+            existingLabel.setVisible(true);
         }
     }
 
