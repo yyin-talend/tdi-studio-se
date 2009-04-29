@@ -121,35 +121,20 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		if(!split){
     		    %>		
     		    //routines.system.Row
-    		    java.io.FileOutputStream fos_begin_<%=cid %> = new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>);
-<%
-				if(encoding.equals("\"UTF-8\"")){
-%>   
-	    		    fos_begin_<%=cid %>.write((byte) 0xEF); 
-	    		    fos_begin_<%=cid %>.write((byte) 0xBB); 
-	    		    fos_begin_<%=cid %>.write((byte) 0xBF); 
-<%
-				}
-%>
-    		    java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(fos_begin_<%=cid %>,<%=encoding%>));
+    		    java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(
+            		new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>),<%=encoding%>));
     		    java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
     		    <% 
     		} else {
     		    %>
-    		    java.io.FileOutputStream fos_begin_<%=cid %> = new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>;
-<%
-				if(encoding.equals("\"UTF-8\"")){
-%>   
-	    		    fos_begin_<%=cid %>.write((byte) 0xEF); 
-	    		    fos_begin_<%=cid %>.write((byte) 0xBB); 
-	    		    fos_begin_<%=cid %>.write((byte) 0xBF); 
-<%
-				}
-%>
-                java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(fos_begin_<%=cid %>,<%=encoding%>));
+                java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(
+                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
                 java.io.File file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
                 <%
     		}
+    		%>
+            		
+    		<%
     		if(isIncludeHeader){
     		    %>
     		    if(file<%=cid%>.length()==0)  
