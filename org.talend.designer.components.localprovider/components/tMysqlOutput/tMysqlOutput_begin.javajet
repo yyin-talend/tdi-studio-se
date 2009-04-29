@@ -56,11 +56,19 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
-	boolean extendedInsert = ElementParameterParser.getValue(node, "__EXTENDINSERT__").equals("true");
-	    
+	boolean extendedInsert = false;
+	
+	if ("INSERT".equalsIgnoreCase(dataAction)) {
+		extendedInsert = ElementParameterParser.getValue(node, "__EXTENDINSERT__").equals("true");
+	}else {
+		extendedInsert = false;
+	}
+	
 	int numPerInsert = Integer.parseInt(ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__"));
 	
 	boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
+	
+	
 %>
 
 <%

@@ -231,7 +231,7 @@
       FIELD="TEXT"
       NUM_ROW="8"
       REQUIRED="true"
-      SHOW_IF="EXTENDINSERT == 'true'"
+      SHOW_IF="(EXTENDINSERT == 'true' AND DATA_ACTION == 'INSERT')"
     >
       <DEFAULT>100</DEFAULT>
     </PARAMETER>
