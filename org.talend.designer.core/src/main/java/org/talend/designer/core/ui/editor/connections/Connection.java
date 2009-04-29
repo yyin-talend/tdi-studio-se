@@ -669,7 +669,9 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public void disconnect() {
         if (isConnected) {
-            if (!getSourceNodeConnector().isMultiSchema()) {
+
+            INodeConnector sourceNodeConnector = getSourceNodeConnector();
+            if (sourceNodeConnector != null && !sourceNodeConnector.isMultiSchema()) {
                 if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME)
                         || isInTypes(lineStyle, EConnectionType.ITERATE, EConnectionType.ON_COMPONENT_OK,
                                 EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK,

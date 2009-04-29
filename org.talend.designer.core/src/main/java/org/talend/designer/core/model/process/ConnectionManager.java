@@ -121,6 +121,7 @@ public class ConnectionManager {
             if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 return false;
             }
+            boolean isJoblet = false;
             if (PluginChecker.isJobLetPluginLoaded()) {
                 IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                         IJobletProviderService.class);
@@ -131,10 +132,11 @@ public class ConnectionManager {
                         if (freeTriggerBuiltConnectors.isEmpty()) {
                             return false;
                         }
+                        isJoblet = true;
                     }
                 }
             }
-            if (!target.isELTComponent() && !target.isSubProcessStart()) {
+            if (!isJoblet && !target.isELTComponent() && !target.isSubProcessStart()) {
                 return false;
             }
         }
@@ -324,16 +326,19 @@ public class ConnectionManager {
                 newlineStyle = EConnectionType.FLOW_MERGE;
             }
         }
-        boolean isJobletOk = false;
+        boolean isJoblet = false;
         if (PluginChecker.isJobLetPluginLoaded()) {
             IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                     IJobletProviderService.class);
             if (service != null && service.isJobletComponent(newTarget)) {
                 List<INodeConnector> inputConnector = service.getFreeTriggerBuiltConnectors(newTarget, lineStyle, true);
-                isJobletOk = !inputConnector.isEmpty();
+                if (inputConnector.isEmpty()) {
+                    return false;
+                }
+                isJoblet = true;
             }
         }
-        if (!isJobletOk) {
+        if (!isJoblet) {
             INodeConnector connectorFromType = newTarget.getConnectorFromType(newlineStyle);
             int maxInput = connectorFromType.getMaxLinkInput();
             if (maxInput != -1 && (connectorFromType.getCurLinkNbInput() >= maxInput)) {
