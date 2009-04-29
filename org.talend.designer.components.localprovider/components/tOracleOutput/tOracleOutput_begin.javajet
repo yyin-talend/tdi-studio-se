@@ -177,22 +177,48 @@ Map<String, String> hintsValues = null;
 if (useHintOptions) {
 	List<Map<String, String>> hintOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HINT_OPTIONS__");
 	hintsValues = new HashMap<String, String>();
+	String hintValue = null;
+	boolean firstInsert = true;
+	boolean firstUpdate = true;
+	boolean firstDelete = true;
+	boolean firstTableName = true;
 	for(java.util.Map<String, String> option : hintOptions) {
 		//get
-		String hintValue = null;
 		if(option.get("HINT").matches("\"/\\*NORMALIZED_HINT\\*/\"")) {
 			String id = cid.replace(node.getComponent().getName() + "_", "");
-			hintValue = "\"/*\"+" + tableName + "+\".\" + "  + "\"" + option.get("SQL_STMT")+ ".\"" + "+" +  id   +  "+\"*/\"" ;
+			hintValue = "\"/*\"+" + tableName + "+\".\" + "  + "\"" + option.get("SQL_STMT")+ ".\"" + "+" +  id   +  "+\"*/\" " ;
 		}else if (option.get("HINT").matches("\"/\\*+.*\\*/\"")) {
 			hintValue = option.get("HINT");	
 		}
 		//set
-		if ("INSERT".equalsIgnoreCase(option.get("SQL_STMT"))){			
-			hintsValues.put("INSERT", hintValue) ;			
+		if ("INSERT".equalsIgnoreCase(option.get("SQL_STMT"))){
+			if(firstInsert){
+				hintsValues.put("INSERT", hintValue) ;
+				firstInsert = false;
+			}else {
+				hintsValues.put("INSERT", hintsValues.get("INSERT") + "+" + hintValue) ;
+			}									
 		}else if ("UPDATE".equalsIgnoreCase(option.get("SQL_STMT"))) {
-			hintsValues.put("UPDATE", hintValue) ;
+			if(firstUpdate){
+				hintsValues.put("UPDATE", hintValue) ;
+				firstUpdate = false;
+			}else {
+				hintsValues.put("UPDATE", hintsValues.get("UPDATE") + "+" + hintValue) ;
+			}
 		}else if ("DELETE".equalsIgnoreCase(option.get("SQL_STMT"))) {
-			hintsValues.put("DELETE", hintValue) ;
+			if (firstDelete){
+				hintsValues.put("DELETE", hintValue) ;
+				firstDelete =false;
+			}else {
+				hintsValues.put("DELETE", hintsValues.get("DELETE") + "+" + hintValue) ;
+			}		
+		}else if ("TABLE_NAME".equalsIgnoreCase(option.get("SQL_STMT"))){
+			if (firstTableName){
+				hintsValues.put("TABLE_NAME", hintValue) ;
+				firstTableName = false;
+			}else {
+				hintsValues.put("TABLE_NAME", hintsValues.get("TABLE_NAME") + "+" + hintValue) ;
+			}
 		}
 	}
 } 
@@ -202,8 +228,9 @@ if (useHintOptions) {
 if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
     tableName_<%=cid%> = <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 } else {
-    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;    
 }
+<%@ include file="../templates/_hintTableName.javajet" %>
 <%
 if(columnList != null && columnList.size()>0) {    
     if(!tableAction.equals("NONE")) {
