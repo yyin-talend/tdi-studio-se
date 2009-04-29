@@ -19,21 +19,23 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-String charset = "utf8";
+String charset = "\"utf8\"";
 if(encoding.equals("\"GBK\"")){
-	charset = "gbk";
+	charset = "\"gbk\"";
 }else if(encoding.equals("\"GB2312\"")){
-	charset = "gb2312";
+	charset = "\"gb2312\"";
 }else if(encoding.equals("\"ISO-8859-1\"")){
-	charset = "latin1";
+	charset = "\"latin1\"";
 }else if(encoding.equals("\"ISO-8859-2\"")){
-	charset = "latin2";
+	charset = "\"latin2\"";
 }else if(encoding.equals("\"ISO-8859-15\"")){
-	charset = "latin1";//?not sure if this is true for iso-8859-15
+	charset = "\"latin1\"";//?not sure if this is true for iso-8859-15
 }else if(encoding.equals("\"Big5\"")){
-	charset = "big5";
+	charset = "\"big5\"";
 }else if(encoding.equals("\"UCS-2\"")){
-	charset = "ucs2";
+	charset = "\"ucs2\"";
+}else if(encoding.equals("\"UTF-8\"")){
+	charset = "\"utf8\"";
 }else {
 	charset = encoding;
 }
@@ -47,6 +49,7 @@ String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 List<IMetadataColumn> columnList = getColumnList(node);
 %>
+String charset_<%=cid %> = <%=charset %>;
 String tableName_<%=cid%> = <%=tableName%>;
 Class.forName("com.mysql.jdbc.Driver").newInstance();
 <%
@@ -158,7 +161,7 @@ if(dataAction.equals("UPDATE")) {
         java.sql.Statement stmtTmpCreate_<%=cid%> = con_<%=cid%>.createStatement();
         stmtTmpCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         java.sql.Statement stmtTmpBulk_<%=cid %> = con_<%=cid %>.createStatement();
-        stmtTmpBulk_<%=cid %>.execute("SET character_set_database=<%=charset %>");
+        stmtTmpBulk_<%=cid %>.execute("SET character_set_database=" + charset_<%=cid %>);
         stmtTmpBulk_<%=cid %>.execute(
             "LOAD DATA LOCAL INFILE '" + file_<%=cid %> + "' "  
             + " INTO TABLE " + tableName_<%=cid %>
@@ -188,7 +191,7 @@ if(dataAction.equals("UPDATE")) {
     }
     %>
     java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
-    stmt_<%=cid %>.execute("SET character_set_database=<%=charset %>");
+    stmt_<%=cid %>.execute("SET character_set_database=" + charset_<%=cid %>);
     stmt_<%=cid %>.execute(
         "LOAD DATA LOCAL INFILE '" + file_<%=cid %> + "' " 
         + replace_<%=cid%> 
