@@ -25,9 +25,12 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -130,11 +133,21 @@ public class PasteAction extends AContextualAction {
                         visible = true;
                         enabled = true;
                     }
+
                 }
             }
         } else {
             enabled = false;
             visible = false;
+        }
+        // for cdc
+        if (PluginChecker.isCDCPluginLoaded()) {
+            ICDCProviderService cdcService = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                    ICDCProviderService.class);
+            if (cdcService != null && cdcService.isSubscriberTableNode(target)) {
+                enabled = false;
+                visible = false;
+            }
         }
         setEnabled(enabled);
     }
