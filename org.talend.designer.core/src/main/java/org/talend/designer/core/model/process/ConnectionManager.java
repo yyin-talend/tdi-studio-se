@@ -121,7 +121,6 @@ public class ConnectionManager {
             if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 return false;
             }
-            boolean isJoblet = false;
             if (PluginChecker.isJobLetPluginLoaded()) {
                 IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                         IJobletProviderService.class);
@@ -129,11 +128,13 @@ public class ConnectionManager {
                     if (service.isJobletComponent(target)) {
                         List<INodeConnector> freeTriggerBuiltConnectors = service.getFreeTriggerBuiltConnectors(target, connType,
                                 true);
-                        isJoblet = !freeTriggerBuiltConnectors.isEmpty();
+                        if (freeTriggerBuiltConnectors.isEmpty()) {
+                            return false;
+                        }
                     }
                 }
             }
-            if (!isJoblet && !target.isELTComponent() && !target.isSubProcessStart()) {
+            if (!target.isELTComponent() && !target.isSubProcessStart()) {
                 return false;
             }
         }
