@@ -108,14 +108,13 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
                 FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
             }
 
-            CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
-
             MessageDialog warningMessageDialog = new MessageDialog(
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                     Messages.getString("PushToPaletteActionProvider.Information"), null, Messages.getString("PushToPaletteActionProvider.InformationMSG"), MessageDialog.INFORMATION, //$NON-NLS-1$ //$NON-NLS-2$
                     new String[] { Messages.getString("PushToPaletteActionProvider.OK3") }, 0); //$NON-NLS-1$
             warningMessageDialog.open();
 
+            CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
         }
     }
 }

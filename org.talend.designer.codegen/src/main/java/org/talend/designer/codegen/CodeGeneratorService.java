@@ -96,12 +96,18 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * org.talend.designer.codegen.ICodeGeneratorService#initializeTemplates(org.eclipse.core.runtime.IProgressMonitor)
      */
     public Job initializeTemplates() {
+        return CodeGeneratorEmittersPoolFactory.initialize();
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.codegen.ICodeGeneratorService#refreshTemplates()
+     */
+    public void refreshTemplates() {
         ComponentsFactoryProvider.getInstance().reset();
-        Job job = CodeGeneratorEmittersPoolFactory.initialize();
+        CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
         IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 IDesignerCoreService.class);
         designerCoreService.getLastGeneratedJobsDateMap().clear();
-        return job;
     }
 }
