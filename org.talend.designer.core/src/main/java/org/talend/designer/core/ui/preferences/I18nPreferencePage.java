@@ -75,6 +75,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
     private boolean updateCompleted;
 
+    private boolean isBabiliButtonClicked = false;
+
     /**
      * Construct a new I18nPreferencePage.
      */
@@ -145,6 +147,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
             public void widgetSelected(SelectionEvent e) {
                 // import all update from Babili
+                isBabiliButtonClicked = true;
                 runProgressMonitorDialog(false);
             }
 
@@ -157,6 +160,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
             public void widgetSelected(SelectionEvent e) {
                 // import validated update from Babili
+                isBabiliButtonClicked = true;
                 runProgressMonitorDialog(true);
             }
 
@@ -212,7 +216,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                     }
 
                     updateCompleted = true;
-                    
+
                 } catch (ImportBabiliCancelException e) {
                     updateCompleted = false;
                 } catch (Exception e1) {
@@ -254,8 +258,20 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         boolean ok = super.performOk();
         saveLanguageType();
         CorePlugin.getDefault().savePluginPreferences();
-        RefreshView.refreshAll();
+        if (isBabiliButtonClicked)
+            RefreshView.refreshAll();
         return ok;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.PreferencePage#performApply()
+     */
+    @Override
+    protected void performApply() {
+        saveLanguageType();
+        CorePlugin.getDefault().savePluginPreferences();
     }
 
     /**
