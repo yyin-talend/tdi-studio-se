@@ -497,7 +497,8 @@ public class DatabaseForm extends AbstractForm {
         fileField.hide();
         directoryField.hide();
         // Button Check
-        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.TOP);
+
+        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.BOTTOM);
         layout2 = (GridLayout) compositeCheckButton.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -1509,11 +1510,15 @@ public class DatabaseForm extends AbstractForm {
             urlConnectionStringText.setEditable(!visible);
 
             if (s != null && s.startsWith("jdbc:jtds:sqlserver:")) { //$NON-NLS-1$
+                schemaText.show();
                 schemaText.setEditable(true);
                 addContextParams(EDBParamName.Schema, true);
                 if (schemaText.getText().equals("")) { //$NON-NLS-1$
                     schemaText.setText("dbo"); //$NON-NLS-1$
                 }
+            } else {
+                schemaText.hide();
+                addContextParams(EDBParamName.Schema, false);
             }
 
             if (s.contains("<host>")) {
@@ -1535,8 +1540,6 @@ public class DatabaseForm extends AbstractForm {
 
             }
             if (s.contains("<filename>")) { // && //$NON-NLS-1$
-                // urlDataStringConnection.getStringConnectionTemplate().contains
-                // ("jdbc:sqlite")
                 fileField.show();
                 fileField.setEditable(visible);
                 addContextParams(EDBParamName.File, visible);
@@ -1554,9 +1557,6 @@ public class DatabaseForm extends AbstractForm {
                 fileField.hide();
                 addContextParams(EDBParamName.File, false);
             }
-            // if (s.contains("<filename>")) { //$NON-NLS-1$
-            // fileField.setEditable(visible);
-            // }
             if (s.contains("<datasource>")) { //$NON-NLS-1$
                 datasourceText.show();
                 datasourceText.setEditable(visible);
@@ -1581,16 +1581,19 @@ public class DatabaseForm extends AbstractForm {
                 schemaText.setEditable(visible);
                 addContextParams(EDBParamName.Schema, visible);
             }
-            if (urlDataStringConnection.isAddtionParamsNeeded()) {
-                if (!DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {
-                    additionParamText.setEditable(visible);
-                    addContextParams(EDBParamName.AdditionalParams, visible);
-                }
-
+            if (urlDataStringConnection.isAddtionParamsNeeded()
+                    && !DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText()) && visible) {
+                additionParamText.show();
+                additionParamText.setEditable(true);
+                addContextParams(EDBParamName.AdditionalParams, true);
+            } else {
+                additionParamText.hide();
+                addContextParams(EDBParamName.AdditionalParams, false);
             }
         }
         compositeDbSettings.layout();
         databaseSettingGroup.layout();
+        compositeGroupDbSettings.layout();
     }
 
     /**
@@ -1605,7 +1608,7 @@ public class DatabaseForm extends AbstractForm {
             return false;
         }
 
-        return dbTypeCombo.getText().startsWith("Oracle") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA); //$NON-NLS-1$
+        return dbTypeCombo.getText().startsWith("Oracle"); //$NON-NLS-1$
     }
 
     /**
