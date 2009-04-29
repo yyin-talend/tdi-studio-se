@@ -608,7 +608,8 @@ public class EmfComponent implements IComponent {
 
         FORMATType formatTypeInXML = compType.getHEADER().getFORMAT();
 
-        String formatId = getNodeFormatIdWithoutFormatType(node.getLabel(), getOriginalFamilyName());
+        // qli modified to fix the bug 7074.
+        String formatId = getNodeFormatIdWithoutFormatType(node.getLabel(), getTranslatedFamilyName());
 
         param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
