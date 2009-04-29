@@ -141,7 +141,7 @@ public final class TalendEditorPaletteFactory {
 
         boolean noteAeeded = false;
         boolean needAddNote = true;
-
+        boolean needToAdd = false;
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
 
@@ -154,20 +154,26 @@ public final class TalendEditorPaletteFactory {
                 String regex = getFilterRegex();
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
-            if (family.equals("Misc") && !noteAeeded && needAddNote) { //$NON-NLS-1$
+            if (oraFamily.equals("Misc") && !noteAeeded && needAddNote) { //$NON-NLS-1$
                 CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
                         .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                         Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
                         new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
                                 .getImageDesc(ECoreImage.CODE_ICON));
                 if (a == 0) {
-                    PaletteDrawer drawer = ht.get("Misc"); //$NON-NLS-1$
+                    PaletteDrawer drawer = ht.get(family); //$NON-NLS-1$
                     if (drawer != null) {
                         noteCreationToolEntry.setParent(drawer);
                         drawer.add(noteCreationToolEntry);
                     }
                 } else if (a == 1) {
-                    nodeList.add(0, noteCreationToolEntry);
+                    for (String s : families) {
+                        if (s.equals(family)) {//$NON-NLS-1$
+                            needToAdd = true;
+                        }
+                    }
+                    if (needToAdd == true)
+                        nodeList.add(0, noteCreationToolEntry);
                     // noteCreationToolEntry.setParent(paGroup);
                     // paGroup.add(noteCreationToolEntry);
                 }
@@ -306,7 +312,7 @@ public final class TalendEditorPaletteFactory {
                     key = xmlComponent.getName() + "#" + oraStrings[j];//$NON-NLS-1$
 
                     if (a == 0) {
-                        if (!strings[j].equals("Misc")) {//$NON-NLS-1$
+                        if (!oraStrings[j].equals("Misc")) {//$NON-NLS-1$
                             if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
 
                                 continue;
@@ -342,34 +348,32 @@ public final class TalendEditorPaletteFactory {
                 continue;
             }
             family = xmlComponent.getTranslatedFamilyName();
+            oraFamily = xmlComponent.getOriginalFamilyName();
             if (filter != null) {
                 String regex = getFilterRegex();
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
             // if (isFavorite == false) {
-            if (family.equals("Misc") && !noteAeeded && needAddNote) { //$NON-NLS-1$
+            if (oraFamily.equals("Misc") && !noteAeeded && needAddNote) { //$NON-NLS-1$
                 CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
                         .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                         Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
                         new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
                                 .getImageDesc(ECoreImage.CODE_ICON));
-
                 if (a == 0) {
-                    PaletteDrawer drawer = ht.get("Misc");//$NON-NLS-1$
+                    PaletteDrawer drawer = ht.get(family);//$NON-NLS-1$
                     if (drawer != null) {
                         noteCreationToolEntry.setParent(drawer);
                         drawer.add(noteCreationToolEntry);
                     }
                 } else if ((a == 1)) {
                     for (String s : families) {
-                        if (s.equals("Misc")) {//$NON-NLS-1$
+                        if (s.equals(family)) {//$NON-NLS-1$
                             needToAdd = true;
                         }
                     }
                     if (needToAdd == true)
                         nodeList.add(0, noteCreationToolEntry);
-                    // noteCreationToolEntry.setParent(paGroup);
-                    // paGroup.add(noteCreationToolEntry);
                 }
                 noteAeeded = true;
             }
