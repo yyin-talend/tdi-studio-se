@@ -54,7 +54,7 @@ if(inConn!=null){
 %>
     java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
     int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
-    boolean matches_<%=cid %> = matcher_<%= cid %>.matches();
+    boolean matches_<%=cid %> = matcher_<%= cid %>.find();
     
 <%
 		}
