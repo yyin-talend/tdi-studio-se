@@ -198,7 +198,7 @@
       NUM_ROW="10"
       REQUIRED="true"
     >
-      <DEFAULT>"latin1"</DEFAULT>
+      <DEFAULT>"UTF-8"</DEFAULT>
     </PARAMETER>
    </ADVANCED_PARAMETERS>
 
