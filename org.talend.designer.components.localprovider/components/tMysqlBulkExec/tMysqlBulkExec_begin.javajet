@@ -34,7 +34,10 @@ if(encoding.equals("\"GBK\"")){
 	charset = "big5";
 }else if(encoding.equals("\"UCS-2\"")){
 	charset = "ucs2";
+}else {
+	charset = encoding;
 }
+
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
