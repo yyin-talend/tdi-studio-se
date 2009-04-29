@@ -65,6 +65,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
@@ -738,45 +739,41 @@ public class SelectorTableForm extends AbstractForm {
             if (isCanceled()) {
                 return;
             }
-            checkConnectionIsDone = managerConnection.check(getIMetadataConnection(), true);
-            if (checkConnectionIsDone) {
-                if (isCanceled()) {
-                    return;
-                }
-                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
-                if (isCanceled()) {
-                    return;
-                }
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-
-                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-                initExistingNames();
-                metadataTable.setLabel(IndiceHelper.getIndexedLabel(tableString, existingNames));
-                metadataTable.setSourceName(tableString);
-                metadataTable.setId(factory.getNextId());
-                metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
-                List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
-                Iterator iterate = metadataColumns.iterator();
-                while (iterate.hasNext()) {
-                    MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
-
-                    // Check the label and add it to the table
-                    metadataColumnsValid.add(metadataColumn);
-                    metadataTable.getColumns().add(metadataColumn);
-                }
-                getConnection().getTables().add(metadataTable);
-
-                Display.getDefault().asyncExec(new Runnable() {
-
-                    public void run() {
-                        if (isCanceled()) {
-                            return;
-                        }
-                        updateUIInThreadIfThread();
-                    }
-                });
-
+            metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString, true);
+            if (isCanceled()) {
+                return;
             }
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+            metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            initExistingNames();
+            metadataTable.setLabel(IndiceHelper.getIndexedLabel(tableString, existingNames));
+            metadataTable.setSourceName(tableString);
+            metadataTable.setId(factory.getNextId());
+            metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
+            List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
+            Iterator iterate = metadataColumns.iterator();
+            while (iterate.hasNext()) {
+                MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
+
+                // Check the label and add it to the table
+                metadataColumnsValid.add(metadataColumn);
+                metadataTable.getColumns().add(metadataColumn);
+            }
+            getConnection().getTables().add(metadataTable);
+
+            checkConnectionIsDone = true;
+
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    if (isCanceled()) {
+                        return;
+                    }
+                    updateUIInThreadIfThread();
+                }
+            });
+
         }
 
         public void updateUIInThreadIfThread() {
@@ -800,7 +797,12 @@ public class SelectorTableForm extends AbstractForm {
             // selectNoneTablesButton.setEnabled(true);
             // checkConnectionButton.setEnabled(true);
 
-            parentWizardPage.setPageComplete(!threadExecutor.hasThreadRunning());
+            parentWizardPage.setPageComplete(threadExecutor.getQueue().isEmpty() && threadExecutor.getActiveCount() == 0);
+            if (threadExecutor.getQueue().isEmpty() && threadExecutor.getActiveCount() == 0) {
+                // close connection
+                ExtractMetaDataUtils.closeConnection();
+                processWhenDispose();
+            }
         }
     }
 
@@ -815,8 +817,10 @@ public class SelectorTableForm extends AbstractForm {
             return;
         }
         if (!threadExecutor.isThreadRunning(tableItem)) {
-            RetrieveColumnRunnable runnable = new RetrieveColumnRunnable(tableItem);
-            threadExecutor.execute(runnable);
+            if (managerConnection.check(getIMetadataConnection(), true)) {
+                RetrieveColumnRunnable runnable = new RetrieveColumnRunnable(tableItem);
+                threadExecutor.execute(runnable);
+            }
         } else {
             RetrieveColumnRunnable runnable = threadExecutor.getRunnable(tableItem);
             runnable.setCanceled(false);
@@ -997,6 +1001,7 @@ public class SelectorTableForm extends AbstractForm {
     protected void processWhenDispose() {
         if (threadExecutor != null) {
             threadExecutor.clearThreads();
+            ExtractMetaDataUtils.closeConnection();
         }
     }
 
