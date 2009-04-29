@@ -279,9 +279,19 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * @param button
      */
     private void openSQLBuilderWithParamer(Button button) {
-        String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        String repositoryType = null;
+        if (this.curParameter != null) {
+            IElementParameter propertyTypeParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
+                    this.curParameter.getCategory());
+            if (propertyTypeParam != null) {
+                propertyTypeParam = propertyTypeParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName());
+            }
+            repositoryType = (String) propertyTypeParam.getValue();
+        }
         String propertyName = (String) button.getData(PARAMETER_NAME);
-        openSQLBuilder(repositoryType, propertyName, ""); //$NON-NLS-1$
+        if (repositoryType != null) {
+            openSQLBuilder(repositoryType, propertyName, ""); //$NON-NLS-1$
+        }
     }
 
     /**

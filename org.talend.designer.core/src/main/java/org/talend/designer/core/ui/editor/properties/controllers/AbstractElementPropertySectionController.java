@@ -1250,7 +1250,17 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
 
             // Part maybe not exist
-            String key = ((Node) elem).getProcess().getName() + ((Node) elem).getUniqueName() + repositoryName2;
+            String processName = "";//$NON-NLS-1$
+            String key = "";//$NON-NLS-1$
+
+            if (elem instanceof Node) {
+                processName = ((Node) elem).getProcess().getName();
+                key = processName + ((Node) elem).getUniqueName();
+            } else if (elem instanceof IProcess) {
+                processName = ((IProcess) elem).getName();
+                key = processName;
+            }
+            key += repositoryName2;
 
             final SQLBuilderDialog builderDialog = sqlbuilers.get(key);
             if (!composite.isDisposed() && builderDialog != null && builderDialog.getShell() != null
@@ -1262,11 +1272,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     connParameters.setRepositoryId(repositoryId);
                 }
                 Shell parentShell = new Shell(composite.getShell().getDisplay());
-                TextUtil.setDialogTitle(((Node) elem).getProcess().getName(), (String) ((Node) elem).getElementParameter("LABEL") //$NON-NLS-1$
-                        .getValue(), elem.getElementName());
+                String nodeLabel = null;
+                if (elem instanceof Node) {
+                    nodeLabel = (String) ((Node) elem).getElementParameter(EParameterName.LABEL.getName()).getValue();
+                }
+                TextUtil.setDialogTitle(processName, nodeLabel, elem.getElementName());
 
                 SQLBuilderDialog sqlBuilder = new SQLBuilderDialog(parentShell);
-                UIUtils.addSqlBuilderDialog(((Node) elem).getProcess().getName(), sqlBuilder);
+                UIUtils.addSqlBuilderDialog(processName, sqlBuilder);
 
                 connParameters.setQuery(query);
 
