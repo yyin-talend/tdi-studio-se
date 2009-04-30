@@ -1161,10 +1161,11 @@ public class DatabaseForm extends AbstractForm {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(!isAS400);
         }
-        if (selectedVersion != null) {
+        if (selectedVersion != null && !"".equals(selectedVersion)) {
             dbVersionCombo.setText(selectedVersion);
         } else {
             dbVersionCombo.select(0);
+            getConnection().setDbVersionString(dbVersionCombo.getText());
         }
     }
 
