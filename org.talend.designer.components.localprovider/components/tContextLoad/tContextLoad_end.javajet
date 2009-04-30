@@ -40,7 +40,7 @@
 		|| (oldVariable.equals("Info") && disInfo==false) ){
 %>
 	for(Object obj_<%=cid %> :noAssignList_<%=cid %>){
-		System.<%=oldVariable.equals("Error")?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>"); 
+		System.<%=oldVariable.equals("Error")?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
 	}
 <%
 	}
