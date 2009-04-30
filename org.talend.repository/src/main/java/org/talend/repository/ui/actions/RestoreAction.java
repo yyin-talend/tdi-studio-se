@@ -132,9 +132,9 @@ public class RestoreAction extends AContextualAction {
                 if (updatePalette) {
                     ComponentUtilities.updatePalette();
                 }
-                notifySQLBuilder(connections);
             }
         });
+        notifySQLBuilder(connections);
     }
 
     /*

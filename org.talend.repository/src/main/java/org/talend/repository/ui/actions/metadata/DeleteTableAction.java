@@ -140,9 +140,9 @@ public class DeleteTableAction extends AContextualAction {
 
             public void run() {
                 RepositoryManager.refreshDeletedNode(types);
-                notifySQLBuilder(connections);
             }
         });
+        notifySQLBuilder(connections);
         // IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
         // RepositoryView.VIEW_ID);
         // IRepositoryView repositoryView = (IRepositoryView) viewPart;
