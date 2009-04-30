@@ -659,8 +659,8 @@
                toolbarPath="debug"
                class="org.talend.designer.core.ui.action.OpenJobAction"
                definitionId="org.talend.designer.core.ui.open.type"
-               icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/etool16/opentype.gif"
-               label="Open Job"
+               icon="icons/find_job.png"
+               label="Find Job"
                tooltip="Find a specific job">
          </action>
     		
