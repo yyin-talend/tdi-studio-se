@@ -115,7 +115,7 @@ public class ScdComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#open(org.eclipse.swt.widgets.Composite)
      */
     public int open(Composite parent) {
-        return 0;
+        return open(parent.getDisplay());
     }
 
     /*

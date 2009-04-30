@@ -59,7 +59,8 @@ public class ExternalController extends AbstractElementPropertySectionController
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     private Command createCommand() {
         Node node = (Node) elem;
@@ -71,7 +72,7 @@ public class ExternalController extends AbstractElementPropertySectionController
             mBox.setMessage("Component plugin not found: " + node.getPluginFullName()); //$NON-NLS-1$
             mBox.open();
         } else {
-            if (externalNode.open(composite.getDisplay()) == SWT.OK) {
+            if (externalNode.open(composite.getShell()) == SWT.OK) {
                 return new ExternalNodeChangeCommand(node, externalNode);
 
             } else {
@@ -84,7 +85,8 @@ public class ExternalController extends AbstractElementPropertySectionController
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -151,8 +153,9 @@ public class ExternalController extends AbstractElementPropertySectionController
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {

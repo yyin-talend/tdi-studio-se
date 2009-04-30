@@ -186,10 +186,11 @@ public class DbMapComponent extends AbstractMapComponent {
      * @see org.talend.designer.core.model.components.IExternalComponent#open()
      */
     public int open(final Composite parent) {
-        initMapperMain();
-        mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
-        mapperMain.createUI(parent);
-        return mapperMain.getMapperDialogResponse();
+        // initMapperMain();
+        // mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
+        // mapperMain.createUI(parent);
+        // return mapperMain.getMapperDialogResponse();
+        return open(parent.getDisplay());
     }
 
     /*

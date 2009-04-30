@@ -92,7 +92,7 @@ public class RowGeneratorUI {
     }
 
     /**
-     *  yzhang Comment method "init".
+     * yzhang Comment method "init".
      * 
      * @param fromDialog
      */

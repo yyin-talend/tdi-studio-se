@@ -682,11 +682,13 @@ public class UIManager extends AbstractUIManager {
         }
 
         ExternalMapperData originalExternalData = (ExternalMapperData) mapperManager.getOriginalExternalData();
+        HashSet<String> originalTableNames = new HashSet<String>();
+        if (originalExternalData != null) {
+            List<ExternalMapperTable> originalOutputTables = originalExternalData.getOutputTables();
+            for (ExternalMapperTable outputTable : originalOutputTables) {
+                originalTableNames.add(outputTable.getName());
+            }
 
-        List<ExternalMapperTable> originalOutputTables = originalExternalData.getOutputTables();
-        HashSet<String> originalTableNames = new HashSet<String>(originalOutputTables.size());
-        for (ExternalMapperTable outputTable : originalOutputTables) {
-            originalTableNames.add(outputTable.getName());
         }
 
         for (String currentTable : currentTables) {
@@ -1985,12 +1987,11 @@ public class UIManager extends AbstractUIManager {
             if (columnEntries.indexOf(entrySource) < columnEntries.indexOf(entryTarget)) {
                 return true;
             }
-        } else if (
-                entrySource instanceof InputColumnTableEntry
-                && (
-                        (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent())
-                        || entryTarget.getParent() instanceof InputTable && (entryTarget instanceof ExpressionFilterEntry || entryTarget instanceof GlobalMapEntry))
-                        
+        } else if (entrySource instanceof InputColumnTableEntry
+                && ((entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent()) || entryTarget
+                        .getParent() instanceof InputTable
+                        && (entryTarget instanceof ExpressionFilterEntry || entryTarget instanceof GlobalMapEntry))
+
         ) {
             List<InputTable> inputTables = mapperManager.getInputTables();
             int indexTableSource = inputTables.indexOf(entrySource.getParent());
@@ -2001,8 +2002,8 @@ public class UIManager extends AbstractUIManager {
             }
         } else if ((entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
                 || entryTarget instanceof FilterTableEntry || entryTarget instanceof ExpressionFilterEntry
-                
-                && entryTarget.getParent() instanceof OutputTable)) {
+
+        && entryTarget.getParent() instanceof OutputTable)) {
             if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry) {
                 return true;
             }
