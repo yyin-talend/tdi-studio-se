@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>Scenario: Removing and regenerating a MySQL table index</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMysqlRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components06-123.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMysqlRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components06-139.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scenario: Removing and regenerating a MySQL table index
 </h2>
 <a name="wp1365427"> </a><p class="pIndented1">
-This scenario describes a four-component job which wants to remove a table index, make a select insert action onto a table then regenerate the index.
+This scenario describes a four-component job that removes a table index, applies a select insert action onto a table then regenerates the index.
 </p>
 <a name="wp1365435"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,21 +38,19 @@ This scenario describes a four-component job which wants to remove a table index
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1365443"> </a><div class="pSmartList2"><li>Select and drop the following components onto the graphical workspace: <b class="cBold">tMysqlRow</b> (x2), <b class="cBold">tRowGenerator</b>, <b class="cBold">tMysqlOutput</b>.</li></div>
-<a name="wp1365460"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tMysqlIntput</b> to the <b class="cBold">tRowGenerator</b>.</li></div>
-<a name="wp1365473"> </a><div class="pSmartList2"><li>Then using a <b class="cBold">ThenRun</b> connection, link the first <b class="cBold">tMysqlRow</b> to the <b class="cBold">tMysqlInput</b>, </li></div>
-<a name="wp1365486"> </a><div class="pSmartList2"><li>Then connect <b class="cBold">tRowGenerator</b> to the second <b class="cBold">tMysqlRow</b> using a <b class="cBold">ThenRun</b> link again.</li></div>
-<a name="wp1365496"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tMysqlRow</b> to fill in the DB <b class="cBold">Basic settings</b>. </li></div>
+<a name="wp1365443"> </a><div class="pSmartList2"><li>Select and drop the following components onto the graphical workspace: <b class="cBold">tMysqlRow</b> (x2), <b class="cBold">tRowGenerator</b>, and <b class="cBold">tMysqlOutput</b>.</li></div>
+<a name="wp2167714"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tRowGenerator</b> to <b class="cBold">tMysqlIntput</b>.</li></div>
+<a name="wp2167777"> </a><div class="pSmartList2"><li>Using a <b class="cBold">ThenRun</b> connections, link the first <b class="cBold">tMysqlRow</b> to <b class="cBold">tRowGenerator</b> and <b class="cBold">tRowGenerator</b> to the second <b class="cBold">tMysqlRow</b>.</li></div>
+<a name="wp2167750"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tMysqlRow</b> to fill in the DB <b class="cBold">Basic settings</b>. </li></div>
 <a name="wp1365506"> </a><div class="pSmartList2"><li>In <b class="cBold">Property type </b>as well in <b class="cBold">Schema type</b>, select the relevant DB entry in the list.</li></div>
 <a name="wp1365510"> </a><div class="pSmartList2"><li>The DB connection details and the table schema are accordingly filled in. </li></div>
 <a name="wp1365514"> </a><div class="pSmartList2"><li>Propagate the properties and schema details onto the other components of the job.</li></div>
-<a name="wp1365520"> </a><div class="pSmartList2"><li>The query being stored in the <b class="cBold">Metadata</b> area of the Repository, you can also select <b class="cBold">Repository</b> in the <b class="cBold">Query type</b> field and the relevant query entry. </li></div>
+<a name="wp1365520"> </a><div class="pSmartList2"><li>The query being stored in the <b class="cBold">Metadata</b> area of the <b class="cBold">Repository</b>, you can also select <b class="cBold">Repository</b> in the <b class="cBold">Query type</b> field and the relevant query entry. </li></div>
 <a name="wp1365533"> </a><div class="pSmartList2"><li>If you didn&#39;t store your query in the <b class="cBold">Repository</b>, type in the following SQL statement to alter the database entries: drop index &lt;index_name&gt; on &lt;table_name&gt; </li></div>
-<a name="wp1365541"> </a><div class="pSmartList2"><li>Then select the second <b class="cBold">tMysqlRow</b> component, check the DB properties and schema.</li></div>
-<a name="wp1365544"> </a><div class="pSmartList2"><li>Then type in the SQL statement to recreate an index on the table using the following statement: create index &lt;index_name&gt; on &lt;table_name&gt; (&lt;column_name&gt;); </li></div>
-<a name="wp1365551"> </a><div class="pSmartList2"><li>The <b class="cBold">tRowGenerator</b> component is used to generate automatically the columns to be added to the DB output table defined.</li></div>
+<a name="wp1365541"> </a><div class="pSmartList2"><li>Select the second <b class="cBold">tMysqlRow</b> component, check the DB properties and schema.</li></div>
+<a name="wp1365544"> </a><div class="pSmartList2"><li>Type in the SQL statement to recreate an index on the table using the following statement: create index &lt;index_name&gt; on &lt;table_name&gt; (&lt;column_name&gt;)<br />The <b class="cBold">tRowGenerator</b> component is used to generate automatically the columns to be added to the DB output table defined.</li></div>
 <a name="wp1365558"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tMysqlOutput</b> component and fill in the DB connection properties either from the Repository or manually the DB connection details are specific for this use only. The table to be fed is named: <em class="cEmphasis">comprehensive</em>.</li></div>
-<a name="wp1365565"> </a><div class="pSmartList2"><li>The schema should be automatically inheritated from the data flow coming from the <b class="cBold">tLogRow</b>. Edit the schema to check its structure and check that it corresponds to the schema expected on the DB table specified.</li></div>
+<a name="wp1365565"> </a><div class="pSmartList2"><li>The schema should be automatically inherited from the data flow coming from the <b class="cBold">tLogRow</b>. Edit the schema to check its structure and check that it corresponds to the schema expected on the DB table specified.</li></div>
 <a name="wp1365585"> </a><div class="pSmartList2"><li>The <b class="cBold">Action on table</b> is <em class="cEmphasis">None</em> and the <b class="cBold">Action on data</b> is <em class="cEmphasis">Insert</em>. </li></div>
 <a name="wp1365589"> </a><div class="pSmartList2"><li>No additional Columns is required for this job.</li></div>
 <a name="wp1365597"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the job.</li></div>
@@ -83,7 +81,7 @@ Related topics: <a href="tDBSQLRow_Prop.html#wp1447255"><em class="cEmphasis">tD
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMysqlRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components06-123.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMysqlRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components06-139.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

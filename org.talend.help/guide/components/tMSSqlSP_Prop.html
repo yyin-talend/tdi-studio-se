@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tMSSqlSP</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components06-100.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlSP_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components06-110.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlSP_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -47,7 +47,7 @@ Databases/MSSql
 </div>
 </td>
     <td><a name="wp1471607"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-06-101-086.jpg" height="59" width="116" id="wp1471602" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-06-111-127.jpg" height="59" width="116" id="wp1471602" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -104,11 +104,24 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1471689"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471693"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2216083"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216089"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp2216093"> </a><div class="pCellBody">
+Select this check box and click the relevant <b class="cBold">tMSSqlConnection </b>component on the Component list to reuse the connection details you already defined.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471693"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -121,7 +134,7 @@ Database server IP address
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471707"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471707"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -134,7 +147,7 @@ Listening port number of DB server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471721"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471721"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -143,7 +156,20 @@ Listening port number of DB server.
 </div>
 </td>
     <td><a name="wp1471731"> </a><div class="pCellBody">
-Name of the database
+Name of the database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2216067"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216074"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>
+</div>
+</td>
+    <td><a name="wp2216077"> </a><div class="pCellBody">
+Name of the schema.
 </div>
 </td>
 </tr>
@@ -165,7 +191,7 @@ DB user authentication data.
 </div>
 </td>
     <td><a name="wp1471760"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+<em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
     <td><a name="wp1471763"> </a><div class="pCellBody">
@@ -178,7 +204,7 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
     <td><a name="wp1471777"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp1471781"> </a><div class="pCellBody">
@@ -234,7 +260,7 @@ Type in the exact name of the Stored Procedure
 </div>
 </td>
     <td><a name="wp1471849"> </a><div class="pCellBody">
-Check this box, if a value only is to be returned. <br />Select on the list the schema column, the value to be returned is based on.
+Check this box, if only a value is to be returned. <br />Select on the list the schema column, the value to be returned is based on.
 </div>
 </td>
 </tr>
@@ -293,7 +319,7 @@ The Stored Procedures syntax should match the Database syntax.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components06-100.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlSP_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components06-110.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlSP_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

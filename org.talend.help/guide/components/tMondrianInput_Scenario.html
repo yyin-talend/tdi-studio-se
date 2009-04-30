@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:05">
+    <meta name="LASTUPDATED" content="04/30/09 15:21:12">
     <title>Scenario: Cross-join tables</title>
   </head>
 
@@ -74,7 +74,7 @@ This job extracts multi-dimensional datasets from relational database tables sto
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1505385"> </a><div class="pSmartList2"><li>Back on the <b class="cBold">Basic settings</b> tab of the <b class="cBold">tMondrianInput</b> component, set the  <b class="cBold">Catalog </b>path to the data warehouse. This catalog describes the structure of the warehouse. </li></div>
+<a name="wp1505385"> </a><div class="pSmartList2"><li>Back on the <b class="cBold">Basic settings</b> tab of the <b class="cBold">tMondrianInput</b> component, set the <b class="cBold">Catalog </b>path to the data warehouse. This catalog describes the structure of the warehouse. </li></div>
 <a name="wp1505366"> </a><div class="pSmartList2"><li>Then type in the MDX query such as:<br /><code class="cCode">&quot;select<br />	  {[Measures].[Unit Sales], [Measures].[Store Cost], [Measures].[Store Sales]} on columns,<br />	  CrossJoin(<br />	    { [Promotion Media].[All Media].[Radio],<br />	      [Promotion Media].[All Media].[TV],<br />	      [Promotion Media].[All Media].[Sunday Paper],<br />	      [Promotion Media].[All Media].[Street Handout] },<br />	    [Product].[All Products].[Drink].children) on rows<br />	from Sales<br />	where ([Time].[1997])&quot;</code></li></div>
 <a name="wp1505343"> </a><div class="pSmartList2"><li>Eventually, select the <b class="cBold">Encoding</b> type on the list.</li></div>
 <a name="wp1505458"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tLogRow</b> component and check the Print header option to display the column names on the console. </li></div>
@@ -87,7 +87,7 @@ This job extracts multi-dimensional datasets from relational database tables sto
 
 </div>
 <a name="wp1505611"> </a><p class="pIndented1">
-The console shows the result of the <em class="cEmphasis">unit_sales</em>, <em class="cEmphasis">store_cost</em> and <em class="cEmphasis">store_sales</em> for each type of <em class="cEmphasis">Drink</em> (<em class="cEmphasis">Beverages</em>, <em class="cEmphasis">Dairy</em>, <em class="cEmphasis">Alcoholic beverages</em>) crossed with each  media (<em class="cEmphasis">TV</em>, <em class="cEmphasis">Sunday Paper</em>, <em class="cEmphasis">Street handout</em>) as shown previously in a table form.
+The console shows the result of the <em class="cEmphasis">unit_sales</em>, <em class="cEmphasis">store_cost</em> and <em class="cEmphasis">store_sales</em> for each type of <em class="cEmphasis">Drink</em> (<em class="cEmphasis">Beverages</em>, <em class="cEmphasis">Dairy</em>, <em class="cEmphasis">Alcoholic beverages</em>) crossed with each media (<em class="cEmphasis">TV</em>, <em class="cEmphasis">Sunday Paper</em>, <em class="cEmphasis">Street handout</em>) as shown previously in a table form.
 </p>
     </blockquote>
     <hr>

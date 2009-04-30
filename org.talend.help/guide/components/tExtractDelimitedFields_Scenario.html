@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:16:42">
+    <meta name="LASTUPDATED" content="04/30/09 15:24:52">
     <title>Scenario: Extracting fields from a comma-delimited file</title>
   </head>
 
@@ -48,12 +48,14 @@ This Java scenario describes a three-component job where the <b class="cBold">tE
 <a name="wp1610777"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tFileInputDelimited</b>.</li></div>
 <a name="wp1610794"> </a><div class="pSmartList2"><li> In the <b class="cBold">Basic settings </b>view, set <b class="cBold">Property Type</b> to <b class="cBold">Built-In</b>.</li></div>
 <a name="wp1610804"> </a><div class="pSmartList2"><li>Click the three-dot [...] button next to the <b class="cBold">File Name </b>field to select the path to the input file. </li></div>
-<a name="wp1610813"> </a><p class="pBodyRelative">
-Note:	The <b class="cBold">File Name</b> field is mandatory.
+<a name="wp1654414"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp1654411" border="0" hspace="0" vspace="0"/><br />
+<br />The <b class="cBold">File Name</b> field is mandatory.<br />
 </p>
 </ul></div>
 </ul></div>
-<a name="wp1611338"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1654418"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/Use_Case_tExtractDelimitedField1.png" id="wp1612459" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
@@ -93,7 +95,7 @@ The input file used in this scenario is called <em class="cEmphasis">test5.</em>
 <a name="wp1611618"> </a><div class="pSmartList2"><li> From the <b class="cBold">Field to split</b> list, select the column to split, <em class="cEmphasis">name</em> in this scenario.</li></div>
 <a name="wp1611548"> </a><div class="pSmartList2"><li>In the <b class="cBold">Field separator</b> field, enter the corresponding separator.</li></div>
 <a name="wp1611661"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema </b>to describe the data structure of this processing component.</li></div>
-<a name="wp1611670"> </a><div class="pSmartList2"><li>In the output panel of the <b class="cBold">Schema of tExtractRegexFields</b> dialog box, click the plus button to add two columns for the output schema, <em class="cEmphasis">firstname</em> and <em class="cEmphasis">lastname</em>.</li></div>
+<a name="wp1611670"> </a><div class="pSmartList2"><li>In the output panel of the <b class="cBold">[Schema of tExtractRegexFields]</b> dialog box, click the plus button to add two columns for the output schema, <em class="cEmphasis">firstname</em> and <em class="cEmphasis">lastname</em>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1610965"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -106,7 +108,7 @@ I this scenario, we want to split the <em class="cEmphasis">name</em> column int
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1610987"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the <b class="cBold">Schema of tExtractDelimitedFields</b> dialog box.</li></div>
+<a name="wp1610987"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the <b class="cBold">[Schema of tExtractDelimitedFields]</b> dialog box.</li></div>
 <a name="wp1612185"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tLogRow</b> and click the <b class="cBold">Component</b> tab to define its basic settings. For more information, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
 <a name="wp1612211"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>

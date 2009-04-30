@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tMysqlOutputBulkExec</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/MySQL
 </div>
 </td>
     <td><a name="wp1299908"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-06-117-018.jpg" height="59" width="112" id="wp1299903" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-06-133-043.jpg" height="59" width="112" id="wp1299903" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -104,7 +104,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1288665"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
@@ -160,7 +160,25 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1288706"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2167872"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_icongf.gif" align="left" id="wp2167868" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2167876"> </a><div class="pCellHeading">
+<em class="cEmphasis">In Java, use tCreateTable as substitute for this function..</em>
+</div>
+</td>
+    <td><a name="wp2167884"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on table</em>
+</div>
+</td>
+    <td><a name="wp2167887"> </a><div class="pCellBody">
+On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation is carried out.<br /><b class="cBold">Drop and create a table</b>: The table is removed and created again.<br /><b class="cBold">Create a table</b>: The table does not exist and gets created.<br /><b class="cBold">Create a table if not exists</b>: The table is created if it does not exist.<br /><b class="cBold">Clear a table</b>: The table content is deleted.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1288706"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -173,12 +191,12 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1288715"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1288715"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
     <td><a name="wp1288720"> </a><div class="pCellHeading">
-<em class="cEmphasis">File Name</em>
+<em class="cEmphasis">Local FileName</em>
 </div>
 </td>
     <td><a name="wp1288722"> </a><div class="pCellBody">
@@ -186,7 +204,33 @@ Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defi
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1288727"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2167928"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2167935"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+</td>
+    <td><a name="wp2212028"> </a><div class="pCellBody">
+Specify additional connection properties in the existing DB connection.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2167960"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2167965"> </a><div class="pCellHeading">
+<em class="cEmphasis">Row separator</em>
+</div>
+</td>
+    <td><a name="wp2167967"> </a><div class="pCellBody">
+String (ex: &quot;\n&quot;on Unix)  to distinguish rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1288727"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -199,25 +243,77 @@ Character, string or regular expression to separate fields.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1288736"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2167987"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1288741"> </a><div class="pCellHeading">
-<em class="cEmphasis">Row separator</em>
+    <td><a name="wp2167994"> </a><div class="pCellHeading">
+<em class="cEmphasis">Escape char</em>
 </div>
 </td>
-    <td><a name="wp1288743"> </a><div class="pCellBody">
-String (ex: &quot;\n&quot;on Unix)  to distinguish rows.
+    <td><a name="wp2167997"> </a><div class="pCellBody">
+Character of the row to be escaped
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1288745"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2167972"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2167979"> </a><div class="pCellHeading">
+<em class="cEmphasis">Text enclosure</em>
+</div>
+</td>
+    <td><a name="wp2167982"> </a><div class="pCellBody">
+Character used to enclose text.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2168001"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2168008"> </a><div class="pCellHeading">
+<em class="cEmphasis">Create directory if not exists</em>
+</div>
+</td>
+    <td><a name="wp2168098"> </a><div class="pCellBody">
+This check box is selected by default. It creates a directory to hold the output table if required.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2168015"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2168021"> </a><div class="pCellHeading">
+<em class="cEmphasis">Custom the flush buffer size</em>
+</div>
+</td>
+    <td><a name="wp2168025"> </a><div class="pCellBody">
+Custom the memory used to temporarily store output data.?????
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2168029"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2168036"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on data</em>
+</div>
+</td>
+    <td><a name="wp2168039"> </a><div class="pCellBody">
+On the data of the table defined, you can perform:<br /><b class="cBold">Insert records in table</b>: Add new records to the table. <br /><b class="cBold">Update records in table</b>: Make changes to existing records.<br /><b class="cBold">Replace records in table</b>: replace existing records with new one.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1288745"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
     <td><a name="wp1288750"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+<em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
     <td><a name="wp1288752"> </a><div class="pCellBody">
@@ -225,16 +321,16 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1288760"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1288760"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1288762"> </a><div class="pCellBody">
-This component is mainly used when no particular tranformation is required on the data to be loaded onto the database. 
+This component is mainly used when no particular transformation is required on the data to be loaded onto the database. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1288766"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1288766"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

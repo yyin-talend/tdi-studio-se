@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:05">
+    <meta name="LASTUPDATED" content="04/30/09 15:21:12">
     <title>tMysqlSCD</title>
   </head>
 
@@ -22,315 +22,240 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1550465"> </a><h2 class="pHeading1">
+<a name="wp2072964"> </a><h2 class="pHeading1">
 tMysqlSCD
 </h2>
-<a name="wp1550475"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1555455"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tMysqlSCD_icon32_white.png" id="wp1550470" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tMysqlSCD_icon32_white.png" id="wp1555450" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1550482"> </a><h2 class="pHeading2">
+<a name="wp1555462"> </a><h2 class="pHeading2">
 tMysqlSCD Properties
 </h2>
-<a name="wp1550776"> </a><p class="pBodyRelative">
+<a name="wp1555756"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp1550490table1550485">
+<table border="1" id="wp1555470table1555465">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550490"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1555470"> </a><div class="pCellBody">
 <b class="cBold">Component family</b>
 </div>
 </td>
-    <td><a name="wp1550492"> </a><div class="pCellBody">
+    <td><a name="wp1555472"> </a><div class="pCellBody">
 Databases/MySQL
 </div>
 </td>
-    <td><a name="wp1550501"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-02-10-01.jpg" height="59" width="116" id="wp1550497" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp1555481"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Components-02-10-01.jpg" height="59" width="116" id="wp1555477" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550506"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1555486"> </a><div class="pCellBody">
 <b class="cBold">Function</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1550511"> </a><div class="pCellBody">
-<b class="cBold">tMysqlSCD</b> reflects and  tracks changes in a dedicated MySQL  SCD table.
+    <td colspan="2" rowspan="1"><a name="wp1555491"> </a><div class="pCellBody">
+<b class="cBold">tMysqlSCD</b> reflects and tracks changes in a dedicated MySQL SCD table.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550518"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1555498"> </a><div class="pCellBody">
 <b class="cBold">Purpose</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1550523"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp1555503"> </a><div class="pCellBody">
 <b class="cBold">tMysqlSCD</b> addresses Slowly Changing Dimension needs, reading regularly a source of data and logging the changes into a dedicated SCD table 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550530"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1557457"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1550535"> </a><div class="pCellHeading">
-<em class="cEmphasis">Property type</em>
+    <td><a name="wp1557463"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
 </div>
 </td>
-    <td><a name="wp1550537"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+    <td><a name="wp1557467"> </a><div class="pCellBody">
+Select this check box and click the relevant DB connection component on the <b class="cBold">Component list</b> to reuse the connection details you already defined.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550539"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1555510"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550541"> </a><div class="pCellBody">
+    <td><a name="wp1555515"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp1555517"> </a><div class="pCellBody">
+Either Built-in or Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1555519"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550546"> </a><div class="pCellBody">
+    <td><a name="wp1555521"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1555526"> </a><div class="pCellBody">
 <b class="cBold">Built-in</b>: No property data stored centrally.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550548"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1555528"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550550"> </a><div class="pCellBody">
+    <td><a name="wp1555530"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550555"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+    <td><a name="wp1555535"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the Repository file where properties are stored. The following fields are pre-filled in using fetched data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550557"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1555537"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550562"> </a><div class="pCellHeading">
+    <td><a name="wp1555542"> </a><div class="pCellHeading">
 <em class="cEmphasis">Host</em>
 </div>
 </td>
-    <td><a name="wp1550564"> </a><div class="pCellBody">
-Database server IP address
+    <td><a name="wp1555544"> </a><div class="pCellBody">
+Database server IP address.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550566"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1555546"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550571"> </a><div class="pCellHeading">
+    <td><a name="wp1555551"> </a><div class="pCellHeading">
 <em class="cEmphasis">Port</em>
 </div>
 </td>
-    <td><a name="wp1550573"> </a><div class="pCellBody">
+    <td><a name="wp1555553"> </a><div class="pCellBody">
 Listening port number of DB server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550575"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1555555"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550580"> </a><div class="pCellHeading">
+    <td><a name="wp1555560"> </a><div class="pCellHeading">
 <em class="cEmphasis">Database</em>
 </div>
 </td>
-    <td><a name="wp1550582"> </a><div class="pCellBody">
-Name of the database
+    <td><a name="wp1555562"> </a><div class="pCellBody">
+Name of the database.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550584"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1555564"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550589"> </a><div class="pCellHeading">
+    <td><a name="wp1555569"> </a><div class="pCellHeading">
 <em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
 </div>
 </td>
-    <td><a name="wp1550594"> </a><div class="pCellBody">
+    <td><a name="wp1555574"> </a><div class="pCellBody">
 DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550596"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1555585"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550601"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
-</div>
-</td>
-    <td><a name="wp1550603"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550605"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1550610"> </a><div class="pCellHeading">
+    <td><a name="wp1555590"> </a><div class="pCellHeading">
 <em class="cEmphasis">Table</em>
 </div>
 </td>
-    <td><a name="wp1550612"> </a><div class="pCellBody">
-Name of the table to be written. Note that only one table can be written at a time
+    <td><a name="wp1555592"> </a><div class="pCellBody">
+Name of the table to be written. Note that only one table can be written at a time.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550614"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1555594"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550621"> </a><div class="pCellHeading">
+    <td><a name="wp1555601"> </a><div class="pCellHeading">
 <em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp1550624"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+    <td><a name="wp1555604"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550626"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1555606"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550628"> </a><div class="pCellBody">
+    <td><a name="wp1555608"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550633"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp1555613"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550641"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1555621"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550643"> </a><div class="pCellBody">
+    <td><a name="wp1555623"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550648"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp1555628"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550662"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconba.gif" align="left" id="wp1550659" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1550663"> </a><div class="pCellBody">
-Java only for the time being.
-</div>
-</td>
-    <td><a name="wp1550668"> </a><div class="pCellHeading">
-<em class="cEmphasis">Surrogate key</em> 
-</div>
-</td>
-    <td><a name="wp1550670"> </a><div class="pCellBody">
-Select the column where the generated surrogate key will be stored. A surrogate key can be generated based on a method  selected on the <b class="cBold">Creation </b>list.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550675"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1557269"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550677"> </a><div class="pCellBody">
-<em class="cEmphasis">Creation</em>
+    <td><a name="wp1557276"> </a><div class="pCellHeading">
+<em class="cEmphasis">SCD Editor</em>
 </div>
 </td>
-    <td><a name="wp1550679"> </a><div class="pCellBody">
-Select the method to be used for the key generation:<br /><b class="cBold">input field</b>: key is provided in an input field<br /><b class="cBold">routine</b>: you can access the basic functions through <b class="cBold">Ctrl+ Space bar </b>combination.<br /><b class="cBold">table max +1</b>: the maximum value from the SCD table is incremented to create a surrogate key <br /><b class="cBold">sequence</b>/<b class="cBold">identity:</b> auto-incremental key
+    <td><a name="wp1557279"> </a><div class="pCellBody">
+The SCD editor helps to build and configure the data flow for slowly changing dimension outputs.<br />For more information, see <a href="tMysqlSCD_Prop.html#wp1555883"><em class="cEmphasis">SCD management methodologies</em></a>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550696"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1557287"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550698"> </a><div class="pCellBody">
-<em class="cEmphasis">Source Keys</em>
+    <td><a name="wp1557293"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use memory saving Mode</em>
 </div>
 </td>
-    <td><a name="wp1550700"> </a><div class="pCellBody">
-Select one or more columns to be used as key,  to ensure the unicity of incoming data.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550702"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1550707"> </a><div class="pCellHeading">
-<em class="cEmphasis">Use SCD Type 1 fields</em>
-</div>
-</td>
-    <td><a name="wp1550709"> </a><div class="pCellBody">
-Use the type 1if change tracking is not necessary. SCD Type 1 should be used for typos corrections for example. Select the columns of the schema, that will be checked for changes.
+    <td><a name="wp1557297"> </a><div class="pCellBody">
+Select this check box to maximize system performance. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550711"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1550716"> </a><div class="pCellHeading">
-<em class="cEmphasis">Use SCD Type 2 fields</em>
-</div>
-</td>
-    <td><a name="wp1550718"> </a><div class="pCellBody">
-Use type 2  if changes need to be tracked down. SCD Type 2 should be used to trace updates for example. Select the columns of the schema, that will be checked for changes.<br /><b class="cBold">Start date: </b>Adds a column to your SCD schema to hold the start date. You can select one of the input  schema column as Start Date in the SCD table. <br /><b class="cBold">End Date</b>: Adds a column to your SCD schema to hold the end date value for the record. When the record is currently active, the End date show a null value or you can select <b class="cBold">Fixed Year value</b> and fill in with a fictive year  to avoid having a null value in the End date field.<br /><b class="cBold">Log Active Status</b>: Adds a column to your  SCD schema to hold the <b class="cBold">true</b> or <b class="cBold">false</b> status value. This column helps to spot easily the active record.<br /><b class="cBold">Log versions</b>: Adds a column to your SCD schema to hold the version number of the record.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550744"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconba.gif" align="left" id="wp1550741" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1550745"> </a><div class="pCellBody">
- Java only for the time being.
-</div>
-</td>
-    <td><a name="wp1550750"> </a><div class="pCellHeading">
-<em class="cEmphasis">Use SCD Type 3 fields</em>
-</div>
-</td>
-    <td><a name="wp1550752"> </a><div class="pCellBody">
-Use type 3 when you want to keep track of the previous value of a changing column <br /><b class="cBold">Current value field</b>: Select the column where the changing value is tracked down..<br /><b class="cBold">Previous value field</b>: Select the column where the previous value should be stored.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550760"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1550765"> </a><div class="pCellHeading">
-<em class="cEmphasis">Debug Mode</em>
-</div>
-</td>
-    <td><a name="wp1550767"> </a><div class="pCellBody">
-Check  this box to display each step of the SCD log process. 
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550769"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1555749"> </a><div class="pCellBody">
 Usage
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1550771"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp1555751"> </a><div class="pCellBody">
 This component is used as Output component. It requires an Input component and Row main link as input.
 </div>
 </td>
@@ -340,6 +265,71 @@ This component is used as Output component. It requires an Input component and R
 <p class="pBodyRelative">
 
 </p>
+<a name="wp1555883"> </a><h3 class="pHeading3">
+SCD management methodologies
+</h3>
+<a name="wp1558294"> </a><p class="pIndented2">
+Slowly Changing Dimensions (SCD)s are dimensions that have data that slowly changes. The SCD editor offers the simplest method of building the data flow for the SCD outputs. In the SCD editor, you can map columns, select surrogate key columns, and set column change attributes through combining SCD types.
+</p>
+<a name="wp1558782"> </a><p class="pIndented2">
+The below figure illustrates an example of the SCD editor.
+</p>
+<a name="wp1558789"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/SCD_Editor.png" id="wp1558786" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1558793"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1558799"> </a><h4 class="pHeading4">
+SCD keys
+</h4>
+<a name="wp1558802"> </a><p class="pIndented3">
+You must choose one or more source key columns from the incoming data to ensure its unicity.<br />You must set one surrogate key column in the dimension table and map it to an input column in the source table. The value of the surrogate key links a record in the source to a record in the dimension table. The editor uses this mapping to locate the record in the dimension table and to determine whether a record is new or changing. The surrogate key is typically the primary key in the source, but it can be an alternate key as long as it uniquely identifies a record and its value does not change.
+</p>
+<a name="wp1558809"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<b class="cBold">Source keys</b>: Drag one or more columns from the <b class="cBold">Unused</b> panel to the <b class="cBold">Source keys</b> panel to be used as the key (s) that ensure the unicity of the incoming data.
+</div>
+<a name="wp1558816"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<b class="cBold">Surrogate keys</b>: Set the column where the generated surrogate key will be stored. A surrogate key can be generated based on a method selected on the <b class="cBold">Creation</b> list.
+</div>
+<a name="wp1558827"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<b class="cBold">Creation</b>: Select any of the below methods to be used for the key generation:
+</div>
+<a name="wp1559075"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
+·	<b class="cBold">Auto increment</b>: auto-incremental key.
+</div>
+<a name="wp1559086"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
+·	<b class="cBold">Input field</b>: key is provided in an input field.
+</div>
+<a name="wp1559097"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
+·	<b class="cBold">Routine</b>: you can access the basic functions through Ctrl+ Space bar combination.
+</div>
+<a name="wp1559118"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
+·	<b class="cBold">Table max +1</b>: the maximum value from the SCD table is incremented to create a surrogate key.
+</div>
+<a name="wp1559133"> </a><h4 class="pHeading4">
+Combining SCD types
+</h4>
+<a name="wp1559881"> </a><p class="pIndented3">
+The Slowly Changing Dimensions support four types of changes: <b class="cBold">Type 0</b> through <b class="cBold">Type 3</b>. You can apply any of the SCD types to any column in a source table by a simple drag-and-drop operation.
+</p>
+<a name="wp1559889"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
+·	<b class="cBold">Type 0</b>: is not used frequently. Some dimension data may be overwritten and other may stay unchanged over time. This is most appropriate when no effort has been made to deal with the changing dimension issues.
+</div>
+<a name="wp1559896"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
+·	<b class="cBold">Type 1</b>: no history is kept in the database. New data overwrites old data. Use this type if tracking changes is not necessary. this is most appropriate when correcting certain typos, for example the spelling of a name.
+</div>
+<a name="wp1559901"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2066024"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
+·	<b class="cBold">Type2</b>: the whole history is stored in the database. This type tracks historical data by inserting a new record in the dimensional table with a separate key each time a change is made. This is most appropriate to track updates, for example.<br /><br />SCD <b class="cBold">Type 2</b> principle lies in the fact that a new record is added to the SCD table when changes are detected on the columns defined. Note that although several changes may be made to the same record on various columns defined as SCD <b class="cBold">Type 2</b>, only one additional line tracks these changes in the SCD table.<br /><br />The SCD schema in this type should include SCD-specific extra columns that hold standard log information such as:<br />-<b class="cBold">start</b>: adds a column to your SCD schema to hold the start date. You can select one of the input schema columns as a start date in the SCD table.<br />-<b class="cBold">end</b>: adds a column to your SCD schema to hold the end date value for a record. When the record is currently active, the end date is <b class="cBold">NULL</b> or you can select <b class="cBold">Fixed Year Value</b> and fill in a fictive year to avoid having a null value in the end date field.<br />-<b class="cBold">version</b>: adds a column to your SCD schema to hold the version number of the record.<br />-<b class="cBold">active</b>: adds a column to your SCD schema to hold the <b class="cBold">true</b> or <b class="cBold">false</b> status value. this column helps to easily spot the active record.
+</div>
+<a name="wp1559245"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
+·	<b class="cBold">Type 3</b>: only the information about a previous value of a dimension is written into the database. This type tracks changes using separate columns. This is most appropriate to track only the previous value of a changing column.
+</div>
     </blockquote>
     <hr>
 

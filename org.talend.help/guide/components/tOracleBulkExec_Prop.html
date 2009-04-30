@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tOracleBulkExec</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMysqlSP_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCDC_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMysqlTableList_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleBulkExec_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,7 +22,7 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1472962"> </a><h2 class="pHeading1">
+<a name="wp2039220"> </a><h2 class="pHeading1">
 tOracleBulkExec
 </h2>
 <a name="wp1472970"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -47,7 +47,7 @@ Databases/Oracle
 </div>
 </td>
     <td><a name="wp1472996"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-06-128-014.jpg" height="59" width="112" id="wp1472992" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-06-146-033.jpg" height="59" width="112" id="wp1472992" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -104,27 +104,122 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1473047"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1473049"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2367521"> </a><div class="pCellBody">
 &#160;
+</div>
+</td>
+    <td><a name="wp2367784"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp2367787"> </a><div class="pCellBody">
+Tick this box when you are using the component <b class="cBold">tOracleConnection</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2367882"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2367887"> </a><div class="pCellHeading">
+<em class="cEmphasis">Connection type</em>
+</div>
+</td>
+    <td><a name="wp2367889"> </a><div class="pCellBody">
+Drop-down list of available drivers
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2367891"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2367896"> </a><div class="pCellHeading">
+<em class="cEmphasis">DB Version</em>
+</div>
+</td>
+    <td><a name="wp2367898"> </a><div class="pCellBody">
+Select the Oracle version in use
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2367900"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2367905"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp2367907"> </a><div class="pCellBody">
+IP address of the database server
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2367909"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2367914"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp2367916"> </a><div class="pCellBody">
+Port number listening the database server
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2367918"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2367923"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp2367925"> </a><div class="pCellBody">
+Database name.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2367927"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2367932"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>
+</div>
+</td>
+    <td><a name="wp2367934"> </a><div class="pCellBody">
+Schema name.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2324229"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallaft.png" align="left" id="wp2324226" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Perl only
 </div>
 </td>
     <td><a name="wp1473051"> </a><div class="pCellBody">
 Service Name
 </div>
 </td>
-    <td><a name="wp1473053"> </a><div class="pCellBody">
+    <td><a name="wp2251985"> </a><div class="pCellBody">
 Oracle Service Name or SID  in Oracle database. 
 </div>
-<a name="wp1473056"> </a><p class="pBodyRelative">
-Note:	In Java projects, the full database connection details are required.
+<a name="wp2251932"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2251989" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+In Java projects, the the full database connection details are required.
 </p>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1473059"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1473059"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -137,7 +232,7 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1473071"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1473071"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -150,7 +245,33 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1473080"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2367992"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2367997"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on table</em>
+</div>
+</td>
+    <td><a name="wp2368033"> </a><div class="pCellBody">
+On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation is carried out.<br /><b class="cBold">Drop and create a table</b>: The table is removed and created again.<br /><b class="cBold">Create a table</b>: The table does not exist and gets created.<br /><b class="cBold">Create a table if not exists</b>: The table is created if it does not exist.<br /><b class="cBold">Drop a table if exists and create</b>: The table is removed if it already exists and created again.<br /><b class="cBold">Clear a table</b>: The table content is deleted.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2367956"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2367958"> </a><div class="pCellBody">
+Data File Name
+</div>
+</td>
+    <td><a name="wp2367960"> </a><div class="pCellBody">
+Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1473080"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -159,25 +280,27 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
     <td><a name="wp1473087"> </a><div class="pCellBody">
-On the data of the table defined, you can perform:<br /><b class="cBold">Insert</b>: Inserts rows to an empty table. If duplicates are found, job stops.<br /><b class="cBold">Append</b>: Add rows to the existing data of the table<br /><b class="cBold">Replace</b>: Overwrites some rows of the table<br /><b class="cBold">Truncate</b>: Drops table entries and inserts new input flow data.
+On the data of the table defined, you can perform:<br /><b class="cBold">Insert</b>: Inserts rows to an empty table. If duplicates are found, job stops.<br /><b class="cBold">Append</b>: Adds rows to the existing data of the table<br /><b class="cBold">Replace</b>: Overwrites some rows of the table<br /><b class="cBold">Truncate</b>: Drops table entries and inserts new input flow data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1473101"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2368106"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1473103"> </a><div class="pCellBody">
-Data File Name
+    <td><a name="wp2368113"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema type</em> et <em class="cEmphasis">Edit schema</em>
 </div>
 </td>
-    <td><a name="wp1473105"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp2368116"> </a><div class="pCellBody">
+In Stored Procedure principle, the schema is an input parameter.<br />A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1473110"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2324244"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallaft.png" align="left" id="wp2324241" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Perl only
 </div>
 </td>
     <td><a name="wp1473112"> </a><div class="pCellBody">
@@ -189,8 +312,10 @@ Character, string or regular expression to separate fields.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1473116"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2324259"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallaft.png" align="left" id="wp2324256" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Perl only
 </div>
 </td>
     <td><a name="wp1473118"> </a><div class="pCellBody">
@@ -202,8 +327,10 @@ Data enclosure characters.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1473122"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2324274"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallaft.png" align="left" id="wp2324271" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Perl only
 </div>
 </td>
     <td><a name="wp1473127"> </a><div class="pCellHeading">
@@ -215,12 +342,14 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1473131"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2324289"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallaft.png" align="left" id="wp2324286" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Perl only
 </div>
 </td>
     <td><a name="wp1473133"> </a><div class="pCellBody">
-Output to
+Output
 </div>
 </td>
     <td><a name="wp1473138"> </a><div class="pCellBody">
@@ -228,7 +357,7 @@ Output to
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1473146"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1473146"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -261,7 +390,7 @@ This dedicated component offers performance and flexibility of Oracle DB query h
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMysqlSP_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCDC_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMysqlTableList_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleBulkExec_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

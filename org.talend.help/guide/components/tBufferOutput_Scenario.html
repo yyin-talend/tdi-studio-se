@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:16:19">
+    <meta name="LASTUPDATED" content="04/30/09 15:24:41">
     <title>Scenario1: Buffering data (Java)</title>
   </head>
 
@@ -38,7 +38,7 @@ This scenario describes an intentionally basic job that bufferizes data in a chi
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1552274"> </a><div class="pSmartList2"><li>Create two jobs: a first job (<em class="cEmphasis">BufferFatherJob</em>) runs the second job and displays its content onto the <b class="cBold">Run Job </b>console . The second job (<em class="cEmphasis">BufferChildJob</em>)  stores the defined data into a buffer memory.</li></div>
+<a name="wp1552274"> </a><div class="pSmartList2"><li>Create two jobs: a first job (<em class="cEmphasis">BufferFatherJob</em>) runs the second job and displays its content onto the <b class="cBold">Run </b>console . The second job (<em class="cEmphasis">BufferChildJob</em>)  stores the defined data into a buffer memory.</li></div>
 <a name="wp1531649"> </a><div class="pSmartList2"><li>On the first job, click and drop the following components: <b class="cBold">tRunJob</b> and <b class="cBold">tLogRow</b>.</li></div>
 <a name="wp1531657"> </a><div class="pSmartList2"><li>On the second job, click and drop the following components: <b class="cBold">tFileInputDelimited</b> and <b class="cBold">tBufferOutput</b>.</li></div>
 <a name="wp1531667"> </a><div class="pSmartList2"><li>Let&#39;s set the parameters of the second job first... </li></div>
@@ -175,7 +175,7 @@ To define the two context variables:
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1595636"> </a><div class="pSmartList2"><li>Click the Component tab to go back to the Basic settings view of tFixedFlowInput.</li></div>
+<a name="wp1595636"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component </b>tab to go back to the <b class="cBold">Basic settings</b> view of <b class="cBold">tFixedFlowInput</b>.</li></div>
 <a name="wp1590784"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">Value</b> cell of <em class="cEmphasis">lastname</em> column and press <b class="cBold">Ctrl+Space </b>to access the global variable list.</li></div>
 <a name="wp1590544"> </a><div class="pSmartList2"><li>From the global variable list, select <em class="cEmphasis">context.lastname</em>, the context variable you created for the last name column. </li></div>
 </ul></div>
@@ -193,7 +193,7 @@ Before exporting your job as a Web service, see <em class="cEmphasis">Exporting 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1591716"> </a><div class="pSmartList2"><li>In the Repository view, right-click on the above created job and select <b class="cBold">Export Job Scripts</b>. The <b class="cBold">Export Job Scripts </b>dialog box displays.</li></div>
+<a name="wp1591716"> </a><div class="pSmartList2"><li>In the Repository view, right-click on the above created job and select <b class="cBold">Export Job Scripts</b>. The <b class="cBold">[Export Job Scripts] </b>dialog box displays.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1590925"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -204,7 +204,7 @@ Before exporting your job as a Web service, see <em class="cEmphasis">Exporting 
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1591099"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Brows...</b> button to select a directory to archive your job in.</li></div>
-<a name="wp1591105"> </a><div class="pSmartList2"><li>In the <b class="cBold">Export type</b> panel, select the export type you want to use in the Tomcat webapp directory (WAR in this example) and click <b class="cBold">Finish</b>. The <b class="cBold">Export Job Scripts</b> dialog box disappears.</li></div>
+<a name="wp1591105"> </a><div class="pSmartList2"><li>In the <b class="cBold">Export type</b> panel, select the export type you want to use in the Tomcat webapp directory (WAR in this example) and click <b class="cBold">Finish</b>. The <b class="cBold">[Export Job Scripts]</b> dialog box disappears.</li></div>
 <a name="wp1591495"> </a><div class="pSmartList2"><li>Copy the War folder and paste it in a Tomcat webapp directory.</li></div>
 </ul></div>
 </ul></div>
@@ -308,7 +308,7 @@ This scenario describes a job that calls another job exported as a Webservice us
 <a name="wp1597546"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameters</b> panel, Click the plus button to add two parameter lines to define your context variables.</li></div>
 <a name="wp1596265"> </a><div class="pSmartList2"><li>Click in the first <b class="cBold">Value</b> cell to enter the parameter to set the number of generated lines using the following syntax: <em class="cEmphasis">--context_param nb_line=3.</em></li></div>
 <a name="wp1598301"> </a><div class="pSmartList2"><li>Click in the second <b class="cBold">Value</b> cell to enter the parameter to set the last name to display using the following syntax: <em class="cEmphasis">--context_param lastname=Ford.</em></li></div>
-<a name="wp1599361"> </a><div class="pSmartList2"><li>Select <b class="cBold">tLogRow </b>and click the <b class="cBold">Component</b> tab to display the component view.</li></div>
+<a name="wp1599361"> </a><div class="pSmartList2"><li>Select <b class="cBold">tLogRow</b> and click the <b class="cBold">Component</b> tab to display the component view.</li></div>
 <a name="wp1599370"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Basic settings </b>for the <b class="cBold">tLogRow </b>component to display the output data in a tabular mode. For more information, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
 <a name="wp1598315"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>

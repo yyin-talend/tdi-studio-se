@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:05">
+    <meta name="LASTUPDATED" content="04/30/09 15:21:12">
     <title>tOracleSCD</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/Oracle
 </div>
 </td>
     <td><a name="wp1368919"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-02-12-10.jpg" height="59" width="116" id="wp1368914" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-02-12-06.jpg" height="59" width="116" id="wp1368914" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Databases/Oracle
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1368934"> </a><div class="pCellBody">
-<b class="cBold">tOracleSCD</b> reflects and  tracks changes in a dedicated Oracle  SCD table.
+<b class="cBold">tOracleSCD</b> reflects and tracks changes in a dedicated Oracle SCD table.
 </div>
 </td>
 </tr>
@@ -91,7 +91,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1368987"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: No property data stored centrally.
+<b class="cBold">Built-in</b>: No property data stored centrally..
 </div>
 </td>
 </tr>
@@ -104,7 +104,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1369001"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the Repository file where properties are stored. The following fields are pre-filled in using fetched data.
 </div>
 </td>
 </tr>
@@ -113,11 +113,11 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1410546"> </a><div class="pCellHeading">
-<em class="cEmphasis">Use existing connection</em>
+<em class="cEmphasis">Use an existing connection</em>
 </div>
 </td>
     <td><a name="wp1410554"> </a><div class="pCellBody">
-Check this box when using a <b class="cBold">tOracleConnection</b>
+Select this check box and click the relevant DB connection component on the <b class="cBold">Component list</b> to reuse the connection details you already defined
 </div>
 </td>
 </tr>
@@ -130,7 +130,7 @@ Check this box when using a <b class="cBold">tOracleConnection</b>
 </div>
 </td>
     <td><a name="wp1410568"> </a><div class="pCellBody">
-Drop-down list of available drivers.
+Select the relevant driver on the list.
 </div>
 </td>
 </tr>
@@ -143,7 +143,7 @@ Drop-down list of available drivers.
 </div>
 </td>
     <td><a name="wp1369015"> </a><div class="pCellBody">
-Database server IP address
+Database server IP address.
 </div>
 </td>
 </tr>
@@ -169,11 +169,24 @@ Listening port number of DB server.
 </div>
 </td>
     <td><a name="wp1369043"> </a><div class="pCellBody">
-Name of the database
+Name of the database.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1369047"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1557666"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1557673"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>
+</div>
+</td>
+    <td><a name="wp1557676"> </a><div class="pCellBody">
+Name of the DB schema.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1369047"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -186,19 +199,6 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1369065"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1369072"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
-</div>
-</td>
-    <td><a name="wp1369075"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
-</div>
-</td>
-</tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1369079"> </a><div class="pCellBody">
 &#160;
 </div>
@@ -208,7 +208,7 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
     <td><a name="wp1369089"> </a><div class="pCellBody">
-Name of the table to be written. Note that only one table can be written at a time
+Name of the table to be written. Note that only one table can be written at a time.
 </div>
 </td>
 </tr>
@@ -221,7 +221,7 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
     <td><a name="wp1369107"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository.
 </div>
 </td>
 </tr>
@@ -234,7 +234,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1369121"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
@@ -247,95 +247,33 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1369139"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1457800"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconba.gif" align="left" id="wp1457796" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1457801"> </a><div class="pCellBody">
-Java only for the time being.
-</div>
-</td>
-    <td><a name="wp1457808"> </a><div class="pCellHeading">
-<em class="cEmphasis">Surrogate key</em> 
-</div>
-</td>
-    <td><a name="wp1457811"> </a><div class="pCellBody">
-Select the column where the generated surrogate key will be stored. A surrogate key can be generated based on a method  selected on the <b class="cBold">Creation </b>list.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1369147"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1557706"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1369150"> </a><div class="pCellBody">
-Source Keys
+    <td><a name="wp1557713"> </a><div class="pCellHeading">
+<em class="cEmphasis">SCD Editor</em>
 </div>
 </td>
-    <td><a name="wp1369153"> </a><div class="pCellBody">
-Select one or more columns to be used as key,  to ensure the unicity of incoming data.
+    <td><a name="wp2072620"> </a><div class="pCellBody">
+The SCD editor helps to build and configure the data flow for slowly changing dimension outputs.<br />For more information, see <a href="tMysqlSCD_Prop.html#wp1555883"><em class="cEmphasis">SCD management methodologies</em></a>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1369157"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1557724"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1369160"> </a><div class="pCellBody">
-Use SCD Type 1 fields
+    <td><a name="wp1557730"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use memory saving Mode</em>
 </div>
 </td>
-    <td><a name="wp1369163"> </a><div class="pCellBody">
-Use the type 1if change tracking is not necessary. SCD Type 1 should be used for typos corrections for example. Select the columns of the schema, that will be checked for changes.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1369167"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1369170"> </a><div class="pCellBody">
-Use SCD Type 2 fields
-</div>
-</td>
-    <td><a name="wp1369173"> </a><div class="pCellBody">
-Use type 2  if changes need to be tracked down. SCD Type 2 should be used to trace updates for example. Select the columns of the schema, that will be checked for changes.<br /><b class="cBold">Start date/End Date</b>: Add a column to your SCD schema to hold the start and end date value for the record. When the record is currently active, the End date show a null value<br /><b class="cBold">Log Active Status</b>: Add a column to your  SCD schema to hold the <b class="cBold">1</b> or <b class="cBold">0</b> status value. This column helps to spot easily the active record.<br /><b class="cBold">Log versions</b>: Add a column to your SCD schema to hold the version number of the record.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1457717"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconba.gif" align="left" id="wp1457713" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1457718"> </a><div class="pCellBody">
- Java only for the time being.
-</div>
-</td>
-    <td><a name="wp1457725"> </a><div class="pCellHeading">
-<em class="cEmphasis">Use SCD Type 3 fields</em>
-</div>
-</td>
-    <td><a name="wp1457728"> </a><div class="pCellBody">
-Use type 3 when you want to keep track of the previous value of a changing column <br /><b class="cBold">Current value field</b>: Select the column where the changing value is tracked down..<br /><b class="cBold">Previous value field</b>: Select the column where the previous value should be stored.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1369197"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1369200"> </a><div class="pCellBody">
-Debug Mode
-</div>
-</td>
-    <td><a name="wp1369203"> </a><div class="pCellBody">
-Check  this box to display each step of the SCD log process. 
+    <td><a name="wp1557734"> </a><div class="pCellBody">
+Select this check box to maximize system performance. 
 </div>
 </td>
 </tr>

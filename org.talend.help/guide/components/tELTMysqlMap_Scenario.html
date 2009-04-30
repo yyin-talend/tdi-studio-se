@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:15:13">
+    <meta name="LASTUPDATED" content="04/30/09 15:23:41">
     <title>Scenario1: Aggregating table columns and filtering</title>
   </head>
 
@@ -107,7 +107,7 @@ This scenario describes a job gathering together several Input DB table schemas 
 <a name="wp1227258"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to save the ELT Map setting.</li></div>
 <a name="wp1227270"> </a><div class="pSmartList2"><li>Define the ELT Output in the Component view of the tELTMysqlOutput component. </li></div>
 <a name="wp1227320"> </a><div class="pSmartList2"><li>The <b class="cBold">Action on table</b> is <b class="cBold">Drop and create table</b> for this use case and the only action available on data in MySQL is <b class="cBold">Insert</b>.</li></div>
-<a name="wp1227346"> </a><div class="pSmartList2"><li>The schema is to be synchronised with the tELTMysqlMap component as it aggregates several source schemas.</li></div>
+<a name="wp1227346"> </a><div class="pSmartList2"><li>The schema is to be synchronized with the tELTMysqlMap component as it aggregates several source schemas.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1227371"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -122,7 +122,7 @@ All selected data are inserted in the <em class="cEmphasis">results</em> table a
 Scenario 2: ELT using Alias table
 </h2>
 <a name="wp1294770"> </a><p class="pIndented1">
-This scenario describes a job that uses an Alias table. The <em class="cEmphasis">employees</em> table contains all employees details as well as the ID of their respective manager, which are also considered  as employees and hence included in the <em class="cEmphasis">employees</em> table. The dept table contains location and department information about the employees.
+This scenario describes a job that uses an Alias table. The <em class="cEmphasis">employees</em> table contains all employees details as well as the ID of their respective manager, which are also considered as employees and hence included in the <em class="cEmphasis">employees</em> table. The dept table contains location and department information about the employees.
 </p>
 <a name="wp1232441"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -143,7 +143,7 @@ This scenario describes a job that uses an Alias table. The <em class="cEmphasis
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1232530"> </a><div class="pSmartList2"><li>Then select the tELTMysqlMap and define the Mysql database connection details. </li></div>
-<a name="wp1232546"> </a><div class="pSmartList2"><li>Here again the connection information is  stored in the Repository&#39;s Metadata.</li></div>
+<a name="wp1232546"> </a><div class="pSmartList2"><li>Here again the connection information is stored in the Repository&#39;s Metadata.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1232559"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -179,7 +179,7 @@ This scenario describes a job that uses an Alias table. The <em class="cEmphasis
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1232899"> </a><div class="pSmartList2"><li>Name it <em class="cEmphasis">Managers</em> and click OK to display it as a new Input table in the ELT mapper.</li></div>
 <a name="wp1232909"> </a><div class="pSmartList2"><li> Drag &amp; drop the <em class="cEmphasis">ID</em> column from the <em class="cEmphasis">employees</em> table to the <em class="cEmphasis">ID_Manager</em> column of the newly added <em class="cEmphasis">Managers</em> table.</li></div>
-<a name="wp1233128"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Explicit Join</b> box and define it as <b class="cBold">Left Outer Join</b>, in order for results to be output eventhough they contain a <b class="cBold">Null</b> value.</li></div>
+<a name="wp1233128"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Explicit Join</b> box and define it as <b class="cBold">Left Outer Join</b>, in order for results to be output even though they contain a <b class="cBold">Null</b> value.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1233170"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

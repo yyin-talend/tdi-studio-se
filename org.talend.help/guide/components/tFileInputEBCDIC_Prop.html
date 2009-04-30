@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/30/09 15:23:55">
+    <title>tFileInputEBCDIC</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="Components09-18.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputEBCDIC_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2092842"> </a><h2 class="pHeading1">
+tFileInputEBCDIC
+</h2>
+<a name="wp2090259"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tFileInputEBCDIC_icon32_white.png" id="wp2090255" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2090266"> </a><h2 class="pHeading2">
+tFileInputEBCDIC properties
+</h2>
+<a name="wp2090398"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2090274table2090269">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2090274"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp2090276"> </a><div class="pCellBody">
+File/Input
+</div>
+</td>
+    <td><a name="wp2090284"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_iconi.png" id="wp2090281" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2090289"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2090291"> </a><div class="pCellBody">
+<b class="cBold">tFileInputEBCDIC</b> reads an EBCDIC file and extracts data depending on the selected schema. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2090298"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2090300"> </a><div class="pCellBody">
+<b class="cBold">tFileInputEBCDIC </b>opens a file and reads it in order to separate the data, based on the file structure description (schemas), and to send the file data and metadata to the next job component(s), via a Row link. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2090307"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2090312"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp2093180"> </a><div class="pCellBody">
+Either Built-in or Repository
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2090316"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090318"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2093185"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: No property data stored centrally.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2090325"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090327"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2093190"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2090334"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090336"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>(s)
+</div>
+</td>
+    <td><a name="wp2090338"> </a><div class="pCellBody">
+Add the various schemas to output to the next job component(s). 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2090340"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090342"> </a><div class="pCellHeading">
+<em class="cEmphasis">Data file</em>
+</div>
+</td>
+    <td><a name="wp2090344"> </a><div class="pCellBody">
+Select the EBCDIC file containing the data to be processed. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2090346"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090348"> </a><div class="pCellHeading">
+<em class="cEmphasis">Xc2j file</em>
+</div>
+</td>
+    <td><a name="wp2090350"> </a><div class="pCellBody">
+Select the xc2j file, transforming the EBCDIC schema(s) into an intermediary XML file. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2090352"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090357"> </a><div class="pCellHeading">
+<em class="cEmphasis">Header</em>
+</div>
+</td>
+    <td><a name="wp2093276"> </a><div class="pCellBody">
+Number of rows to be skipped at the beginning of a file
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2090361"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090366"> </a><div class="pCellHeading">
+<em class="cEmphasis">Footer</em>
+</div>
+</td>
+    <td><a name="wp2093279"> </a><div class="pCellBody">
+Number of rows to be skipped at the end of a file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2090370"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090375"> </a><div class="pCellHeading">
+<em class="cEmphasis">Limit</em>
+</div>
+</td>
+    <td><a name="wp2090377"> </a><div class="pCellBody">
+Maximum number of rows to be processed. If Limit = 0, no row is read or processed. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2090379"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2090384"> </a><div class="pCellHeading">
+<em class="cEmphasis">Skip empty rows</em>
+</div>
+</td>
+    <td><a name="wp2093294"> </a><div class="pCellBody">
+Check this box to skip empty rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2090391"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2090393"> </a><div class="pCellBody">
+Use this component to read an EBCDIC file and to output the data separately depending on the schemas identified in the file. 
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="Components09-18.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputEBCDIC_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tInformixRow</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/Informix
 </div>
 </td>
     <td><a name="wp1396036"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconbb.png" id="wp1396031" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconi.png" id="wp1396031" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -104,7 +104,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1396118"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
@@ -251,46 +251,85 @@ Enter your DB query  paying particularly attention to properly sequence the fiel
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1396292"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214655"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1396295"> </a><div class="pCellBody">
-Commit every
-</div>
-</td>
-    <td><a name="wp1396298"> </a><div class="pCellBody">
-Number of rows to be completed before commiting batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1396302"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1396309"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
-</div>
-</td>
-    <td><a name="wp1396312"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1396316"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1396323"> </a><div class="pCellHeading">
+    <td><a name="wp2214660"> </a><div class="pCellHeading">
 <em class="cEmphasis">Die on error</em>
 </div>
 </td>
-    <td><a name="wp1396326"> </a><div class="pCellBody">
-Uncheck this box to skip the row on error and complete the process for non-error rows. 
+    <td><a name="wp2214662"> </a><div class="pCellBody">
+Clear this check box to skip the row on error and complete the process for error-free rows. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1396334"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214669"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2214675"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+</td>
+    <td><a name="wp2214679"> </a><div class="pCellBody">
+Specify additional connection properties in the existing DB connection
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214683"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2214689"> </a><div class="pCellHeading">
+<em class="cEmphasis">Propagate QUERY&#39;s recordset</em>
+</div>
+</td>
+    <td><a name="wp2214693"> </a><div class="pCellBody">
+Select this check box to insert the result of the query into a COLUMN of the current flow.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214697"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2214704"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding Type</em>
+</div>
+</td>
+    <td><a name="wp2214711"> </a><div class="pCellBody">
+Select the encoding from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214715"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2214722"> </a><div class="pCellHeading">
+<em class="cEmphasis">Commit every</em>
+</div>
+</td>
+    <td><a name="wp2214725"> </a><div class="pCellBody">
+Number of rows to be completed before committing batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214729"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2214736"> </a><div class="pCellHeading">
+<em class="cEmphasis">tState</em>Catcher Statistics
+</div>
+</td>
+    <td><a name="wp2214739"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1396334"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>

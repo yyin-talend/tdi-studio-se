@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>Scenario 1: Displaying selected data from DB table</title>
   </head>
 
@@ -28,41 +28,41 @@
 <a name="wp1287208"> </a><h2 class="pHeading2">
 Scenario 1: Displaying selected data from DB table
 </h2>
-<a name="wp1287495"> </a><p class="pIndented1">
+<a name="wp2199013"> </a><p class="pIndented1">
 The following scenario creates a two-component job, reading data from a database using a DB query and outputting delimited data into the standard output (console).
 </p>
-<a name="wp1187751"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2199021"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tDBInput1.png" id="wp1187748" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tDBInput1.png" id="wp2199018" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1187762"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tDBInput</b> and <b class="cBold">tLogRow</b> component from the Palette to the design workspace.</li></div>
-<a name="wp1187772"> </a><div class="pSmartList2"><li>Right-click on the <b class="cBold">tDBInput</b> component and select <em class="cEmphasis">Row &gt; Main</em>. Drag this main row link onto the <b class="cBold">tLogRow</b> component and release when the plug symbol displays.</li></div>
-<a name="wp1187784"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tDBInput</b> again so the <b class="cBold">Component</b> view shows up, and define the properties:</li></div>
+<a name="wp2199032"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tDBInput</b> and <b class="cBold">tLogRow</b> component from the Palette to the design workspace.</li></div>
+<a name="wp2199042"> </a><div class="pSmartList2"><li>Right-click on the <b class="cBold">tDBInput</b> component and select <em class="cEmphasis">Row &gt; Main</em>. Drag this main row link onto the <b class="cBold">tLogRow</b> component and release when the plug symbol displays.</li></div>
+<a name="wp2199057"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tDBInput</b> so the <b class="cBold">Component</b> view shows up, and define the properties:</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1187791"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2199061"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tDBInput2.png" id="wp1187788" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tDBInput2.png" id="wp2199089" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1187800"> </a><div class="pSmartList2"><li>The component property data are <b class="cBold">Built-In</b> for this scenario.</li></div>
-<a name="wp1187807"> </a><div class="pSmartList2"><li>Select Mysql as database driver.</li></div>
-<a name="wp1187811"> </a><div class="pSmartList2"><li>Fill in the DB connection data in Host, Port, Database name, User name and password fields.</li></div>
+<a name="wp2199069"> </a><div class="pSmartList2"><li>The component property data are <b class="cBold">Built-In</b> for this scenario.</li></div>
+<a name="wp1187811"> </a><div class="pSmartList2"><li>Fill in the database name, the username and password in the corresponding fields.</li></div>
 <a name="wp1187818"> </a><div class="pSmartList2"><li>The schema is <b class="cBold">Built-In</b>.This means that it is available for this job and on this station only. </li></div>
-<a name="wp1187825"> </a><div class="pSmartList2"><li>Click on <b class="cBold">Edit Schema</b> and create a 2-column description including shop code and sales</li></div>
+<a name="wp1187825"> </a><div class="pSmartList2"><li>Click on <b class="cBold">Edit Schema</b> and create a 2-column description including shop code and sales.</li></div>
+<a name="wp2199109"> </a><div class="pSmartList2"><li>Enter the table name in the corresponding field.</li></div>
 <a name="wp1187828"> </a><div class="pSmartList2"><li>Type in the query making sure it includes all columns in the same order as defined in the Schema. In this case, as we&#39;ll select all columns of the schema, the asterisk symbol makes sense.</li></div>
-<a name="wp1187834"> </a><div class="pSmartList2"><li>Enter the Encoding for information only. And click on the second component to define it.</li></div>
+<a name="wp1187834"> </a><div class="pSmartList2"><li>Click on the second component to define it.</li></div>
 <a name="wp1187840"> </a><div class="pSmartList2"><li>Enter the fields separator. In this case, a pipe separator. </li></div>
-<a name="wp1187851"> </a><div class="pSmartList2"><li>Now go to the <b class="cBold">Run Job </b>tab, and click on <b class="cBold">Run</b> to execute the job.</li></div>
+<a name="wp1187851"> </a><div class="pSmartList2"><li>Now go to the <b class="cBold">Run </b>tab, and click on <b class="cBold">Run</b> to execute the job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1187854"> </a><p class="pIndented1">
-The DB is parsed and queried data is extracted and passed on to the Job log console. You can view the output file straight on the console.  
+The DB is parsed and queried data is extracted from the specified table and passed on to the Job log console. You can view the output file straight on the console.  
 </p>
 <a name="wp1187863"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -78,10 +78,15 @@ StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which 
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1187883"> </a><div class="pSmartList2"><li>Use the same scenario as scenario 1 above and add a third component, <b class="cBold">tPerl</b>.</li></div>
-<a name="wp1187886"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tDBInput</b> component to <b class="cBold">tPerl</b> component using a trigger connection of <b class="cBold">ThenRun</b> type. In this case, we want the <b class="cBold">tDBInput</b> to run before the <b class="cBold">tPerl</b> component.</li></div>
+<a name="wp2251387"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp2251385" border="0" hspace="0" vspace="0"/><br />
+<br />If you create scenario 1 using the Java language, you must use <b class="cBold">tJava</b> in this step.
+</p>
+<a name="wp2204935"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tDBInput</b> component to <b class="cBold">tPerl</b> component using a trigger connection of <b class="cBold">ThenRun</b> type. In this case, we want the <b class="cBold">tDBInput</b> to run before the <b class="cBold">tPerl</b> component.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1187898"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2204893"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/Use_Case_tDBInput4_var.png" id="wp1187895" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
@@ -89,7 +94,7 @@ StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which 
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1187904"> </a><div class="pSmartList2"><li>Set both <b class="cBold">tDBInput</b> and <b class="cBold">tLogRow</b> component as in <b class="cBold">tDBInput</b> scenario 1.</li></div>
-<a name="wp1187911"> </a><div class="pSmartList2"><li>Click anywhere on the design workspace to display the <b class="cBold">Context</b> property panel.</li></div>
+<a name="wp1187911"> </a><div class="pSmartList2"><li>Click anywhere on the design workspace to display the <b class="cBold">Contexts</b> property panel.</li></div>
 <a name="wp1187917"> </a><div class="pSmartList2"><li>Create a new parameter called explicitly <b class="cBold">StoreSQLQuery</b>. Enter a default value of 1. This value of 1 means the <b class="cBold">StoreSQLQuery</b> is &quot;true&quot; for a use in the QUERY global variable.</li></div>
 <a name="wp1187921"> </a><div class="pSmartList2"><li>Click on the <b class="cBold">tPerl</b> component and display the <b class="cBold">Component</b> view. Enter the command Print to display the query content, press <b class="cBold">Ctrl+Space bar</b> to access the variable list and select the global variable QUERY.</li></div>
 </ul></div>

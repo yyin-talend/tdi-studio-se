@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tDB2Row</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/DB2
 </div>
 </td>
     <td><a name="wp1383035"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-06-022-045.jpg" height="59" width="112" id="wp1383030" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-06-024-072.jpg" height="59" width="112" id="wp1383030" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Databases/DB2
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1383054"> </a><div class="pCellBody">
-<b class="cBold">tDB2Row</b> is the specific component for this database query. It executes the SQL query stated onto the specified database. The row suffix  means the component implements a flow in the job design although it doesn&#39;t provide output. 
+<b class="cBold">tDB2Row</b> is the specific component for this database query. It executes the SQL query stated onto the specified database. The row suffix means the component implements a flow in the job design although it doesn&#39;t provide output. 
 </div>
 </td>
 </tr>
@@ -104,11 +104,24 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1383122"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383375"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2213628"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2213634"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp2213638"> </a><div class="pCellBody">
+Select this check box and click the relevant <b class="cBold">tDB2Connection </b>component on the Component list to reuse the connection details you already defined.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383375"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -121,7 +134,7 @@ Database server IP address
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383389"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383389"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -134,7 +147,7 @@ Listening port number of DB server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383126"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383126"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -147,7 +160,7 @@ Name of the database
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383140"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383140"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -160,7 +173,7 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383158"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383158"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -169,11 +182,11 @@ DB user authentication data.
 </div>
 </td>
     <td><a name="wp1383172"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383176"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383176"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -186,7 +199,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383194"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383194"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -195,11 +208,11 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1383204"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383212"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383212"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -212,7 +225,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383226"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383226"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -225,7 +238,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383240"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383240"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -238,7 +251,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383254"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383254"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -247,50 +260,76 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1383264"> </a><div class="pCellBody">
-Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
+Enter your DB query paying particularly attention to properly sequence the fields in order to match the schema definition. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383268"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214054"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1383271"> </a><div class="pCellBody">
-Commit every
-</div>
-</td>
-    <td><a name="wp1383274"> </a><div class="pCellBody">
-Number of rows to be completed before commiting batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383278"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1383285"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
-</div>
-</td>
-    <td><a name="wp1383288"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383292"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1383299"> </a><div class="pCellHeading">
+    <td><a name="wp2214059"> </a><div class="pCellHeading">
 <em class="cEmphasis">Die on error</em>
 </div>
 </td>
-    <td><a name="wp1383302"> </a><div class="pCellBody">
-Uncheck this box to skip the row on error and complete the process for non-error rows. 
+    <td><a name="wp2214061"> </a><div class="pCellBody">
+Clear this check box to skip the row on error and complete the process for error-free rows. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1383310"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214082"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2214088"> </a><div class="pCellHeading">
+<em class="cEmphasis">Propagate QUERY&#39;s recordset</em>
+</div>
+</td>
+    <td><a name="wp2214092"> </a><div class="pCellBody">
+Select this check box to insert the result of the query into a COLUMN of the current flow.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214096"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2214103"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding Type</em>
+</div>
+</td>
+    <td><a name="wp2214110"> </a><div class="pCellBody">
+Select the encoding from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214114"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2214121"> </a><div class="pCellHeading">
+<em class="cEmphasis">Commit every</em>
+</div>
+</td>
+    <td><a name="wp2214124"> </a><div class="pCellBody">
+Number of rows to be completed before committing batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214128"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2214135"> </a><div class="pCellHeading">
+<em class="cEmphasis">tState</em>Catcher Statistics
+</div>
+</td>
+    <td><a name="wp2214138"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1383310"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>

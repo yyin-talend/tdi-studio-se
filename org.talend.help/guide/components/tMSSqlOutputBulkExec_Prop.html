@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tMSSqlOutputBulkExec</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/MSSql
 </div>
 </td>
     <td><a name="wp1471199"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconbb.png" id="wp1471196" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconi.png" id="wp1471196" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Databases/MSSql
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1471206"> </a><div class="pCellBody">
-Executes the Insert action on the data provided.
+Executes the action on the data provided.
 </div>
 </td>
 </tr>
@@ -69,8 +69,21 @@ As a dedicated component, it allows gains in performance during Insert operation
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471222"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2211908"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2211915"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action</em>
+</div>
+</td>
+    <td><a name="wp2211918"> </a><div class="pCellBody">
+Select the action to be carried out<br /><b class="cBold">Bulk insert</b><br /><b class="cBold">Bulk update</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471222"> </a><div class="pCellBody">
+&#160;
 </div>
 </td>
     <td><a name="wp1471227"> </a><div class="pCellHeading">
@@ -82,7 +95,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471231"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471231"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -95,7 +108,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471240"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471240"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -104,24 +117,24 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1471247"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471365"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471365"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
     <td><a name="wp1471368"> </a><div class="pCellHeading">
-<em class="cEmphasis">Bcp utility</em>
+<em class="cEmphasis">Use an existing connection</em>
 </div>
 </td>
-    <td><a name="wp1471371"> </a><div class="pCellBody">
-Name of the utility to be used to copy data over.on the SQL server.
+    <td><a name="wp2211518"> </a><div class="pCellBody">
+Select this check box and click the relevant <b class="cBold">tMSSqlConnection </b>component on the Component list to reuse the connection details you already defined.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471249"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471249"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -134,7 +147,7 @@ Database server IP address
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471258"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471258"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -147,16 +160,29 @@ Listening port number of DB server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471267"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471267"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
     <td><a name="wp1471272"> </a><div class="pCellHeading">
-<em class="cEmphasis">DB Name</em>
+<em class="cEmphasis">DB name</em>
 </div>
 </td>
     <td><a name="wp1471274"> </a><div class="pCellBody">
 Name of the database
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2211541"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2211548"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>
+</div>
+</td>
+    <td><a name="wp2211551"> </a><div class="pCellBody">
+Name of the database schema
 </div>
 </td>
 </tr>
@@ -182,20 +208,98 @@ DB user authentication data.
 </div>
 </td>
     <td><a name="wp1471295"> </a><div class="pCellBody">
-Name of the table to be written. Note that only one table can be written at a time and that the table must exist for the insert operation to succeed.
+Name of the table to be written.<br />Note that only one table can be written at a time and that the table must exist for the insert operation to succeed.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471297"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2211557"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1471302"> </a><div class="pCellHeading">
+    <td><a name="wp2211564"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on table</em>
+</div>
+</td>
+    <td><a name="wp2211567"> </a><div class="pCellBody">
+On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation is carried out.<br /><b class="cBold">Drop and create a table</b>: The table is removed and created again.<br /><b class="cBold">Create a table</b>: The table does not exist and gets created.<br /><b class="cBold">Create a table if not exists</b>: The table is created if it does not exist.<br /><b class="cBold">Truncate table</b>: The table content is deleted. You do not have the possibility to rollback the operation.<br /><b class="cBold">Clear a table</b>: The table content is deleted. You have the possibility to rollback the operation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2211692"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2211702"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2211706"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2211711"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2211714"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2211789"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2211732"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2211735"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2211804"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2211631"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2211638"> </a><div class="pCellHeading">
 <em class="cEmphasis">File Name</em>
 </div>
 </td>
-    <td><a name="wp1471304"> </a><div class="pCellBody">
+    <td><a name="wp2211641"> </a><div class="pCellBody">
 Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2211846"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2211853"> </a><div class="pCellHeading">
+<em class="cEmphasis">Append</em>
+</div>
+</td>
+    <td><a name="wp2211891"> </a><div class="pCellBody">
+Select this check box to add the new rows at the end of the records
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2211998"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2212005"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+</td>
+    <td><a name="wp2212015"> </a><div class="pCellBody">
+Specify additional connection properties in the existing DB connection.
 </div>
 </td>
 </tr>
@@ -221,24 +325,11 @@ Character, string or regular expression to separate fields.
 </div>
 </td>
     <td><a name="wp1471325"> </a><div class="pCellBody">
-String (ex: &quot;\n&quot;on Unix)  to distinguish rows.
+String (ex: &quot;\n&quot;on Unix) to distinguish rows.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471404"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1471411"> </a><div class="pCellHeading">
-<em class="cEmphasis">Append</em>
-</div>
-</td>
-    <td><a name="wp1471414"> </a><div class="pCellBody">
-Check this option box to add the new rows at the end of the records
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471466"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471466"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -247,11 +338,11 @@ Check this option box to add the new rows at the end of the records
 </div>
 </td>
     <td><a name="wp1471476"> </a><div class="pCellBody">
-Type in the number of the row where the action should start from.
+Type in the number of the row where the action should start.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471452"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471452"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -260,7 +351,20 @@ Type in the number of the row where the action should start from.
 </div>
 </td>
     <td><a name="wp1471462"> </a><div class="pCellBody">
-Check this box to include the column header. 
+Select this heck box to include the column header.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2212079"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212086"> </a><div class="pCellHeading">
+<em class="cEmphasis">Code page</em>
+</div>
+</td>
+    <td><a name="wp2212089"> </a><div class="pCellBody">
+<b class="cBold">OEM </b>code pages used to map a specific set of characters to numerical code point values.
 </div>
 </td>
 </tr>
@@ -282,7 +386,7 @@ Select the type of data being handled.
 </div>
 </td>
     <td><a name="wp1471332"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+<em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
     <td><a name="wp1471334"> </a><div class="pCellBody">
@@ -290,16 +394,29 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471345"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2212059"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212066"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStaCatcher statistics</em>
+</div>
+</td>
+    <td><a name="wp2212069"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471345"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1471347"> </a><div class="pCellBody">
-This component is mainly used when no particular tranformation is required on the data to be loaded onto the database. 
+This component is mainly used when no particular transformation is required on the data to be loaded onto the database. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1471354"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1471354"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

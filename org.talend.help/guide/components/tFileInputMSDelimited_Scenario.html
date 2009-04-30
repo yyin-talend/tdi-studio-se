@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/09 16:15:02">
+    <title>Scenario: Reading a multi structure delimited file</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputMSDelimited_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputMSPositional_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2093111"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2096358"> </a><h2 class="pHeading2">
+Scenario: Reading a multi structure delimited file
+</h2>
+<a name="wp2093114"> </a><p class="pIndented1">
+The following scenario creates a Java job which aims at reading three schemas in a delimited file and displaying their data structure on the <b class="cBold">Run Job </b>console.
+</p>
+<a name="wp2093122"> </a><p class="pIndented1">
+The delimited file processed in this example looks like the following:
+</p>
+<a name="wp2093129"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted2.png" id="wp2093126" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093143"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tFileInputMSDelimited</b> and three <b class="cBold">tLogRow </b>components from the <b class="cBold">Palette </b>onto the design workspace.</li></div>
+<a name="wp2093155"> </a><div class="pSmartList2"><li>Double_click <b class="cBold">tFileInputMSDelimited </b>to open the <b class="cBold">Multi Schema Editor</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093162"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted.png" id="wp2093159" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093173"> </a><div class="pSmartList2"><li>Click <b class="cBold">Browse...</b> next to the <b class="cBold">File name </b>field to locate the multi schema delimited file you need to process.</li></div>
+<a name="wp2093180"> </a><div class="pSmartList2"><li>In the <b class="cBold">File Settings</b> area:<br />-Select from the list the encoding type the source file is encoded in. This setting is meant to ensure encoding consistency throughout all input and output files.<br />-Select the field and row separators used in the source file.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093189"> </a><p class="pIndented1">
+A preview of the source file data displays automatically in the <b class="cBold">Preview</b> panel.
+</p>
+<a name="wp2093196"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted1.png" id="wp2093193" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093207"> </a><div class="pSmartList2"><li>Click <b class="cBold">Fetch Code </b>to the right of the <b class="cBold">Preview </b>panel to list the type of schema and records you have in the source file. In this scenario, the source file has three schema types (<em class="cEmphasis">A, B, C</em>).</li></div>
+<a name="wp2093220"> </a><div class="pSmartList2"><li>Click each schema type in the <b class="cBold">Fetch Code</b> panel to display its data structure below the <b class="cBold">Preview </b>panel.</li></div>
+<a name="wp2093227"> </a><div class="pSmartList2"><li>Click in the name cells and set column names for each of the selected schema.<br />In this scenario, column names read as the following:<br />-Schema <em class="cEmphasis">A</em>: <em class="cEmphasis">Type, DiscName, Author, Date</em>,<br />-Schema <em class="cEmphasis">B</em>: <em class="cEmphasis">Type, SongName</em>,<br />-Schema <em class="cEmphasis">C</em>: <em class="cEmphasis">Type, LibraryName</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093253"> </a><p class="pIndented1">
+You need now to set the primary key from the incoming data to insure its unicity (<em class="cEmphasis">DiscName</em> in this scenario). To do that:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093262"> </a><div class="pSmartList2"><li>In the <b class="cBold">Fetch Code</b> panel, select the schema holding the column you want to set as the primary key (schema <em class="cEmphasis">A</em> in this scenario) to display its data structure.</li></div>
+<a name="wp2093275"> </a><div class="pSmartList2"><li>Click in the <em class="cEmphasis">Key</em> cell that corresponds to the <em class="cEmphasis">DiscName</em> column and select the check box that displays.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093284"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted4.png" id="wp2093281" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093300"> </a><div class="pSmartList2"><li>Click anywhere in the editor and the <em class="cEmphasis">false</em> in the <em class="cEmphasis">Key</em> cell will become <em class="cEmphasis">true</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093303"> </a><p class="pIndented1">
+You need now to declare the parent schema by which you want to group the other &quot;children&quot; schemas (<em class="cEmphasis">DiscName</em> in this scenario). To do that:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093318"> </a><div class="pSmartList2"><li>In the <b class="cBold">Fetch Code</b> panel, select schema <em class="cEmphasis">B</em> and click the right arrow button to move it to the right.</li></div>
+<a name="wp2093327"> </a><div class="pSmartList2"><li>Do the same with schema <em class="cEmphasis">C</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093334"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted3.png" id="wp2093331" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2093343"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2093338" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+The <b class="cBold">Cardinality</b> field is not compulsory. It helps you to define the number (or range) of fields in &quot;children&quot; schemas attached to the parent schema. However, if you set the wrong number or range and try to execute the Job, an error message will display.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093355"> </a><div class="pSmartList2"><li>In the <b class="cBold">Multi Schema Editor</b>, click <b class="cBold">OK</b> to validate all the changes you did and close the editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093360"> </a><p class="pIndented1">
+The three defined schemas along with the corresponding record types display automatically in the <b class="cBold">Basic settings</b> view of <b class="cBold">tFileInputMSDelimited</b>.
+</p>
+<a name="wp2093374"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted6.png" id="wp2093371" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093382"> </a><div class="pSmartList2"><li>In the designer workspace, right-click <b class="cBold">tFileInputMSDelimited</b> and connect it to <b class="cBold">tLogRow1</b>, <b class="cBold">tLogRow2</b>, and <b class="cBold">tLogRow3</b> using the <b class="cBold">row_A_1</b>, <b class="cBold">row_B_1</b>, and <b class="cBold">row_C_1</b> links respectively.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093409"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted5.png" id="wp2093406" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2093415"> </a><p class="pIndented1">
+The three schemas you defined in the <b class="cBold">Multi Schema Editor</b> are automatically passed to the three <b class="cBold">tLogRow</b> components.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093433"> </a><div class="pSmartList2"><li>If necessary, click the <b class="cBold">Edit schema</b> button in the <b class="cBold">Basic settings</b> view of each of the <b class="cBold">tLogRow</b> components to view the input and output data structures you defined in the <b class="cBold">Multi Schema Editor</b> or to modify them.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093445"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted7.png" id="wp2093442" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2093455"> </a><div class="pSmartList2"><li>Save your Job and click <b class="cBold">F6</b> to execute it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2093460"> </a><p class="pIndented1">
+The multi schema delimited file is read row by row and the extracted fields are displayed on the <b class="cBold">Run Job</b> console as defined in the <b class="cBold">Multi Schema Editor</b>.
+</p>
+<a name="wp2093474"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileInputMSDelimeted8.png" id="wp2093469" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputMSDelimited_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputMSPositional_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

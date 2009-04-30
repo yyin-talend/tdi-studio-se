@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:15:51">
+    <meta name="LASTUPDATED" content="04/30/09 15:24:23">
     <title>Scenario: asynchronous communication via a MOM server</title>
   </head>
 
@@ -71,11 +71,13 @@ In the first job, a string message is created using a <b class="cBold">tRowGener
 <a name="wp1424334"> </a><div class="pSmartList2"><li>In <b class="cBold">Host</b> and <b class="cBold">Port</b> fields, fill in the relevant connection information.</li></div>
 <a name="wp1424383"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Message type</b> in the list. The message can be of <b class="cBold">Queue</b> or <b class="cBold">Topic</b> type. In this example, select the <b class="cBold">Queue </b>type on the list. </li></div>
 <a name="wp1424358"> </a><div class="pSmartList2"><li>In the <b class="cBold">To</b> field, type in the message source information strictly as expected by the server. This should match the Message Type you selected, such as: <code class="cCode">queue/A</code>.  </li></div>
-<a name="wp1424458"> </a><p class="pBodyRelative">
-Note:	The message name is case-sensitive, therefore <code class="cCode">queue/A </code>and <code class="cCode">Queue/A</code> are different. 
+<a name="wp1654307"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp1654304" border="0" hspace="0" vspace="0"/><br />
+<br />The message name is case-sensitive, therefore <code class="cCode">queue/A </code>and <code class="cCode">Queue/A</code> are different.
 </p>
 <a name="wp1424481"> </a><div class="pSmartList2"><li>Then click <b class="cBold">Sync Columns</b> to pass on the schema from the preceding component. The schema being read-only, it cannot be changed. The data posted onto the MQ come from the first encountered column of the schema.</li></div>
-<a name="wp1425140"> </a><div class="pSmartList2"><li>Run the job and see  the console the data flow being passed on thanks to the tLogRow component.</li></div>
+<a name="wp1425140"> </a><div class="pSmartList2"><li>Run the job and see the console the data flow being passed on thanks to the tLogRow component.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1425211"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -109,8 +111,10 @@ Then set the second job in order to fetch the queuing messages from the MOM serv
 <a name="wp1425010"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Message From</b> and the <b class="cBold">Message Type</b> to match the source and type expected by the messaging server.</li></div>
 <a name="wp1425048"> </a><div class="pSmartList2"><li>The <b class="cBold">Schema</b> is read-only and is made of two columns: <b class="cBold">From</b> and <b class="cBold">Message</b>.</li></div>
 <a name="wp1425085"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Keep listening</b> box and set the frequency of verification to <em class="cEmphasis">5 </em>seconds.</li></div>
-<a name="wp1425221"> </a><p class="pBodyRelative">
-Note:	When using the <b class="cBold">Keep Listening</b> option, you&#39;ll need to kill the job to end it. 
+<a name="wp1654361"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp1654358" border="0" hspace="0" vspace="0"/><br />
+<br />When using the <b class="cBold">Keep Listening</b> option, you&#39;ll need to kill the job to end it.
 </p>
 <a name="wp1425237"> </a><div class="pSmartList2"><li>No need to change any default setting from the <b class="cBold">tLogRow</b>.</li></div>
 <a name="wp1425254"> </a><div class="pSmartList2"><li>Save the job and run it (when launching for the first time or if you killed it on a previous run).</li></div>

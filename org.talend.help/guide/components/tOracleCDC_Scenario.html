@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
-    <title>Scenario: Truncating and inserting file data into Oracle DB</title>
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
+    <title>Related scenario</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tOracleBulkExec_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCommit_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tOracleCDC_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCommit_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,64 +22,15 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1473157"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2380738"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1473165"> </a><h2 class="pHeading2">
-Scenario: Truncating and inserting file data into Oracle DB
-</h2>
-<a name="wp1473168"> </a><p class="pIndented1">
-This scenario describes how to truncate the content of an Oracle DB and load an input file content. The related job is composed of three components that respectively creates the content, output this content into a file to be loaded onto the Oracle database after the DB table has been truncated.
-</p>
-<a name="wp1473176"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_tOracleBulkExec1.png" id="wp1473173" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1473187"> </a><div class="pSmartList2"><li>Click and drop the following components: <b class="cBold">tOracleInput</b>, <b class="cBold">tFileOutputDelimited</b>, <b class="cBold">tOracleBulkExec</b></li></div>
-<a name="wp1473204"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tOracleInput</b> with the <b class="cBold">tFileOutputDelimited</b> using a <b class="cBold">row main</b> link. </li></div>
-<a name="wp1473211"> </a><div class="pSmartList2"><li>And connect the tOracleInput to the tOracleBulkExec using a <b class="cBold">ThenRun </b>trigger  link.</li></div>
-<a name="wp1473214"> </a><div class="pSmartList2"><li>Define the Oracle connection details. We recommend you to store the DB connection details in the Metadata repository in order to retrieve them easily at any time in any job.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1473223"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_tOracleBulkExec2.png" id="wp1473220" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1473231"> </a><div class="pSmartList2"><li>Define the schema, if it isn&#39;t stored either in the <b class="cBold">Repository</b>. In this example, the schema is as follows: <em class="cEmphasis">ID_Contract</em>, <em class="cEmphasis">ID_Client</em>, <em class="cEmphasis">Contract_type</em>, <em class="cEmphasis">Contract_Value</em>.</li></div>
-<a name="wp1473251"> </a><div class="pSmartList2"><li>Change the default encoding to <em class="cEmphasis">AL32UTF8</em> encoding type.</li></div>
-<a name="wp1473260"> </a><div class="pSmartList2"><li>Define the <b class="cBold">tFileOutputDelimited</b> component parameters, including output <b class="cBold">File Name</b>, <b class="cBold">Row separator</b> and <b class="cBold">Fields delimiter</b>.</li></div>
-<a name="wp1473274"> </a><div class="pSmartList2"><li>Set also the <b class="cBold">encoding</b> to the Oracle encoding type as above.</li></div>
-<a name="wp1473282"> </a><div class="pSmartList2"><li>Then double-click on the <b class="cBold">tOracleBulkExec</b> to define the DB feeding properties.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1473289"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_tOracleBulkExec3.png" id="wp1473286" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1473295"> </a><div class="pSmartList2"><li>Fill in the DB connection details if they are not available from the Repository. </li></div>
-<a name="wp1473301"> </a><div class="pSmartList2"><li>Fill in the name of the <b class="cBold">Table</b> to be fed and the Action on data to be carried out, in this use case: <b class="cBold">insert</b>. </li></div>
-<a name="wp1473312"> </a><div class="pSmartList2"><li>Define the <b class="cBold">encoding</b> as in preceding steps.</li></div>
-<a name="wp1473323"> </a><div class="pSmartList2"><li>For this scenario, the log <b class="cBold">output</b> is to be displayed in the <b class="cBold">console</b>.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1473332"> </a><p class="pIndented1">
-Press <b class="cBold">F6</b> to run the job. The log output displays in the <b class="cBold">Run Job</b> tab and the table is fed with the parameter file data. 
-</p>
-<a name="wp1473342"> </a><p class="pIndented1">
-Related topic: <a href="tMysqlOutputBulkExec_Scenario.html#wp1295428"><em class="cEmphasis">Scenario: Inserting data in MySQL database</em></a>
-</p>
-<a name="wp729539"> </a><h2 class="pHeading2">
+<a name="wp2380748"> </a><h2 class="pHeading2">
 Related scenario
 </h2>
+<a name="wp2380759"> </a><p class="pIndented1">
+For related scenarios, see <b class="cBold">tMysqlSCD</b> <a href="tMysqlSCD_Scenario.html#wp2074144"><em class="cEmphasis">Scenario: Tracking changes using Slowly Changing Dimensions (type 0 through type 3)</em></a>.
+</p>
     </blockquote>
     <hr>
 
@@ -99,7 +50,7 @@ Related scenario
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tOracleBulkExec_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCommit_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tOracleCDC_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCommit_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

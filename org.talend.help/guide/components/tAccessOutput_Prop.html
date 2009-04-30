@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tAccessOutput</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/Access
 </div>
 </td>
     <td><a name="wp1386242"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconbb.png" id="wp1386237" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconi.png" id="wp1386237" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -104,11 +104,24 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1386324"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386356"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2219390"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2219401"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Save_Icon.png" id="wp2219397" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+    <td><a name="wp2219404"> </a><div class="pCellBody">
+Click this icon to open a database connection wizard and store the database connection parameters you set in the component <b class="cBold">Basic settings </b>view.<br />For more information about setting up and storing database connection parameters, see <em class="cEmphasis">Setting up a DB connection</em> of Talend Open Studio <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386356"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -121,7 +134,7 @@ Name of the database
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386370"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386370"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -134,7 +147,7 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386388"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386388"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -147,6 +160,19 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
 </tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2087408"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2087416"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on table</em>
+</div>
+</td>
+    <td><a name="wp2087475"> </a><div class="pCellBody">
+On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation is carried out.<br /><b class="cBold">Drop and create a table</b>: The table is removed and created again.<br /><b class="cBold">Create a table</b>: The table does not exist and gets created.<br /><b class="cBold">Create a table if not exists</b>: The table is created if it does not exist.<br /><b class="cBold">Drop a table if exists and create</b>: The table is removed if it already exists and created again.<br /><b class="cBold">Clear a table</b>: The table content is deleted.
+</div>
+</td>
+</tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386445"> </a><div class="pCellBody">
 &#160;
 </div>
@@ -156,24 +182,11 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
     <td><a name="wp1386455"> </a><div class="pCellBody">
-On the data of the table defined, you can perform:<br /><b class="cBold">Insert</b>: Add new entries to the table. If duplicates are found, job stops.<br /><b class="cBold">Update</b>: Make changes to existing entries<br /><b class="cBold">Insert or update</b>: Add entries or update existing ones.<br /><b class="cBold">Update or insert</b>: Update existing entries or create it if non existing<br /><b class="cBold">Delete</b>: Remove entries corresponding to the input flow.
+On the data of the table defined, you can perform:<br /><b class="cBold">Insert</b>: Add new entries to the table. If duplicates are found, job stops.<br /><b class="cBold">Update</b>: Make changes to existing entries.<br /><b class="cBold">Insert or update</b>: Add entries or update existing ones.<br /><b class="cBold">Update or insert</b>: Update existing entries or create it if non existing.<br /><b class="cBold">Delete</b>: Remove entries corresponding to the input flow.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386479"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1386486"> </a><div class="pCellHeading">
-<em class="cEmphasis">Clear data in table</em>
-</div>
-</td>
-    <td><a name="wp1386489"> </a><div class="pCellBody">
-Wipes out data from the selected table before action.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386493"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386493"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -182,11 +195,11 @@ Wipes out data from the selected table before action.
 </div>
 </td>
     <td><a name="wp1386507"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386511"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386511"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -195,11 +208,11 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1386521"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of Talend Open Studio User Guide
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386529"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386529"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -208,111 +221,156 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1386539"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of Talend Open Studio User Guide
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386547"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2170415"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
 </div>
 </td>
-    <td><a name="wp1386554"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+    <td><a name="wp2170180"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
-    <td><a name="wp1386557"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+    <td><a name="wp2170183"> </a><div class="pCellBody">
+Select the encoding type from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386561"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2170191"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386568"> </a><div class="pCellHeading">
+    <td><a name="wp2170198"> </a><div class="pCellHeading">
+<em class="cEmphasis">Commit every</em>
+</div>
+</td>
+    <td><a name="wp2170201"> </a><div class="pCellBody">
+Number of rows to be completed before committing batches of rows together into the DB. This option ensures transaction quality (but not rollback) and, above all, better performance at executions.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2170205"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2170212"> </a><div class="pCellHeading">
 <em class="cEmphasis">Additional Columns</em>
 </div>
 </td>
-    <td><a name="wp1386571"> </a><div class="pCellBody">
-This option is not offered if you create (with or without drop) the Db table. This option allows you to perform actions on columns,  which are not insert, nor update or delete actions or requires a particular preprocessing. 
+    <td><a name="wp2170215"> </a><div class="pCellBody">
+This option is not offered if you create (with or without drop) the DB table. This option allows you to call SQL functions to perform actions on columns, which are not insert, nor update or delete actions, or action that require particular preprocessing. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386575"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2170219"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386578"> </a><div class="pCellBody">
+    <td><a name="wp2170222"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386585"> </a><div class="pCellBody">
+    <td><a name="wp2170229"> </a><div class="pCellBody">
 <b class="cBold">Name:</b> Type in the name of the schema column to be altered or inserted as new column
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386589"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2170233"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386592"> </a><div class="pCellBody">
+    <td><a name="wp2170236"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386599"> </a><div class="pCellBody">
+    <td><a name="wp2170243"> </a><div class="pCellBody">
 <b class="cBold">SQL expression:</b> Type in the SQL statement to be executed in order to alter or insert the relevant column data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386603"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2170247"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386606"> </a><div class="pCellBody">
+    <td><a name="wp2170250"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386613"> </a><div class="pCellBody">
-<b class="cBold">Position:</b> Select Before, Replace or After, following the action to be performed on the reference column.
+    <td><a name="wp2170269"> </a><div class="pCellBody">
+<b class="cBold">Position:</b> Select <b class="cBold">Before</b>, <b class="cBold">Replace</b> or <b class="cBold">After</b> following the action to be performed on the reference column.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386617"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2170273"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386620"> </a><div class="pCellBody">
+    <td><a name="wp2170276"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386627"> </a><div class="pCellBody">
-<b class="cBold">Reference column:</b> Type in a column of reference that the tDBOutput can use to place or replace the new or altered column.
+    <td><a name="wp2170283"> </a><div class="pCellBody">
+<b class="cBold">Reference column:</b> Type in a column of reference that the <b class="cBold">tDBOutput</b> can use to place or replace the new or altered column.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1386631"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2170291"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386634"> </a><div class="pCellBody">
-Commit every
+    <td><a name="wp2170298"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use field option</em>s
 </div>
 </td>
-    <td><a name="wp1386637"> </a><div class="pCellBody">
-Number of rows to be completed before commiting batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
+    <td><a name="wp2170301"> </a><div class="pCellBody">
+Select this check box to customize a request, especially when there is double action on data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1386641"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2170305"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1386648"> </a><div class="pCellHeading">
-<em class="cEmphasis">Die on error</em>
+    <td><a name="wp2170312"> </a><div class="pCellHeading">
+<em class="cEmphasis">Enable debug mode</em>
 </div>
 </td>
-    <td><a name="wp1386651"> </a><div class="pCellBody">
-Uncheck this box to skip the row on error and complete the process for non-error rows. 
+    <td><a name="wp2170315"> </a><div class="pCellBody">
+Select this check box to display each step during processing entries in a database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2170319"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2170326"> </a><div class="pCellHeading">
+<em class="cEmphasis">tState</em>Catcher Statistics
+</div>
+</td>
+    <td><a name="wp2170329"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2170333"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2203766"> </a><div class="pCellBody">
+&#160;
+</div>
+<a name="wp2381905"> </a><div class="pCellHeading">
+<em class="cEmphasis">Parallelize</em>
+</div>
+<a name="wp2381908"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2170343"> </a><div class="pCellBody">
+Select this check box to perform high-speed data processing, that is treating multiple data flows simultaneously. <br />For more information, see <em class="cEmphasis">Parallelizing data flows on page 77</em>of <b class="cBold">Talend Open Studio</b> User Guide .
 </div>
 </td>
 </tr>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:15:27">
+    <meta name="LASTUPDATED" content="04/30/09 15:23:55">
     <title>Scenario: Creating a temporary file and writing data in it</title>
   </head>
 
@@ -106,7 +106,7 @@ The following Perl scenario describes a simple job that creates an empty tempora
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1617491"> </a><div class="pSmartList2"><li>Set <b class="cBold">Property Type</b> to <b class="cBold">Built-In</b>.</li></div>
-<a name="wp1617009"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">File Name</b> field and use the <b class="cBold">Ctrl+Space bar</b> combination to access the variable completion list. To output data in the created temporary file, select  $_globals{tCreateTemporaryFile_1}{FILEPATH} on the Perl global variable list.</li></div>
+<a name="wp1617009"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">File Name</b> field and use the <b class="cBold">Ctrl+Space bar</b> combination to access the variable completion list. To output data in the created temporary file, select  <code class="cCode">$_globals{tCreateTemporaryFile_1}{FILEPATH} </code>on the Perl global variable list.</li></div>
 <a name="wp1617080"> </a><div class="pSmartList2"><li>Set the row and field separators in their corresponding fields as needed.</li></div>
 <a name="wp1617028"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema </b>to <b class="cBold">Built-In</b> and click <b class="cBold">Sync columns</b> to synchronize input and output columns. Note that the row connection feeds automatically the output schema.</li></div>
 </ul></div>
@@ -128,7 +128,7 @@ For more information about schema types, see <em class="cEmphasis">Setting a bui
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1617229"> </a><div class="pSmartList2"><li>Set property type to <b class="cBold">Build in</b>.</li></div>
-<a name="wp1617241"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">File Name</b> field and use the <b class="cBold">Ctrl+Space bar</b> combination to access the variable completion list. To read data in the created temporary file, select  $_globals{tCreateTemporaryFile_1}{FILEPATH} on the Perl global variable list.</li></div>
+<a name="wp1617241"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">File Name</b> field and use the <b class="cBold">Ctrl+Space bar</b> combination to access the variable completion list. To read data in the created temporary file, select  <code class="cCode">$_globals{tCreateTemporaryFile_1}{FILEPATH} </code>on the Perl global variable list.</li></div>
 <a name="wp1617255"> </a><div class="pSmartList2"><li>Set the row and field separators in their corresponding fields as needed.</li></div>
 <a name="wp1617280"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Built in </b>and click <b class="cBold">Edit schema</b> to define the data to pass on to the <b class="cBold">tLogRow</b> component. The schema consists of one column here, <em class="cEmphasis">value.</em></li></div>
 <a name="wp1617403"> </a><div class="pSmartList2"><li>Save the job and press <b class="cBold">F6</b> to execute the job.</li></div>

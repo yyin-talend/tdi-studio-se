@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tDBSQLRow</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/DB Generic
 </div>
 </td>
     <td><a name="wp1296810"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-06-031-015.jpg" height="59" width="112" id="wp1296805" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-06-033-040.jpg" height="59" width="112" id="wp1296805" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -55,11 +55,13 @@ Databases/DB Generic
 <b class="cBold">Function</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1190858"> </a><div class="pCellBody">
-<b class="cBold">tDBSQLRow</b> is the generic component for database query. It executes the SQL query stated onto the specified database. The row suffix  means the component implements a flow in the job design although it doesn&#39;t provide output. 
+    <td colspan="2" rowspan="1"><a name="wp2251581"> </a><div class="pCellBody">
+<b class="cBold">tDBSQLRow</b> is the generic component for database query. It executes the SQL query stated onto the specified database. The row suffix means the component implements a flow in the job design although it doesn&#39;t provide output. 
 </div>
-<a name="wp1375063"> </a><p class="pBodyRelative">
-Note:	For performance reasons, specific DB component should always be preferred to the generic component.
+<a name="wp2251588"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2251585" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+For performance reasons, specific DB component should always be preferred to the generic component.
 </p>
 </td>
 </tr>
@@ -107,7 +109,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1190913"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
@@ -146,7 +148,7 @@ DB user authentication data.
 </div>
 </td>
     <td><a name="wp1190997"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
 </div>
 </td>
 </tr>
@@ -172,7 +174,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1191029"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
 </div>
 </td>
 </tr>
@@ -224,64 +226,68 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1191061"> </a><div class="pCellBody">
-Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
+Enter your DB query paying particularly attention to properly sequence the fields in order to match the schema definition. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1382929"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214206"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2214212"> </a><div class="pCellHeading">
+<em class="cEmphasis">Propagate QUERY&#39;s recordset</em>
+</div>
+</td>
+    <td><a name="wp2214216"> </a><div class="pCellBody">
+Select this check box to insert the result of the query into a COLUMN of the current flow.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214220"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1382932"> </a><div class="pCellBody">
-Commit every
+    <td><a name="wp2214227"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
-    <td><a name="wp1382935"> </a><div class="pCellBody">
-Number of rows to be completed before commiting batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
+    <td><a name="wp2214234"> </a><div class="pCellBody">
+Select the encoding from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191065"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214238"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1191072"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+    <td><a name="wp2214245"> </a><div class="pCellHeading">
+<em class="cEmphasis">Commit every</em>
 </div>
 </td>
-    <td><a name="wp1191075"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+    <td><a name="wp2214248"> </a><div class="pCellBody">
+Number of rows to be completed before committing batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1382996"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214252"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1383003"> </a><div class="pCellHeading">
-<em class="cEmphasis">Die on error</em>
+    <td><a name="wp2214259"> </a><div class="pCellHeading">
+<em class="cEmphasis">tState</em>Catcher Statistics
 </div>
 </td>
-    <td><a name="wp1383006"> </a><div class="pCellBody">
-Uncheck this box to skip the row on error and complete the process for non-error rows. 
+    <td><a name="wp2214262"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191079"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191079"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1191082"> </a><div class="pCellBody">
-This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191216"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td colspan="2" rowspan="1"><a name="wp1191219"> </a><div class="pCellBody">
-Use the relevant DBRow component according to the DB type you use. Most of the databases have their specific DBRow component.
+This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.<br /><b class="cBold">Note</b>: Use the relevant DBRow component according to the DB type you use. Most of databases have their specific DBRow components.
 </div>
 </td>
 </tr>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:17:03">
+    <meta name="LASTUPDATED" content="04/30/09 15:25:15">
     <title>tRunJob</title>
   </head>
 
@@ -69,46 +69,137 @@ Executes the job called in the component&#39;s properties, in the frame of the c
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188040"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1575401"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1188045"> </a><div class="pCellHeading">
-<em class="cEmphasis">Process</em>
+    <td><a name="wp1575408"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp1188047"> </a><div class="pCellBody">
-Select the job to be called in and processed. Make sure you already executed once the job called, beforehand, in order to ensure a smooth run through the tRunJob. 
+    <td><a name="wp1714020"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema </b>to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188049"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1713968"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1188054"> </a><div class="pCellHeading">
+    <td><a name="wp1713970"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1714028"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1713980"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1713982"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1714039"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1714058"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1714062"> </a><div class="pCellHeading">
+<em class="cEmphasis">CopyChild Job Schema</em>
+</div>
+</td>
+    <td><a name="wp1714065"> </a><div class="pCellBody">
+Click to fetch the child Job schema.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1714068"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1714075"> </a><div class="pCellHeading">
+<em class="cEmphasis">Job</em>
+</div>
+</td>
+    <td><a name="wp1714078"> </a><div class="pCellBody">
+Select the job to be called in and processed. Make sure you already executed once the job called, beforehand, in order to ensure a smooth run through the tRunJob.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1714081"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1714083"> </a><div class="pCellBody">
+<em class="cEmphasis">Version</em>
+</div>
+</td>
+    <td><a name="wp1714085"> </a><div class="pCellBody">
+Select the child Job version that you want to use.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1714089"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1714096"> </a><div class="pCellHeading">
 <em class="cEmphasis">Context</em>
 </div>
 </td>
-    <td><a name="wp1188056"> </a><div class="pCellBody">
+    <td><a name="wp1714099"> </a><div class="pCellBody">
 If you defined contexts and variables for the job to be run by the <b class="cBold">tRunJob</b>, select the applicable context entry on the list.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1337827"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1714107"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1337830"> </a><div class="pCellHeading">
-<em class="cEmphasis">Context parameter</em>
+    <td><a name="wp1714114"> </a><div class="pCellHeading">
+<em class="cEmphasis">Context Param</em>
 </div>
 </td>
-    <td><a name="wp1337833"> </a><div class="pCellBody">
-You can change the selected context parameters. Click the plus button to add the parameters as defined in the Context of the child job
+    <td><a name="wp1714117"> </a><div class="pCellBody">
+You can change the selected context parameters. Click the plus button to add the parameters as defined in the Context of the child job.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1337964"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1714121"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1714124"> </a><div class="pCellBody">
+<em class="cEmphasis">Die on child error</em>
+</div>
+</td>
+    <td><a name="wp1714127"> </a><div class="pCellBody">
+Untick this box to execute the parent Job even though there is an error when executing the child Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1714131"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1714134"> </a><div class="pCellBody">
+<em class="cEmphasis">Transmit whole context</em>
+</div>
+</td>
+    <td><a name="wp1714137"> </a><div class="pCellBody">
+Tick this box  to transfer all the context variables from the child Job to the parent Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1337964"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -121,7 +212,7 @@ Click the button to validate the context selection  in the <b class="cBold">tRun
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188058"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188058"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -130,7 +221,7 @@ This component can be used as a standalone job or can help clarifying complex jo
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188064"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188064"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

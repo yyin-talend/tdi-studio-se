@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:16:27">
+    <meta name="LASTUPDATED" content="04/30/09 15:54:13">
     <title>Scenario: Job execution in a loop</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tLoop_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPostjob_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tLoop_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tParallelize_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -48,10 +48,10 @@ This scenario describes a job composed of a parent job and a child job. The pare
 <a name="wp1208770"> </a><div class="pSmartList2"><li>In the <b class="cBold">tSleep</b> <b class="cBold">Basic settings</b> panel, type in the time-off value in second. In this example, type in <em class="cEmphasis">3 seconds</em> in the <b class="cBold">Pause</b> field.</li></div>
 <a name="wp1208914"> </a><div class="pSmartList2"><li>Then in the child job, define the connection parameters to the pop server, on the <b class="cBold">Basic settings</b> panel. </li></div>
 <a name="wp1208933"> </a><div class="pSmartList2"><li>In the <b class="cBold">tFileInputMail</b> <b class="cBold">Basic settings</b> panel, select a global variable as <b class="cBold">File Name</b>, to collect the current file in the directory defined in the <b class="cBold">tPOP</b> component. Press <b class="cBold">Ctrl+Space bar</b> to access the variable list. In this example, the variable to be used is: <code class="cCode">$_globals{tPOP_1}{CURRENT_FILEPATH}</code> (for Perl)<br /><code class="cCode">((String)globalMap.get(&quot;tPOP_1_CURRENT_FILEPATH&quot;))</code> (for Java)</li></div>
-<a name="wp1209024"> </a><div class="pSmartList2"><li>Define the <b class="cBold">Schema</b>, for it to include the mail element to be processed, such as <em class="cEmphasis">author</em>, <em class="cEmphasis">topic</em>, <em class="cEmphasis">delivery date</em> and <em class="cEmphasis">number of lines</em>.</li></div>
-<a name="wp1209067"> </a><div class="pSmartList2"><li>In the <b class="cBold">Mail Parts</b> table, type in the corresponding <b class="cBold">Mail part</b> for each column defined in the schema. ex: <em class="cEmphasis">author</em> comes from the <em class="cEmphasis">From</em> part of the email file.</li></div>
-<a name="wp1209173"> </a><div class="pSmartList2"><li>Then connect the <b class="cBold">tFileInputMail</b> to a <b class="cBold">tLogRow</b> to check out the execution result on the <b class="cBold">Run Job</b> view.</li></div>
-<a name="wp1209232"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the job.</li></div>
+<a name="wp1593474"> </a><div class="pSmartList2"><li>Define the <b class="cBold">Schema</b>, for it to include the mail element to be processed, such as <em class="cEmphasis">author</em>, <em class="cEmphasis">topic</em>, <em class="cEmphasis">delivery date</em> and <em class="cEmphasis">number of lines</em>.</li></div>
+<a name="wp1593490"> </a><div class="pSmartList2"><li>In the <b class="cBold">Mail Parts</b> table, type in the corresponding <b class="cBold">Mail part</b> for each column defined in the schema. ex: <em class="cEmphasis">author</em> comes from the <em class="cEmphasis">From</em> part of the email file.</li></div>
+<a name="wp1593629"> </a><div class="pSmartList2"><li>Then connect the <b class="cBold">tFileInputMail</b> to a <b class="cBold">tLogRow</b> to check out the execution result on the <b class="cBold">Run</b> view.</li></div>
+<a name="wp1593520"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the job.</li></div>
 </ul></div>
 </ul></div>
     </blockquote>
@@ -73,7 +73,7 @@ This scenario describes a job composed of a parent job and a child job. The pare
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tLoop_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPostjob_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tLoop_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tParallelize_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

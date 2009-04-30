@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:15:51">
+    <meta name="LASTUPDATED" content="04/30/09 15:24:23">
     <title>Scenario: Creating an RSS flow.</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tRSSOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSendMail_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tRSSOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSCPDelete_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -42,7 +42,7 @@ This scenario writes an RSS feed XML file about a Mysql table holding informatio
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1590917"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace:<b class="cBold"> tMysqlInput</b>, tRSSOutput, and <b class="cBold">tFTPPut</b>.</li></div>
+<a name="wp1590917"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace:<b class="cBold"> tMysqlInput</b>, <b class="cBold">tRSSOutput</b>, and <b class="cBold">tFTPPut</b>.</li></div>
 <a name="wp1590965"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tMysqlInput</b> and connect it to <b class="cBold">tRSSOutpu</b> using a <b class="cBold">Row Main </b>link.</li></div>
 <a name="wp1591071"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tMysqlInput</b> and connect it to <b class="cBold">tFTPPut</b> using an <b class="cBold">OnSubjobOk </b>link.</li></div>
 </ul></div>
@@ -83,8 +83,10 @@ This scenario writes an RSS feed XML file about a Mysql table holding informatio
 <a name="wp1593287"> </a><div class="pSmartList2"><li>Select the encoding type on the <b class="cBold">Encoding Type </b>list.</li></div>
 <a name="wp1593293"> </a><div class="pSmartList2"><li>On the <b class="cBold">Channel</b> panel, enter a title, a description, a publication date, and a link to define your input data as a whole.</li></div>
 <a name="wp1593303"> </a><div class="pSmartList2"><li>Select your schema type on the <b class="cBold">Schema Type</b> list and click <b class="cBold">Edit Schema</b> to modify the schema if necessary.</li></div>
-<a name="wp1593311"> </a><p class="pBodyRelative">
-Note:	You can click <b class="cBold">Sync Column</b> to retrieve the generated schema from the preceding component. 
+<a name="wp1654448"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp1654445" border="0" hspace="0" vspace="0"/><br />
+You can click <b class="cBold">Sync Column</b> to retrieve the generated schema from the preceding component.
 </p>
 <a name="wp1593320"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F5</b> to execute this first part.</li></div>
 </ul></div>
@@ -144,7 +146,7 @@ Files defined in the Filemask are copied on the remote server.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tRSSOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSendMail_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tRSSOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSCPDelete_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

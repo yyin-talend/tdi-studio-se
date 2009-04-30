@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tAS400Input</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/AS400
 </div>
 </td>
     <td><a name="wp1387585"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconbb.png" id="wp1387581" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconi.png" id="wp1387581" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -104,7 +104,33 @@ Either Built-in or Repository
 </div>
 </td>
     <td><a name="wp1387667"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2219430"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2219441"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Save_Icon.png" id="wp2219437" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+    <td><a name="wp2219444"> </a><div class="pCellBody">
+Click this icon to open a database connection wizard and store the database connection parameters you set in the component <b class="cBold">Basic settings </b>view.<br />For more information about setting up and storing database connection parameters, see <em class="cEmphasis">Setting up a DB connection</em> of <b class="cBold">Talend Open Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2368311"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2368318"> </a><div class="pCellHeading">
+<em class="cEmphasis">DB Version</em>
+</div>
+</td>
+    <td><a name="wp2368321"> </a><div class="pCellBody">
+Select the AS 400 version in use
 </div>
 </td>
 </tr>
@@ -169,7 +195,7 @@ DB user authentication data.
 </div>
 </td>
     <td><a name="wp1387713"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
 </div>
 </td>
 </tr>
@@ -195,7 +221,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1387745"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
 </div>
 </td>
 </tr>
@@ -208,20 +234,72 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1387767"> </a><div class="pCellBody">
-Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
+Enter your DB query paying particularly attention to properly sequence the fields in order to match the schema definition. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1387771"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2180937"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2180943"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+</td>
+    <td><a name="wp2180947"> </a><div class="pCellBody">
+Specify additional connection properties in the existing DB connection.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2180951"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1387778"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+    <td><a name="wp2180958"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
-    <td><a name="wp1387781"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+    <td><a name="wp2180961"> </a><div class="pCellBody">
+Select the encoding type from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2180983"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2180989"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trim all the String/Char columns</em>
+</div>
+</td>
+    <td><a name="wp2180993"> </a><div class="pCellBody">
+Select this check box to remove leading and trailing whitespace from all the String/Char columns.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2180997"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2181004"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trim column</em>
+</div>
+</td>
+    <td><a name="wp2181007"> </a><div class="pCellBody">
+Remove leading and trailing whitespace from defined columns.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2181011"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2181018"> </a><div class="pCellHeading">
+<em class="cEmphasis">tState</em>Catcher Statistics
+</div>
+</td>
+    <td><a name="wp2181021"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
 </div>
 </td>
 </tr>

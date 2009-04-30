@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tPostgresqlBulkExec</title>
   </head>
 
@@ -50,7 +50,7 @@ Databases/Postgresql
 </div>
 </td>
     <td><a name="wp1477342"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconbb.png" id="wp1477337" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconi.png" id="wp1477337" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -107,7 +107,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1477416"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
@@ -146,11 +146,24 @@ Listening port number of DB server.
 </div>
 </td>
     <td><a name="wp1477458"> </a><div class="pCellBody">
-Name of the database
+Name of the database.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1477462"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2216503"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216510"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>
+</div>
+</td>
+    <td><a name="wp2216513"> </a><div class="pCellBody">
+Name of the schema.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1477462"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -163,7 +176,7 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1477480"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1477480"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -173,6 +186,19 @@ DB user authentication data.
 </td>
     <td><a name="wp1477490"> </a><div class="pCellBody">
 Name of the table to be written. Note that only one table can be written at a time and that the table must exist for the insert operation to succeed.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2216525"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216532"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on table</em>
+</div>
+</td>
+    <td><a name="wp2216612"> </a><div class="pCellBody">
+On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation is carried out.<br /><b class="cBold">Drop and create table</b>: The table is removed and created again.<br /><b class="cBold">Create table</b>: The table does not exist and gets created.<br /><b class="cBold">Create table if not exists</b>: The table is created if it does not exist.<br /><b class="cBold">Clear table</b>: The table content is deleted.<br /><b class="cBold">Truncate table</b>: The table content is deleted. You don not have the possibility to rollback the operation.
 </div>
 </td>
 </tr>
@@ -189,7 +215,46 @@ Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defi
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1477512"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2216651"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216661"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2216665"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2216669"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216672"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216679"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2216690"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216693"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2216700"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1477512"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -202,7 +267,7 @@ Character, string or regular expression to separate fields.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1477554"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1477554"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -211,7 +276,7 @@ This component is to be used along with <b class="cBold">tPostgresqlOutputBulk</
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1477572"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1477572"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>Scenario: Get the ID for the last inserted record</title>
   </head>
 
@@ -36,7 +36,7 @@ The following Java scenario creates a job that opens a connection to Mysql datab
 <a name="wp1606589"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace: <b class="cBold">tMySqlConnection</b>, <b class="cBold">tMySqlCommit</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tMySqlOutput</b>, <b class="cBold">tMysqlLastInsertId</b>, and <b class="cBold">tLogRow</b>.</li></div>
 <a name="wp1606616"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tMySqlConnection</b> to <b class="cBold">tFileInputDelimited </b>using an <b class="cBold">OnSubjobOk </b>link.</li></div>
 <a name="wp1609527"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputDelimited </b>to <b class="cBold">tMySqlCommit</b> using an <b class="cBold">OnSubjobOk </b>link.</li></div>
-<a name="wp1606993"> </a><div class="pSmartList2"><li>Connect the four other components using <b class="cBold">Row Main </b>links.</li></div>
+<a name="wp1606993"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputdelimited </b>to the three other components using <b class="cBold">Row Main </b>links.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1607780"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -95,14 +95,14 @@ In this scenario, the schema consists of two columns, <em class="cEmphasis">name
 <a name="wp1610405"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings of <b class="cBold">tMySqlOuptput</b>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1610408"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1610911"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMysqlLastInsertId4.png" id="wp1610431" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlLastInsertId4.png" id="wp2216489" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1610911"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Use an existing connection</b> check box.</li></div>
+<a name="wp2216484"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Use an existing connection</b> check box.</li></div>
 <a name="wp1610699"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table</b> field, enter the name of the table where to write the employees&#39; list, in this example: <em class="cEmphasis">employee</em>. </li></div>
 <a name="wp1610716"> </a><div class="pSmartList2"><li>Select relevant actions on the <b class="cBold">Action on table </b>and <b class="cBold">Action on data</b> lists. In this example, no action is carried out on table, and the action carried out on data is <em class="cEmphasis">Insert</em>. </li></div>
 <a name="wp1610741"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Built-In</b> and click <b class="cBold">Sync columns</b> to synchronize columns with the previous component. In this example, the schema to be inserted into the MySql database table consists of the two columns<em class="cEmphasis"> name</em> and<em class="cEmphasis"> age</em>.</li></div>
@@ -119,15 +119,15 @@ In this scenario, the schema consists of two columns, <em class="cEmphasis">name
 <a name="wp1611096"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings of <b class="cBold">tMySqlLastInserId</b>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1611099"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1611115"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMysqlLastInsertId6.png" id="wp1611120" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlLastInsertId6.png" id="wp2216262" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1611115"> </a><div class="pSmartList2"><li>On the <b class="cBold">Component List</b>, select the relevant <b class="cBold">tMysqlConnection</b> if more than one connection is used.</li></div>
-<a name="wp1611791"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Built-In</b> and click <b class="cBold">Sync columns </b>to synchronize columns with the previous component. In the output schema of tMySqlLastInsertId, you can see the read-only column<em class="cEmphasis"> last_insert_id</em> that will fetch the last inserted ID on the existing connection.</li></div>
+<a name="wp2216256"> </a><div class="pSmartList2"><li>On the <b class="cBold">Component List</b>, select the relevant <b class="cBold">tMysqlConnection</b>, if more than one connection is used.</li></div>
+<a name="wp1611791"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Built-In</b> and click <b class="cBold">Sync columns </b>to synchronize columns with the previous component. In the output schema of <b class="cBold">tMySqlLastInsertId</b>, you can see the read-only column<em class="cEmphasis"> last_insert_id</em> that will fetch the last inserted ID on the existing connection.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1611709"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
+    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
     <title>tMSSqlOutputBulk</title>
   </head>
 
@@ -50,7 +50,7 @@ Databases/MSSql
 </div>
 </td>
     <td><a name="wp1469525"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconbb.png" id="wp1469520" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconi.png" id="wp1469520" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -59,7 +59,7 @@ Databases/MSSql
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1469536"> </a><div class="pCellBody">
-Writes a file  with columns based on the defined delimiter and the MSSql standards 
+Writes a file with columns based on the defined delimiter and the MSSql standards 
 </div>
 </td>
 </tr>
@@ -68,7 +68,7 @@ Writes a file  with columns based on the defined delimiter and the MSSql standar
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1469550"> </a><div class="pCellBody">
-Prepares the file to be used as parameter in the INSERT query  to feed the MSSql database.
+Prepares the file to be used as parameter in the INSERT query to feed the MSSql database.
 </div>
 </td>
 </tr>
@@ -107,7 +107,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp1469599"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. When selected, the fields to follow are pre-filled in using fetched data.
 </div>
 </td>
 </tr>
@@ -124,7 +124,72 @@ Name of the file to be processed. <br />Related topic: <em class="cEmphasis">Def
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1469621"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2212130"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212135"> </a><div class="pCellHeading">
+<em class="cEmphasis">Append</em>
+</div>
+</td>
+    <td><a name="wp2212137"> </a><div class="pCellBody">
+Check this option box to add the new rows at the end of the records
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2212150"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212157"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2212160"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2212204"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212207"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212214"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2212225"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212228"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212235"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2212168"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2212185"> </a><div class="pCellHeading">
+<em class="cEmphasis">Row separator</em>
+</div>
+</td>
+    <td><a name="wp2212188"> </a><div class="pCellBody">
+String (ex: &quot;\n&quot;on Unix) to distinguish rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1469621"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -137,33 +202,7 @@ Character, string or regular expression to separate fields.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1469635"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1469642"> </a><div class="pCellHeading">
-<em class="cEmphasis">Row separator</em>
-</div>
-</td>
-    <td><a name="wp1469645"> </a><div class="pCellBody">
-String (ex: &quot;\n&quot;on Unix)  to distinguish rows.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1469649"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1469656"> </a><div class="pCellHeading">
-<em class="cEmphasis">Append</em>
-</div>
-</td>
-    <td><a name="wp1469659"> </a><div class="pCellBody">
-Check this option box to add the new rows at the end of the records
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1469663"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1469663"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -172,46 +211,7 @@ Check this option box to add the new rows at the end of the records
 </div>
 </td>
     <td><a name="wp1469673"> </a><div class="pCellBody">
-Check this box to include the column header. 
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1469677"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1469687"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
-</div>
-</td>
-    <td><a name="wp1469691"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. 
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1469695"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1469698"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1469705"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1469713"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1469716"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1469723"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused in various  projects and job designs. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+Select this check to include the column header. 
 </div>
 </td>
 </tr>
@@ -220,7 +220,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp1469752"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+<em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
     <td><a name="wp1469755"> </a><div class="pCellBody">
@@ -228,12 +228,25 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1469763"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2212276"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2212283"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStaCatcher statistics</em>
+</div>
+</td>
+    <td><a name="wp2212286"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1469763"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1469770"> </a><div class="pCellBody">
-This component is to be used along with <b class="cBold">tMSSqlBulkExec</b> component. Used  together they offer  gains in performance while feeding a MSSql database.
+This component is to be used along with <b class="cBold">tMSSqlBulkExec</b> component. Used together they offer gains in performance while feeding a MSSql database.
 </div>
 </td>
 </tr>
