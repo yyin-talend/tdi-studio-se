@@ -22,8 +22,14 @@
 		<%
 	if(sftp){
 %>
-		msg_<%=cid%>.add(getter_<%=cid%>.count + " files have been downloaded.");    	    
-    	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", (String[]) msg_<%=cid%>.toArray(new String[0]));
+		msg_<%=cid%>.add(getter_<%=cid%>.count + " files have been downloaded.");
+		
+		StringBuffer sb_<%=cid %> = new StringBuffer();
+        for (String item_<%=cid %> : msg_<%=cid %>) {
+            sb_<%=cid %>.append(item_<%=cid %>).append("\n");
+        }
+    	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
+    	
     	session_<%=cid%>.disconnect(); 
     	
     } catch (com.jcraft.jsch.JSchException e){
@@ -36,7 +42,15 @@
     
 <%}else{%>
 	msg_<%=cid%>.add(ftp_<%=cid%>.getDownloadCount() + " files have been downloaded.");
-	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", msg_<%=cid%>.getAll());
+	
+	String[] msgAll_<%=cid %> = msg_<%=cid%>.getAll();
+    StringBuffer sb_<%=cid %> = new StringBuffer();
+    if (msgAll_<%=cid %> != null) {
+        for (String item_<%=cid %> : msgAll_<%=cid %>) {
+            sb_<%=cid %>.append(item_<%=cid %>).append("\n");
+        }
+    }
+	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
 	
 <%
 	if(!useExistingConn.equals("true"))

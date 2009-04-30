@@ -21,8 +21,11 @@
     session<%=cid%>.disconnect(); 
     msg_<%=cid%>.add(nb_file_<%=cid%> + " files has been uploaded.");  
     	
-    // msg_<%=cid%> (ArrayList) can store Object class item, so make conversion here.(will return String arry)
-	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", (String[])msg_<%=cid%>.toArray(new String[0]));
+	StringBuffer sb_<%=cid %> = new StringBuffer();
+    for (String item_<%=cid %> : msg_<%=cid %>) {
+        sb_<%=cid %>.append(item_<%=cid %>).append("\n");
+    }
+	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
     
 <%}else{%>
 	}
@@ -35,7 +38,15 @@
 	<%}%>
 	
 	msg_<%=cid%>.add(ftp<%=cid %>.getUploadCount() + " files has been uploaded.");
-	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", msg_<%=cid%>.getAll());
+	
+	String[] msgAll_<%=cid %> = msg_<%=cid%>.getAll();
+    StringBuffer sb_<%=cid %> = new StringBuffer();
+    if (msgAll_<%=cid %> != null) {
+        for (String item_<%=cid %> : msgAll_<%=cid %>) {
+            sb_<%=cid %>.append(item_<%=cid %>).append("\n");
+        }
+    }
+	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
 	
 <%}%>
 	
