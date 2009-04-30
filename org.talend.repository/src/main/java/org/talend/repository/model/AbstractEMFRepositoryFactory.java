@@ -512,6 +512,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         for (IRepositoryObject cur : jobs) {
             if (repositoryFactory.getStatus(cur) != ERepositoryStatus.DELETED) {
                 ProcessItem item = (ProcessItem) cur.getProperty().getItem();
+                if (item == null || item.getProcess() == null) {
+                    continue;
+                }
                 List<NodeType> nodes = item.getProcess().getNode();
                 for (NodeType node : nodes) {
                     List<ElementParameterType> elementParameter = node.getElementParameter();
