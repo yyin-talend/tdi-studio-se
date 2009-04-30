@@ -45,4 +45,14 @@
 <%
 	}
 %> 
+
+    String newPropertyStr_<%=cid %> = newPropertyList_<%=cid %>.toString();
+    String newProperty_<%=cid %> = newPropertyStr_<%=cid %>.substring(1, newPropertyStr_<%=cid %>.length() - 1);
+    
+    String noAssignStr_<%=cid %> = noAssignList_<%=cid %>.toString();
+    String noAssign_<%=cid %> = noAssignStr_<%=cid %>.substring(1, noAssignStr_<%=cid %>.length() - 1);
+    
+    globalMap.put("tContextLoad_1_KEY_NOT_INCONTEXT", newProperty_<%=cid %>);
+    globalMap.put("tContextLoad_1_KEY_NOT_LOADED", noAssign_<%=cid %>);
+
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
