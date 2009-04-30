@@ -388,7 +388,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                     label[i] = value.trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
-                label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
+                label[i] = ColumnNameValidator.validateColumnNameFormat(label[i]);
 
             }
         }

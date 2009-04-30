@@ -443,7 +443,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 for (int i = 1; i <= numbOfColumn; i++) {
                     IMetadataColumn oneColum = new MetadataColumn();
                     String labelName = rsmd.getColumnLabel(i);
-                    labelName = ColumnNameValidator.validateColumnNameFormat(labelName, i);
+                    labelName = ColumnNameValidator.validateColumnNameFormat(labelName);
                     oneColum.setLabel(getNextGeneratedColumnName(labelName, allNames));
                     oneColum.setOriginalDbColumnName(rsmd.getColumnName(i));
                     oneColum.setNullable(rsmd.isNullable(i) == 0 ? false : true);
@@ -547,7 +547,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 }
 
                 String labelName = rsmd.getColumnLabel(i + 1);
-                labelName = ColumnNameValidator.validateColumnNameFormat(labelName, i);
+                labelName = ColumnNameValidator.validateColumnNameFormat(labelName);
 
                 oneColum.setTalendType(talendType);
                 oneColum.setLength(lengthValue);
@@ -740,7 +740,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             connParameters.setConnectionComment(testConnection.getMessageException());
             return testConnection.getResult();
         } catch (Exception e) {
-            log.error("" + "\n" + e.toString());  //$NON-NLS-1$//$NON-NLS-2$
+            log.error("" + "\n" + e.toString()); //$NON-NLS-1$//$NON-NLS-2$
         }
         return false;
     }
@@ -860,7 +860,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    MessageDialog.openWarning(composite.getShell(), Messages.getString("GuessSchemaController.connError"), strExcepton); //$NON-NLS-1$
+                                    MessageDialog.openWarning(composite.getShell(), Messages
+                                            .getString("GuessSchemaController.connError"), strExcepton); //$NON-NLS-1$
                                 }
                             });
                         }
