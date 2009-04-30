@@ -136,7 +136,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                             }
                         }
                         List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(property.getItem()),
-                                property);
+                                property, true);
 
                         // save error status
                         property.getInformations().clear();

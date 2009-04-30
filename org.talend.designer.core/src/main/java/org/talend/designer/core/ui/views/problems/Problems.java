@@ -263,7 +263,7 @@ public class Problems {
     public static void refreshProblemTreeView() {
         if (!isWorkbenchStarted())
             return;
-        
+
         if (getProblemView() != null) {
             Display.getDefault().syncExec(new Runnable() {
 
@@ -278,6 +278,7 @@ public class Problems {
             });
         }
     }
+
     /***
      * workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=49316
      */
@@ -302,7 +303,7 @@ public class Problems {
     public static void refreshRepositoryView() {
         if (!isWorkbenchStarted())
             return;
-        
+
         Display.getDefault().syncExec(new Runnable() {
 
             /*
@@ -422,7 +423,7 @@ public class Problems {
      * 
      * 
      */
-    public static List<Information> addRoutineFile(IFile file, final Property property) {
+    public static List<Information> addRoutineFile(IFile file, final Property property, boolean... fromJob) {
         if (file == null || !file.exists()) {
             return null;
         }
@@ -489,7 +490,9 @@ public class Problems {
                     add(status, marker, routineFileName, message, lineNr, uniName, start, end, type, version);
                 }
             }
-            addErrorMark();
+            if (fromJob.length > 0 && fromJob[0]) {
+                addErrorMark();
+            }
 
         } catch (org.eclipse.core.runtime.CoreException e) {
             ExceptionHandler.process(e);

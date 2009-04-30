@@ -119,7 +119,8 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
                         }
                     }
 
-                    List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
+                    List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property,
+                            true);
 
                     // save error status
                     property.getInformations().clear();

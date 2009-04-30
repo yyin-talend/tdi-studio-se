@@ -88,7 +88,7 @@ public class JobErrorsChecker {
 
                 }
                 // Property property = process.getProperty();
-                Problems.addRoutineFile(sourceFile, item.getProperty());
+                Problems.addRoutineFile(sourceFile, item.getProperty(), true);
             }
             Problems.refreshProblemTreeView();
 
