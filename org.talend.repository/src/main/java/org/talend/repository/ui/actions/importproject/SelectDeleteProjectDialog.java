@@ -40,7 +40,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.CorePlugin;
@@ -50,6 +52,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.ERepositoryImages;
 
 /**
@@ -168,15 +171,27 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
             public final String getText(Object element) {
                 // query the element for its label
+
                 String label = ""; //$NON-NLS-1$
                 if (element instanceof IProject) {
                     IProject project = (IProject) element;
-                    label = project.getName();
+                    label = getLabel(project.getName());
                 } else if (element instanceof IFolder) {
                     IFolder folder = (IFolder) element;
-                    label = folder.getName();
+                    label = getLabel(folder.getName());
                 }
                 return label;
+            }
+
+            private String getLabel(String name) {
+                List<String> proItem = getProjectItem();
+                for (int i = 0; i < proItem.size(); i++) {
+                    String proName = proItem.get(i).toString().toUpperCase();
+                    if (proName.equals(name)) {
+                        return proItem.get(i).toString();
+                    }
+                }
+                return name;
             }
 
             public final Image getImage(Object element) {
@@ -195,6 +210,23 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         addTreeListener();
         createButtons(parent);
 
+    }
+
+    private List<String> getProjectItem() {
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        Project[] projects = null;
+        List<String> projectItem = new ArrayList<String>();
+        try {
+            projects = repositoryFactory.readProject();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        } catch (BusinessException e) {
+            ExceptionHandler.process(e);
+        }
+        for (int i = 0; i < projects.length; i++) {
+            projectItem.add(projects[i].getLabel());
+        }
+        return projectItem;
     }
 
     private void createButtons(Composite parent) {
@@ -302,8 +334,6 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
                 }
             }
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            // e.printStackTrace();
             ExceptionHandler.process(e);
         }
     }
