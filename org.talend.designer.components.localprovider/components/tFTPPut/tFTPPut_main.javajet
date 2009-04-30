@@ -67,7 +67,7 @@
 		    				 
 		    				// add info to list will return
 		    				msg_<%=cid%>.add("file: " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + ", size: "
-		                    	+ listings<%=cid %>[m<%=cid %>].length() + " byte uploaded sucessfully");
+		                    	+ listings<%=cid %>[m<%=cid %>].length() + " bytes upload successfully");
 		                                            
 		    				globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
 		    				if(c<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
@@ -162,7 +162,7 @@
 								 	
 						 	// add uploading status to list which will return back to client.
 						 	msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
-	                                        + file_in_localDir.length() + " byte uploaded sucessfully");
+	                                        + file_in_localDir.length() + " bytes upload successfully");
 								 	
 						 	currentStatus_<%=cid %> = "File rename OK.";
 	        				globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
@@ -173,7 +173,7 @@
 	        					
 	        					// add uploading status to list which will return back to client.
 						 		msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
-	                                        + file_in_localDir.length() + " byte uploaded sucessfully"); 
+	                                        + file_in_localDir.length() + " bytes upload successfully"); 
 	                            
 	        					currentStatus_<%=cid %> = "File rename OK.";
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
@@ -183,7 +183,7 @@
 	        				 
 	        				// add uploading status to list which will return back to client.
 						 	msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
-	                                        + file_in_localDir.length() + " byte uploaded sucessfully"); 
+	                                        + file_in_localDir.length() + " bytes upload successfully"); 
 	                        
 	        				currentStatus_<%=cid %> = "File rename OK.";
 							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
@@ -198,7 +198,7 @@
 	        						
 	        						// add uploading status to list which will return back to client.
 						 			msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
-	                                        	+ file_in_localDir.length() + " byte uploaded sucessfully"); 
+	                                        	+ file_in_localDir.length() + " bytes upload successfully"); 
 	                                        
 	        						currentStatus_<%=cid %> = "File rename OK.";
 	        						globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
@@ -208,7 +208,7 @@
 	        					
 	        					// add uploading status to list which will return back to client.
 						 		msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
-	                                        + file_in_localDir.length() + " byte uploaded sucessfully"); 
+	                                        + file_in_localDir.length() + " bytes upload successfully"); 
 	                                        
 	        					currentStatus_<%=cid %> = "File rename OK.";
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));

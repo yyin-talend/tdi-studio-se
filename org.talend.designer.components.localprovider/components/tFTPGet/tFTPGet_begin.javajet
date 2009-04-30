@@ -171,7 +171,7 @@ if(useProxy){
 %>
             );
             
-            msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded sucessfully.");
+            msg_<%=cid%>.add("file [" + remoteFileName + "] download successfully.");
             
             globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
             
@@ -179,7 +179,7 @@ if(useProxy){
             if (e.id == com.jcraft.jsch.ChannelSftp.SSH_FX_FAILURE
                                 || e.id == com.jcraft.jsch.ChannelSftp.SSH_FX_BAD_MESSAGE) {
                                 
-                            msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsuccessfully.");
+                            msg_<%=cid%>.add("file [" + remoteFileName + "] download unsuccessfully.");
                             
                             globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
                             
@@ -283,14 +283,14 @@ try{
 <%if(append){%>
 			java.io.FileOutputStream fout = new java.io.FileOutputStream(localFile, true);
 			ftpClient.get(fout, remoteFileName);
-			msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded sucessfully.");
+			msg_<%=cid%>.add("file [" + remoteFileName + "] download successfully.");
 			globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
 <%
 	}else if(overwrite.equals("never")){
 %>
 			if (!localFile.exists()) {
                 ftpClient.get(localFileName, remoteFileName);
-                msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded sucessfully.");
+                msg_<%=cid%>.add("file [" + remoteFileName + "] download successfully.");
                 globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
             }else{ 
             	msg_<%=cid%>.add("file ["+ remoteFileName +"] exit transmission.");
@@ -300,7 +300,7 @@ try{
 	}else if(overwrite.equals("always")){
 %>
 			ftpClient.get(localFileName, remoteFileName);
-			msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded sucessfully.");
+			msg_<%=cid%>.add("file [" + remoteFileName + "] download successfully.");
 <%
 	}else if(overwrite.equals("size_differ")){
 %>
@@ -310,7 +310,7 @@ try{
         		if(ftpSize!=localSize)
         		{
         	 		ftpClient.get(localFileName, remoteFileName);
-        	 		msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded sucessfully.");
+        	 		msg_<%=cid%>.add("file [" + remoteFileName + "] download successfully.");
         	 		globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
         		}else {
         			msg_<%=cid%>.add("file ["+ remoteFileName +"] exit transmission.");
@@ -319,7 +319,7 @@ try{
                 }
         	}else{
         		ftpClient.get(localFileName, remoteFileName);
-        		msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded sucessfully.");
+        		msg_<%=cid%>.add("file [" + remoteFileName + "] download successfully.");
         		globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
         	}
 <%
@@ -327,7 +327,7 @@ try{
 %>
 
 	} catch (com.enterprisedt.net.ftp.FTPException e) {
-		msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsucessfully.");
+		msg_<%=cid%>.add("file [" + remoteFileName + "] download unsuccessfully.");
         globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
 		throw e;
     }
