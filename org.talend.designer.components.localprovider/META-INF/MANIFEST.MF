@@ -17,4 +17,6 @@ Require-Bundle: org.eclipse.ui,
  org.talend.librariesmanager;bundle-version="2.2.0"
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
-Export-Package: org.talend.designer.components.lookup.common
+Export-Package: org.talend.designer.components,
+ org.talend.designer.components.lookup.common,
+ org.talend.designer.components.ui
