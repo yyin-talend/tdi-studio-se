@@ -17,6 +17,7 @@ boolean generateError = ElementParameterParser.getValue(node, "__ERROR__").equal
 }
 }
 
+globalMap.put("<%=cid%>_NB_FILE", NB_FILE<%=cid%>);  
 
 <%if(generateError){%>
 if(NB_FILE<%=cid%> == 0) throw new RuntimeException("No file found in directory "+directory_<%=cid%>);
