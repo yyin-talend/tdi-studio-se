@@ -37,7 +37,9 @@ public class DocumentBusinessItemShapeFigure extends BusinessItemShapeFigure {
             setBorder(border);
             drawFigure(getSmallBounds(), graphics);
         } else {
-            setBorder(null);
+            if (getBorder() != null) {
+                setBorder(null);
+            }
             drawFigure(getInnerBounds(), graphics);
         }
 
