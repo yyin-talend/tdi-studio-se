@@ -798,11 +798,6 @@ public class SelectorTableForm extends AbstractForm {
             // checkConnectionButton.setEnabled(true);
 
             parentWizardPage.setPageComplete(threadExecutor.getQueue().isEmpty() && threadExecutor.getActiveCount() == 0);
-            if (threadExecutor.getQueue().isEmpty() && threadExecutor.getActiveCount() == 0) {
-                // close connection
-                ExtractMetaDataUtils.closeConnection();
-                processWhenDispose();
-            }
         }
     }
 
