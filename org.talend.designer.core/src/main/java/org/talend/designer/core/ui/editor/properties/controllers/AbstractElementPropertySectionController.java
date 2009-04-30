@@ -1082,6 +1082,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String type = getValueFromRepositoryName(elem, "TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
 
+        String dbVersion = getValueFromRepositoryName(elem, "DB_VERSION"); //$NON-NLS-1$
+        connParameters.setDbVersion(dbVersion);
+
         connParameters.setNode(elem);
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
         connParameters.setSelectedComponentName(selectedComponentName);

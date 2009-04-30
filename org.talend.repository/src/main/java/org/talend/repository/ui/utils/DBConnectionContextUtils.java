@@ -233,6 +233,7 @@ public final class DBConnectionContextUtils {
         // url
         DataStringConnection dataStringConn = new DataStringConnection();
         dataStringConn.setSelectionIndex(dbTypeIndex);
+        dataStringConn.setDbVersion(dbConn.getDbVersionString());
         dataStringConn.getString(dbTypeIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(),
                 datasource, dbRootPath, additionParam);
 
@@ -287,6 +288,7 @@ public final class DBConnectionContextUtils {
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
         DataStringConnection dataStringConn = new DataStringConnection();
         dataStringConn.setSelectionIndex(dbIndex);
+        dataStringConn.setDbVersion(dbConn.getDbVersionString());
         dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
                 dbRootPath, additionParam, jdbcUrl, driverJar, className, mappingFile);
         return dataStringConn;
@@ -392,6 +394,7 @@ public final class DBConnectionContextUtils {
             dbIndex = dataStringConn.getIndexOfLabel(cloneConn.getDatabaseType());
         }
         dataStringConn.setSelectionIndex(dbIndex);
+        dataStringConn.setDbVersion(dbConn.getDbVersionString());
         dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
                 dbRootPath, additionParam);
         if (dbConn.getURL() != null && !dbConn.getURL().equals("")) { //$NON-NLS-1$

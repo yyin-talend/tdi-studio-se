@@ -163,6 +163,8 @@ public class ConnectionParameters {
 
     private String driverClass = null;
 
+    private String dbVersion = null;
+
     /**
      * Sets the connectionComment.
      * 
@@ -485,9 +487,9 @@ public class ConnectionParameters {
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
+        urlDataStringConnection.setDbVersion(dbVersion);
         String url = urlDataStringConnection.getString(dbIndex, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
                 getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
-
         return url;
 
     }
@@ -806,6 +808,14 @@ public class ConnectionParameters {
      */
     public void setDriverClass(String driverClass) {
         this.driverClass = driverClass;
+    }
+
+    public String getDbVersion() {
+        return this.dbVersion;
+    }
+
+    public void setDbVersion(String dbVersion) {
+        this.dbVersion = dbVersion;
     }
 
 }

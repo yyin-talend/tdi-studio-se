@@ -67,7 +67,17 @@ public class DataStringConnection {
 
     public final static String EXASOL = "Exasol"; //$NON-NLS-1$
 
+    private String dbVersion = null;
+
     // private Combo combo;
+
+    public String getDbVersion() {
+        return this.dbVersion;
+    }
+
+    public void setDbVersion(String dbVersion) {
+        this.dbVersion = dbVersion;
+    }
 
     private int selectionIndex;
 
@@ -291,7 +301,16 @@ public class DataStringConnection {
         if (selectionIndex < 0) {
             return null;
         } else {
-            return dataConnection[selectionIndex].getString();
+            DataConnection tmp = dataConnection[selectionIndex];
+            if (dbVersion != null) { // PTODO need refactor later.
+                if (DBTYPE_ACCESS == selectionIndex) {
+                    if (dbVersion.equals("Access 2003")) {
+                        String str = tmp.getString();
+                        return str.replaceFirst(",\\s\\*\\.accdb", "");
+                    }
+                }
+            }
+            return tmp.getString();
         }
     }
 
@@ -299,7 +318,16 @@ public class DataStringConnection {
         if (selectionIndex < 0) {
             return null;
         } else {
-            return dataConnection[selectionIndex].getRegex();
+            DataConnection tmp = dataConnection[selectionIndex];
+            if (dbVersion != null) { // PTODO need refactor later.
+                if (DBTYPE_ACCESS == selectionIndex) {
+                    if (dbVersion.equals("Access 2003")) {
+                        String str = tmp.getRegex();
+                        return str.replaceFirst(",\\s\\*\\.accdb", "");
+                    }
+                }
+            }
+            return tmp.getRegex();
         }
     }
 
@@ -518,7 +546,7 @@ public class DataStringConnection {
 
     public String getString(final int dbTypeItemIndex, final String host, final String login, final String password,
             final String port, final String sid, final String filename, final String datasource, String dbrootPath,
-            String addParams, String... schema) {
+            String addParams, String... dbVersion) {
         String string = getString(dbTypeItemIndex, host, login, password, port, sid, filename, datasource);
         if (string.equals("")) { //$NON-NLS-1$
             return ""; //$NON-NLS-1$
@@ -531,6 +559,7 @@ public class DataStringConnection {
         if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13 || dbTypeItemIndex == 0 || dbTypeItemIndex == 16) {
             string = getStringReplace(string, "<property>", addParams); //$NON-NLS-1$
         }
+
         // if (dbTypeItemIndex == 31 && schema != null && schema.length > 0) {
         //            string = getStringReplace(string, "<schemaname>", schema[0]); //$NON-NLS-1$
         // }

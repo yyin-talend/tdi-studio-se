@@ -668,6 +668,7 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setURL(parameters.getCombineURL());
 
         connection.setDBRootPath(parameters.getDirectory());
+        connection.setDbVersionString(parameters.getDbVersion());
 
         return connection;
     }

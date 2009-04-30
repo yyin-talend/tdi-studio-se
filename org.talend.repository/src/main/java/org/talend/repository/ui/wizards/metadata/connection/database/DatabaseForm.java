@@ -411,6 +411,10 @@ public class DatabaseForm extends AbstractForm {
                 result.add(d4v.getDbVersionName());
             }
         }
+        if (dbType.equals("Access")) { //$NON-NLS-1$
+            result.add("Access 2003"); //$NON-NLS-1$
+            result.add("Access 2007"); //$NON-NLS-1$
+        }
         return result;
     }
 
@@ -673,6 +677,7 @@ public class DatabaseForm extends AbstractForm {
                         }
                         databaseSettingIsValide = false;
                         checkButton.setEnabled(true);
+                        urlDataStringConnection.setDbVersion(dbVersionCombo.getText());
                         String[] s = urlDataStringConnection.getAnalyse(urlConnectionStringText.getText());
                         // if the ConnectionString write manually don't
                         // correspond width selectedIndex of combo DbType
@@ -1160,6 +1165,9 @@ public class DatabaseForm extends AbstractForm {
         } else if (dbTypeCombo.getText().startsWith("AS400")) { //$NON-NLS-1$
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(!isAS400);
+        } else if (dbTypeCombo.getText().startsWith("Access")) { //$NON-NLS-1$
+            dbVersionCombo.getCombo().setItems(versions);
+            dbVersionCombo.setHideWidgets(false);
         }
         if (selectedVersion != null && !"".equals(selectedVersion)) {
             dbVersionCombo.setText(selectedVersion);
@@ -1299,7 +1307,7 @@ public class DatabaseForm extends AbstractForm {
         boolean checkGeneralDB = isGeneralJDBC();
 
         // See bug 004800
-        if (!checkGeneralDB) {
+        if (!checkGeneralDB || dbTypeCombo.getText().startsWith("Access")) {
             getConnection().setURL(getStringConnection());
         }
 
@@ -1434,9 +1442,14 @@ public class DatabaseForm extends AbstractForm {
             s = DBConnectionContextUtils.getUrlConnectionString(dbTypeCombo.getSelectionIndex(), connectionItem, true)
                     .getUrlConnectionStr();
         } else {
+            urlDataStringConnection.setDbVersion(dbVersionCombo.getText());
             s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(), usernameText.getText(),
                     passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(), fileField.getText().toLowerCase(),
                     datasourceText.getText(), directoryField.getText(), additionParamText.getText());
+        }
+
+        if (dbTypeCombo.getText().startsWith("Access") && dbVersionCombo.getText().equals("Access 2003")) {
+            return s.replaceFirst(",\\s\\*\\.accdb", "");
         }
 
         return s;
@@ -1493,7 +1506,7 @@ public class DatabaseForm extends AbstractForm {
         boolean isOracle = visible && oracleVersionEnable();
         boolean isAS400 = visible && as400VersionEnable();
 
-        dbVersionCombo.setEnabled(isOracle || isAS400);
+        dbVersionCombo.setEnabled(isOracle || isAS400 || dbTypeCombo.getText().startsWith("Access"));
         usernameText.setEditable(visible);
         passwordText.setEditable(visible);
         serverText.setEditable(false);

@@ -716,7 +716,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
                     IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
                     DataStringConnection dataString = new DataStringConnection();
-                    if (!metadataConnection.getDbType().equals(DataStringConnection.GENERAL_JDBC)) {
+                    if (!metadataConnection.getDbType().equals(DataStringConnection.GENERAL_JDBC)
+                            && !metadataConnection.getDbType().equals("Access")) {
                         metadataConnection.setUrl(dataString.getString(dataString.getDBTypes().indexOf(
                                 metadataConnection.getDbType()), metadataConnection.getServerName(), metadataConnection
                                 .getUsername(), metadataConnection.getPassword(), metadataConnection.getPort(),
