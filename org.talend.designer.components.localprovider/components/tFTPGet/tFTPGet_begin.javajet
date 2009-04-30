@@ -190,8 +190,7 @@ if(useProxy){
         }
     }
     
-// add a try{...}catch(){...}(the end is line 30 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
-try{
+
     
     com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
     
@@ -335,8 +334,7 @@ try{
         }
     }
     
-// add a try{...}catch(){...}(the end is line 44 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
-try{
+
 
 	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
 	
