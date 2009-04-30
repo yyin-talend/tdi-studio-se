@@ -152,7 +152,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             
             if (maxLength > 0 && ( bIsStringType || bIsIntegerType )){
 %>				
-				if ( (<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null)) {
+				if ( String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>) != null) {
 				
 <%				
 					if ( bIsTrim ){
