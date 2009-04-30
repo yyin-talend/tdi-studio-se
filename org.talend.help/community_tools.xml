@@ -2,14 +2,13 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Talend communities Online tools">
-    	<topic label="Ecosystem" href="http://talendforge.org/ext/" />
-    	<topic label="Forum" href="http://talendforge.org/forum/" />
-    	<topic label="Components" href="http://talendforge.org/components/" />
-    	<topic label="Tutorials" href="http://talendforge.org/tutorials/menu.php" />
-     	<topic label="Wiki" href="http://talendforge.org/wiki/doku.php" />
-     	<topic label="Sources" href="http://talendforge.org/trac/tos/" />
-    	<topic label="Corporate Blog" href="http://www.talendforge.org/blog/" />
-    	<topic label="Technical Blog" href="http://talendforge.org/teamblog/" />
-    	<topic label="Bugtracker" href="http://talendforge.org/bugs/my_view_page.php" />
-    	<topic label="Register now" href="http://www.talend.com/communities-talend/communities-talend.htm" /> 
+    	<topic label="Talend Exchange" href="http://www.talendforge.org/exchange" />
+    	<topic label="Forum"           href="http://www.talendforge.org/forum" />
+    	<topic label="Components"      href="http://www.talendforge.org/components" />
+    	<topic label="Tutorials"       href="http://www.talendforge.org/tutorials" />
+     	<topic label="Wiki"            href="http://www.talendforge.org/wiki" />
+     	<topic label="Sources"         href="http://www.talendforge.org/trac/tos" />
+    	<topic label="News"            href="http://www.talendforge.org/news" />
+    	<topic label="Bugtracker"      href="http://www.talendforge.org/bugs" />
+    	<topic label="Register now"    href="http://www.talend.com/communities-talend/communities-talend.htm" /> 
 </toc>
