@@ -99,6 +99,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     String checkAll = ElementParameterParser.getValue(node,"__CHECK_ALL__");
     
     final boolean bIsTrim = "true".equals( ElementParameterParser.getValue(node,"__SUB_STRING__") );
+    
+    final boolean useFasteDateChecker = "true".equals( ElementParameterParser.getValue(node,"__FAST_DATE_CHECK__") );
 
     List<IMetadataColumn> schemaOtherColumns = null;
 	
@@ -238,9 +240,19 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 				if (javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE) {				
 %>
 					try{
-
+<%
+    				if (!useFasteDateChecker) {
+%>
+						java.text.DateFormat df_<%=cid%> = new java.text.SimpleDateFormat(<%=pattern%>); 
+						df_<%=cid%>.setLenient(false);
+						df_<%=cid%>.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>); 
+<%
+					} else {
+%>
 						FastDateParser.getInstance(<%=pattern%>, false).parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);						
-
+<%
+					}
+%>
 					} catch(Exception e){
 
 						ifPassed_<%=cid%> = false;
