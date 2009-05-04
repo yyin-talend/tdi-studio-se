@@ -803,15 +803,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return getAll(projectManager.getCurrentProject(), type, false);
     }
 
-    public List<IRepositoryObject> getAllReferenced(ERepositoryObjectType type) throws PersistenceException {
-        List<IRepositoryObject> list = new ArrayList<IRepositoryObject>();
-        List<Project> projectList = projectManager.getReferencedProjects();
-        for (Project project : projectList) {
-            list.addAll(getAll(project, type, false));
-        }
-        return list;
-    }
-
     public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted) throws PersistenceException {
         return this.repositoryFactoryFromProvider.getAll(projectManager.getCurrentProject(), type, withDeleted, false);
     }
