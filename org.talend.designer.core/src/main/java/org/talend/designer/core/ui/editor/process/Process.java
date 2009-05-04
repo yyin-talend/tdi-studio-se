@@ -200,15 +200,19 @@ public class Process extends Element implements IProcess2 {
     }
 
     public void updateProperties() {
-        setId(property.getId());
-        setLabel(property.getLabel());
-        setVersion(property.getVersion());
-        setAuthor(property.getAuthor());
-        setStatusCode(property.getStatusCode());
-        setDescription(property.getDescription());
-        setPurpose(property.getPurpose());
-        if (getStatusCode() == null) {
-            setStatusCode(""); //$NON-NLS-1$
+        try {
+            setId(property.getId());
+            setLabel(property.getLabel());
+            setVersion(property.getVersion());
+            setAuthor(property.getAuthor());
+            setStatusCode(property.getStatusCode());
+            setDescription(property.getDescription());
+            setPurpose(property.getPurpose());
+            if (getStatusCode() == null) {
+                setStatusCode(""); //$NON-NLS-1$
+            }
+        } catch (Exception ex) {
+            ExceptionHandler.process(ex);
         }
     }
 
