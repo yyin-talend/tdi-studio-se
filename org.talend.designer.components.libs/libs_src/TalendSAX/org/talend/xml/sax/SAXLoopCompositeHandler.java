@@ -33,6 +33,8 @@ public class SAXLoopCompositeHandler extends DefaultHandler {
 
     private String rootPath = null;
 
+    private String[] arrLoopPath = null;
+
     public SAXLoopCompositeHandler() {
         super();
     }
@@ -41,6 +43,7 @@ public class SAXLoopCompositeHandler extends DefaultHandler {
         super();
         this.saxlooper = saxlooper;
         this.rootPath = this.saxlooper.getRootPath();
+        this.arrLoopPath = saxlooper.getArrLoopPaths();
     }
 
     public void register(DefaultHandler handler) {
@@ -78,6 +81,18 @@ public class SAXLoopCompositeHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
         currentPath = currentPath + "/" + qName;
+        //
+        // if (this.arrLoopPath != null) {
+        // for (int i = 0; i < arrLoopPath.length; i++) {
+        // if (currentPath.equals(arrLoopPath[i])) {
+        // subList = new ArrayList<Map<String, Object>>();
+        // break;
+        // }
+        // }
+        // }
+        if (currentPath.equals(rootPath)) {
+            subList = new ArrayList<Map<String, Object>>();
+        }
 
         for (DefaultHandler handler : handlerList) {
             handler.startElement(uri, localName, qName, attributes);
@@ -100,29 +115,39 @@ public class SAXLoopCompositeHandler extends DefaultHandler {
      * 
      * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
      */
-    List<Map<String, List<Map<String, String>>>> resultList = new ArrayList<Map<String, List<Map<String, String>>>>();
+    List<List<Map<String, Object>>> resultList = new ArrayList<List<Map<String, Object>>>();
+
+    List<Map<String, Object>> subList = null;
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
         for (DefaultHandler handler : handlerList) {
             handler.endElement(uri, localName, qName);
         }
-
         // get all the rows under the root loop element
         if (currentPath.equals(rootPath)) {
-            Map<String, List<Map<String, String>>> map = null;
-            map = saxlooper.getSubRootLoopList();
-            resultList.add(map);
-            // clear all the stored rows
-            for (DefaultHandler handler : handlerList) {
-                ((SAXLoopHandler) handler).clearEntryRows();
+            resultList.add(subList);
+        }
+
+        if (this.arrLoopPath != null) {
+            for (int i = 0; i < arrLoopPath.length; i++) {
+                if (currentPath.equals(arrLoopPath[i])) {
+                    Map<String, Object> map = saxlooper.getSubRootLoopMap(arrLoopPath[i]);
+                    subList.add(map);
+                    break;
+                }
             }
         }
+
+        // // clear all the stored rows
+        // for (DefaultHandler handler : handlerList) {
+        // ((SAXLoopHandler) handler).clearEntryRows();
+        // }
 
         currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
     }
 
-    protected List<Map<String, List<Map<String, String>>>> getAllResult() {
+    protected List<List<Map<String, Object>>> getAllResult() {
         return this.resultList;
     }
 

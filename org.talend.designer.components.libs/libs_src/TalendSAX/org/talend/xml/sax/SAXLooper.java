@@ -1,7 +1,6 @@
 package org.talend.xml.sax;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -102,8 +101,12 @@ public class SAXLooper {
         initLoopEntries();
     }
 
-    public String getRootPath() {
+    protected String getRootPath() {
         return this.rootPath;
+    }
+
+    protected String[] getArrLoopPaths() {
+        return this.arrLoopPath;
     }
 
     /**
@@ -369,27 +372,32 @@ public class SAXLooper {
      * @return
      */
 
-    protected Map<String, List<Map<String, String>>> getSubRootLoopList() {
+    protected Map<String, Object> getSubRootLoopMap(String tmpLoopPath) {
 
-        Map<String, List<Map<String, String>>> mapping = new HashMap<String, List<Map<String, String>>>();
+        Map<String, Object> mapping = new HashMap<String, Object>();
 
         if (this.rootPath == null || rootPath.equals("")) {
             return null;
         }
 
         for (int i = 0; i < this.entries.length; i++) {
-            List<Map<String, String>> tmpList = new ArrayList<Map<String, String>>();
-            Iterator<Map<String, String>> iter = new SAXLoopIterator(this.entries[i]);
-            while (iter.hasNext()) {
-                tmpList.add(iter.next());
+            if (entries[i].getLoop().equals(tmpLoopPath)) {
+                Iterator<Map<String, String>> iter = new SAXLoopIterator(this.entries[i]);
+                if (iter.hasNext()) {
+                    mapping.put("value", iter.next());
+                }
+                mapping.put("path", this.arrOrigLoopPath[i]);
+
+                this.entries[i].clearRows();
+
+                break;
             }
-            mapping.put(this.arrOrigLoopPath[i], tmpList);
         }
 
         return mapping;
     }
 
-    public List<Map<String, List<Map<String, String>>>> getAllResultList() {
+    public List<List<Map<String, Object>>> getAllResultList() {
         if (rootPath != null && !rootPath.equals("")) {
             return result.getAllResult();
         }
@@ -420,24 +428,32 @@ public class SAXLooper {
             SAXLooper looper = new SAXLooper(rootPath, loopPath, pathList);
             looper.parse(file);
 
-            List<Map<String, List<Map<String, String>>>> rootlist = looper.getAllResultList();
+            List<List<Map<String, Object>>> rootlist = looper.getAllResultList();
 
-            for (Map<String, List<Map<String, String>>> map : rootlist) {
+            for (List<Map<String, Object>> subList : rootlist) {
 
-                for (int i = 0; i < loopPath.length; i++) {
-                    if (map.containsKey(loopPath[i])) {
-                        List<Map<String, String>> tmpList = map.get(loopPath[i]);
+                Iterator<Map<String, Object>> itGroup = subList.iterator();
+                while (itGroup.hasNext()) {
 
-                        Iterator<Map<String, String>> it = tmpList.iterator();
-                        while (it.hasNext()) {
-                            Map<String, String> tmp = it.next();
-                            for (String value : pathList[i]) {
-                                System.out.print("|" + tmp.get(value));
-                            }
-                            System.out.println();
+                    Map<String, Object> map = itGroup.next();
+                    System.out.print(map.get("path") + "|");
+                    Map<String, String> tmpMap = (Map<String, String>) map.get("value");
+
+                    String tmpLoopPath = null;
+                    int i = 0;
+                    for (; i < loopPath.length; i++) {
+                        if (loopPath[i].equals(map.get("path"))) {
+                            break;
                         }
-
                     }
+                    for (int j = 0; j < pathList[i].length; j++) {
+                        if (j == pathList[i].length - 1) {
+                            System.out.println(tmpMap.get(pathList[i][j]));
+                        } else {
+                            System.out.print(tmpMap.get(pathList[i][j]) + "|");
+                        }
+                    }
+
                 }
 
             }
