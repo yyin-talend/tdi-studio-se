@@ -125,15 +125,14 @@ public class ConnectionManager {
             if (PluginChecker.isJobLetPluginLoaded()) {
                 IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                         IJobletProviderService.class);
-                if (service != null) {
-                    if (service.isJobletComponent(target)) {
-                        List<INodeConnector> freeTriggerBuiltConnectors = service.getFreeTriggerBuiltConnectors(target, connType,
-                                true);
-                        if (freeTriggerBuiltConnectors.isEmpty()) {
-                            return false;
-                        }
-                        isJoblet = true;
+                if (service != null && service.isJobletComponent(target)
+                        && !connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    List<INodeConnector> freeTriggerBuiltConnectors = service.getFreeTriggerBuiltConnectors(target, connType,
+                            true);
+                    if (freeTriggerBuiltConnectors.isEmpty()) {
+                        return false;
                     }
+                    isJoblet = true;
                 }
             }
             if (!isJoblet && !target.isELTComponent() && !target.isSubProcessStart()) {
@@ -330,7 +329,8 @@ public class ConnectionManager {
         if (PluginChecker.isJobLetPluginLoaded()) {
             IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                     IJobletProviderService.class);
-            if (service != null && service.isJobletComponent(newTarget)) {
+            if (service != null && service.isJobletComponent(newTarget)
+                    && !lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
                 List<INodeConnector> inputConnector = service.getFreeTriggerBuiltConnectors(newTarget, lineStyle, true);
                 if (inputConnector.isEmpty()) {
                     return false;
