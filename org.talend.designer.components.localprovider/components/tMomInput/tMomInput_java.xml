@@ -105,7 +105,7 @@
 
 
 
-	<PARAMETER NAME="MQ_DERVIERS" FIELD="TEXT" NUM_ROW="30" SHOW="false">
+	<PARAMETER NAME="MQ_DERVIERS" READONLY="true" FIELD="TEXT" NUM_ROW="30" SHOW="false">
 		<DEFAULT IF="(SERVER == 'JBOSS')">jbossall-client.jar</DEFAULT>
 		<DEFAULT IF="(SERVER == 'WEBSPHERE')">x.com.ibm.mq.jmqi.jar;x.com.ibm.mqjms.jar;x.com.ibm.mq.headers.jar;x.connector.jar;x.jms.jar;x.jta.jar;dhbcore.jar</DEFAULT>
 		<DEFAULT IF="(SERVER == 'ACTIVEMQ')">activemq-all-5.1.0.jar</DEFAULT>
