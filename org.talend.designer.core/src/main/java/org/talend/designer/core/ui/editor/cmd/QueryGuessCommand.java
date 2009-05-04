@@ -275,11 +275,13 @@ public class QueryGuessCommand extends Command {
             buffer.append("," + "\n" + "\t" + "\t" + s[s.length - 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         } else {
             String[] temp = s[0].split("FROM"); //$NON-NLS-1$
-            lastPartA = temp[0] + "\n"; //$NON-NLS-1$
-            lastPartB = "FROM" + "\t" + temp[1]; //$NON-NLS-1$ //$NON-NLS-2$
-            buffer = new StringBuffer();
-            buffer.append(lastPartA);
-            buffer.append(lastPartB);
+            if (temp.length > 1) {
+                lastPartA = temp[0] + "\n"; //$NON-NLS-1$
+                lastPartB = "FROM" + "\t" + temp[1]; //$NON-NLS-1$ //$NON-NLS-2$
+                buffer = new StringBuffer();
+                buffer.append(lastPartA);
+                buffer.append(lastPartB);
+            }
         }
         return buffer.toString();
     }
