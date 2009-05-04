@@ -1523,7 +1523,7 @@ public class DatabaseForm extends AbstractForm {
             String s = urlDataStringConnection.getStringConnectionTemplate();
             urlConnectionStringText.setEditable(!visible);
 
-            if (s != null && s.startsWith("jdbc:jtds:sqlserver:")) { //$NON-NLS-1$
+            if (s != null && (s.startsWith("jdbc:jtds:sqlserver:"))) { //$NON-NLS-1$
                 schemaText.show();
                 schemaText.setEditable(true);
                 addContextParams(EDBParamName.Schema, true);
@@ -1592,6 +1592,7 @@ public class DatabaseForm extends AbstractForm {
             }
 
             if (urlDataStringConnection.isSchemaNeeded()) {
+                schemaText.show();
                 schemaText.setEditable(visible);
                 addContextParams(EDBParamName.Schema, visible);
             }
