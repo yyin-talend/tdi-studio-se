@@ -23,27 +23,26 @@ if(serverType.equals("JBoss")){
 }
 <%
 }else if(serverType.equals("ActiveMQ")){%>
+
 }
+
  System.out.println("Closing connection");
         consumer_<%=cid %>.close();
         session_<%=cid %>.close();
         connection_<%=cid %>.close();
 
-<%}else{ // WebSphere
+<%}else{
 %>
-}
-	System.out.println("Closing connection");
+	}	
+		System.out.println("Closing connection");
+		remoteQ<%=cid%>.close();
+		qMgr<%=cid%>.disconnect();
 	
-	if (consumer_<%=cid%> != null) {
-		consumer_<%=cid%>.close();
 	}
-	if (session_<%=cid%> != null) {
-		session_<%=cid%>.close();
+	catch(com.ibm.mq.MQException ex){
+		System.out.println("A WebSphere MQ error occurred : Completion code " + ex.completionCode + " Reason code " + ex.reasonCode);
+		remoteQ<%=cid%>.close();
 	}
-	if (connection_<%=cid%> != null) {
-		connection_<%=cid%>.close();
-	}
-
 <%
 	}
 	%>

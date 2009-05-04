@@ -10,7 +10,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
     STARTABLE="false"
-    SCHEMA_AUTO_PROPAGATE ="true"
+    SCHEMA_AUTO_PROPAGATE ="false"
   >
     <SIGNATURE />
   </HEADER>
@@ -18,7 +18,6 @@
   <FAMILIES>
     <FAMILY>Internet</FAMILY>
   </FAMILIES>
-
 
   <DOCUMENTATION>
     <URL />
@@ -66,9 +65,9 @@
 	<DEFAULT IF="(SERVER == 'ACTIVEMQ')">61616</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="MQ_DERVIERS" FIELD="TEXT" READONLY="true" NUM_ROW="30" SHOW="false">
+    <PARAMETER NAME="MQ_DERVIERS" FIELD="TEXT" NUM_ROW="30" SHOW="false">
 		<DEFAULT IF="(SERVER == 'JBOSS')">jbossall-client.jar</DEFAULT>
-		<DEFAULT IF="(SERVER == 'WEBSPHERE')">x.com.ibm.mq.jmqi.jar;x.com.ibm.mqjms.jar;x.com.ibm.mq.headers.jar;x.connector.jar;x.jms.jar;x.jta.jar;dhbcore.jar</DEFAULT>
+		<DEFAULT IF="(SERVER == 'WEBSPHERE')">com.ibm.mq.jar;com.ibm.mqjms.jar</DEFAULT>
 		<DEFAULT IF="(SERVER == 'ACTIVEMQ')">activemq-all-5.1.0.jar</DEFAULT>
 	</PARAMETER>
     
@@ -85,8 +84,9 @@
     <PARAMETER
       NAME="MSGTYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="30">
-      
+      NUM_ROW="30"
+      SHOW_IF="(SERVER == 'JBOSS')OR (SERVER == 'ACTIVEMQ')"
+    >
       <ITEMS DEFAULT="TOPIC">
         <ITEM NAME="TOPIC"   VALUE="Topic" />
         <ITEM NAME="QUEUE"   VALUE="Queue" />
@@ -105,26 +105,16 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="40"	  
+      NUM_ROW="40"
+	  
     >
-      
-      <TABLE IF="(SERVER == 'ACTIVEMQ') and (IS_MAPMESSAGE == 'false')" READONLY="true">
+      <TABLE IF="(IS_USE_MESSAGE_ID == 'true')" READONLY="true">
+        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+      <TABLE IF="(IS_USE_MESSAGE_ID == 'false')" READONLY="true">
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
-
-      <TABLE IF="(SERVER == 'ACTIVEMQ') and (IS_MAPMESSAGE == 'true')" READONLY="false">
-        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
-      </TABLE>
-
-      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_MAPMESSAGE == 'false')" READONLY="true">
-        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
-      </TABLE>
-      
-      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_MAPMESSAGE == 'true')" READONLY="false">
-        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>      	
-      </TABLE>
-      
-      
     </PARAMETER>
    
   <PARAMETER
@@ -145,31 +135,53 @@
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
-	<PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60"
-		SHOW_IF="(SERVER == 'JBOSS')" >
-	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>
-	
-	<PARAMETER NAME="IS_MAPMESSAGE" FIELD="CHECK" REQUIRED="true" NUM_ROW="70" 
-		SHOW_IF="(SERVER == 'WEBSPHERE') or (SERVER == 'ACTIVEMQ')">
+	<PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" >
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
   </PARAMETERS>
-  
-  
+
+  <ADVANCED_PARAMETERS>	
+  	<PARAMETER
+      NAME="USE_FORMAT"
+      FIELD="CHECK"
+      NUM_ROW="5"
+      REQUIRED="true"
+	  SHOW_IF="(SERVER == 'WEBSPHERE')"
+    >
+      <DEFAULT>"false"</DEFAULT>
+    </PARAMETER>
+	
+  	<PARAMETER
+      NAME="WS_MQ_FORMAT"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REQUIRED="true"
+	  SHOW_IF="((SERVER == 'WEBSPHERE') AND (USE_FORMAT == 'true'))"
+    >
+      <DEFAULT>"MQSTR"</DEFAULT>
+    </PARAMETER>
+	
+	 <PARAMETER
+      NAME="DELIVERY_MODE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="10"
+      REQUIRED="true"
+	  SHOW_IF="((SERVER == 'ACTIVEMQ'))">	  
+	  <ITEMS DEFAULT="N_PERSISTENT">
+        <ITEM NAME="N_PERSISTENT"   VALUE="N_PERSISTENT" />
+        <ITEM NAME="PERSISTENT"   VALUE="PERSISTENT" />
+      </ITEMS>	
+	</PARAMETER>
+
+</ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
    <IMPORTS>
-		<IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" /> 
-  		<IMPORT NAME="JBOSS MQ LIB" MODULE="jbossall-client.jar" REQUIRED="false" /> 
-		<IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.1.0.jar" REQUIRED="false" /> 		   
-		<IMPORT NAME="MQJ08" MODULE="x.com.ibm.mq.jmqi.jar" REQUIRED="true" />
-		<IMPORT NAME="MQJMS" MODULE="x.com.ibm.mqjms.jar" REQUIRED="true" />
-		<IMPORT NAME="MQJ06" MODULE="x.com.ibm.mq.headers.jar" REQUIRED="true" />
-		<IMPORT NAME="MQJ13" MODULE="x.connector.jar" REQUIRED="true" />
-		<IMPORT NAME="MQJ15" MODULE="x.jms.jar" REQUIRED="true" />	
-		<IMPORT NAME="MQJ17" MODULE="x.jta.jar" REQUIRED="true" />	
-		<IMPORT NAME="MQJ21" MODULE="dhbcore.jar" REQUIRED="true" />
+       <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
+       <IMPORT NAME="JBOSS MQ LIB" MODULE="jbossall-client.jar" REQUIRED="false" />
+       <IMPORT NAME="WEBSPHERE MQ LIB" MODULE="com.ibm.mq.jar" REQUIRED="false" />
+       <IMPORT NAME="WEBSPHERE JMS LIB" MODULE="com.ibm.mqjms.jar" REQUIRED="false" />
+       <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.1.0.jar" REQUIRED="false" />
      </IMPORTS>
   </CODEGENERATION>
 
