@@ -1524,14 +1524,14 @@ public class DatabaseForm extends AbstractForm {
             urlConnectionStringText.setEditable(!visible);
 
             if (s != null && ((s.startsWith("jdbc:jtds:sqlserver:")) || urlDataStringConnection.isSchemaNeeded())) { //$NON-NLS-1$
-                schemaText.show();
+            // schemaText.show();
                 schemaText.setEditable(true);
                 addContextParams(EDBParamName.Schema, true);
                 if (schemaText.getText().equals("")) { //$NON-NLS-1$
                     schemaText.setText("dbo"); //$NON-NLS-1$
                 }
             } else {
-                schemaText.hide();
+                // schemaText.hide();
                 addContextParams(EDBParamName.Schema, false);
             }
 
@@ -1602,7 +1602,7 @@ public class DatabaseForm extends AbstractForm {
                 additionParamText.setEditable(true);
                 addContextParams(EDBParamName.AdditionalParams, true);
             } else {
-                additionParamText.hide();
+                // additionParamText.hide();
                 addContextParams(EDBParamName.AdditionalParams, false);
             }
         }
