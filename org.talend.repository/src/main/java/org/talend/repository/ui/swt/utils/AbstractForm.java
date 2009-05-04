@@ -27,6 +27,8 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -375,8 +377,10 @@ public abstract class AbstractForm extends Composite {
 
             Composite exportComposite = Form.startNewGridLayout(group, 2, true, SWT.CENTER, SWT.CENTER);
 
-            exportContextBtn = new UtilsButton(exportComposite,
-                    Messages.getString("AbstractForm.ExportAsContext"), 130, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+            GC gc = new GC(exportComposite);
+            String displayStr = Messages.getString("AbstractForm.ExportAsContext"); //$NON-NLS-1$
+            Point buttonSize = gc.stringExtent(displayStr);
+            exportContextBtn = new UtilsButton(exportComposite, displayStr, buttonSize.x + 12, HEIGHT_BUTTON_PIXEL);
             exportContextBtn.addSelectionListener(new SelectionAdapter() {
 
                 @Override
@@ -384,9 +388,11 @@ public abstract class AbstractForm extends Composite {
                     exportAsContext();
                 }
             });
+            displayStr = Messages.getString("AbstractForm.RevertContext"); //$NON-NLS-1$
+            buttonSize = gc.stringExtent(displayStr);
+            revertContextBtn = new UtilsButton(exportComposite, displayStr, buttonSize.x + 12, HEIGHT_BUTTON_PIXEL);
+            gc.dispose();
 
-            revertContextBtn = new UtilsButton(exportComposite,
-                    Messages.getString("AbstractForm.RevertContext"), 130, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
             revertContextBtn.addSelectionListener(new SelectionAdapter() {
 
                 @Override

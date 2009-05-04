@@ -38,6 +38,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -218,16 +220,22 @@ public class SelectorTableForm extends AbstractForm {
         Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(compositeTableSettings, 3, false, SWT.CENTER,
                 SWT.BOTTOM);
 
+        GC gc = new GC(compositeRetreiveSchemaButton);
         // Button Create Table
-        selectAllTablesButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
-                .getString("SelectorTableForm.selectAllTables"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        String displayStr = Messages.getString("SelectorTableForm.selectAllTables");
+        Point buttonSize = gc.stringExtent(displayStr);
+        selectAllTablesButton = new UtilsButton(compositeRetreiveSchemaButton, displayStr, buttonSize.x + 12, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
-        selectNoneTablesButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
-                .getString("SelectorTableForm.selectNoneTables"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        displayStr = Messages.getString("SelectorTableForm.selectNoneTables"); //$NON-NLS-1$
+        buttonSize = gc.stringExtent(displayStr);
+        selectNoneTablesButton = new UtilsButton(compositeRetreiveSchemaButton, displayStr, buttonSize.x + 12,
+                HEIGHT_BUTTON_PIXEL);
 
         // Button Check Connection
-        checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
-                .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        displayStr = Messages.getString("DatabaseTableForm.checkConnection"); //$NON-NLS-1$
+        buttonSize = gc.stringExtent(displayStr);
+        checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, displayStr, buttonSize.x + 12, HEIGHT_BUTTON_PIXEL);
+        gc.dispose();
 
         metadataEditor = new MetadataEmfTableEditor(""); //$NON-NLS-1$
         // addUtilsButtonListeners();

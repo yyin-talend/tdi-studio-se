@@ -35,6 +35,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -390,8 +392,12 @@ public class DatabaseTableForm extends AbstractForm {
 
         // Button retreiveSchema
         Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(composite1, 3, false, SWT.CENTER, SWT.TOP);
-        retreiveSchemaButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
-                .getString("DatabaseTableForm.retreiveSchema"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+
+        GC gc = new GC(compositeRetreiveSchemaButton);
+
+        String displayStr = Messages.getString("DatabaseTableForm.retreiveSchema"); //$NON-NLS-1$
+        Point buttonSize = gc.stringExtent(displayStr);
+        retreiveSchemaButton = new UtilsButton(compositeRetreiveSchemaButton, displayStr, buttonSize.x + 12, HEIGHT_BUTTON_PIXEL);
         retreiveSchemaButton.setToolTipText(RETRIEVE_SCHEMA_TOOLTIP);
         // Button Check Connection
         checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, "" //$NON-NLS-1$
@@ -403,10 +409,12 @@ public class DatabaseTableForm extends AbstractForm {
         tableSettingsInfoLabel.setLayoutData(gridData);
 
         // Button guessSchema
-
-        guessSchemaButton = new UtilsButton(compositeRetreiveSchemaButton,
-                Messages.getString("DatabaseTableForm.guessSchema"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        displayStr = Messages.getString("DatabaseTableForm.guessSchema"); //$NON-NLS-1$
+        buttonSize = gc.stringExtent(displayStr);
+        guessSchemaButton = new UtilsButton(compositeRetreiveSchemaButton, displayStr, buttonSize.x + 12, HEIGHT_BUTTON_PIXEL);
         guessSchemaButton.setToolTipText(GUESS_SCHEMA_TOOLTIP);
+        gc.dispose();
+
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
             guessSchemaButton.setVisible(true);
         } else {
