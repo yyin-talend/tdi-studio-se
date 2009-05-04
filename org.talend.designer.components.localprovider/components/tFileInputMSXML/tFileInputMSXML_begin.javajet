@@ -145,12 +145,29 @@ class XML_API_<%=cid %>{
     }
 }
 
+org.dom4j.io.SAXReader reader_<%=cid %> = new org.dom4j.io.SAXReader();
+
+org.dom4j.Document doc_<%=cid %>= reader_<%=cid %>.read(new java.io.File(<%=filename %>).toURI().toString());
+
+NameSpaceTool_<%=cid %> nsTool_<%=cid %> = new NameSpaceTool_<%=cid %>();
+nsTool_<%=cid %>.countNSMap(doc_<%=cid %>.getRootElement());
+java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid %> = nsTool_<%=cid %>.xmlNameSpaceMap;  
 
 String rootpath_<%=cid %> = <%=rootpath %>;
 if(rootpath_<%=cid %>.endsWith("/")){
 	rootpath_<%=cid %> = rootpath_<%=cid %>.substring(0,rootpath_<%=cid %>.length()-1);
 }
 
+org.dom4j.XPath x_<%=cid %> = doc_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(rootpath_<%=cid %>,rootpath_<%=cid %>));  
+x_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>);
+
+java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid %> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid %>.selectNodes(doc_<%=cid %>);	
+XML_API_<%=cid %> xml_api_<%=cid %> = new XML_API_<%=cid %>();
+String str_<%=cid %> = "";
+org.dom4j.Node node_<%=cid %> = null;
+
+for (org.dom4j.tree.AbstractNode loop_<%=cid %>: nodeList_<%=cid %>) {
+		nb_line_<%=cid%>++;
 
 <%
 	//get all the children collections of the loop node.
@@ -165,37 +182,29 @@ if(rootpath_<%=cid %>.endsWith("/")){
 %>
 	String query_<%=conn.getName() %> = <%=query %>;
 	if(query_<%=conn.getName() %>.startsWith("/")){
-		query_<%=conn.getName() %> = query_<%=conn.getName() %>.substring(1);
+		query_<%=conn.getName() %> = query_<%=conn.getName() %>.substring(1, query_<%=conn.getName() %>.length());
 	}
-	String subLoop_<%=conn.getName() %> = rootpath_<%=cid %> + "/" + query_<%=conn.getName() %>;
-<%
+	org.dom4j.XPath xSub<%=conn.getName() %>_<%=cid %> = loop_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(query_<%=conn.getName() %>,rootpath_<%=cid %>));
+    xSub<%=conn.getName() %>_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>); 
+    java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=conn.getName() %>_<%=cid %> = (java.util.List<org.dom4j.tree.AbstractNode>)xSub<%=conn.getName() %>_<%=cid %>.selectNodes(loop_<%=cid %>);
+    java.util.Iterator<org.dom4j.tree.AbstractNode> it_<%=conn.getName() %>_<%=cid %> = nodeList_<%=conn.getName() %>_<%=cid %>.iterator();
+<% 
 		}
 	}
 %>
+	while(
+<%
+	boolean b_dom_while = true;
+	for(IConnection conn : connections){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+%>
+<%=b_dom_while?"": " || "%>it_<%=conn.getName() %>_<%=cid %>.hasNext()
+<%
+			b_dom_while = false;
+		}
+	}
+%>){
 
-org.dom4j.io.SAXReader reader_<%=cid %> = new org.dom4j.io.SAXReader();
-
-org.dom4j.Document doc_<%=cid %>= reader_<%=cid %>.read(new java.io.File(<%=filename %>).toURI().toString());
-
-NameSpaceTool_<%=cid %> nsTool_<%=cid %> = new NameSpaceTool_<%=cid %>();
-nsTool_<%=cid %>.countNSMap(doc_<%=cid %>.getRootElement());
-java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid %> = nsTool_<%=cid %>.xmlNameSpaceMap;  
-
-org.dom4j.XPath x_<%=cid %> = doc_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(rootpath_<%=cid %>,rootpath_<%=cid %>));  
-x_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>);
-
-java.util.List<org.dom4j.Element> nodeList_<%=cid %> = (java.util.List<org.dom4j.Element>)x_<%=cid %>.selectNodes(doc_<%=cid %>);	
-XML_API_<%=cid %> xml_api_<%=cid %> = new XML_API_<%=cid %>();
-String str_<%=cid %> = "";
-org.dom4j.Node node_<%=cid %> = null;
-
-for (org.dom4j.Element loop_<%=cid %>: nodeList_<%=cid %>) {
-		nb_line_<%=cid%>++;
-
-	java.util.Iterator<org.dom4j.Element> it_<%=cid %> = loop_<%=cid %>.elementIterator();
-	
-	while(it_<%=cid%>.hasNext()){
-		org.dom4j.Element temp_<%=cid %> = it_<%=cid %>.next();
 <%
 // ***dom4j end and sax begin*** //
 }else if(mode.equals("SAX")){
@@ -272,14 +281,39 @@ String[] node_<%=cid%> = null;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=rootpath%>,arrLoop_<%=cid %>,arrQuery_<%=cid %>);
 
 looper_<%=cid%>.parse(new java.io.File(<%=filename %>).toURI().toString());
-java.util.List<java.util.List<java.util.Map<String, Object>>> rootlist_<%=cid %> = looper_<%=cid %>.getAllResultList();
+java.util.List<java.util.Map<String, java.util.List<java.util.Map<String, String>>>> rootlist_<%=cid %> = looper_<%=cid %>.getAllResultList();
 
-for (java.util.List<java.util.Map<String, Object>> map_<%=cid %> : rootlist_<%=cid %>){
+for (java.util.Map<String, java.util.List<java.util.Map<String, String>>> map_<%=cid %> : rootlist_<%=cid %>){
 	nb_line_<%=cid %>++;
-	java.util.Iterator<java.util.Map<String, Object>> it_<%=cid %> = map_<%=cid %>.iterator();
-	
-	while (it_<%=cid%>.hasNext()) {
-		java.util.Map<String, Object> tmp_<%=cid %> = (java.util.Map<String, Object>)it_<%=cid %>.next();
+<%
+	for(IConnection conn : connections){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+			String loopPath = null;
+			for(Map<String, String> schemaMap : schemas){
+				if(schemaMap.get("SCHEMA").equals(conn.getName())){
+					loopPath = schemaMap.get("LOOP_PATH");
+				}
+			}
+%>
+	java.util.List<java.util.Map<String, String>> tmpList_<%=conn.getName()%>_<%=cid %> = map_<%=cid %>.get(<%=loopPath %>);
+	java.util.Iterator<java.util.Map<String, String>> it_<%=conn.getName() %>_<%=cid %> = tmpList_<%=conn.getName()%>_<%=cid %>.iterator();
+<%
+		}
+	}
+%>
+	while (
+<%
+	boolean b_sax_while = true;
+	for(IConnection conn : connections){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+%>
+<%=b_sax_while?"": " || "%>it_<%=conn.getName() %>_<%=cid %>.hasNext()
+<%
+			b_sax_while = false;
+		}
+	}
+%>) {
+
 <%
 }
 // *** sax end *** //
@@ -303,17 +337,31 @@ for (java.util.List<java.util.Map<String, Object>> map_<%=cid %> : rootlist_<%=c
 			if(metadata!=null){
 %>
 	<%=conn.getName() %> = null;
-<%				if(mode.equals("Dom4j")){%>
-	if(temp_<%=cid %>.getPath().equals(subLoop_<%=conn.getName() %>)){
-<%				}else{%>
-	if(tmp_<%=cid %>.get("path").equals(<%=tmpQuery %>)){
-		java.util.Map<String, String> row_<%=cid %> = (java.util.Map<String, String>)tmp_<%=cid %>.get("value");
-<%				}%>	
-		<%=conn.getName() %>=new <%=conn.getName() %>Struct();
 <%
-				if(hasEmptyRow==false){
+				if(hasEmptyRow){
 %>
-		boolean hasEmptyRow_<%=cid %> = true;
+	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
+	if(it_<%=conn.getName() %>_<%=cid %>.hasNext()){
+<% 
+				}else{
+%>
+	if(it_<%=conn.getName() %>_<%=cid %>.hasNext()){	
+		<%=conn.getName() %>=new <%=conn.getName() %>Struct();	
+<% 
+				}
+				if(mode.equals("Dom4j")){
+%>		
+		String tmpQuery_<%=conn.getName() %> = <%=tmpQuery %>;
+		if(tmpQuery_<%=conn.getName() %>.startsWith("/")){
+			tmpQuery_<%=conn.getName() %> = tmpQuery_<%=conn.getName() %>.substring(1, tmpQuery_<%=conn.getName() %>.length());
+		}
+		String subLoop_<%=conn.getName() %> = rootpath_<%=cid %> + "/" + tmpQuery_<%=conn.getName() %>;
+
+		org.dom4j.tree.AbstractNode temp_<%=conn.getName() %>_<%=cid %> = it_<%=conn.getName() %>_<%=cid %>.next();
+<% 
+				}else if(mode.equals("SAX")){
+%>
+		java.util.Map<String, String> row_<%=conn.getName() %>_<%=cid %> = it_<%=conn.getName() %>_<%=cid %>.next();
 <%
 				}
 				List<IMetadataColumn> columns = metadata.getListColumns();
@@ -322,18 +370,18 @@ for (java.util.List<java.util.Map<String, Object>> map_<%=cid %> : rootlist_<%=c
 					String query = arrXpath[i];
 					if(mode.equals("Dom4j")){
 %>
-		org.dom4j.XPath xTmp<%=conn.getName() + i %>_<%=cid %> = temp_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(<%=query %>, subLoop_<%=conn.getName() %>));
+		org.dom4j.XPath xTmp<%=conn.getName() + i %>_<%=cid %> = temp_<%=conn.getName() %>_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(<%=query %>, subLoop_<%=conn.getName() %>));
 	    xTmp<%=conn.getName() + i %>_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>); 
-	    node_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.selectSingleNode(temp_<%=cid %>);
-	    str_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.valueOf(temp_<%=cid %>);
+	    node_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.selectSingleNode(temp_<%=conn.getName() %>_<%=cid %>);
+	    str_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.valueOf(temp_<%=conn.getName() %>_<%=cid %>);
 <%
 					}else if(mode.equals("SAX")){
 %>
-	str_<%=cid %> = row_<%=cid %>.get(<%=query %>);
+	str_<%=cid %> = row_<%=conn.getName() %>_<%=cid %>.get(<%=query %>);
 <%
 						if(query!=null && query.indexOf("@")<0){
 %>
-	node_<%=cid %> = new String[]{str_<%=cid %>,row_<%=cid %>.get(<%=query %>+"/@xsi:nil")};
+	node_<%=cid %> = new String[]{str_<%=cid %>,row_<%=conn.getName() %>_<%=cid %>.get(<%=query %>+"/@xsi:nil")};
 <%
 						}else{
 %>
@@ -415,13 +463,6 @@ for (java.util.List<java.util.Map<String, Object>> map_<%=cid %> : rootlist_<%=c
 <%
 							}
 %>
-<%
-							if(hasEmptyRow==false){
-%>
-		hasEmptyRow_<%=cid %> = false;
-<%
-							}
-%>
 	}
 <%
 							break;//jump out of the for loop
@@ -429,21 +470,14 @@ for (java.util.List<java.util.Map<String, Object>> map_<%=cid %> : rootlist_<%=c
 						j++;
 					}				//for(IMetadataColumn column:columns)
 				}				//for (int i=0;i<mapping.size();i++)
-%>
-<%
-				if(hasEmptyRow==false){
-%>
-		if(hasEmptyRow_<%=cid %> == true){
-			<%=conn.getName() %> = null;
-		}
-<%
-				}
+//===========================modify by wliu=================================
 %>
 	}
-<%
+<% 
 			}	//if(metadata!=null)	
 		}//if(conn) 
 	}	//for(IConnection)
 }	//if(conns!=null)
+//===============================end========================================
 %>
 			
