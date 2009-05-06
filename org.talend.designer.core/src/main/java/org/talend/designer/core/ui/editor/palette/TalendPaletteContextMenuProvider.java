@@ -29,8 +29,8 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.properties.ComponentSetting;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ComponentSearcher;
@@ -256,33 +256,44 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 Context.REPOSITORY_CONTEXT_KEY);
         project = repositoryContext.getProject();
 
-        List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
+        List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
+        for (IComponent component : components) {
 
-        for (ComponentSetting componentSetting : components) {
             if (fam != null) {
                 for (int i = 0; i < fam.length; i++) {
+                    if (!component.isVisible(fam[i])) {
+                        continue;
+                    }
                     String famName = null;
-                    String familyName = null;
+                    String familyName[] = null;
                     famName = fam[i];
-                    familyName = componentSetting.getFamily();
 
-                    if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
-                        String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
+                    familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                    for (int j = 0; j < familyName.length; j++) {
+
+                        if (component.getName().equals(label) && (familyName[j]).equals(famName)) {
+                            String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                            DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
+                        }
+                    }
+
+                }
+            } else {
+                if (!component.isVisible(family)) {
+                    continue;
+                }
+                String famName = null;
+                String[] familyName = null;
+
+                famName = family;
+                familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                for (int i = 0; i < familyName.length; i++) {
+                    if (component.getName().equals(label) && (familyName[i]).equals(famName)) {
+                        String key = component.getName() + "#" + famName; //$NON-NLS-1$
                         DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
                     }
                 }
-            } else {
-                String famName = null;
-                String familyName = null;
-                famName = family;
-                familyName = componentSetting.getFamily();
-                if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
-                    // componentSetting.setFavoriteFlag(true);
-                    // );
-                    // family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX
-                    String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
-                    DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
-                }
+
             }
 
         }
@@ -315,30 +326,42 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 Context.REPOSITORY_CONTEXT_KEY);
         project = repositoryContext.getProject();
 
-        List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
+        List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
 
-        for (ComponentSetting componentSetting : components) {
+        for (IComponent component : components) {
+
             if (fam != null) {
                 for (int i = 0; i < fam.length; i++) {
+                    if (!component.isVisible(fam[i])) {
+                        continue;
+                    }
                     String famName = null;
-                    String familyName = null;
+                    String[] familyName = null;
                     famName = fam[i];
-                    familyName = componentSetting.getFamily();
-                    if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
-                        String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
-                        DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
+                    familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                    for (int j = 0; j < familyName.length; j++) {
+                        if (component.getName().equals(label) && (familyName[j]).equals(famName)) {
+                            String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                            DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
+                        }
                     }
                 }
             } else {
-                String famName = null;
-                String familyName = null;
-                famName = family;
-                familyName = componentSetting.getFamily();
-                if (componentSetting.getName().equals(label) && (familyName).equals(famName)) {
-                    String key = componentSetting.getName() + "#" + famName; //$NON-NLS-1$
-                    // componentSetting.setFavoriteFlag(false);
-                    DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
+                if (!component.isVisible(family)) {
+                    continue;
                 }
+                String famName = null;
+                String[] familyName = null;
+
+                famName = family;
+                familyName = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                for (int j = 0; j < familyName.length; j++) {
+                    if (component.getName().equals(label) && (familyName[j]).equals(famName)) {
+                        String key = component.getName() + "#" + famName; //$NON-NLS-1$
+                        DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
+                    }
+                }
+
             }
 
         }
