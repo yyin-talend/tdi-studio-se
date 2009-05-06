@@ -119,6 +119,7 @@ imports="
                             trimMethod = ".trim()";
                         }
                         String columnType = column.getType();
+                                                
                  	    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
                  	    String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate); 	
                  	    if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -191,19 +192,19 @@ imports="
                  	                    java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(<%=currentColNo%>);
                  	                    java.io.BufferedReader br_<%=cid%> = null;
                  	                    if(reader_<%=cid%> != null) {
-                 	                        br_<%=cid%> = new java.io.BufferedReader(reader_<%=cid%>);
-                 	                        String tempContent_<%=cid%> = null;
-                 	                        String content_<%=cid%> = "";
-                 	                        while((tempContent_<%=cid%> = br_<%=cid%>.readLine()) != null) {
-                 	                            content_<%=cid%> += tempContent_<%=cid%>;
+                 	                        br_<%=cid%> = new java.io.BufferedReader(reader_<%=cid%>);                 	                        
+                 	                        StringBuffer content_<%=cid%> = new StringBuffer();
+                 	                        int c_<%=cid%> =0;
+                 	                        while( (c_<%=cid%> = br_<%=cid%>.read()) != -1) {
+                 	                            content_<%=cid%>.append((char)c_<%=cid%>);
                  	                        }
                  	                        br_<%=cid%>.close();
-                 	                        <%=firstConnName%>.<%=column.getLabel()%> = content_<%=cid%>;
+                 	                        <%=firstConnName%>.<%=column.getLabel()%> = content_<%=cid%>.toString();
                  	                    } else {
                  	                        <%=firstConnName%>.<%=column.getLabel()%> = null;
                  	                    }                 	                    
                  	                    <%
-                 	                } else {
+                 	            } else {
                  	                    %>
                  	                    tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
                                         if(tmpContent_<%=cid%> != null) {
