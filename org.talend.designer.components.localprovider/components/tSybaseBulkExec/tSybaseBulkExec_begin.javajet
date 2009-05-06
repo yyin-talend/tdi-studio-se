@@ -164,7 +164,7 @@ command_<%=cid %>.append(<%=bcpUtility%> + " ");
 if(dataAction.equals("UPDATE")) {
     %>
     String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-    tableName_<%=cid%> = "<%=cid%>";
+    tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
     <%
 }
 %>
