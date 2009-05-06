@@ -69,10 +69,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
             ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
             String schemaName = getSelectedSchema();
             FOXTreeNode root = cloneATreeNode(treeNode, schemaName);
-
-            if (!file.toUpperCase().endsWith(".XSD")) { //$NON-NLS-1$
-                root = ((Element) root).getElementChildren().get(0);
-            }
+            root = ((Element) root).getElementChildren().get(0);
             root.setParent(null);
             list.add(root);
         } catch (Exception e) {
@@ -89,9 +86,9 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         } else {
             node = new Element();
         }
-        
+
         node.setLabel((String) treeNode.getValue());
-        
+
         Object[] children = treeNode.getChildren();
         if (children != null) {
             for (int i = 0; i < children.length; i++) {
