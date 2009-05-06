@@ -76,6 +76,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     String hostname_<%=cid%> = <%=host%>;
     String username_<%=cid%> = <%=user%>;
 
+	globalMap.remove("<%=cid %>_STDOUT");
+	globalMap.remove("<%=cid %>_STDERR");
 
 	/* Create a connection instance */
 <%
