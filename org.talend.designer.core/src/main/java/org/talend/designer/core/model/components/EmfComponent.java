@@ -1447,7 +1447,13 @@ public class EmfComponent implements IComponent {
                     } else {
                         int index = this.computeIndex(listParam, param);
                         if (index >= 0) {
-                            param.setValue(param.getDefaultValues().get(index).getDefaultValue());
+                            Object defaultValue = param.getDefaultValues().get(index).getDefaultValue();
+                            param.setValue(defaultValue);
+                            if (param.getName().equals(EParameterName.ENCODING.getName())) {
+                                String encodingType=TalendTextUtils.removeQuotes( (String)defaultValue);
+                                param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName()).setValue(encodingType);
+                            }
+
                         }
                     }
                 }

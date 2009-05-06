@@ -555,6 +555,8 @@ public class ElementParameter implements IElementParameter {
 
     public void setParentParameter(IElementParameter parentParameter) {
         this.parentParameter = parentParameter;
+        // keep the same category with parent.
+        this.setCategory(parentParameter.getCategory());
         parentParameter.getChildParameters().put(this.getName(), this);
     }
 
