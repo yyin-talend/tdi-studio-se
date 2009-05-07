@@ -444,10 +444,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
         		
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
-        		
-        		//======================add by wliu============================
+				
         		boolean isMerge=ElementParameterParser.getValue(node, "__MERGE__").equals("true");        		
-        		//==========================end================================
         		
         		// init tool
                 XMLTool tool = new XMLTool();
@@ -459,14 +457,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 
                 // change tables to a tree 
 				Object[] treeObjs = getTree(rootTable, groupTable, loopTable, metadata.getListColumns());
+				
+				if(treeObjs == null || treeObjs.length == 0){
+					return "";
+				}
+				
             	List<XMLNode> mainList = (ArrayList<XMLNode>)treeObjs[0];
                 List<XMLNode> groupList = (ArrayList<XMLNode>)treeObjs[1];
                 XMLNode root = mainList.get(0);                
             	XMLNode loop = (XMLNode)treeObjs[2];
-            	
-            	//=================add by wliu===============================
-//            	groupList.add(loop);//temporarily set the loop element as a group element.
-            	//=====================end===================================
                 
                 if(!allowEmpty.equals("true")){
                 	removeEmptyElement(root);
