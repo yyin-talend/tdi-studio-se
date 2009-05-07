@@ -555,14 +555,6 @@
             isReadAction="true"
             level="20"
             name="ReadDiagramAction"/>
-      <Action
-            class="org.talend.designer.business.diagram.custom.actions.DeleteAssignmentAction"
-            id="org.talend.designer.business.diagram.deleteAssignment"
-            isEditAction="false"
-            isPropertiesAction="false"
-            isReadAction="false"
-            name="DeleteAssignmentAction">
-      </Action>
    </extension>
    
 </plugin>
