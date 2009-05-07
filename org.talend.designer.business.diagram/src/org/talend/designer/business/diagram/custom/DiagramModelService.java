@@ -23,6 +23,7 @@ import org.eclipse.gmf.runtime.diagram.ui.editparts.NoteEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.NoteAttachmentEditPart;
 import org.eclipse.gmf.runtime.notation.Node;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
@@ -35,6 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.business.BusinessType;
 import org.talend.designer.business.diagram.custom.actions.CreateDiagramAction;
+import org.talend.designer.business.diagram.custom.actions.DeleteAssignmentAction;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.commands.ChangeBusinessItemAlignmentCommand;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
@@ -188,5 +190,10 @@ public class DiagramModelService implements IDiagramModelService {
     public IFile getDiagramFile(IWorkbenchPage page) {
         DiagramResourceManager diagramResourceManager = new DiagramResourceManager(page, new NullProgressMonitor());
         return diagramResourceManager.createDiagramFile();
+    }
+
+    public void addDeleteAssignmentAction(IMenuManager mgr) {
+        DeleteAssignmentAction action = new DeleteAssignmentAction();
+        mgr.add(action);
     }
 }

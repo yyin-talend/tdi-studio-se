@@ -374,8 +374,11 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                                 }
                             }
                         }
+                        CorePlugin.getDefault().getDiagramModelService().addDeleteAssignmentAction(mgr);
+
                     }
                 }
+
             }
         });
         Menu menu = menuMgr.createContextMenu(tableViewer.getControl());

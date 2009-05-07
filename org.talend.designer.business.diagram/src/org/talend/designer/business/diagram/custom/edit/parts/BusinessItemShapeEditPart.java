@@ -192,13 +192,17 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                     }
 
                 }
-                if (labels.size() > 0) {
-                    if (tooltipFigure == null) {
-                        tooltipFigure = new BusinessTooltipFigure();
-                    }
+
+                if (tooltipFigure == null) {
+                    tooltipFigure = new BusinessTooltipFigure();
+                }
+                if (labels.size() == 0) {
+                    figure.setToolTip(null);
+                } else {
                     tooltipFigure.buildFigures(labels);
                     figure.setToolTip(tooltipFigure);
                 }
+
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
