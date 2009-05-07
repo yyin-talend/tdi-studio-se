@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -46,6 +47,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -196,7 +198,10 @@ public class Problems {
     }
 
     public static void add(Problem pro) {
-        problemList.add(pro);
+        if (problemList.getProblemList().size() <= CorePlugin.getDefault().getPreferenceStore().getInt(
+                ITalendCorePrefConstants.PREVIEW_LIMIT)) {
+            problemList.add(pro);
+        }
     }
 
     public static List<String> getStatusList(ProblemStatus status, Element element) {

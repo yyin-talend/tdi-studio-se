@@ -85,6 +85,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
@@ -1286,12 +1287,14 @@ public class ProcessComposite extends Composite {
                 || ProcessMessageManager.PROP_DEBUG_MESSAGE_ADD.equals(propName)) {
             IProcessMessage psMess = (IProcessMessage) evt.getNewValue();
 
-            if (!(LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL))) {
-                getAllErrorMess(psMess);
-            } else {
-                addPerlMark(psMess);
+            if (errorMessMap.size() <= CorePlugin.getDefault().getPreferenceStore()
+                    .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT)) {
+                if (!(LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL))) {
+                    getAllErrorMess(psMess);
+                } else {
+                    addPerlMark(psMess);
+                }
             }
-
             appendToConsole(psMess);
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
