@@ -496,6 +496,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
 
                 // define the metadataColumn to field i
                 MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                metadataColumn.setPattern("\"dd-MM-yyyy\"");
                 // Convert javaType to TalendType
                 String talendType = null;
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {

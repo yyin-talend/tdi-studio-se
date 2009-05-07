@@ -522,6 +522,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
 
                 // define the metadataColumn to field i
                 MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                // hshen bug7249
+                metadataColumn.setPattern("\"dd-MM-yyyy\"");
                 // Convert javaType to TalendType
                 String talendType = null;
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {

@@ -499,7 +499,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
             // define the metadataColumn to field i
             MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-
+            metadataColumn.setPattern("\"dd-MM-yyyy\"");
             String talendType = null;
             if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                 talendType = globalType;
