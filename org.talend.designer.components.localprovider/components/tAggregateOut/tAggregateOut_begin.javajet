@@ -391,8 +391,10 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 	<%
 	} // T_OutBegin_AggR_160
 	%>
-	
-	
+
+<%
+} // T_OutBegin_AggR_114
+%>
 	class AggOperationStruct_<%=cid %> { // G_OutBegin_AggR_100
 
 		private static final int DEFAULT_HASHCODE = 1;
@@ -542,8 +544,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
            		} // T_OutBegin_AggR_137
            	} // T_OutBegin_AggR_138
     	} // T_OutBegin_AggR_131
-        %>
-        
+		%>
         
 	    @Override
 		public int hashCode() {
@@ -637,10 +638,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
         
 	} // G_OutBegin_AggR_100
 
-
 <%
-} // T_OutBegin_AggR_114
-
 if(warnings.size() > 0) {
 	%>
 	System.err.println(
@@ -654,15 +652,11 @@ if(warnings.size() > 0) {
 	);
 	<%
 }
-
-
-if(sizeOps>0){ // G_OutBegin_AggR_191
 	%>
 	AggOperationStruct_<%=cid %> operation_result_<%=cid %> = null;
 	AggOperationStruct_<%=cid %> operation_finder_<%=cid %> = new AggOperationStruct_<%=cid %>();
 	java.util.Map<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>> hash_<%=cid %> = new java.util.HashMap<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>>();  
 	<%
-} // G_OutBegin_AggR_191
 
 if(listFlag){ // G_OutBegin_AggR_192
 	%>
