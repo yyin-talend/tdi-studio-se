@@ -766,7 +766,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
         managerConnection.check(metadataConnection);
         if (managerConnection.getIsValide()) {
-            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
+            // secend parameter of returnTablesFormConnection() can be given what ever you want
+            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection, 5);
             if (itemTableName == null || itemTableName.isEmpty()) {
                 skipStep = true;
             }
