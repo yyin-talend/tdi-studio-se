@@ -117,7 +117,9 @@
 
 				if(!hasIterate) {
 				%>
-					tHash_Lookup_<%=tableName%>.endGet();
+					if(tHash_Lookup_<%=tableName%> != null) {
+						tHash_Lookup_<%=tableName%>.endGet();
+					}
 					globalMap.remove( "tHash_Lookup_<%=tableName%>" );
 
 					<%					

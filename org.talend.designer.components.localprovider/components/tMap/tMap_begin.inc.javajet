@@ -155,16 +155,22 @@ for (int i = 1; i < lstSizeInputs; i++) {
 	
 	%>
 	
-		org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = 
-			(org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+		org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = <%
+		
+		if(isOneOfReloadLookupMode) {
+			 %>null;<%
+		} else {
+			%>(org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct>) 
 				((org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct>) 
 					globalMap.get( "tHash_Lookup_<%=tableName%>" ))
 					<%
 					if(hasConcurrencyContext) {
 					%>
 					.clone()
-					<%}%>;
+					<%}%>;<%
+		}
 					
+	%>					
 					
 	<%
 	}
