@@ -341,7 +341,12 @@ public class ExpressionComposite extends Composite {
         gebutton.addMouseListener(buttonListener);
 
         final Button nebutton = new Button(lowerOperationButtonBar, SWT.NONE);
-        nebutton.setText("<>"); //$NON-NLS-1$
+        ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
+        if (codeLanguage == ECodeLanguage.JAVA) {
+            nebutton.setText("!="); //$NON-NLS-1$
+        } else {
+            nebutton.setText("<>"); //$NON-NLS-1$
+        }
         nebutton.addMouseListener(buttonListener);
 
         final Button lebutton = new Button(lowerOperationButtonBar, SWT.NONE);
