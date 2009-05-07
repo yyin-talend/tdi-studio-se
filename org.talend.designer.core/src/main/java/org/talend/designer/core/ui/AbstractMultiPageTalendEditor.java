@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui;
 
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +38,8 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.INodeEditPart;
 import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.custom.CTabFolder;
@@ -60,6 +63,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -107,6 +111,7 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.ERepositoryStatus;
@@ -523,29 +528,72 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     protected void updateRunJobContext() {
-        JobContextManager manager = (JobContextManager) getProcess().getContextManager();
-        Map<String, String> nameMap = manager.getNameMap();
+        final JobContextManager manager = (JobContextManager) getProcess().getContextManager();
         if (manager.isModified()) {
-            try {
-                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+            final Map<String, String> nameMap = manager.getNameMap();
+            // gcui:if nameMap is empty it do nothing.
+            if (!nameMap.isEmpty()) {
+                // gcui:add a progressDialog.
+                ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay()
+                        .getActiveShell().getShell());
+                IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-                Set<String> curContextVars = getCurrentContextVariables(manager);
-                String jobId = getProcess().getProperty().getId();
+                    public void run(final IProgressMonitor monitor) {
+                        monitor.beginTask("Saving Please Waite....", IProgressMonitor.UNKNOWN);
+                        Display.getDefault().syncExec(new Runnable() {
 
-                UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, nameMap, jobId, curContextVars);
+                            public void run() {
+                                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                                factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) {
 
-                IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .getEditorReferences();
-                List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+                                    @Override
+                                    protected void run() throws LoginException, PersistenceException {
+                                        try {
+                                            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
 
-                UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, jobId,
-                        curContextVars);
-            } catch (PersistenceException e) {
-                // e.printStackTrace();
-                ExceptionHandler.process(e);
+                                            Set<String> curContextVars = getCurrentContextVariables(manager);
+                                            String jobId = getProcess().getProperty().getId();
+
+                                            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory,
+                                                    nameMap, jobId, curContextVars);
+
+                                            IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                                    .getActivePage().getEditorReferences();
+                                            List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService()
+                                                    .getOpenedProcess(reference);
+
+                                            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes,
+                                                    nameMap, jobId, curContextVars);
+                                            nameMap.clear();
+                                            manager.setModified(false);
+                                        } catch (PersistenceException e) {
+                                            // e.printStackTrace();
+                                            ExceptionHandler.process(e);
+                                        }
+                                    }
+                                });
+
+                            }
+
+                        });
+                        monitor.done();
+                        if (monitor.isCanceled()) {
+                            try {
+                                throw new InterruptedException("Save Fail"); //$NON-NLS-1$
+                            } catch (InterruptedException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
+                    }
+                };
+                try {
+                    progressDialog.run(true, true, runnable);
+                } catch (InvocationTargetException e1) {
+                    ExceptionHandler.process(e1);
+                } catch (InterruptedException e1) {
+                    ExceptionHandler.process(e1);
+                }
             }
-            nameMap.clear();
-            manager.setModified(false);
         }
     }
 
