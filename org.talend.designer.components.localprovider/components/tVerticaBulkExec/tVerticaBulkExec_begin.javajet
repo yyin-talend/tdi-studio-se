@@ -30,7 +30,7 @@ String pas = ElementParameterParser.getValue(node, "__PASS__");
 String tableName = ElementParameterParser.getValue(node, "__TABLE__");
 boolean ros = ElementParameterParser.getValue(node, "__ROS__").equals("true");
 boolean exitOnNoRows = ElementParameterParser.getValue(node, "__EXIT_ON_NO_ROWS__").equals("true");
-boolean hasNullString = !null_string.matches("(\"\\s+\"|\"\")");
+boolean hasNullString = !null_string.matches("\"\"");
 List<IMetadataColumn> columnList = getColumnList(node);    
 %>
 String tableName_<%=cid%> = <%=tableName%>;
@@ -148,7 +148,7 @@ if(dataAction.equals("UPDATE")) {
     }
 } else if(dataAction.equals("INSERT")) {
     %>
-	String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM '"+<%=file%>+"' DELIMITER '" +<%=field_separator%> + "'" 
+	String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM STDIN DELIMITER '" +<%=field_separator%> + "'" 
     <%if(hasNullString){
 	%> + " NULL '"  + <%=null_string%> + "'"
 	<%}%>
