@@ -203,8 +203,13 @@ public final class UpdateManagerUtils {
                         saveModifiedItem(results, monitor);
                         // update joblet reference
                         upadateJobletReferenceInfor();
+
                         // refresh
                         refreshRelatedViewers(results);
+
+                        // hyWang add method checkandRefreshProcess for bug7248
+                        checkandRefreshProcess(results);
+
                         monitor.worked(1 * UpdatesConstants.SCALE);
                         monitor.done();
                     }
@@ -437,6 +442,20 @@ public final class UpdateManagerUtils {
         for (IProcess proc : openedProcessList) {
             if (proc instanceof IProcess2) {
                 ((IProcess2) proc).getUpdateManager().retrieveRefInformation();
+            }
+        }
+    }
+
+    /**
+     * DOC hyWang Comment method "checkandRefreshProcess".
+     * 
+     * @param results
+     */
+    private static void checkandRefreshProcess(final List<UpdateResult> results) {
+        for (UpdateResult tempResult : results) {
+            if (tempResult.getJob() instanceof IProcess2) {
+                IProcess2 process = (IProcess2) tempResult.getJob();
+                process.checkProcess();
             }
         }
     }
