@@ -1449,9 +1449,13 @@ public class EmfComponent implements IComponent {
                         if (index >= 0) {
                             Object defaultValue = param.getDefaultValues().get(index).getDefaultValue();
                             param.setValue(defaultValue);
-                            if (param.getName().equals(EParameterName.ENCODING.getName())) {
-                                String encodingType=TalendTextUtils.removeQuotes( (String)defaultValue);
-                                param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName()).setValue(encodingType);
+                            if (param.getField() == EParameterFieldType.ENCODING_TYPE) {
+                                String encodingType = TalendTextUtils.removeQuotes((String) defaultValue);
+                                IElementParameter elementParameter = param.getChildParameters().get(
+                                        EParameterName.ENCODING_TYPE.getName());
+                                if (elementParameter != null) {
+                                    elementParameter.setValue(encodingType);
+                                }
                             }
 
                         }
