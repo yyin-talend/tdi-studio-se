@@ -1414,6 +1414,9 @@ public class ProcessComposite extends Composite {
                 org.talend.core.model.process.IProcess process = processContext.getProcess();
                 List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
                 for (INode inode : nodeList) {
+                    if (!inode.isActivate()) {
+                        continue;
+                    }
                     String nodeUniqueName = inode.getUniqueName();
                     if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL) && Problems.nodeList.size() > 0) {
                         errorMessMap.clear();
@@ -1468,21 +1471,30 @@ public class ProcessComposite extends Composite {
     public void refreshProgress(IProcessMessage psMess, Node node, String nodeUniqueName) {
         String mess = ""; //$NON-NLS-1$
         String uniqueName = ""; //$NON-NLS-1$
-        int firIndex = psMess.getContent().indexOf("$"); //$NON-NLS-1$
-        int secIndex = psMess.getContent().indexOf("%"); //$NON-NLS-1$
-        if (isPattern(psMess.getContent())) {
-            uniqueName = psMess.getContent().substring(0, firIndex);
-            mess = psMess.getContent().substring(firIndex + 1, secIndex);
-        }
-        Double extentPro = new Double(0);
-        if ((!"".equals(mess)) && mess != null) { //$NON-NLS-1$  
-            extentPro = Math.floor(Double.parseDouble(mess) / 10);
+        String[] message = psMess.getContent().split("\n");
+
+        for (int i = 0; i < message.length; i++) {
+            if (isPattern(message[i])) {
+
+                int firIndex = message[i].indexOf("$"); //$NON-NLS-1$
+                int secIndex = message[i].indexOf("%"); //$NON-NLS-1$
+                uniqueName = message[i].substring(0, firIndex);
+                mess = message[i].substring(firIndex + 1, secIndex);
+                System.out.println(mess);
+            }
+
+            Double extentPro = new Double(0);
+            if ((!"".equals(mess)) && mess != null) { //$NON-NLS-1$  
+                extentPro = Double.parseDouble(mess);
+            }
+
+            if (((extend != extentPro) && nodeUniqueName.equals(uniqueName))) {
+                node.getNodeProgressBar().updateState("UPDATE_STATUS", extentPro); //$NON-NLS-1$
+                extend = extentPro;
+            }
+
         }
 
-        if (((extend != extentPro) && nodeUniqueName.equals(uniqueName))) {
-            node.getNodeProgressBar().updateState("UPDATE_STATUS", new Double(extentPro)); //$NON-NLS-1$
-            extend = extentPro;
-        }
     }
 
     private boolean isPattern(String content) {

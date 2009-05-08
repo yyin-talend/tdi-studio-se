@@ -108,8 +108,8 @@ public class NodeProgressBarPart extends AbstractGraphicalEditPart implements Pr
         if (request.equals("UPDATE_STATUS")) { //$NON-NLS-1$
             NodeProgressBarFigure figure = (NodeProgressBarFigure) this.getFigure();
             Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
-            figure.updateVisible(true);
-            figure.setProgressData(extent.intValue());
+            // figure.updateVisible(true);
+            figure.setProgressData(extent);
             ((NodeProgressBar) getModel()).setProgressSize((figure).getSize());
             refreshVisuals();
         }

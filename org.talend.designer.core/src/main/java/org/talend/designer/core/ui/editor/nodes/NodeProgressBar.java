@@ -153,7 +153,7 @@ public class NodeProgressBar extends Element {
     }
 
     public void updateState(final String id, Object value) {
-        this.getNode().getUniqueName();
+        // this.getNode().getUniqueName();
 
         for (Node node : getIncludedNodesInProgress()) {
             // avoid to update itself to avoid loops

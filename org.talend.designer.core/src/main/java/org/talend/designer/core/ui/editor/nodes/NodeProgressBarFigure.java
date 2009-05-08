@@ -51,9 +51,9 @@ public class NodeProgressBarFigure extends Figure {
 
     }
 
-    public void updateVisible(boolean flag) {
-        setProgressData(0);
-    }
+    // public void updateVisible(boolean flag) {
+    // setProgressData(new Double(0));
+    // }
 
     @Override
     public void paint(Graphics graphics) {
@@ -68,48 +68,64 @@ public class NodeProgressBarFigure extends Figure {
         this.alpha = alpha;
     }
 
-    public void setProgressData(int extent) {
-
+    public void setProgressData(Double extent) {
         List childs = this.getChildren();
         childs.clear();
+        if (extent == 0) {
+            return;
+        }
         Figure baseFigure = new Figure();
         baseFigure.setLayoutManager(new ToolbarLayout(true));
         baseFigure.setVisible(true);
+
+        Double extentString = Math.floor(extent / 10);
+        Double extentFlag = Math.floor(extent);
 
         Figure progressBarFigure = new Figure();
         progressBarFigure.setBorder(new LineBorder(ColorConstants.black, 1));
         progressBarFigure.setLayoutManager(new ToolbarLayout(true));
         progressBarFigure.setSize(60, 10);
         progressBarFigure.setPreferredSize(60, 10);
-        if (extent != 0) {
-            progressBarFigure.setVisible(true);
-        } else {
-            progressBarFigure.setVisible(false);
-        }
+
+        progressBarFigure.setVisible(true);
 
         SimpleHtmlFigure dataFigure = new SimpleHtmlFigure();
         dataFigure.setVisible(true);
         Font font = new Font(Display.getDefault(), "Courier", 12, SWT.NORMAL);
         dataFigure.setFont(font);
-        if (extent == 0) {
-            dataFigure.setText("");//$NON-NLS-1$
-        } else {
-            dataFigure.setText(extent + "0%");//$NON-NLS-1$
-        }
+
+        dataFigure.setText(extentFlag.intValue() + "%");//$NON-NLS-1$
 
         dataFigure.setSize(27, 12);
         dataFigure.setPreferredSize(27, 12);
 
         int nodeX = progressBarFigure.getLocation().x;
         int nodeY = progressBarFigure.getLocation().y;
-        if (extent == 10) {
+
+        if (extentString == 0) {
+            if (extent > 0 && extent < 1) {
+                ImageFigure progressDataFigure = new ImageFigure();
+                Image image = ImageProvider.getImage(ECoreImage.PROGRESSGRAYBAR);
+                progressDataFigure.setImage(image);
+                progressDataFigure.setVisible(true);
+                progressBarFigure.add(progressDataFigure);
+            } else if (extent >= 1 && extent < 10) {
+                ImageFigure progressDataFigure = new ImageFigure();
+                Image image = ImageProvider.getImage(ECoreImage.PROGRESSGRAYGEBAR);
+                progressDataFigure.setImage(image);
+                progressDataFigure.setVisible(true);
+                progressBarFigure.add(progressDataFigure);
+            }
+
+        } else if (extentString == 10) {
             ImageFigure progressDataFigure = new ImageFigure();
             Image image = ImageProvider.getImage(ECoreImage.PROGRESSGREEBAR);
             progressDataFigure.setImage(image);
             progressDataFigure.setVisible(true);
             progressBarFigure.add(progressDataFigure);
-        } else {
-            for (int i = 0; i < extent; i++) {
+        } else if (extentString > 0 && extentString < 10) {
+
+            for (int i = 0; i < extentString; i++) {
                 ImageFigure progressDataFigure = new ImageFigure();
                 Image image = ImageProvider.getImage(ECoreImage.PROGRESSBAR);
                 progressDataFigure.setImage(image);
@@ -122,31 +138,26 @@ public class NodeProgressBarFigure extends Figure {
                 }
 
             }
-            if (extent != 0) {
 
-                for (int j = 0; j < (10 - extent); j++) {
-                    ImageFigure progressDataFigure = new ImageFigure();
-                    Image image = ImageProvider.getImage(ECoreImage.PROGRESSBARBlACK);
-                    progressDataFigure.setImage(image);
-                    progressDataFigure.setVisible(true);
-                    progressBarFigure.add(progressDataFigure);
-                    int imageWith = image.getImageData().width;
-                    if (j != 0) {
-                        Point point = new Point(nodeX + extent * imageWith + j * imageWith, nodeY);
-                        progressDataFigure.setLocation(point);
-                    }
+            for (int j = 0; j < (10 - extentString); j++) {
+                ImageFigure progressDataFigure = new ImageFigure();
+                Image image = ImageProvider.getImage(ECoreImage.PROGRESSBARBlACK);
+                progressDataFigure.setImage(image);
+                progressDataFigure.setVisible(true);
+                progressBarFigure.add(progressDataFigure);
+                int imageWith = image.getImageData().width;
+                if (j != 0) {
+                    Point point = new Point(nodeX + extentString * imageWith + j * imageWith, nodeY);
+                    progressDataFigure.setLocation(point);
                 }
             }
+
         }
-        if (extent != 0) {
-            baseFigure.setSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width, dataFigure
-                    .getPreferredSize().height);
-            baseFigure.setPreferredSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width,
-                    dataFigure.getPreferredSize().height);
-        } else {
-            baseFigure.setSize(0, 0);
-            baseFigure.setPreferredSize(0, 0);
-        }
+
+        baseFigure.setSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width, dataFigure
+                .getPreferredSize().height);
+        baseFigure.setPreferredSize(dataFigure.getPreferredSize().width + progressBarFigure.getPreferredSize().width, dataFigure
+                .getPreferredSize().height);
 
         baseFigure.add(progressBarFigure);
         baseFigure.add(dataFigure);
