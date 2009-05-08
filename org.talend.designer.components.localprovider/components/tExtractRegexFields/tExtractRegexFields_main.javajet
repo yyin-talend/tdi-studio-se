@@ -54,8 +54,17 @@ if(inConn!=null){
 %>
     java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
     int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
-    boolean matches_<%=cid %> = matcher_<%= cid %>.find();
-    
+    //boolean matches_<%=cid %> = matcher_<%= cid %>.find();
+    java.util.List<String> list_<%=cid%> = new java.util.ArrayList<String>();
+    while(matcher_<%= cid %>.find()){
+    	for(int i_<%=cid%>=0;i_<%=cid%><matcher_<%=cid%>.groupCount();i_<%=cid%>++){
+	    	list_<%=cid%>.add(matcher_<%=cid%>.group(i_<%=cid%>+1));
+    	}
+    }
+    if(list_<%=cid%>.size() == 0){
+    	list_<%=cid%>.add(null);
+    }
+    java.util.Iterator<String> it_<%=cid%> = list_<%=cid%>.iterator();
 <%
 		}
 	}
@@ -94,6 +103,10 @@ if(!dieOnError.equals("true")){
 	boolean flag_<%=cid %> = true;
 <%
 }
+%>
+while(it_<%=cid%>.hasNext()){
+	String match_<%=cid%> = it_<%=cid%>.next();
+<%
 for(int i=0; i<newColumnList.size();i++){
 	IMetadataColumn column = newColumnList.get(i);
 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -103,26 +116,27 @@ for(int i=0; i<newColumnList.size();i++){
 	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
 		if(dieOnError.equals("true")){
 %>
-<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
+			<%=outConn.getName()%>.<%=column.getLabel() %> = match_<%=cid%>;
 <%
 		}else{
 %>
 if(flag_<%=cid %>){
 	try{
-		<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
+		<%=outConn.getName()%>.<%=column.getLabel() %> = match_<%=cid%>;
 	}catch(IllegalStateException e){
 		<%=outConn.getName()%>.<%=column.getLabel() %> = null;
-		flag_<%=cid %> = false;
+		flag_<%=cid%> = false;
 	}
 }else{
 	<%=outConn.getName()%>.<%=column.getLabel() %> = null;
 }
+
 <%
 		}
 	}else{ 
 		if(dieOnError.equals("true")){
 %>
-	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
+	temp_<%=cid%> = match_<%=cid%>;
 	if(temp_<%=cid %>.length() > 0) {
 <%
 		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -159,7 +173,7 @@ if(flag_<%=cid %>){
 %>
 if(flag_<%=cid %>){
 try{
-	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
+	temp_<%=cid%> = match_<%=cid%>;
 	if(temp_<%=cid %>.length() > 0) {
 <%
 		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -243,6 +257,5 @@ try{
 	}
 }
 %>
-
 	
 	
