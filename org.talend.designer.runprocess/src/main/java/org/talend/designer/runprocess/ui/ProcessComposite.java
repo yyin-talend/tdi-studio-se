@@ -401,7 +401,8 @@ public class ProcessComposite extends Composite {
         formData = new FormData();
         formData.top = new FormAttachment(toolBar, 0, SWT.TOP);
         formData.left = new FormAttachment(toolBar, 0, SWT.RIGHT);
-        formData.right = new FormAttachment(toolBar, itemDropDown.getWidth(), SWT.RIGHT);
+        // qli modified to fix the bug "7302".
+        formData.right = new FormAttachment(toolBar, itemDropDown.getWidth() + 50, SWT.RIGHT);
         formData.height = 30;
         killBtn.setLayoutData(formData);
 
