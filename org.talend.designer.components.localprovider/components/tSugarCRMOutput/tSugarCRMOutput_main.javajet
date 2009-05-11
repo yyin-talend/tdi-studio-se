@@ -43,12 +43,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 					if(!isPrimitive) { //begin
-%>   				
+%>
+                nameValues_<%=cid %>[<%=i %>] = new org.talend.sugarws.Name_value("<%=column.getLabel() %>", "");
 	    		if(<%=conn.getName() %>.<%=column.getLabel() %> != null) { //
 <%
     				} 
-%>              
-                 nameValues_<%=cid %>[<%=i %>] = new org.talend.sugarws.Name_value("<%=column.getLabel() %>",    						
+%>
+                    nameValues_<%=cid %>[<%=i %>].setValue(
 <%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
@@ -65,7 +66,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%				
 					}
 %>
-					          );	
+					         );	
 							
 <%
 					if(!isPrimitive) {//end
