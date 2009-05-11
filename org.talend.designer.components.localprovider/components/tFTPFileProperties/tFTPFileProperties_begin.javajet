@@ -158,11 +158,11 @@ if(useProxy){
 <%
 	if(connectMode.equals("ACTIVE")){
 %>
-		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
 <%
 	}else{
 %>
-		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
 <%
 	}
 %>	
