@@ -373,9 +373,14 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     public Color getBackgroundColor(B bean) {
                         Map<String, Object> valueMap = (Map<String, Object>) bean;
                         List<Map<String, Object>> fullValues = (List<Map<String, Object>>) param.getValue();
-                        ((ElementParameter) currentParam).setCurrentRow(fullValues.indexOf(valueMap));
-                        if (currentParam.isReadOnly(element.getElementParameters())) {
-                            return AbstractMetadataTableEditorView.READONLY_CELL_BG_COLOR;
+
+                        // hyWang add varriable index for bug 7294
+                        int index = fullValues.indexOf(valueMap);
+                        if (index >= 0) {
+                            ((ElementParameter) currentParam).setCurrentRow(index);
+                            if (currentParam.isReadOnly(element.getElementParameters())) {
+                                return AbstractMetadataTableEditorView.READONLY_CELL_BG_COLOR;
+                            }
                         }
                         return null;
                     }
