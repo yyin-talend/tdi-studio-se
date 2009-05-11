@@ -15,6 +15,9 @@ package org.talend.repository.ui.wizards.metadata.connection.ldap;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
@@ -45,6 +48,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
@@ -53,6 +57,13 @@ import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractLDAPSchemaStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
+
+import com.ca.commons.jndi.ConnectionData;
+import com.ca.commons.jndi.SchemaOps;
+import com.ca.commons.naming.DN;
+import com.ca.directory.jxplorer.broker.CBGraphicsOps;
+import com.ca.directory.jxplorer.broker.JNDIBroker;
+import com.ca.directory.jxplorer.broker.JNDIBroker.DataConnectionQuery;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>
@@ -71,6 +82,10 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
     private Label previewInformationLabel;
 
     private ShadowProcessPreview ldapSchemaPreview;
+
+    static DN dn;
+
+    static CBGraphicsOps dirOps;
 
     /**
      * Another.
@@ -551,27 +566,55 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
 
         itemTableNameList = new ArrayList<String>();
 
-        // List<javax.naming.directory.Attribute> attributeList = LDAPConnectionUtils
-        // .getAttributes((LDAPSchemaConnection) this.connectionItem.getConnection());
+        // qli modified to fix the bug "6648".
+        SchemaOps schemaOps = getSchema(getOriginalValueConnection());
 
-        Object[] attributeList = LDAPConnectionUtils.getAttributes(getOriginalValueConnection());
+        Object[] attributeList = LDAPConnectionUtils.getAttributes(schemaOps);
 
-        // String[] attributes = LDAPConnectionUtils.getAttributes((LDAPSchemaConnection)
-        // this.connectionItem.getConnection());
-        // Arrays.sort(attributes);
-        // for (Attribute attribute : attributeList) {
-        // String id = attribute.getID();
-        // if (itemTableNameList.contains(id) == false) {
-        // itemTableNameList.add(id);
-        // System.out.println(id);
-        // }
-        // }
         if (attributeList != null && attributeList.length > 0) {
             for (Object object : attributeList) {
                 String str = (String) object;
                 itemTableNameList.add(str);
             }
         }
+    }
+
+    /**
+     * 
+     * qli comment the method "getSchema".
+     * 
+     * @param talendLDAPConnection
+     * 
+     * */
+    private SchemaOps getSchema(LDAPSchemaConnection talendLDAPConnection) {
+        SchemaOps schemaOps = null;
+        ConnectionData newCon = new ConnectionData();
+        newCon.protocol = ConnectionData.LDAP;
+        newCon.setURL(talendLDAPConnection.getHost());
+        newCon.version = 3;
+        newCon.useGSSAPI = false;
+        newCon.userDN = talendLDAPConnection.getBindPrincipal();
+        newCon.pwd = talendLDAPConnection.getBindPassword().toCharArray();
+        newCon.useSSL = false;
+        newCon.baseDN = (String) talendLDAPConnection.getBaseDNs().get(0);
+        // finish the connection
+        dn = new DN(newCon.baseDN);
+
+        JNDIBroker jndiBroker = new JNDIBroker();
+
+        DataConnectionQuery request = (DataConnectionQuery) jndiBroker.connect(newCon);
+        ConnectionData cData = request.conData;
+        DirContext ctx;
+        try {
+            dirOps = new CBGraphicsOps(cData);
+            ctx = dirOps.getContext();
+            schemaOps = new SchemaOps(ctx);
+        } catch (NamingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return schemaOps;
+
     }
 
     /**

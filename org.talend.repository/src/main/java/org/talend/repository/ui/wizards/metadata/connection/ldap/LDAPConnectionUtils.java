@@ -23,15 +23,15 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.InitialLdapContext;
 
-import org.apache.directory.studio.ldapbrowser.core.model.schema.ObjectClassDescription;
-import org.apache.directory.studio.ldapbrowser.core.model.schema.Schema;
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.ldap.AdvancedSocketFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.repository.model.EAuthenticationMethod;
 import org.talend.repository.model.EEncryptionMethod;
+
+import com.ca.commons.jndi.SchemaOps;
+import com.ca.commons.naming.DXAttributes;
 
 /**
  * This class is used for getting connection and retrieving data for LDAP. <br/>
@@ -51,159 +51,87 @@ public class LDAPConnectionUtils {
 
     private static InitialLdapContext ctx = null;
 
-    // Used for customed schema attributes.
-    private static List<String> allAttributes;
-
     /**
-     * Comment method "getAttributes".
+     * qli Comment method "getAttributes".
      * 
-     * @return
+     * @param schema
+     * 
+     * @return array
      */
-    // public static List<Attribute> getAttributes(LDAPSchemaConnection connection) {
-    public static Object[] getAttributes(LDAPSchemaConnection connection) {
-        if (ctx == null) {
-            return null;
-        }
 
-        String baseDN = connection.getSelectedDN();
-        EList baseDNs = connection.getBaseDNs();
-        String searchFilter = connection.getFilter();
-        int timeLimit = (Integer.valueOf(connection.getTimeOutLimit()).intValue());
-        EList returnAttributeList = connection.getReturnAttributes();
-        List<String> allObjectClassList = new ArrayList<String>();
-
-        int size = returnAttributeList.size();
-
-        String[] returnAttributes = (String[]) returnAttributeList.toArray(new String[size]);
-
-        try {
-            javax.naming.directory.SearchControls searchCtls = new javax.naming.directory.SearchControls();
-            searchCtls.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
-
-            javax.naming.directory.Attributes namingContexts = ctx.getAttributes("", new String[] { "namingContexts" }); //$NON-NLS-1$ //$NON-NLS-2$
-            javax.naming.directory.Attribute namingContextValue = namingContexts.get("namingContexts"); //$NON-NLS-1$
-            if (namingContextValue == null) {
-                namingContextValue = namingContexts.get("namingcontexts"); //$NON-NLS-1$
-            }
-            String searchBase = null;
-            if (baseDN == null) {
-                searchBase = ((namingContextValue == null) || ((namingContextValue != null)
-                        && (namingContextValue.get().toString() != null) && (namingContextValue.get().toString().length() > 0) && (Character
-                        .isIdentifierIgnorable(namingContextValue.get().toString().charAt(0))))) ? "" : namingContextValue.get() //$NON-NLS-1$
-                        .toString();
-            } else {
-                searchBase = baseDN;
-            }
-
-            if (searchFilter == null) {
-
-                searchFilter = ConnectionUIConstants.DEFAULT_FILTER;
-            }
-
-            // initialize counter to total the group members
-            int totalResults = 0;
-
-            // Specify the attributes to return.
-            if (returnAttributes != null && returnAttributes.length > 0) {
-                searchCtls.setReturningAttributes(returnAttributes);
-            }
-
-            // specify the value of time out.
-            if (timeLimit != 0) {
-                searchCtls.setTimeLimit(timeLimit);
-            }
-
-            boolean isGetBaseDNsFromRoot = connection.isGetBaseDNsFromRoot();
-
-            if (isGetBaseDNsFromRoot) {
-                EList baseDNList = baseDNs;
-                for (Object tempBaseDN : baseDNList) {
-                    allObjectClassList.addAll(getAttributeList(searchFilter, searchCtls, (String) tempBaseDN));
-                }
-            } else {
-                allObjectClassList.addAll(getAttributeList(searchFilter, searchCtls, searchBase));
-            }
-            // System.out.println("Total attrs: " + totalResults);
-        } catch (Exception e) {
-            MessageBoxExceptionHandler.process(e);
-            connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
-            return null;
-        }
-
-        Schema defaultSchema = new Schema().DEFAULT_SCHEMA;
+    public static Object[] getAttributes(SchemaOps schema) {
 
         Set<String> attributeSet = new TreeSet<String>();
-
-        for (String objectClassName : allObjectClassList) {
-            ObjectClassDescription objectClassDescription = defaultSchema.getObjectClassDescription(objectClassName);
-
-            String[] mustAttributeTypeDescriptionNames = objectClassDescription.getMustAttributeTypeDescriptionNames();
-            String[] mayAttributeTypeDescriptionNames = objectClassDescription.getMayAttributeTypeDescriptionNames();
-
-            for (String string : mustAttributeTypeDescriptionNames) {
-                attributeSet.add(string);
-            }
-            for (String string2 : mayAttributeTypeDescriptionNames) {
-                attributeSet.add(string2);
-            }
+        if (schema == null) {
+            return null;
+        }
+        Attribute oc = null;
+        DXAttributes dx = null;
+        try {
+            dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(LDAPSchemaStep3Form.dn, null));
+        } catch (NamingException e1) {
+            e1.printStackTrace();
         }
 
-        for (String attribute : allAttributes) {
-            if (!attributeSet.contains(attribute)) {
-                attributeSet.add(attribute);
-            }
-        }
+        oc = dx.getAllObjectClasses();
+        try {
+            if (oc.contains(SchemaOps.SCHEMA_FAKE_OBJECT_CLASS_NAME))
+                return null;
+            NamingEnumeration ocs = oc.getAll();
+            while (ocs.hasMore()) {
+                final Object next = ocs.next();
+                String objectClass = (String) next;
+                attributeSet.add(objectClass);
+                Attributes ocAttrs = schema.getAttributes("ClassDefinition/" + objectClass);//$NON-NLS-1$
+                Attribute mustAtt = ocAttrs.get("MUST"); //$NON-NLS-1$     // get mandatory attribute IDs
+                Attribute mayAtt = ocAttrs.get("MAY"); //$NON-NLS-1$       // get optional attribute IDs
 
-        Object[] array = (Object[]) attributeSet.toArray();
-
-        return array;
-        // return attributeList;
-
-    }
-
-    /**
-     * Administrator Comment method "getAttributeDetails".
-     * 
-     * @param searchFilter
-     * @param attributeNameList
-     * @param searchCtls
-     * @param searchBase
-     * @return
-     * @throws NamingException
-     */
-    private static List<String> getAttributeList(String searchFilter, javax.naming.directory.SearchControls searchCtls,
-            String searchBase) throws NamingException {
-
-        allAttributes = new ArrayList<String>();
-
-        List<String> objectClassList = new ArrayList<String>();
-        javax.naming.NamingEnumeration answer = ctx.search(searchBase, searchFilter, searchCtls);
-
-        // Loop through the search results
-        while (answer.hasMoreElements()) {
-            javax.naming.directory.SearchResult sr = (javax.naming.directory.SearchResult) answer.next();
-
-            Attributes attrs = sr.getAttributes();
-
-            if (attrs != null) {
-                for (NamingEnumeration ae = attrs.getAll(); ae.hasMore();) {
-                    Attribute attr = (Attribute) ae.next();
-                    String id = attr.getID();
-                    if (id.equals("objectClass")) { //$NON-NLS-1$
-                        NamingEnumeration<?> all = attr.getAll();
-                        while (all.hasMore()) {
-                            String next = (String) all.next();
-                            if (!objectClassList.contains(next)) {
-                                objectClassList.add(next);
-                            }
+                if (mustAtt != null) {
+                    NamingEnumeration musts = mustAtt.getAll();
+                    while (musts.hasMore()) {
+                        String attributeName = (String) musts.next();
+                        if (attributeName.indexOf(";binary") > 0)//$NON-NLS-1$
+                            attributeName = attributeName.substring(0, attributeName.indexOf(";binary"));//$NON-NLS-1$
+                        String ldapName = null;
+                        if (schema.knownOID(attributeName)) {
+                            ldapName = schema.translateOID(attributeName);
+                            attributeSet.add(ldapName);
+                        } else {
+                            Attributes myldapEntry = schema.getAttributes("AttributeDefinition/" + attributeName);//$NON-NLS-1$
+                            ldapName = myldapEntry.get("NAME").get().toString();//$NON-NLS-1$
+                            attributeSet.add(ldapName);
                         }
-                    } else {
-                        allAttributes.add(id);
+                    }
+                }
+
+                if (mayAtt != null) {
+                    NamingEnumeration mays = mayAtt.getAll();
+                    while (mays.hasMore()) {
+                        String attOID = (String) mays.next();
+                        // XXX isNonString hack
+                        if (attOID.indexOf(";binary") > 0)//$NON-NLS-1$
+                            attOID = attOID.substring(0, attOID.indexOf(";binary"));//$NON-NLS-1$
+
+                        String ldapName = null;
+                        if (schema.knownOID(attOID)) {
+                            ldapName = schema.translateOID(attOID);
+                            attributeSet.add(ldapName);
+                        } else {
+                            Attributes myldapEntry = schema.getAttributes("AttributeDefinition/" + attOID);//$NON-NLS-1$
+                            ldapName = myldapEntry.get("NAME").get().toString();//$NON-NLS-1$
+                            attributeSet.add(ldapName);
+                        }
                     }
                 }
             }
+        } catch (NamingException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
-        return objectClassList;
+        Object[] array = (Object[]) attributeSet.toArray();
+
+        return array;
     }
 
     /**
