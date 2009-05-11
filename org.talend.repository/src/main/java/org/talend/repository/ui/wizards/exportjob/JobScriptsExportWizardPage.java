@@ -869,8 +869,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     public FileSystemExporterFullPath getUnzipExporterOperation(List<ExportFileResource> resourcesToExport) {
-        String currentUnzipFile = getDestinationValue().replace("/", "\\"); //$NON-NLS-1$ //$NON-NLS-2$
-        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf("\\")); //$NON-NLS-1$
+        String currentUnzipFile = getDestinationValue().replace("/", File.separator); //$NON-NLS-1$ //$NON-NLS-2$
+        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf(File.separator)); //$NON-NLS-1$
         FileSystemExporterFullPath exporterOperation = null;
         try {
             exporterOperation = new FileSystemExporterFullPath(resourcesToExport, currentUnzipFile);
