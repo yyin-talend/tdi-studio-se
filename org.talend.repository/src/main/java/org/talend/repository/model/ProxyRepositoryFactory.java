@@ -923,9 +923,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             String folderLabel = path.segment(i);
 
             String folderName = parentPath.append(folderLabel).toString();
-            if (!folders.contains(folderName)) {
-                createFolder(project, itemType, parentPath, folderLabel);
-            }
+            // if (!folders.contains(folderName)) {
+            createFolder(project, itemType, parentPath, folderLabel);
+            // }
         }
     }
 
