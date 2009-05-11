@@ -365,8 +365,22 @@ public class StatsAndLogsManager {
             connectionNode.getElementParameter(EParameterName.SCHEMA_DB.getName()).setValue(
                     process.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue());
         }
-        connectionNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
-                process.getElementParameter(EParameterName.DBNAME.getName()).getValue());
+        if (connectionNode.getElementParameter(EParameterName.DBNAME.getName()) != null) {
+            connectionNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
+                    process.getElementParameter(EParameterName.DBNAME.getName()).getValue());
+        }
+        // 7253
+        IElementParameter elementParameter = connectionNode.getElementParameter("PROPERTY");
+        if (elementParameter != null) {
+            String repositoryValue = elementParameter.getRepositoryValue();
+            if ("DATABASE:SQLITE".equals(repositoryValue)) {
+                if (connectionNode.getElementParameter(EParameterName.DBNAME.getName()) != null) {
+                    connectionNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
+                            process.getElementParameter(EParameterName.DBFILE.getName()).getValue());
+                }
+            }
+        }
+
         if (connectionNode.getElementParameter(EParameterName.DB_VERSION.getName()) != null) {
             connectionNode.getElementParameter(EParameterName.DB_VERSION.getName()).setValue(
                     process.getElementParameter(EParameterName.DB_VERSION.getName()).getValue());
