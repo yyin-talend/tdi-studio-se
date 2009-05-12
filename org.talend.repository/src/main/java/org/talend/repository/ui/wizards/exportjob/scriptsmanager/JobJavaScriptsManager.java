@@ -289,8 +289,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<URL> emfFileUrls = new ArrayList<URL>();
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-            resource.addResources(JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
-                    + typeFolderPath.toOSString(), emfFileUrls);
+            String relativePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
+                    + typeFolderPath.toOSString();
+            if (processPath != null && !"".equals(processPath)) {
+                relativePath = relativePath + PATH_SEPARATOR + processPath;
+            }
+            resource.addResources(relativePath, emfFileUrls);
             String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
             IPath path = getSrcRootLocation();
