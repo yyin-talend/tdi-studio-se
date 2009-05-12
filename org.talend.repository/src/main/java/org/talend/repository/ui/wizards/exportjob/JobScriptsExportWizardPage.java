@@ -752,7 +752,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
 
         ok = executeExportOperation(exporterOperation);
-    
+
         // path can like name/name
         manager.deleteTempFiles();
         ProcessorUtilities.resetExportConfig();
@@ -798,7 +798,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (curLanguage == ECodeLanguage.JAVA) {
             reBuildJobZipFile();
         }
-        //see bug 7181
+        // see bug 7181
         if (zipOption != null && zipOption.equals("true")) { //$NON-NLS-1$
             // unzip
             try {
@@ -869,8 +869,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     public FileSystemExporterFullPath getUnzipExporterOperation(List<ExportFileResource> resourcesToExport) {
-        String currentUnzipFile = getDestinationValue().replace("/", "\\"); //$NON-NLS-1$ //$NON-NLS-2$
-        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf("\\")); //$NON-NLS-1$
+        String currentUnzipFile = getDestinationValue().replace("/", File.separator); //$NON-NLS-1$ //$NON-NLS-2$
+        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf(File.separator)); //$NON-NLS-1$
         FileSystemExporterFullPath exporterOperation = null;
         try {
             exporterOperation = new FileSystemExporterFullPath(resourcesToExport, currentUnzipFile);
