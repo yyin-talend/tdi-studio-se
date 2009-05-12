@@ -82,8 +82,10 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
@@ -254,8 +256,8 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -306,11 +308,19 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     private void fastRepositoryUpdateSchema(IElementParameter schemaParam) {
         IElementParameter param = schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         if (param != null && param.getValue() != null) {
-            String[] names = ((String) param.getValue()).split(" - "); //$NON-NLS-1$
-            if (names.length != 2) {
+            String queryIdAndName = (String) param.getValue();
+            String[] names = queryIdAndName.split(" - "); //$NON-NLS-1$
+            if (names.length < 2) {
                 return;
             }
             String linkedRepository = names[0];
+            String tableName = null;
+            if (names.length == 2) {
+                tableName = names[1];
+            } else if (names.length > 2) {
+                tableName = queryIdAndName.substring(linkedRepository.length() + 3);
+            }
+
             if (lastItemUsed != null) {
                 if (!linkedRepository.equals(lastItemUsed.getProperty().getId())) {
                     lastItemUsed = null;
@@ -331,7 +341,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
                     ExceptionHandler.process(e);
                 }
             }
-            String tableName = names[1];
+
             // EList<MetadataTable> tableList = lastItemUsed.getConnection().getTables();
             // for (MetadataTable table )
 
@@ -351,12 +361,18 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         }
         param = param.getChildParameters().get(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
         if (param != null && param.getValue() != null) {
-            String[] names = ((String) param.getValue()).split(" - "); //$NON-NLS-1$
-            if (names.length != 2) {
+            String queryIdAndName = (String) param.getValue();
+            String[] names = queryIdAndName.split(" - "); //$NON-NLS-1$
+            if (names.length < 2) {
                 return;
             }
             String linkedRepository = names[0];
-            String queryName = names[1];
+            String queryName = null;
+            if (names.length == 2) {
+                queryName = names[1];
+            } else if (names.length > 2) {
+                queryName = queryIdAndName.substring(linkedRepository.length() + 3);
+            }
             if (lastItemUsed != null) {
                 if (!linkedRepository.equals(lastItemUsed.getProperty().getId())) {
                     lastItemUsed = null;
@@ -437,8 +453,9 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
-     * boolean)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org
+     * .talend.core.model.process.IElementParameter, boolean)
      */
     @Override
     public void refresh(IElementParameter param, boolean check) {
