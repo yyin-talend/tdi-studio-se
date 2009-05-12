@@ -332,6 +332,9 @@ public final class DBConnectionContextUtils {
         String className = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverClass());
         String jarPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverJarPath());
 
+        // hyWang add for bug 0007252
+        String dbmsID = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDbmsId());
+
         filePath = TalendTextUtils.removeQuotes(filePath);
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
         cloneConn.setAdditionalParams(additionParam);
@@ -361,7 +364,7 @@ public final class DBConnectionContextUtils {
 
         cloneConn.setComment(dbConn.getComment());
         cloneConn.setDatabaseType(dbConn.getDatabaseType());
-        cloneConn.setDbmsId(dbConn.getDbmsId());
+        cloneConn.setDbmsId(dbmsID);
         cloneConn.setDivergency(dbConn.isDivergency());
         cloneConn.setDbVersionString(dbConn.getDbVersionString());
         cloneConn.setId(dbConn.getId());
