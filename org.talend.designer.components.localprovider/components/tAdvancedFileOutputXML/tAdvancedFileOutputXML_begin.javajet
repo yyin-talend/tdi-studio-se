@@ -49,7 +49,7 @@ boolean	needRoot_<%=cid%> = true;
 <%}%>
 String fileName_<%=cid%> = <%=fileName%>;
 if(fileName_<%=cid %>.indexOf(".", fileName_<%=cid %>.lastIndexOf("/")) < 0){
-	throw new Exception("The xml file name should end with \".xml\"");
+	throw new Exception("The file name should specify a file with a suffix like \".xml\"");
 }
 String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("."));
 <%
