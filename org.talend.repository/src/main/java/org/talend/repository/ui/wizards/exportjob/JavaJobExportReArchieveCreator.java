@@ -138,6 +138,12 @@ public class JavaJobExportReArchieveCreator {
             for (String s : strs) {
                 changedContent.append(s).append(" "); //$NON-NLS-1$
             }
+            //see bug 7181. add addition lines
+            String line2 = br.readLine();
+            while (line2 != null) {
+                changedContent.append(('\n')).append(line2); //$NON-NLS-1$
+                line2 = br.readLine();
+            }
             // rewrite the changed content to file
             bw = new BufferedWriter(new FileWriter(file));
             bw.write(line + "\n"); //$NON-NLS-1$

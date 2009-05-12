@@ -131,7 +131,7 @@ public class ZipToFile {
     public static void unZipFile(String zipfile, String unzipdir) throws Exception {
         File unzipF = new File(unzipdir);
         if (!unzipF.exists()) {
-            unzipF.mkdirs();
+            unzipF.mkdir();
         }
         ZipFile zfile = new ZipFile(zipfile);
         Enumeration zList = zfile.entries();

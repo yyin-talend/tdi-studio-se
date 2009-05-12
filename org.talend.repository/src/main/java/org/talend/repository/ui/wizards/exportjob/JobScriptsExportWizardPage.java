@@ -752,18 +752,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
 
         ok = executeExportOperation(exporterOperation);
-
-        // if zip optin is true,create unzip file.
-        if (zipOption != null && zipOption.equals("true")) { //$NON-NLS-1$
-            FileSystemExporterFullPath exporter = getUnzipExporterOperation(resourcesToExport);
-            try {
-                exporter.exportSpecifiedResources();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                // e.printStackTrace();
-                ExceptionHandler.process(e);
-            }
-        }
+    
         // path can like name/name
         manager.deleteTempFiles();
         ProcessorUtilities.resetExportConfig();
@@ -808,6 +797,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
         if (curLanguage == ECodeLanguage.JAVA) {
             reBuildJobZipFile();
+        }
+        //see bug 7181
+        if (zipOption != null && zipOption.equals("true")) { //$NON-NLS-1$
+            // unzip
+            try {
+                String zipFile = getDestinationValue();
+                ZipToFile.unZipFile(getDestinationValue(), new File(zipFile).getParentFile().getAbsolutePath());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         return ok;
     }
@@ -869,8 +869,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     public FileSystemExporterFullPath getUnzipExporterOperation(List<ExportFileResource> resourcesToExport) {
-        String currentUnzipFile = getDestinationValue().replace("/", File.separator); //$NON-NLS-1$ //$NON-NLS-2$
-        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf(File.separator)); //$NON-NLS-1$
+        String currentUnzipFile = getDestinationValue().replace("/", "\\"); //$NON-NLS-1$ //$NON-NLS-2$
+        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf("\\")); //$NON-NLS-1$
         FileSystemExporterFullPath exporterOperation = null;
         try {
             exporterOperation = new FileSystemExporterFullPath(resourcesToExport, currentUnzipFile);
