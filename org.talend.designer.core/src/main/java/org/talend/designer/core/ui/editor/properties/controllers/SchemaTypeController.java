@@ -644,7 +644,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
                 // setColumnLength(node, param, columnCopied);
             }
-            outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
+            outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly()
+                    || param.isReadOnly(node.getElementParametersWithChildrens()));
             if (("tLogCatcher".equals(node.getComponent().getName()) || "tStatCatcher".equals(node.getComponent().getName()))
                     && !outputMetaCopy.sameMetadataAs(originaleMetadataTable, IMetadataColumn.OPTIONS_NONE)) {
                 outputMetaCopy.setReadOnly(false);
