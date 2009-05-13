@@ -1004,7 +1004,7 @@ public class UIManager extends AbstractUIManager {
                 int y;
                 TableItem tableItem = mapperManager.retrieveTableItem(tableEntry);
                 Table table = tableItem.getParent();
-                Rectangle boundsTableItem = tableItem.getBounds(1);
+                Rectangle boundsTableItem = tableItem.getBounds(1);// FIX for issue 1225 ("1" parameter added)
                 y = boundsTableItem.y + table.getItemHeight() / 2 + dataMapTableView.getBorderWidth();
                 int x = 0;
                 if (y < 0) {
