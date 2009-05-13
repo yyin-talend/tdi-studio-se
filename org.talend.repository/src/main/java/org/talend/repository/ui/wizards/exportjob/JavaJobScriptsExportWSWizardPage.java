@@ -488,9 +488,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportChoiceMap.put(ExportChoice.needSource, false);
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
-            exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
-            exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
-            exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
             exportChoiceMap.put(ExportChoice.needMetaInfo, true);
             exportChoiceMap.put(ExportChoice.queueMessageName, queueMessageName.getText());
             return exportChoiceMap;
@@ -502,6 +499,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportChoiceMap.put(ExportChoice.needMetaInfo, false);
         }
 
+        exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
+        exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWEBXML, webXMLButton.getSelection());
         exportChoiceMap.put(ExportChoice.needCONFIGFILE, configFileButton.getSelection());
         exportChoiceMap.put(ExportChoice.needAXISLIB, axisLibButton.getSelection());
