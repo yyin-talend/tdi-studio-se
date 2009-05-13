@@ -52,7 +52,6 @@ import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
-import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
@@ -1005,17 +1004,11 @@ public class UIManager extends AbstractUIManager {
                 int y;
                 TableItem tableItem = mapperManager.retrieveTableItem(tableEntry);
                 Table table = tableItem.getParent();
-                Rectangle boundsTableItem = tableItem.getBounds();
+                Rectangle boundsTableItem = tableItem.getBounds(1);
                 y = boundsTableItem.y + table.getItemHeight() / 2 + dataMapTableView.getBorderWidth();
                 int x = 0;
                 if (y < 0) {
                     y = 0;
-                }
-
-                if (WindowSystem.isOSX()) { // FIX for issue 1225
-                    int idx = tableEntry.getParent().getColumnEntries().indexOf(tableEntry);
-                    y += idx * table.getItemHeight();
-                    y += 19; // 19px offset for the header (would be 20 except getBorderWidth() returns 1
                 }
 
                 Point point = new Point(x, y);
