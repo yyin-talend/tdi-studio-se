@@ -49,7 +49,7 @@ if (connList.size()>0) {//HSS_____0
 		schema.put("PADDING_CHAR", TalendTextUtils.removeQuotes(schema_o.get("PADDING_CHAR")));
 		schema.put("KEEP", TalendTextUtils.removeQuotes(schema_o.get("KEEP")));
 		schema.put("ALIGN", TalendTextUtils.removeQuotes(schema_o.get("ALIGN")));
-		if(schema.get("PARENT_ROW").equals("")){//put the root schema in the first place on list.
+		if(("").equals(schema.get("PARENT_ROW"))){//put the root schema in the first place on list.
 			for(int i=0;i<conns.size();i++){//HSS_____0_____1_____1
 	    		IConnection connTemp = conns.get(i);
 	    		if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -83,7 +83,7 @@ if (connList.size()>0) {//HSS_____0
     
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
     if (encoding!=null) {
-    	if (encoding.equals("")) {
+    	if (("").equals(encoding)) {
         	encoding = "undef";
         }
     }
@@ -94,7 +94,7 @@ if (connList.size()>0) {//HSS_____0
 		String fileNewName_<%=cid%> = <%=filename%>;
 		java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
 <%
-	if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){//HSS_____0_____2
+	if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){//HSS_____0_____2
 %>
         //create directory only if not exists
         java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();

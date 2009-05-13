@@ -16,7 +16,7 @@ String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
 java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
 <%
-if(append.equals("false")){
+if(("false").equals(append)){
 %>
 	file_<%=cid%>.delete();
 <%
@@ -24,13 +24,13 @@ if(append.equals("false")){
 %>
 file_<%=cid%>.createNewFile();
 <%
-if(fileFormat.equals("PROPERTIES_FORMAT")){
+if(("PROPERTIES_FORMAT").equals(fileFormat)){
 %>
 	java.io.InputStream fis_<%=cid%> = new java.io.FileInputStream(file_<%=cid%>);
 	java.util.Properties properties_<%=cid%> = new java.util.Properties();
 	properties_<%=cid%>.load(fis_<%=cid%>);
 <%
-}else if(fileFormat.equals("INI_FORMAT")){
+}else if(("INI_FORMAT").equals(fileFormat)){
 	
 %>
 	org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));

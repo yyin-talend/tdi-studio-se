@@ -19,13 +19,13 @@ imports="
 	
 	String connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__");	
 	
-    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
         %>
         conn_<%=cid%>.commit();
         <%
     }
     
-    if(dataAction.equals("INSERT_OR_UPDATE")) {
+    if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -43,7 +43,7 @@ imports="
             
         }        
         <%
-    } else if(dataAction.equals("UPDATE_OR_INSERT")) {
+    } else if(("UPDATE_OR_INSERT").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -69,7 +69,7 @@ imports="
     conn_<%=cid%> .close();
 
     <%
-    if(frameworkType.equals("EMBEDED"))
+    if(("EMBEDED").equals(frameworkType))
     {%>
     	try
     	{
@@ -90,7 +90,7 @@ imports="
     }
     else
     {
-    	if(connectionFlag.equals("false"))
+    	if(("false").equals(connectionFlag))
     	{
     	%>
     	serverControl_<%=cid%>.shutdown();

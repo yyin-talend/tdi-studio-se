@@ -58,7 +58,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	denormalizeColumns.add(columnName);
         	denormalizeColumnsType.add(typesMap.get(columnName));
         	denormalizeDelimiters.add(denormalize.get("DELIMITER"));
-        	denormalizeMergeFlags.add(denormalize.get("MERGE").equals("true"));
+        	denormalizeMergeFlags.add(("true").equals(denormalize.get("MERGE")));
         }
         for(IMetadataColumn column : columns){
         	String columnName = column.getLabel();
@@ -90,7 +90,7 @@ boolean sameGroup_<%=cid %> = true;
 		denormalize_<%=columnName %>_<%=cid %>.add(<%=connName %>.<%=columnName %>);
 <%
 		}else{
-			if((columnType.equals("java.util.Date")) && (patternsMap.get(columnName).length() != 0)){
+			if((("java.util.Date").equals(columnType)) && (patternsMap.get(columnName).length() != 0)){
 %>
 		denormalize_<%=columnName %>_<%=cid %>.append(FormatterUtils.format_Date(<%=connName %>.<%=columnName %>, <%=patternsMap.get(columnName) %>));
 <%
@@ -110,7 +110,7 @@ while(true){
 <%	for(int i = 0; i < groupColumns.size(); i++){
 		String columnName = groupColumns.get(i);
 		String type = typesMap.get(columnName);
-		if(type.equals("byte[]") || type.equals("Object") || type.equals("String") || type.equals("java.util.Date")){
+		if(("byte[]").equals(type) || ("Object").equals(type) || ("String").equals(type) || ("java.util.Date").equals(type)){
 %>if(group_<%=columnName %>_<%=cid %> == null){
 	if(<%=connName %>.<%=columnName %> != null){
 		sameGroup_<%=cid %> = false;
@@ -150,7 +150,7 @@ if(sameGroup_<%=cid %>){
 %>
 	denormalize_<%=columnName %>_<%=cid %>.append(<%=denormalizeDelimiters.get(i) %>);
 <%
-			if((columnType.equals("java.util.Date")) && (patternsMap.get(columnName).length() != 0)){
+			if((("java.util.Date").equals(columnType)) && (patternsMap.get(columnName).length() != 0)){
 %>
 		denormalize_<%=columnName %>_<%=cid %>.append(FormatterUtils.format_Date(<%=connName %>.<%=columnName %>, <%=patternsMap.get(columnName) %>));
 <%
@@ -203,7 +203,7 @@ if( !sameGroup_<%=cid %> ){
 			tempSB_<%=cid %>.append(<%=denormalizeDelimiters.get(i) %>);
 		}
 <%
-						if((columnType.equals("java.util.Date")) && (patternsMap.get(columnName).length() != 0)){
+						if((("java.util.Date").equals(columnType)) && (patternsMap.get(columnName).length() != 0)){
 %>
 		tempSB_<%=cid %>.append(FormatterUtils.format_Date(tmp_<%=cid %>, <%=patternsMap.get(columnName) %>));
 <%
@@ -244,7 +244,7 @@ if( !sameGroup_<%=cid %> ){
 		denormalize_<%=columnName %>_<%=cid %>.add(<%=connName %>.<%=columnName %>);
 <%
 		}else{
-			if((columnType.equals("java.util.Date")) && (patternsMap.get(columnName).length() != 0)){
+			if((("java.util.Date").equals(columnType)) && (patternsMap.get(columnName).length() != 0)){
 %>
 	denormalize_<%=columnName %>_<%=cid %>.append(FormatterUtils.format_Date(<%=connName %>.<%=columnName %>, <%=patternsMap.get(columnName) %>));
 <%
@@ -288,7 +288,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 			tempSB_<%=cid %>.append(<%=denormalizeDelimiters.get(i) %>);
 		}
 <%
-						if((columnType.equals("java.util.Date")) && (patternsMap.get(columnName).length() != 0)){
+						if((("java.util.Date").equals(columnType)) && (patternsMap.get(columnName).length() != 0)){
 %>
 		tempSB_<%=cid %>.append(FormatterUtils.format_Date(tmp_<%=cid %>, <%=patternsMap.get(columnName) %>));
 <%

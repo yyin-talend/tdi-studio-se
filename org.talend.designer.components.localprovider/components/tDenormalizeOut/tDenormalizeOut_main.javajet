@@ -54,7 +54,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		}
         		denormalizeColumns.add(columnName);
         		denormalizeDelimiters.add(denormalize.get("DELIMITER"));
-        		denormalizeMergeFlags.add(denormalize.get("MERGE").equals("true"));
+        		denormalizeMergeFlags.add(("true").equals(denormalize.get("MERGE")));
         	}
         
         	for(IMetadataColumn column : columns){
@@ -131,7 +131,7 @@ if(hash_<%=inputColumn %>_<%=cid %>.containsKey(<%=connName %>.<%=inputColumn %>
 <%
 		}else{
 			if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
-				if((typesMap.get(denormalizeColumn).equals("java.util.Date")) && (patternsMap.get(denormalizeColumn).length() != 0)){
+				if((("java.util.Date").equals(typesMap.get(denormalizeColumn))) && (patternsMap.get(denormalizeColumn).length() != 0)){
 %>		
 	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(<%=denormalizeDelimiters.get(k) %>).append(FormatterUtils.format_Date(<%=connName %>.<%=denormalizeColumn %>, <%=patternsMap.get(denormalizeColumn) %>));
 			
@@ -160,7 +160,7 @@ if(hash_<%=inputColumn %>_<%=cid %>.containsKey(<%=connName %>.<%=inputColumn %>
 <%
 		}else{
 			if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
-				if((typesMap.get(denormalizeColumn).equals("java.util.Date")) && (patternsMap.get(denormalizeColumn).length() != 0)){
+				if((("java.util.Date").equals(typesMap.get(denormalizeColumn))) && (patternsMap.get(denormalizeColumn).length() != 0)){
 %>		
 	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(FormatterUtils.format_Date(<%=connName %>.<%=denormalizeColumn %>, <%=patternsMap.get(denormalizeColumn) %>));
 			
@@ -197,7 +197,7 @@ if(denormalize_result_<%=cid %> == null){
 <%
 					}else{
 						if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
-							if((typesMap.get(denormalizeColumn).equals("java.util.Date")) && (patternsMap.get(denormalizeColumn).length() != 0)){
+							if((("java.util.Date").equals(typesMap.get(denormalizeColumn))) && (patternsMap.get(denormalizeColumn).length() != 0)){
 %>		
 	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(FormatterUtils.format_Date(<%=connName %>.<%=denormalizeColumn %>, <%=patternsMap.get(denormalizeColumn) %>));
 			
@@ -225,7 +225,7 @@ if(denormalize_result_<%=cid %> == null){
 <%
 					}else{
 						if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
-							if((typesMap.get(denormalizeColumn).equals("java.util.Date")) && (patternsMap.get(denormalizeColumn).length() != 0)){
+							if((("java.util.Date").equals(typesMap.get(denormalizeColumn))) && (patternsMap.get(denormalizeColumn).length() != 0)){
 %>		
 	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(<%=denormalizeDelimiters.get(k) %>).append(FormatterUtils.format_Date(<%=connName %>.<%=denormalizeColumn %>, <%=patternsMap.get(denormalizeColumn) %>));
 			

@@ -27,7 +27,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List keyCols = new ArrayList();
         for (int i=0; i<implication.size(); i++) {
             Map<String, String> col = implication.get(i);
-            if (col.get("USE_IN_CRC").equals("true")) {
+            if (("true").equals(col.get("USE_IN_CRC"))) {
                 keyCols.add(i);
             }
         }
@@ -55,7 +55,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     }
          
                 }
-                if(crcType.equals("crc32")){
+                if(("crc32").equals(crcType)){
                     %>
         
                     java.util.zip.CRC32 crc32<%=cid%> = new java.util.zip.CRC32();  
@@ -63,14 +63,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     crcComputedValue<%=cid %> = new Long(crc32<%=cid%>.getValue());
                     <%          
                 }   
-                if(crcType.equals("crc8")){
+                if(("crc8").equals(crcType)){
           
                     %>
         
                     crcComputedValue<%=cid %> = new Long(com.dalsemi.onewire.utils.CRC8.compute(strBuffer_<%=cid%>.toString().getBytes())); 
                     <%       
                 }   
-                if(crcType.equals("crc16")){
+                if(("crc16").equals(crcType)){
           
                     %>      
                     crcComputedValue<%=cid %> = new Long(com.dalsemi.onewire.utils.CRC16.compute(strBuffer_<%=cid%>.toString().getBytes()));        

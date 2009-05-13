@@ -189,7 +189,7 @@
 			  	   if(mainInputTable != null
 			  	   	 && mainInputTable.isActivateExpressionFilter()
 			  	   	 && mainInputTable.getExpressionFilter() != null 
-			  	   	 && !mainInputTable.getExpressionFilter().trim().equals("")) { // T_TM_M_300 
+			  	   	 && !("").equals(mainInputTable.getExpressionFilter().trim())) { // T_TM_M_300 
 
 						if(isVirtualOut) { // T_TM_M_301
 
@@ -422,7 +422,7 @@
 			  	  	    && !hasPersistentLookup
 			  	  	   	&& externalTable.isActivateExpressionFilter() 
 			  	  	   	&& externalTable.getExpressionFilter() != null 
-			  	  	   	&& !externalTable.getExpressionFilter().trim().equals("")
+			  	  	   	&& !("").equals(externalTable.getExpressionFilter().trim())
 			  	  	   ) { 
 
 						hasMainFilter = true;
@@ -610,7 +610,7 @@
 							matchingMode = "ALL_ROWS";
 						}
 					}
-                    isMultipleResultMode = matchingMode.equals("ALL_ROWS") || matchingMode.equals("ALL_MATCHES");
+                    isMultipleResultMode = ("ALL_ROWS").equals(matchingMode) || ("ALL_MATCHES").equals(matchingMode);
 
 			//System.out.println("tableName=" +  tableName + " => isMultipleResultMode=" + isMultipleResultMode);
 
@@ -872,7 +872,7 @@
                     		<%
 							} // T 57
 
-							if(!isPersistentSortedTable && matchingMode.equals("UNIQUE_MATCH")) { // T 52 
+							if(!isPersistentSortedTable && ("UNIQUE_MATCH").equals(matchingMode)) { // T 52 
 							%>
 				           		if(tHash_Lookup_<%= tableName %>.getCount(<%= tableName %>HashKey) > 1) { // G 071
 			  							
@@ -968,7 +968,7 @@
 							if(
 								externalTable.isActivateExpressionFilter() 
 								&& externalTable.getExpressionFilter() != null 
-								&& !externalTable.getExpressionFilter().trim().equals("")
+								&& !("").equals(externalTable.getExpressionFilter().trim())
 							) { // T 012 
                     		  	  	   		
 								String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
@@ -1393,7 +1393,7 @@ if(!isVirtualOut) { // T_TM_M_320
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
             boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable) 
-            	|| outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !outputTable.getExpressionFilter().trim().equals("");
+            	|| outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !("").equals(outputTable.getExpressionFilter().trim());
             if (columnsEntries != null && columnsEntries.size() > 0) {
                 if (!hasFilter && !(outputTable.isReject() || outputTable.isRejectInnerJoin())) {
                     allNotRejectTablesHaveFilter = false;
@@ -1456,7 +1456,7 @@ if(!isVirtualOut) { // T_TM_M_320
             boolean currentIsRejectInnerJoin = outputTable.isRejectInnerJoin();
 
             boolean hasFilters = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
-            boolean hasExpressionFilter = outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !outputTable.getExpressionFilter().trim().equals("");
+            boolean hasExpressionFilter = outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !("").equals(outputTable.getExpressionFilter().trim());
 
             boolean rejectValueHasJustChanged = lastValueReject != (currentIsReject || currentIsRejectInnerJoin);
 

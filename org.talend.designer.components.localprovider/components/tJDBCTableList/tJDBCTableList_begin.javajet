@@ -20,27 +20,27 @@ imports="
     
     String schema = "dbschema_" + connection;
     
-    boolean useFilter = ElementParameterParser.getValue(node,"__USEFILTER__").equals("true");
+    boolean useFilter = ("true").equals(ElementParameterParser.getValue(node,"__USEFILTER__"));
     String nameRegex = ElementParameterParser.getValue(node,"__NAME_REGEX__");
     String criteria = ElementParameterParser.getValue(node,"__CRITERIA__");
-    boolean isInclude = criteria.equals("INCLUDE");
+    boolean isInclude = ("INCLUDE").equals(criteria);
 %>
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 
 int nb_table_<%=cid%> = 0;
 
 <%
-	if(dbType.equals("DBORACLE")){
+	if(("DBORACLE").equals(dbType)){
 %>
 java.sql.Statement stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
 java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SELECT table_name from user_tables");
 <%
-	}else if(dbType.equals("MYSQL")){
+	}else if(("MYSQL").equals(dbType)){
 %>
 java.sql.Statement stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
 java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SHOW tables");
 <%
-	}else if(dbType.equals("MSSQL")){
+	}else if(("MSSQL").equals(dbType)){
 %>
 java.sql.CallableStatement stmt2_<%=cid %> = conn_<%=cid %>.prepareCall("{call sp_tables()}", java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE, java.sql.ResultSet.CONCUR_READ_ONLY);
 java.sql.ResultSet rs_<%=cid %> = null;
@@ -55,7 +55,7 @@ if (resultSetFound_<%=cid %>) {
 	rs_<%=cid %> = stmt2_<%=cid %>.getResultSet();
 }
 <%
-	}else if(dbType.equals("POSTGRE")){
+	}else if(("POSTGRE").equals(dbType)){
 %>
 String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 String query_<%=cid %> = "";
@@ -67,7 +67,7 @@ if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0){
 java.sql.Statement stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
 java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery(query_<%=cid %>);
 <%
-	}else if(dbType.equals("DB2")){
+	}else if(("DB2").equals(dbType)){
 		schema = "tableschema_" + connection;
 %>
 String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
@@ -85,9 +85,9 @@ java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery(query_<%=cid %>);
 
 while (rs_<%=cid %>.next()) {
 <%
-	if(dbType.equals("MSSQL")){
+	if(("MSSQL").equals(dbType)){
 %>
-	if(!rs_<%=cid %>.getString(4).equals("TABLE")){
+	if(!("TABLE").equals(rs_<%=cid %>.getString(4))){
 		continue;
 	}
 	String currentTableName_<%=cid %> = rs_<%=cid %>.getString(3);

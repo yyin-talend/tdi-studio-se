@@ -51,14 +51,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		continue;//skip dipulicate
         	}
         	listCols.add(colname);
-        	if(line.get("ORDER").equals("asc")){
+        	if(("asc").equals(line.get("ORDER"))){
         		listCriterias.add(SORT_ASC);
         	}else{
         		listCriterias.add(SORT_DESC);
         	}
-        	if(line.get("SORT").equals("num")){
+        	if(("num").equals(line.get("SORT"))){
         		listCriteriaTypes.add(SORT_NUM);
-        	}else if(line.get("SORT").equals("alpha")){
+        	}else if(("alpha").equals(line.get("SORT"))){
         		listCriteriaTypes.add(SORT_ALPHA);
         	}else{
         		listCriteriaTypes.add(SORT_DATE);
@@ -104,7 +104,7 @@ if(true){
 %>
 
 <%
-		if(isExternalSort.equals("false")){
+		if(("false").equals(isExternalSort)){
 		//sort in memory begin
 %>
 class Comparable<%=rowName %>Struct extends <%=rowName %>Struct implements Comparable<Comparable<%=rowName %>Struct> {
@@ -645,7 +645,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 					%>
 			            result.<%=column.getLabel() %> = dis.read<%= typeToGenerate %>();
 					<%
-				} else if(typeToGenerate.equals("String")) {
+				} else if(("String").equals(typeToGenerate)) {
 					%>
 			            length = dis.readInt();
            				if (length == -1) {
@@ -656,7 +656,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
                				result.<%=column.getLabel() %> = new String(bytes);
            				}
 					<%
-				} else if(typeToGenerate.equals("byte[]")) {
+				} else if(("byte[]").equals(typeToGenerate)) {
 					%>
 			            length = dis.readInt();
            				if (length == -1) {
@@ -667,7 +667,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
                				result.<%=column.getLabel() %> = bytes;
            				}
 					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
+				} else if(("java.util.Date").equals(typeToGenerate)) {
 					%>
 			            length = dis.readByte();
            				if (length == -1) {
@@ -676,7 +676,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
            			    	result.<%=column.getLabel() %> = new Date(dis.readLong());
            				}
 					<%
-				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
+				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 					%>
 			            length = dis.readInt();
            				if (length == -1) {
@@ -739,7 +739,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 					%>
 			dos.write<%= typeToGenerate %>(this.<%=column.getLabel() %>);
 					<%
-				} else if(typeToGenerate.equals("String")) {
+				} else if(("String").equals(typeToGenerate)) {
 					%>
 			if(this.<%=column.getLabel() %> == null) {
 				dos.writeInt(-1);
@@ -749,7 +749,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 				dos.write(byteArray);
 			}
 					<%
-				} else if(typeToGenerate.equals("byte[]")) {
+				} else if(("byte[]").equals(typeToGenerate)) {
 					%>
 			if(this.<%=column.getLabel() %> == null) {
 				dos.writeInt(-1);
@@ -758,7 +758,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 				dos.write(this.<%=column.getLabel() %>);
 			}
 					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
+				} else if(("java.util.Date").equals(typeToGenerate)) {
 					%>
 			if(this.<%=column.getLabel() %> == null) {
 				dos.writeByte(-1);
@@ -767,7 +767,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 				dos.writeLong(this.<%=column.getLabel() %>.getTime());
 			}
 					<%
-				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
+				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 					%>
 			if(this.<%=column.getLabel() %> == null) {
 				dos.writeByte(-1);

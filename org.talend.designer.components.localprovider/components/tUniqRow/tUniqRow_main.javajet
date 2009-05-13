@@ -35,7 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
 		boolean hasKey = false;
 		for(Map<String, String> keyColumn:keyColumns){
-			if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+			if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
 				hasKey = true;
 				break;
 			}
@@ -60,8 +60,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	for (int i=0; i<metadata.getListColumns().size();i++) {
 		IMetadataColumn column = metadata.getListColumns().get(i);
 		Map<String,String> keyColumn = keyColumns.get(i);
-		if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
-			boolean caseSensitive = keyColumn.get("CASE_SENSITIVE").equals("true");
+		if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
+			boolean caseSensitive = ("true").equals(keyColumn.get("CASE_SENSITIVE"));
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			if(javaType == JavaTypesManager.STRING) {
 				if(caseSensitive){
@@ -93,8 +93,8 @@ if (!keys<%=cid %>.contains(finder_<%=cid %>)) {
 	for (int ij=0; ij<metadata.getListColumns().size();ij++) {
 		IMetadataColumn column = metadata.getListColumns().get(ij);
 		Map<String,String> keyColumn = keyColumns.get(ij);
-		if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
-			boolean caseSensitive = keyColumn.get("CASE_SENSITIVE").equals("true");
+		if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
+			boolean caseSensitive = ("true").equals(keyColumn.get("CASE_SENSITIVE"));
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			if(javaType == JavaTypesManager.STRING) {
 				if(caseSensitive){
@@ -146,7 +146,7 @@ new_<%=cid %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;
 			for (int i=0;i<connsDuplicate.size();i++) {
 				IConnection conn = connsDuplicate.get(i);
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-					if(onlyOnceEachDuplicatedKey.equals("true")){
+					if(("true").equals(onlyOnceEachDuplicatedKey)){
 					%>
 if (!keysForDuplicated<%=cid %>.contains(finder_<%=cid %>)) {
 		KeyStruct_<%=cid %> new_<%=cid %> = new KeyStruct_<%=cid %>();
@@ -155,8 +155,8 @@ if (!keysForDuplicated<%=cid %>.contains(finder_<%=cid %>)) {
 	for (int ik=0; ik<metadata.getListColumns().size();ik++) {
 		IMetadataColumn column = metadata.getListColumns().get(ik);
 		Map<String,String> keyColumn = keyColumns.get(ik);
-		if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
-			boolean caseSensitive = keyColumn.get("CASE_SENSITIVE").equals("true");
+		if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
+			boolean caseSensitive = ("true").equals(keyColumn.get("CASE_SENSITIVE"));
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			if(javaType == JavaTypesManager.STRING) {
 				if(caseSensitive){
@@ -191,7 +191,7 @@ if(<%=conn.getName() %> == null){
 			    	 for (IMetadataColumn column: metadata.getListColumns()) {
 			    	 %><%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;			
 <%					 }
-					if(onlyOnceEachDuplicatedKey.equals("true")){
+					if(("true").equals(onlyOnceEachDuplicatedKey)){
 					%>
 }
 					<%

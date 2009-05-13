@@ -19,7 +19,7 @@ imports="
 	
 	String useCommitControl = ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__");
     
-    if(dataAction.equals("INSERT_OR_UPDATE")) {
+    if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -37,7 +37,7 @@ imports="
             
         }        
         <%
-    } else if(dataAction.equals("UPDATE_OR_INSERT")) {
+    } else if(("UPDATE_OR_INSERT").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -62,9 +62,9 @@ imports="
     %>
     
     <%
-    if(!useExistingConn.equals("true")) {
-        if(useCommitControl.equals("true")) {
-            if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+    if(!("true").equals(useExistingConn)) {
+        if(("true").equals(useCommitControl)) {
+            if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
                 %>
                 if(commitCounter_<%=cid%> > 0) {
                     conn_<%=cid%>.commit();

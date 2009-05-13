@@ -24,13 +24,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         String cid = node.getUniqueName();
         String normalizeColumn = ElementParameterParser.getValue(node, "__NORMALIZE_COLUMN__");
         String deduplicate = ElementParameterParser.getValue(node, "__DEDUPLICATE__");
-        boolean useCSV = ElementParameterParser.getValue(node, "__CSV_OPTION__").equals("true");
+        boolean useCSV = ("true").equals(ElementParameterParser.getValue(node, "__CSV_OPTION__"));
         String escapeMode = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
         
         String delim = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
         if(useCSV){
         	delim = delim.substring(1,delim.length()-1);
-        	if(delim.equals("'")){
+        	if(("'").equals(delim)){
         		delim = "\\'";
         	}
         }
@@ -38,7 +38,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
     	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
     	if ("".equals(textEnclosure)) textEnclosure = "\0";
-    	if(textEnclosure.equals("'")){
+    	if(("'").equals(textEnclosure)){
     		textEnclosure = "\\'";
     	}        
         
@@ -81,7 +81,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             for(int i_<%=cid%> = 0 ; i_<%=cid%> < normalizeRecord_<%=cid%>.length ; i_<%=cid%>++) {
                 currentRecord_<%=cid%> = new StringBuilder();               
                 <%
-                if(deduplicate.equals("true")) {//check deduplicate start
+                if(("true").equals(deduplicate)) {//check deduplicate start
                     for(int i = 0 ; i < metadataColumns.size() ; i++) {
                         IMetadataColumn metadataColumn = (IMetadataColumn)metadataColumns.get(i);
                         JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
@@ -98,13 +98,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                                     javaType == JavaTypesManager.LONG ||
                                     javaType == JavaTypesManager.INTEGER || 
                                     javaType == JavaTypesManager.BOOLEAN) {
-                                if(typeName.equals("Byte") || 
-                                        typeName.equals("Short") || 
-                                        typeName.equals("Float") || 
-                                        typeName.equals("Double") || 
-                                        typeName.equals("Long") || 
-                                        typeName.equals("Integer") || 
-                                        typeName.equals("Boolean")) {                    
+                                if(("Byte").equals(typeName) || 
+                                        ("Short").equals(typeName) || 
+                                        ("Float").equals(typeName) || 
+                                        ("Double").equals(typeName) || 
+                                        ("Long").equals(typeName) || 
+                                        ("Integer").equals(typeName) || 
+                                        ("Boolean").equals(typeName)) {                    
                                     %>
                                     tmp_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null ? null : <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.toString();
                                     <%

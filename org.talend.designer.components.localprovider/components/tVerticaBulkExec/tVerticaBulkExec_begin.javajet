@@ -28,8 +28,8 @@ String db = ElementParameterParser.getValue(node, "__DBNAME__");
 String user = ElementParameterParser.getValue(node, "__USER__");
 String pas = ElementParameterParser.getValue(node, "__PASS__");
 String tableName = ElementParameterParser.getValue(node, "__TABLE__");
-boolean ros = ElementParameterParser.getValue(node, "__ROS__").equals("true");
-boolean exitOnNoRows = ElementParameterParser.getValue(node, "__EXIT_ON_NO_ROWS__").equals("true");
+boolean ros = ("true").equals(ElementParameterParser.getValue(node, "__ROS__"));
+boolean exitOnNoRows = ("true").equals(ElementParameterParser.getValue(node, "__EXIT_ON_NO_ROWS__"));
 boolean hasNullString = !null_string.matches("\"\"");
 List<IMetadataColumn> columnList = getColumnList(node);    
 %>
@@ -68,8 +68,8 @@ if(columnList != null && columnList.size()>0) {
         }
     }
     manager = getManager(dbmsId, cid);
-    if(!tableAction.equals("NONE")) {
-        if(tableAction.equals("DROP_CREATE")) {
+    if(!("NONE").equals(tableAction)) {
+        if(("DROP_CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + " cascade");
@@ -77,13 +77,13 @@ if(columnList != null && columnList.size()>0) {
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             <%
-        } else if(tableAction.equals("CREATE")) {
+        } else if(("CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             <%
-        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
             %>
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
             java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -101,7 +101,7 @@ if(columnList != null && columnList.size()>0) {
                 stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             }
             <%
-        } else if(tableAction.equals("CLEAR")) {
+        } else if(("CLEAR").equals(tableAction)) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
@@ -110,7 +110,7 @@ if(columnList != null && columnList.size()>0) {
     }    
 }
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-if(dataAction.equals("UPDATE")) {
+if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {
         int keyCount = 0;
         for(IMetadataColumn column : columnList) {
@@ -146,7 +146,7 @@ if(dataAction.equals("UPDATE")) {
         stmtTmpDrop_<%=cid%>.close();        
         <%
     }
-} else if(dataAction.equals("INSERT")) {
+} else if(("INSERT").equals(dataAction)) {
     %>
 	String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM STDIN DELIMITER '" +<%=field_separator%> + "'" 
     <%if(hasNullString){

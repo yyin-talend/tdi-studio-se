@@ -14,12 +14,12 @@ imports="
         String wrap = ElementParameterParser.getValue(node, "__WRAP__");
         String filename = ElementParameterParser.getValue(node, "__FILENAME__");
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");       
-        boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+        boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
 %>
 
 java.io.File file_<%=cid %> = new java.io.File(<%=filename %>); 
 
-<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+<%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 //create directory only if not exists
 file_<%=cid %>.getParentFile().mkdirs();
 <%}%>	

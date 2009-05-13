@@ -17,7 +17,7 @@ String filename = ElementParameterParser.getValue(node,"__JRXML_FILE__");
 String sourceFile = ElementParameterParser.getValue(node,"__SOURCE_FILE__");
 String destinationDirectory = ElementParameterParser.getValue(node,"__DESTINATION__");
 String reportType = ElementParameterParser.getValue(node,"__REPORT_TYPE__");
-boolean useDefaultName = ElementParameterParser.getValue(node, "__USE_DEFAULT_OUTPUT_NAME__").equals("true");
+boolean useDefaultName = ("true").equals(ElementParameterParser.getValue(node, "__USE_DEFAULT_OUTPUT_NAME__"));
 String outputName = ElementParameterParser.getValue(node, "__OUTPUT_NAME__");
 %>       
 	String fileName_<%=cid%> = <%=filename%>;

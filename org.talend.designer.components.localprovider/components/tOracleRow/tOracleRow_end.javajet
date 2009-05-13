@@ -16,8 +16,8 @@ imports="
 	%>
 	stmt_<%=cid %>.close();	
 	<%
-	if(!useExistingConn.equals("true")) {
-    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+	if(!("true").equals(useExistingConn)) {
+    	if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
     	    %>
     		if(commitEvery_<%=cid%> > commitCounter_<%=cid%>) {
     

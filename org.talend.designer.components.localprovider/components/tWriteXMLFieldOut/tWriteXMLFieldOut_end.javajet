@@ -21,7 +21,7 @@ skeleton="tWriteXMLFieldOut_java.skeleton"
 class XSDToolByDom4j{
     String cid = null;
     public void generateXSD(String parent, String currEleName, XMLNode root){
-    	if(root.type.equals("ELEMENT")){
+    	if(("ELEMENT").equals(root.type)){
     		createElement(parent,currEleName,root);
 			
 			if(root.elements!=null && root.elements.size()>0
@@ -68,7 +68,7 @@ class XSDToolByDom4j{
 class XSDToolByNull{
 	String cid = null;
     public void generateXSD(String emptyspace, XMLNode root){
-    	if(root.type.equals("ELEMENT")){
+    	if(("ELEMENT").equals(root.type)){
     		createElement(emptyspace, root);
 			
 			if(root.elements!=null && root.elements.size()>0
@@ -152,8 +152,8 @@ String cid = node.getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
-	if(mode.equals("Dom4j")){
-		if(outputAsXSD.equals("true")){
+	if(("Dom4j").equals(mode)){
+		if(("true").equals(outputAsXSD)){
 %>
 	doc_<%=cid%>.getRootElement().addAttribute("xsi:noNamespaceSchemaLocation", <%=fileNameXSD%>);
     doc_<%=cid%>.getRootElement().addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -162,7 +162,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>  
     nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
 <%
-		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
     nestXMLTool_<%=cid%>.removeEmptyElement(doc_<%=cid%>.getRootElement());
 <%
@@ -176,8 +176,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
 	globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
 <%
-	}else if(mode.equals("Null")){
-		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+	}else if(("Null").equals(mode)){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
 	if (preUnNullMaxIndex_<%=cid%> >= 0) {
         // output all buffer
@@ -223,18 +223,18 @@ globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 
 // ------------------- *** xsd output code start *** ------------------- //
-	if(outputAsXSD.equals("true")){
+	if(("true").equals(outputAsXSD)){
 
         // change tables to a tree 
 		Object[] treeObjs = getTree(rootTable, groupTable, loopTable, metadatas.get(0).getListColumns());
     	List<XMLNode> mainList = (ArrayList<XMLNode>)treeObjs[0];
         XMLNode root = mainList.get(0);
 
-        if(!allowEmpty.equals("true")){
+        if(!("true").equals(allowEmpty)){
         	removeEmptyElement(root);
         }
 
-		if(mode.equals("Dom4j")){
+		if(("Dom4j").equals(mode)){
 %>
 	org.dom4j.Document doc_xsd_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
 	
@@ -250,7 +250,7 @@ globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
     output_xsd_<%=cid%>.write(doc_xsd_<%=cid%> );
     output_xsd_<%=cid%>.close();
 <%
-		}else if(mode.equals("Null")){
+		}else if(("Null").equals(mode)){
 %>
 	java.io.BufferedWriter out_xsd_<%=cid%> = new java.io.BufferedWriter(
 		new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileNameXSD%>), <%=encoding%>));

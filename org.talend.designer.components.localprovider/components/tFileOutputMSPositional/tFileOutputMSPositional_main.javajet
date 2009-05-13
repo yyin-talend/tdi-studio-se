@@ -49,7 +49,7 @@ if(hasDataLink){//HSS_____0
 		schema.put("PADDING_CHAR", TalendTextUtils.removeQuotes(schema_o.get("PADDING_CHAR")));
 		schema.put("KEEP", TalendTextUtils.removeQuotes(schema_o.get("KEEP")));
 		schema.put("ALIGN", TalendTextUtils.removeQuotes(schema_o.get("ALIGN")));
-		if(schema.get("PARENT_ROW").equals("")){//put the root schema in the first place on list.
+		if(("").equals(schema.get("PARENT_ROW"))){//put the root schema in the first place on list.
 			for(int i=0;i<conns.size();i++){//HSS_____0_____1_____1
 	    		IConnection connTemp = conns.get(i);
 	    		if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {

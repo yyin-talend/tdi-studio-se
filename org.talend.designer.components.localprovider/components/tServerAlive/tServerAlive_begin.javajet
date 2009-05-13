@@ -13,8 +13,8 @@ String cid = node.getUniqueName();
 String protocol = ElementParameterParser.getValue(node, "__PROTOCOL__");
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String timeoutInterval = ElementParameterParser.getValue(node, "__TIMEOUT_INTERVAL__");
-boolean isEnableProxy = ElementParameterParser.getValue(node, "__ENABLE_PROXY_SERVER__").equals("true");
-if(protocol.equals("PING")) {
+boolean isEnableProxy = ("true").equals(ElementParameterParser.getValue(node, "__ENABLE_PROXY_SERVER__"));
+if(("PING").equals(protocol)) {
     %>
     try {
         java.net.InetAddress address_<%=cid%> = java.net.InetAddress.getByName(<%=host%>);

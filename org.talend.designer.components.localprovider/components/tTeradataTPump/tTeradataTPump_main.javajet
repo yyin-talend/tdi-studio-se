@@ -33,7 +33,7 @@ String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
-if(loadFile.indexOf("/") !=0 && execution.equals("Windows")){
+if(loadFile.indexOf("/") !=0 && ("Windows").equals(execution)){
 	loadFile = loadFile.replaceAll("/", "\\\\\\\\");
 }
 
@@ -104,19 +104,19 @@ if(columnList!=null){
  		}
 	}
 }
-if(action.equals("Update") || action.equals("InsertOrUpdate")){
+if(("Update").equals(action) || ("InsertOrUpdate").equals(action)){
 %>
 fw_<%=cid %>.write("UPDATE "+tableFullName_<%=cid%>+" SET "+"<%=updateSetSQL.toString()%>"
 	+" WHERE "+"<%=updateWhereSQL%>"+";\r\n");
 <%
 }
-if(action.equals("Insert") || action.equals("InsertOrUpdate")){
+if(("Insert").equals(action) || ("InsertOrUpdate").equals(action)){
 %>
 fw_<%=cid %>.write("INSERT INTO "+tableFullName_<%=cid%>+"("
 	+"<%=insertColSQL%>"+") VAlUES("+"<%=insertValueSQL.toString()%>"+");\r\n");
 <%
 }
-if(action.equals("Delete")){
+if(("Delete").equals(action)){
 %>
 fw_<%=cid %>.write("DELETE FROM "+tableFullName_<%=cid%>+" "+<%=where%>+" ;\r\n");
 <%

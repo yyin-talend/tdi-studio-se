@@ -16,7 +16,7 @@ imports="
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     String dbuser= ElementParameterParser.getValue(node, "__USER__");
     String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-    boolean isUseSharedConnection = ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__").equals("true");
+    boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
 	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
 
     
@@ -26,7 +26,7 @@ int nb_line_<%=cid%> = 0;
 
 java.lang.Class.forName("<%=javaDbDriver%>");
 <%
-if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
  %>   
    String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>;
 <%}else{ %> 

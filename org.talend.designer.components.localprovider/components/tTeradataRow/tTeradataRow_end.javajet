@@ -12,12 +12,12 @@ imports="
 	String cid = node.getUniqueName();
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	%>
 	stmt_<%=cid %>.close();
 	<%
     if(!useExistingConn){
-    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+    	if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
     	    %>
             if(commitEvery_<%=cid%> > commitCounter_<%=cid%>) {
             

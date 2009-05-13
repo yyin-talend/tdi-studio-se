@@ -97,16 +97,16 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 		if(duplicate){
 			continue;
 		}
-		if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
 %><%= JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %> <%=functions[i] %>_<%=column_op[i].getLabel() %>_<%=cid %><%
 if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || 
 	javaType == JavaTypesManager.CHARACTER || javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || 
 	javaType == JavaTypesManager.FLOAT || javaType == JavaTypesManager.DOUBLE){
 	%>=(<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), false) %>)0<%}else{%>=null<%}%>;
-<%		}else if(functions[i].equals("count")){
+<%		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(functions[j].equals("avg") && column_op[j].getLabel().equals(column_op[i].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j].getLabel().equals(column_op[i].getLabel())){
 					countHasAvg = true;
 					break;
 				}
@@ -114,10 +114,10 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 			if(!countHasAvg){
 %>int count_<%=column_op[i].getLabel() %>_<%=cid %>=0;
 <%			}
-		}else if(functions[i].equals("sum")){
+		}else if(("sum").equals(functions[i])){
 			boolean sumHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(functions[j].equals("avg") && column_op[j].getLabel().equals(column_op[i].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j].getLabel().equals(column_op[i].getLabel())){
 					sumHasAvg = true;
 					break;
 				}
@@ -138,7 +138,7 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 <%
 				}
 			}
-		}else if(functions[i].equals("avg")){
+		}else if(("avg").equals(functions[i])){
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER || 
 				javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT || 
 				javaType == JavaTypesManager.DOUBLE){
@@ -154,7 +154,7 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 <%
 			}
 %>int count_<%=column_op[i].getLabel() %>_<%=cid %>=0;
-<%		}else if(functions[i].equals("distinct")){
+<%		}else if(("distinct").equals(functions[i])){
 %>java.util.Set set_<%=column_op[i].getLabel() %>_<%=cid %> = null;
 <%		}else{
 %>StringBuilder list_<%=column_op[i].getLabel() %>_<%=cid %>=null;

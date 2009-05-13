@@ -30,7 +30,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<Map<String, String>> mailParts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__MAIL_PARTS__");
         
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
+		boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 %> 
 	if(!(<%=directory%>).endsWith("/")){
            globalMap.put("<%=cid %>_EXPORTED_FILE_PATH",<%=directory%> + "/");
@@ -64,7 +64,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	for (int i=0; i<mailParts.size(); i++) {
 	   Map<String, String> lineValue = mailParts.get(i);
-	   if(lineValue.get("PART_SEPARATOR").equals("")){
+	   if(("").equals(lineValue.get("PART_SEPARATOR"))){
 %>
 			<%="\"\""%>,
 <%		}else{%>
@@ -141,7 +141,7 @@ try{
 			}
 			list_<%=cid%>.add(tempStr_<%=cid %>);
         }else{
-        	if(mailChecked_<%=cid %>[i_<%=cid%>].equals("true")){   
+        	if(("true").equals(mailChecked_<%=cid %>[i_<%=cid%>])){   
 				String[] sa_<%=cid%> = msg_<%=cid %>.getHeader(part_<%=cid%>);
 				String tempStr_<%=cid%>="";
 				for(int i=0;i<sa_<%=cid%>.length;i++){

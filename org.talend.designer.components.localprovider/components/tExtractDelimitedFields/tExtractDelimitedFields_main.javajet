@@ -24,11 +24,11 @@ String field = ElementParameterParser.getValue(node, "__FIELD__");
 String separator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 
-boolean trim = ElementParameterParser.getValue(node, "__TRIM__").equals("true");
+boolean trim = ("true").equals(ElementParameterParser.getValue(node, "__TRIM__"));
 
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();

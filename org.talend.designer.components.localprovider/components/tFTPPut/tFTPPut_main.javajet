@@ -16,9 +16,9 @@
 	String cid = node.getUniqueName();
 	String overwrite=ElementParameterParser.getValue(node, "__OVERWRITE__");
 	String sftpoverwrite=ElementParameterParser.getValue(node, "__SFTPOVERWRITE__");
-	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
-	boolean append = ElementParameterParser.getValue(node, "__APPEND__").equals("true");
+	boolean append = ("true").equals(ElementParameterParser.getValue(node, "__APPEND__"));
 		
 	if(sftp){
 %>
@@ -55,11 +55,11 @@
 	    		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++){ 
 	     			if (listings<%=cid %>[m<%=cid %>].getName().matches(mask<%=cid %>)){     
 	      				
-		      			<%if(sftpoverwrite.equals("overwrite")){%>    			
+		      			<%if(("overwrite").equals(sftpoverwrite)){%>    			
 		    			int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.OVERWRITE;
-						<%}else if(sftpoverwrite.equals("append")){%>
+						<%}else if(("append").equals(sftpoverwrite)){%>
 						int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.APPEND;
-						<%}else if(sftpoverwrite.equals("resume")){%>
+						<%}else if(("resume").equals(sftpoverwrite)){%>
 						int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
 						<%}%>
 						try{
@@ -167,7 +167,7 @@
 						 	currentStatus_<%=cid %> = "File rename OK.";
 	        				globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            				
-							<%}else if(overwrite.equals("never")){%>
+							<%}else if(("never").equals(overwrite)){%>
 		            		if (!(remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()))){
 	        					ftp<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),file_in_localDir.getName());
 	        					
@@ -178,7 +178,7 @@
 	        					currentStatus_<%=cid %> = "File rename OK.";
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            		}
-		            		<%}else if(overwrite.equals("always")){%>
+		            		<%}else if(("always").equals(overwrite)){%>
 	        				ftp<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),file_in_localDir.getName());
 	        				 
 	        				// add uploading status to list which will return back to client.
@@ -188,7 +188,7 @@
 	        				currentStatus_<%=cid %> = "File rename OK.";
 							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            				 
-		            		<%}else if(overwrite.equals("size_differ")){%>
+		            		<%}else if(("size_differ").equals(overwrite)){%>
 		            		if ((remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()))){
 		    					com.enterprisedt.net.ftp.FTPFile ftpfile<%=cid%>=ftp<%=cid%>.fileDetails(file_in_localDir.getName());
 								long ftpSize<%=cid%>=ftpfile<%=cid%>.size();
@@ -232,21 +232,21 @@
 	    	
 	    	//do rename
 	    	if(map<%=cid %>.get(key<%=cid %>) != ""){
-	    		<%if(overwrite.equals("always")){%>
+	    		<%if(("always").equals(overwrite)){%>
 	     		if(ftp<%=cid%>.exists(key<%=cid %>)){
 	     			ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
 	     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 	     			//nb_file_<%=cid%>++;
 	     		}
 	     		<%}%>
-	     		<%if(overwrite.equals("never")){%>
+	     		<%if(("never").equals(overwrite)){%>
 	     		if(!(ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>)))){
 	     			ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
 	     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 	     			//nb_file_<%=cid%>++;
 	     		}
 	     		<%}%>
-	     		<%if(overwrite.equals("size_differ")){%>
+	     		<%if(("size_differ").equals(overwrite)){%>
      			if((ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>)))){
 					com.enterprisedt.net.ftp.FTPFile ftpnewNamefile<%=cid%>=ftp<%=cid%>.fileDetails(map<%=cid %>.get(key<%=cid %>));
 					com.enterprisedt.net.ftp.FTPFile ftporigNamefile<%=cid%>=ftp<%=cid%>.fileDetails(key<%=cid %>);

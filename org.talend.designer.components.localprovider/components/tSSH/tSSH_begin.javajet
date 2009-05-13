@@ -67,7 +67,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String standardOutput  = ElementParameterParser.getValue(node, "__STANDARDOUTPUT__");
 		String errorOuput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
-		if (standardOutput.equals("NORMAL_OUTPUT")||errorOuput.equals("NORMAL_OUTPUT")) {
+		if (("NORMAL_OUTPUT").equals(standardOutput)||("NORMAL_OUTPUT").equals(errorOuput)) {
 %>
 			final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
 <%
@@ -81,7 +81,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 	/* Create a connection instance */
 <%
-        if(port.equals("")){
+        if(("").equals(port)){
 %>
 			  ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>);
 <%
@@ -93,7 +93,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
               /* Now connect */
 <%
-        if(useTimeout.equals("true")){
+        if(("true").equals(useTimeout)){
 %>
 			  conn_<%=cid%>.connect(null,0,<%=timeout%>*1000);
 <%
@@ -103,7 +103,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         }
         
-        if (authMethod.equals("PUBLICKEY")) {
+        if (("PUBLICKEY").equals(authMethod)) {
 %>
         java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
 		    boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
@@ -111,7 +111,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				      throw new RuntimeException("Authentication failed.");
 <%
         }
-        if (authMethod.equals("PASSWORD")) {
+        if (("PASSWORD").equals(authMethod)) {
 %>
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
 		if (isAuthenticated_<%=cid%> == false)
@@ -119,7 +119,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         }
         
-        if (authMethod.equals("KEYBOARDINTERACTIVE")) {
+        if (("KEYBOARDINTERACTIVE").equals(authMethod)) {
 %>
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithKeyboardInteractive(username_<%=cid%>, 
             new ch.ethz.ssh2.InteractiveCallback() {

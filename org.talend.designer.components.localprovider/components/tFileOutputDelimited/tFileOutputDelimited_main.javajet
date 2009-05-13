@@ -18,7 +18,7 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();	
-if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {	
+if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     %>
 
@@ -46,35 +46,26 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                 "__ENCODING__"
             );
             
-            boolean isAppend = ElementParameterParser.getValue(
-                node,
-                "__APPEND__"
-            ).equals("true");
+            boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
             
-            boolean isIncludeHeader = ElementParameterParser.getValue(
-                node,
-                "__INCLUDEHEADER__"
-            ).equals("true");
+            boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
     		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
     		
-    		boolean isInRowMode = ElementParameterParser.getValue(
-                node,
-                "__ROW_MODE__"
-            ).equals("true");
+    		boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
     		
-    		boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+    		boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
             
-            boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
+            boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));
             String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
             
     		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-    		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+    		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
    		    
 			String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
-			boolean isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
+			boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
 
         	List< ? extends IConnection> conns = node.getIncomingConnections();
         	for (IConnection conn : conns) {
@@ -274,8 +265,8 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     		String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
  //       	String delim = delim1.substring(1,delim1.length()-1);
-        	boolean isIncludeHeader = ElementParameterParser.getValue(node,"__INCLUDEHEADER__").equals("true");
-        	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+        	boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
+        	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
 //        	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
         	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
@@ -283,20 +274,20 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
         	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
         	if ("".equals(textEnclosure)) textEnclosure = "\0";
-        	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+        	boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
         	
-        	boolean isInRowMode = ElementParameterParser.getValue(node,"__ROW_MODE__").equals("true");
+        	boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
         	
-        	boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
+        	boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));
         	String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
         	
     		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-    		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+    		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);        	
         	
         	String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
-			boolean isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
+			boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
         	
         	List< ? extends IConnection> conns = node.getIncomingConnections();
 				%>
@@ -321,12 +312,12 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
 		
             
 				<%
-          	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
+          	if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){
           	    %>
               	CsvWriter<%=cid %>.setRecordDelimiter(row_Delim<%=cid %>[0]);
               	<%				
           	}
-            if(escapeChar.equals("\\\\")){
+            if(("\\\\").equals(escapeChar)){
                 %>
                 CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
                 <%
@@ -461,12 +452,12 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                         		%>
                         		//initialize new CsvWriter information 
         						<%
-        						if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
+        						if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){
         						    %>
         						    CsvWriter<%=cid %>.setRecordDelimiter(row_Delim<%=cid %>[0]);
         						    <%
         						}
-        						if(escapeChar.equals("\\\\")){
+        						if(("\\\\").equals(escapeChar)){
         						    %>
         						    CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
         						    <%

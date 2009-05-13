@@ -19,9 +19,9 @@ String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
 String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
-boolean isFunction = ElementParameterParser.getValue(node, "__IS_FUNCTION__").equals("true");
+boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
-boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
 
 if (useExistingConnection) {
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
@@ -34,15 +34,15 @@ if (useExistingConnection) {
 	java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
 	<%
 	String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-	if (connectionType.equals("ORACLE_SID")) {
+	if (("ORACLE_SID").equals(connectionType)) {
 		%>
 		String connectionString_<%=cid%> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
 		<%
-	} else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
+	} else if(("ORACLE_SERVICE_NAME").equals(connectionType)) {
 		%>
 		String connectionString_<%=cid%> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
 		<%
-	} else if(connectionType.equals("ORACLE_OCI")) {
+	} else if(("ORACLE_OCI").equals(connectionType)) {
 	    %>
 	    String connectionString_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
 	    <%

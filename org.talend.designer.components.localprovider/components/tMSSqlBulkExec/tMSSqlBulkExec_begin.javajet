@@ -37,7 +37,7 @@ String table = ElementParameterParser.getValue(node, "__TABLE__");
 String codePage = ElementParameterParser.getValue(node, "__CODE_PAGE__");
 String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
 
-if(action.equals("EXPORT")) {
+if(("EXPORT").equals(action)) {
     String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
     String server = ElementParameterParser.getValue(node, "__SERVER__");
     String query_statement = ElementParameterParser.getValue(node, "__QUERY__");
@@ -47,9 +47,9 @@ if(action.equals("EXPORT")) {
     String row_terminated_export = ElementParameterParser.getValue(node, "__ROW_TERMINATED_EXPORT__");
 
     String char_type =  "char type error!";
-    if(data_file_type.equals("char")){
+    if(("char").equals(data_file_type)){
         char_type = "-c";
-    }else if(data_file_type.equals("native")){
+    }else if(("native").equals(data_file_type)){
         char_type = "-n";
     }else{
         char_type = "-w";
@@ -62,11 +62,11 @@ if(action.equals("EXPORT")) {
     command.append(output_file_name.replaceAll("\"","\\\\\""));
     command.append(" ");
     command.append(char_type);
-    if(!server.equals("")&&!server.equals("\"\"")&&!(server==null)){
+    if(!("").equals(server)&&!("\"\"").equals(server)&&!(server==null)){
         command.append(" -S");
         command.append(server.replaceAll("\"",""));
     }
-    if((user.equals("")||user.equals("\"\"")||user==null)&&(pas.equals("")||pas==null||pas.equals("\"\""))){
+    if((("").equals(user)||("\"\"").equals(user)||user==null)&&(("").equals(pas)||pas==null||("\"\"").equals(pas))){
         command.append(" -T");
     }else{
         command.append(" -U");
@@ -90,11 +90,11 @@ if(action.equals("EXPORT")) {
                 try {
                     while((line = reader.readLine()) != null) {
                         <%
-                        if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+                        if (("OUTPUT_TO_CONSOLE").equals(outputAction)) {
                             %>
                             System.out.println(line);
                             <%
-                        } else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+                        } else if (("RETRIEVE_OUTPUT").equals(outputAction)) {
                             %>
                             globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
                             <%
@@ -118,11 +118,11 @@ if(action.equals("EXPORT")) {
                 try {
                     while((line = reader.readLine()) != null) {
                         <%
-                        if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+                        if (("OUTPUT_TO_CONSOLE").equals(outputAction)) {
                             %>
                             System.err.println(line);
                             <%
-                        } else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+                        } else if (("RETRIEVE_OUTPUT").equals(outputAction)) {
                             %>
                             globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
                             <%
@@ -144,7 +144,7 @@ if(action.equals("EXPORT")) {
     <%    
 } else {
     List<IMetadataColumn> columnList = getColumnList(node);
-    boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
     if(useExistingConnection) {
     	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
@@ -177,7 +177,7 @@ if(action.equals("EXPORT")) {
     if(columnList != null && columnList.size() > 0) {
         stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
         manager = getManager(dbmsId, cid);
-        if(tableAction.equals("DROP_CREATE")) {
+        if(("DROP_CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
@@ -186,13 +186,13 @@ if(action.equals("EXPORT")) {
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("CREATE")) {
+        } else if(("CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
             %>
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
             java.sql.ResultSet rsTable_<%=cid%> = null;
@@ -216,13 +216,13 @@ if(action.equals("EXPORT")) {
                 stmtCreate_<%=cid%>.close();
             }
             <%
-        } else if(tableAction.equals("CLEAR")) {
+        } else if(("CLEAR").equals(tableAction)) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
             stmtClear_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("TRUNCATE")) {
+        } else if(("TRUNCATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
@@ -230,13 +230,13 @@ if(action.equals("EXPORT")) {
             <%
         }        
     }    
-    if(action.equals("INSERT")) {
+    if(("INSERT").equals(action)) {
         %>
         java.sql.Statement stmtBulkInsert_<%=cid %> = conn_<%=cid %>.createStatement();
         stmtBulkInsert_<%=cid %>.execute("BULK INSERT [" + tableName_<%=cid%> + "] FROM '" + <%=file%> + "' WITH ( CODEPAGE='" + <%=codePage%> + "',DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
         stmtBulkInsert_<%=cid %>.close();        
         <%
-    } else if(action.equals("UPDATE")) {
+    } else if(("UPDATE").equals(action)) {
         if(columnList != null && columnList.size() > 0) {
             int keyCount = 0;
             for(IMetadataColumn column : columnList) {

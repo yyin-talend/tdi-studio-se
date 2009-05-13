@@ -104,7 +104,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
     List<IMetadataColumn> schemaOtherColumns = null;
 	
-    if(anotherChecked.equals("true")) {
+    if(("true").equals(anotherChecked)) {
 
         IMetadataTable schemaOther = node.getMetadataFromConnector("OTHER");
 
@@ -168,7 +168,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
 							String generatedType = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
 
-							if(generatedType.equals("int")) {
+							if(("int").equals(generatedType)) {
 %>
 								tmpContent_<%=cid%> = String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
 <%
@@ -197,7 +197,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
 							String generatedType = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
 
-							if(generatedType.equals("int")) {
+							if(("int").equals(generatedType)) {
 %>
 								tmpContent_<%=cid%> = String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);							
 <%
@@ -301,7 +301,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
             	int columnIndex = columnList.indexOf(metadataColumn);
 
-				if (anotherChecked.equals("true") && (columnListToTest.size() > columnIndex)) {
+				if (("true").equals(anotherChecked) && (columnListToTest.size() > columnIndex)) {
 
             		IMetadataColumn testColumn = columnListToTest.get(columnIndex);
 
@@ -309,7 +309,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
 					typeToTest = JavaTypesManager.getTypeToGenerate(typeToTest, true);
 
-					if(typeToTest.equals("java.util.Date")){
+					if(("java.util.Date").equals(typeToTest)){
 
             			checker.testDate(incomingConnName,metadataColumn,testColumn.getPattern(),cid);
 
@@ -322,7 +322,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
 					String selectedType = checkedColumn.get("SELECTED_TYPE");
 
-					if(selectedType.equals("Date")){
+					if(("Date").equals(selectedType)){
 
             			checker.testDate(incomingConnName, metadataColumn, checkedColumn.get("DATEPATTERN"), cid);
 
@@ -333,7 +333,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 	}
                 }
 
-                if(anotherChecked.equals("true")) {
+                if(("true").equals(anotherChecked)) {
 
                 	if (columnListToTest.size() <= columnIndex) {
                 		continue;
@@ -362,13 +362,13 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
                     String checkMaxLength = checkedColumn.get("MAX_LENGTH");
 
-					if(checkAll.equals("true") || !checkNullable.equals("true")) {
+					if(("true").equals(checkAll) || !("true").equals(checkNullable)) {
 
                         checker.testNull(incomingConnName,metadataColumn,cid);
 
                     } 
 
-					if(checkAll.equals("true") || checkMaxLength.equals("true")) { 
+					if(("true").equals(checkAll) || ("true").equals(checkMaxLength)) { 
 						
 						Object maxLength = metadataColumn.getLength();
 					

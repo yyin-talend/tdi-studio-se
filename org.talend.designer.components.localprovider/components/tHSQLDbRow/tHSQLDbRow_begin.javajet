@@ -27,9 +27,9 @@ String url_<%=cid %> = null;
 <%
 String runningMode = ElementParameterParser.getValue(node, "__RUNNING_MODE__");
 String tls = ElementParameterParser.getValue(node, "__TLS__");
-if(runningMode.equals("HSQLDB_SERVER"))
+if(("HSQLDB_SERVER").equals(runningMode))
 {
-	if(tls.equals("true"))
+	if(("true").equals(tls))
 	{
 	%>
 		url_<%=cid %> = "jdbc:hsqldb:hsqls://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
@@ -42,9 +42,9 @@ if(runningMode.equals("HSQLDB_SERVER"))
 	<%
 	}
 }
-else if(runningMode.equals("HSQLDB_WEBSERVER"))
+else if(("HSQLDB_WEBSERVER").equals(runningMode))
 {
-	if(tls.equals("true"))
+	if(("true").equals(tls))
 	{
 	%>
 		url_<%=cid %> = "jdbc:hsqldb:https://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
@@ -57,7 +57,7 @@ else if(runningMode.equals("HSQLDB_WEBSERVER"))
 	<%
 	}
 }
-else if(runningMode.equals("HSQLDB_INPROGRESS_PERSISTENT"))
+else if(("HSQLDB_INPROGRESS_PERSISTENT").equals(runningMode))
 {
 	%>
 	url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%> + ";ifexists=true";
@@ -77,7 +77,7 @@ java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
 boolean whetherReject_<%=cid%> = false;
 
 <%
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 
 int commitEvery_<%=cid%> = <%=commitEvery%>;

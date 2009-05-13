@@ -17,7 +17,7 @@ imports="
     String cid = node.getUniqueName();
 	String standardOutput = ElementParameterParser.getValue(node, "__STANDARDOUTPUT__");
 	String errorOuput = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
-    if(standardOutput.equals("NORMAL_OUTPUT") || errorOuput.equals("NORMAL_OUTPUT")){
+    if(("NORMAL_OUTPUT").equals(standardOutput) || ("NORMAL_OUTPUT").equals(errorOuput)){
     	List<IMetadataTable> metadatas = node.getMetadataList();
         if ((metadatas!=null)&&(metadatas.size()>0)) {
         	IMetadataTable metadata = metadatas.get(0);

@@ -13,7 +13,7 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 

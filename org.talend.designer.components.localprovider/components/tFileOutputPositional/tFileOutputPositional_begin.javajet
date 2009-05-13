@@ -23,7 +23,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	
     	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
         if (encoding!=null) {
-            if (encoding.equals("")) {
+            if (("").equals(encoding)) {
                 encoding = "undef";
             }
         }
@@ -38,15 +38,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__FILENAME__"
         );
 
-        boolean isIncludeHeader = ElementParameterParser.getValue(
-            node,
-            "__INCLUDEHEADER__"
-        ).equals("true");
+        boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
 
-        boolean isAppend = ElementParameterParser.getValue(
-            node,
-            "__APPEND__"
-        ).equals("true");
+        boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         
         List<Map<String, String>> formats =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -57,7 +51,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String fileNewName_<%=cid%> = <%=filename%>;
 		java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
 <%
-		if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
+		if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
         //create directory only if not exists
         java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();
@@ -95,12 +89,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			
             	if (tempLengthB<%=cid %> > <%=format.get("SIZE")%>) {
 <%
-                    if (format.get("KEEP").equals("\'A\'")) {
-                    } else if (format.get("KEEP").equals("\'R\'")) {
+                    if (("\'A\'").equals(format.get("KEEP"))) {
+                    } else if (("\'R\'").equals(format.get("KEEP"))) {
 %>
                         tempStringB<%=cid %> = tempStringB<%=cid %>.substring(tempLengthB<%=cid %>-<%=format.get("SIZE")%>);
 <%
-                    } else if (format.get("KEEP").equals("\'M\'")) {
+                    } else if (("\'M\'").equals(format.get("KEEP"))) {
 %>
                         int begin<%=cid %>=(tempLengthB<%=cid %>-<%=format.get("SIZE")%>)/2;
                         tempStringB<%=cid %> = tempStringB<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>);
@@ -114,7 +108,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 }else if(tempLengthB<%=cid %><<%=format.get("SIZE")%>){
                     StringBuilder result<%=cid %> = new StringBuilder();
 <%
-                    if (format.get("ALIGN").equals("\'L\'")) {
+                    if (("\'L\'").equals(format.get("ALIGN"))) {
 %>
                         result<%=cid %>.append(tempStringB<%=cid %>);
                         for(int i<%=cid %>=0; i<%=cid %>< <%=format.get("SIZE")%>-tempLengthB<%=cid %>; i<%=cid %>++){
@@ -122,7 +116,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         }
                         tempStringB<%=cid %> = result<%=cid %>.toString();
 <%
-                    } else if (format.get("ALIGN").equals("\'R\'")) {
+                    } else if (("\'R\'").equals(format.get("ALIGN"))) {
 %>
                         for(int i<%=cid %>=0; i<%=cid %>< <%=format.get("SIZE")%>-tempLengthB<%=cid %>; i<%=cid %>++){
                             result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);

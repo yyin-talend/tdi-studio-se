@@ -21,9 +21,9 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
-boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = getColumnList(node);
-if(dataAction.equals("UPDATE")) {
+if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {        
         List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
         Manager manager = getManager(dbmsId, cid);

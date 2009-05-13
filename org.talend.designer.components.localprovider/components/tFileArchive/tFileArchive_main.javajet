@@ -15,9 +15,9 @@
 	String directory = ElementParameterParser.getValue(node, "__SOURCE__");
 	String zipFile = ElementParameterParser.getValue(node, "__TARGET__");
 	String level = ElementParameterParser.getValue(node, "__LEVEL__");
-	boolean mkDir = ElementParameterParser.getValue(node, "__MKDIR__").equals("true");
-	boolean isAllFile = ElementParameterParser.getValue(node, "__ALL_FILES__").equals("true");
-	boolean subDir = ElementParameterParser.getValue(node, "__SUB_DIRECTROY__").equals("true");
+	boolean mkDir = ("true").equals(ElementParameterParser.getValue(node, "__MKDIR__"));
+	boolean isAllFile = ("true").equals(ElementParameterParser.getValue(node, "__ALL_FILES__"));
+	boolean subDir = ("true").equals(ElementParameterParser.getValue(node, "__SUB_DIRECTROY__"));
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
 	%>

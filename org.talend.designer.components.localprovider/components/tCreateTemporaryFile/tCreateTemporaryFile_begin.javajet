@@ -15,7 +15,7 @@ String cid = node.getUniqueName();
 %>
 
 <%
-boolean rmSuccess = ElementParameterParser.getValue(node,"__REMOVE__").equals("true");
+boolean rmSuccess = ("true").equals(ElementParameterParser.getValue(node,"__REMOVE__"));
 String dir = ElementParameterParser.getValue(node,"__DIRECTORY__");
 String filename = ElementParameterParser.getValue(node,"__TEMPLATE__");
 String suffix = ElementParameterParser.getValue(node,"__SUFFIX__");

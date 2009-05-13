@@ -36,13 +36,13 @@ java.util.Set<<%=connectionName %>Struct> tSet_<%=connectionName
 	%>_<%=cid %> = ((java.util.Map<<%=connectionName %>Struct, <%=connectionName %>Struct>) globalMap.get("tHash_<%=connectionName %>")).keySet();
 
 <%	
-		if(matchingType.equals("matchMetaphone")){
+		if(("matchMetaphone").equals(matchingType)){
 %>
 org.apache.commons.codec.language.Metaphone metaphone_<%=cid %> = new org.apache.commons.codec.language.Metaphone();
 	
 <%
 		}
-		if(matchingType.equals("matchDoubleMetaphone")){
+		if(("matchDoubleMetaphone").equals(matchingType)){
 %>
 org.apache.commons.codec.language.DoubleMetaphone doublemetaphone_<%=cid %> = new org.apache.commons.codec.language.DoubleMetaphone();
 	

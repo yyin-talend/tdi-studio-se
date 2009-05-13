@@ -22,12 +22,12 @@ String cid = node.getUniqueName();
 
 String field = ElementParameterParser.getValue(node, "__FIELD__");
 String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
-boolean advanced = ElementParameterParser.getValue(node, "__ADVANCED_OPTION__").equals("true");
+boolean advanced = ("true").equals(ElementParameterParser.getValue(node, "__ADVANCED_OPTION__"));
 List<Map<String, String>> formats =
 	(List<Map<String,String>>)ElementParameterParser.getObjectValue( node, "__FORMATS__");
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 

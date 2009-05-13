@@ -48,10 +48,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
              List<IMetadataColumn> listColumns = metadata.getListColumns();
              int colNo = 0;
              for (IMetadataColumn column: listColumns) {
-                 if(column.getTalendType().equals("id_String")){
+                 if(("id_String").equals(column.getTalendType())){
 %>          
                      <%=conn.getName() %>.<%=column.getLabel() %> = data<%=cid%>.instance(lineNo).stringValue(<%=colNo%>);
-<%               }else if(column.getTalendType().equals("id_Date")){%>
+<%               }else if(("id_Date").equals(column.getTalendType())){%>
                      <%=conn.getName() %>.<%=column.getLabel() %> = new java.text.SimpleDateFormat(<%=column.getPattern()%>).parse(data<%=cid%>.instance(lineNo).stringValue(<%=colNo%>));
 <%               }else{%>
                      <%=conn.getName()%>.<%=column.getLabel()%> = (<%=JavaTypesManager.getJavaTypeFromId(column.getTalendType()).getPrimitiveClass()%>)data<%=cid%>.instance(lineNo).value(<%=colNo%>);

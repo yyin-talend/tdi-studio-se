@@ -105,7 +105,7 @@ class GenerateToolByDom4j{
 	boolean outputAsXSD = false;
 	XMLTool tool = null;
 	public void generateCode(XMLNode node, String currEleName, String parentName){
-		if(node.type.equals("ELEMENT")){
+		if(("ELEMENT").equals(node.type)){
 			createElement(currEleName,node,parentName);
 			setText(currEleName,node);
 			for(XMLNode ns:node.namespaces){
@@ -233,7 +233,7 @@ class GenerateToolByNull{
 	XMLTool tool = null;
 	
 	public void generateCode(XMLNode node, String emptySpace){	
-		if(node.type.equals("ELEMENT")){
+		if(("ELEMENT").equals(node.type)){
 			startElement(node,emptySpace);
 			setText(node);
 			XMLNode mainNode = null;
@@ -395,7 +395,7 @@ if (inConn != null) {
 	            String rowNumber = ElementParameterParser.getValue(node, "__ROW_NUMBER__");
                 
                 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-        		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+        		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
         		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
         		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
         		
@@ -431,7 +431,7 @@ if (inConn != null) {
                 XMLNode root = mainList.get(0);
             	XMLNode loop = (XMLNode)treeObjs[2];
                 
-                if(!allowEmpty.equals("true")){
+                if(!("true").equals(allowEmpty)){
                 	removeEmptyElement(root);
                 }
                 
@@ -467,13 +467,13 @@ if (inConn != null) {
 // ------------------- *** Common code end *** ------------------- //
 
 // ------------------- *** Dom4j generation mode start *** ------------------- //
-if(mode.equals("Dom4j")){
+if(("Dom4j").equals(mode)){
 		if(inputKeysColumns.size() !=0){
 %>
 		//the data read is different from the data read last time. 
 		if(strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)==false){	
 <%		}
-		if(outputAsXSD.equals("true")){
+		if(("true").equals(outputAsXSD)){
 %>
 			doc_<%=cid%>.getRootElement().addAttribute("xsi:noNamespaceSchemaLocation", <%=fileNameXSD%>);
 		    doc_<%=cid%>.getRootElement().addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -482,7 +482,7 @@ if(mode.equals("Dom4j")){
 %>  
     		nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
 <%
-		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
     		nestXMLTool_<%=cid%>.removeEmptyElement(doc_<%=cid%>.getRootElement());
 <%
@@ -509,10 +509,10 @@ if(mode.equals("Dom4j")){
 <%
 	//init the generate tool.
 	GenerateToolByDom4j generateToolByDom4j = new GenerateToolByDom4j();
-    if(outputAsXSD.equals("true")){
+    if(("true").equals(outputAsXSD)){
     	generateToolByDom4j.outputAsXSD = true;
     }
-    if(allowEmpty.equals("true")){
+    if(("true").equals(allowEmpty)){
     	generateToolByDom4j.allowEmpty = true;
     }
     generateToolByDom4j.cid = cid;
@@ -592,15 +592,15 @@ if(mode.equals("Dom4j")){
 // ------------------- *** Dom4j generation mode end *** ------------------- //
 
 // ------------------- *** Null generation mode start *** ------------------- //
-else if(mode.equals("Null")){
+else if(("Null").equals(mode)){
 //	String fileNameXSD = ElementParameterParser.getValue(node, "__XSD_FILE__");
 	//init the generate tool.
 	GenerateToolByNull generateToolByNull = new GenerateToolByNull();
-    if(outputAsXSD.equals("true")){
+    if(("true").equals(outputAsXSD)){
     	generateToolByNull.outputAsXSD = true;
     	generateToolByNull.fileNameXSD = fileNameXSD;
     }
-    if(allowEmpty.equals("true")){
+    if(("true").equals(allowEmpty)){
     	generateToolByNull.allowEmpty = true;
     }
     generateToolByNull.cid = cid;
@@ -612,7 +612,7 @@ else if(mode.equals("Null")){
 		if(strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)==false){
 <%	}%>
 <%
-		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
 
 		 // write the endtag to the StringWriter:strWriter_tWriteXMLField_1_Out
@@ -770,7 +770,7 @@ else if(mode.equals("Null")){
 		}
 		generateToolByNull.generateCode(groupList.get(i),emptySpace);
 		
-		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 			if((groupList.get(i).relatedColumn != null || groupList.get(i).childrenColumnList.size()>0)){
 %>
 	if( false
@@ -798,7 +798,7 @@ else if(mode.equals("Null")){
     if (newTabIndex_<%=cid%> >= 0) {
         //out_<%=cid%>.newLine();//Track code
 <%
-		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
 		// output unNull tabs in start tabs buffer
         if (preUnNullMaxIndex_<%=cid%> >= 0) {
@@ -823,7 +823,7 @@ else if(mode.equals("Null")){
         }
 <%
 		}
-		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
         // output endtabs
         if (preUnNullMaxIndex_<%=cid%> >= preNewTabIndex_<%=cid%>
@@ -843,7 +843,7 @@ else if(mode.equals("Null")){
                         .get(i_<%=cid%>));
             }
 <%
-		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
         }
 <%
@@ -861,7 +861,7 @@ else if(mode.equals("Null")){
     }
 <%
 	}
-	if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+	if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
 	//reset the preUnNullMaxIndex
 	if(unNullMaxIndex_<%=cid%>>=0){
@@ -880,7 +880,7 @@ else if(mode.equals("Null")){
 	for(int len =loop.path.split("/").length-1;len>1;len--){
 		emptySpace +="  ";
 	}
-	if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+	if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
 		if( false
 <%
@@ -904,7 +904,7 @@ else if(mode.equals("Null")){
 		out_<%=cid%>.write(buf_<%=cid%>.toString());
 		preNewTabIndex_<%=cid%> = <%=groupList.size()+mainList.size()%>;
 <%
-	if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+	if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
             preUnNullMaxIndex_<%=cid%> = <%=groupList.size()+mainList.size()-1%>;
 		}

@@ -45,10 +45,10 @@ if(outgoingConns != null && outgoingConns.size() > 0) {
 }
 if(incomingConnName != null && outgoingConnName != null && columnList != null && columnList.size() > 0) {
     String inputColumn = ElementParameterParser.getValue(node, "__INPUT_COLUMN__");
-    boolean isHostName = ElementParameterParser.getValue(node, "__INPUT_HOST_NAME__").equals("true");
-    boolean isIPAddress = ElementParameterParser.getValue(node, "__INPUT_IP__").equals("true");
-    boolean isLocationTypeCode = ElementParameterParser.getValue(node, "__LOCATION_TYPE_CODE__").equals("true");
-    boolean isLocationTypeName = ElementParameterParser.getValue(node, "__LOCATION_TYPE_NAME__").equals("true");
+    boolean isHostName = ("true").equals(ElementParameterParser.getValue(node, "__INPUT_HOST_NAME__"));
+    boolean isIPAddress = ("true").equals(ElementParameterParser.getValue(node, "__INPUT_IP__"));
+    boolean isLocationTypeCode = ("true").equals(ElementParameterParser.getValue(node, "__LOCATION_TYPE_CODE__"));
+    boolean isLocationTypeName = ("true").equals(ElementParameterParser.getValue(node, "__LOCATION_TYPE_NAME__"));
     for(int i = 0 ; i < columnList.size() ; i++) {
         if(i == columnList.size() -1) {
             if(isHostName) {

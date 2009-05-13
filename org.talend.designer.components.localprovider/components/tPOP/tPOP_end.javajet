@@ -28,7 +28,7 @@
 
     if (folder_<%=cid %> != null)    
 <%
-   if (deleteFromServer.equals("true")) {
+   if (("true").equals(deleteFromServer)) {
 %>
      folder_<%=cid %>.close(true); 
 <%

@@ -35,16 +35,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 "__FORMATS__"
             );            
             
-        boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true"); 
+        boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__")); 
         String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
         
 		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);        
 
 		String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
-			boolean isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
+			boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
 %>
 
 				String tempStringM<%=cid %>= null;
@@ -99,13 +99,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			
             	if (tempLengthM<%=cid %> >=<%=format.get("SIZE")%>) {
                     <%
-                    if (format.get("KEEP").equals("\'A\'")) {%>
+                    if (("\'A\'").equals(format.get("KEEP"))) {%>
                         sb_<%=cid %>.append(tempStringM<%=cid %>);
                     <%
-                    } else if (format.get("KEEP").equals("\'R\'")) {%>
+                    } else if (("\'R\'").equals(format.get("KEEP"))) {%>
                         sb_<%=cid %>.append(tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>));
                     <%
-                    } else if (format.get("KEEP").equals("\'M\'")) {%>
+                    } else if (("\'M\'").equals(format.get("KEEP"))) {%>
                         int begin<%=cid %>=(tempLengthM<%=cid %>-<%=format.get("SIZE")%>)/2;
                         sb_<%=cid %>.append(tempStringM<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>));
                     <%
@@ -116,7 +116,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 }else if(tempLengthM<%=cid %><<%=format.get("SIZE")%>){
                    
                     <%
-                    if (format.get("ALIGN").equals("\'L\'")) {
+                    if (("\'L\'").equals(format.get("ALIGN"))) {
                     %>
                         sb_<%=cid %>.append(tempStringM<%=cid %>);
                         for(int i_<%=cid %>=0; i_<%=cid %>< <%=format.get("SIZE")%>-tempLengthM<%=cid %>; i_<%=cid %>++){
@@ -124,7 +124,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         }
                         
                     <%
-                    } else if (format.get("ALIGN").equals("\'R\'")) {%>
+                    } else if (("\'R\'").equals(format.get("ALIGN"))) {%>
                         for(int i_<%=cid %>=0; i_<%=cid %>< <%=format.get("SIZE")%>-tempLengthM<%=cid %>; i_<%=cid %>++){
                             sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }

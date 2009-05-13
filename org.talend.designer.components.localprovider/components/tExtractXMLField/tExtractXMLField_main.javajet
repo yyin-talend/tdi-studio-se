@@ -25,7 +25,7 @@ String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
 List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__"); 
 String limit = ElementParameterParser.getValue(node, "__LIMIT__");
-if (limit.equals("")) {
+if (("").equals(limit)) {
 	limit = "-1";
 }
 
@@ -93,7 +93,7 @@ class NameSpaceTool_<%=cid%> {
         	String fullPath = loopPath;
         	if(!path.equals(fullPath)){
             	for (String tmp : path.split("/")) {
-            		if (tmp.equals("..")) {
+            		if (("..").equals(tmp)) {
                         fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
                     } else {
                         fullPath += "/" + tmp;

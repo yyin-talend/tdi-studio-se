@@ -26,11 +26,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         String URL = ElementParameterParser.getValue(node,"__URL__");
         
-        boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
+        boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
 		
         String fromRev = ElementParameterParser.getValue(node,"__FROM_REV__");
 
-        boolean singleRev = ElementParameterParser.getValue(node,"__SINGLE_REV__").equals("true");
+        boolean singleRev = ("true").equals(ElementParameterParser.getValue(node,"__SINGLE_REV__"));
 
         String toRev = ElementParameterParser.getValue(node,"__TO_REV__");
 %>
@@ -63,7 +63,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
         long endRevision<%=cid%> = startRevision<%=cid%>;
              
-<%}else if(toRev.equals("'HEAD'")){%>
+<%}else if(("'HEAD'").equals(toRev)){%>
 
         long endRevision<%=cid%> = repository<%=cid%>.getLatestRevision();
         

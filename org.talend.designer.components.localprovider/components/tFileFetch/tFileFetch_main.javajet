@@ -26,22 +26,22 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__");
 %>   
 
-<%if(protocol.equals("http")){
+<%if(("http").equals(protocol)){
 
 String uri = ElementParameterParser.getValue(node, "__URI__");
-boolean post = ElementParameterParser.getValue(node,"__POST__").equals("true");
-boolean printResponse = ElementParameterParser.getValue(node,"__PRINT__").equals("true");
-boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
+boolean post = ("true").equals(ElementParameterParser.getValue(node,"__POST__"));
+boolean printResponse = ("true").equals(ElementParameterParser.getValue(node,"__PRINT__"));
+boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
 String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
 String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
 String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 
-boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
+boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
-boolean useProxyNTLM = ElementParameterParser.getValue(node,"__PROXY_NTLM__").equals("true");
+boolean useProxyNTLM = ("true").equals(ElementParameterParser.getValue(node,"__PROXY_NTLM__"));
 String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 %>
     org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
@@ -74,7 +74,7 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 <%}%>
 
 <%if(post){
-	boolean uploadFile = ElementParameterParser.getValue(node,"__UPLOAD__").equals("true");
+	boolean uploadFile = ("true").equals(ElementParameterParser.getValue(node,"__UPLOAD__"));
     
 	List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");
 	List<Map<String, String>> fileParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILE_PARAMS__");
@@ -111,7 +111,7 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
    try{
     client_<%=cid %>.executeMethod(post_<%=cid %>);
     }catch(Exception e){
-<% if(dieOnError.equals("true")){
+<% if(("true").equals(dieOnError)){
 %>
    throw(e);
 <% }else{
@@ -130,7 +130,7 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
     try{
     client_<%=cid %>.executeMethod(get_<%=cid %>);
     }catch(Exception e){
-<% if(dieOnError.equals("true")){
+<% if(("true").equals(dieOnError)){
 %>
    throw(e);
 <% }else{
@@ -203,11 +203,11 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 	<%}%>
 	
 <%}
-if(protocol.equals("ftp")){%>
+if(("ftp").equals(protocol)){%>
 
 <%
 String uri = ElementParameterParser.getValue(node, "__URI__");
-boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
+boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
@@ -246,7 +246,7 @@ java.io.DataInputStream in<%=cid%>=null;
    try{
    in<%=cid%> = new java.io.DataInputStream(conn<%=cid %>.getInputStream());
    }catch(Exception e){
-<% if(dieOnError.equals("true")){
+<% if(("true").equals(dieOnError)){
 %>    throw(e);
 <%}else{
 %>
@@ -272,7 +272,7 @@ java.io.DataInputStream in<%=cid%>=null;
 
 
 <%}
-if(protocol.equals("smb")){ //1%>
+if(("smb").equals(protocol)){ //1%>
 
 <%
   String srcurl = ElementParameterParser.getValue(node, "__SMB_URI__"); 

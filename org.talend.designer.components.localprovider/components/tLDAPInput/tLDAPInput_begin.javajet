@@ -37,9 +37,9 @@ imports="
 	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
 	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
-	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__").equals("true");	
+	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));	
 	
-	boolean paging =ElementParameterParser.getValue(node, "__ISPAGING__").equals("true");	
+	boolean paging =("true").equals(ElementParameterParser.getValue(node, "__ISPAGING__"));	
 	String pageSize =ElementParameterParser.getValue(node, "__PAGESIZE__");
 %>
 	int <%=cid%>_NB_LINE = 0;
@@ -58,24 +58,24 @@ imports="
 	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
 <%
 	}
-    if(authen.equals("true")){
+    if(("true").equals(authen)){
 %>
     env_<%=cid%>.put(javax.naming.Context.SECURITY_PRINCIPAL, <%=user%>);
     env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, <%=passwd%>);
 <%
     }
-    if(protocol.equals("LDAPS")){
+    if(("LDAPS").equals(protocol)){
 %>
 	env_<%=cid%>.put(javax.naming.Context.SECURITY_PROTOCOL, "ssl");
 	env_<%=cid%>.put("java.naming.ldap.factory.socket", "talend.ssl.AdvancedSocketFactory");
 <%
-		if(advanced.equals("true")){
+		if(("true").equals(advanced)){
 %>
 	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
 <%
 		}
-    }else if(protocol.equals("TLS")){
-    	if(advanced.equals("true")){
+    }else if(("TLS").equals(protocol)){
+    	if(("true").equals(advanced)){
 %>
 	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
 <%
@@ -84,7 +84,7 @@ imports="
 %>
     javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(env_<%=cid%>, null);
 <%
-	if(protocol.equals("TLS")){
+	if(("TLS").equals(protocol)){
 %>
 	javax.naming.ldap.StartTlsRequest tldsReq_<%=cid%> = new javax.naming.ldap.StartTlsRequest();
     javax.naming.ldap.StartTlsResponse tls_<%=cid%> =(javax.naming.ldap.StartTlsResponse)ctx_<%=cid%>.extendedOperation(tldsReq_<%=cid%>);
@@ -226,7 +226,7 @@ do {
         throw(e);
 <%
         } else {
-            if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 %>                    
         <%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
@@ -239,7 +239,7 @@ do {
                 <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
 <%
-            } else if(rejectConnName.equals("")){
+            } else if(("").equals(rejectConnName)){
 %>
                 System.err.println(e.getMessage());
                 <%=firstConnName %> = null;

@@ -19,7 +19,7 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 
@@ -35,7 +35,7 @@ stmt_<%=cid %>.close();
 conn_<%=cid %> .close();
 
 <%
-if(frameworkType.equals("EMBEDED"))
+if(("EMBEDED").equals(frameworkType))
 {%>
 	try
 	{
@@ -56,7 +56,7 @@ if(frameworkType.equals("EMBEDED"))
 }
 else
 {
-	if(connectionFlag.equals("false"))
+	if(("false").equals(connectionFlag))
 	{
 	%>
 	serverControl_<%=cid%>.shutdown();

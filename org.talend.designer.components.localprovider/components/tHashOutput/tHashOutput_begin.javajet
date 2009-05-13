@@ -13,7 +13,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean clearData = ElementParameterParser.getValue(node, "__CLEAR_DATA__").equals("true");
+	boolean clearData = ("true").equals(ElementParameterParser.getValue(node, "__CLEAR_DATA__"));
 	String comName=ElementParameterParser.getValue(node, "__COMPNAME__");
 	String cid = node.getUniqueName();
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();

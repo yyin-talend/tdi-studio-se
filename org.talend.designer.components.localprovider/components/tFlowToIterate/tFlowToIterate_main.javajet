@@ -18,7 +18,7 @@ INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
 
-boolean useDefault = ElementParameterParser.getValue(node, "__DEFAULT_MAP__").equals("true");
+boolean useDefault = ("true").equals(ElementParameterParser.getValue(node, "__DEFAULT_MAP__"));
 List<Map<String, String>> map = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__MAP__");
 
 String inputRowName = null;

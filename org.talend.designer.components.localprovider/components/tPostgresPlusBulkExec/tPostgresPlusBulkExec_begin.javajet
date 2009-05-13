@@ -23,11 +23,11 @@ String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 StringBuilder tableName = new StringBuilder();
 StringBuilder tmpTableName = new StringBuilder();
-boolean standardConformingString=ElementParameterParser.getValue(node,"__STANDARD_CONFORMING_STRING__").equals("true");
+boolean standardConformingString= ("true").equals(ElementParameterParser.getValue(node,"__STANDARD_CONFORMING_STRING__"));
 %>
 String tableName_<%=cid%> = null;
 <%
-if(dbSchema == null || dbSchema.equals("") || dbSchema.equals("\"\"")) {
+if(dbSchema == null || ("").equals(dbSchema) || ("\"\"").equals(dbSchema)) {
     tableName.append("\\\"\" + " + table + " + \"\\\"");
     %>
     tableName_<%=cid%> = <%=table%>;
@@ -38,7 +38,7 @@ if(dbSchema == null || dbSchema.equals("") || dbSchema.equals("\"\"")) {
     tableName_<%=cid%> = <%=dbSchema%> + "\".\"" + <%=table%>;
     <%
 }
-if(dataAction.equals("UPDATE")) {
+if(("UPDATE").equals(dataAction)) {
     tmpTableName = tableName;
     tableName = new StringBuilder("\\\"tmp_" + cid ); //tableName not end. will add pid when create a temp table for update.
 }
@@ -65,7 +65,7 @@ if(notNullCols != null && notNullCols.size() > 0) {
     notNullColumns.append("FORCE NOT NULL ");
     int notNullCount = 0;
     for(Map<String, String> notNullCol : notNullCols) {
-        if(notNullCol.get("FORCENOTNULL").equals("true")) {
+        if(("true").equals(notNullCol.get("FORCENOTNULL"))) {
             notNullColumns.append("\\\"" + notNullCol.get("SCHEMA_COLUMN") + "\\\",");
             notNullCount++;
         }
@@ -76,12 +76,12 @@ if(notNullCols != null && notNullCols.size() > 0) {
 }
 %>
 String bulkSQL_<%=cid%> = "COPY " + "<%=tableName.toString()%>" 
- <%if (dataAction.equals("UPDATE")) {%>+ "_"+ pid + "\""<%}%>
+ <%if (("UPDATE").equals(dataAction)) {%>+ "_"+ pid + "\""<%}%>
  +"<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
 <%
 String fileType = ElementParameterParser.getValue(node, "__FILETYPE__");
-String oids = (ElementParameterParser.getValue(node, "__OIDS__").equals("true") ? "OIDS" : "");
-if(fileType.equals("BINARYFILE")) {
+String oids = (("true").equals(ElementParameterParser.getValue(node, "__OIDS__")) ? "OIDS" : "");
+if(("BINARYFILE").equals(fileType)) {
     %>
     bulkSQL_<%=cid%> += "BINARY <%=oids%>";
     <%
@@ -90,8 +90,8 @@ if(fileType.equals("BINARYFILE")) {
     bulkSQL_<%=cid%> += "<%=oids%> " + "DELIMITER AS '" + <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__")%> + "' ";
     bulkSQL_<%=cid%> += "NULL AS '" + <%=ElementParameterParser.getValue(node, "__NULLSTRING__")%> + "' ";
     <%
-    if(fileType.equals("CSVFILE")) {
-        String header = (ElementParameterParser.getValue(node, "__HEADER__").equals("true") ? "HEADER" : "");
+    if(("CSVFILE").equals(fileType)) {
+        String header = (("true").equals(ElementParameterParser.getValue(node, "__HEADER__")) ? "HEADER" : "");
         String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");        
         String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");        
         %>
@@ -122,7 +122,7 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
     manager = getManager(dbmsId, cid);
-    if(tableAction.equals("DROP_CREATE")) {
+    if(("DROP_CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
         stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
@@ -131,13 +131,13 @@ if(columnList != null && columnList.size() > 0) {
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreate_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("CREATE")) {
+    } else if(("CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreate_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+    } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
         %>
         java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
         java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -156,13 +156,13 @@ if(columnList != null && columnList.size() > 0) {
             stmtCreate_<%=cid%>.close();
         }
         <%
-    } else if(tableAction.equals("CLEAR")) {
+    } else if(("CLEAR").equals(tableAction)) {
         %>
         java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
         stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
         stmtClear_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("TRUNCATE")) {
+    } else if(("TRUNCATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtTrunc_<%=cid%> = con_<%=cid%>.createStatement();
         stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
@@ -170,7 +170,7 @@ if(columnList != null && columnList.size() > 0) {
         <%
     }    
 }
-if(dataAction.equals("UPDATE")) {
+if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {
         int keyCount = 0;
         for(IMetadataColumn column : columnList) {
@@ -208,7 +208,7 @@ if(dataAction.equals("UPDATE")) {
         stmtTmpDrop_<%=cid%>.close();
         <%
     }
-} else if(dataAction.equals("INSERT")) {
+} else if(("INSERT").equals(dataAction)) {
     %>
 	    <%if(standardConformingString) {
    		%>

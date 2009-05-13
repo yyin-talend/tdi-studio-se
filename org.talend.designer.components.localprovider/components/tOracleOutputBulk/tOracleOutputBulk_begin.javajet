@@ -39,14 +39,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ENCODING__"
         );
         
-        boolean isAppend = ElementParameterParser.getValue(
-            node,
-            "__APPEND__"
-        ).equals("true");
+        boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
 %>
 		String fileName_<%=cid%> = (new java.io.File(<%=filename %>)).getAbsolutePath().replace("\\","/");
 <%
-	if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
+	if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
 		String directory_<%=cid%> = null;
 		if((fileName_<%=cid%>.indexOf("/") != -1)) {     

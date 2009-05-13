@@ -18,7 +18,7 @@ imports="
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-    boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+    boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     if(useExistingConn) {
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
@@ -38,7 +38,7 @@ imports="
 
 <%
 if(!useExistingConn) {
-    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+    if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
         %>
         conn_<%=cid%>.setAutoCommit(false);        
         int commitEvery_<%=cid%> = <%=commitEvery%>;    

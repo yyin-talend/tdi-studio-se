@@ -10,15 +10,15 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String method = ElementParameterParser.getValue(node, "__METHODNAME__");
-if(method.equals("addClndr") || method.equals("updateClndr")) {
+if(("addClndr").equals(method) || ("updateClndr").equals(method)) {
     %>
     vtigerManager_<%=cid%>.<%=method%>(clndrDetais_<%=cid%>.toArray(new org.talend.vtiger.module.outlook.Clndrdetail[clndrDetais_<%=cid%>.size()]));
     <%
-} else if(method.equals("addContacts") || method.equals("updateContacts")) {
+} else if(("addContacts").equals(method) || ("updateContacts").equals(method)) {
     %>
     vtigerManager_<%=cid%>.<%=method%>(contactdetails_<%=cid%>.toArray(new org.talend.vtiger.module.outlook.Contactdetail[contactdetails_<%=cid%>.size()]));
     <%
-} else if(method.equals("addTasks") || method.equals("updateTasks")) {
+} else if(("addTasks").equals(method) || ("updateTasks").equals(method)) {
     %>
     vtigerManager_<%=cid%>.<%=method%>(taskdetails_<%=cid%>.toArray(new org.talend.vtiger.module.outlook.Taskdetail[taskdetails_<%=cid%>.size()]));
     <%

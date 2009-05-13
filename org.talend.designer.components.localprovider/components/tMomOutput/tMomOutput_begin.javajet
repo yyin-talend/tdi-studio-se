@@ -27,7 +27,7 @@ class="MomInput"
 %>
 	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
 <%
-if(serverType.equals("JBoss")){ // server judgement
+if(("JBoss").equals(serverType)){ // server judgement
 	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
 	String to = ElementParameterParser.getValue(node, "__TO__");
 %>
@@ -45,8 +45,8 @@ if(serverType.equals("JBoss")){ // server judgement
 	javax.jms.<%=msgType%> type_<%=cid%>=(javax.jms.<%=msgType%>)context_<%=cid%>.lookup(<%=to%>);
 
 <%
-}else if(serverType.equals("ActiveMQ")){
-	boolean topic = ElementParameterParser.getValue(node, "__MSGTYPE__").equals("Topic");
+}else if(("ActiveMQ").equals(serverType)){
+	boolean topic = ("Topic").equals(ElementParameterParser.getValue(node, "__MSGTYPE__"));
 	String to = ElementParameterParser.getValue(node, "__TO__");
 	String deliverMode = ElementParameterParser.getValue(node, "__DELIVERY_MODE__");
 %>

@@ -35,7 +35,7 @@ imports="
 String jdbcDriver_<%=cid%> = null;
 String url_<%=cid%> = null;
 <%
-if(frameworkType.equals("EMBEDED"))
+if(("EMBEDED").equals(frameworkType))
 {
 	%>
 	jdbcDriver_<%=cid%> = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -46,7 +46,7 @@ if(frameworkType.equals("EMBEDED"))
 }
 else
 {
-	if(frameworkType.equals("JCCJDBC"))
+	if(("JCCJDBC").equals(frameworkType))
 	{
 		%>
 		jdbcDriver_<%=cid%> = "com.ibm.db2.jcc.DB2Driver";
@@ -63,7 +63,7 @@ else
 	%>
 	<%
 	String connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__");
-	if(connectionFlag.equals("false"))
+	if(("false").equals(connectionFlag))
 	{
 	%>
     	org.apache.derby.drda.NetworkServerControl serverControl_<%=cid%>;
@@ -118,7 +118,7 @@ java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
 boolean whetherReject_<%=cid%> = false;
 
 <%
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 
 int commitEvery_<%=cid%> = <%=commitEvery%>;

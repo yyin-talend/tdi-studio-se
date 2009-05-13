@@ -29,7 +29,7 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String rootpath = ElementParameterParser.getValue(node, "__ROOT_LOOP_QUERY__");
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
@@ -43,7 +43,7 @@ if(connections!=null && connections.size()>0){
 int nb_line_<%=cid %> = 0;
 <%
 // *** dom4j begin *** //
-if(mode.equals("Dom4j")){
+if(("Dom4j").equals(mode)){
 %>
 class NameSpaceTool_<%=cid %> {
 
@@ -81,7 +81,7 @@ class NameSpaceTool_<%=cid %> {
         	String fullPath = loopPath;
         	if(!path.equals(fullPath)){
             	for (String tmp : path.split("/")) {
-            		if (tmp.equals("..")) {
+            		if (("..").equals(tmp)) {
                         fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
                     } else {
                         fullPath += "/" + tmp;
@@ -126,7 +126,7 @@ class XML_API_<%=cid %>{
 	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
         if (node != null && node instanceof org.dom4j.Element) {
         	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
-        	if(attri != null && attri.getText().equals("true")){
+        	if(attri != null && ("true").equals(attri.getText())){
             	return true;
             }
         }
@@ -198,11 +198,11 @@ for (org.dom4j.Element loop_<%=cid %>: nodeList_<%=cid %>) {
 		org.dom4j.Element temp_<%=cid %> = it_<%=cid %>.next();
 <%
 // ***dom4j end and sax begin*** //
-}else if(mode.equals("SAX")){
+}else if(("SAX").equals(mode)){
 %>
 class XML_API_<%=cid%>{
 	public boolean isDefNull(String[] node) throws javax.xml.transform.TransformerException {
-        if(node[0] != null && node[1]!=null && node[1].equals("true")){
+        if(node[0] != null && node[1]!=null && ("true").equals(node[1])){
         	return true;
         }
         return false;
@@ -246,7 +246,7 @@ XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
 			String[] arrQuery = strQuery.split(",");
 			builderQueries.append("{");
 			for(int i = 0; i < arrQuery.length; i++){
-				if(arrQuery[i]!=null && !arrQuery[i].equals("")){
+				if(arrQuery[i]!=null && !("").equals(arrQuery[i])){
 					if(i == 0){
 						builderQueries.append(arrQuery[i]);
 					}else{
@@ -294,7 +294,7 @@ for (java.util.List<java.util.Map<String, Object>> map_<%=cid %> : rootlist_<%=c
 			String tmpQuery = null;
 			for(Map<String, String> schemaMap : schemas){
 				if(schemaMap.get("SCHEMA").equals(conn.getName())){
-					hasEmptyRow = schemaMap.get("CREATE_EMPTY_ROW").equals("true");
+					hasEmptyRow = ("true").equals(schemaMap.get("CREATE_EMPTY_ROW"));
 					mapping = schemaMap;
 					tmpQuery = schemaMap.get("LOOP_PATH");
 				}
@@ -303,7 +303,7 @@ for (java.util.List<java.util.Map<String, Object>> map_<%=cid %> : rootlist_<%=c
 			if(metadata!=null){
 %>
 	<%=conn.getName() %> = null;
-<%				if(mode.equals("Dom4j")){%>
+<%				if(("Dom4j").equals(mode)){%>
 	if(temp_<%=cid %>.getPath().equals(subLoop_<%=conn.getName() %>)){
 <%				}else{%>
 	if(tmp_<%=cid %>.get("path").equals(<%=tmpQuery %>)){
@@ -320,14 +320,14 @@ for (java.util.List<java.util.Map<String, Object>> map_<%=cid %> : rootlist_<%=c
 				String[] arrXpath = ((String)mapping.get("MAPPING")).split(",");
 				for (int i=0;i < arrXpath.length;i++) {
 					String query = arrXpath[i];
-					if(mode.equals("Dom4j")){
+					if(("Dom4j").equals(mode)){
 %>
 		org.dom4j.XPath xTmp<%=conn.getName() + i %>_<%=cid %> = temp_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(<%=query %>, subLoop_<%=conn.getName() %>));
 	    xTmp<%=conn.getName() + i %>_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>); 
 	    node_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.selectSingleNode(temp_<%=cid %>);
 	    str_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.valueOf(temp_<%=cid %>);
 <%
-					}else if(mode.equals("SAX")){
+					}else if(("SAX").equals(mode)){
 %>
 	str_<%=cid %> = row_<%=cid %>.get(<%=query %>);
 <%

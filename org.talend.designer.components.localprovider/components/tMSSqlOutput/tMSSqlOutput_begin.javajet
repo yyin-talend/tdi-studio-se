@@ -28,7 +28,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__ADD_COLS__" );
 
-    boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");
+    boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
     
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");    
     
@@ -54,7 +54,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
     
-    boolean isSpecifyIdentityField = ElementParameterParser.getValue(node,"__SPECIFY_IDENTITY_FIELD__").equals("true");
+    boolean isSpecifyIdentityField = ("true").equals(ElementParameterParser.getValue(node,"__SPECIFY_IDENTITY_FIELD__"));
     
     String identityField = ElementParameterParser.getValue(node, "__IDENTITY_FIELD__");
     
@@ -66,7 +66,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 
-    boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
+    boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 %>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
@@ -89,7 +89,7 @@ if(columnList != null && columnList.size() > 0) {
 %>
 
 <%
-if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataAction.equals("UPDATE_OR_INSERT")) {
+if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || ("UPDATE_OR_INSERT").equals(dataAction)) {
     int updateKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
@@ -104,7 +104,7 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         }
         <%
     }
-} else if(dataAction.equals("DELETE")) {
+} else if(("DELETE").equals(dataAction)) {
     int deleteKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
@@ -119,7 +119,7 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         }
         <%
     }
-} else if (dataAction.equals("INSERT_IF_NOT_EXIST")){
+} else if (("INSERT_IF_NOT_EXIST").equals(dataAction)){
 	int insertKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
@@ -137,7 +137,7 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
 }
 
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(useExistingConn.equals("true")) {
+if(("true").equals(useExistingConn)) {
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
     String schema = "dbschema_" + connection;
@@ -155,8 +155,8 @@ if(useExistingConn.equals("true")) {
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%
 }
-if(!useExistingConn.equals("true")) {
-    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+if(!("true").equals(useExistingConn)) {
+    if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
         %>
         conn_<%=cid%>.setAutoCommit(false);
         int commitEvery_<%=cid%> = <%=commitEvery%>;            
@@ -173,9 +173,9 @@ if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
 }
 <%
 if(columnList != null && columnList.size()>0) {    
-    if(!tableAction.equals("NONE")) {
+    if(!("NONE").equals(tableAction)) {
         Manager manager = getManager(dbmsId, cid);
-        if(tableAction.equals("DROP_CREATE")) {
+        if(("DROP_CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
@@ -184,13 +184,13 @@ if(columnList != null && columnList.size()>0) {
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("CREATE")) {
+        } else if(("CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS") || tableAction.equals("DROP_IF_EXISTS_AND_CREATE")) {
+        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
             %>
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
             java.sql.ResultSet rsTable_<%=cid%> = null;
@@ -209,7 +209,7 @@ if(columnList != null && columnList.size()>0) {
             }
             rsTable_<%=cid%>.close();
             <%
-            if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+            if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
                 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -229,13 +229,13 @@ if(columnList != null && columnList.size()>0) {
                 stmtCreate_<%=cid%>.close();
                 <%
             }
-        } else if(tableAction.equals("CLEAR")) {
+        } else if(("CLEAR").equals(tableAction)) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
             deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
             stmtClear_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("TRUNCATE")) {
+        } else if(("TRUNCATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtTruncCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsTruncCount_<%=cid%> = stmtTruncCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
@@ -257,17 +257,17 @@ if(columnList != null && columnList.size()>0) {
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
     
-    if(dataAction.equals("INSERT")) {
+    if(("INSERT").equals(dataAction)) {
         %>  
         String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
         <%
-    } else if (dataAction.equals("UPDATE")) {
+    } else if (("UPDATE").equals(dataAction)) {
         %>
         String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
         <%      
-    } else if (dataAction.equals("INSERT_OR_UPDATE")) {
+    } else if (("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM [" + tableName_<%=cid%> + "] WHERE <%=updateWhereStmt.toString()%>"); 
         String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
@@ -275,19 +275,19 @@ if(columnList != null && columnList.size()>0) {
         String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
         java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);    
         <%
-    } else if (dataAction.equals("UPDATE_OR_INSERT")) {
+    } else if (("UPDATE_OR_INSERT").equals(dataAction)) {
         %>
         String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
         java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
         String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
         java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);        
         <%            
-    } else if (dataAction.equals("DELETE")) {
+    } else if (("DELETE").equals(dataAction)) {
         %>
         String delete_<%=cid%> = "DELETE FROM [" + tableName_<%=cid%> + "] WHERE <%=deleteWhereStmt.toString()%>";
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
         <%      
-    } else if (dataAction.equals("INSERT_IF_NOT_EXIST")) {
+    } else if (("INSERT_IF_NOT_EXIST").equals(dataAction)) {
     	%>
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM [" + tableName_<%=cid%> + "] WHERE <%=updateWhereStmt.toString()%>"); 
         String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
@@ -299,7 +299,7 @@ if(columnList != null && columnList.size()>0) {
         String query_<%=cid%> = null;
         <%
     }
-    if(identityInsert.equals("true")) {
+    if(("true").equals(identityInsert)) {
         %>
         java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
         stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");

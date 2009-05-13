@@ -21,14 +21,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
 	String cid = node.getUniqueName();
 	String label = ElementParameterParser.getValue(node, "__LABEL__");
-	if(label.equals("__UNIQUE_NAME__"))
+	if(("__UNIQUE_NAME__").equals(label))
 	    label=cid;
-    boolean tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__").equals("true");
+    boolean tablePrint = ("true").equals(ElementParameterParser.getValue(node,"__TABLE_PRINT__"));
     String printHeader = ElementParameterParser.getValue(node,"__PRINT_HEADER__");
-    boolean vertical = ElementParameterParser.getValue(node,"__VERTICAL__").equals("true");
-    boolean uniquePrint = ElementParameterParser.getValue(node,"__PRINT_UNIQUE__").equals("true");
-    boolean titlePrint = ElementParameterParser.getValue(node,"__PRINT_LABEL__").equals("true");
-    boolean uniqueTitlePrint = ElementParameterParser.getValue(node,"__PRINT_UNIQUE_LABEL__").equals("true");
+    boolean vertical = ("true").equals(ElementParameterParser.getValue(node,"__VERTICAL__"));
+    boolean uniquePrint = ("true").equals(ElementParameterParser.getValue(node,"__PRINT_UNIQUE__"));
+    boolean titlePrint = ("true").equals(ElementParameterParser.getValue(node,"__PRINT_LABEL__"));
+    boolean uniqueTitlePrint = ("true").equals(ElementParameterParser.getValue(node,"__PRINT_UNIQUE_LABEL__"));
     boolean basic = !(tablePrint||vertical);
 
 
@@ -321,7 +321,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 		final String OUTPUT_FIELD_SEPARATOR_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
 		java.io.PrintStream consoleOut_<%=cid%> = null;
 <%
-if (printHeader.equals("true")) {
+if (("true").equals(printHeader)) {
 %>
                     
                     

@@ -14,7 +14,7 @@
 	String cid = node.getUniqueName();
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	
-	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 		%>
 		}
  
@@ -47,7 +47,7 @@
 	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
 	
 <%
-	if(!useExistingConn.equals("true"))
+	if(!("true").equals(useExistingConn))
 	{
 		%>
 

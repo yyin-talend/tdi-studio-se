@@ -21,7 +21,7 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-    boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true"); 
+    boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__")); 
     String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");       
     String split = ElementParameterParser.getValue(node, "__SPLIT__");
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
@@ -44,15 +44,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             );
             
     String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-	boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+	boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 	String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 	
-    if (useDynamicGrouping.equals("false")) {
+    if (("false").equals(useDynamicGrouping)) {
         groupBys.clear();
     }
     if (encoding!=null) {
-        if (encoding.equals("")) {
+        if (("").equals(encoding)) {
                 encoding = "ISO-8859-15";
         }
     }
@@ -69,7 +69,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String col = metadata.getListColumns().get(i).getLabel();
     	for(int j = 0; j < groupby.length; j++){
     		if(groupby[j][0].equals(col)){
-    			if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    			if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     				groupby[j][2] = col;
     			}else{
     				groupby[j][2] = map.get("LABEL");
@@ -77,7 +77,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			continue outter1;
     		}
     	}
-    	if(map.get("AS_ATTRIBUTE").equals("true")){
+    	if(("true").equals(map.get("AS_ATTRIBUTE"))){
     		atts ++;
     	}else{
     		tags ++;
@@ -96,15 +96,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			continue outter2;
     		}
     	}
-    	if(map.get("AS_ATTRIBUTE").equals("true")){
-    		if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    	if(("true").equals(map.get("AS_ATTRIBUTE"))){
+    		if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     			attribute[ia][1] = col;
     		}else{
     			attribute[ia][1] = map.get("LABEL");
     		}
     		attribute[ia++][0] = col;
     	}else{
-    		if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    		if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     			tag[it][1] = col;
     		}else{
     			tag[it][1] = map.get("LABEL");
@@ -384,7 +384,7 @@ out_<%=cid %>.newLine();
 nb_line_<%=cid %>++;
 
 <%
-    if(split.equals("true")){
+    if(("true").equals(split)){
 %>
 currentRowCount_<%=cid %>++;
 if(currentRowCount_<%=cid %> == <%=ElementParameterParser.getValue(node, "__SPLIT_EVERY__") %>){

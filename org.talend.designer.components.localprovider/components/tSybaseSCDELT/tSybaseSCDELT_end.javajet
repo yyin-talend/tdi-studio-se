@@ -24,7 +24,7 @@ String cid = node.getUniqueName();
 List<IMetadataColumn> columnList = getColumnList(node);
 if(columnList != null && columnList.size() > 0) {
     String useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
-    if(!useExistingConnection.equals("true")) {
+    if(!("true").equals(useExistingConnection)) {
         %>
         if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
             conn_<%=cid%>.close();

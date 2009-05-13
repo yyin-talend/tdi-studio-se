@@ -27,7 +27,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {                                    
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
-        boolean compress = ElementParameterParser.getValue(node,"__COMPRESS__").equals("true");
+        boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
         String delim = delim1.substring(1,delim1.length()-1);
         String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
         String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
@@ -38,12 +38,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if ("".equals(textEnclosure)) textEnclosure = "\0";
         
         List< ? extends IConnection> conns = node.getIncomingConnections();
-        if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
+        if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){
 %>
             CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator%>');
 <%              
         }
-        if(escapeChar.equals("\\\\")){
+        if(("\\\\").equals(escapeChar)){
 %>
             CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
 <%

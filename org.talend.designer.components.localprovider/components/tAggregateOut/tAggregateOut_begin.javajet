@@ -74,10 +74,10 @@ for(int i=0; i<sizeOperations; i++){
 		haveSTD_DEV = true;
 	}
 	/*
-	if(fun.equals("sum") || fun.equals("count")){
+	if(("sum").equals(fun) || ("count").equals(fun)){
 		for(int j=0; j<sizeOperations; j++){
 			Map<String, String> tOperation = operations.get(j);
-			if(tOperation.get("FUNCTION").equals("avg") && tOperation.get("INPUT_COLUMN").equals(in)){
+			if(("avg").equals(tOperation.get("FUNCTION")) && tOperation.get("INPUT_COLUMN").equals(in)){
 				continue next;
 			}
 		}
@@ -93,7 +93,7 @@ for(int i=0; i<sizeOperations; i++){
 	if(fun.equals(COUNT_DISTINCT)){
 		hasCountDistinctOperation = true;
 	}
-	if(fun.equals("avg")){
+	if(("avg").equals(fun)){
 		String[] funin = new String[3];
 		funin[FUNCTION]=SUM;
 		funin[INPUT_COLUMN]=in;

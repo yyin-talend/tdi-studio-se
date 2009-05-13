@@ -16,13 +16,13 @@ imports="
     
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     
-    boolean batchMode = ElementParameterParser.getValue(node, "__BATCH_MODE__").equals("true");
+    boolean batchMode = ("true").equals(ElementParameterParser.getValue(node, "__BATCH_MODE__"));
     
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 %>
 <%
 	//batch mode
-    if(dataAction.equals("INSERT") && batchMode){
+    if(("INSERT").equals(dataAction) && batchMode){
 %>
 try {
 	int batchInsertCount_<%=cid %> = 0;
@@ -35,7 +35,7 @@ try {
 	insertedCount_<%=cid%> = insertedCount_<%=cid%> + batchInsertCount_<%=cid %>;
 } catch(Exception e) {
 <%
-		if (dieOnError.equals("true")) {
+		if (("true").equals(dieOnError)) {
                     %>
 	throw(e);
 <%
@@ -49,14 +49,14 @@ try {
 <%
     }
     %>    
-    <%if(dataAction.equals("INSERT_OR_UPDATE")){%>
+    <%if(("INSERT_OR_UPDATE").equals(dataAction)){%>
         pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");              
         pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   
         pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   
         pstmt_<%=cid%>.executeUpdate();
         pstmtInsert_<%=cid %>.executeUpdate();
         pstmtUpdate_<%=cid%>.executeUpdate();
-    <%}else if(dataAction.equals("UPDATE_OR_INSERT")){%>         
+    <%}else if(("UPDATE_OR_INSERT").equals(dataAction)){%>         
         pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   
         pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");    
         pstmtInsert_<%=cid %>.executeUpdate();
@@ -67,13 +67,13 @@ try {
     <%
     }
      
-    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
         %>
         conn_<%=cid%>.commit();
         <%
     }
     
-    if(dataAction.equals("INSERT_OR_UPDATE")) {
+    if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -91,7 +91,7 @@ try {
             
         }        
         <%
-    } else if(dataAction.equals("UPDATE_OR_INSERT")) {
+    } else if(("UPDATE_OR_INSERT").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 

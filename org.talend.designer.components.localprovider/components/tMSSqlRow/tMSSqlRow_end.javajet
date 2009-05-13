@@ -16,7 +16,7 @@ imports="
 		
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
-	if(identityInsert.equals("true")) {
+	if(("true").equals(identityInsert)) {
 	    %>
 	    stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] OFF");
 	    <%
@@ -24,8 +24,8 @@ imports="
 	%>
 	stmt_<%=cid%>.close();
 	<%
-	if(!useExistingConn.equals("true")) {
-	    if(!commitEvery.equals("")&&!commitEvery.equals("0")) {
+	if(!("true").equals(useExistingConn)) {
+	    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
 	        %>
 	        if(commitEvery_<%=cid%> > commitCounter_<%=cid%>) {
 

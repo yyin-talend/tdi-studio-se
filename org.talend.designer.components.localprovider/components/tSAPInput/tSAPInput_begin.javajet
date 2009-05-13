@@ -197,7 +197,7 @@ for(int k = 0; k < iterate_out_multi.length; k++){
 }
 List<String> iterate_out_multi_list = Arrays.asList(iterate_out_multi);
 
-boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 %>
 
@@ -302,7 +302,7 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 
         client_<%=cid %>.execute(function_<%=cid %>);
 
-<%if(iterate_out_type.equals("output_single")){%>
+<%if(("output_single").equals(iterate_out_type)){%>
 
 <%
         /* the following is input part, it will extract data from SAP. */
@@ -322,7 +322,7 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
         }
 %>
 
-<%}else if(iterate_out_type.equals("output_structure")){%>
+<%}else if(("output_structure").equals(iterate_out_type)){%>
 
 <%
         // "output_structure"
@@ -349,7 +349,7 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
         }        
 %>
 
-<%}else if(iterate_out_type.equals("output_table")){%>
+<%}else if(("output_table").equals(iterate_out_type)){%>
 
 <%
         // "output_table"
@@ -374,7 +374,7 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
         }
 %>        
 
-<%}else if(iterate_out_type.equals("table_output")){%>
+<%}else if(("table_output").equals(iterate_out_type)){%>
 
 <%
         // "table_output"

@@ -45,7 +45,7 @@ if ((node.getOutgoingSortedConnections()!=null)&&(node.getOutgoingSortedConnecti
 String isExternalSort = ElementParameterParser.getValue(node, "__EXTERNAL__");
 %>
 <%
-if(isExternalSort.equals("false")){
+if(("false").equals(isExternalSort)){
 %>
 <%=rowName %>Struct[] array_<%=cid %> = (<%=rowName %>Struct[]) globalMap.get("<%=origin %>");
 

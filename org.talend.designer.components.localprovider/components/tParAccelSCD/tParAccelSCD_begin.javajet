@@ -44,9 +44,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
-    boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
-    boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
-    boolean isEnableSaveMemMode = ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__").equals("true");
+    boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
+    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+    boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
     String dbType = POSTGRESQL;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -117,23 +117,23 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 }
                 String generatedType = searchColumn.getJavaType();
                 String struct = (isSourceKey ? "sk_" : "row_") + cid;
-                if(generatedType.equals("byte[]")) {
+                if(("byte[]").equals(generatedType)) {
                     generatedType = "Bytes";
-                } else if(generatedType.equals("java.util.Date")) {
+                } else if(("java.util.Date").equals(generatedType)) {
                     generatedType = "Timestamp";
-                } else if(generatedType.equals("Integer")) {
+                } else if(("Integer").equals(generatedType)) {
                     generatedType = "Int";
                 } else {
                     generatedType = generatedType.substring(0, 1).toUpperCase() + generatedType.substring(1);
                 }
-                if(generatedType.equals("Char") || generatedType.equals("Character")) {
+                if(("Char").equals(generatedType) || ("Character").equals(generatedType)) {
                     %>
                     tmpValue_<%=cid%> = resultSet_<%=cid%>.getString(<%=index%>);
                     if (tmpValue_<%=cid%> != null && tmpValue_<%=cid%>.length() > 0) {
                         <%=struct%>.<%=searchColumn.getColumnName()%> = tmpValue_<%=cid%>.charAt(0);
                     } else {
                         <%
-                        if(generatedType.equals("Character")) {
+                        if(("Character").equals(generatedType)) {
                             %>
                             if(tmpValue_<%=cid%> == null) {
                                 <%=struct%>.<%=searchColumn.getColumnName()%> = null;
@@ -143,7 +143,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                             <%
                         } else {
                             %>
-                            if(tmpValue_<%=cid%>.equals("")) {
+                            if(("").equals(tmpValue_<%=cid%>)) {
                                 <%=struct%>.<%=searchColumn.getColumnName()%> = '\0';
                             } else {
                                 throw new RuntimeException("Value is empty for column : '<%=searchColumn.getColumnName()%>' in '<%=incomingConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
@@ -153,7 +153,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                         %>
                     }
                     <%
-                } else if(generatedType.equals("Timestamp")) {
+                } else if(("Timestamp").equals(generatedType)) {
                     %>
                     timestamp_<%=cid%> = resultSet_<%=cid%>.getTimestamp(<%=index%>);
                     if(timestamp_<%=cid%> != null) {
@@ -183,7 +183,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             <%
         }        
     }
-    if(scdConfiger.getSurrogateKeyValueType().equals("TABLE_MAX")) {
+    if(("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())) {
         %>
         <%=scdConfiger.getSurrogateKeyFieldType()%> nextSurrogateKey_<%=cid%> = 1;
         <%
@@ -198,7 +198,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         java.sql.ResultSet tmpRS_<%=cid%> = tmpStmt_<%=cid%>.executeQuery(tmpQuery_<%=cid%>);
         <%
         String tmpType = null;        
-        if(scdConfiger.getSurrogateKeyFieldType().equals("Integer")) {
+        if(("Integer").equals(scdConfiger.getSurrogateKeyFieldType())) {
             tmpType = "Int";
         } else {
             tmpType = scdConfiger.getSurrogateKeyFieldType().substring(0, 1).toUpperCase() + scdConfiger.getSurrogateKeyFieldType().substring(1);
@@ -228,12 +228,12 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         } else {
             paramIndex = insertionColumnList.size() - 1;
         }       
-        if(scdConfiger.getDimensionType2Configer().getStartDateValueType().equals("JOB_START_TIME")) {
+        if(("JOB_START_TIME").equals(scdConfiger.getDimensionType2Configer().getStartDateValueType())) {
             %>
             insertionStatement_<%=cid%>.setTimestamp(<%=paramIndex%>, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
             <%
         }
-        if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
+        if(("NULL_VALUE").equals(scdConfiger.getDimensionType2Configer().getEndDateValueType())) {
             %>
             insertionStatement_<%=cid%>.setNull(<%=paramIndex + 1%>, java.sql.Types.DATE);
             <%
@@ -254,7 +254,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         String updateSQLForType2_<%=cid%> = "<%=scdManager.createUpdateSQLForType2(scdConfiger)%>";
         java.sql.PreparedStatement updateForType2_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType2_<%=cid%>);
         <%
-        if(scdConfiger.getDimensionType2Configer().getStartDateValueType().equals("JOB_START_TIME")) {
+        if(("JOB_START_TIME").equals(scdConfiger.getDimensionType2Configer().getStartDateValueType())) {
             %>
             updateForType2_<%=cid%>.setTimestamp(1, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
             <%

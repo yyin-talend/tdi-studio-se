@@ -17,7 +17,7 @@
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();	
-	if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {	
+	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %>
 
@@ -29,46 +29,46 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String filename = ElementParameterParser.getValue(node,"__FILENAME__");
     	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     	String header = ElementParameterParser.getValue(node, "__HEADER__");
-    	if(header.equals("")){
+    	if(("").equals(header)){
     		header="0";
     	}
     	String limit = ElementParameterParser.getValue(node, "__LIMIT__");
-		if(limit.equals("")){
+		if(("").equals(limit)){
 			limit = "-1";
 		}
     	String footer = ElementParameterParser.getValue(node, "__FOOTER__");
-    	if(footer.equals("")){
+    	if(("").equals(footer)){
     		footer="0";
     	}
     	String random = "-1";
     	String ran = ElementParameterParser.getValue(node, "__RANDOM__");
-    	if(ran.equals("true")){
+    	if(("true").equals(ran)){
     		random = ElementParameterParser.getValue(node, "__NB_RANDOM__");
-    		if(random.equals("")){
+    		if(("").equals(random)){
     			random="0";
     		}
     	}
     	
 		List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
 		String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
-		boolean isTrimAll = (isTrimAllStr!=null&&!isTrimAllStr.equals(""))?isTrimAllStr.equals("true"):true;
+		boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
 		
     	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false; 
+		boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false; 
 		
 		String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
-		boolean checkNum = (checkNumStr!=null&&!checkNumStr.equals(""))?checkNumStr.equals("true"):false; 
+		boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
 		
 		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 		
 		String splitRecordStr = ElementParameterParser.getValue(node, "__SPLITRECORD__");
-		boolean splitRecord = (splitRecordStr!=null&&!splitRecordStr.equals(""))?splitRecordStr.equals("true"):false;
+		boolean splitRecord = (splitRecordStr!=null&&!("").equals(splitRecordStr))?("true").equals(splitRecordStr):false;
 %>
 org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
 while (fid_<%=cid %>.nextRecord()) {
@@ -131,10 +131,10 @@ while (fid_<%=cid %>.nextRecord()) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
 if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
-<%=firstConnName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(valueN).get("TRIM").equals("true")))?".trim()":"" %>;
+<%=firstConnName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 <%
 }else{ 
-%>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(valueN).get("TRIM").equals("true")))?".trim()":"" %>;
+%>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 if(temp_<%=cid %>.length() > 0) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -191,7 +191,7 @@ if(temp_<%=cid %>.length() > 0) {
             throw(e);
             <%
         } else {
-            if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>                    
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -205,7 +205,7 @@ if(temp_<%=cid %>.length() > 0) {
                 <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
                 <%
-            } else if(rejectConnName.equals("")){
+            } else if(("").equals(rejectConnName)){
                 %>
                 System.err.println(e.getMessage());
                 <%=firstConnName %> = null;
@@ -265,7 +265,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String header = ElementParameterParser.getValue(node, "__HEADER__");
     	String footer = ElementParameterParser.getValue(node, "__FOOTER__");
     	String limit = ElementParameterParser.getValue(node, "__LIMIT__");
-    	if(limit.equals("")){
+    	if(("").equals(limit)){
     		limit="-1";
     	}
     	String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");     	
@@ -274,20 +274,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	
     	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
     	
-    	if(escapeChar1.equals("")){
+    	if(("").equals(escapeChar1)){
     		escapeChar1 = "\"\"";
     	}
     	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
-    	if(escapeChar.equals("'")){
+    	if(("'").equals(escapeChar)){
     		escapeChar = "\\'";
     	}
     	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
-    	if(textEnclosure1.equals("")){
+    	if(("").equals(textEnclosure1)){
     		textEnclosure1 = "\"\"";
     	}
     	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
     	if ("".equals(textEnclosure)) textEnclosure = "\0";
-    	if(textEnclosure.equals("'")){
+    	if(("'").equals(textEnclosure)){
     		textEnclosure = "\\'";
     	}
     	
@@ -295,16 +295,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	
     	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
 		String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
-		boolean isTrimAll = (isTrimAllStr!=null&&!isTrimAllStr.equals(""))?isTrimAllStr.equals("true"):true;
+		boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
 		
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
+		boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 		
 		String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
-		boolean checkNum = (checkNumStr!=null&&!checkNumStr.equals(""))?checkNumStr.equals("true"):false; 
+		boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
 		
 		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 		
@@ -334,7 +334,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 		
 <%
-		if(!escapeChar1.equals("") && !escapeChar1.startsWith("\"")){//context and global variables
+		if(!("").equals(escapeChar1) && !escapeChar1.startsWith("\"")){//context and global variables
 %>
             String escapeChar1_<%=cid %> = <%=escapeChar1 %>;          
 	        char escapeChar_<%=cid %>[] = null;
@@ -366,12 +366,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
 <%
-		if(escapeChar1.equals("") || escapeChar1.startsWith("\"")){//normal situation
+		if(("").equals(escapeChar1) || escapeChar1.startsWith("\"")){//normal situation
 %>
         csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 
 <%
-        	if(escapeChar.equals("\\\\")){
+        	if(("\\\\").equals(escapeChar)){
         %>
             csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
 <%
@@ -400,14 +400,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(footer_<%=cid %> > 0){
 		
             while (csvReader<%=cid %>.readRecord()) {
-<%             	if(removeEmptyRow.equals("true")){%>
+<%             	if(("true").equals(removeEmptyRow)){%>
 				row<%=cid %>=csvReader<%=cid %>.getValues();
-				if(!(row<%=cid %>.length == 1 && row<%=cid %>[0].equals("\015"))){//empty line when row separator is '\n'
+				if(!(row<%=cid %>.length == 1 && ("\015").equals(row<%=cid %>[0]))){//empty line when row separator is '\n'
 <%				}%>
                 
                 	totalLine<%=cid %>++;
                 
-<%            	if(removeEmptyRow.equals("true")){%>
+<%            	if(("true").equals(removeEmptyRow)){%>
 				}
 <%				}%>
                 
@@ -428,11 +428,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
 <%
-		if(escapeChar1.equals("") || escapeChar1.startsWith("\"")){//normal situation
+		if(("").equals(escapeChar1) || escapeChar1.startsWith("\"")){//normal situation
 %>
         csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 <% 
-        	if(escapeChar.equals("\\\\")){
+        	if(("\\\\").equals(escapeChar)){
         %>
         csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
 <%
@@ -469,8 +469,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	row<%=cid %>=csvReader<%=cid %>.getValues();
         	
  <%
-   		if(removeEmptyRow.equals("true")){%>
-        	if(row<%=cid %>.length == 1 && row<%=cid %>[0].equals("\015")){//empty line when row separator is '\n'
+   		if(("true").equals(removeEmptyRow)){%>
+        	if(row<%=cid %>.length == 1 && ("\015").equals(row<%=cid %>[0])){//empty line when row separator is '\n'
         		continue;
         	}
 <%		}%>
@@ -533,7 +533,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				int columnSize = columns.size();
 				%>				
 				
-			if(row<%=cid %>.length == 1 && row<%=cid %>[0].equals("\015")){//empty line when row separator is '\n'
+			if(row<%=cid %>.length == 1 && ("\015").equals(row<%=cid %>[0])){//empty line when row separator is '\n'
 				
 <%
 		for (IMetadataColumn column1: metadata.getListColumns()) {%>
@@ -557,7 +557,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
-					<%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>;
+					<%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
 <%
 					} else {
 %>
@@ -566,24 +566,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							if(javaType == JavaTypesManager.DATE) {
 								if(checkNum){
 	%>
-								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= patternValue %>, false);
+								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>, false);
 	<%
 								}else{
 	%>
-								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= patternValue %>);
+								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
 	<%
 								}
 							} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 	%>
-								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 	<%
 							}else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 	%>							
-							    <%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>.getBytes(<%=encoding %>);
+							    <%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
 	<%
 							} else {
 	%>
-								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>);
+								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 	<%
 							}
 	%>					
@@ -622,7 +622,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             throw(e);
             <%
         } else {
-            if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -636,7 +636,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
                 <%
-            } else if(rejectConnName.equals("")){
+            } else if(("").equals(rejectConnName)){
                 %>
                 System.err.println(e.getMessage());
                 <%=firstConnName %> = null;

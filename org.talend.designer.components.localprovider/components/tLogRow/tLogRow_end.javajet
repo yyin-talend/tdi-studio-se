@@ -23,7 +23,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
 //////
 <%
-	if (tablePrint.equals("true")) {//print all records one time
+	if (("true").equals(tablePrint)) {//print all records one time
 %>
 
                     

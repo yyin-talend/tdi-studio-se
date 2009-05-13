@@ -16,7 +16,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");		
-boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");		
+boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));		
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -45,7 +45,7 @@ List<Map<String, String>> groupBys =
                 node,
                 "__GROUP_BY__"
             );
-if (useDynamicGrouping.equals("false")) {
+if (("false").equals(useDynamicGrouping)) {
     groupBys.clear();
 }
 
@@ -60,7 +60,7 @@ for(int i = 0; i < groupby.length; i++){
 		Map<String, String> map = columnMapping.get(j);
 		String col = metadata.getListColumns().get(j).getLabel();
 		if(groupby[i][0].equals(col)){
-			if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+			if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     			groupby[i][2] = col;
     		}else{
     			groupby[i][2] = map.get("LABEL");
@@ -87,7 +87,7 @@ out_<%=cid%>.newLine();
 %>out_<%=cid %>.close();
 
 <%
-if(split.equals("true")){
+if(("true").equals(split)){
 %>
 	if(currentRowCount_<%=cid %> == 0){		
 		file_<%=cid %>.delete();

@@ -25,7 +25,7 @@ if(conns!=null){
 	}
 }
 if(hasDataLink){
-	if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {	
+	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 %>
 }
 fid_<%=cid %>.close();

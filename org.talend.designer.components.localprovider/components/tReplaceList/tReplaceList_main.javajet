@@ -49,14 +49,14 @@ if (metadatas != null && metadatas.size() > 0) {
 
     int column_num = 0;
     for (Map<String, String> columnOption: columnOptions) {
-        if (columnOption.get("REPLACE").equals("true")) {
+        if (("true").equals(columnOption.get("REPLACE"))) {
             String columnName = metadata.getListColumns().get(column_num).getLabel();
 %>
             String inputFlow_<%=cid%>_<%=columnName%> = <%=main%>.<%=columnName%>;
             for(Object o:replace_<%=cid%>.keySet()){
                 String search<%=cid%> = (String)o;
                 String replace<%=cid%> = replace_<%=cid%>.get(o);
-                inputFlow_<%=cid%>_<%=columnName%> = inputFlow_<%=cid%>_<%=columnName%>.replaceAll(<%if(columnOption.get("CASE_INSENSITIVE").equals("true")) {%>"(?i)" + <%}%>search<%=cid%>,replace<%=cid%>);
+                inputFlow_<%=cid%>_<%=columnName%> = inputFlow_<%=cid%>_<%=columnName%>.replaceAll(<%if(("true").equals(columnOption.get("CASE_INSENSITIVE"))) {%>"(?i)" + <%}%>search<%=cid%>,replace<%=cid%>);
             }
 <%
         }
@@ -68,7 +68,7 @@ if (metadatas != null && metadatas.size() > 0) {
     for (IConnection connection : outputConnections){
         String outConName = connection.getName();
         for(Map<String,String> columnOption: columnOptions){
-            if (columnOption.get("REPLACE").equals("true")){
+            if (("true").equals(columnOption.get("REPLACE"))){
                 String columnname = connection.getTarget().getMetadataList().get(0).getListColumns().get(outColumn_num).getLabel();
 %>
                 <%=main%>.<%=columnname%> = inputFlow_<%=cid%>_<%=columnname%>;

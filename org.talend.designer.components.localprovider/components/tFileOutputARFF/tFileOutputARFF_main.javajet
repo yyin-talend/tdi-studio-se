@@ -23,7 +23,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = node.getUniqueName();
         String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-    	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+    	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
     	List<Map<String, String>> colDef = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COLDEFINE__");
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	List<IMetadataColumn> columnList;
@@ -44,16 +44,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 //for(Map<String, String> colD:colDef){
                         for(IMetadataColumn column:columnList){
                            // if(colDef.get(colNum).get("REFCOL").equals(column.getLabel())){
-                                if(colDef.get(colNum).get("TYPE").equals("String")){%>
+                                if(("String").equals(colDef.get(colNum).get("TYPE"))){%>
                                     //insert String value
                                     vals<%=cid%>[<%=colNum%>]=m_Data<%=cid%>.attribute(<%=colNum%>).addStringValue(<%=conn.getName() %>.<%=column.getLabel()%>);
-          <%                    }else if(colDef.get(colNum).get("TYPE").equals("Numeric")){%>
+          <%                    }else if(("Numeric").equals(colDef.get(colNum).get("TYPE"))){%>
                                     //insert Numeric value
                                     vals<%=cid%>[<%=colNum%>]=<%=conn.getName() %>.<%=column.getLabel()%>;
-          <%                    }else if(colDef.get(colNum).get("TYPE").equals("Date")){%>
+          <%                    }else if(("Date").equals(colDef.get(colNum).get("TYPE"))){%>
                                     //insert Date value
                                     vals<%=cid%>[<%=colNum%>]=m_Data<%=cid%>.attribute(<%=colNum%>).parseDate(new java.text.SimpleDateFormat(<%=colDef.get(colNum).get("PATTERN")%>).format(<%=conn.getName() %>.<%=column.getLabel()%>));
-          <%                    }else if(colDef.get(colNum).get("TYPE").equals("Nominal")){%>
+          <%                    }else if(("Nominal").equals(colDef.get(colNum).get("TYPE"))){%>
                                     //insert Nominal value          
                                     vals<%=cid%>[<%=colNum%>]=classValues<%=cid%><%=colNum%>.indexOf(<%=conn.getName() %>.<%=column.getLabel()%>);
           <%                    }

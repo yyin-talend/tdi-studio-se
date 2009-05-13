@@ -13,7 +13,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	if(sftp){
 %>

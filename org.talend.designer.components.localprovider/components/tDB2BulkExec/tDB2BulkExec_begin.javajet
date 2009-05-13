@@ -43,7 +43,7 @@ String timeformat = ElementParameterParser.getValue(node, "__TIME_FORMAT__");
 String timestampformat = ElementParameterParser.getValue(node, "__TIMESTAMP_FORMAT__");
 
 
-boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
@@ -82,8 +82,8 @@ if(columnList != null && columnList.size() > 0) {
 <%
 if(columnList != null && columnList.size() > 0) {
 	Manager manager = getManager(dbmsId, cid);        
-    if(!tableAction.equals("NONE")) {        
-        if(tableAction.equals("DROP_CREATE")) {
+    if(!("NONE").equals(tableAction)) {        
+        if(("DROP_CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
@@ -91,13 +91,13 @@ if(columnList != null && columnList.size() > 0) {
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("CREATE")) {
+        } else if(("CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS") || tableAction.equals("DROP_IF_EXISTS_AND_CREATE")) {
+        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
             %>
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
             java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -111,7 +111,7 @@ if(columnList != null && columnList.size() > 0) {
             }
             rsTable_<%=cid%>.close();
             <%
-            if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+            if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
                 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -131,7 +131,7 @@ if(columnList != null && columnList.size() > 0) {
                 stmtCreate_<%=cid%>.close();
             <%
             }
-        } else if(tableAction.equals("CLEAR")) {
+        } else if(("CLEAR").equals(tableAction)) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
@@ -141,7 +141,7 @@ if(columnList != null && columnList.size() > 0) {
     }
     
 	////////////////////////////////////////////    
-    if(action.equals("INSERT") || action.equals("REPLACE")) {
+    if(("INSERT").equals(action) || ("REPLACE").equals(action)) {
     
         %>
         String action_<%=cid%> = "<%=action%>";
@@ -154,7 +154,7 @@ if(columnList != null && columnList.size() > 0) {
         callStmt_<%=cid%>.close();
         <%
     } 
-    else if(action.equals("UPDATE")) {
+    else if(("UPDATE").equals(action)) {
         if(columnList != null && columnList.size() > 0) {
             int keyCount = 0;
             for(IMetadataColumn column : columnList) {

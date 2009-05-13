@@ -77,7 +77,7 @@ if(!hasOutgoingDataConnection || columnList == null || columnList.size() < 1) {
 query_<%=cid %> = <%=dbquery%>;
 globalMap.put("<%=cid %>_QUERY",query_<%=cid %>);
 <%
-if(propagateRecordset.equals("true")) {
+if(("true").equals(propagateRecordset)) {
     %>
 	java.sql.ResultSet rs_<%=cid %> = null;
 	<%
@@ -85,7 +85,7 @@ if(propagateRecordset.equals("true")) {
 %>
 try {
     <%
-    if(propagateRecordset.equals("true")) {
+    if(("true").equals(propagateRecordset)) {
         %>
 		rs_<%=cid %> = stmt_<%=cid %>.executeQuery(query_<%=cid %>);
 		<%
@@ -98,7 +98,7 @@ try {
     } catch (Exception e) {
         whetherReject_<%=cid%> = true;
         <%
-        if (dieOnError.equals("true")) {
+        if (("true").equals(dieOnError)) {
             %>
             throw(e);
             <%
@@ -136,7 +136,7 @@ if(outgoingConns != null && outgoingConns.size() > 0) {
                     <%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
                     <%
                     for(IMetadataColumn column : columnList) {
-                    	if(propagateRecordset.equals("true") && column.getLabel().equals(recordsetColumn)){
+                    	if(("true").equals(propagateRecordset) && column.getLabel().equals(recordsetColumn)){
                     	    %>
                     	    <%=outgoingConn.getName()%>.<%=column.getLabel()%> = rs_<%=cid %>;
                     	    <%
@@ -153,8 +153,8 @@ if(outgoingConns != null && outgoingConns.size() > 0) {
     }
     <%
 }	
-if(!useExistingConn.equals("true")) {	
-    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+if(!("true").equals(useExistingConn)) {	
+    if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
         %>
         commitCounter_<%=cid%>++;
         if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {        

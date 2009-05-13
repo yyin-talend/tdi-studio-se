@@ -21,19 +21,19 @@
 	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");	
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
 	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
 	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
 
-    boolean useProxy = ElementParameterParser.getValue(node,"__UES_PROXY__").equals("true");
+    boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__UES_PROXY__"));
     String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
     String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
     String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
     String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");	
     
-    boolean append = ElementParameterParser.getValue(node, "__APPEND__").equals("true");
+    boolean append = ("true").equals(ElementParameterParser.getValue(node, "__APPEND__"));
 		
 	String cid = node.getUniqueName();
     String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");		
@@ -108,7 +108,7 @@ if(useProxy){
             for (Object sftpFile : sftpFiles) {
                 com.jcraft.jsch.ChannelSftp.LsEntry lsEntry = (com.jcraft.jsch.ChannelSftp.LsEntry) sftpFile;
                 com.jcraft.jsch.SftpATTRS attrs = lsEntry.getAttrs();
-                if (lsEntry.getFilename().equals(".") || lsEntry.getFilename().equals("..")) {
+                if ((".").equals(lsEntry.getFilename()) || ("..").equals(lsEntry.getFilename())) {
                     continue;
                 }
                 if (attrs.isDir()) {
@@ -132,7 +132,7 @@ if(useProxy){
             for (Object sftpFile : sftpFiles) {
                 com.jcraft.jsch.ChannelSftp.LsEntry lsEntry = (com.jcraft.jsch.ChannelSftp.LsEntry) sftpFile;
                 com.jcraft.jsch.SftpATTRS attrs = lsEntry.getAttrs();
-                if (lsEntry.getFilename().equals(".") || lsEntry.getFilename().equals("..")) {
+                if ((".").equals(lsEntry.getFilename()) || ("..").equals(lsEntry.getFilename())) {
                     continue;
                 }
                 if (!attrs.isDir() && !attrs.isLink()) {
@@ -155,15 +155,15 @@ if(useProxy){
         try {
             cnlSFTP.get(remoteFileName, localFileName, monitor,
 <%
-	if(sftpoverwrite.equals("overwrite")){
+	if(("overwrite").equals(sftpoverwrite)){
 %>    			
 				com.jcraft.jsch.ChannelSftp.OVERWRITE
 <%
-	}else if(sftpoverwrite.equals("append")){
+	}else if(("append").equals(sftpoverwrite)){
 %>
 				com.jcraft.jsch.ChannelSftp.APPEND
 <%
-	}else if(sftpoverwrite.equals("resume")){
+	}else if(("resume").equals(sftpoverwrite)){
 %>
 				com.jcraft.jsch.ChannelSftp.RESUME
 <%
@@ -194,13 +194,13 @@ if(useProxy){
     
     com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
     
-    <%if(authMethod.equals("PUBLICKEY")){%>
+    <%if(("PUBLICKEY").equals(authMethod)){%>
     jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
     <%}%>
     
     com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
     
-    <%if(authMethod.equals("PASSWORD")){%> 
+    <%if(("PASSWORD").equals(authMethod)){%> 
 	session_<%=cid%>.setPassword(<%=pass%>); 
     <%}%>
     
@@ -238,7 +238,7 @@ if(useProxy){
             com.enterprisedt.net.ftp.FTPFile[] ftpFiles = ftpClient.dirDetails(".");
             for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
                 if (ftpFile.isDir()) {
-                  if ((!ftpFile.getName().equals(".")) && (!ftpFile.getName().equals(".."))) {
+                  if ((!(".").equals(ftpFile.getName())) && (!("..").equals(ftpFile.getName()))) {
                 	java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFile.getName());
                     if (!localFile.exists()) {
                         localFile.mkdir();
@@ -285,7 +285,7 @@ if(useProxy){
 			msg_<%=cid%>.add("file [" + remoteFileName + "] download successfully.");
 			globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
 <%
-	}else if(overwrite.equals("never")){
+	}else if(("never").equals(overwrite)){
 %>
 			if (!localFile.exists()) {
                 ftpClient.get(localFileName, remoteFileName);
@@ -296,12 +296,12 @@ if(useProxy){
             	globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
             }
 <%
-	}else if(overwrite.equals("always")){
+	}else if(("always").equals(overwrite)){
 %>
 			ftpClient.get(localFileName, remoteFileName);
 			msg_<%=cid%>.add("file [" + remoteFileName + "] download successfully.");
 <%
-	}else if(overwrite.equals("size_differ")){
+	}else if(("size_differ").equals(overwrite)){
 %>
 			if(localFile.exists()){
         		long ftpSize=ftpClient.size(remoteFileName);
@@ -341,7 +341,7 @@ if(useProxy){
 	<%
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 	
-	if(useExistingConn.equals("true")){
+	if(("true").equals(useExistingConn)){
 		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 		String conn= "conn_" + connection;
 	%>
@@ -353,7 +353,7 @@ if(useProxy){
 	ftp_<%=cid %>.setRemoteHost(<%=host %>);
 	ftp_<%=cid %>.setRemotePort(<%=port %>);
 <%
-	if(connectMode.equals("ACTIVE")){
+	if(("ACTIVE").equals(connectMode)){
 %>
 		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
 <%

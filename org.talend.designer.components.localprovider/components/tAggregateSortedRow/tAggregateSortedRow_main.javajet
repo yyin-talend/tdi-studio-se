@@ -100,12 +100,12 @@ boolean sameGroup_<%=cid %> = true;
 			continue;
 		}
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
-		if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%		}else if(functions[i].equals("count")){
+<%		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
 					countHasAvg = true;
 					break;
 				}
@@ -113,10 +113,10 @@ boolean sameGroup_<%=cid %> = true;
 			if(!countHasAvg){
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
 <%			}
-		}else if(functions[i].equals("sum")){
+		}else if(("sum").equals(functions[i])){
 			boolean sumHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
 					sumHasAvg = true;
 					break;
 				}
@@ -134,7 +134,7 @@ boolean sameGroup_<%=cid %> = true;
 %>//sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%				}
 			}
-		}else if(functions[i].equals("avg")){
+		}else if(("avg").equals(functions[i])){
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
@@ -146,7 +146,7 @@ boolean sameGroup_<%=cid %> = true;
 %>//sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%			}
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
-<%		}else if(functions[i].equals("distinct")){
+<%		}else if(("distinct").equals(functions[i])){
 %>set_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.HashSet();
 set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}else{
@@ -204,11 +204,11 @@ if(sameGroup_<%=cid %>){
 			continue;
 		}
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
-		if(functions[i].equals("first")){
+		if(("first").equals(functions[i])){
 			//do nothing here
-		}else if(functions[i].equals("last")){
+		}else if(("last").equals(functions[i])){
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%		}else if(functions[i].equals("min")){
+<%		}else if(("min").equals(functions[i])){
 			if(javaType == JavaTypesManager.LIST || javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.BYTE_ARRAY){
 			//do nothing
 			}else if(javaType == JavaTypesManager.BIGDECIMAL || javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
@@ -226,7 +226,7 @@ if(sameGroup_<%=cid %>){
 	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 }
 <%			}
-		}else if(functions[i].equals("max")){
+		}else if(("max").equals(functions[i])){
 			if(javaType == JavaTypesManager.LIST || javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.BYTE_ARRAY){
 			//do nothing
 			}else if(javaType == JavaTypesManager.BIGDECIMAL || javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
@@ -244,10 +244,10 @@ if(sameGroup_<%=cid %>){
 	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 }
 <%			}
-		}else if(functions[i].equals("count")){
+		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
 					countHasAvg = true;
 					break;
 				}
@@ -255,10 +255,10 @@ if(sameGroup_<%=cid %>){
 			if(!countHasAvg){
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
 <%			}
-		}else if(functions[i].equals("sum")){
+		}else if(("sum").equals(functions[i])){
 			boolean sumHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
 					sumHasAvg = true;
 					break;
 				}
@@ -280,7 +280,7 @@ if(sameGroup_<%=cid %>){
 <%
 				}
 			}
-		}else if(functions[i].equals("avg")){
+		}else if(("avg").equals(functions[i])){
 				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
@@ -298,10 +298,10 @@ count_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
 }
 <%
 				}
-		}else if(functions[i].equals("list")){
+		}else if(("list").equals(functions[i])){
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(",");
 <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}else if(functions[i].equals("distinct")){
+<%		}else if(("distinct").equals(functions[i])){
 %>
 set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}
@@ -379,7 +379,7 @@ if( !sameGroup_<%=cid %> ){
 					}					
 					for(int i = 0; i < column_op.length; i++){
 						if(column.getLabel().equals(column_op[i][1].getLabel())){
-							if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+							if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(inJavaType == javaType){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
@@ -422,7 +422,7 @@ if( !sameGroup_<%=cid %> ){
 %>}
 <%									}
 								}
-							}else if(functions[i].equals("count")){
+							}else if(("count").equals(functions[i])){
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
@@ -433,7 +433,7 @@ if( !sameGroup_<%=cid %> ){
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
 <%								}
-							}else if(functions[i].equals("sum")){
+							}else if(("sum").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
@@ -466,7 +466,7 @@ if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
 								}else{
 %>//emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
 <%								}
-							}else if(functions[i].equals("avg")){
+							}else if(("avg").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
@@ -524,7 +524,7 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 	throw new Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"avg\" result.");
 }
 <%								}
-							}else if(functions[i].equals("distinct")){
+							}else if(("distinct").equals(functions[i])){
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
@@ -574,12 +574,12 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 			continue;
 		}
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
-		if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%		}else if(functions[i].equals("count")){
+<%		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
 					countHasAvg = true;
 					break;
 				}
@@ -587,10 +587,10 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 			if(!countHasAvg){
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
 <%			}
-		}else if(functions[i].equals("sum")){
+		}else if(("sum").equals(functions[i])){
 			boolean sumHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
 					sumHasAvg = true;
 					break;
 				}
@@ -607,7 +607,7 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 %>//sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%			}
 }
-		}else if(functions[i].equals("avg")){
+		}else if(("avg").equals(functions[i])){
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
@@ -619,7 +619,7 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 %>//sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%			}
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
-<%		}else if(functions[i].equals("distinct")){
+<%		}else if(("distinct").equals(functions[i])){
 %>set_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.HashSet();
 set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}else{
@@ -691,7 +691,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 					}					
 					for(int i = 0; i < column_op.length; i++){
 						if(column.getLabel().equals(column_op[i][1].getLabel())){
-							if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+							if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(inJavaType == javaType){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
@@ -734,7 +734,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 %>}
 <%									}
 								}
-							}else if(functions[i].equals("count")){
+							}else if(("count").equals(functions[i])){
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
@@ -745,7 +745,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
 <%								}
-							}else if(functions[i].equals("sum")){
+							}else if(("sum").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
@@ -778,7 +778,7 @@ if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
 								}else{
 %>//emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
 <%								}
-							}else if(functions[i].equals("avg")){
+							}else if(("avg").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
@@ -836,7 +836,7 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 	throw new Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"avg\" result.");
 }
 <%								}
-							}else if(functions[i].equals("distinct")){
+							}else if(("distinct").equals(functions[i])){
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 

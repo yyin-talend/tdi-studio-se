@@ -32,8 +32,8 @@ String fieldLayout = ElementParameterParser.getValue(node, "__FIELD_LAYOUT__");
 String fixedWidth = ElementParameterParser.getValue(node, "__FIXED_WIDTH__");
 String methodFixedWidth = ElementParameterParser.getValue(node, "__METHOD_FIXED_WIDTH__");
 
-boolean removeQuotes = ElementParameterParser.getValue(node, "__REMOVE_QUOTES__").equals("true");
-boolean explicitIDs = ElementParameterParser.getValue(node, "__EXPLICIT_IDS__").equals("true");
+boolean removeQuotes = ("true").equals(ElementParameterParser.getValue(node, "__REMOVE_QUOTES__"));
+boolean explicitIDs = ("true").equals(ElementParameterParser.getValue(node, "__EXPLICIT_IDS__"));
 
 String logLevel= ElementParameterParser.getValue(node, "__LOG_LEVEL__");
 String logFile= ElementParameterParser.getValue(node, "__LOG_FILE__");
@@ -43,7 +43,7 @@ StringBuilder tmpTableName = new StringBuilder();
 %>
 String tableName_<%=cid%> = null;
 <%
-if(dbSchema == null || dbSchema.equals("") || dbSchema.equals("\"\"")) {
+if(dbSchema == null || ("").equals(dbSchema) || ("\"\"").equals(dbSchema)) {
     tableName.append("\\\"\" + " + table + " + \"\\\"");
     %>
     tableName_<%=cid%> = <%=table%>;
@@ -54,7 +54,7 @@ if(dbSchema == null || dbSchema.equals("") || dbSchema.equals("\"\"")) {
     tableName_<%=cid%> = <%=dbSchema%> + "\".\"" + <%=table%>;
     <%
 }
-if(dataAction.equals("UPDATE")) {
+if(("UPDATE").equals(dataAction)) {
     tmpTableName = tableName;
     tableName = new StringBuilder("\\\"tmp_" + cid + "\\\"");
 }
@@ -82,7 +82,7 @@ if(notNullCols != null && notNullCols.size() > 0) {
     notNullColumns.append("FORCE NOT NULL ");
     int notNullCount = 0;
     for(Map<String, String> notNullCol : notNullCols) {
-        if(notNullCol.get("FORCENOTNULL").equals("true")) {
+        if(("true").equals(notNullCol.get("FORCENOTNULL"))) {
             notNullColumns.append("\\\"" + notNullCol.get("SCHEMA_COLUMN") + "\\\",");
             notNullCount++;
         }
@@ -95,8 +95,8 @@ if(notNullCols != null && notNullCols.size() > 0) {
 	String xpxSQL_<%=cid%>="";
 	String bulkSQL_<%=cid%>="";
 <%
-	String gzipped = fileType.equals("GZIP") ? "GZIP " : "";
-	if(parallel.equals("PARALLEL")){
+	String gzipped = ("GZIP").equals(fileType) ? "GZIP " : "";
+	if(("PARALLEL").equals(parallel)){
 %>
 	xpxSQL_<%=cid%> += "xpx 'localize " + "<%=tableName.toString()%> " + <%=file%> + " <%=gzipped%>'";
 	bulkSQL_<%=cid%> += "COPY " + "<%=tableName.toString()%>" + 
@@ -108,13 +108,13 @@ if(notNullCols != null && notNullCols.size() > 0) {
 		<%=file%> + "' WITH <%=gzipped%> ";
 <%
 	}
-	if (fieldLayout.equals("DELIMITED")) {
+	if (("DELIMITED").equals(fieldLayout)) {
 %>
 	bulkSQL_<%=cid%> += "DELIMITER '" + <%=fieldTerminator%> + "' ";
 <%
 	}
 	else {
-		if(methodFixedWidth.equals("true")){
+		if(("true").equals(methodFixedWidth)){
 		%>
 			bulkSQL_<%=cid%> += "FIXEDWIDTH '" + <%=fixedWidth%> + "' ";
 		<%
@@ -152,15 +152,15 @@ if(notNullCols != null && notNullCols.size() > 0) {
 /*
 	int maxerr = 0;
 	try {
-		if (!(maxErrors.equals("") || maxErrors.equals("\"\"") || maxErrors.equals("\"0\""))) {
-			maxerr = maxErrors.substring(0, 0).equals("\"")
+		if (!(("").equals(maxErrors) || ("\"\"").equals(maxErrors) || ("\"0\"").equals(maxErrors))) {
+			maxerr = ("\"").equals(maxErrors.substring(0, 0))
 				? Integer.parseInt(maxErrors.substring(1, maxErrors.length() - 2))
 				: Integer.parseInt(maxErrors);
 		}
 	}
 	catch (Exception e) { }
 */
-	if (!(maxErrors.equals("") || maxErrors.equals("\"\"") || maxErrors.equals("\"0\""))) {
+	if (!(("").equals(maxErrors) || ("\"\"").equals(maxErrors) || ("\"0\"").equals(maxErrors))) {
 %>
 	bulkSQL_<%=cid%> += "MAXERROR " + <%=maxErrors%> + " ";
 <%
@@ -175,7 +175,7 @@ if(notNullCols != null && notNullCols.size() > 0) {
 	bulkSQL_<%=cid%> += "TIMEFORMAT '" + <%=timeFormat%> + "' ";
 <%
 	}
-	if (!(addlOptions.equals("") || addlOptions.equals("\"\""))) {
+	if (!(("").equals(addlOptions) || ("\"\"").equals(addlOptions))) {
 %>
 	bulkSQL_<%=cid%> += <%=addlOptions%> + " ";
 <%
@@ -204,19 +204,19 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
     manager = getManager(dbmsId, cid);
-    if(tableAction.equals("DROP_CREATE")) {
+    if(("DROP_CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
         stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         <%
-    } else if(tableAction.equals("CREATE")) {
+    } else if(("CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         <%
-    } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+    } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
         %>
         java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
         java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -233,7 +233,7 @@ if(columnList != null && columnList.size() > 0) {
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
         }
         <%
-    } else if(tableAction.equals("CLEAR")) {
+    } else if(("CLEAR").equals(tableAction)) {
         %>
         java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
         stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
@@ -244,7 +244,7 @@ if(columnList != null && columnList.size() > 0) {
     java.sql.Statement stmtBulk_<%=cid %> = con_<%=cid %>.createStatement();
     //stmt.execute("SET client_encoding to 'UNICODE'");
 <%
-	if(parallel.equals("PARALLEL")){
+	if(("PARALLEL").equals(parallel)){
 %>
     java.sql.Statement stmtXPX_<%=cid %> = con_<%=cid %>.createStatement();
     stmtXPX_<%=cid %>.execute(xpxSQL_<%=cid%>);

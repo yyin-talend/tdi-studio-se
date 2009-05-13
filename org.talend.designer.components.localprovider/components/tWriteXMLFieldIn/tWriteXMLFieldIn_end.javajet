@@ -39,7 +39,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 }
 
 String strJobCid="";
-if(destination !=null && !destination.trim().equals(""))
+if(destination !=null && !("").equals(destination.trim()))
 	strJobCid=destination;
 else{
 	strJobCid= cid.substring(0,cid.length()-3);

@@ -146,7 +146,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
     							}else if(outputJavaType == JavaTypesManager.BYTE_ARRAY){
     								%>s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>.getBytes()<%
     							} else if(outputJavaType == JavaTypesManager.DATE) {
-    								%>s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>.equals("null") ? null : ParserUtils.parseTo_Date(s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>, <%= patternValue %>)<%
+    								%>("null").equals(s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>) ? null : ParserUtils.parseTo_Date(s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>, <%= patternValue %>)<%
     							} else {
     								%>ParserUtils.parseTo_<%= outputTypeToGenerate %>(s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>)<%
     							}
@@ -162,7 +162,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
                 		String function = operation.get("FUNCTION");
                 		String outOperation = operation.get("OUTPUT_COLUMN");
                 		String inOperation = operation.get("INPUT_COLUMN");
-						boolean ignoreNull = operation.get("IGNORE_NULL").equals("true");
+						boolean ignoreNull = ("true").equals(operation.get("IGNORE_NULL"));
 
                 		if(outOperation.equals(outputColumnName)){ // T_InMain_AggR_616
 
@@ -332,7 +332,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
     								<%= outputConn.getName() %>.<%=outOperation %> = aggregated_row_<%=cid %>.<%=outOperation %>_<%=function %>.toString();
 	    						<% 
     						}  // T_InMain_AggR_679
-    						else if(function.equals("list_object")) { // T_InMain_AggR_619
+    						else if(("list_object").equals(function)) { // T_InMain_AggR_619
     							%>
     								<%= outputConn.getName() %>.<%=outOperation %> = aggregated_row_<%=cid %>.<%=outOperation %>_<%=function %>;
     							<% 

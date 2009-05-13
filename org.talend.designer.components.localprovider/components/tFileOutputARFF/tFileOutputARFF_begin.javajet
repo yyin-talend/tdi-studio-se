@@ -22,7 +22,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
      	String cid = node.getUniqueName();
         String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-	    boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+	    boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
 	    List<Map<String, String>> colDef = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COLDEFINE__");
 	    String relation = ElementParameterParser.getValue(node,"__RELATION__");
  %>        
@@ -32,7 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
  double vals<%=cid%>[];
  String fileNewName_<%=cid%> = <%=filename%>;
  java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-   <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+   <%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 	 //create directory only if not exists
 
 	 if(!createFile<%=cid%>.exists()){
@@ -46,7 +46,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	
     
     for(int i=0;i<colDef.size();i++){
-        if(colDef.get(i).get("TYPE").equals("Nominal")){
+        if(("Nominal").equals(colDef.get(i).get("TYPE"))){
 %>
        //initialize nominal array
       weka.core.FastVector classValues<%=cid%><%=i%>;
@@ -73,16 +73,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                weka.core.FastVector attributes<%=cid%> = new weka.core.FastVector(numAtts<%=cid%>);
  <%            int attIndex=0;
                for(Map<String, String> colD:colDef){
-                  if(colD.get("TYPE").equals("String")){%>
+                  if(("String").equals(colD.get("TYPE"))){%>
                       //A String attribute
                       attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", (weka.core.FastVector) null));
-<%                }else if(colD.get("TYPE").equals("Numeric")){%>
+<%                }else if(("Numeric").equals(colD.get("TYPE"))){%>
                       //A Numeric attribute
                       attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>"));
-<%                }else if(colD.get("TYPE").equals("Date")){%>
+<%                }else if(("Date").equals(colD.get("TYPE"))){%>
                       //A Date attribute
                       attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", <%=colD.get("PATTERN")%>));
-<%                }else if(colD.get("TYPE").equals("Nominal")){%>
+<%                }else if(("Nominal").equals(colD.get("TYPE"))){%>
                       //A Nominal attribute
                       attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", classValues<%=cid%><%=attIndex%>));
 <%                }
@@ -98,16 +98,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         weka.core.FastVector attributes<%=cid%> = new weka.core.FastVector(numAtts<%=cid%>);
 <%      int attIndex=0;
         for(Map<String, String> colD:colDef){//for 1
-           if(colD.get("TYPE").equals("String")){%>
+           if(("String").equals(colD.get("TYPE"))){%>
                //A String attribute
                attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", (weka.core.FastVector) null));
-<%         }else if(colD.get("TYPE").equals("Numeric")){%>
+<%         }else if(("Numeric").equals(colD.get("TYPE"))){%>
                //A Numeric attribute
                attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>"));
-<%         }else if(colD.get("TYPE").equals("Date")){%>
+<%         }else if(("Date").equals(colD.get("TYPE"))){%>
                //A Date attribute
                attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", <%=colD.get("PATTERN")%>));
-<%         }else if(colD.get("TYPE").equals("Nominal")){%>
+<%         }else if(("Nominal").equals(colD.get("TYPE"))){%>
                //A Nominal attribute
                attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", classValues<%=cid%><%=attIndex%>));
 <%         }

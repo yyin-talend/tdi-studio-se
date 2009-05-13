@@ -13,12 +13,12 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
-	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
     String tableName = ElementParameterParser.getValue(node,"__TABLE__");
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
     
-    if(identityInsert.equals("true")) {
+    if(("true").equals(identityInsert)) {
         %>
         stmt_<%=cid %>.execute("SET IDENTITY_INSERT "+ <%=tableName %> +" OFF");
         <%
@@ -27,7 +27,7 @@ imports="
     stmt_<%=cid %>.close();
     <%
     if(!useExistingConn) {
-    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+    	if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
     	    %>
     	    if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 

@@ -15,7 +15,7 @@ imports="
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
     String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	boolean isUseSharedConnection = ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__").equals("true");
+	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
 	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
     
 %>

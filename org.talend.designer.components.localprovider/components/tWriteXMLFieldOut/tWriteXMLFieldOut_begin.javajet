@@ -44,7 +44,7 @@ java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.Arra
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
 <%
 				// *** generation mode init ***
-				if(mode.equals("Dom4j")){
+				if(("Dom4j").equals(mode)){
 %>
 
 class NestXMLTool_<%=cid%>{
@@ -70,7 +70,7 @@ class NestXMLTool_<%=cid%>{
 	public void replaceDefaultNameSpace(org.dom4j.Element nestRoot){
 		if (nestRoot!=null) {
 			for (org.dom4j.Element tmp: (java.util.List<org.dom4j.Element>) nestRoot.elements()) {
-        		if (tmp.getQName().getNamespace().getURI().equals("") && tmp.getQName().getNamespace().getPrefix().equals("")){
+        		if (("").equals(tmp.getQName().getNamespace().getURI()) && ("").equals(tmp.getQName().getNamespace().getPrefix())){
         			tmp.setQName(org.dom4j.DocumentHelper.createQName(tmp.getName(), nestRoot.getQName().getNamespace()));
 	        	}
     	    	replaceDefaultNameSpace(tmp);
@@ -106,7 +106,7 @@ format_<%=cid%>.setEncoding(<%=encoding%>);
 
 //java.io.StringWriter strWriter_<%=cid%> = new java.io.StringWriter();
 <%
-				}else if(mode.equals("Null")){
+				}else if(("Null").equals(mode)){
 %>
 java.util.List<String> endTabStrs_<%=cid%> = new java.util.ArrayList<String>();
 java.util.List<String> startTabStrs_<%=cid%> = new java.util.ArrayList<String>();

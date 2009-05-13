@@ -16,7 +16,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
-boolean close = ElementParameterParser.getValue(node,"__CLOSE__").equals("true");
+boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
 %>
 <%=generateSQLPatternCode(node) %>

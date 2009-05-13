@@ -31,7 +31,7 @@ String cid_original = cid;
 cid = cid_original.replace("tFileOutputXMLMultiSchema","tOXMLMS");
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
-boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
+boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 
 List<IMetadataTable> metadatas = NodeUtil.getIncomingMetadataTable(node, IConnectionCategory.FLOW);
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -42,7 +42,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	
     nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
 <%
-	if(!allowEmpty.equals("true")){
+	if(!("true").equals(allowEmpty)){
 %>
     nestXMLTool_<%=cid%>.removeEmptyElement(doc_<%=cid%>.getRootElement());
 <%

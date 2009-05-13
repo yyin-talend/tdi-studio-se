@@ -26,18 +26,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     String colName = ElementParameterParser.getValue(node, "__MATCH__");
     String matchingType = ElementParameterParser.getValue(node, "__MATCHING_TYPE__");
     String min = ElementParameterParser.getValue(node, "__MIN__");
-    if(min.equals("")){
+    if(("").equals(min)){
     	min="0";
     }
     String max = ElementParameterParser.getValue(node, "__MAX__");
-    if(max.equals("")){
+    if(("").equals(max)){
     	max="0";
     }
 
 	String uniqueS = ElementParameterParser.getValue(node, "__GET_UNIQUE__");
-	boolean unique = uniqueS.equals("true");
+	boolean unique = ("true").equals(uniqueS);
 	String caseS = ElementParameterParser.getValue(node, "__CASE_SENSITIVE__");
-	boolean caseSens = caseS.equals("true");
+	boolean caseSens = ("true").equals(caseS);
 	String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
 	String lookUpColumn = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
 
@@ -86,7 +86,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	String defaultValue_VALUE = null;
 	String defaultValue_MATCHING = null;
     for (IMetadataColumn column: metadata.getListColumns()) {
-    	if(column.getLabel().equals("VALUE")) {
+    	if(("VALUE").equals(column.getLabel())) {
     		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
             String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
             defaultValue_VALUE = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
@@ -98,7 +98,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         			isPrimitive = true;
         		}
     		}
-    	}else if(column.getLabel().equals("MATCHING")){    	
+    	}else if(("MATCHING").equals(column.getLabel())){    	
             String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
             defaultValue_MATCHING = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());    	
     	}
@@ -118,7 +118,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				java.util.Iterator<<%=inRefCon.getName() %>Struct> tItr_<%=inRefCon.getName() %>_<%=cid %> = tSet_<%=inRefCon.getName() %>_<%=cid %>.iterator();
 
                 <%
-                if(matchingType.equals("matchLevenshteinDistance")){
+                if(("matchLevenshteinDistance").equals(matchingType)){
                 %>  
                     String tomatch_<%=cid %> = ("" + <%=inMainCon.getName() %>.<%=colName%>)<%if(!caseSens){%>.toLowerCase()<%}%>;
                 
@@ -198,7 +198,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 
                 <%
                 	}
-                }else if(matchingType.equals("matchMetaphone")){%>
+                }else if(("matchMetaphone").equals(matchingType)){%>
                 
                 	<%=conn.getName()%>.VALUE = metaphone_<%=cid %>.metaphone("" + <%=inMainCon.getName() %>.<%=colName%>);
                 

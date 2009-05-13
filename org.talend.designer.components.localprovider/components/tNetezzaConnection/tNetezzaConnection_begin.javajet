@@ -19,7 +19,7 @@ imports="
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	boolean isUseSharedConnection = ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__").equals("true");
+	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
 	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
 %>
 
@@ -28,7 +28,7 @@ String userName_<%=cid%> = <%=dbuser%>;
 String password_<%=cid%> = <%=dbpass%>;
 
 <%
-if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
     %>
 String url_<%=cid%> = "jdbc:netezza://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
     <%

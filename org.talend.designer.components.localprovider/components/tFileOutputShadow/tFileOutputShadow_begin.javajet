@@ -10,7 +10,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
         String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 		if (encoding!=null) {
-            if (encoding.equals("")) {
+            if (("").equals(encoding)) {
                 encoding = "ISO-8859-15";
             }
         }

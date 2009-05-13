@@ -20,7 +20,7 @@ INode node = (INode)codeGenArgument.getArgument();
 // component id
 String cid = node.getUniqueName();
 
-if(ElementParameterParser.getValue(node,"__ADVANCED_USE__").equals("false")) {
+if(("false").equals(ElementParameterParser.getValue(node,"__ADVANCED_USE__"))) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -32,22 +32,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
         
-        boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
+        boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
         String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
         String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
         
-        boolean useProxy = ElementParameterParser.getValue(node,"__UES_PROXY__").equals("true");
+        boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__UES_PROXY__"));
         String proxuHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
         String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
         String proxuUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
         String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
         
         String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
-		String timeout = (timeoutStr!=null&&!timeoutStr.equals(""))?timeoutStr:"20";
+		String timeout = (timeoutStr!=null&&!("").equals(timeoutStr))?timeoutStr:"20";
 		
         String endpoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
         String method = ElementParameterParser.getValue(node,"__METHOD__");
-        if(method != null && !method.trim().equals("\"runJob\"")) {
+        if(method != null && !("\"runJob\"").equals(method.trim())) {
 %>
 /////////////////////////////////// 
         

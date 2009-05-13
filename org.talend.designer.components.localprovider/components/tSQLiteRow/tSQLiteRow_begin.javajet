@@ -18,7 +18,7 @@ imports="
 %>
 java.sql.Connection conn_<%=cid%> = null;
 <%
-if(useExistingConn.equals("true")) {
+if(("true").equals(useExistingConn)) {
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
     %>
@@ -34,8 +34,8 @@ if(useExistingConn.equals("true")) {
 %>
 
 <%
-if(!useExistingConn.equals("true")) {
-    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+if(!("true").equals(useExistingConn)) {
+    if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
         %>
         conn_<%=cid%>.setAutoCommit(false);
         int commitEvery_<%=cid%> = <%=commitEvery%>;    

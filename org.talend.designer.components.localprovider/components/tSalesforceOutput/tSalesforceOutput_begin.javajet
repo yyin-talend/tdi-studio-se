@@ -16,9 +16,9 @@ imports="
 	String password = ElementParameterParser.getValue(node, "__PASS__");
 	String action = ElementParameterParser.getValue(node, "__ACTION__");
 	String commitLevel = ElementParameterParser.getValue(node, "__COMMIT_LEVEL__");
-	boolean extendedInsert = ElementParameterParser.getValue(node, "__EXTENDINSERT__").equals("true");
+	boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
 	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
-	boolean ceaseForError = ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__").equals("true");
+	boolean ceaseForError = ("true").equals(ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__"));
 	
 	// if the extended insert is disabled set the commit level to 1
 	if (!extendedInsert) commitLevel = "1";

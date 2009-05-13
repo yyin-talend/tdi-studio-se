@@ -24,7 +24,7 @@ String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 
 boolean result_<%=cid%> = true;
 	<%
-	if(!cmpMode.equals("TEXT_CMP"))
+	if(!("TEXT_CMP").equals(cmpMode))
 	{%>
 java.nio.channels.FileChannel fileChannel_<%=cid%> = new java.io.FileInputStream(<%=file%>).getChannel();
 long fileLength_<%=cid%> = fileChannel_<%=cid%>.size();
@@ -39,7 +39,7 @@ if(fileLength_<%=cid%> != fileRefLength_<%=cid%>)
 if (result_<%=cid%>)
 {
 	<%
-	if(cmpMode.equals("TEXT_CMP"))
+	if(("TEXT_CMP").equals(cmpMode))
 	{
 		%>
 		java.io.BufferedReader file_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=file%>),<%=encoding %>));

@@ -29,15 +29,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String font = ElementParameterParser.getValue(node, "__FONT__");
 		
-        boolean isIncludeHeader = ElementParameterParser.getValue(node, "__INCLUDEHEADER__").equals("true");
-        boolean isAppendFile = ElementParameterParser.getValue(node, "__APPEND_FILE__" ).equals("true");
-        boolean isAppendSheet = ElementParameterParser.getValue(node, "__APPEND_SHEET__" ).equals("true");
+        boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
+        boolean isAppendFile = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_FILE__" ));
+        boolean isAppendSheet = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_SHEET__" ));
 %>
 
 		int nb_line_<%=cid%> = 0;
 		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
 		
-<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+<%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 //create directory only if not exists		  
           java.io.File parentFile_<%=cid %> = file_<%=cid %>.getParentFile();
           if (parentFile_<%=cid %> != null && !parentFile_<%=cid %>.exists()) {

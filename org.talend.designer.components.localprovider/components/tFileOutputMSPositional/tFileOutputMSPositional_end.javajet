@@ -38,7 +38,7 @@ final String separator = ElementParameterParser.getValue(
             "__ROWSEPARATOR__"
         );
 final String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-final boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+final boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 final String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 final String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);   
 
@@ -74,7 +74,7 @@ class Gen{//HSS_____inner class
 		}
 		Map<String, String> schema = schemas.get(index);
 		String parent = schema.get("PARENT_ROW");
-		boolean hasParent = !(parent.equals("") || parent == null);
+		boolean hasParent = !(("").equals(parent) || parent == null);
 		if(hasParent){//assign key....
 			sb.append("String key_").append(connection).append("_").append(parent).append(" = String.valueOf(").append(parent).append("_e.").append(schema.get("PARENT_KEY_COLUMN")).append(");\n");
 			//sb.append("Object v_").append(connection).append("_").append(cid).append(" = ").append(connection).append("Map_").append(cid).append(".get(key_").append(connection).append("_").append(schema.get("PARENT_ROW")).append(");\n");
@@ -136,23 +136,23 @@ class Gen{//HSS_____inner class
 			sb.append(";\n");
     		sb.append("tempLengthM").append(cid).append("=tempStringM").append(cid).append(".length();\n");
     		sb.append("if (tempLengthM").append(cid).append(" >=").append(sizes[i]).append(") {");
-            if (schema.get("KEEP").equals("\'A\'")) {
+            if (("\'A\'").equals(schema.get("KEEP"))) {
             	sb.append("sb_").append(cid).append(".append(tempStringM").append(cid).append(");\n");
-            } else if (schema.get("KEEP").equals("\'R\'")) {
+            } else if (("\'R\'").equals(schema.get("KEEP"))) {
                 sb.append("sb_").append(cid).append(".append(tempStringM").append(cid).append(".substring(tempLengthM").append(cid).append("-").append(sizes[i]).append("));\n");
-            } else if (schema.get("KEEP").equals("\'M\'")) {
+            } else if (("\'M\'").equals(schema.get("KEEP"))) {
                 sb.append("int begin").append(cid).append("=(tempLengthM").append(cid).append("-").append(sizes[i]).append(")/2;\n");
                 sb.append("sb_").append(cid).append(".append(tempStringM").append(cid).append(".substring(begin").append(cid).append(", begin").append(cid).append("+").append(sizes[i]).append("));\n");
             } else {
 				sb.append("sb_").append(cid).append(".append(tempStringM").append(cid).append(".substring(0, ").append(sizes[i]).append("));\n");
             }
             sb.append("}else if(tempLengthM").append(cid).append("<").append(sizes[i]).append("){\n");
-            if (schema.get("ALIGN").equals("\'L\'")) {
+            if (("\'L\'").equals(schema.get("ALIGN"))) {
             	sb.append("sb_").append(cid).append(".append(tempStringM").append(cid).append(");\n");
                 sb.append("for(int i_").append(cid).append("=0; i_").append(cid).append("< ").append(sizes[i]).append("-tempLengthM").append(cid).append("; i_").append(cid).append("++){");
                 sb.append("sb_").append(cid).append(".append(").append(schema.get("PADDING_CHAR")).append(");\n");
                 sb.append("}\n");
-            } else if (schema.get("ALIGN").equals("\'R\'")) {
+            } else if (("\'R\'").equals(schema.get("ALIGN"))) {
 				sb.append("for(int i_").append(cid).append("=0; i_").append(cid).append("< ").append(sizes[i]).append("-tempLengthM").append(cid).append("; i_").append(cid).append("++){\n");
                 sb.append("sb_").append(cid).append(".append(").append(schema.get("PADDING_CHAR")).append(");\n");
                 sb.append("}\n");
@@ -212,7 +212,7 @@ if (connList.size()>0) {//HSS_____0
 		schema.put("PADDING_CHAR", TalendTextUtils.removeQuotes(schema_o.get("PADDING_CHAR")));
 		schema.put("KEEP", TalendTextUtils.removeQuotes(schema_o.get("KEEP")));
 		schema.put("ALIGN", TalendTextUtils.removeQuotes(schema_o.get("ALIGN")));
-		if(schema.get("PARENT_ROW").equals("")){//put the root schema in the first place on list.
+		if(("").equals(schema.get("PARENT_ROW"))){//put the root schema in the first place on list.
 			for(int i=0;i<conns.size();i++){//HSS_____0_____1_____1
 	    		IConnection connTemp = conns.get(i);
 	    		if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {

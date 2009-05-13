@@ -30,7 +30,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
+	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 %>
 
 
@@ -38,7 +38,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
 
-    boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");
+    boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
     
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
 
@@ -89,7 +89,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     	%>
     	whetherReject_<%=cid%> = false;
     	<%
-        if(dataAction.equals("INSERT")) {
+        if(("INSERT").equals(dataAction)) {
             if(isEnableDebug) {
                 %>
         		query_<%=cid%> = new String(insert_<%=cid%>);
@@ -122,7 +122,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
                     %>
                     throw(e);
                     <%
@@ -147,7 +147,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
             }
     	<%
-    	} else if(dataAction.equals("UPDATE")) {
+    	} else if(("UPDATE").equals(dataAction)) {
             if(isEnableDebug) {
                 %>
                 query_<%=cid%> = new String(update_<%=cid%>);
@@ -195,7 +195,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
                     %>
                     throw(e);
                     <%
@@ -220,7 +220,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
             }
             <%
-    	} else if (dataAction.equals("INSERT_OR_UPDATE")) {
+    	} else if (("INSERT_OR_UPDATE").equals(dataAction)) {
     	    %>    
     	    <%
     		int columnIndex = 1;
@@ -287,7 +287,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
-                    if (dieOnError.equals("true")) {
+                    if (("true").equals(dieOnError)) {
                         %>
                         throw(e);
                         <%
@@ -345,7 +345,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
-                    if (dieOnError.equals("true")) {
+                    if (("true").equals(dieOnError)) {
                         %>
                         throw(e);
                         <%
@@ -372,7 +372,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}
     		nb_line_<%=cid%>++;
     		<%
-    	} else if (dataAction.equals("UPDATE_OR_INSERT")) {
+    	} else if (("UPDATE_OR_INSERT").equals(dataAction)) {
             if(isEnableDebug) {
                 %>
                 query_<%=cid%> = new String(update_<%=cid%>);
@@ -424,7 +424,7 @@ skeleton="../templates/db_output_bulk.skeleton"
              } catch(Exception e) {
                  whetherReject_<%=cid%> = true;
                  <%
-                 if (dieOnError.equals("true")) {
+                 if (("true").equals(dieOnError)) {
                      %>
                      throw(e);
                      <%
@@ -482,7 +482,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                  } catch(Exception e) {
                      whetherReject_<%=cid%> = true;
                      <%
-                     if (dieOnError.equals("true")) {
+                     if (("true").equals(dieOnError)) {
                          %>
                          throw(e);
                          <%
@@ -510,7 +510,7 @@ skeleton="../templates/db_output_bulk.skeleton"
              } 
              nb_line_<%=cid%>++;
              <%    	
-    	} else if (dataAction.equals("DELETE")) {
+    	} else if (("DELETE").equals(dataAction)) {
             if(isEnableDebug) {
                 %>
                 query_<%=cid%> = new String(delete_<%=cid%>);
@@ -542,7 +542,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
                     %>
                     throw(e);
                     <%
@@ -595,7 +595,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         }	
     	
         ////////////commit every////////////
-    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+    	if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
     	    %>
             commitCounter_<%=cid%>++;
             

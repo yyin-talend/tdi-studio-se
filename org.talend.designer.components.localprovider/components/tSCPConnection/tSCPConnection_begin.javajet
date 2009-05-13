@@ -30,7 +30,7 @@ imports="
     
     /* Create a connection instance */
 <%
-        if(port.equals("")){
+        if(("").equals(port)){
 %>
               ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>);
 <% 
@@ -43,7 +43,7 @@ imports="
               /* Now connect */
         conn_<%=cid%>.connect();
 <%        
-        if (authMethod.equals("PUBLICKEY")) {
+        if (("PUBLICKEY").equals(authMethod)) {
 %>
         java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
             boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
@@ -51,14 +51,14 @@ imports="
                       throw new RuntimeException("Authentication failed.");
 <%
         }
-        if (authMethod.equals("PASSWORD")) {
+        if (("PASSWORD").equals(authMethod)) {
 %>
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
         if (isAuthenticated_<%=cid%> == false)
             throw new RuntimeException("Authentication failed.");
 <%
         }
-        if (authMethod.equals("KEYBOARDINTERACTIVE")) {
+        if (("KEYBOARDINTERACTIVE").equals(authMethod)) {
 %>
         boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithKeyboardInteractive(username_<%=cid%>, 
             new ch.ethz.ssh2.InteractiveCallback() {

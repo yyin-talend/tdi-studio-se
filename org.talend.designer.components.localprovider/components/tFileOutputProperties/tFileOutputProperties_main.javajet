@@ -25,11 +25,11 @@ for(IConnection conn : inConns){
 if(inConnName == null){
 	return ""; //return immediately, generate nothing
 }
-if(fileFormat.equals("PROPERTIES_FORMAT")){
+if(("PROPERTIES_FORMAT").equals(fileFormat)){
 %>
 	properties_<%=cid%>.setProperty(<%=inConnName %>.key, <%=inConnName %>.value);
 <%
-}else if(fileFormat.equals("INI_FORMAT")){
+}else if(("INI_FORMAT").equals(fileFormat)){
 	String sectionName = ElementParameterParser.getValue(node,"__SECTION_NAME__");
 %>
 	ini_<%=cid%>.put(<%=sectionName %>,<%=inConnName %>.key, <%=inConnName %>.value);

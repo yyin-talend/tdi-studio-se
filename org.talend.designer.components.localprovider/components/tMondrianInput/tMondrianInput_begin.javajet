@@ -31,42 +31,42 @@ if (metadatas != null && metadatas.size() > 0) {
 class Transfer{
 	public String dbDriver(INode node){
 		String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
-		if(dbType.equals("MSSQL")){
+		if(("MSSQL").equals(dbType)){
 			return "net.sourceforge.jtds.jdbc.Driver";
-		}else if(dbType.equals("MySQL")){
+		}else if(("MySQL").equals(dbType)){
 			return "org.gjt.mm.mysql.Driver";
-		}else if(dbType.equals("Oracle")){
+		}else if(("Oracle").equals(dbType)){
 			return "oracle.jdbc.driver.OracleDriver";
-		}else if(dbType.equals("Postgre")){
+		}else if(("Postgre").equals(dbType)){
 			return "org.postgresql.Driver";
-		}else if(dbType.equals("Access")){
+		}else if(("Access").equals(dbType)){
 			return "sun.jdbc.odbc.JdbcOdbcDriver";
-		}else if(dbType.equals("DB2")){
+		}else if(("DB2").equals(dbType)){
 			return "com.ibm.db2.jcc.DB2Driver";
-		}else if(dbType.equals("Firebird")){
+		}else if(("Firebird").equals(dbType)){
 			return "org.firebirdsql.jdbc.FBDriver";
-		}else if(dbType.equals("Informix")){
+		}else if(("Informix").equals(dbType)){
 			return "com.informix.jdbc.IfxDriver";
-		}else if(dbType.equals("Ingres")){
+		}else if(("Ingres").equals(dbType)){
 			return "com.ingres.jdbc.IngresDriver";
-		}else if(dbType.equals("JavaDB")){
+		}else if(("JavaDB").equals(dbType)){
 			String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
-			if(frameworkType.equals("Embeded")){
+			if(("Embeded").equals(frameworkType)){
 				return "org.apache.derby.jdbc.EmbeddedDriver";
-			}else if(frameworkType.equals("JCCJDBC")){
+			}else if(("JCCJDBC").equals(frameworkType)){
 				return "com.ibm.db2.jcc.DB2Driver";
-			}else if(frameworkType.equals("DERBYCLIENT")){
+			}else if(("DERBYCLIENT").equals(frameworkType)){
 				return "org.apache.derby.jdbc.ClientDriver";
 			}
-		}else if(dbType.equals("SQLite")){
+		}else if(("SQLite").equals(dbType)){
 			return "org.sqlite.JDBC";
-		}else if(dbType.equals("Sybase")){
+		}else if(("Sybase").equals(dbType)){
 			return "com.sybase.jdbc3.jdbc.SybDriver";
-		}else if(dbType.equals("ODBC")){
+		}else if(("ODBC").equals(dbType)){
 			return "sun.jdbc.odbc.JdbcOdbcDriver";
-		}else if(dbType.equals("HSQLdb")){
+		}else if(("HSQLdb").equals(dbType)){
 			return "org.hsqldb.jdbcDriver";
-		}else if(dbType.equals("Interbase")){
+		}else if(("Interbase").equals(dbType)){
 			return "interbase.interclient.Driver";
 		}
 		return null;
@@ -82,69 +82,69 @@ class Transfer{
 		String pass = ElementParameterParser.getValue(node,"__PASS__");
 		String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
 
-		if(dbType.equals("MSSQL")){
+		if(("MSSQL").equals(dbType)){
 			return "\"jdbc:jtds:sqlserver://\"+"+host+"+\":\"+"+port+"+\"//\"+"+dbname;
-		}else if(dbType.equals("MySQL")){
+		}else if(("MySQL").equals(dbType)){
 			return "\"jdbc:mysql://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname+ "+\"?noDatetimeStringSync=true\"";
-		}else if(dbType.equals("Oracle")){//depends on SID/Service
-					if(oraType.equals("Oracle SID")){
+		}else if(("Oracle").equals(dbType)){//depends on SID/Service
+					if(("Oracle SID").equals(oraType)){
 						return "\"jdbc:oracle:thin:@\"+"+host+"+\":\"+" + port + "+\":\"+" + dbname;
 					}else{
 						return "\"dbc:oracle:thin:@(description=(address=(protocol=tcp)(host=\"+" + host + "+\")(port=\"+" + port + "+\"))(connect_data=(service_name=\"+" + dbname +"+\")))\"";			
 					}
-		}else if(dbType.equals("Postgre")){
+		}else if(("Postgre").equals(dbType)){
 			return "\"jdbc:postgresql://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}else if(dbType.equals("Access")){
+		}else if(("Access").equals(dbType)){
 		String accessDbname = ElementParameterParser.getValue(node,"__ACCESSDBNAME__");
 			return "\"jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=\"+"+accessDbname;
-		}else if(dbType.equals("DB2")){
+		}else if(("DB2").equals(dbType)){
 			return "\"jdbc:db2://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}else if(dbType.equals("Firebird")){			
+		}else if(("Firebird").equals(dbType)){			
 			String firebirdDB=ElementParameterParser.getValue(node,"__FIREBIRDDBNAME__");
 			return "\"jdbc:firebirdsql:\"+"+host+"+\":\"+"+firebirdDB;
-		}else if(dbType.equals("Informix")){
+		}else if(("Informix").equals(dbType)){
 			String server=ElementParameterParser.getValue(node,"__INFORMIXSERVER__");			
 			return "\"jdbc:informix-sqli://\"+"+host+ "+\":\"+"+port+"+\"/\"+"+dbname+"+\":informixserver=\"+"+server;
-		}else if(dbType.equals("Ingres")){
+		}else if(("Ingres").equals(dbType)){
 			return "\"jdbc:ingres://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}else if(dbType.equals("JavaDB")){
+		}else if(("JavaDB").equals(dbType)){
 			String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
-			if(frameworkType.equals("Embeded")){
+			if(("Embeded").equals(frameworkType)){
 				return "\"jdbc:derby:\"+" + dbname;
-			}else if(frameworkType.equals("JCCJDBC")){
+			}else if(("JCCJDBC").equals(frameworkType)){
 				return "\"+jdbc:derby:net://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-			}else if(frameworkType.equals("DERBYCLIENT")){
+			}else if(("DERBYCLIENT").equals(frameworkType)){
 				return "\"+jdbc:derby://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
 			}
-		}else if(dbType.equals("SQLite")){		
+		}else if(("SQLite").equals(dbType)){		
 			String sqliteDB=ElementParameterParser.getValue(node,"__SQLITEDBNAME__");
 			return "\"jdbc:sqlite:/\"+" +sqliteDB.toLowerCase();
-		}else if(dbType.equals("Sybase")){
+		}else if(("Sybase").equals(dbType)){
 			return "\"jdbc:sybase:Tds:\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}else if(dbType.equals("ODBC")){
+		}else if(("ODBC").equals(dbType)){
 			return "\"jdbc:odbc:\" + " + dbname;
-		}else if(dbType.equals("HSQLdb")){
+		}else if(("HSQLdb").equals(dbType)){
 			String runningMode=ElementParameterParser.getValue(node,"__HSQLMODE__");
 			String tls=ElementParameterParser.getValue(node,"__TLS__");
 			String dbalias=ElementParameterParser.getValue(node,"__HSQLDATABASEALIAS__");
-			if(runningMode.equals("SERVER")){
-				if(tls.equals("true")){
+			if(("SERVER").equals(runningMode)){
+				if(("true").equals(tls)){
 					return "\"jdbc:hsqldb:hsqls://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
 				}else{
 					return "\"jdbc:hsqldb:hsql://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
 				}
-			}else if(runningMode.equals("WEBSERVER")){
-				if(tls.equals("true")){
+			}else if(("WEBSERVER").equals(runningMode)){
+				if(("true").equals(tls)){
 					return "\"jdbc:hsqldb:https://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
 				}else{
 					return  "\"jdbc:hsqldb:http://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
 				}
-			}else if(runningMode.equals("PROCESS")){
+			}else if(("PROCESS").equals(runningMode)){
 				String dbpath=ElementParameterParser.getValue(node,"__HSQLDATABASEPATH__");
 				String hdbname=ElementParameterParser.getValue(node,"__HSQLDATABASE__");
 				return "\"jdbc:hsqldb:file:\"+" + dbpath + "+\"/\"+" + hdbname + "+\";ifexists=true\"";
 			}
-		}else if(dbType.equals("Interbase")){
+		}else if(("Interbase").equals(dbType)){
 			return "\"jdbc:interbase://\"+"+host+"+\"/\"+"+dbname;
 		}
 		return null;
@@ -167,11 +167,11 @@ if (metadata != null) {
 		"Jdbc='" + <%=transfer.url(node)%> + "';" +
 		"Catalog='" + <%=catalog%> + "';" +
 	    "JdbcDrivers=<%=transfer.dbDriver(node)%>;"<%
-	if (!dbuser.equals("\"\"")) {
+	if (!("\"\"").equals(dbuser)) {
 		%> +
 		"JdbcUser=" + <%=dbuser%> + ";"<%
 	}
-	if (!dbpwd.equals("\"\"")) {
+	if (!("\"\"").equals(dbpwd)) {
 		%> +
 		"JdbcPassword=" + <%=dbpwd%> + ";"<%
 	}
@@ -226,7 +226,7 @@ if (metadata != null) {
 						String colname = column.getLabel();
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					    
-					    if (typeToGenerate.equals("String")) {
+					    if (("String").equals(typeToGenerate)) {
 						    %>
 						    if (pos_<%=cid%> == <%=i%>) {
 						    	<%=firstOutConnection.getName()%>.<%=colname%> = member_<%=cid%>.getUniqueName();

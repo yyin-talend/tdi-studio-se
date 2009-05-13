@@ -16,17 +16,17 @@
 
 	String destination  = ElementParameterParser.getValue(node, "__DESTINATION__");
 	
-	boolean rename = ElementParameterParser.getValue(node, "__RENAME__").equals("true");
+	boolean rename = ("true").equals(ElementParameterParser.getValue(node, "__RENAME__"));
 	
 	String destination_filename  = ElementParameterParser.getValue(node, "__DESTINATION_RENAME__");
 
-	boolean isCopyADir = ElementParameterParser.getValue(node, "__ENABLE_COPY_DIRECTORY__").equals("true");
+	boolean isCopyADir = ("true").equals(ElementParameterParser.getValue(node, "__ENABLE_COPY_DIRECTORY__"));
 	
-	boolean reFile = ElementParameterParser.getValue(node, "__REMOVE_FILE__").equals("true");
+	boolean reFile = ("true").equals(ElementParameterParser.getValue(node, "__REMOVE_FILE__"));
 
-	boolean rpFile = ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
+	boolean rpFile = ("true").equals(ElementParameterParser.getValue(node,"__REPLACE_FILE__"));
 
-	boolean creatDir = ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__").equals("true");
+	boolean creatDir = ("true").equals(ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__"));
 	
 	if (isCopyADir){ // copy a directory
 %>     
@@ -116,7 +116,7 @@
 
 		String desFileName_<%=cid %> = <%if(rename){%> <%=destination_filename %> <%}else{%> srcFile_<%=cid %>.getName() <%}%>;
 
-		if (desFileName_<%=cid %> != null && desFileName_<%=cid %>.trim().equals("")){
+		if (desFileName_<%=cid %> != null && ("").equals(desFileName_<%=cid %>.trim())){
 			desFileName_<%=cid %> = "NewName.temp";
 		}
 

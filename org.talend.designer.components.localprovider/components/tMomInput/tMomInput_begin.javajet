@@ -28,7 +28,7 @@ class="MomInput"
 	metadata = metadatas.get(0);
 	}
 
-	if(serverType.equals("JBoss")){ // server judgement
+	if(("JBoss").equals(serverType)){ // server judgement
 		String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
 		String from=ElementParameterParser.getValue(node, "__FROM__");
 		String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
@@ -56,7 +56,7 @@ class HelloInput implements javax.jms.MessageListener {
 
 
 <%
-		if(msgType.equals("Queue")){
+		if(("Queue").equals(msgType)){
 %>
 		javax.jms.<%=msgType%>Receiver receiver<%=cid%>=session<%=cid%>.createReceiver(topic<%=cid%>);
 		receiver<%=cid%>.setMessageListener(this);
@@ -74,7 +74,7 @@ class HelloInput implements javax.jms.MessageListener {
 	public void onMessage(javax.jms.Message m){
 		try {
 <%
-		if(useMsgId.equals("true")){
+		if(("true").equals(useMsgId)){
 %>
 			String msg<%=cid%>=((javax.jms.MapMessage)m).getString(<%=msgId%>);
 			if(msg<%=cid%> != null){
@@ -102,7 +102,7 @@ class HelloInput implements javax.jms.MessageListener {
 		HelloInput input<%=cid%>=null;
 		try {
 		//begin part
-			input<%=cid%>=new HelloInput("<%if(msgType.equals("Topic")){%>TopicConnectionFactory<%}else{%>ConnectionFactory<%}%>",<%=from%>);			
+			input<%=cid%>=new HelloInput("<%if(("Topic").equals(msgType)){%>TopicConnectionFactory<%}else{%>ConnectionFactory<%}%>",<%=from%>);			
 		} catch (java.lang.Exception e) {
 			System.err.println("An exception occurred while testing HelloSubscriber:" + e);
 			e.printStackTrace();
@@ -126,7 +126,7 @@ class HelloInput implements javax.jms.MessageListener {
 				<%=firstConnName%>.from=<%=from%>;	
 				<%=firstConnName%>.message=msg<%=cid%>;	
 <%
-				if(useMsgId.equals("true")){
+				if(("true").equals(useMsgId)){
 %>		
 				<%=firstConnName%>.messageid=<%=msgId%>;
 			
@@ -134,20 +134,20 @@ class HelloInput implements javax.jms.MessageListener {
 				}
 			}
 		}
-	}else if(serverType.equals("ActiveMQ")){
-		boolean startServer = ElementParameterParser.getValue(node, "__STARTSERVER__").equals("true");
-		boolean topic = ElementParameterParser.getValue(node, "__MSGTYPE__").equals("Topic");
+	}else if(("ActiveMQ").equals(serverType)){
+		boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
+		boolean topic = ("Topic").equals(ElementParameterParser.getValue(node, "__MSGTYPE__"));
 		String from = ElementParameterParser.getValue(node, "__FROM__");
-		boolean useMax = ElementParameterParser.getValue(node,"__USEMAX__").equals("true");
+		boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
 		String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
 		String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
 		String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
 		String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
 		
-		if(maxiumMessages.equals("")|| maxiumMessages == null){
+		if(("").equals(maxiumMessages)|| maxiumMessages == null){
 			maxiumMessages = "0";
 		}
-		if(receiveTimeOut.equals("")|| receiveTimeOut == null){
+		if(("").equals(receiveTimeOut)|| receiveTimeOut == null){
 			receiveTimeOut = "0L";
 		}
 %>
@@ -188,13 +188,13 @@ String msg_<%=cid %>  = "";
  
  
 <%
-		if(kListen.equals("true")){
+		if(("true").equals(kListen)){
 %>
 System.out.println("We will consume messages while they continue to be delivered ");
 javax.jms.Message message;
 while ((message = consumer_<%=cid %>.receive()) != null) {
 <%
-			if(useMsgId.equals("true")){
+			if(("true").equals(useMsgId)){
 %>
 	if (message instanceof javax.jms.MapMessage) {
 		javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
@@ -218,7 +218,7 @@ while ((message = consumer_<%=cid %>.receive()) != null) {
 		<%=firstConnName%>.from=<%=from%>;	
 		<%=firstConnName%>.message=msg_<%=cid %>;	
 <%
-					if(useMsgId.equals("true")){
+					if(("true").equals(useMsgId)){
 %>		
 		<%=firstConnName%>.messageid=<%=msgId%>;
 
@@ -226,7 +226,7 @@ while ((message = consumer_<%=cid %>.receive()) != null) {
 					}
 				}
 			}
-			if(useMsgId.equals("true")){
+			if(("true").equals(useMsgId)){
 %>
 			}
 <%
@@ -243,7 +243,7 @@ while ((message = consumer_<%=cid %>.receive()) != null) {
         if (message != null) {
             i_<%=cid %>++;
 <%
-			if(useMsgId.equals("true")){
+			if(("true").equals(useMsgId)){
 %>
 			if (message instanceof javax.jms.MapMessage) {
 				javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
@@ -266,14 +266,14 @@ while ((message = consumer_<%=cid %>.receive()) != null) {
 			<%=firstConnName%>.from=<%=from%>;	
 			<%=firstConnName%>.message=msg_<%=cid %>;	
 <%
-					if(useMsgId.equals("true")){
+					if(("true").equals(useMsgId)){
 %>		
 			<%=firstConnName%>.messageid=<%=msgId%>;
 <%
 					}
 				}
 			}
-			if(useMsgId.equals("true")){
+			if(("true").equals(useMsgId)){
 %>
 			}
 <%
@@ -289,7 +289,7 @@ while ((message = consumer_<%=cid %>.receive()) != null) {
     javax.jms.Message message;
     while ((message = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
 <%
-			if(useMsgId.equals("true")){
+			if(("true").equals(useMsgId)){
 %>
 		if (message instanceof javax.jms.MapMessage) {
 			javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
@@ -312,7 +312,7 @@ while ((message = consumer_<%=cid %>.receive()) != null) {
 			<%=firstConnName%>.from=<%=from%>;	
 			<%=firstConnName%>.message=msg_<%=cid %>;	
 <%
-					if(useMsgId.equals("true")){
+					if(("true").equals(useMsgId)){
 %>		
 			<%=firstConnName%>.messageid=<%=msgId%>;
 			
@@ -320,7 +320,7 @@ while ((message = consumer_<%=cid %>.receive()) != null) {
 					}
 				}
 			}
-			if(useMsgId.equals("true")){
+			if(("true").equals(useMsgId)){
 %>
 			}
 <%
@@ -351,10 +351,10 @@ else{
 	com.ibm.mq.MQQueueManager qMgr<%=cid%>=null;
 	com.ibm.mq.MQQueue remoteQ<%=cid%>=null;
 <%
-	if(useMsgId.equals("true")){
+	if(("true").equals(useMsgId)){
 %>
 	String msgId_<%=cid%> = <%=msgId%>;
-    if (msgId_<%=cid%> != null & !msgId_<%=cid%>.equals("")) {
+    if (msgId_<%=cid%> != null & !("").equals(msgId_<%=cid%>)) {
 		String padding_<%=cid%> = new String();
        	int padlen_<%=cid%> = 24;
  
@@ -375,7 +375,7 @@ else{
 
 	com.ibm.mq.MQGetMessageOptions gmo<%=cid%>=new com.ibm.mq.MQGetMessageOptions();
 	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
-	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(kListen.equals("false")){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
+	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(("false").equals(kListen)){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
 	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
 	gmo<%=cid%>.waitInterval=com.ibm.mq.MQC.MQWI_UNLIMITED;
 	com.ibm.mq.MQException.log = null;
@@ -384,7 +384,7 @@ else{
 	qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
 	remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
 
-	<%if(kListen.equals("false")) {
+	<%if(("false").equals(kListen)) {
 	%>
 	if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0))
 	{
@@ -395,7 +395,7 @@ else{
 	System.out.println("Waiting...");	
 	while(flag<%=cid%>){
 <%
-	if(kListen.equals("false")){
+	if(("false").equals(kListen)){
 %>
 		if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(1))
 		{
@@ -406,12 +406,12 @@ else{
 %>
 		com.ibm.mq.MQMessage inMessage<%=cid%>=new com.ibm.mq.MQMessage();
 <%
-	if(useMsgId.equals("true")){
+	if(("true").equals(useMsgId)){
 %>
 		inMessage<%=cid%>.messageId = msgId_<%=cid%>.getBytes("ISO-8859-15");
 <%
 	}
-	if(kListen.equals("false") && useMsgId.equals("true")){
+	if(("false").equals(kListen) && ("true").equals(useMsgId)){
 %>		
 		try{
 			remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
@@ -440,7 +440,7 @@ else{
 		<%=firstConnName%>.from=<%=queue%>;	
 		<%=firstConnName%>.message=message<%=cid%>;			
 <%
-			if(useMsgId.equals("true")){
+			if(("true").equals(useMsgId)){
 %>
 		<%=firstConnName%>.messageid=new String(inMessage<%=cid%>.messageId,"ISO-8859-15");	
 <%

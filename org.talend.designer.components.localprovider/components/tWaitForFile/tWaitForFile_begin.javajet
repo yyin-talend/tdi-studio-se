@@ -16,10 +16,10 @@
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
-    boolean incldSubdir = ElementParameterParser.getValue(node, "__INCLUDE_SUBDIR__").equals("true");
-    boolean present = ElementParameterParser.getValue(node, "__INCLUDE_PRESENT__").equals("true");
+    boolean incldSubdir = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDE_SUBDIR__"));
+    boolean present = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDE_PRESENT__"));
     String triggerAction = ElementParameterParser.getValue(node, "__ACTION_ON__");
-    boolean waitRelease = ElementParameterParser.getValue(node, "__WAIT_RELEASE__").equals("true");
+    boolean waitRelease = ("true").equals(ElementParameterParser.getValue(node, "__WAIT_RELEASE__"));
 %>
        
         class Util_<%=cid %> {
@@ -93,7 +93,7 @@
                 return list;
             }
             <%
-            if(triggerAction.equals("fileupdated") || triggerAction.equals("fileall")) {
+            if(("fileupdated").equals(triggerAction) || ("fileall").equals(triggerAction)) {
                 %>
                 public String getFileChecksum(java.io.File file) {
                 	String strMD5 = "";
@@ -136,7 +136,7 @@
         Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
         java.util.List<java.io.File> originalFiles_<%=cid %> = util_<%=cid %>.getFiles();            
         <%
-        if(triggerAction.equals("fileupdated") || triggerAction.equals("fileall")) {
+        if(("fileupdated").equals(triggerAction) || ("fileall").equals(triggerAction)) {
             %>
             java.util.Map<String, java.io.File> originalMap_<%=cid%> = new java.util.HashMap<String, java.io.File>();
             for(java.io.File file_<%=cid%>:originalFiles_<%=cid %>){
@@ -149,7 +149,7 @@
         int count_<%=cid %> = 0;
         while (true) {
             <%
-            if(!ElementParameterParser.getValue(node,"__MAX_ITERATIONS__").equals("")){
+            if(!("").equals(ElementParameterParser.getValue(node,"__MAX_ITERATIONS__"))){
                 %>                
                 if (count_<%=cid %> == <%=ElementParameterParser.getValue(node, "__MAX_ITERATIONS__") %> ) {
                     break;
@@ -172,7 +172,7 @@
 			%>
             java.util.List<java.io.File> fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();
             <%
-            if(triggerAction.equals("filecreated")) {
+            if(("filecreated").equals(triggerAction)) {
                 %>
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(!originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
@@ -206,7 +206,7 @@
                 }
                 originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                 <%
-            } else if(triggerAction.equals("filedeleted")) {
+            } else if(("filedeleted").equals(triggerAction)) {
                 %>
                 for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
                     if(!fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
@@ -218,7 +218,7 @@
                 }
                 originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                 <%
-            } else if(triggerAction.equals("fileupdated")) {
+            } else if(("fileupdated").equals(triggerAction)) {
                 %>
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(null == originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))) {
@@ -234,7 +234,7 @@
                     }                   
                 }                
                 <%
-            } else if(triggerAction.equals("fileall")) {
+            } else if(("fileall").equals(triggerAction)) {
                 %>
                 for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
                     if(!fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {

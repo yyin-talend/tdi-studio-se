@@ -152,7 +152,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
             aggValues<%=cid%>.append(<%=fieldSeparator%>);
         
-<%if( aggFunction.equals("count")){%>
+<%if( ("count").equals(aggFunction)){%>
 
         aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(1).append(<%=fieldSeparator%>).toString());
 
@@ -179,7 +179,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                
             aggValues<%=cid%>.delete(0,aggValues<%=cid%>.length());
             
-<%if( aggFunction.equals("count")){%>
+<%if( ("count").equals(aggFunction)){%>
 
             aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(1).toString() + <%=fieldSeparator%>;
 
@@ -217,14 +217,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             aggValues<%=cid%>.delete(0,aggValues<%=cid%>.length());
         
             <%  
-            if( aggFunction.equals("sum") ){
+            if( ("sum").equals(aggFunction) ){
             %>
 
                 <%=columnTypeValue%> sum<%=cid%> ;
                 
-                if (aggStrSplit<%=cid%>[pivotIndex<%=cid%>].equals("")){
+                if (("").equals(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])){
                 	
-                	<%if(columnType.equals("BigDecimal")){%>
+                	<%if(("BigDecimal").equals(columnType)){%>
 					
 					  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(<%=inConnName%>.<%=aggColumn%> + "");
                     
@@ -239,11 +239,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					<%}%>
                     
                 }else{
-               		<%if(columnType.equals("BigDecimal")){%>
+               		<%if(("BigDecimal").equals(columnType)){%>
 						
 					  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = (new java.math.BigDecimal(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])).add(new java.math.BigDecimal(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())).toString();
 					  
-					<%}else if(columnType.equals("Double")||columnType.equals("Float")){%>
+					<%}else if(("Double").equals(columnType)||("Float").equals(columnType)){%>
 
 					  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = (new java.math.BigDecimal(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])).add(new java.math.BigDecimal(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())).toString();
 					  
@@ -258,18 +258,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
             
             <%
-            }else if( aggFunction.equals("count") ){
+            }else if( ("count").equals(aggFunction) ){
             %>
                 int count<%=cid%> = 1;
                 
-                if (!aggStrSplit<%=cid%>[pivotIndex<%=cid%>].equals(""))
+                if (!("").equals(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
             
                     count<%=cid%> = Integer.parseInt(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]) + 1;
                     
                 aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(count<%=cid%>);
             
             <%
-            }else if( aggFunction.equals("max") ){
+            }else if( ("max").equals(aggFunction) ){
             %>
             
                 if(Float.parseFloat(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())>Float.parseFloat(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
@@ -277,7 +277,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.toString();
             
             <%
-            }else if( aggFunction.equals("min") ){
+            }else if( ("min").equals(aggFunction) ){
             %>
                 
 
@@ -286,15 +286,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.toString();
             
             <%
-            }else if( aggFunction.equals("first") ){
+            }else if( ("first").equals(aggFunction) ){
             %>
             
-                if (aggStrSplit<%=cid%>[pivotIndex<%=cid%>].equals(""))
+                if (("").equals(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
 
                     aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString();
             
             <%
-            }else if( aggFunction.equals("last") ){
+            }else if( ("last").equals(aggFunction) ){
             %>
     
                     aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString();

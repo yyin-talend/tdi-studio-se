@@ -24,7 +24,7 @@
 	String errorOuput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
 	
 	
-	boolean ifDir = ElementParameterParser.getValue(node, "__ROOTDIR__").equals("true");
+	boolean ifDir = ("true").equals(ElementParameterParser.getValue(node, "__ROOTDIR__"));
 	
 	String rootDir  = ElementParameterParser.getValue(node, "__DIRECTORY__").replace("\\","/");
 	
@@ -33,7 +33,7 @@
 	// To launch an internal command to cmd.exe (XP), you have to call :
 	// cmd.exe /c dir (for example)
 
-	if (outputAction.equals("NORMAL_OUTPUT")||errorOuput.equals("NORMAL_OUTPUT")) {
+	if (("NORMAL_OUTPUT").equals(outputAction)||("NORMAL_OUTPUT").equals(errorOuput)) {
 %>
 final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
 <%
@@ -81,11 +81,11 @@ Thread normal_<%=cid %> = new Thread() {
 			try {
 				while((line = reader.readLine()) != null) {
 <%
-	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+	if (("OUTPUT_TO_CONSOLE").equals(outputAction)) {
 %>
 					System.out.println(line);
 <%
-	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+	} else if (("RETRIEVE_OUTPUT").equals(outputAction)) {
 %>
 					if (globalMap.get("<%=cid %>_OUTPUT") != null) {
 						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
@@ -93,7 +93,7 @@ Thread normal_<%=cid %> = new Thread() {
 						globalMap.put("<%=cid %>_OUTPUT", line);
 					}
 <%
-	} else if(outputAction.equals("OUTPUT_TO_CONSOLE_AND_RETRIVE_OUTPUT")){
+	} else if(("OUTPUT_TO_CONSOLE_AND_RETRIVE_OUTPUT").equals(outputAction)){
 %>
         System.out.println(line);
         
@@ -105,7 +105,7 @@ Thread normal_<%=cid %> = new Thread() {
 					
     	 
 <%
-   } else if (outputAction.equals("NORMAL_OUTPUT")) {
+   } else if (("NORMAL_OUTPUT").equals(outputAction)) {
 %>
 					output_<%=cid%>.add(line);
 <%
@@ -130,11 +130,11 @@ Thread error_<%=cid %> = new Thread() {
 			try {
 				while((line = reader.readLine()) != null) {
 <%
-	if (errorOuput.equals("OUTPUT_TO_CONSOLE")) {
+	if (("OUTPUT_TO_CONSOLE").equals(errorOuput)) {
 %>
 					System.err.println(line);
 <%
-	} else if (errorOuput.equals("RETRIEVE_OUTPUT")) {
+	} else if (("RETRIEVE_OUTPUT").equals(errorOuput)) {
 %>
 					if (globalMap.get("<%=cid %>_ERROROUTPUT") != null) {
 						globalMap.put("<%=cid %>_ERROROUTPUT", (String)globalMap.get("<%=cid %>_ERROROUTPUT")+"\n"+line);
@@ -142,7 +142,7 @@ Thread error_<%=cid %> = new Thread() {
 						globalMap.put("<%=cid %>_ERROROUTPUT", line);
 					}
 <%
-	}else if(errorOuput.equals("OUTPUT_TO_CONSOLE_AND_RETRIVE_OUTPUT")){
+	}else if(("OUTPUT_TO_CONSOLE_AND_RETRIVE_OUTPUT").equals(errorOuput)){
 %>
         System.err.println(line);
         
@@ -154,7 +154,7 @@ Thread error_<%=cid %> = new Thread() {
 					
     	 
 <% 
-	}else if (errorOuput.equals("NORMAL_OUTPUT")) {
+	}else if (("NORMAL_OUTPUT").equals(errorOuput)) {
 %>
 					output_<%=cid%>.add(line);
 <%
@@ -176,7 +176,7 @@ normal_<%=cid %>.join(10000);
 error_<%=cid %>.join(10000);
 
 <%
-if(outputAction.equals("NORMAL_OUTPUT")||errorOuput.equals("NORMAL_OUTPUT")){
+if(("NORMAL_OUTPUT").equals(outputAction)||("NORMAL_OUTPUT").equals(errorOuput)){
 	List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
     	IMetadataTable metadata = metadatas.get(0);

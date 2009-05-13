@@ -112,11 +112,11 @@ class VariantTool{
 	}
 
 	public String vCulomnVale(Column column,String rowName){
-		if(column.dataType.equals("String")){
+		if(("String").equals(column.dataType)){
 			return vStr(column.value);
-		}else if(column.dataType.equals("Int") || column.dataType.equals("Float") || column.dataType.equals("Double")
-			|| column.dataType.equals("Short") || column.dataType.equals("Char") || column.dataType.equals("Object")
-			|| column.dataType.equals("Date") || column.dataType.equals("Boolean")){
+		}else if(("Int").equals(column.dataType) || ("Float").equals(column.dataType) || ("Double").equals(column.dataType)
+			|| ("Short").equals(column.dataType) || ("Char").equals(column.dataType) || ("Object").equals(column.dataType)
+			|| ("Date").equals(column.dataType) || ("Boolean").equals(column.dataType)){
 			return "new org.jinterop.dcom.core.JIVariant("+column.value+")";
 		}
 		return "new org.jinterop.dcom.core.JIVariant.EMPTY";
@@ -143,17 +143,17 @@ for(IMetadataColumn column:columnList){
 					stmtIndex++;
 				}
 				
-				if(addCol.get("POS").equals("AFTER")){
+				if(("AFTER").equals(addCol.get("POS"))){
 					Column insertAfter = new Column(addCol.get("NAME").replaceAll("\"",""),addCol.get("SQL"),true,addCol.get("DATATYPE"));
 					insertAfter.dataType = addCol.get("DATATYPE");
 					insertAfter.operator = addCol.get("OPERATOR");
 					stmtStructure.add(stmtIndex+1,insertAfter);
-				}else if(addCol.get("POS").equals("BEFORE")){
+				}else if(("BEFORE").equals(addCol.get("POS"))){
 					Column insertBefore = new Column(addCol.get("NAME").replaceAll("\"",""),addCol.get("SQL"),true,addCol.get("DATATYPE"));
 					insertBefore.dataType = addCol.get("DATATYPE");
 					insertBefore.operator = addCol.get("OPERATOR");
 					stmtStructure.add(stmtIndex,insertBefore);
-				}else if(addCol.get("POS").equals("REPLACE")){
+				}else if(("REPLACE").equals(addCol.get("POS"))){
 					Column replacementCol = new Column(addCol.get("NAME").replaceAll("\"",""),addCol.get("SQL"),true,addCol.get("DATATYPE"));
 					replacementCol.dataType = addCol.get("DATATYPE");
 					replacementCol.operator = addCol.get("OPERATOR");
@@ -205,7 +205,7 @@ for(Column column : stmtStructure) {
 }
 
 //select recode
-if(!dataAction.equals("INSERT")){
+if(!("INSERT").equals(dataAction)){
 	String executeStmt = "\"select forupdate %1 where"+whereStmt.toString()+"\"";
 %>
 	record_<%=cid%>.callMethod("ExecuteStmt", new Object[] { <%=vTool.vStr(executeStmt)%>});
@@ -222,7 +222,7 @@ if(incomingConnName != null && columnList != null){
 %>
     whetherReject_<%=cid%> = false;
 <%
-    if(dataAction.equals("INSERT")){
+    if(("INSERT").equals(dataAction)){
 		for(Column column : insertValueList){
 %>
 	record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
@@ -236,7 +236,7 @@ if(incomingConnName != null && columnList != null){
     }catch(Exception e){
         whetherReject_<%=cid%> = true;
 <%
-        if (dieOnError.equals("true")) {
+        if (("true").equals(dieOnError)) {
 %>
             throw(e);
 <%
@@ -262,7 +262,7 @@ if(incomingConnName != null && columnList != null){
 %>
     }
 <%
-	}else if(dataAction.equals("UPDATE")){
+	}else if(("UPDATE").equals(dataAction)){
 %>
         try{
             while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
@@ -281,7 +281,7 @@ if(incomingConnName != null && columnList != null){
         }catch(Exception e){
             whetherReject_<%=cid%> = true;
 <%
-            if (dieOnError.equals("true")) {
+            if (("true").equals(dieOnError)) {
 %>
                 throw(e);
 <%
@@ -307,7 +307,7 @@ if(incomingConnName != null && columnList != null){
 %>
         }
 <%
-	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 %>
 		if(record_<%=cid%>.get("Found").getObjectAsBoolean()){
             try{
@@ -326,7 +326,7 @@ if(incomingConnName != null && columnList != null){
             }catch(Exception e){
                 whetherReject_<%=cid%> = true;
 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
 %>
                     throw(e);
 <%
@@ -366,7 +366,7 @@ if(incomingConnName != null && columnList != null){
             {
                 whetherReject_<%=cid%> = true;
 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
 %>
                     throw(e);
 <%
@@ -394,7 +394,7 @@ if(incomingConnName != null && columnList != null){
 		}
 		nb_line_<%=cid%>++;
 <%
-	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 %>
 		int updateFlag_<%=cid%>=0;
         try{
@@ -416,7 +416,7 @@ if(incomingConnName != null && columnList != null){
         {
             whetherReject_<%=cid%> = true;
 <%
-            if (dieOnError.equals("true")) {
+            if (("true").equals(dieOnError)) {
 %>
                 throw(e);
 <%
@@ -455,7 +455,7 @@ if(incomingConnName != null && columnList != null){
             }catch(Exception e){
                 whetherReject_<%=cid%> = true;
 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
 %>
                     throw(e);
 <%
@@ -480,7 +480,7 @@ if(incomingConnName != null && columnList != null){
         }
         nb_line_<%=cid%>++;
 <%
-	}else if (dataAction.equals("DELETE")){
+	}else if (("DELETE").equals(dataAction)){
 %>
     try{
 	    while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
@@ -491,7 +491,7 @@ if(incomingConnName != null && columnList != null){
     }catch(Exception e){
         whetherReject_<%=cid%> = true;
 <%
-        if (dieOnError.equals("true")) {
+        if (("true").equals(dieOnError)) {
 %>
             throw(e);
 <%

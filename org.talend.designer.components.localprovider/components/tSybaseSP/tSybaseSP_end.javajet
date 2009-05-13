@@ -15,7 +15,7 @@ String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_C
 %>
 statement_<%=cid%>.close();
 <%
-if (!useExistingConn.equals("true")) {
+if (!("true").equals(useExistingConn)) {
 	%>
 	connection_<%=cid%> .close();
 	<%

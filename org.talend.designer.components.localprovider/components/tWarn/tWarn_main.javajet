@@ -17,7 +17,7 @@
 			if (node.getProcess().getNodesOfType("tLogCatcher").size() > 0) {
 				List<INode> logCatchers = (List<INode>)node.getProcess().getNodesOfType("tLogCatcher");
 				for (INode logCatcher : logCatchers) {
-					if (ElementParameterParser.getValue(logCatcher, "__CATCH_TWARN__").equals("true")) {
+					if (("true").equals(ElementParameterParser.getValue(logCatcher, "__CATCH_TWARN__"))) {
 %>
 	<%=logCatcher.getUniqueName() %>.addMessage("tWarn", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
 	<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);

@@ -78,7 +78,7 @@ imports="
 	        dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
 	        encoding = ElementParameterParser.getValue(previousNode, "__ENCODING__");
 	    	connectionType = ElementParameterParser.getValue(previousNode, "__CONNECTION_TYPE__");
-	    	useExistingConn = ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__").equals("true");
+	    	useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
         }
 
 //        String tableAction = ElementParameterParser.getValue(
@@ -102,11 +102,11 @@ if(useExistingConn) {
     %>
     java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
     <%
-    if(connectionType == null || connectionType.equals("ORACLE_SID")) {
+    if(connectionType == null || ("ORACLE_SID").equals(connectionType)) {
         %>
         String url_<%=cid%> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
         <%
-    } else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
+    } else if(("ORACLE_SERVICE_NAME").equals(connectionType)) {
         %>
         String url_<%=cid%> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
         <%
@@ -131,7 +131,7 @@ if(metadatas !=null && metadatas.size()>0){
 }
 %>
 
-<%if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){%>
+<%if(("INSERT_OR_UPDATE").equals(dataAction)||("UPDATE_OR_INSERT").equals(dataAction)){%>
 
 java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
 
@@ -318,7 +318,7 @@ for(Column colStmt:stmtStructure){
 }
 
 
-	if(dataAction.equals("INSERT")){
+	if(("INSERT").equals(dataAction)){
 	%>	
 	
 	
@@ -326,7 +326,7 @@ String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" ("+select_query+")";
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 	<%
-	}else if (dataAction.equals("UPDATE")){
+	}else if (("UPDATE").equals(dataAction)){
 	%>
 
 String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
@@ -337,7 +337,7 @@ String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toStri
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 
 	<%		
-	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 	%>
 
 String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" ("+select_query+")";
@@ -351,7 +351,7 @@ String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toStri
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 		
 	<%
-	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 	%>
 
 String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
@@ -366,7 +366,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 	<%
 			
-	}else if (dataAction.equals("DELETE")){
+	}else if (("DELETE").equals(dataAction)){
 	%>
 	
 String deleteQuery = "DELETE  FROM ("+select_query+") " + tableName_<%=cid%>
@@ -532,7 +532,7 @@ for(Column colStmt:stmtStructure){
 ///////////////////////////////////////////////////////////
 
 if(incomingConnName != null && columnList != null){
-	if(dataAction.equals("INSERT")){
+	if(("INSERT").equals(dataAction)){
 	%>
 
 System.out.println("Inserting with : \n" + insertQuery + "\n");
@@ -540,14 +540,14 @@ nb_line_inserted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 
 	<%
-	}else if(dataAction.equals("UPDATE")){
+	}else if(("UPDATE").equals(dataAction)){
 
 	%>
 System.out.println("Updating with : \n" + updateQuery +"\n");
 nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
 	<%
-	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 %>
 	try{
 		System.out.println("Inserting with : \n" + insertQuery + "\n");
@@ -559,7 +559,7 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");	
 	}
 <%
-	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 %>
 	try{
 		System.out.println("Updating with : \n" + updateQuery +"\n");
@@ -572,7 +572,7 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	}
 <%
 	
-	}else if (dataAction.equals("DELETE")){
+	}else if (("DELETE").equals(dataAction)){
 		%>
 	System.out.println("Deleting with : \n" + deleteQuery +"\n");
 		nb_line_deleted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
@@ -605,7 +605,7 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 
 
 
-	if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){
+	if(("INSERT_OR_UPDATE").equals(dataAction)||("UPDATE_OR_INSERT").equals(dataAction)){
 %>
 
 if(pstmtUpdate_<%=cid%> != null){

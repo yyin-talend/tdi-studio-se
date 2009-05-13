@@ -19,9 +19,9 @@ String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
 String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
-boolean isFunction = ElementParameterParser.getValue(node, "__IS_FUNCTION__").equals("true");
+boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
-boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 if(useExistingConn){
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
@@ -40,7 +40,7 @@ java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall(
 <%
 boolean isFirstArg = true;
 for (int i = 0; i < spArgs.size(); i++) {
-	if(!spArgs.get(i).get("TYPE").equals("RECORDSET")){
+	if(!("RECORDSET").equals(spArgs.get(i).get("TYPE"))){
 		if(isFirstArg){
 			%>?<%
 			isFirstArg=false;
@@ -53,7 +53,7 @@ for (int i = 0; i < spArgs.size(); i++) {
 
 <%
 String timeoutInterval = ElementParameterParser.getValue(node, "__TIMEOUT_INTERVAL__");
-if(timeoutInterval != null && !timeoutInterval.equals("0") && !timeoutInterval.equals("")) {
+if(timeoutInterval != null && !("0").equals(timeoutInterval) && !("").equals(timeoutInterval)) {
     %>
     statement_<%=cid%>.setQueryTimeout(<%=timeoutInterval%>);
     <%

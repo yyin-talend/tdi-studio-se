@@ -20,21 +20,21 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String charset = "\"utf8\"";
-if(encoding.equals("\"GBK\"")){
+if(("\"GBK\"").equals(encoding)){
 	charset = "\"gbk\"";
-}else if(encoding.equals("\"GB2312\"")){
+}else if(("\"GB2312\"").equals(encoding)){
 	charset = "\"gb2312\"";
-}else if(encoding.equals("\"ISO-8859-1\"")){
+}else if(("\"ISO-8859-1\"").equals(encoding)){
 	charset = "\"latin1\"";
-}else if(encoding.equals("\"ISO-8859-2\"")){
+}else if(("\"ISO-8859-2\"").equals(encoding)){
 	charset = "\"latin2\"";
-}else if(encoding.equals("\"ISO-8859-15\"")){
+}else if(("\"ISO-8859-15\"").equals(encoding)){
 	charset = "\"latin1\"";//?not sure if this is true for iso-8859-15
-}else if(encoding.equals("\"Big5\"")){
+}else if(("\"Big5\"").equals(encoding)){
 	charset = "\"big5\"";
-}else if(encoding.equals("\"UCS-2\"")){
+}else if(("\"UCS-2\"").equals(encoding)){
 	charset = "\"ucs2\"";
-}else if(encoding.equals("\"UTF-8\"")){
+}else if(("\"UTF-8\"").equals(encoding)){
 	charset = "\"utf8\"";
 }else {
 	charset = encoding;
@@ -53,7 +53,7 @@ String charset_<%=cid %> = <%=charset %>;
 String tableName_<%=cid%> = <%=tableName%>;
 Class.forName("com.mysql.jdbc.Driver").newInstance();
 <%
-if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
     %>
     String url_<%=cid%> = "jdbc:mysql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>;
     <%
@@ -72,7 +72,7 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
     manager = getManager(dbmsId, cid);
-    if(tableAction.equals("DROP_CREATE")) {
+    if(("DROP_CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
         stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
@@ -81,13 +81,13 @@ if(columnList != null && columnList.size() > 0) {
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreate_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("CREATE")) {
+    } else if(("CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreate_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+    } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
         %>
         java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
         java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -106,13 +106,13 @@ if(columnList != null && columnList.size() > 0) {
             stmtCreate_<%=cid%>.close();
         }
         <%
-    } else if(tableAction.equals("CLEAR")) {
+    } else if(("CLEAR").equals(tableAction)) {
         %>
         java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
         stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
         stmtClear_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("TRUNCATE")) {
+    } else if(("TRUNCATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtTrunc_<%=cid%> = con_<%=cid%>.createStatement();
         stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
@@ -144,7 +144,7 @@ file_<%=cid %> = file_<%=cid %>.replaceAll("\\\\", "/");
 String replace_<%=cid%> = null;
 <%
 String dataAction = ElementParameterParser.getValue(node, "__DATA_ACTION__");
-if(dataAction.equals("UPDATE")) {
+if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {
         int keyCount = 0;
         for(IMetadataColumn column : columnList) {
@@ -181,7 +181,7 @@ if(dataAction.equals("UPDATE")) {
         <%
     }
 } else {
-    if(dataAction.equals("REPLACE")) {
+    if(("REPLACE").equals(dataAction)) {
         %>
         replace_<%=cid%> = "REPLACE";
         <%

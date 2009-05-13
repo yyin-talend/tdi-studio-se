@@ -56,7 +56,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	}
         	denormalizeColumns.add(columnName);
         	denormalizeDelimiters.add(denormalize.get("DELIMITER"));
-        	denormalizeMergeFlags.add(denormalize.get("MERGE").equals("true"));
+        	denormalizeMergeFlags.add(("true").equals(denormalize.get("MERGE")));
         }
         for(IMetadataColumn column : inColumns){
         	String columnName = column.getLabel();
@@ -133,7 +133,7 @@ while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
 		
 			sb_<%=cid %> = new StringBuilder();
 <%
-					if((typesMap.get(inputColumn).equals("java.util.Date")) && (patternsMap.get(inputColumn).length() != 0)){
+					if((("java.util.Date").equals(typesMap.get(inputColumn))) && (patternsMap.get(inputColumn).length() != 0)){
 %>		
 			sb_<%=cid %>.append(FormatterUtils.format_Date(temp_<%=cid %>, <%=patternsMap.get(inputColumn) %>));
 			
@@ -148,7 +148,7 @@ while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
 			
 		}else{
 <%
-					if((typesMap.get(inputColumn).equals("java.util.Date")) && (patternsMap.get(inputColumn).length() != 0)){
+					if((("java.util.Date").equals(typesMap.get(inputColumn))) && (patternsMap.get(inputColumn).length() != 0)){
 %>		
 			sb_<%=cid %>.append(<%=delimiter %>).append(FormatterUtils.format_Date(temp_<%=cid %>, <%=patternsMap.get(inputColumn) %>));
 			

@@ -31,7 +31,7 @@ dbquery = dbquery.replaceAll("\r"," ");
 String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
 String cursorSize= ElementParameterParser.getValue(node, "__CURSOR_SIZE__");
 
-boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
+boolean whetherTrimAllCol = ("true").equals(ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__"));
 List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
 
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -44,7 +44,7 @@ if (metadata != null) {
 	%>
 	int nb_line_<%=cid%> = 0;	
 	<%
-	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	if(useExistingConn){
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
@@ -61,7 +61,7 @@ if (metadata != null) {
 	%>	
 	java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
     <%
-    if(useCursor.equals("true")) {
+    if(("true").equals(useCursor)) {
     %>
         statement_<%=cid%>.setFetchSize(<%=cursorSize %>);
     <%
@@ -87,7 +87,7 @@ if (metadata != null) {
                 if((trimColumnList != null && trimColumnList.size() > 0) && !whetherTrimAllCol) {
                     for(Map<String, String> trimColumn : trimColumnList) {
                         if(column.getLabel().equals(trimColumn.get("SCHEMA_COLUMN"))) {
-                            if(trimColumn.get("TRIM").equals("true")) {
+                            if(("true").equals(trimColumn.get("TRIM"))) {
                                 whetherTrimCol = true;
                                 break;
                             }
@@ -107,15 +107,15 @@ if (metadata != null) {
  					} else {
 						<%
 						String method = null;
-						if (typeToGenerate.equals("byte[]")) {
+						if (("byte[]").equals(typeToGenerate)) {
 							method = "Bytes";
-						} else if (typeToGenerate.equals("Integer")) {
+						} else if (("Integer").equals(typeToGenerate)) {
 							method = "Int";
 						} else {
 							method = typeToGenerate.substring(0,1).toUpperCase() + typeToGenerate.substring(1);
 						}
 						
-			  			if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+			  			if (("Char").equals(typeToGenerate) || ("Character").equals(typeToGenerate)) {
 							%>
 							tmpContent_<%=cid%> = resultSet_<%=cid%>.getString(<%=currentColumn%>);
                             <%
@@ -131,18 +131,18 @@ if (metadata != null) {
 				  				<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = tmpContent_<%=cid%>.charAt(0);
 					  		}
 						 	<%
-						} else if (typeToGenerate.equals("java.util.Date")) {
+						} else if (("java.util.Date").equals(typeToGenerate)) {
 							%>
 							tmpDate_<%=cid%> = resultSet_<%=cid%>.getDate(<%=currentColumn%>);
 							if (tmpDate_<%=cid%> != null) {
 								<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = new java.util.Date(tmpDate_<%=cid%>.getTime());
 							}						
 						    <%
-						} else if (typeToGenerate.equals("List")) {
+						} else if (("List").equals(typeToGenerate)) {
 			          	    %>
 			         		<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = (List)resultSet_<%=cid%>.getObject(<%=currentColumn%>);
 				 			<%
-						} else if(typeToGenerate.equals("String")) {
+						} else if(("String").equals(typeToGenerate)) {
 						    %>
                             tmpContent_<%=cid%> = resultSet_<%=cid %>.getString(<%=currentColumn%>);
                             if(tmpContent_<%=cid%> != null) {

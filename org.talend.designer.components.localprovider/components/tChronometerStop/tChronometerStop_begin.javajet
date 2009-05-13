@@ -14,30 +14,18 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-boolean sinceStarter = ElementParameterParser.getValue(
-    node,
-    "__SINCE_STARTER__"
-).equals("true");
+boolean sinceStarter = ("true").equals(ElementParameterParser.getValue(node,"__SINCE_STARTER__"));
 
 String starter = ElementParameterParser.getValue(
     node,
     "__STARTER__"
 );
 
-boolean display = ElementParameterParser.getValue(
-    node,
-    "__DISPLAY__"
-).equals("true");
+boolean display = ("true").equals(ElementParameterParser.getValue(node,"__DISPLAY__"));
 
-boolean displayComponentName = ElementParameterParser.getValue(
-    node,
-    "__DISPLAY_COMPONENT_NAME__"
-).equals("true");
+boolean displayComponentName = ("true").equals(ElementParameterParser.getValue(node,"__DISPLAY_COMPONENT_NAME__"));
 
-boolean displayReadableDuration = ElementParameterParser.getValue(
-    node,
-    "__DISPLAY_READABLE_DURATION__"
-).equals("true");
+boolean displayReadableDuration = ("true").equals(ElementParameterParser.getValue(node,"__DISPLAY_READABLE_DURATION__"));
 
 
 String caption = ElementParameterParser.getValue(

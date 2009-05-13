@@ -20,7 +20,7 @@ imports="
 	String separatorText=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String separator = separatorText;
-	if(separatorText.equals("\"|\"")){
+	if(("\"|\"").equals(separatorText)){
 		separator="\"\\\\|\"";
 	}
 	
@@ -64,7 +64,7 @@ imports="
 %> 
 	String dn_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.trim();
 <%
-						}else if(!insertMode.equals("DELETE")){
+						}else if(!("DELETE").equals(insertMode)){
 %>
 	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
     	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(<%=separatorText%>)>0){
@@ -84,23 +84,23 @@ imports="
 %>
 	try{
 <%
-					if(insertMode.equals("ADD")){
+					if(("ADD").equals(insertMode)){
 %>
 	ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.ADD_ATTRIBUTE, entry_<%=cid%>);
 <%
-					} else if(insertMode.equals("INSERT")){
+					} else if(("INSERT").equals(insertMode)){
 %> 
 	ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
 <%
-					}else if(insertMode.equals("UPDATA")){
+					}else if(("UPDATA").equals(insertMode)){
 %>
     ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.REPLACE_ATTRIBUTE, entry_<%=cid%>);
 <%
-					}else if(insertMode.equals("DELETE")){
+					}else if(("DELETE").equals(insertMode)){
 %>
 	ctx_<%=cid%>.destroySubcontext(dn_<%=cid%>);
 <%
-					}else if(insertMode.equals("INSERT_UPDATA")){
+					}else if(("INSERT_UPDATA").equals(insertMode)){
 %>
 	boolean found = false;
 	try{
@@ -120,7 +120,7 @@ imports="
 	}catch(Exception e){
         whetherReject_<%=cid%> = true;
 <%
-        if (dieOnError.equals("true")) {
+        if (("true").equals(dieOnError)) {
 %>
         throw(e);
 <%

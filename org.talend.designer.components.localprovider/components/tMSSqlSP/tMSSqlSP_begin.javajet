@@ -19,11 +19,11 @@ String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
 String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
-boolean isFunction = ElementParameterParser.getValue(node, "__IS_FUNCTION__").equals("true");
+boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(useExistingConn.equals("true")){
+if(("true").equals(useExistingConn)){
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
 %>
@@ -40,12 +40,12 @@ java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(c
 boolean hasOutput = false;
 StringBuilder parameters =new StringBuilder();
 for (int i = 0; i < spArgs.size(); i++) {
-	if(spArgs.get(i).get("TYPE").equals("RECORDSET") 
-		|| spArgs.get(i).get("TYPE").equals("INOUT")
-		|| spArgs.get(i).get("TYPE").equals("OUT")){
+	if(("RECORDSET").equals(spArgs.get(i).get("TYPE")) 
+		|| ("INOUT").equals(spArgs.get(i).get("TYPE"))
+		|| ("OUT").equals(spArgs.get(i).get("TYPE"))){
 		hasOutput=true;
 	}
-    if(!spArgs.get(i).get("TYPE").equals("RECORDSET")){
+    if(!("RECORDSET").equals(spArgs.get(i).get("TYPE"))){
         if (parameters.length()==0) {
            	parameters.append("?");
         } else {

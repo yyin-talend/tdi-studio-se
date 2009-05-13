@@ -11,8 +11,8 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");	
-	boolean replaceFile=ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
-	boolean createDir=ElementParameterParser.getValue(node, "__CREATEDIR__").equals("true");
+	boolean replaceFile=("true").equals(ElementParameterParser.getValue(node,"__REPLACE_FILE__"));
+	boolean createDir=("true").equals(ElementParameterParser.getValue(node, "__CREATEDIR__"));
    
 %>     
 		java.io.File file_<%=cid %> = new java.io.File((<%=fileName%>));

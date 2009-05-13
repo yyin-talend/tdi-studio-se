@@ -27,8 +27,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String host = ElementParameterParser.getValue(node,"__HOST__");
         String retry = ElementParameterParser.getValue(node,"__RETRY__");
         String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
-        boolean compress = ElementParameterParser.getValue(node,"__COMPRESS__").equals("true");
-        boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
+        boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
+        boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 %>    
 <% if(compress){%>
 class Compress{

@@ -83,43 +83,43 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 <%
 		//-----begin to handle output
-		if(standardOutput.equals("TO_CONSOLE")){
+		if(("TO_CONSOLE").equals(standardOutput)){
 %>
 			System.out.println(stringStdout_<%=cid%>.toString());
 <%
-		}else if(standardOutput.equals("TO_GLOBAL_VARIABLE")){
+		}else if(("TO_GLOBAL_VARIABLE").equals(standardOutput)){
 %>
 			globalMap.put("<%=cid %>_STDOUT", stringStdout_<%=cid%>.toString());
 <%
-		}else if(standardOutput.equals("TO_CONSOLE_AND_GLOBAL_VARIABLE")){
+		}else if(("TO_CONSOLE_AND_GLOBAL_VARIABLE").equals(standardOutput)){
 %>
 			System.out.println(stringStdout_<%=cid%>.toString());
 			globalMap.put("<%=cid %>_STDOUT", stringStdout_<%=cid%>.toString());
 <%
-		}else if(standardOutput.equals("NORMAL_OUTPUT")){
+		}else if(("NORMAL_OUTPUT").equals(standardOutput)){
 %>
 			output_<%=cid%>.add(stringStdout_<%=cid%>.toString());
 <%
 		}
-		if(errorOutput.equals("TO_CONSOLE")){
+		if(("TO_CONSOLE").equals(errorOutput)){
 %>
 			System.out.println(stringStderr_<%=cid%>.toString());
 <%			
-		}else if(errorOutput.equals("TO_GLOBAL_VARIABLE")){
+		}else if(("TO_GLOBAL_VARIABLE").equals(errorOutput)){
 %>
 			System.out.println(stringStderr_<%=cid%>.toString());
 			globalMap.put("<%=cid %>_STDERR", stringStderr_<%=cid%>.toString());
 <%		
-		}else if(errorOutput.equals("TO_CONSOLE_AND_GLOBAL_VARIABLE")){
+		}else if(("TO_CONSOLE_AND_GLOBAL_VARIABLE").equals(errorOutput)){
 %>
 			globalMap.put("<%=cid %>_STDERR", stringStderr_<%=cid%>.toString());
 <%		
-		}else if(errorOutput.equals("NORMAL_OUTPUT")){
+		}else if(("NORMAL_OUTPUT").equals(errorOutput)){
 %>
 			output_<%=cid%>.add(stringStderr_<%=cid%>.toString());
 <%		
 		}
-		if(errorOutput.equals("NORMAL_OUTPUT") || standardOutput.equals("NORMAL_OUTPUT")){
+		if(("NORMAL_OUTPUT").equals(errorOutput) || ("NORMAL_OUTPUT").equals(standardOutput)){
 			if (conns!=null && conns.size()>0) {
 				IConnection conn = conns.get(0);
 %>

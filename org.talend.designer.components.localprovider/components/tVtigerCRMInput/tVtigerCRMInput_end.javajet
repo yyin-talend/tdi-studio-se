@@ -20,7 +20,7 @@ if(metadataTables != null && metadataTables.size() > 0) {
     if(metadataTable != null) {
         metadataColumns = metadataTable.getListColumns();
         if(metadataColumns != null && metadataColumns.size() > 0) {
-            if(method.equals("searchContactsByEmail") || method.equals("getContacts") || method.equals("getTasks") || method.equals("getClndr") || method.equals("get_KBase_details")) {
+            if(("searchContactsByEmail").equals(method) || ("getContacts").equals(method) || ("getTasks").equals(method) || ("getClndr").equals(method) || ("get_KBase_details").equals(method)) {
                 %>
                 }
                 <%

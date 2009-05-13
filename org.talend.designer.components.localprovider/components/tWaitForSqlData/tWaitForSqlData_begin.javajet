@@ -15,8 +15,8 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 String max = ElementParameterParser.getValue(node,"__MAX_ITERATIONS__");
 String operator = ElementParameterParser.getValue(node,"__OPERATOR__");
 String value = ElementParameterParser.getValue(node,"__VALUE__");
-boolean isEnableWhereClause = ElementParameterParser.getValue(node,"__ENABLE_WHERE_CLAUSE__").equals("true");
-boolean isEnableSQLStmt = ElementParameterParser.getValue(node,"__ENABLE_SQL_STMT__").equals("true");
+boolean isEnableWhereClause = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_WHERE_CLAUSE__"));
+boolean isEnableSQLStmt = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_SQL_STMT__"));
 String conn = "conn_" + connection ;
 String query = "SELECT COUNT(*) FROM ";
 %>
@@ -45,7 +45,7 @@ int count_<%=cid%> = 0;
 int rowCount_<%=cid%>=0;
 while (true) {
     <%
-    if(!max.equals("")) {
+    if(!("").equals(max)) {
         %>
         if(<%=max%> == count_<%=cid%>) {
         	break;

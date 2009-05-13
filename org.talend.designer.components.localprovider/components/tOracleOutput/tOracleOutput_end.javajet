@@ -33,7 +33,7 @@ imports="
     }
 
 	
-    if(dataAction.equals("INSERT_OR_UPDATE")) {
+    if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -51,7 +51,7 @@ imports="
             
         }        
         <%
-    } else if(dataAction.equals("UPDATE_OR_INSERT")) {
+    } else if(("UPDATE_OR_INSERT").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -66,25 +66,25 @@ imports="
         <%
     } else { // dataAction equals "INSERT" or "UPDATE" or "DELETE" 
         %>
-                <%if ((rejectConnName==null && isUseBatchByDBVersion) && (dataAction.equals("INSERT") || dataAction.equals("UPDATE") || dataAction.equals("DELETE"))) {
+                <%if ((rejectConnName==null && isUseBatchByDBVersion) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
                 %>                
                 try {
 						pstmt_<%=cid %>.executeBatch();                	
-            	    	<%if (dataAction.equals("INSERT")) {
+            	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
             	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
             	    	<%
-            	    	}else if (dataAction.equals("UPDATE")) {
+            	    	}else if (("UPDATE").equals(dataAction)) {
             	    	%>
             	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
-            	    	}else if (dataAction.equals("DELETE")) {
+            	    	}else if (("DELETE").equals(dataAction)) {
             	    	%>
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    	}%>            	    
                 }catch (java.sql.BatchUpdateException e){
-                	<%if(dieOnError.equals("true")) {
+                	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);
                 	<%
@@ -104,9 +104,9 @@ imports="
     %>
 
     <%
-	if(!useExistingConn.equals("true"))
+	if(!("true").equals(useExistingConn))
 	{
-		if(!commitEvery.equals("") && !commitEvery.equals("0"))
+		if(!("").equals(commitEvery) && !("0").equals(commitEvery))
 		{
 		    %>
 		    

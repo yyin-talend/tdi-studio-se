@@ -52,7 +52,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	}
         	denormalizeColumns.add(columnName);
         	denormalizeDelimiters.add(denormalize.get("DELIMITER"));
-        	denormalizeMergeFlags.add(denormalize.get("MERGE").equals("true"));
+        	denormalizeMergeFlags.add(("true").equals(denormalize.get("MERGE")));
         }
         for(IMetadataColumn column : inColumns){
         	String columnName = column.getLabel();

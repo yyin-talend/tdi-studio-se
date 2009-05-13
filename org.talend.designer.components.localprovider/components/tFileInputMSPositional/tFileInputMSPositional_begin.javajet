@@ -33,16 +33,16 @@
 	String recordTypePosition = ElementParameterParser.getValue(node, "__RECORD_TYPE_POSITION__");
 	String headerRecordPosition = ElementParameterParser.getValue(node, "__HEADER_RECORD_POSITION__");
 	String headerRecordLength = ElementParameterParser.getValue(node, "__HEADER_RECORD_LENGTH__");
-	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__").equals("true");
-	boolean dieOnUnknownHeader = ElementParameterParser.getValue(node, "__DIE_ON_UNKNOWN_HEADER__").equals("true");
-    String skipEmptyRows = "true"; //ElementParameterParser.getValue(node, "__SKIP_EMPTY_ROWS__").equals("true");
-	boolean trimAll = ElementParameterParser.getValue(node,"__TRIMALL__").equals("true");
+	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+	boolean dieOnUnknownHeader = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_UNKNOWN_HEADER__"));
+    String skipEmptyRows = "true"; //("true").equals(ElementParameterParser.getValue(node, "__SKIP_EMPTY_ROWS__"));
+	boolean trimAll = ("true").equals(ElementParameterParser.getValue(node,"__TRIMALL__"));
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	//need to process rows longger than 100,000 characters, the property SafetySwitch(in talend_file_enhanced_20070724.jar) should be sent to false.(the default is true)
     //that means if check the option(true), the logic value of bSafetySwitch should be changed to false (negate the property)
-	boolean bSafetySwitch = !(ElementParameterParser.getValue(node, "__PROCESS_LONG_ROW__").equals("true"));
+	boolean bSafetySwitch = !(("true").equals(ElementParameterParser.getValue(node, "__PROCESS_LONG_ROW__")));
 	String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-	boolean advancedSeparator = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__").equals("true");
+	boolean advancedSeparator = ("true").equals(ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__"));
 	String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 	
@@ -69,15 +69,15 @@
         rejectConnName = rejectConn.getName();
     }
 	
-	if (header.equals("")) {
+	if (("").equals(header)) {
 		header = "0";
 	}
 	
-	if (limit.equals("") || limit.equals("0")) {
+	if (("").equals(limit) || ("0").equals(limit)) {
 		limit = "-1";
 	}
 	
-	if (footer.equals("")) {
+	if (("").equals(footer)) {
 		footer = "0";
 	}
 	
@@ -139,7 +139,7 @@
 			
 			for (int i=0; i < patternSplit.length; i++) {
 				numberOfFields++;
-				if (patternSplit[i].equals("*") ) {
+				if (("*").equals(patternSplit[i]) ) {
 					if (i != (patternSplit.length -1)) {		// the star can only be used for the size of the last column
 						throw new java.lang.RuntimeException("The star (*) in the pattern can only be at the end of the pattern string.");
 					}
@@ -259,7 +259,7 @@
 				if (conn.getName().equals(schema.get("SCHEMA"))) {
 					headerValue = schema.get("HEADER");
 					patternValue = schema.get("PATTERN");
-					checkRowSize = schema.get("CHECK_ROW_SIZE").equals("true");
+					checkRowSize = ("true").equals(schema.get("CHECK_ROW_SIZE"));
 				}
 			}
     		IMetadataTable tempMetadataTable = conn.getMetadataTable();
@@ -293,7 +293,7 @@
 	
 <%
 		for(Map<String,String> schema : schemas){
-			if(!schema.get("PARENT_ROW").equals("")){
+			if(!("").equals(schema.get("PARENT_ROW"))){
 %>
 String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> = "";
 <%
@@ -331,7 +331,7 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 					}
 				}
 				
-				if(!parent.equals("")){
+				if(!("").equals(parent)){
 					int keyIndex = listColumns.size() - 1;
 					for(int k=0; k < listColumns.size(); k++){
 						if(listColumns.get(k).getLabel().equals(keyColumn)){
@@ -354,7 +354,7 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 <%
 				for (int i=0; i < listColumns.size(); i++) {//_____0_____1_____1_____1
 					boolean isKeyColumn = false;
-					if(i == listColumns.size() - 1 && !parent.equals("")){
+					if(i == listColumns.size() - 1 && !("").equals(parent)){
 						isKeyColumn = true;
 					}
 					IMetadataColumn column = listColumns.get(i);

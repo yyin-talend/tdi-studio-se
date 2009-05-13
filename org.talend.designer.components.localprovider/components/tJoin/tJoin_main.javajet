@@ -52,8 +52,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
     	int minSize = Math.min(columnSize, preColumnSize);
         
         List<Map<String, String>> lookupCols = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOKUP_COLS__");
-        boolean useLookup = ElementParameterParser.getValue(node, "__USE_LOOKUP_COLS__").equals("true");
-        boolean useReject = ElementParameterParser.getValue(node, "__USE_INNER_JOIN__").equals("true");
+        boolean useLookup = ("true").equals(ElementParameterParser.getValue(node, "__USE_LOOKUP_COLS__"));
+        boolean useReject = ("true").equals(ElementParameterParser.getValue(node, "__USE_INNER_JOIN__"));
         
     	List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
 		List<? extends IConnection> connsFilter = node.getOutgoingConnections("FLOW");

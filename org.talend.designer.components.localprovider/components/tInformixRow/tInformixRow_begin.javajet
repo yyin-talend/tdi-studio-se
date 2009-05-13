@@ -24,7 +24,7 @@ imports="
 java.lang.Class.forName("com.informix.jdbc.IfxDriver");
 
 <%
-if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
     %>
     String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%>;
     <%
@@ -44,7 +44,7 @@ java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
 
 boolean whetherReject_<%=cid%> = false;
 <%
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 
 int commitEvery_<%=cid%> = <%=commitEvery%>;

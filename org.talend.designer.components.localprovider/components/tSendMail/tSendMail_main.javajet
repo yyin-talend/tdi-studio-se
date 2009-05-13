@@ -16,10 +16,10 @@
 	String cid = node.getUniqueName();
 	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
 	String importance=ElementParameterParser.getValue(node, "__IMPORTANCE__");
-	String priority=importance.equals("Normal")?"3":(importance.equals("High")?"1":"5");
-	boolean ifSSL = ElementParameterParser.getValue(node, "__SSL__").equals("true");
-	boolean startTLS = ElementParameterParser.getValue(node, "__STARTTLS__").equals("true");
-	boolean checkAttachementOnSend = ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__").equals("true");
+	String priority=("Normal").equals(importance)?"3":(("High").equals(importance)?"1":"5");
+	boolean ifSSL = ("true").equals(ElementParameterParser.getValue(node, "__SSL__"));
+	boolean startTLS = ("true").equals(ElementParameterParser.getValue(node, "__STARTTLS__"));
+	boolean checkAttachementOnSend = ("true").equals(ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__"));
 %>
 <%
  

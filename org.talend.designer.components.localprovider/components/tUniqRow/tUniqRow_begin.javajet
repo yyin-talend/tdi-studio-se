@@ -20,7 +20,7 @@ String onlyOnceEachDuplicatedKey = ElementParameterParser.getValue(node, "__ONLY
 List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
 boolean hasKey = false;
 for(Map<String, String> keyColumn:keyColumns){
-	if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+	if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
 		hasKey = true;
 		break;
 	}
@@ -50,7 +50,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			for (int i=0; i<columns.size();i++) {
 				IMetadataColumn column = columns.get(i);
 				Map<String,String> keyColumn = keyColumns.get(i);
-				if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+				if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
 					%>
 					<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
 				}
@@ -66,7 +66,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					for (int i=0; i<columns.size();i++) {
 						IMetadataColumn column = columns.get(i);
 						Map<String,String> keyColumn = keyColumns.get(i);
-						if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+						if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
 
 							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 		
@@ -114,7 +114,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					for (int i=0; i<columns.size();i++) {
 						IMetadataColumn column = columns.get(i);
 						Map<String,String> keyColumn = keyColumns.get(i);
-						if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+						if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
 						
 							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						
@@ -158,7 +158,7 @@ if(hasKey){%>
 KeyStruct_<%=cid %> finder_<%=cid %> = new KeyStruct_<%=cid %>();
 java.util.Set<KeyStruct_<%=cid %>> keys<%=cid %> = new java.util.HashSet<KeyStruct_<%=cid %>>();
 <%
-	if(onlyOnceEachDuplicatedKey.equals("true")){
+	if(("true").equals(onlyOnceEachDuplicatedKey)){
 %>
 java.util.Set<KeyStruct_<%=cid %>> keysForDuplicated<%=cid %> = new java.util.HashSet<KeyStruct_<%=cid %>>();
 <%

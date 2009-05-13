@@ -43,7 +43,7 @@ imports="
 		 /* Close this session */			
 		sess_<%=cid%>.close();
 		
-		if(stringStderr_<%=cid %>.toString().equals("") || (stringStderr_<%=cid %>.toString() == null)){
+		if(("").equals(stringStderr_<%=cid %>.toString()) || (stringStderr_<%=cid %>.toString() == null)){
 			globalMap.put("<%=cid %>_STATUS","File rename OK");
 		}else{
 			globalMap.put("<%=cid %>_STATUS",stringStderr_<%=cid %>.toString());

@@ -22,7 +22,7 @@ imports="
 	ftp<%=cid %>.setRemoteHost(<%=host %>);
 	ftp<%=cid %>.setRemotePort(<%=port %>);
 <%
-	if(connectMode.equals("ACTIVE")){
+	if(("ACTIVE").equals(connectMode)){
 %>
 		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
 <%

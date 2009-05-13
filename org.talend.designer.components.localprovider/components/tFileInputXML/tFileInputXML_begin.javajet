@@ -26,12 +26,12 @@ String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__");
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String limit = ElementParameterParser.getValue(node, "__LIMIT__");
-if (limit.equals("")) {
+if (("").equals(limit)) {
 	limit = "-1";
 }
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 
@@ -40,7 +40,7 @@ String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 int nb_line_<%=cid%> = 0;
 <%
 // *** Xerces *** //
-if(mode.equals("Xerces")){
+if(("Xerces").equals(mode)){
 %>
 class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.utils.PrefixResolver {
 
@@ -53,7 +53,7 @@ class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.u
     }
 
     public String getNamespaceForPrefix(String prefix) {
-        if (prefix.equals("xml")) {
+        if (("xml").equals(prefix)) {
             return com.sun.org.apache.xml.internal.utils.Constants.S_XMLNAMESPACEURI;
         } else {
             return map.get(prefix);
@@ -105,7 +105,7 @@ class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.u
 		String fullPath = loopPath;
     	if(!path.equals(fullPath)){
         	for (String tmp : path.split("/")) {
-        		if (tmp.equals("..")) {
+        		if (("..").equals(tmp)) {
                     fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
                 } else {
                     fullPath += "/" + tmp;
@@ -217,7 +217,7 @@ for (int i_<%=cid %> = 0; i_<%=cid %> < nodelist_<%=cid %>.getLength(); i_<%=cid
 	org.w3c.dom.Node tmp_<%=cid %> = nodelist_<%=cid %>.item(i_<%=cid %>);
 <%
 // *** Dom4j *** //
-}else if(mode.equals("Dom4j")){
+}else if(("Dom4j").equals(mode)){
 %>
 class NameSpaceTool_<%=cid%> {
 
@@ -255,7 +255,7 @@ class NameSpaceTool_<%=cid%> {
         	String fullPath = loopPath;
         	if(!path.equals(fullPath)){
             	for (String tmp : path.split("/")) {
-            		if (tmp.equals("..")) {
+            		if (("..").equals(tmp)) {
                         fullPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
                     } else {
                         fullPath += "/" + tmp;
@@ -300,7 +300,7 @@ class XML_API_<%=cid%>{
 	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
         if (node != null && node instanceof org.dom4j.Element) {
         	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
-        	if(attri != null && attri.getText().equals("true")){
+        	if(attri != null && ("true").equals(attri.getText())){
             	return true;
             }
         }
@@ -341,11 +341,11 @@ org.dom4j.Node node_<%=cid%> = null;
 for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 <%
 // *** SAX *** //
-}else if(mode.equals("SAX")){
+}else if(("SAX").equals(mode)){
 %>
 class XML_API_<%=cid%>{
 	public boolean isDefNull(String[] node) throws javax.xml.transform.TransformerException {
-        if(node[0] != null && node[1]!=null && node[1].equals("true")){
+        if(node[0] != null && node[1]!=null && ("true").equals(node[1])){
         	return true;
         }
         return false;
@@ -411,19 +411,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				firstConnName = conn.getName();
 				for (int i=0;i<mapping.size();i++) { 
 					String query = mapping.get(i).get("QUERY");
-					if(mode.equals("Xerces")){
+					if(("Xerces").equals(mode)){
 %>
 	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
 	str_<%=cid %> = node_<%=cid%>!=null?node_<%=cid%>.getTextContent():"";
 <%
-					}else if(mode.equals("Dom4j")){
+					}else if(("Dom4j").equals(mode)){
 %>
 	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
     xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
     node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
     str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
 <%
-					}else if(mode.equals("SAX")){
+					}else if(("SAX").equals(mode)){
 %>
 	str_<%=cid %> = row_<%=cid%>.get(<%=query%>);
 <%

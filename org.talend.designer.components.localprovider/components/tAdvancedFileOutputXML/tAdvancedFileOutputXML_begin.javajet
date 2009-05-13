@@ -30,9 +30,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String split = ElementParameterParser.getValue(node, "__SPLIT__");
         		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
         		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-
-        		boolean isMerge=ElementParameterParser.getValue(node, "__MERGE__").equals("true");
-
+        		//======================add by wliu============================
+        		boolean isMerge= ("true").equals(ElementParameterParser.getValue(node, "__MERGE__"));
+        		
+        		//==========================end================================
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
         		List<Map<String, String>> rootTable = 
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
@@ -53,7 +54,7 @@ if(fileName_<%=cid %>.indexOf(".", fileName_<%=cid %>.lastIndexOf("/")) < 0){
 }
 String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("."));
 <%
-				if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
+				if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
 java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
 if(!createFile<%=cid%>.exists()){ 
@@ -70,7 +71,7 @@ if(!createFile<%=cid%>.exists()){
 
 <%
 				}
-				if(split.equals("true")){
+				if(("true").equals(split)){
 %>
 int currentRowCount_<%=cid%> = 0;
 int currentFileCount_<%=cid%> = 0;
@@ -83,7 +84,7 @@ java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.Arra
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
 <%
 // *** generation mode init ***
-				if(mode.equals("Dom4j")){
+				if(("Dom4j").equals(mode)){
 %>
 
 class NestXMLTool_<%=cid%>{
@@ -109,7 +110,7 @@ class NestXMLTool_<%=cid%>{
 	public void replaceDefaultNameSpace(org.dom4j.Element nestRoot){
 		if (nestRoot!=null) {
 			for (org.dom4j.Element tmp: (java.util.List<org.dom4j.Element>) nestRoot.elements()) {
-        		if (tmp.getQName().getNamespace().getURI().equals("") && tmp.getQName().getNamespace().getPrefix().equals("")){
+        		if (("").equals(tmp.getQName().getNamespace().getURI()) && ("").equals(tmp.getQName().getNamespace().getPrefix())){
         			tmp.setQName(org.dom4j.DocumentHelper.createQName(tmp.getName(), nestRoot.getQName().getNamespace()));
 	        	}
     	    	replaceDefaultNameSpace(tmp);
@@ -165,7 +166,7 @@ org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPret
 format_<%=cid %>.setEncoding(<%=encoding%>);
 
 <%
-				}else if(mode.equals("Null")){
+				}else if(("Null").equals(mode)){
 %>
 java.util.List<String> endTabStrs_<%=cid%> = new java.util.ArrayList<String>();
 java.util.List<String> startTabStrs_<%=cid%> = new java.util.ArrayList<String>();

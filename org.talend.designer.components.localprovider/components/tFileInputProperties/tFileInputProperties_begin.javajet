@@ -28,7 +28,7 @@ if(outConnName == null){
 %>
 	java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
 <%
-if(fileFormat.equals("PROPERTIES_FORMAT")){
+if(("PROPERTIES_FORMAT").equals(fileFormat)){
 %>
 	java.util.Properties properties_<%=cid%> = new java.util.Properties();
 	properties_<%=cid%>.load(new java.io.FileInputStream(file_<%=cid%>));
@@ -38,7 +38,7 @@ if(fileFormat.equals("PROPERTIES_FORMAT")){
 		<%=outConnName %>.key = (String)enumeration_<%=cid%>.nextElement();
 		<%=outConnName %>.value = (String)properties_<%=cid%>.getProperty(<%=outConnName %>.key);
 <%
-}else if(fileFormat.equals("INI_FORMAT")){
+}else if(("INI_FORMAT").equals(fileFormat)){
 	String sectionName = ElementParameterParser.getValue(node,"__SECTION_NAME__");
 %>
     org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));

@@ -28,7 +28,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
   	String pubdate= ElementParameterParser.getValue(node,"__PUBDATE__");
   	String link= ElementParameterParser.getValue(node,"__LINK__");
     File file=new File(filename);
-    boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+    boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
     List< ? extends IConnection> conns = node.getIncomingConnections();
   %>  
  <%    	

@@ -33,20 +33,20 @@
     String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     String regex = ElementParameterParser.getValue(node, "__REGEX__");
 	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-	boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;  
+	boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;  
 %>
 		int nb_line_<%=cid%> = 0;
         
-        int footer_<%=cid %>  = <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = "0"; %><%=myFooter%>;
+        int footer_<%=cid %>  = <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (("").equals(myFooter)) myFooter = "0"; %><%=myFooter%>;
         boolean removeEmptyRow<%=cid %> = <%= ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__") %>;
         org.talend.fileprocess.TOSDelimitedReader in<%=cid%>=null;
         	in<%=cid %> = new org.talend.fileprocess.TOSDelimitedReader(<%=filename %>, <%= encoding%>, "", <%=row_separator%>, removeEmptyRow<%=cid %>);
         String str<%=cid %>;
         int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1,validRowCount<%=cid %>=0;
-        int limit<%=cid %>=<%if (myLimit.equals("")) {myLimit = "-1";}%><%=myLimit %>;
+        int limit<%=cid %>=<%if (("").equals(myLimit)) {myLimit = "-1";}%><%=myLimit %>;
         
         <% 
-         	if (myHeader.equals("")) myHeader = "0"; 
+         	if (("").equals(myHeader)) myHeader = "0"; 
         %>
 		int header<%=cid %> = <%=myHeader %>;
 		if(header<%=cid %> > 0){
@@ -80,7 +80,7 @@
         	if(lastLine<%=cid %> > -1 && currentLine<%=cid %> > lastLine<%=cid %>) {
         		break;
         	}
-        	if(removeEmptyRow<%=cid %> && str<%=cid %>.equals("")){
+        	if(removeEmptyRow<%=cid %> && ("").equals(str<%=cid %>)){
         		continue;
         	}
         	if(limit<%=cid %>!=-1&& validRowCount<%=cid %> >= limit<%=cid %>){
@@ -216,7 +216,7 @@
             }
             <%
         } else {
-            if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -230,7 +230,7 @@
                 <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
                 <%
-            } else if(rejectConnName.equals("")){
+            } else if(("").equals(rejectConnName)){
                 %>
                 System.err.println(e.getMessage());
                 <%=firstConnName %> = null;

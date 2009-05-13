@@ -27,23 +27,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String firstColumn = ElementParameterParser.getValue(node, "__FIRST_COLUMN__");
     	String lastColumn = ElementParameterParser.getValue(node, "__LAST_COLUMN__");
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
+		boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 		String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 		
 		String allSheets = ElementParameterParser.getValue(node, "__ALL_SHEETS__");
-		boolean isAllSheets = (allSheets!=null&&!allSheets.equals(""))?allSheets.equals("true"):false;
+		boolean isAllSheets = (allSheets!=null&&!("").equals(allSheets))?("true").equals(allSheets):false;
 		List<Map<String, String>> sheetNameList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SHEETLIST__");
 		
 		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
-		boolean bReadRealValue = ElementParameterParser.getValue(node, "__READ_REAL_VALUE__").equals("true");
+		boolean bReadRealValue = ("true").equals(ElementParameterParser.getValue(node, "__READ_REAL_VALUE__"));
 		
-		boolean affect = ElementParameterParser.getValue(node,"__AFFECT_EACH_SHEET__").equals("true");
-		boolean stopOnEmptyRow = ElementParameterParser.getValue(node,"__STOPREAD_ON_EMPTYROW__").equals("true");
-		boolean notNeedValidateOnCell = !ElementParameterParser.getValue(node,"__NOVALIDATE_ON_CELL__").equals("false");//make wizard work
-		boolean suppressWarn = !ElementParameterParser.getValue(node,"__SUPPRESS_WARN__").equals("false");//make wizard work
+		boolean affect = ("true").equals(ElementParameterParser.getValue(node,"__AFFECT_EACH_SHEET__"));
+		boolean stopOnEmptyRow = ("true").equals(ElementParameterParser.getValue(node,"__STOPREAD_ON_EMPTYROW__"));
+		boolean notNeedValidateOnCell = !("false").equals(ElementParameterParser.getValue(node,"__NOVALIDATE_ON_CELL__"));//make wizard work
+		boolean suppressWarn = !("false").equals(ElementParameterParser.getValue(node,"__SUPPRESS_WARN__"));//make wizard work
 %>
 
 			class RegexUtil_<%=cid %> {
@@ -129,18 +129,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         int nb_line_<%= cid %> = 0;            
 
-        int begin_line_<%= cid %> = <%if(header.trim().equals("")){%>0<%}else{%><%= header %><%}%>;
+        int begin_line_<%= cid %> = <%if(("").equals(header.trim())){%>0<%}else{%><%= header %><%}%>;
         
-        int footer_input_<%= cid %> = <%if(footer.trim().equals("")){%>0<%}else{%><%=footer%><%}%>;
+        int footer_input_<%= cid %> = <%if(("").equals(footer.trim())){%>0<%}else{%><%=footer%><%}%>;
         
         int end_line_<%= cid %>=0;
         for(jxl.Sheet sheet_<%=cid%>:sheetList_<%= cid %>){
         	end_line_<%= cid %>+=sheet_<%=cid%>.getRows();
         }
         end_line_<%= cid %> -= footer_input_<%= cid %>;
-        int limit_<%= cid %> = <%if(limit.trim().equals("")){%>-1<%}else{%><%=limit%><%}%>;
-        int start_column_<%= cid %> = <%if(firstColumn.trim().equals("")){%>0<%}else{%><%=firstColumn%>-1<%}%>;
-        int end_column_<%= cid %> = <%if(lastColumn.trim().equals("")){%>sheetList_<%= cid %>.get(0).getColumns()<%}else{%><%=lastColumn%><%}%>;
+        int limit_<%= cid %> = <%if(("").equals(limit.trim())){%>-1<%}else{%><%=limit%><%}%>;
+        int start_column_<%= cid %> = <%if(("").equals(firstColumn.trim())){%>0<%}else{%><%=firstColumn%>-1<%}%>;
+        int end_column_<%= cid %> = <%if(("").equals(lastColumn.trim())){%>sheetList_<%= cid %>.get(0).getColumns()<%}else{%><%=lastColumn%><%}%>;
 
         jxl.Cell[] row_<%= cid %> = null;
         jxl.Sheet sheet_<%= cid %> = sheetList_<%= cid %>.get(0);
@@ -342,7 +342,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             throw(e);
             <%
         } else {
-            if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -356,7 +356,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 <%=firstConnName %> = null;
                 <%
-            } else if(rejectConnName.equals("")){
+            } else if(("").equals(rejectConnName)){
                 %>
                 System.err.println(e.getMessage());
                 <%=firstConnName %> = null;

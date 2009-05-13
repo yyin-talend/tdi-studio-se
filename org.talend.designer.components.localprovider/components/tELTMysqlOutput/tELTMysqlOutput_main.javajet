@@ -63,7 +63,7 @@ imports="
 	        dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
 	        dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
 	        encoding = ElementParameterParser.getValue(previousNode, "__ENCODING__");
-	        useExistingConn = ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__").equals("true");
+	        useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
         }
 
 //        String tableAction = ElementParameterParser.getValue(
@@ -105,7 +105,7 @@ if(metadatas !=null && metadatas.size()>0){
 }
 %>
 
-<%if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){%>
+<%if(("INSERT_OR_UPDATE").equals(dataAction)||("UPDATE_OR_INSERT").equals(dataAction)){%>
 
 java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
 
@@ -292,7 +292,7 @@ for(Column colStmt:stmtStructure){
 }
 
 
-	if(dataAction.equals("INSERT")){
+	if(("INSERT").equals(dataAction)){
 	%>	
 	
 	
@@ -300,7 +300,7 @@ String insertQuery = "INSERT INTO <%=dbtable%> ("+select_query+")";
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 	<%
-	}else if (dataAction.equals("UPDATE")){
+	}else if (("UPDATE").equals(dataAction)){
 	%>
 
 String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
@@ -311,7 +311,7 @@ String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = 
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 
 	<%		
-	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 	%>
 
 String insertQuery = "INSERT INTO <%=dbtable%> ("+select_query+")";
@@ -325,7 +325,7 @@ String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = 
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 		
 	<%
-	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 	%>
 
 String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
@@ -340,7 +340,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 	<%
 			
-	}else if (dataAction.equals("DELETE")){
+	}else if (("DELETE").equals(dataAction)){
 	%>
 	
 String deleteQuery = "DELETE  FROM ("+select_query+") <%=dbtable%>"
@@ -506,7 +506,7 @@ for(Column colStmt:stmtStructure){
 ///////////////////////////////////////////////////////////
 
 if(incomingConnName != null && columnList != null){
-	if(dataAction.equals("INSERT")){
+	if(("INSERT").equals(dataAction)){
 	%>
 
 System.out.println("Inserting with : \n" + insertQuery + "\n");
@@ -514,14 +514,14 @@ nb_line_inserted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 
 	<%
-	}else if(dataAction.equals("UPDATE")){
+	}else if(("UPDATE").equals(dataAction)){
 
 	%>
 System.out.println("Updating with : \n" + updateQuery +"\n");
 nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
 	<%
-	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 %>
 	try{
 		System.out.println("Inserting with : \n" + insertQuery + "\n");
@@ -534,7 +534,7 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
 	}
 <%
-	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 %>
 	try{
 		System.out.println("Updating with : \n" + updateQuery +"\n");
@@ -547,7 +547,7 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	}
 <%
 	
-	}else if (dataAction.equals("DELETE")){
+	}else if (("DELETE").equals(dataAction)){
 		%>
 	System.out.println("Deleting with : \n" + deleteQuery +"\n");
 		nb_line_deleted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
@@ -580,7 +580,7 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 
 
 
-	if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){
+	if(("INSERT_OR_UPDATE").equals(dataAction)||("UPDATE_OR_INSERT").equals(dataAction)){
 %>
 
 if(pstmtUpdate_<%=cid%> != null){

@@ -22,7 +22,7 @@ String eol = ElementParameterParser.getValue(node,"__EOL_CHAR__");
 
 String print = ElementParameterParser.getValue(node,"__PRINT__");
 
-boolean then = ElementParameterParser.getValue(node,"__THEN__").equals("continue");
+boolean then = ("continue").equals(ElementParameterParser.getValue(node,"__THEN__"));
 
 %>
 
@@ -40,7 +40,7 @@ while (ifContinue<%=cid%>) {
         out<%=cid%> = new java.io.PrintWriter(socket<%=cid%>.getOutputStream(), true);
         out<%=cid%>.println(<%=output%>); 
         
-        <% if(print.equals("true")){ %>
+        <% if(("true").equals(print)){ %>
         //get data from client
             System.out.println(socket<%=cid%>.getInetAddress()+" input is : ");
             in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream()));

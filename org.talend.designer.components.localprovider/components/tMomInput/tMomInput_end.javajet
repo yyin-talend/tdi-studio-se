@@ -13,16 +13,16 @@ String cid = node.getUniqueName();
 String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
 String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
-if(serverType.equals("JBoss")){
+if(("JBoss").equals(serverType)){
 %>
 					
 	}
-	<%if(kListen.equals("false")){%> flag<%=cid%>=false;input<%=cid%>.close();<%}else{%>Thread.sleep(<%=timeOut%>000);<%}%>			
+	<%if(("false").equals(kListen)){%> flag<%=cid%>=false;input<%=cid%>.close();<%}else{%>Thread.sleep(<%=timeOut%>000);<%}%>			
 
 
 }
 <%
-}else if(serverType.equals("ActiveMQ")){%>
+}else if(("ActiveMQ").equals(serverType)){%>
 
 }
 

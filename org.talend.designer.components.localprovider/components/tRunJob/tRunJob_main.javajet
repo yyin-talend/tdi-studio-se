@@ -36,13 +36,13 @@ imports="
     //if tRunJob is middle node of the FLOW link, it will be data_auto_propagate=true 
     List< ? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);    
 	
-	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_CHILD_ERROR__").equals("true");
+	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_CHILD_ERROR__"));
 	
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	
-	boolean transmitWholeContext = ElementParameterParser.getValue(node, "__TRANSMIT_WHOLE_CONTEXT__").equals("true");
+	boolean transmitWholeContext = ("true").equals(ElementParameterParser.getValue(node, "__TRANSMIT_WHOLE_CONTEXT__"));
 	
-	boolean printParameter = ElementParameterParser.getValue(node, "__PRINT_PARAMETER__").equals("true");
+	boolean printParameter = ("true").equals(ElementParameterParser.getValue(node, "__PRINT_PARAMETER__"));
 	IProcess currentProcess = node.getProcess();
 	
     List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
@@ -127,7 +127,7 @@ for (int i=0; i<contextParams.size(); i++) {
     %>
         
 	if(childJob_<%=cid %>.getErrorCode() == null){
-		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && childJob_<%=cid %>.getStatus().equals("failure") ? 1 : 0);
+		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=cid %>.getStatus()) ? 1 : 0);
 	}else{
 		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
 	}
@@ -137,7 +137,7 @@ for (int i=0; i<contextParams.size(); i++) {
     <% 
     	if (dieOnError) {
     %> 
-            if (childJob_<%=cid %>.getErrorCode() != null || childJob_<%=cid %>.getStatus().equals("failure")) {
+            if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
                 throw new RuntimeException("Child job running failed");
             }
     <%  

@@ -33,7 +33,7 @@ java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
 boolean whetherReject_<%=cid%> = false;
 
 <%
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 
 int commitEvery_<%=cid%> = <%=commitEvery%>;

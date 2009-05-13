@@ -21,13 +21,13 @@ INode node = (INode)codeGenArgument.getArgument();
 String directory = ElementParameterParser.getValue(node, "__TEMP_DIRECTORY__");
 String buffer = ElementParameterParser.getValue(node, "__BUFFER_SIZE__");
 String bufferSize = "1000000";
-if(buffer.equals("S")){
+if(("S").equals(buffer)){
 	bufferSize = "500000";
-}else if(buffer.equals("B")){
+}else if(("B").equals(buffer)){
 	bufferSize = "2000000";
 }
 
-if (directory.equals("")) { 
+if (("").equals(directory)) { 
 	directory=ElementParameterParser.getValue(node.getProcess(), "__COMP_DEFAULT_FILE_DIR__") + "/temp"; 
 } 
 String cid = ElementParameterParser.getValue(node, "__CID__");
@@ -40,7 +40,7 @@ if (node.getIncomingConnections().size()==1) {
 
 ///////////////
 List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0) && !connName.equals("")) {//HSS_____0
+if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS_____0
     IMetadataTable metadata = metadatas.get(0);
     List<IMetadataColumn> columnList = metadata.getListColumns();
     List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
@@ -48,9 +48,9 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !connName.equals("")) {//HSS_____
 	List<Boolean> uniqueColumnCaseFlagList = new java.util.ArrayList<Boolean>();
 	for(int i = 0; i < keyColumns.size(); i++){
 		Map<String, String> keyColumn = keyColumns.get(i);
-		if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+		if(("true").equals(keyColumn.get("KEY_ATTRIBUTE"))){
 			uniqueColumnList.add(columnList.get(i));
-			uniqueColumnCaseFlagList.add(!keyColumn.get("CASE_SENSITIVE").equals("true"));
+			uniqueColumnCaseFlagList.add(!("true").equals(keyColumn.get("CASE_SENSITIVE")));
 		}
 	}
 %>

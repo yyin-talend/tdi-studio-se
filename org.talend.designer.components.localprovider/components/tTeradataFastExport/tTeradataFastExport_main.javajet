@@ -31,7 +31,7 @@ String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
-if(exportedFile.indexOf("/") !=0 && execution.equals("Windows")){
+if(exportedFile.indexOf("/") !=0 && ("Windows").equals(execution)){
 	exportedFile = exportedFile.replaceAll("/", "\\\\\\\\");
 }
 

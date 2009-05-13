@@ -19,7 +19,7 @@
 			if (node.getProcess().getNodesOfType("tAssertCatcher").size() > 0) {
 				List<INode> assertCatchers = (List<INode>)node.getProcess().getNodesOfType("tAssertCatcher");
 				for (INode assertCatcher : assertCatchers) {
-					if (ElementParameterParser.getValue(assertCatcher, "__CATCH_TASSERT__").equals("true")) {
+					if (("true").equals(ElementParameterParser.getValue(assertCatcher, "__CATCH_TASSERT__"))) {
 %>
  if(<%=expression %>) {
 	<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", "<%=cid %>", "Ok", "--", <%=description.trim().length()==0?"null":description %>);

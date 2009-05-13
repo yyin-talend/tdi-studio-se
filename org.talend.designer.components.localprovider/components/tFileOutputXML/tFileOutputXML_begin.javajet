@@ -26,7 +26,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	rootTags.add(defaultRootNode);
     }
     int headers = rootTags.size() + 1;
-    boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+    boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
     String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
     
     //**
@@ -44,11 +44,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 node,
                 "__GROUP_BY__"
             );
-    if (useDynamicGrouping.equals("false")) {
+    if (("false").equals(useDynamicGrouping)) {
         groupBys.clear();
     }
     if (encoding!=null) {
-        if (encoding.equals("")) {
+        if (("").equals(encoding)) {
                 encoding = "ISO-8859-15";
         }
     }
@@ -65,7 +65,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String col = metadata.getListColumns().get(i).getLabel();
     	for(int j = 0; j < groupby.length; j++){
     		if(groupby[j][0].equals(col)){
-    			if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    			if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     				groupby[j][2] = col;
     			}else{
     				groupby[j][2] = map.get("LABEL");
@@ -73,7 +73,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			continue outter1;
     		}
     	}
-    	if(map.get("AS_ATTRIBUTE").equals("true")){
+    	if(("true").equals(map.get("AS_ATTRIBUTE"))){
     		atts ++;
     	}else{
     		tags ++;
@@ -92,15 +92,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			continue outter2;
     		}
     	}
-    	if(map.get("AS_ATTRIBUTE").equals("true")){
-    		if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    	if(("true").equals(map.get("AS_ATTRIBUTE"))){
+    		if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     			attribute[ia][1] = col;
     		}else{
     			attribute[ia][1] = map.get("LABEL");
     		}
     		attribute[ia++][0] = col;
     	}else{
-    		if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    		if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     			tag[it][1] = col;
     		}else{
     			tag[it][1] = map.get("LABEL");
@@ -116,7 +116,7 @@ java.io.File originalFile_<%=cid %> = new java.io.File(originalFileName_<%=cid %
 String fileName_<%=cid %> = originalFileName_<%=cid %>;
 java.io.File file_<%=cid %> = new java.io.File(fileName_<%=cid %>); 
 
-<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+<%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 //create directory only if not exists
 file_<%=cid %>.getParentFile().mkdirs();
 <%}%>

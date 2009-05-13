@@ -149,10 +149,10 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		String ignoreNull = operation.get("IGNORE_NULL");
 		
 		/*
-		if(fun.equals("sum") || fun.equals("count")){
+		if(("sum").equals(fun) || ("count").equals(fun)){
 			for(int j=0; j<sizeOperations; j++){
 				Map<String, String> tOperation = operations.get(j);
-				if(tOperation.get("FUNCTION").equals("avg") && tOperation.get("INPUT_COLUMN").equals(in)){
+				if(("avg").equals(tOperation.get("FUNCTION")) && tOperation.get("INPUT_COLUMN").equals(in)){
 					continue next;
 				}
 			}
@@ -231,7 +231,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		String function = funin[FUNCTION];
 		String inputColumnName = funin[INPUT_COLUMN];
 		String outputColumnName = funin[OUTPUT_COLUMN];
-		boolean ignoreNull = funin[IGNORE_NULL].equals("true");
+		boolean ignoreNull = ("true").equals(funin[IGNORE_NULL]);
 
 		IMetadataColumn outputColumn = outputValuesColumns.get(outputColumnName);
 		IMetadataColumn inputColumn = inputValuesColumns.get(inputColumnName);

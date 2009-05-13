@@ -16,7 +16,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	List<IContextParameter> params = node.getProcess().getContextManager().getDefaultContext().getContextParameterList();
-	boolean hidePassword = ElementParameterParser.getValue(node,"__HIDE_PASSWORD__").equals("true");
+	boolean hidePassword = ("true").equals(ElementParameterParser.getValue(node,"__HIDE_PASSWORD__"));
 	String cid = node.getUniqueName();
     List<IMetadataColumn> columnList = null;
     List<IMetadataTable> metadatas = node.getMetadataList();
@@ -43,10 +43,10 @@
 		                <%=outgoingConn.getName()%>.<%=columnList.get(0).getLabel()%> = key_<%=cid %>.toString();
                    		<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString();
 		                <%for (IContextParameter param :params){
-	                    	if(param.getType().equals("id_Password")){
+	                    	if(("id_Password").equals(param.getType())){
 	                    		String str = param.getName(); 
 	                    %>
-								if(key_<%=cid %>.toString().equals("<%=str%>")){
+								if(("<%=str%>").equals(key_<%=cid %>.toString())){
 			                    	<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString().replaceAll(".","*");
 			                    }
 		                    <%}%>

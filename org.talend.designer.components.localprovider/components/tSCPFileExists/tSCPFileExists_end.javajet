@@ -12,7 +12,7 @@ imports="
             String cid = node.getUniqueName();
             String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 			
-			if(!useExistingConn.equals("true")){
+			if(!("true").equals(useExistingConn)){
 %>  	
             /* Close the connection */
             conn_<%=cid%>.close();

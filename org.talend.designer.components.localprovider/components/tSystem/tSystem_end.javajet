@@ -16,7 +16,7 @@
 	INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
 	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
-    if(outputAction.equals("NORMAL_OUTPUT")){
+    if(("NORMAL_OUTPUT").equals(outputAction)){
     	List<IMetadataTable> metadatas = node.getMetadataList();
         if ((metadatas!=null)&&(metadatas.size()>0)) {
         	IMetadataTable metadata = metadatas.get(0);

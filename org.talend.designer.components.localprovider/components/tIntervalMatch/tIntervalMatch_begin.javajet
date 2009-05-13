@@ -40,8 +40,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
         String minNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_MIN__");
         String maxNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_MAX__");
-        boolean minBounds = ElementParameterParser.getValue(node, "__LOOKUP_MIN_BOUNDS__").equals("true");
-        boolean maxBounds = ElementParameterParser.getValue(node, "__LOOKUP_MAX_BOUNDS__").equals("true");
+        boolean minBounds = ("true").equals(ElementParameterParser.getValue(node, "__LOOKUP_MIN_BOUNDS__"));
+        boolean maxBounds = ("true").equals(ElementParameterParser.getValue(node, "__LOOKUP_MAX_BOUNDS__"));
         String mainName = ElementParameterParser.getValue(node, "__MAIN_COLUMN__");
         String minName = minNameOrigi.substring(minNameOrigi.lastIndexOf('.')+1);
         String maxName = maxNameOrigi.substring(maxNameOrigi.lastIndexOf('.')+1);
@@ -59,7 +59,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         for (int i = 0; i < sizeColumns; i++) {//5
         
         	IMetadataColumn column = columns.get(i);
-        	if(column.getLabel().equals("LOOKUP")) 
+        	if(("LOOKUP").equals(column.getLabel())) 
         	{
             	returnClassName = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());    	
         	}
@@ -129,13 +129,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                         mainjavaType == JavaTypesManager.DOUBLE ||
                         mainjavaType == JavaTypesManager.LONG ||
                         mainjavaType == JavaTypesManager.INTEGER){
-                    if(mainTypeName.equals("java.util.Date") || 
-                            mainTypeName.equals("Byte") || 
-                            mainTypeName.equals("Short") || 
-                            mainTypeName.equals("Float") || 
-                            mainTypeName.equals("Double") || 
-                            mainTypeName.equals("Long") || 
-                            mainTypeName.equals("Integer")) {
+                    if(("java.util.Date").equals(mainTypeName) || 
+                            ("Byte").equals(mainTypeName) || 
+                            ("Short").equals(mainTypeName) || 
+                            ("Float").equals(mainTypeName) || 
+                            ("Double").equals(mainTypeName) || 
+                            ("Long").equals(mainTypeName) || 
+                            ("Integer").equals(mainTypeName)) {
                         %>
                         if(o1_min == null && o2_min != null) {
                             return -1;
@@ -274,13 +274,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                             mainjavaType == JavaTypesManager.DOUBLE ||
                             mainjavaType == JavaTypesManager.LONG ||
                             mainjavaType == JavaTypesManager.INTEGER) {
-                        if(mainTypeName.equals("java.util.Date") || 
-                                mainTypeName.equals("Byte") || 
-                                mainTypeName.equals("Short") || 
-                                mainTypeName.equals("Float") || 
-                                mainTypeName.equals("Double") || 
-                                mainTypeName.equals("Long") || 
-                                mainTypeName.equals("Integer")) {
+                        if(("java.util.Date").equals(mainTypeName) || 
+                                ("Byte").equals(mainTypeName) || 
+                                ("Short").equals(mainTypeName) || 
+                                ("Float").equals(mainTypeName) || 
+                                ("Double").equals(mainTypeName) || 
+                                ("Long").equals(mainTypeName) || 
+                                ("Integer").equals(mainTypeName)) {
                             %>
                             if(tmpMain == null) {
                                 return <%=JavaTypesManager.getDefaultValueFromJavaType(returnClassName)%>;
@@ -320,13 +320,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                                 mainjavaType == JavaTypesManager.DOUBLE ||
                                 mainjavaType == JavaTypesManager.LONG ||
                                 mainjavaType == JavaTypesManager.INTEGER) {
-                            if(mainTypeName.equals("java.util.Date") || 
-                                    mainTypeName.equals("Byte") || 
-                                    mainTypeName.equals("Short") || 
-                                    mainTypeName.equals("Float") || 
-                                    mainTypeName.equals("Double") || 
-                                    mainTypeName.equals("Long") || 
-                                    mainTypeName.equals("Integer")) {
+                            if(("java.util.Date").equals(mainTypeName) || 
+                                    ("Byte").equals(mainTypeName) || 
+                                    ("Short").equals(mainTypeName) || 
+                                    ("Float").equals(mainTypeName) || 
+                                    ("Double").equals(mainTypeName) || 
+                                    ("Long").equals(mainTypeName) || 
+                                    ("Integer").equals(mainTypeName)) {
                                 %>
                                 if(tmpMin != null && tmpMain < tmpMin) {
                                     upperBound = currentIndex - 1;

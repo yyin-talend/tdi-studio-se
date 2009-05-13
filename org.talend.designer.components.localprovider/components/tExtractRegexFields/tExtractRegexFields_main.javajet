@@ -98,7 +98,7 @@ if(outConn!=null && inConn!=null){
 
 String temp_<%=cid%> = null;
 <%
-if(!dieOnError.equals("true")){
+if(!("true").equals(dieOnError)){
 %>
 	boolean flag_<%=cid %> = true;
 <%
@@ -114,7 +114,7 @@ for(int i=0; i<newColumnList.size();i++){
 	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 	String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
 	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-		if(dieOnError.equals("true")){
+		if(("true").equals(dieOnError)){
 %>
 			<%=outConn.getName()%>.<%=column.getLabel() %> = match_<%=cid%>;
 <%
@@ -134,7 +134,7 @@ if(flag_<%=cid %>){
 <%
 		}
 	}else{ 
-		if(dieOnError.equals("true")){
+		if(("true").equals(dieOnError)){
 %>
 	temp_<%=cid%> = match_<%=cid%>;
 	if(temp_<%=cid %>.length() > 0) {

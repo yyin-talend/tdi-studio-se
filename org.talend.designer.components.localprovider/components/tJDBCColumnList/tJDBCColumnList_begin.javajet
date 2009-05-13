@@ -25,7 +25,7 @@ imports="
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 String tableName_<%=cid%> = <%=tableName%>;
 <%
-	if(dbType.equals("MSSQL")){
+	if(("MSSQL").equals(dbType)){
 %>
 String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 
@@ -35,7 +35,7 @@ if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0){
 	tableName_<%=cid%> = "[" + tableName_<%=cid%> + "]";
 }
 <%
-	}else if(dbType.equals("DBORACLE")){
+	}else if(("DBORACLE").equals(dbType)){
 %>
 String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 
@@ -43,7 +43,7 @@ if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0){
 	tableName_<%=cid%> = dbschema_<%=cid%> + "." + tableName_<%=cid%>;
 }
 <%
-	}else if(dbType.equals("DB2")){
+	}else if(("DB2").equals(dbType)){
 %>
 String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 

@@ -59,10 +59,10 @@ imports="
 
 String[] sb_<%=cid %> = new String[] {
 
-<% if (!SortCMDPath.equals("")) { %> <%=SortCMDPath %>,   <% } else { %> "sort", <% } %>
+<% if (!("").equals(SortCMDPath)) { %> <%=SortCMDPath %>,   <% } else { %> "sort", <% } %>
 
 "--buffer-size="+<%=maxMemory%>,
-<% if (!tempDir.equals("")) { %>"--temporary-directory="+<%=tempDir %>,<% } %>
+<% if (!("").equals(tempDir)) { %>"--temporary-directory="+<%=tempDir %>,<% } %>
 "--field-separator="+<%=fieldSeparator %>,
 <%
         for(int i=0; i<criteria.size(); i++) {
@@ -79,7 +79,7 @@ String[] sb_<%=cid %> = new String[] {
                 j++;
             }	
 %>
-"--key=<%=colnum %>,<%=colnum %><% if (line.get("ORDER").toLowerCase().equals("desc")) { %>r<% } %><% if (line.get("SORT").toLowerCase().startsWith("num")) { %>n<% } %>",
+"--key=<%=colnum %>,<%=colnum %><% if (("desc").equals(line.get("ORDER").toLowerCase())) { %>r<% } %><% if (line.get("SORT").toLowerCase().startsWith("num")) { %>n<% } %>",
 <% } %>
 "--output="+<%=filename%>,
 ""+tempFile_<%=cid %>.getAbsolutePath()+""
@@ -130,7 +130,7 @@ final Process ps_<%=cid %> = runtime_<%=cid %>.exec(sb_<%=cid %>);
 		normal_<%=cid %>.interrupt();
 		error_<%=cid %>.interrupt();
 		
-<%	if(ElementParameterParser.getValue(node, "__ADD_EOF__").equals("true")){
+<%	if(("true").equals(ElementParameterParser.getValue(node, "__ADD_EOF__"))){
 %>final java.io.BufferedWriter re_out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(<%=filename %>, true)));
 <%	List< ? extends IConnection> conns = node.getIncomingConnections();

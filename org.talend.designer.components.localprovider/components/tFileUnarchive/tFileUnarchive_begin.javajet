@@ -12,8 +12,8 @@
 
 	String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
 	String zipFile = ElementParameterParser.getValue(node, "__ZIPFILE__");
-	boolean rootName = ElementParameterParser.getValue(node, "__ROOTNAME__").equals("true");
-	boolean extractPath = ElementParameterParser.getValue(node, "__EXTRACTPATH__").equals("true");	
+	boolean rootName = ("true").equals(ElementParameterParser.getValue(node, "__ROOTNAME__"));
+	boolean extractPath = ("true").equals(ElementParameterParser.getValue(node, "__EXTRACTPATH__"));	
 %>      
 		class UnzippedFile_<%=cid %> {
 			public String fileName;

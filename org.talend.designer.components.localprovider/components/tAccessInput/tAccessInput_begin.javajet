@@ -25,7 +25,7 @@ imports="
 	String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
 		   dbquery = dbquery.replaceAll("\n"," ");
 		   dbquery = dbquery.replaceAll("\r"," ");		   
-    boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
+    boolean whetherTrimAllCol = ("true").equals(ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__"));
     String dbversion = ElementParameterParser.getValue(node, "__DB_VERSION__");
     
     
@@ -76,7 +76,7 @@ imports="
                         if((trimColumnList != null && trimColumnList.size() > 0) && !whetherTrimAllCol) {
                             for(Map<String, String> trimColumn : trimColumnList) {
                                 if(column.getLabel().equals(trimColumn.get("SCHEMA_COLUMN"))) {
-                                    if(trimColumn.get("TRIM").equals("true")) {
+                                    if(("true").equals(trimColumn.get("TRIM"))) {
                                         whetherTrimCol = true;
                                         break;
                                     }
@@ -95,17 +95,17 @@ imports="
                                 <%=firstConnName%>.<%=column.getLabel()%>=<%=defVal%>; 			
                             } else {
                                 <%
-                                if(typeToGenerate.equals("byte[]")) {
+                                if(("byte[]").equals(typeToGenerate)) {
                                     typeToGenerate = "Bytes";
-                                } else if(typeToGenerate.equals("java.util.Date")) {
+                                } else if(("java.util.Date").equals(typeToGenerate)) {
                                     typeToGenerate = "Timestamp";
-                                } else if(typeToGenerate.equals("Integer")) {
+                                } else if(("Integer").equals(typeToGenerate)) {
                                     typeToGenerate = "Int";
                                 } else {
                                     typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
                                 }
 		  
-                                if(typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+                                if(("Char").equals(typeToGenerate) || ("Character").equals(typeToGenerate)) {
                                     %>
                                     tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
                                     <%
@@ -121,7 +121,7 @@ imports="
                                         <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%>.charAt(0);			  		
                                     } else {			  	
                                         <%
-                                        if(typeToGenerate.equals("Character")) {
+                                        if(("Character").equals(typeToGenerate)) {
                                             %>			  	    
                                             if(tmpContent_<%=cid%> == null) {			  	   	
                                                 <%=firstConnName%>.<%=column.getLabel()%> = null;			  			
@@ -131,7 +131,7 @@ imports="
                                             <%
                                         } else {
                                             %>			  		
-                                            if(tmpContent_<%=cid%>.equals("")) {			  		
+                                            if(("").equals(tmpContent_<%=cid%>)) {			  		
                                                 <%=firstConnName%>.<%=column.getLabel()%> = '\0';			  			
                                             } else {			  		
                         			  			throw new RuntimeException(
@@ -142,7 +142,7 @@ imports="
                                         %>
                                     }			
                                     <%
-                                } else if(typeToGenerate.equals("Timestamp")) {
+                                } else if(("Timestamp").equals(typeToGenerate)) {
                                     %>
                                     java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
                                     if(timestamp_<%=cid%> != null) {
@@ -151,11 +151,11 @@ imports="
                                         <%=firstConnName%>.<%=column.getLabel()%> =  null;
                                     }
                                     <% 
-                                } else if(typeToGenerate.equals("List")) {
+                                } else if(("List").equals(typeToGenerate)) {
                                     %>                                           
                                     <%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(<%=currentColNo%>); 		 	
                                     <%
-                                } else if(typeToGenerate.equals("String")) {
+                                } else if(("String").equals(typeToGenerate)) {
                                     %>
                                     tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
                                     if(tmpContent_<%=cid%> != null) {
@@ -170,12 +170,12 @@ imports="
                                     if(value != null) {
                                         <%
                                         String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
-                       		 			if(javaType.equals("Integer")) {
+                       		 			if(("Integer").equals(javaType)) {
                        		 				%>
                        		 				value = new <%=javaType%>(<%=javaType%>.parse<%=javaType.substring(0,3)%>(value.toString()));
                        		 				<%
-                       		 			} else if(javaType.equals("Byte") || javaType.equals("Short") || javaType.equals("Long") || 
-                       		 			        javaType.equals("Float") || javaType.equals("Double")) {
+                       		 			} else if(("Byte").equals(javaType) || ("Short").equals(javaType) || ("Long").equals(javaType) || 
+                       		 			        ("Float").equals(javaType) || ("Double").equals(javaType)) {
                        		 				%>
                        		 				value = new <%=javaType%>(<%=javaType%>.parse<%=javaType%>(value.toString()));
                        		 				<%

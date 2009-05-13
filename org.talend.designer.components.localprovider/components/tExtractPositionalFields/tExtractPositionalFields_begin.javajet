@@ -15,7 +15,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
-boolean advanced = ElementParameterParser.getValue(node, "__ADVANCED_OPTION__").equals("true");
+boolean advanced = ("true").equals(ElementParameterParser.getValue(node, "__ADVANCED_OPTION__"));
 List<Map<String, String>> formats =
 	(List<Map<String,String>>)ElementParameterParser.getObjectValue( node, "__FORMATS__");
 %>
@@ -27,7 +27,7 @@ int[] sizes_<%=cid%> =new int[]{
 <%
 	for(int i=0;i<formats.size();i++){
 		Map<String,String> tmp = formats.get(i);
-		if(tmp.get("SIZE").equals("*")){
+		if(("*").equals(tmp.get("SIZE"))){
 %>
 	<%=-1%>
 <%
@@ -46,7 +46,7 @@ int[] sizes_<%=cid%> =new int[]{
 	String[] ptnSplit_<%=cid%> = pattern_<%=cid%>.split(",");
 	int[] sizes_<%=cid%> = new int[ptnSplit_<%=cid%>.length];
 	for(int i_<%=cid%>=0;i_<%=cid%><ptnSplit_<%=cid%>.length;i_<%=cid%>++){
-		if(ptnSplit_<%=cid%>[i_<%=cid%>].equals("*")){
+		if(("*").equals(ptnSplit_<%=cid%>[i_<%=cid%>])){
 			 sizes_<%=cid%>[i_<%=cid%>]=-1;
 	 	}else{
 	 		 sizes_<%=cid%>[i_<%=cid%>]=Integer.valueOf(ptnSplit_<%=cid%>[i_<%=cid%>]);

@@ -24,7 +24,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       	String description= ElementParameterParser.getValue(node,"__DESCRIPTION__");
       	String pubdate= ElementParameterParser.getValue(node,"__PUBDATE__");
       	String link= ElementParameterParser.getValue(node,"__LINK__");
-        boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+        boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         
 %>

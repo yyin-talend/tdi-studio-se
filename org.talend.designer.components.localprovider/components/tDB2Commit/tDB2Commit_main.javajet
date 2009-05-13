@@ -14,7 +14,7 @@ imports="
 
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 
-    boolean close = ElementParameterParser.getValue(node,"__CLOSE__").equals("true");
+    boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
     String conn = "conn_" + connection;
 %>

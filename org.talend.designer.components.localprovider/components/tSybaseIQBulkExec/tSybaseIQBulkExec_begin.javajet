@@ -19,7 +19,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
@@ -30,8 +30,8 @@ String password = ElementParameterParser.getValue(node, "__PASS__");
 
 String lines_separator = ElementParameterParser.getValue(node, "__LINES_TERMINATED_BY__") ;
 String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") ;
-boolean useEnclosed = ElementParameterParser.getValue(node, "__ENCLOSED__").equals("true");
-boolean useFixedLength= ElementParameterParser.getValue(node, "__FIXED_LENGTH__").equals("true");
+boolean useEnclosed = ("true").equals(ElementParameterParser.getValue(node, "__ENCLOSED__"));
+boolean useFixedLength= ("true").equals(ElementParameterParser.getValue(node, "__FIXED_LENGTH__"));
 String fileName = ElementParameterParser.getValue(node, "__FILENAME__") ;
 
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -61,7 +61,7 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
     manager = getManager(dbmsId, cid);
-    if(tableAction.equals("DROP_CREATE")) {
+    if(("DROP_CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
         stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
@@ -70,13 +70,13 @@ if(columnList != null && columnList.size() > 0) {
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreate_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("CREATE")) {
+    } else if(("CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreate_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+    } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
         %>
         java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
         java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -95,13 +95,13 @@ if(columnList != null && columnList.size() > 0) {
             stmtCreate_<%=cid%>.close();
         }
         <%
-    } else if(tableAction.equals("CLEAR")) {
+    } else if(("CLEAR").equals(tableAction)) {
         %>
         java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
         stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
         stmtClear_<%=cid%>.close();
         <%
-    } else if(tableAction.equals("TRUNCATE")) {
+    } else if(("TRUNCATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtTrunc_<%=cid%> = con_<%=cid%>.createStatement();
         stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");

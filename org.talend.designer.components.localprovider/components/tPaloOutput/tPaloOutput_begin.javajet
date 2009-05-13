@@ -31,11 +31,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String database = ElementParameterParser.getValue(node, "__DATABASE__");
     	String cube = ElementParameterParser.getValue(node, "__CUBE__");
 	String measureColumn = ElementParameterParser.getValue(node, "__MEASURE_COLUMN__");
-	boolean isCreateElement = ElementParameterParser.getValue(node,"__CREATEELEM__").equals("true");
-	boolean isSaveCube = ElementParameterParser.getValue(node,"__SAVECUBE__").equals("true");
+	boolean isCreateElement = ("true").equals(ElementParameterParser.getValue(node,"__CREATEELEM__"));
+	boolean isSaveCube = ("true").equals(ElementParameterParser.getValue(node,"__SAVECUBE__"));
 	String commitsize = ElementParameterParser.getValue(node, "__COMMITSIZE__");
 
-    	if(commitsize.equals("")){
+    	if(("").equals(commitsize)){
 		commitsize="1000";
     	}
 

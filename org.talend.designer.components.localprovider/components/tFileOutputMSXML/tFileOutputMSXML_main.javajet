@@ -107,7 +107,7 @@ class GenerateToolByDom4j{
 	boolean outputAsXSD = false;
 	XMLTool tool = null;
 	public void generateCode(XMLNode node, String currEleName, String parentName){
-		if(node.type.equals("ELEMENT")){
+		if(("ELEMENT").equals(node.type)){
 			createElement(currEleName,node,parentName);
 			setText(currEleName,node);
 			for(XMLNode ns:node.namespaces){
@@ -332,7 +332,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
                 
                 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-        		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+        		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
         		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
         		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
         		
@@ -353,7 +353,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 XMLNode root = mainList.get(0);                
             	XMLNode loop = (XMLNode)treeObjs[2];
             	
-                if(!allowEmpty.equals("true")){
+                if(!("true").equals(allowEmpty)){
                 	removeEmptyElement(root);
                 }
                 
@@ -376,7 +376,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		//init the generate tool.
 		GenerateToolByDom4j generateToolByDom4j = new GenerateToolByDom4j();
 	
-	    if(allowEmpty.equals("true")){
+	    if(("true").equals(allowEmpty)){
 	    	generateToolByDom4j.allowEmpty = true;
 	    }
 	    generateToolByDom4j.cid = cid;
@@ -460,7 +460,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				int j=0;
 				for(j=0;j<listNodes.size();j++){
 					org.dom4j.Element tempElem =listNodes.get(j);
-					if(tempElem.getPath().equals("<%=groupNode.path %>")){
+					if(("<%=groupNode.path %>").equals(tempElem.getPath())){
 						if(<%generateExprCmpByDom4j.generateCode(groupNode, "tempElem"); %>){
 							subTreeRootParent_<%=cid %> =  tempElem;
 							break;

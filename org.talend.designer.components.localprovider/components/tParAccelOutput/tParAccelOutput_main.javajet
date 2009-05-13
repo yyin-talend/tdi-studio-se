@@ -31,7 +31,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
 
-    boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");
+    boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
     
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");    
     
@@ -83,7 +83,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         %>
         whetherReject_<%=cid%> = false;
         <%    
-        if(dataAction.equals("INSERT")) {
+        if(("INSERT").equals(dataAction)) {
             int counter = 1;
             for(Column column : colStruct) {
                 if(column.isInsertable()) {
@@ -101,7 +101,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
                     %>
                     throw(e);
                     <%
@@ -127,7 +127,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
             }
             <%
-        } else if(dataAction.equals("UPDATE")) {
+        } else if(("UPDATE").equals(dataAction)) {
             int counterCol = 1;
             for(Column column : colStruct) {
                 if(column.isUpdatable()) {
@@ -155,7 +155,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
                     %>
                     throw(e);
                     <%
@@ -181,7 +181,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
             }
             <%
-        } else if (dataAction.equals("INSERT_OR_UPDATE")) {
+        } else if (("INSERT_OR_UPDATE").equals(dataAction)) {
             %>
     
             <%
@@ -229,7 +229,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
-                    if (dieOnError.equals("true")) {
+                    if (("true").equals(dieOnError)) {
                         %>
                         throw(e);
                         <%
@@ -272,7 +272,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
-                    if (dieOnError.equals("true")) {
+                    if (("true").equals(dieOnError)) {
                         %>
                         throw(e);
                         <%
@@ -300,7 +300,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             nb_line_<%=cid%>++;
             <%
-        } else if (dataAction.equals("UPDATE_OR_INSERT")) {
+        } else if (("UPDATE_OR_INSERT").equals(dataAction)) {
             %>
             int updateFlag_<%=cid%>=0;
             <%
@@ -332,7 +332,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
                     %>
                     throw(e);
                     <%
@@ -375,7 +375,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
-                    if (dieOnError.equals("true")) {
+                    if (("true").equals(dieOnError)) {
                         %>
                         throw(e);
                         <%
@@ -404,7 +404,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             nb_line_<%=cid%>++;
             <%
         
-        }else if (dataAction.equals("DELETE")){
+        }else if (("DELETE").equals(dataAction)){
             int keyCounter = 1;
             for(Column column : colStruct) {
                 if(column.isDeleteKey()) {
@@ -421,7 +421,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
-                if (dieOnError.equals("true")) {
+                if (("true").equals(dieOnError)) {
                     %>
                     throw(e);
                     <%
@@ -474,8 +474,8 @@ skeleton="../templates/db_output_bulk.skeleton"
         }   
         
         ////////////commit every////////////
-        if(!useExistingConn.equals("true")) {
-            if(!commitEvery.equals("")&&!commitEvery.equals("0")) {
+        if(!("true").equals(useExistingConn)) {
+            if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
                 %>
                 commitCounter_<%=cid%>++;
         

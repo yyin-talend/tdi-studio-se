@@ -24,7 +24,7 @@ if (node.getIncomingConnections().size()==1) {
 
 ///////////////
 List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0) && !connName.equals("")) {//HSS_____0
+if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS_____0
 	IMetadataTable metadata = metadatas.get(0);
     List<IMetadataColumn> columnList = metadata.getListColumns();
 %>

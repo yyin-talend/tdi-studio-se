@@ -17,7 +17,7 @@ imports="
 stmt_<%=cid %>.close();
 conn_<%=cid %> .close();
 <%
-if(frameworkType.equals("EMBEDED"))
+if(("EMBEDED").equals(frameworkType))
 {%>
 	try
 	{
@@ -38,7 +38,7 @@ if(frameworkType.equals("EMBEDED"))
 }
 else
 {
-	if(connectionFlag.equals("false"))
+	if(("false").equals(connectionFlag))
 	{
 	%>
 	serverControl_<%=cid%>.shutdown();

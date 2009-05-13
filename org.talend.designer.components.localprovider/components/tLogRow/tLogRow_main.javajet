@@ -24,8 +24,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     
         String cid = node.getUniqueName();        
 
-		boolean tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__").equals("true");
-		boolean vertical = ElementParameterParser.getValue(node,"__VERTICAL__").equals("true");
+		boolean tablePrint = ("true").equals(ElementParameterParser.getValue(node,"__TABLE_PRINT__"));
+		boolean vertical = ("true").equals(ElementParameterParser.getValue(node,"__VERTICAL__"));
     	boolean basic = !(tablePrint||vertical);
 
         String printUniqueName = ElementParameterParser.getValue(node,"__PRINT_UNIQUE_NAME__");
@@ -51,7 +51,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
 				StringBuilder strBuffer_<%=cid%> = new StringBuilder();
 <% 
-   if (printUniqueName.equals("true")) {//print the component name.
+   if (("true").equals(printUniqueName)) {//print the component name.
 %>
 				strBuffer_<%=cid%>.append("[<%=cid%>] ");
 <%
@@ -68,7 +68,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
 
 <% 
-   if (useFixedLength.equals("true")) {//fix the column length
+   if (("true").equals(useFixedLength)) {//fix the column length
 %>
 				java.util.Formatter formatter_<%=column.getLabel() %>_<%=cid%> = new java.util.Formatter(new StringBuilder());
 <%
@@ -77,7 +77,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
 
 <% 
-   if (printColumnNames.equals("true")) {//print the schema name
+   if (("true").equals(printColumnNames)) {//print the schema name
 %>
 				strBuffer_<%=cid%>.append("<%=column.getLabel() %>: ");
 <%
@@ -94,7 +94,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 %>              
                     
 <% 
-   if (useFixedLength.equals("true")) {//fixed the column length
+   if (("true").equals(useFixedLength)) {//fixed the column length
 %>
 				strBuffer_<%=cid%>.append(formatter_<%=column.getLabel() %>_<%=cid%>.format("%1$<%=lengths.get(i).get("LENGTH") %>s", 
 <%

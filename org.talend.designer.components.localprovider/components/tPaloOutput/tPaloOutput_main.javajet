@@ -22,7 +22,7 @@
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null && conns.size()>0) {
 			String measureColumn = ElementParameterParser.getValue(node, "__MEASURE_COLUMN__");
-			boolean isCreateElement = ElementParameterParser.getValue(node,"__CREATEELEM__").equals("true");
+			boolean isCreateElement = ("true").equals(ElementParameterParser.getValue(node,"__CREATEELEM__"));
 			String commitsize = ElementParameterParser.getValue(node, "__COMMITSIZE__");
 			IConnection conn =conns.get(0);
 			List<IMetadataColumn> columns = metadata.getListColumns();

@@ -44,7 +44,7 @@ imports="
 %>
 
 <%
-if(!dataAction.equals("INSERT")){
+if(!("INSERT").equals(dataAction)){
     int keyCount = 0;
     for(IMetadataColumn column:columnList){
     	if(column.isKey()){

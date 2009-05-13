@@ -92,11 +92,11 @@ while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
 	{
 		org.jinterop.dcom.core.JIVariant[] field_<%=cid%> =  record_<%=cid%>.get("field", new Object[] { <%=vTool.vStr("\""+column.getLabel()+"\"")%> });
 <%
-            		if(typeToGenerate.equals("byte[]")){
+            		if(("byte[]").equals(typeToGenerate)){
             			typeToGenerate = "Bytes";
-            		}else if(typeToGenerate.equals("java.util.Date")){
+            		}else if(("java.util.Date").equals(typeToGenerate)){
             			typeToGenerate = "Date";
-                    }else if(typeToGenerate.equals("Integer")){
+                    }else if(("Integer").equals(typeToGenerate)){
                       	typeToGenerate = "Int";
                     }else{
                     	typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
@@ -105,15 +105,15 @@ while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
 	 	if(field_<%=cid%>!=null && field_<%=cid%>.length>0 && field_<%=cid%>[0].getObject() != null)
 	 	{
 <%
-	 				if (typeToGenerate.equals("List")) {
+	 				if (("List").equals(typeToGenerate)) {
 %>
 			<%=firstConnName%>.<%=column.getLabel()%> = (List)field_<%=cid%>[0].getObjectAsArray().getArrayInstance();
 <%
-					}else if(typeToGenerate.equals("Object")){
+					}else if(("Object").equals(typeToGenerate)){
 %>
 			<%=firstConnName%>.<%=column.getLabel()%> = field_<%=cid%>[0].getObject();
 <%
-					}else if(typeToGenerate.equals("String")){
+					}else if(("String").equals(typeToGenerate)){
 %>
 			<%=firstConnName%>.<%=column.getLabel()%> = field_<%=cid%>[0].getObjectAsString().getString();
 <%

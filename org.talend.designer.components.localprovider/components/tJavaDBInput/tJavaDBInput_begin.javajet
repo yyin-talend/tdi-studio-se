@@ -29,7 +29,7 @@ imports="
 	String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
 		   dbquery = dbquery.replaceAll("\n"," ");
 		   dbquery = dbquery.replaceAll("\r"," ");
-    boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
+    boolean whetherTrimAllCol = ("true").equals(ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__"));
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
 		   
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -40,7 +40,7 @@ imports="
 			String jdbcDriver_<%=cid%> = null;
 			String url_<%=cid%> = null;
 			<%
-			if(frameworkType.equals("EMBEDED")) {
+			if(("EMBEDED").equals(frameworkType)) {
 				%>
 				jdbcDriver_<%=cid%> = "org.apache.derby.jdbc.EmbeddedDriver";
 				url_<%=cid%> = "jdbc:derby:" + <%=db%>;
@@ -48,7 +48,7 @@ imports="
 				System.setProperty("derby.system.home", <%=dbRootPath%>);
 				<%
 			} else {
-    			if(frameworkType.equals("JCCJDBC")) {
+    			if(("JCCJDBC").equals(frameworkType)) {
     				%>
     				jdbcDriver_<%=cid%> = "com.ibm.db2.jcc.DB2Driver";
     				url_<%=cid%> = "jdbc:derby:net://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=db%>;
@@ -62,7 +62,7 @@ imports="
     			%>
     			<%
     			String connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__");
-    			if(connectionFlag.equals("false")) {
+    			if(("false").equals(connectionFlag)) {
     			    %>
         			org.apache.derby.drda.NetworkServerControl serverControl_<%=cid%>;
         			serverControl_<%=cid%> = new org.apache.derby.drda.NetworkServerControl(java.net.InetAddress.getByName(<%=dbhost%>),Integer.parseInt(<%=dbport%>));
@@ -123,7 +123,7 @@ imports="
                         if((trimColumnList != null && trimColumnList.size() > 0) && !whetherTrimAllCol) {
                             for(Map<String, String> trimColumn : trimColumnList) {
                                 if(column.getLabel().equals(trimColumn.get("SCHEMA_COLUMN"))) {
-                                    if(trimColumn.get("TRIM").equals("true")) {
+                                    if(("true").equals(trimColumn.get("TRIM"))) {
                                         whetherTrimCol = true;
                                         break;
                                     }
@@ -142,16 +142,16 @@ imports="
                  	            <%=firstConnName%>.<%=column.getLabel()%> = <%=defVal%>;             			
                  	        } else {
                  	            <%
-                 	            if(typeToGenerate.equals("byte[]")) {
+                 	            if(("byte[]").equals(typeToGenerate)) {
                  	                typeToGenerate = "Bytes";
-                 	            } else if(typeToGenerate.equals("java.util.Date")) {
+                 	            } else if(("java.util.Date").equals(typeToGenerate)) {
                  	                typeToGenerate = "Timestamp";
-                 	            } else if(typeToGenerate.equals("Integer")) {
+                 	            } else if(("Integer").equals(typeToGenerate)) {
                  	                typeToGenerate = "Int";
                  	            } else {
                  	                typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
                  	            }            		  
-                 	            if(typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+                 	            if(("Char").equals(typeToGenerate) || ("Character").equals(typeToGenerate)) {
                  	                %>
                  	                tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
                                     <%
@@ -167,7 +167,7 @@ imports="
                  	                    <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%>.charAt(0);            			  		
                  	                } else {			  	
                  	                    <%
-                 	                    if(typeToGenerate.equals("Character")) {
+                 	                    if(("Character").equals(typeToGenerate)) {
                  	                        %>            			  	    
                  	                        if(tmpContent_<%=cid%> == null) {            			  	   	
                  	                            <%=firstConnName%>.<%=column.getLabel()%>=null;            			  			
@@ -177,7 +177,7 @@ imports="
                  	                        <%
                  	                    } else {
                  	                        %>            			  		
-                 	                        if(tmpContent_<%=cid%>.equals("")) {            			  		
+                 	                        if(("").equals(tmpContent_<%=cid%>)) {            			  		
                  	                            <%=firstConnName%>.<%=column.getLabel()%> = '\0';            			  			
                  	                        } else {            			  		
                         			  			throw new RuntimeException(
@@ -189,7 +189,7 @@ imports="
                  	                    %>
                  	                }			
                  	                <%
-                 	            } else if(typeToGenerate.equals("Timestamp")) {
+                 	            } else if(("Timestamp").equals(typeToGenerate)) {
                  	                %>
                  	                if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>) != null) {
                  	                    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
@@ -197,11 +197,11 @@ imports="
                  	                    <%=firstConnName%>.<%=column.getLabel()%> = null;
                  	                }
                  	                <%
-                 	            } else if (typeToGenerate.equals("List")) {
+                 	            } else if (("List").equals(typeToGenerate)) {
                  	                %>
                  	                <%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(<%=currentColNo%>);
                  	                <% 	
-                 	            } else if(typeToGenerate.equals("String")) {
+                 	            } else if(("String").equals(typeToGenerate)) {
                  	                %>
                                     tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
                                     if(tmpContent_<%=cid%> != null) {

@@ -31,21 +31,21 @@ String filePath = ElementParameterParser.getValue(node,"__GENERATED_IMAGE_PATH__
 
         final org.jfree.chart.plot.XYPlot plot<%=cid%> = (org.jfree.chart.plot.XYPlot) chart<%=cid%>.getPlot();
 
-        <%if (!ElementParameterParser.getValue(node,"__BACKGROUND_PLOT__").equals("")){%>
+        <%if (!("").equals(ElementParameterParser.getValue(node,"__BACKGROUND_PLOT__"))){%>
         plot<%=cid%>.setBackgroundPaint(<%=ElementParameterParser.getValue(node,"__BACKGROUND_PLOT__")%>);
         <%}%>
-        <%if (!ElementParameterParser.getValue(node,"__BACKGROUND_CHART__").equals("")){%>
+        <%if (!("").equals(ElementParameterParser.getValue(node,"__BACKGROUND_CHART__"))){%>
         chart<%=cid%>.setBackgroundPaint(<%=ElementParameterParser.getValue(node,"__BACKGROUND_CHART__")%>);
         <%}%>
 
-        <%if (!ElementParameterParser.getValue(node,"__LOWER_BOUND__").equals("")){%>
+        <%if (!("").equals(ElementParameterParser.getValue(node,"__LOWER_BOUND__"))){%>
             plot<%=cid%>.getRangeAxis().setLowerBound(<%=ElementParameterParser.getValue(node,"__LOWER_BOUND__")%>);
         <%}%>
-        <%if (!ElementParameterParser.getValue(node,"__UPPER_BOUND__").equals("")) {%>
+        <%if (!("").equals(ElementParameterParser.getValue(node,"__UPPER_BOUND__"))) {%>
             plot<%=cid%>.getRangeAxis().setUpperBound(<%=ElementParameterParser.getValue(node,"__UPPER_BOUND__")%>);
         <%}%>
 
-        <%if (ElementParameterParser.getValue(node,"__MOVING_AVERAGE__").equals("true")){%>
+        <%if (("true").equals(ElementParameterParser.getValue(node,"__MOVING_AVERAGE__"))){%>
         org.jfree.data.xy.XYDataset movingAverage<%=cid%> = org.jfree.data.time.MovingAverage.createMovingAverage(dataset<%=cid%>, " (average)", <%=ElementParameterParser.getValue(node,"__MOVING_AVERAGE_PERIOD__")%>, 10);
         plot<%=cid%>.setDataset(1, movingAverage<%=cid%>);
         plot<%=cid%>.setRenderer(1, new org.jfree.chart.renderer.xy.StandardXYItemRenderer());

@@ -15,7 +15,7 @@ imports="
         String replaceOption = ElementParameterParser.getValue(node,"__REPLACEOPTION__");
 %>
 try{
-<%if(replaceOption.equals("append")){%>
+<%if(("append").equals(replaceOption)){%>
 for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 				if (sourceFile_<%=cid %> != null
 						&& sourceFile_<%=cid %>.length() != 0) {
@@ -43,7 +43,7 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 			globalMap.put("<%=cid %>_STATUS", "No file transfered.");
 			}
 <%}else{
-	if(!replaceOption.equals("overwrite")) {%>        
+	if(!("overwrite").equals(replaceOption)) {%>        
         String parentPath_<%=cid%> = new java.io.File(<%=localdir %>).getPath();
         java.util.List<String> list_<%=cid%> = new java.util.ArrayList<String>();
         for (int i_<%=cid%> = 0; i_<%=cid%> < sourceFileNames_<%=cid%>.length; i_<%=cid%>++) {

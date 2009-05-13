@@ -20,7 +20,7 @@
 
 
 <%
-   boolean autoCast = ElementParameterParser.getValue(node, "__AUTOCAST__").equals("true");
+   boolean autoCast = ("true").equals(ElementParameterParser.getValue(node, "__AUTOCAST__"));
    List<Map<String, String>> manualtable = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MANUALTABLE__");
 
    IConnection inMainCon = null;
@@ -82,23 +82,23 @@
 	 String outPattern = col.getPattern();
 	 String outTypeWhole = JavaTypesManager.getTypeToGenerate(col.getTalendType(), col.isNullable());
 	 String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
-	 if(outType.equals("byte[]")){outType = "byteArray";}
+	 if(("byte[]").equals(outType)){outType = "byteArray";}
 	 for(IMetadataColumn preCol:preColumns){//3
 	 String preLabel = preCol.getLabel();	 
 	 	if(preLabel.equals(outLabel)){	 	
     	 	String inTypeWhole = JavaTypesManager.getTypeToGenerate(preCol.getTalendType(), preCol.isNullable());
     	 	String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
-    	 	if(inType.equals("byte[]")){inType = "byteArray";}
+    	 	if(("byte[]").equals(inType)){inType = "byteArray";}
 %>
   
-<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+<%if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
 try{
 
 	 	TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
 }catch(Exception e){
   isPassed_<%=cid %>=false;
-  if(errorMessage_<%=cid %>.equals("")){
+  if(("").equals(errorMessage_<%=cid %>)){
   errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
   }else{
   errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
@@ -114,7 +114,7 @@ try{
 	 	TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
 }catch(Exception e){
   isPassed_<%=cid %>=false;
-  if(errorMessage_<%=cid %>.equals("")){
+  if(("").equals(errorMessage_<%=cid %>)){
   errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
   }else{
   errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
@@ -154,15 +154,15 @@ try{
 	 String outPattern = col.getPattern();
 	 String outTypeWhole = JavaTypesManager.getTypeToGenerate(col.getTalendType(), col.isNullable());
 	 String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
-	 if(outType.equals("byte[]")){outType = "byteArray";}
+	 if(("byte[]").equals(outType)){outType = "byteArray";}
 	 for(IMetadataColumn preCol:preColumns){//3
 	 String preLabel = preCol.getLabel();	 
 	 	if(preLabel.equals(outLabel)){	 	
     	 	String inTypeWhole = JavaTypesManager.getTypeToGenerate(preCol.getTalendType(), preCol.isNullable());
     	 	String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
-    	 	if(inType.equals("byte[]")){inType = "byteArray";}
+    	 	if(("byte[]").equals(inType)){inType = "byteArray";}
 %>
-<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+<%if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
    <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
 <%}else{
@@ -188,15 +188,15 @@ try{
 	 String outPattern = col.getPattern();
 	 String outTypeWhole = JavaTypesManager.getTypeToGenerate(col.getTalendType(), col.isNullable());
 	 String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
-	 if(outType.equals("byte[]")){outType = "byteArray";}
+	 if(("byte[]").equals(outType)){outType = "byteArray";}
 	 for(IMetadataColumn preCol:preColumns){//3
 	 String preLabel = preCol.getLabel();	 
 	 	if(preLabel.equals(outLabel)){	 	
     	 	String inTypeWhole = JavaTypesManager.getTypeToGenerate(preCol.getTalendType(), preCol.isNullable());
     	 	String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
-    	 	if(inType.equals("byte[]")){inType = "byteArray";}
+    	 	if(("byte[]").equals(inType)){inType = "byteArray";}
 %>
-<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+<%if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
    try{
    TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
@@ -260,20 +260,20 @@ else{%>// manual cast begin
 			String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
 			String outTypeWhole = JavaTypesManager.getTypeToGenerate(out.getTalendType(), out.isNullable());
 			String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
-			if(outType.equals("byte[]")){outType = "byteArray";}
-			if(inType.equals("byte[]")){inType = "byteArray";}
+			if(("byte[]").equals(outType)){outType = "byteArray";}
+			if(("byte[]").equals(inType)){inType = "byteArray";}
 			String outLabel = out.getLabel();
 			String outPattern = out.getPattern();
 			String preLabel = in.getLabel();
 %>            
-<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+<%if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
 try{
 
 	 	TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
 }catch(Exception e){
   isPassed_<%=cid %>=false;
-  if(errorMessage_<%=cid %>.equals("")){
+  if(("").equals(errorMessage_<%=cid %>)){
   errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
   }else{
   errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
@@ -289,7 +289,7 @@ try{
 	 	TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
 }catch(Exception e){
   isPassed_<%=cid %>=false;
-  if(errorMessage_<%=cid %>.equals("")){
+  if(("").equals(errorMessage_<%=cid %>)){
   errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
   }else{
   errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
@@ -328,13 +328,13 @@ try{
 			String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
 			String outTypeWhole = JavaTypesManager.getTypeToGenerate(out.getTalendType(), out.isNullable());
 			String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
-			if(outType.equals("byte[]")){outType = "byteArray";}
-			if(inType.equals("byte[]")){inType = "byteArray";}
+			if(("byte[]").equals(outType)){outType = "byteArray";}
+			if(("byte[]").equals(inType)){inType = "byteArray";}
 			String outLabel = out.getLabel();
 			String outPattern = out.getPattern();
 			String preLabel = in.getLabel();
 %> 
-<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+<%if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
    <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
 <%}else{
@@ -363,13 +363,13 @@ try{
 			String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
 			String outTypeWhole = JavaTypesManager.getTypeToGenerate(out.getTalendType(), out.isNullable());
 			String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
-			if(outType.equals("byte[]")){outType = "byteArray";}
-			if(inType.equals("byte[]")){inType = "byteArray";}
+			if(("byte[]").equals(outType)){outType = "byteArray";}
+			if(("byte[]").equals(inType)){inType = "byteArray";}
 			String outLabel = out.getLabel();
 			String outPattern = out.getPattern();
 			String preLabel = in.getLabel();
 %>
-<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+<%if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
    try{
    TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);

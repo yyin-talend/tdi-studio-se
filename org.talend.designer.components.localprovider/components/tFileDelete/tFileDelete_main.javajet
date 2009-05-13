@@ -14,8 +14,8 @@ String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
 String dirName = ElementParameterParser.getValue(node, "__DIRECTORY__");
 String path = ElementParameterParser.getValue(node, "__PATH__");
 String failon = ElementParameterParser.getValue(node, "__FAILON__");
-boolean ifFolder = ElementParameterParser.getValue(node, "__FOLDER__").equals("true");
-boolean either = ElementParameterParser.getValue(node, "__FOLDER_FILE__").equals("true");
+boolean ifFolder = ("true").equals(ElementParameterParser.getValue(node, "__FOLDER__"));
+boolean either = ("true").equals(ElementParameterParser.getValue(node, "__FOLDER_FILE__"));
 %>
 class DeleteFolder<%=cid%>{
 	 /**
@@ -67,7 +67,7 @@ if(either){%>
 	  }
     }
 <%
-	if(failon.equals("true")){
+	if(("true").equals(failon)){
 %>
     else{
     	throw new RuntimeException("the file or path does not exists or is invalid");
@@ -87,7 +87,7 @@ if(file<%=cid%>.exists()&& file<%=cid%>.isDirectory()){
 	df<%=cid%>.delete(file<%=cid%>);
 }
 <%
-	if(failon.equals("true")){
+	if(("true").equals(failon)){
 %>
     else{
     	throw new RuntimeException("Directory does not exists or is invalid");
@@ -105,7 +105,7 @@ if(file<%=cid%>.exists()&& file<%=cid%>.isDirectory()){
     	file_<%=cid%>.delete();
     }
 <%
-	if(failon.equals("true")){
+	if(("true").equals(failon)){
 %>
     else{
     	throw new RuntimeException("File does not exists or is invalid");

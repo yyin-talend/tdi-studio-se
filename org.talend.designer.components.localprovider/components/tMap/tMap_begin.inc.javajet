@@ -49,7 +49,7 @@
         JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
 
 		String tempFolder = ElementParameterParser.getValue(node, "__TEMPORARY_DATA_DIRECTORY__");
-		if (tempFolder.equals("")) {
+		if (("").equals(tempFolder)) {
 			tempFolder=ElementParameterParser.getValue(node.getProcess(), "__COMP_DEFAULT_FILE_DIR__") + "/temp";
 			tempFolder=TalendTextUtils.addQuotes(tempFolder);
 		}
@@ -576,7 +576,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 					%>
 			            this.<%= connection.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
 					<%
-				} else if(typeToGenerate.equals("String")) {
+				} else if(("String").equals(typeToGenerate)) {
 					%>
 			            length = dis.readInt();
            				if (length == -1) {
@@ -593,7 +593,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				this.<%= connection.getName() %>__<%= column.getLabel() %> = new String(<%= currentTableName %>Struct.commonByteArray, 0, length);
            				}
 					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
+				} else if(("java.util.Date").equals(typeToGenerate)) {
 					%>
 			            length = dis.readByte();
            				if (length == -1) {
@@ -602,7 +602,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            			    	this.<%= connection.getName() %>__<%= column.getLabel() %> = new Date(dis.readLong());
            				}
 					<%
-				} else if(typeToGenerate.equals("byte[]")) {
+				} else if(("byte[]").equals(typeToGenerate)) {
 					%>
 			            length = dis.readInt();
            				if (length == -1) {
@@ -613,7 +613,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				this.<%= connection.getName() %>__<%= column.getLabel() %> = byteArray;
            				}
 					<%
-				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
+				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 			 		hasAtLeastOneObjectType = true;
 					%>
 						this.<%= connection.getName() %>__<%= column.getLabel() %> = (<%= typeToGenerate %>) dis.readObject();
@@ -650,7 +650,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 					%>
 			            this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
 					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
+				} else if(("java.util.Date").equals(typeToGenerate)) {
 					%>
 			            length = dis.readByte();
            				if (length == -1) {
@@ -659,7 +659,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            			    	this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new Date(dis.readLong());
            				}
 					<%
-				} else if(typeToGenerate.equals("String")) {
+				} else if(("String").equals(typeToGenerate)) {
 					%>
 			            length = dis.readInt();
            				if (length == -1) {
@@ -676,7 +676,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new String(<%= currentTableName %>Struct.commonByteArray, 0, length);
            				}
 					<%
-				} else if(typeToGenerate.equals("byte[]")) {
+				} else if(("byte[]").equals(typeToGenerate)) {
 					%>
 			            length = dis.readInt();
            				if (length == -1) {
@@ -687,7 +687,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = byteArray;
            				}
 					<%
-				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
+				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 			 		hasAtLeastOneObjectType = true;
 					%>
            				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = (<%= typeToGenerate %>) dis.readObject();
@@ -759,7 +759,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 					%>
 		            	dos.write<%= typeToGenerate %>(this.<%= connection.getName() %>__<%= column.getLabel() %>);
 					<%
-				} else if(typeToGenerate.equals("String")) {
+				} else if(("String").equals(typeToGenerate)) {
 					%>
 						if(this.<%= connection.getName() %>__<%= column.getLabel() %> == null) {
 			                dos.writeInt(-1);
@@ -769,7 +769,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				dos.write(byteArray);
 		            	}
 					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
+				} else if(("java.util.Date").equals(typeToGenerate)) {
 					%>
 						if(this.<%= connection.getName() %>__<%= column.getLabel() %> == null) {
 			                dos.writeByte(-1);
@@ -778,7 +778,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            			    	dos.writeLong(this.<%= connection.getName() %>__<%= column.getLabel() %>.getTime());
 		            	}
 					<%
-				} else if(typeToGenerate.equals("byte[]")) {
+				} else if(("byte[]").equals(typeToGenerate)) {
 					%>
 						if(this.<%= connection.getName() %>__<%= column.getLabel() %> == null) {
 			                dos.writeInt(-1);
@@ -787,7 +787,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				dos.write(this.<%= connection.getName() %>__<%= column.getLabel() %>);
 		            	}
 					<%
-				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
+				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 					%>
        			    	dos.writeObject(this.<%= connection.getName() %>__<%= column.getLabel() %>);
 					<%
@@ -820,7 +820,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 					%>
 		            	dos.write<%= typeToGenerate %>(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>);
 					<%
-				} else if(typeToGenerate.equals("String")) {
+				} else if(("String").equals(typeToGenerate)) {
 					%>
 						if(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> == null) {
 			                dos.writeInt(-1);
@@ -830,7 +830,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				dos.write(byteArray);
 		            	}
 					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
+				} else if(("java.util.Date").equals(typeToGenerate)) {
 					%>
 						if(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> == null) {
 			                dos.writeByte(-1);
@@ -839,7 +839,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            			    	dos.writeLong(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>.getTime());
 		            	}
 					<%
-				} else if(typeToGenerate.equals("byte[]")) {
+				} else if(("byte[]").equals(typeToGenerate)) {
 					%>
 						if(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> == null) {
 			                dos.writeInt(-1);
@@ -848,7 +848,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				dos.write(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>);
 		            	}
 					<%
-				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
+				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 					%>
        			    	dos.writeObject(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>);
 					<%

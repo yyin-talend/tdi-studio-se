@@ -16,7 +16,7 @@ imports="
 stmt_<%=cid %>.close();
 
 <%
-if(!useExistingConn.equals("true"))
+if(!("true").equals(useExistingConn))
 {
 	%>
 	conn_<%=cid %> .close();

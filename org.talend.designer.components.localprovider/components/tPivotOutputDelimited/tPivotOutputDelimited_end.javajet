@@ -15,7 +15,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
+boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 	
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -25,7 +25,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<Map<String, String>> groupbys = 
             ( List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
 
-        boolean csvOption = ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("true");
+        boolean csvOption = ("true").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"));
         
         String pivotColumn = ElementParameterParser.getValue(node, "__PIVOT_COLUMN__");
 
@@ -39,7 +39,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
 %>
 
-<% if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) { %>
+<% if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) { %>
   ////////////////////////////////  Delimited  /////////  
 <%  for (int i=0; i<groupbys.size(); i++) {
         

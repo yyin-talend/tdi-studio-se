@@ -112,8 +112,8 @@ abstract class  Manager {
                     createTableSQL.append(prefix + precision);
                 }
                 if(!lengthIgnored) {
-                    prefix = (prefix.equals("") ? "(" : prefix);
-                    suffix = (suffix.equals("") ? ") " : suffix);
+                    prefix = (("").equals(prefix) ? "(" : prefix);
+                    suffix = (("").equals(suffix) ? ") " : suffix);
                     if(precisionIgnored) {
                         createTableSQL.append(prefix);
                         comma = "";
@@ -133,8 +133,8 @@ abstract class  Manager {
                 	}
                 }
                 if(!precisionIgnored) {
-                    prefix = (prefix.equals("") ? "(" : prefix);
-                    suffix = (suffix.equals("") ? ") " : suffix);
+                    prefix = (("").equals(prefix) ? "(" : prefix);
+                    suffix = (("").equals(suffix) ? ") " : suffix);
                     if(lengthIgnored) {
                         createTableSQL.append(prefix);
                         comma = "";                        
@@ -184,7 +184,7 @@ abstract class  Manager {
         }
     }    
     private String getDefaultValueSQL(String defaultValue) {
-        if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
+        if(defaultValue == null || ("\"\"").equals(defaultValue) || ("").equals(defaultValue)) {
             return " ";
         } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
             return " default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
@@ -207,7 +207,7 @@ class AS400Manager extends Manager {
         return "com.ibm.as400.access.AS400JDBCDriver";
     }
     public String getConnectionURL() {
-        if(dbproperty == null || dbproperty.equals("\"\"") || dbproperty.equals("")){
+        if(dbproperty == null || ("\"\"").equals(dbproperty) || ("").equals(dbproperty)){
             return "\"jdbc:as400://\" + " + host + " + \"/\" + "+ dbName;
         }else{
             return "\"jdbc:as400://\" + " + host + " + \"/\" + "+ dbName + "+\";\"+"+ dbproperty;
@@ -311,13 +311,13 @@ class HSQLDBManager extends Manager {
     }
     public String getConnectionURL() {
         String connectionURL = null;
-        if(runningMode.equals("HSQLDB_SERVER")) {
+        if(("HSQLDB_SERVER").equals(runningMode)) {
             if(tls) {
                 connectionURL = "\"jdbc:hsqldb:hsqls://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbAlias;
             } else {
                 connectionURL = "\"jdbc:hsqldb:hsql://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbAlias;
             }
-        } else if(runningMode.equals("HSQLDB_WEBSERVER")) {
+        } else if(("HSQLDB_WEBSERVER").equals(runningMode)) {
             if(tls) {
                 connectionURL = "\"jdbc:hsqldb:https://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbAlias;
             } else {
@@ -435,9 +435,9 @@ class JavaDBManager extends Manager {
     }
     protected String getDriver() {
         String driver = null;
-        if(frameworkType.equals("EMBEDED")) {
+        if(("EMBEDED").equals(frameworkType)) {
             driver = "org.apache.derby.jdbc.EmbeddedDriver";
-        } if(frameworkType.equals("JCCJDBC")) {
+        } if(("JCCJDBC").equals(frameworkType)) {
             driver = "com.ibm.db2.jcc.DB2Driver";
         } else {
             driver = "org.apache.derby.jdbc.ClientDriver";
@@ -446,9 +446,9 @@ class JavaDBManager extends Manager {
     }
     public String getConnectionURL() {
         String connectionURL = null;
-        if(frameworkType.equals("EMBEDED")) {
+        if(("EMBEDED").equals(frameworkType)) {
             connectionURL = "\"jdbc:derby:\" + " + dbName;
-        } else if(frameworkType.equals("JCCJDBC")) {
+        } else if(("JCCJDBC").equals(frameworkType)) {
             connectionURL = "\"jdbc:derby:net://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbName;
         } else {
             connectionURL = "\"jdbc:derby://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbName;
@@ -457,7 +457,7 @@ class JavaDBManager extends Manager {
     }
     public String getConnection() {
         StringBuilder javaCode = new StringBuilder();
-        if(frameworkType.equals("EMBEDED")) {
+        if(("EMBEDED").equals(frameworkType)) {
             javaCode.append("System.setProperty(\"derby.system.home\", " + dbRootPath + ");\r\n");              
         } else {
             if(!connectionFlag) {
@@ -490,7 +490,7 @@ class JavaDBManager extends Manager {
     public String closeConnection() {
         StringBuilder javaCode = new StringBuilder();
         javaCode.append(super.closeConnection());
-        if(frameworkType.equals("EMBEDED")) {
+        if(("EMBEDED").equals(frameworkType)) {
             javaCode.append("try {\r\n");
             javaCode.append("java.sql.DriverManager.getConnection(\"jdbc:derby:;shutdown=true\");\r\n");
             javaCode.append("} catch(java.sql.SQLException se) {\r\n");
@@ -648,9 +648,9 @@ class OracleManager extends Manager {
     }
     public String getConnectionURL() {
         String connectionURL = null;
-        if(connectionType.equals("ORACLE_SID")) {
+        if(("ORACLE_SID").equals(connectionType)) {
             connectionURL = "\"jdbc:oracle:thin:@\" + " + host + " + \":\" + " + port + " + \":\" + " + dbName;
-        } else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
+        } else if(("ORACLE_SERVICE_NAME").equals(connectionType)) {
             connectionURL = "\"jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=\" + " + host + " + \")(port=\" + " + port + " + \"))(connect_data=(service_name=\" + " + dbName + " + \")))\"";
         }
         return connectionURL;
@@ -919,7 +919,7 @@ class TeradataManager extends Manager {
 class StringUtil {
     public String getString(String source) {
         String tmp = null;
-        if(source == null || source.equals("") || source.equals("\"\"")) {
+        if(source == null || ("").equals(source) || ("\"\"").equals(source)) {
             tmp = "";
         } else {
             if(source.startsWith("\"") && source.endsWith("\"")) {
@@ -937,32 +937,32 @@ class ManagerFactory {
         Manager manager = null;
         String cid = node.getUniqueName();
         String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-        if(dbType.equals("ACCESS")) {
+        if(("ACCESS").equals(dbType)) {
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_ACCESS__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new AccessManager(dbName, tableName, userName, password, cid);
-        } else if(dbType.equals("AS400")) {
+        } else if(("AS400").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
             manager = new AS400Manager(host, dbName, tableName, userName, password, cid,dbproperties);
-        } else if(dbType.equals("DB2")) {
+        } else if(("DB2").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new DB2Manager(host, port, dbName, tableName, userName, password, cid);
-        } else if(dbType.equals("FIREBIRD")) {
+        } else if(("FIREBIRD").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_FIREBIRD__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new FirebirdManager(host, dbName, tableName, userName, password, cid);
-        } else if(dbType.equals("HSQLDB")) {
+        } else if(("HSQLDB").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbPath = ElementParameterParser.getValue(node, "__DBPATH_HSQL__");
@@ -971,9 +971,9 @@ class ManagerFactory {
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             String runningMode = ElementParameterParser.getValue(node, "__RUNNING_MODE__");
-            boolean tls = ElementParameterParser.getValue(node, "__TLS__").equals("true");
+            boolean tls = ("true").equals(ElementParameterParser.getValue(node, "__TLS__"));
             manager = new HSQLDBManager(host, port, dbPath, dbName, tableName, dbAlias, userName, password, runningMode, tls, cid);
-        } else if(dbType.equals("INFORMIX")) {
+        } else if(("INFORMIX").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -981,20 +981,20 @@ class ManagerFactory {
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new InformixManager(host, port, dbName, tableName, dbServer, userName, password, cid);
-        } else if(dbType.equals("INGRES")) {
+        } else if(("INGRES").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new IngresManager(host, port, dbName, tableName, userName, password, cid);
-        } else if(dbType.equals("INTERBASE")) {
+        } else if(("INTERBASE").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_INTERBASE__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new InterbaseManager(host, dbName, tableName, userName, password, cid);
-        } else if(dbType.equals("JAVADB")) {
+        } else if(("JAVADB").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbRootPath = ElementParameterParser.getValue(node, "__DBROOTPATH__");
@@ -1002,35 +1002,35 @@ class ManagerFactory {
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             String frameworkType = ElementParameterParser.getValue(node, "__FRAMEWORK_TYPE__");
-            boolean connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__").equals("true");
+            boolean connectionFlag = ("true").equals(ElementParameterParser.getValue(node, "__CONNECTION_FLAG__"));
             manager = new JavaDBManager(host, port, dbRootPath, dbName, tableName, userName, password, frameworkType, connectionFlag, cid);
-        } else if(dbType.equals("MAXDB")) {
+        } else if(("MAXDB").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new MaxDBManager(host, port, dbName, tableName, userName, password, cid);
-        } else if(dbType.equals("MSSQL")) {
+        } else if(("MSSQL").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");            
-            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_MSSQL__"));
             manager = new MSSQLManager(host, port, dbName, tableName, userName, password, useExistingConnection, connection, cid);
-        } else if(dbType.equals("MYSQL")) {
+        } else if(("MYSQL").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");            
-            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_MYSQL__"));
-            boolean temporary = ElementParameterParser.getValue(node, "__TEMPTABLE__").equals("true");
+            boolean temporary = ("true").equals(ElementParameterParser.getValue(node, "__TEMPTABLE__"));
             manager = new MysqlManager(host, port, dbName, tableName, userName, password, useExistingConnection, connection, temporary, cid);
-        } else if(dbType.equals("DBORACLE")) {
+        } else if(("DBORACLE").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
@@ -1038,42 +1038,42 @@ class ManagerFactory {
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_ORACLE__"));
             manager = new OracleManager(host, port, dbName, tableName, dbSchema, userName, password, connectionType, useExistingConnection, connection, cid);
-        } else if(dbType.equals("POSTGRE")) {
+        } else if(("POSTGRE").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");            
-            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_POSTGRE__"));
             manager = new PostgreManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid);
-        } else if(dbType.equals("POSTGREPLUS")) {
+        } else if(("POSTGREPLUS").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");            
-            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_POSTGREPLUS__"));
             manager = new PostgrePlusManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid);            
-        } else if(dbType.equals("SQLITE")) {
+        } else if(("SQLITE").equals(dbType)) {
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_SQLITE__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new SQLiteManager(dbName, tableName, userName, password, cid);
-        } else if(dbType.equals("SYBASE")) {
+        } else if(("SYBASE").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new SybaseManager(host, port, dbName, tableName, userName, password, cid);
-        } else if(dbType.equals("ODBC")) {
+        } else if(("ODBC").equals(dbType)) {
             String odbcName = ElementParameterParser.getValue(node, "__ODBCNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
@@ -1101,7 +1101,7 @@ if(columnList != null && columnList.size() > 0) {
     try{
         <%=manager.getConnection()%>
         <%
-        if(tableAction.equals("CREATE_TABLE")) {
+        if(("CREATE_TABLE").equals(tableAction)) {
             %>
             java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
             stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>");
@@ -1120,14 +1120,14 @@ if(columnList != null && columnList.size() > 0) {
                 }
             }        
             <%
-            if(tableAction.equals("CREATE_IF_NOT_EXIST")) {
+            if(("CREATE_IF_NOT_EXIST").equals(tableAction)) {
                 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
                     stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>");                
                 }
                 <%
-            } else if(tableAction.equals("DROP_IF_EXIST_CREATE")) {
+            } else if(("DROP_IF_EXIST_CREATE").equals(tableAction)) {
                 %>
                 if(whetherExist_<%=cid%>) {
                     java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();

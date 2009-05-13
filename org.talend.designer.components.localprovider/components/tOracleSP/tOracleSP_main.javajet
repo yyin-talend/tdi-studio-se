@@ -44,7 +44,7 @@ List<Map<String, String>> spArgs =
 	(List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 
 // Functions have an additionnal output parameter
-boolean isFunction = ElementParameterParser.getValue(node, "__IS_FUNCTION__").equals("true");
+boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 if (isFunction) {
 	// Add return value at first position of parameters list
 	String returnField = ElementParameterParser.getValue(node, "__RETURN__");
@@ -57,13 +57,13 @@ if (isFunction) {
 
 class JavaToDbType {
 	public String convert(String javaType) {
-		if (javaType.equals("String")) {
+		if (("String").equals(javaType)) {
 			return "VARCHAR";
-		} else if (javaType.equalsIgnoreCase("char") || javaType.equals("Character")) {
+		} else if (javaType.equalsIgnoreCase("char") || ("Character").equals(javaType)) {
 			return "CHAR";
-		} else if (javaType.equals("byte[]")) {
+		} else if (("byte[]").equals(javaType)) {
 			return "RAW";
-		} else if (javaType.equals("java.util.Date")) {
+		} else if (("java.util.Date").equals(javaType)) {
 			return "DATE";
 		} else if (javaType.equalsIgnoreCase("boolean")) {
 			return "BOOLEAN";
@@ -71,7 +71,7 @@ class JavaToDbType {
 			return "TINYINT";
 		} else if (javaType.equalsIgnoreCase("short")) {
 			return "SMALLINT";
-		} else if (javaType.equalsIgnoreCase("int") || javaType.equals("Integer")) {
+		} else if (javaType.equalsIgnoreCase("int") || ("Integer").equals(javaType)) {
 			return "INTEGER";
 		} else if (javaType.equalsIgnoreCase("long")) {
 			return "BIGINT";
@@ -110,7 +110,7 @@ boolean canGenerate = true;
 if (inConnection == null) {
 	for (int i = 0; i < spArgs.size(); i++) {
 		String argType = spArgs.get(i).get("TYPE");
-		if (argType.equals("IN") || argType.equals("INOUT")) {
+		if (("IN").equals(argType) || ("INOUT").equals(argType)) {
 			%>
 			// No code generated: IN or INOUT arguments defined, whereas <%=cid%> has no input
 			<%
@@ -158,7 +158,7 @@ if (canGenerate) {
 			int argIndex = i + 1;
 			
 			// Input argument
-			if (argType.equals("IN") || argType.equals("INOUT")) {
+			if (("IN").equals(argType) || ("INOUT").equals(argType)) {
 				if (nullable) {
 					%>
 					if (<%=inConnectionName%>.<%=argName%> == null) {
@@ -168,16 +168,16 @@ if (canGenerate) {
 				}
 				
 				String method;
-				if (typeToGenerate.equals("byte[]")) {
+				if (("byte[]").equals(typeToGenerate)) {
  			  		method = "Bytes";
- 	  			} else if (typeToGenerate.equals("Integer")) {
+ 	  			} else if (("Integer").equals(typeToGenerate)) {
 		 	   		method = "Int";
 		 	   	} else {
 					method = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
 				}
 				
 				// Bind parameter to CallableStatement
-				if (typeToGenerate.equals("char") || typeToGenerate.equals("Character")) {
+				if (("char").equals(typeToGenerate) || ("Character").equals(typeToGenerate)) {
 					%>
 					if (<%=inConnectionName%>.<%=argName%> == '\0') {
 						statement_<%=cid%>.setString(<%=argIndex%>, "");
@@ -185,7 +185,7 @@ if (canGenerate) {
 						statement_<%=cid%>.setString(<%=argIndex%>, String.valueOf(<%=inConnectionName%>.<%=argName%>));
 					}
 					<%
-				} else if (typeToGenerate.equals("java.util.Date")) {
+				} else if (("java.util.Date").equals(typeToGenerate)) {
 					%>
 					statement_<%=cid%>.setTimestamp(<%=argIndex%>, new java.sql.Timestamp(<%=inConnectionName%>.<%=argName%>.getTime()));
 					<%
@@ -203,11 +203,11 @@ if (canGenerate) {
 			}
 			
 			// Output argument
-			if (argType.equals("OUT") || argType.equals("INOUT") ) {
+			if (("OUT").equals(argType) || ("INOUT").equals(argType) ) {
 				%>
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 	  			<%
-			}else if(argType.equals("RECORDSET")){
+			}else if(("RECORDSET").equals(argType)){
 %>
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, oracle.jdbc.OracleTypes.CURSOR);
 <%
@@ -248,36 +248,36 @@ if (canGenerate) {
 							boolean nullable = column.isNullable();
 							int argIndex = i + 1;
 							
-							if (argType.equals("IN")) {
+							if (("IN").equals(argType)) {
 								// Copy parameter value from input flow
 								%>
 								<%=firstOutConnection.getName()%>.<%=argName%> = <%=inConnectionName%>.<%=argName%>;
 								<%
-							} else if(argType.equals("RECORDSET")){
+							} else if(("RECORDSET").equals(argType)){
 %>
 								<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.getObject(<%=argIndex%>);
 <%
 							} else {
 								// Retrieve parameter value (INOUT or OUT)
 								String method;
-								if (typeToGenerate.equals("byte[]")) {
+								if (("byte[]").equals(typeToGenerate)) {
 					  	   			method = "Bytes";
-					  			} else if (typeToGenerate.equals("java.util.Date")) {
+					  			} else if (("java.util.Date").equals(typeToGenerate)) {
 					   	  			method = "Date";
-					  			} else if (typeToGenerate.equals("Integer")) {
+					  			} else if (("Integer").equals(typeToGenerate)) {
 					  				method = "Int";
 					 			} else {
 									method = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
 					  			}
 					  			
-					  			if (method.equalsIgnoreCase("char") || method.equals("Character")) {
+					  			if (method.equalsIgnoreCase("char") || ("Character").equals(method)) {
 							 		%>
 							 		tmpString_<%=cid%> = statement_<%=cid%>.getString(<%=argIndex%>);
 						  			if (tmpString_<%=cid%> != null && tmpString_<%=cid%>.length() > 0) {
 						  				<%=firstOutConnection.getName()%>.<%=argName%> = tmpString_<%=cid%>.charAt(0);
 							  		}
 							  		<%
-						  		} else if (method.equals("Date")) {
+						  		} else if (("Date").equals(method)) {
 									%>
 									tmpDate_<%=cid%> = statement_<%=cid%>.getTimestamp(<%=argIndex%>);
 									if (tmpDate_<%=cid%> != null)

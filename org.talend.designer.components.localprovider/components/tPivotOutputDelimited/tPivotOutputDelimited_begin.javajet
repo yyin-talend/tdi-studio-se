@@ -35,18 +35,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
 
-        boolean csvOption = ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("true");
+        boolean csvOption = ("true").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"));
         
         String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
     	
     	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
     	
-    	if(escapeChar.equals("'")) escapeChar = "\\'";
+    	if(("'").equals(escapeChar)) escapeChar = "\\'";
         
         String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
     	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
     	if ("".equals(textEnclosure)) textEnclosure = "\0";
-    	if(textEnclosure.equals("'")) textEnclosure = "\\'";
+    	if(("'").equals(textEnclosure)) textEnclosure = "\\'";
         
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         
@@ -54,7 +54,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String delim = delim1.substring(1,delim1.length()-1);
         
-        if(delim.equals("'")) delim = "\\'";
+        if(("'").equals(delim)) delim = "\\'";
         
             delim = delim1.substring(1,delim1.length()-1);
 
@@ -69,7 +69,7 @@ int nb_line_<%=cid%> = 0;
 
 String fileName_<%=cid%> = <%=filename%>;
 
-<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+<%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 	 //create directory only if not exists
 	java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>);
 	 if(!createFile<%=cid%>.exists()){
@@ -78,7 +78,7 @@ String fileName_<%=cid%> = <%=filename%>;
 <%
   }
 
-  if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) { %>
+  if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) { %>
     
     java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
             new java.io.FileOutputStream(fileName_<%=cid%>, false),<%=encoding%>));
@@ -88,14 +88,14 @@ String fileName_<%=cid%> = <%=filename%>;
     com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
             new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)), '<%=delim%>');  
     
-<%              if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){%>
+<%              if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
     CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator.substring(1,rowSeparator.length()-1)  %>');
 <%              }
 %>
     CsvWriter<%=cid %>.setTextQualifier('<%=textEnclosure %>');                
 
 <%
-if(escapeChar.equals("\\\\")){
+if(("\\\\").equals(escapeChar)){
 %>
     CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
 <%

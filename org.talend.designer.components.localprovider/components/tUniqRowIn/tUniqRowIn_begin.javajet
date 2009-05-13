@@ -27,7 +27,7 @@ int DUPLICATE_ONCE = 5;
 int mode = 0;
 String connUniqName = null;
 String connDuplicateName = null;
-boolean onlyOnceEachDuplicatedKey = ElementParameterParser.getValue(node, "__ONLY_ONCE_EACH_DUPLICATED_KEY__").equals("true");
+boolean onlyOnceEachDuplicatedKey = ("true").equals(ElementParameterParser.getValue(node, "__ONLY_ONCE_EACH_DUPLICATED_KEY__"));
 List<? extends IConnection> connsUnique = node.getOutgoingConnections("UNIQUE");
 List<? extends IConnection> connsDuplicate = node.getOutgoingConnections("DUPLICATE");
 if(connsUnique.size() > 0){

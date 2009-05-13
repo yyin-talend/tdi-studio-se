@@ -22,7 +22,7 @@ String isExternalSort = ElementParameterParser.getValue(node, "__EXTERNAL__");
 %>
 
 <%
-if(isExternalSort.equals("false")){
+if(("false").equals(isExternalSort)){
 %>
 <%=rowName %>Struct[] array_<%=cid %> = list_<%=cid %>.toArray(new Comparable<%=rowName %>Struct[0]);
 

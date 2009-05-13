@@ -40,15 +40,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ENCODING__"
         );
         
-        boolean isAppend = ElementParameterParser.getValue(
-            node,
-            "__APPEND__"
-        ).equals("true");
+        boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         
-        boolean isIncludeHeader = ElementParameterParser.getValue(
-            node,
-            "__INCLUDEHEADER__"
-        ).equals("true");
+        boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
 %>
 		int nb_line_<%=cid%> = 0;
 		

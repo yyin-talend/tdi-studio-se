@@ -29,7 +29,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	List<Map<String, String>> addCols =
         (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");	
 	
-    boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");
+    boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
     
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");	
 	
@@ -42,7 +42,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean extendedInsert = false;
 	
 	if ("INSERT".equalsIgnoreCase(dataAction)) {
-		extendedInsert = ElementParameterParser.getValue(node, "__EXTENDINSERT__").equals("true");
+		extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
 	}else {
 		extendedInsert = false;
 	}	
@@ -64,13 +64,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 	if(extendedInsert){
 	    class ExtendInsertOperation{
 	        public String generateType(String typeToGenerate){
-	            if(typeToGenerate.equals("byte[]")){
+	            if(("byte[]").equals(typeToGenerate)){
 	                typeToGenerate = "Bytes";
-	            }else if(typeToGenerate.equals("java.util.Date")){
+	            }else if(("java.util.Date").equals(typeToGenerate)){
 	                typeToGenerate = "Date";
-	            }else if(typeToGenerate.equals("Integer")){
+	            }else if(("Integer").equals(typeToGenerate)){
 	                typeToGenerate = "Int";
-	            }else if(typeToGenerate.equals("List")){  
+	            }else if(("List").equals(typeToGenerate)){  
 	                typeToGenerate = "Object";                 
 	            }else{
 	                typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
@@ -84,55 +84,55 @@ skeleton="../templates/db_output_bulk.skeleton"
 	            %>
 
 	        <%
-	        if(typeToGenerate.equals("Character")) {
+	        if(("Character").equals(typeToGenerate)) {
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
 	                <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.CHAR);
                 <%
-	        }else if(typeToGenerate.equals("Date")){
+	        }else if(("Date").equals(typeToGenerate)){
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
 	                <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.DATE);
                 <%
-	        }else if(typeToGenerate.equals("byte[]")){
+	        }else if(("byte[]").equals(typeToGenerate)){
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
 	                <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.ARRAY);         
                 <%
-	        }else if(typeToGenerate.equals("Long")||typeToGenerate.equals("Byte")||typeToGenerate.equals("Integer")||typeToGenerate.equals("Short")){
+	        }else if(("Long").equals(typeToGenerate)||("Byte").equals(typeToGenerate)||("Integer").equals(typeToGenerate)||("Short").equals(typeToGenerate)){
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
 	                <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.INTEGER);
                 <%
-	        }else if(typeToGenerate.equals("String")){
+	        }else if(("String").equals(typeToGenerate)){
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
 	                <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.VARCHAR);
                 <%
-	        }else if(typeToGenerate.equals("Object")){
+	        }else if(("Object").equals(typeToGenerate)){
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
 	                <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.OTHER);
                 <%
-	        }else if(typeToGenerate.equals("Boolean")){
+	        }else if(("Boolean").equals(typeToGenerate)){
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
 	                <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.BOOLEAN);   
                 <%
-	        }else if(typeToGenerate.equals("Double")){
+	        }else if(("Double").equals(typeToGenerate)){
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
 	                <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.DOUBLE);    
                 <%
-	        }else if(typeToGenerate.equals("Float")){
+	        }else if(("Float").equals(typeToGenerate)){
 	            isObject = true;
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>==null){
@@ -148,7 +148,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
 	        typeToGenerate = generateType(typeToGenerate);
 	        
-	        if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
+	        if(("Char").equals(typeToGenerate)||("Character").equals(typeToGenerate)){
 	            %>
 	        <%
 	        if(isObject) {
@@ -157,7 +157,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	        <%
 	        } else {
 	            %>
-	            if(String.valueOf(bufferL<%=cid%>.<%=column.getName()%>).toLowerCase().equals("null")){
+	            if(("null").equals(String.valueOf(bufferL<%=cid%>.<%=column.getName()%>).toLowerCase())){
 	        <%
 	        }
             %>
@@ -172,7 +172,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	            <%=prefix+cid%>.setString(count<%=cid%>,String.valueOf(bufferL<%=cid%>.<%=column.getName()%>));
 	        }
 	        <%
-	        }else if(typeToGenerate.equals("Date")){
+	        }else if(("Date").equals(typeToGenerate)){
 	            %>
 	            if(bufferL<%=cid%>.<%=column.getName()%>!=null){
 	                // timestamp < min java date value (year 1) || timestamp > max mysql value (year 10000) => set 0000-00-00 as date in MySQL
@@ -246,7 +246,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
 	}
 	
-    if(dataAction.equals("INSERT_OR_UPDATE")) {
+    if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -264,7 +264,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             
         }        
         <%
-    } else if(dataAction.equals("UPDATE_OR_INSERT")) {
+    } else if(("UPDATE_OR_INSERT").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
 
@@ -289,9 +289,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     %>
 
     <%
-	if(!useExistingConn.equals("true"))
+	if(!("true").equals(useExistingConn))
 	{
-		if(!commitEvery.equals("") && !commitEvery.equals("0"))
+		if(!("").equals(commitEvery) && !("0").equals(commitEvery))
 		{
     		%>
     		conn_<%=cid%>.commit();

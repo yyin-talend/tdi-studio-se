@@ -35,7 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List<? extends IConnection> conns = node.getOutgoingSortedConnections();
 		List<? extends IConnection> connsFilter = node.getOutgoingConnections("FILTER");
 		List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
-        boolean use_advanced = ElementParameterParser.getValue(node,"__USE_ADVANCED__").equals("true");
+        boolean use_advanced = ("true").equals(ElementParameterParser.getValue(node,"__USE_ADVANCED__"));
         String advancedCondition = ElementParameterParser.getValue(node,"__ADVANCED_COND__");
 		
 		List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONDITIONS__");
@@ -69,7 +69,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>	
 		<%=ii==1? "":logical %>(
 <% 
-		if(!keyColumn.get("FUNCTION").equals("")) {
+		if(!("").equals(keyColumn.get("FUNCTION"))) {
 %>		
 		<%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
