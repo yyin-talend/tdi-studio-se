@@ -117,6 +117,8 @@ public class FOXUI {
 
     private String selectedText;
 
+    private boolean canModify;
+
     public FOXUI(Composite parent, FOXManager foxManager) {
         this.foxManager = foxManager;
         this.foxManager.getUiManager().setFoxUI(this);
@@ -140,7 +142,6 @@ public class FOXUI {
      * @param child
      */
     private void createContent(Composite mainComposite) {
-
         header = new HeaderComposite(mainComposite, SWT.NONE);
         if (this.foxManager.isNoLoopInComponent()) {
             header.updateStatus(Messages.getString("FOXUI.NoLoop")); //$NON-NLS-1$
@@ -150,6 +151,7 @@ public class FOXUI {
         xmlToSchemaSash.setLayoutData(new GridData(GridData.FILL_BOTH));
         xmlToSchemaSash.setBackgroundMode(SWT.INHERIT_FORCE);
 
+        canModify = externalNode.getProcess().isReadOnly();
         addSchemaViewer(xmlToSchemaSash, 300, 110);
         addXMLViewer(xmlToSchemaSash, 400, 110);
 
@@ -301,6 +303,10 @@ public class FOXUI {
         xmlViewer.getControl().setLayoutData(gridData);
         xmlViewer.setUseHashlookup(true);
         Tree tree = xmlViewer.getTree();
+        // see bug 7087
+        if (canModify) {
+            tree.setEnabled(false);
+        }
         tree.setLinesVisible(true);
         tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
@@ -450,6 +456,10 @@ public class FOXUI {
 
         GridData data2 = new GridData(GridData.FILL_BOTH);
         Table table = schemaViewer.getTable();
+        // see bug 7087
+        if (canModify) {
+            table.setEnabled(false);
+        }
         // table.setLinesVisible(true);
         table.setHeaderVisible(true);
         TableColumn column1 = new TableColumn(table, SWT.LEFT);

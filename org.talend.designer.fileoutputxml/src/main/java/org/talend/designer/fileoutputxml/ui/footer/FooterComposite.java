@@ -44,13 +44,13 @@ public class FooterComposite extends Composite {
      * @param mapperManager
      */
     public FooterComposite(Composite parent, int style, FOXManager generatorManager) {
-        this(parent, style);
+        super(parent, style);
         this.foxManager = generatorManager;
+        createComponents();
     }
 
     public FooterComposite(Composite parent, int style) {
-        super(parent, style);
-        createComponents();
+        this(parent, style, null);
     }
 
     /**
@@ -101,6 +101,13 @@ public class FooterComposite extends Composite {
         cancelButton.setLayoutData(cancelFormData);
 
         Button autoMapButton = new Button(this, SWT.NONE);
+        // see bug 7087
+        if (foxManager != null) {
+            boolean canModify = foxManager.getFoxComponent().getProcess().isReadOnly();
+            if (canModify) {
+                autoMapButton.setEnabled(false);
+            }
+        }
         autoMapButton.setToolTipText(Messages.getString("FooterComposite.AutoMapTip")); //$NON-NLS-1$
         autoMapButton.setText(Messages.getString("FooterComposite.AutoMap")); //$NON-NLS-1$
         autoMapButton.addSelectionListener(new SelectionListener() {
