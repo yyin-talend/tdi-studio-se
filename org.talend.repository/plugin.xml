@@ -936,6 +936,13 @@
 	            id="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
 	            name="ChangeExtendInsertDefaultValueMigrationTask">
 	      </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.RenametFSUniq"
+             description="Rename tFSUniq to tFSUnique"
+             id="org.talend.repository.model.migration.RenametFSUniq"
+             name="Rename tFSUniq to tFSUnique">
+       </projecttask>
 
          
    </extension>
