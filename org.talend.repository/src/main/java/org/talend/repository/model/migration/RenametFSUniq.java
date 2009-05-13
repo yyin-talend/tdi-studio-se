@@ -35,7 +35,7 @@ public class RenametFSUniq extends AbstractJobMigrationTask {
         }
         try {
             ModifyComponentsAction.searchAndRename(item, processType, "tFSUniq", "tFSUnique"); //$NON-NLS-1$ //$NON-NLS-2$
-            return ExecutionResult.SUCCESS_WITH_ALERT;
+            return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
