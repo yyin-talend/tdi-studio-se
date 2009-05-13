@@ -965,15 +965,16 @@ public class ProcessComposite extends Composite {
 
         StyleRange style = new StyleRange();
         style.start = consoleText.getText().length();
-        Pattern patternP = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%"); //$NON-NLS-1$
-        Matcher mP = patternP.matcher(content);
-        Pattern pattern = Pattern.compile("\\[\\s*\\d+(\\.\\d*)?%\\]"); //$NON-NLS-1$
-        Matcher m = pattern.matcher(content);
-        if (mP.find() || m.find()) {
-            consoleText.append(""); //$NON-NLS-1$
-            content = ""; //$NON-NLS-1$
-        } else {
-            consoleText.append(content);
+
+        String[] contents = content.split("\n");
+        for (int i = 0; i < contents.length; i++) {
+            if (isPattern(contents[i]) || isPatternFor(contents[i])) {
+                consoleText.append(""); //$NON-NLS-1$
+                content = ""; //$NON-NLS-1$
+            } else {
+                consoleText.append(contents[i]);
+                consoleText.append("\n");
+            }
         }
         style.length = content.length();
         if (message.getType() == MsgType.CORE_OUT || message.getType() == MsgType.CORE_ERR) {
@@ -1481,7 +1482,6 @@ public class ProcessComposite extends Composite {
                 int secIndex = message[i].indexOf("%"); //$NON-NLS-1$
                 uniqueName = message[i].substring(0, firIndex);
                 mess = message[i].substring(firIndex + 1, secIndex);
-                System.out.println(mess);
             }
 
             Double extentPro = new Double(0);
@@ -1500,6 +1500,12 @@ public class ProcessComposite extends Composite {
 
     private boolean isPattern(String content) {
         Pattern pattern = Pattern.compile("\\$\\s*\\d+(\\.\\d*)?%"); //$NON-NLS-1$
+        Matcher m = pattern.matcher(content);
+        return m.find();
+    }
+
+    private boolean isPatternFor(String content) {
+        Pattern pattern = Pattern.compile("\\[\\s*\\d+(\\.\\d*)?%\\]"); //$NON-NLS-1$
         Matcher m = pattern.matcher(content);
         return m.find();
     }
