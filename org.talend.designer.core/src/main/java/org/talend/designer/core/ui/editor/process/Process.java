@@ -2141,10 +2141,14 @@ public class Process extends Element implements IProcess2 {
     }
 
     // hshen
+    // qli modified to fix the bug "7312".
     public boolean checkIgnoreCase(String connectionName) {
+        if (connectionName.equals("")) {//$NON-NLS-1$
+            return true;
+        }
         if (uniqueConnectionNameList != null) {
             for (String value : uniqueConnectionNameList) {
-                if (value.equalsIgnoreCase(connectionName)) {
+                if (value.equals(connectionName)) {
                     return true;
                 }
             }
