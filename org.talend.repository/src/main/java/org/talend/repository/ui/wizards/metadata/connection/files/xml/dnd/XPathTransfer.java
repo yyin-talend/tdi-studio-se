@@ -14,7 +14,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd;
 
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
-import org.talend.repository.i18n.Messages;
+import org.talend.commons.ui.ws.WindowSystem;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -58,6 +58,9 @@ public class XPathTransfer extends ByteArrayTransfer {
 
     @Override
     protected void javaToNative(Object object, TransferData transferData) {
+        if (WindowSystem.isOSX()) { // FIX for issue 1225
+            super.javaToNative(new byte[0], transferData);
+        }
     }
 
     @Override
