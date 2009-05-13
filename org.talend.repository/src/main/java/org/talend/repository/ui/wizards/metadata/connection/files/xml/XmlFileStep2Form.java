@@ -185,6 +185,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         loopModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor);
         if (xmlXPathLoopDescriptor.getLimitBoucle() == null) {
             xmlXPathLoopDescriptor.setLimitBoucle(-1);
+            XmlArray.setLimitToDefault();
+            xmlXPathLoopDescriptor.setLimitBoucle(XmlArray.getRowLimit());
+
         }
         fieldsModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor.getSchemaTargets());
         fieldsTableEditorView.getTableViewerCreator().layout();
