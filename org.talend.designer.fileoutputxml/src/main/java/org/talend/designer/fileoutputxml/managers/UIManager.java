@@ -171,4 +171,22 @@ public class UIManager {
 
     }
 
+    public boolean validateRootElement() {
+        List<FOXTreeNode> treeData = foxManager.getTreeData();
+        for (int i = 0; i < treeData.size() - 1; i++) {
+            Object obj1 = treeData.get(i);
+            Object obj2 = treeData.get(i + 1);
+            if (obj1 instanceof Element && obj2 instanceof Element) {
+                Element elem1 = (Element) obj1;
+                Element elem2 = (Element) obj2;
+                if (!elem1.getLabel().equals(elem2.getLabel())) {
+                    return false;
+                }
+            }
+
+        }
+
+        return true;
+    }
+
 }

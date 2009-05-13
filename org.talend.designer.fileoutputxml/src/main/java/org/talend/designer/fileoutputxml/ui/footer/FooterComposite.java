@@ -13,6 +13,7 @@
 package org.talend.designer.fileoutputxml.ui.footer;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -36,6 +37,8 @@ public class FooterComposite extends Composite {
 
     private FOXManager foxManager;
 
+    private Composite composite;
+
     /**
      * amaumont FooterComposite constructor comment.
      * 
@@ -47,10 +50,12 @@ public class FooterComposite extends Composite {
         super(parent, style);
         this.foxManager = generatorManager;
         createComponents();
+        this.composite = parent;
     }
 
     public FooterComposite(Composite parent, int style) {
         this(parent, style, null);
+        this.composite = parent;
     }
 
     /**
@@ -77,7 +82,15 @@ public class FooterComposite extends Composite {
             }
 
             public void widgetSelected(SelectionEvent e) {
-                foxManager.getUiManager().closeFOX(SWT.OK);
+                if (foxManager.getUiManager().validateRootElement()) {
+                    foxManager.getUiManager().closeFOX(SWT.OK);
+                } else {
+                    MessageDialog warningMessageDialog = new MessageDialog(composite.getShell(), Messages
+                            .getString("FooterComposite.RootElementError.Title"), null, //$NON-NLS-1$
+                            Messages.getString("FooterComposite.RootElementError.Message"), MessageDialog.ERROR, //$NON-NLS-1$
+                            new String[] { Messages.getString("FooterComposite.0") }, 0); //$NON-NLS-1$
+                    warningMessageDialog.open();
+                }
             }
 
         });
