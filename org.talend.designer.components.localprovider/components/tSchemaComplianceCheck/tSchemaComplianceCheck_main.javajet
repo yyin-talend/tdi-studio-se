@@ -149,12 +149,13 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
         public void testDataLength(String incomingConnName, IMetadataColumn metadataColumn, Integer maxLength, String cid) {
 
             JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
+            boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, metadataColumn.isNullable());            
             
             boolean bIsStringType = (javaType == JavaTypesManager.STRING), bIsIntegerType = (javaType == JavaTypesManager.INTEGER);          
             
             if (maxLength > 0 && ( bIsStringType || bIsIntegerType )){
 %>				
-				if ( String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>) != null) {
+				if ( <%if(!isPrimitive){%> <%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null <%}else{%> true <%}%> ) {
 				
 <%				
 					if ( bIsTrim ){
