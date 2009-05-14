@@ -51,21 +51,17 @@ if(inConn!=null){
 	int outCols = outputMetadataTable.getListColumns().size();
 	for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
 		if(inputCol.getLabel().equals(field)){
+			if(("Date").equals(JavaTypesManager.getJavaTypeFromId(inputCol.getTalendType()).getNullableClass().getSimpleName())){
+				String pattern = inputCol.getPattern() == null || inputCol.getPattern().trim().length() == 0 ? null : inputCol.getPattern();
 %>
-    java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
-    int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
-    //boolean matches_<%=cid %> = matcher_<%= cid %>.find();
-    java.util.List<String> list_<%=cid%> = new java.util.ArrayList<String>();
-    while(matcher_<%= cid %>.find()){
-    	for(int i_<%=cid%>=0;i_<%=cid%><matcher_<%=cid%>.groupCount();i_<%=cid%>++){
-	    	list_<%=cid%>.add(matcher_<%=cid%>.group(i_<%=cid%>+1));
-    	}
-    }
-    if(list_<%=cid%>.size() == 0){
-    	list_<%=cid%>.add(null);
-    }
-    java.util.Iterator<String> it_<%=cid%> = list_<%=cid%>.iterator();
+				java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(FormatterUtils.format_Date(<%=inConn.getName()%>.<%=field%>, <%=pattern%>));
+<%			
+			}else{
+%>
+			    java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
+			    int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
 <%
+			}
 		}
 	}
 }
@@ -84,7 +80,7 @@ if(outConn!=null && inConn!=null){
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
 				isOirginalColumn = true;
 %>
-	<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
+				<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
 <%
 				break;
 			}
@@ -104,158 +100,163 @@ if(!("true").equals(dieOnError)){
 <%
 }
 %>
-while(it_<%=cid%>.hasNext()){
-	String match_<%=cid%> = it_<%=cid%>.next();
+while(matcher_<%= cid %>.find()){
+	for(int i_<%=cid%> = 0; i_<%=cid%> < matcher_<%=cid%>.groupCount(); i_<%=cid%>++){
+		String match_<%=cid%> = matcher_<%=cid%>.group(i_<%=cid%>+1);
 <%
-for(int i=0; i<newColumnList.size();i++){
-	IMetadataColumn column = newColumnList.get(i);
-	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-	String primitiveTypeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
-	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-	String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
-	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-		if(("true").equals(dieOnError)){
+		for(int i=0; i<newColumnList.size();i++){
 %>
-			<%=outConn.getName()%>.<%=column.getLabel() %> = match_<%=cid%>;
+			if(i_<%=cid%> == <%=i%>){
 <%
-		}else{
+				IMetadataColumn column = newColumnList.get(i);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				String primitiveTypeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+					if(("true").equals(dieOnError)){
 %>
-if(flag_<%=cid %>){
-	try{
-		<%=outConn.getName()%>.<%=column.getLabel() %> = match_<%=cid%>;
-	}catch(IllegalStateException e){
-		<%=outConn.getName()%>.<%=column.getLabel() %> = null;
-		flag_<%=cid%> = false;
-	}
-}else{
-	<%=outConn.getName()%>.<%=column.getLabel() %> = null;
-}
-
+						<%=outConn.getName()%>.<%=column.getLabel() %> = match_<%=cid%>;
 <%
-		}
-	}else{ 
-		if(("true").equals(dieOnError)){
+					}else{
 %>
-	temp_<%=cid%> = match_<%=cid%>;
-	if(temp_<%=cid %>.length() > 0) {
+						if(flag_<%=cid %>){
+							try{
+								<%=outConn.getName()%>.<%=column.getLabel() %> = match_<%=cid%>;
+							}catch(IllegalStateException e){
+								<%=outConn.getName()%>.<%=column.getLabel() %> = null;
+								flag_<%=cid%> = false;
+							}
+						}else{
+							<%=outConn.getName()%>.<%=column.getLabel() %> = null;
+						}
 <%
-		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-		} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+					}
+				}else{ 
+					if(("true").equals(dieOnError)){
 %>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
+						temp_<%=cid%> = match_<%=cid%>;
+						if(temp_<%=cid %>.length() > 0){
 <%
-		}else if(javaType == JavaTypesManager.DATE) { 
+							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+							}else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+								<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
 <%
-		} else {
+							}else if(javaType == JavaTypesManager.DATE) { 
 %>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+								<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
-		}
+							}else{
 %>
-	} else {						
+								<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
 <%
-		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-		if(defaultValue == null) {
+							}
 %>
-		throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=outConn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
+						}else{						
 <%
-		} else {
+							String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+							if(defaultValue == null) {
 %>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+								throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=outConn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
-		}
+							}else{
 %>
-	}
+								<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
 <%
-		}else{
+							}
 %>
-if(flag_<%=cid %>){
-try{
-	temp_<%=cid%> = match_<%=cid%>;
-	if(temp_<%=cid %>.length() > 0) {
+						}
 <%
-		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-		} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+					}else{
 %>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
+						if(flag_<%=cid %>){
+							try{
+								temp_<%=cid%> = match_<%=cid%>;
+								if(temp_<%=cid %>.length() > 0){
 <%
-		}else if(javaType == JavaTypesManager.DATE) { 
+									if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+									}else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+										<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
 <%
-		} else {
+									}else if(javaType == JavaTypesManager.DATE){ 
 %>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+										<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
-		}
+									}else {
 %>
-	} else {						
+										<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
 <%
-		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-		if(defaultValue == null) {
+									}
 %>
-		throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=outConn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
+								}else{						
 <%
-		} else {
+									String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+									if(defaultValue == null) {
 %>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+										throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=outConn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
-		}
+									}else {
 %>
-	}
-}catch(IllegalStateException e){
+										<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
 <%
-		if(defaultValue != null){
+									}
 %>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+								}
+							}catch(IllegalStateException e){
 <%
-		}else{
-			if(column.isNullable()) {
+							if(defaultValue != null){
 %>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = null;
+								<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
 <%
-			}else if(javaType == JavaTypesManager.BOOLEAN){
+							}else{
+								if(column.isNullable()) {
 %>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = false;
+									<%=outConn.getName() %>.<%=column.getLabel() %> = null;
 <%
-			}else{
+								}else if(javaType == JavaTypesManager.BOOLEAN){
 %>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
+									<%=outConn.getName() %>.<%=column.getLabel() %> = false;
 <%
+								}else{
+%>
+									<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
+<%
+								}
+							}
+%>
+							flag_<%=cid %> = false;
+						}
+					}else{
+<%
+						if(defaultValue != null){
+%>
+							<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%
+						}else{
+							if(column.isNullable()){
+%>
+								<%=outConn.getName() %>.<%=column.getLabel() %> = null;
+<%
+							}else if(javaType == JavaTypesManager.BOOLEAN){
+%>
+								<%=outConn.getName() %>.<%=column.getLabel() %> = false;
+<%
+							}else{
+%>
+								<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
+<%
+							}
+						}
+%>
+					}
+<%
+				}
 			}
+%>
 		}
-%>
-	flag_<%=cid %> = false;
-}
-}else{
 <%
-		if(defaultValue != null){
-%>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
-<%
-		}else{
-			if(column.isNullable()) {
-%>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = null;
-<%
-			}else if(javaType == JavaTypesManager.BOOLEAN){
-%>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = false;
-<%
-			}else{
-%>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
-<%
-			}
-		}
-%>
-}
-<%
-		}
 	}
-}
 %>
-	
-	
+}
