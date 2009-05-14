@@ -28,9 +28,41 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class ProcessTreeEditPart extends AbstractTreeEditPart implements PropertyChangeListener {
 
+    private NodeTransferDragSourceListener nodeTransferDragSourceListener = NodeTransferDragSourceListener.getInstance();
+
     public ProcessTreeEditPart(Object model) {
         super(model);
     }
+
+    @Override
+    public void setSelected(int value) {
+        nodeTransferDragSourceListener.setEditPart(this);
+        super.setSelected(value);
+    }
+
+    // TransferDragSourceListener dragDropListener = new TransferDragSourceListener() {
+    //
+    // TextTransfer transfer;
+    //
+    // public Transfer getTransfer() {
+    // transfer = TextTransfer.getInstance();
+    // return transfer;
+    // }
+    //
+    // public void dragFinished(final DragSourceEvent event) {
+    // }
+    //
+    // public void dragSetData(final DragSourceEvent event) {
+    // INode node = (INode) currentEditPart.getParent().getModel();
+    // String value = ElementParameterParser.parse(node, ((INodeReturn) currentEditPart.getModel()).getVarName());
+    // event.data = value;
+    // }
+    //
+    // public void dragStart(final DragSourceEvent event) {
+    // event.doit = true;
+    // }
+    //
+    // };
 
     /*
      * (non-Javadoc)
@@ -40,6 +72,8 @@ public class ProcessTreeEditPart extends AbstractTreeEditPart implements Propert
     public void activate() {
         super.activate();
         ((Process) getModel()).addPropertyChangeListener(this);
+        nodeTransferDragSourceListener.setEditPart(this);
+        getViewer().addDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
     }
 
     /*
@@ -49,6 +83,8 @@ public class ProcessTreeEditPart extends AbstractTreeEditPart implements Propert
      */
     public void deactivate() {
         ((Process) getModel()).removePropertyChangeListener(this);
+        nodeTransferDragSourceListener.setEditPart(this);
+        getViewer().removeDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
         super.deactivate();
     }
 
@@ -68,5 +104,6 @@ public class ProcessTreeEditPart extends AbstractTreeEditPart implements Propert
      */
     public void propertyChange(final PropertyChangeEvent change) {
         refreshChildren();
+
     }
 }

@@ -15,15 +15,8 @@ package org.talend.designer.core.ui.editor.outline;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractTreeEditPart;
-import org.eclipse.jface.util.TransferDragSourceListener;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.talend.core.model.process.ElementParameterParser;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.designer.core.ui.editor.nodes.NodeEditPolicy;
 
@@ -44,8 +37,6 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
          */
     }
 
-    static EditPart currentEditPart;
-
     @Override
     public void setSelected(int value) {
         // IWorkbench workbench = PlatformUI.getWorkbench();
@@ -64,44 +55,27 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
         // }
         // }
         // }
-        currentEditPart = this;
+        // Set the editPart parameter of the nodeTransferDragSourceListener object
+        nodeTransferDragSourceListener.setEditPart(this);
         super.setSelected(value);
     }
 
-    TransferDragSourceListener dragDropListener = new TransferDragSourceListener() {
-
-        TextTransfer transfer;
-
-        public Transfer getTransfer() {
-            transfer = TextTransfer.getInstance();
-            return transfer;
-        }
-
-        public void dragFinished(final DragSourceEvent event) {
-        }
-
-        public void dragSetData(final DragSourceEvent event) {
-            INode node = (INode) currentEditPart.getParent().getModel();
-            String value = ElementParameterParser.parse(node, ((INodeReturn) currentEditPart.getModel()).getVarName());
-            event.data = value;
-        }
-
-        public void dragStart(final DragSourceEvent event) {
-            event.doit = true;
-        }
-
-    };
+    // Define a NodeTransferDragSourceListener instance which is always single.
+    private NodeTransferDragSourceListener nodeTransferDragSourceListener = NodeTransferDragSourceListener.getInstance();
 
     @Override
     public void activate() {
         super.activate();
-        getViewer().addDragSourceListener(dragDropListener);
+        // Set the editPart parameter of the nodeTransferDragSourceListener object and register the drag listener
+        nodeTransferDragSourceListener.setEditPart(this);
+        getViewer().addDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
     }
 
     @Override
     public void deactivate() {
         super.deactivate();
-        getViewer().removeDragSourceListener(dragDropListener);
+        nodeTransferDragSourceListener.setEditPart(this);
+        getViewer().removeDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
     }
 
     public NodeReturnsTreeEditPart(Object model) {

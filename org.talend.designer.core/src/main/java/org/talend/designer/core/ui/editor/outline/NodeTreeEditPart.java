@@ -30,6 +30,14 @@ import org.talend.designer.core.ui.editor.nodes.NodeEditPolicy;
  */
 public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyChangeListener {
 
+    private NodeTransferDragSourceListener nodeTransferDragSourceListener = NodeTransferDragSourceListener.getInstance();
+
+    @Override
+    public void setSelected(int value) {
+        nodeTransferDragSourceListener.setEditPart(this);
+        super.setSelected(value);
+    }
+
     public NodeTreeEditPart(Object model) {
         super(model);
     }
@@ -43,6 +51,8 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
     public void activate() {
         super.activate();
         ((Node) getModel()).addPropertyChangeListener(this);
+        nodeTransferDragSourceListener.setEditPart(this);
+        getViewer().addDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
     }
 
     /*
@@ -53,6 +63,8 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
     @Override
     public void deactivate() {
         ((Node) getModel()).removePropertyChangeListener(this);
+        nodeTransferDragSourceListener.setEditPart(this);
+        getViewer().removeDragSourceListener(nodeTransferDragSourceListener.getNodeTransferDragSourceListener());
         super.deactivate();
     }
 
