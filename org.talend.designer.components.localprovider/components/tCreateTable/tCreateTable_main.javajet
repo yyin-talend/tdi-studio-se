@@ -30,8 +30,6 @@ abstract class  Manager {
     protected abstract String getDriver();
     public abstract String getConnectionURL();
     protected abstract String getDBMSId();
-    protected abstract String getLProtectedChar();
-    protected abstract String getRProtectedChar();
     public Manager(String dbName, String userName, String password) {
         this.dbName = dbName;
         this.userName = userName;
@@ -76,15 +74,15 @@ abstract class  Manager {
         if(temporary) {
             temp = "TEMPORARY "; 
         }
-        createTableSQL.append("CREATE " + temp + "TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "(");
+        createTableSQL.append("CREATE " + temp + "TABLE " + getLProtectedChar( "\" + tableName_" + cid + " + \"" ) + "\" + tableName_" + cid + " + \"" + getRProtectedChar("\" + tableName_" + cid + " + \"") + "(");
         List<String> pkList = new ArrayList<String>();
         int count = 0;
         String ending = ",";
         for(IMetadataColumn metadataColumn : listColumn) {
             if(metadataColumn.isKey()) {
-                pkList.add(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar());
+                pkList.add(getLProtectedChar(metadataColumn.getOriginalDbColumnName()) + metadataColumn.getOriginalDbColumnName() + getRProtectedChar(metadataColumn.getOriginalDbColumnName()));
             }
-            createTableSQL.append(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar() + " ");
+            createTableSQL.append(getLProtectedChar(metadataColumn.getOriginalDbColumnName()) + metadataColumn.getOriginalDbColumnName() + getRProtectedChar(metadataColumn.getOriginalDbColumnName()) + " ");
             String dataType = null;
             if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
                 dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
@@ -194,7 +192,22 @@ abstract class  Manager {
             return " default " + defaultValue + " ";
         }            
     }
+    protected String getLProtectedChar() {
+    	return "";
+    }
+    protected String getRProtectedChar() {
+    	return "";
+    }
+    
+    protected String getLProtectedChar(String keyword){
+    	return getLProtectedChar();
+    }
+    protected String getRProtectedChar(String keyword){
+    	return getRProtectedChar();
+    }
+    
 }
+
 class AS400Manager extends Manager {
     private String host;
     private String dbproperty;
@@ -633,7 +646,37 @@ class OracleManager extends Manager {
     private String dbSchema;
     private String connectionType;
     private boolean useExistingConnection;
-    private String connection;        
+    private String connection;
+    private String[] oracleKeyWords= {
+    	"ACCESS" ,"AUDIT","COMPRESS","DESC" , 
+    	"ADD","ACCESS","CONNECT","DISTINCT" ,
+    	"ALL","BY","CREATE","DROP",
+    	"ALTER","CHAR","CURRENT","ELSE",
+    	"AND","CHECK","DATE","EXCLUSIVE",
+    	"ANY","CLUSTER","DECIMAL","	EXISTS",
+    	"AS","COLUMN","DEFAULT","FILE",
+    	"ASC","COMMENT","DELETE","FLOAT",
+    	"FOR","LONG","PCTFREE","SUCCESSFUL",
+    	"FROM","MAXEXTENTS","PRIOR","SYNONYM",
+    	"GRANT","MINUS","PRIVILEGES","SYSDATE",
+    	"GROUP","MODE","PUBLIC","TABLE",
+    	"HAVING","MODIFY","RAW","THEN",
+    	"IDENTIFIED","NETWORK","RENAME","TO",
+		"IMMEDIATE","NOAUDIT","RESOURCE","TRIGGER",
+		"IN","NOCOMPRESS","REVOKE","UID",
+		"INCREMENT","NOT","ROW","UNION",
+		"INDEX","NOWAIT","ROWID","UNIQUE",
+		"INITIAL","NULL","ROWNUM","UPDATE",
+		"INSERT","NUMBER","ROWS","USER",
+		"INTEGER","OF","SELECT","VALIDATE",
+		"INTERSECT","OFFLINE","SESSION","VALUES",
+		"INTO","ON","SET","VARCHAR",
+		"IS","ONLINE","SHARE","VARCHAR2",
+		"LEVEL","OPTION","SIZE","VIEW",
+		"LIKE","OR","SMALLINT","WHENEVER",
+		"LOCK","ORDER","START","WHERE","WITH"
+    	};
+            
     public OracleManager(String host, String port, String dbName, String tableName, String dbSchema, String useName, String password, String connectionType, boolean useExistingConnection, String connection, String cid) {
         super(dbName, tableName, useName, password, cid);
         this.host = host;
@@ -669,11 +712,31 @@ class OracleManager extends Manager {
         return "oracle_id";
     }
     protected String getLProtectedChar() {
-        return "\\\"";
+        return "";
     }
     protected String getRProtectedChar() {
-        return "\\\"";
+        return "";
     }
+    protected boolean isOracleKeyword (String keyword) {
+        for (int i=0 ; i < oracleKeyWords.length ; i++){
+            if (oracleKeyWords[i].equalsIgnoreCase(keyword)) {
+            	return true;
+            }
+        }
+    	return false;
+    }
+    protected String getLProtectedChar(String keyword) {
+    	if (isOracleKeyword(keyword)){
+    		return "\\\"";
+    	}
+    	return getLProtectedChar();
+    }
+    protected String getRProtectedChar(String keyword) {
+    	if (isOracleKeyword(keyword)){
+    		return "\\\"";
+    	}
+    	return getRProtectedChar();
+    }    
     public String closeConnection() {
         StringBuilder javaCode = new StringBuilder();
         if(useExistingConnection) {
@@ -696,6 +759,7 @@ class OracleManager extends Manager {
         javaCode.append("}");
         return javaCode.toString();
     }
+    
 }
 class PostgreManager extends Manager {
     private String host;
