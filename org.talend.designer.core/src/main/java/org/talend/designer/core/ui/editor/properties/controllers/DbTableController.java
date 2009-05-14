@@ -256,20 +256,41 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * 
      * @param button
      */
-    protected void createOpenSQLCommand(Button button, IContextManager manager) {
+    protected void createOpenSQLCommand(Button button, IContextManager contextManager) {
+        final Button btn = button;
+        SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+
         initConnectionParameters();
-        if (this.connParameters != null) {
+
+        DatabaseConnection connt = manager.createConnection(connParameters);
+        IMetadataConnection iMetadataConnection = null;
+        boolean isStatus = false;
+        if (connt != null) {
+            iMetadataConnection = ConvertionHelper.convert(connt);
+            isStatus = checkConnection(iMetadataConnection);
+        }
+
+        if (isStatus) {
             if (!isUseExistingConnection()) {
-                initConnectionParametersWithContext(elem, manager.getDefaultContext());
+                initConnectionParametersWithContext(elem, contextManager.getDefaultContext());
             } else {
-                initConnectionParametersWithContext(connectionNode, manager.getDefaultContext());
+                initConnectionParametersWithContext(connectionNode, contextManager.getDefaultContext());
             }
             openSQLBuilderWithParamer(button);
         } else {
-            MessageDialog
-                    .openWarning(
-                            button.getShell(),
-                            Messages.getString("DbTableController.connectionError"), Messages.getString("DbTableController.setParameter")); //$NON-NLS-1$ //$NON-NLS-2$
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    String pid = SqlBuilderPlugin.PLUGIN_ID;
+                    String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
+                    ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(composite
+                            .getShell(), pid, mainMsg, connParameters.getConnectionComment());
+                    if (dialog.getCodeOfButton() == Window.OK) {
+                        openParamemerDialog(btn, part.getTalendEditor().getProcess().getContextManager());
+                    }
+                }
+            });
+
         }
     }
 
