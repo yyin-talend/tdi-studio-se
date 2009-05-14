@@ -895,11 +895,18 @@ public class ProcessComposite extends Composite {
             }
             toolBar.setEnabled(b);
         } else {
+            // qli modified to fix the bug 7354.
             toolBar.setEnabled(runnable);
-            itemDropDown.setText(" " + Messages.getString("ProcessComposite.exec") + "  "); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-            itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
-            itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-            itemDropDown.setData(ProcessView.EXEC_ID);
+            if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
+                debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
+                debugMenuItem.setData(ProcessView.DEBUG_ID);
+                debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+            } else {
+                itemDropDown.setText(" " + Messages.getString("ProcessComposite.exec") + "  "); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+                itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
+                itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+                itemDropDown.setData(ProcessView.EXEC_ID);
+            }
         }
 
     }
