@@ -21,10 +21,7 @@ import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.ui.images.ECoreImage;
@@ -91,13 +88,16 @@ public class NodeProgressBarFigure extends Figure {
 
         SimpleHtmlFigure dataFigure = new SimpleHtmlFigure();
         dataFigure.setVisible(true);
-        Font font = new Font(Display.getDefault(), "Courier", 12, SWT.NORMAL);
-        dataFigure.setFont(font);
+        // Font font = new Font(Display.getDefault(), "Arial", 9, SWT.ITALIC);
+        // dataFigure.setFont(font);
+        //
+        //        dataFigure.setText(extentFlag.intValue() + "%");//$NON-NLS-1$
 
-        dataFigure.setText(extentFlag.intValue() + "%");//$NON-NLS-1$
+        dataFigure.setText("<font color='#000000'> <b> " + extentFlag.intValue() + "%" //$NON-NLS-1$
+                + "</b></font>"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        dataFigure.setSize(27, 12);
-        dataFigure.setPreferredSize(27, 12);
+        // dataFigure.setSize(27, 12);
+        // dataFigure.setPreferredSize(27, 12);
 
         int nodeX = progressBarFigure.getLocation().x;
         int nodeY = progressBarFigure.getLocation().y;
