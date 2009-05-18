@@ -71,4 +71,31 @@ public final class ComponentsProviderManager {
             }
         }
     }
+
+    public AbstractComponentsProvider loadUserComponentsProvidersFromExtension() {
+        providers = new ArrayList<AbstractComponentsProvider>();
+
+        IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+        IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.talend.core.components_provider"); //$NON-NLS-1$
+        IExtension[] extensions = extensionPoint.getExtensions();
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configurationElements = extension.getConfigurationElements();
+            for (IConfigurationElement configurationElement : configurationElements) {
+                String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
+                if ("org.talend.designer.components.model.UserComponentsProvider".equals(id)) {//$NON-NLS-1$
+                    String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
+                    try {
+                        AbstractComponentsProvider componentsProvider = (AbstractComponentsProvider) configurationElement
+                                .createExecutableExtension("class"); //$NON-NLS-1$
+                        componentsProvider.setId(id);
+                        componentsProvider.setFolderName(folderName);
+                        return componentsProvider;
+                    } catch (CoreException e) {
+                        log.error(Messages.getString("ComponentsProviderManager.unableLoad") + id, e); //$NON-NLS-1$
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

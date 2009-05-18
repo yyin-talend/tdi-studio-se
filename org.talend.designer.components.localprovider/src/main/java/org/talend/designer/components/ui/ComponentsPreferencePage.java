@@ -28,9 +28,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
+import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
 import org.talend.designer.components.i18n.Messages;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
@@ -103,7 +107,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     public void propertyChange(PropertyChangeEvent event) {
 
         if (event.getSource() == filePathTemp) {
-            propertyChangeForComponents(event);
+            // propertyChangeForComponents(event);
         } else {
             Object nValue = event.getNewValue();
             if (event.getProperty().equals(FieldEditor.IS_VALID)) {
@@ -122,12 +126,6 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     protected boolean canClearErrorMessage() {
         return true;
-    }
-
-    @Override
-    protected void performApply() {
-        // TODO Auto-generated method stub
-        super.performApply();
     }
 
     protected Composite createForMapper(Composite parent) {
@@ -237,4 +235,13 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     public void init(IWorkbench workbench) {
     }
 
+    @Override
+    public boolean performOk() {
+        boolean flag = super.performOk();
+        IComponentsFactory components = ComponentsFactoryProvider.getInstance();
+        components.loadUserComponentsFromComponentsProviderExtension();
+        CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
+                new java.beans.PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
+        return flag;
+    }
 }

@@ -131,6 +131,19 @@ public class ComponentsFactory implements IComponentsFactory {
         }
     }
 
+    public void loadUserComponentsFromComponentsProviderExtension() {
+        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+        AbstractComponentsProvider componentsProvider = componentsProviderManager.loadUserComponentsProvidersFromExtension();
+        try {
+            componentsProvider.preComponentsLoad();
+            if (componentsProvider.getInstallationFolder().exists()) {
+                loadComponentsFromFolder(componentsProvider.getComponentsLocation(), componentsProvider);
+            }
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
     private void removeOldComponentsUserFolder() {
         String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar + OLD_COMPONENTS_USER_INNER_FOLDER;
         File componentsLocation = getComponentsLocation(userPath);
