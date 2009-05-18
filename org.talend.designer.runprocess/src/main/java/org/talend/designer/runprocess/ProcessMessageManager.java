@@ -39,13 +39,21 @@ public class ProcessMessageManager implements IProcessMessageManager {
 
     public static final int LIMIT_MESSAGES = 500;
 
+    public static int lineLimit;
+
     /**
      * DOC amaumont ProcessMessageManager constructor comment.
      */
     public ProcessMessageManager() {
         super();
-
-        messages = new BoundedFifoBuffer(LIMIT_MESSAGES);
+        String line = RunProcessPlugin.getDefault().getPluginPreferences()
+                .getString(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
+        if (!"".equals(line) && line != null) {
+            lineLimit = (Integer.parseInt(line));
+            messages = new BoundedFifoBuffer(lineLimit);
+        } else {
+            messages = new BoundedFifoBuffer(LIMIT_MESSAGES);
+        }
         pcsDelegate = new PropertyChangeSupport(this);
     }
 

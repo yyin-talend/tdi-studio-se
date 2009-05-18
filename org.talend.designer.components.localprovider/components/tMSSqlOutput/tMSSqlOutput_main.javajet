@@ -145,7 +145,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                     } else {
                         %>
-                        System.err.print(e.getMessage());
+                        System.err.println(e.getMessage());
                         <%
                     }
                 } 
@@ -219,7 +219,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                     } else {
                         %>
-                        System.err.print(e.getMessage());
+                        System.err.println(e.getMessage());
                         <%
                     }
                 } 
@@ -311,7 +311,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         } else {
                             %>
-                            System.err.print(e.getMessage());
+                            System.err.println(e.getMessage());
                             <%
                         }
                     } 
@@ -369,7 +369,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         } else {
                             %>
-                            System.err.print(e.getMessage());
+                            System.err.println(e.getMessage());
                             <%
                         }
                     } 
@@ -449,7 +449,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                     } else {
                         %>
-                        System.err.print(e.getMessage());
+                        System.err.println(e.getMessage());
                         <%
                     }
                 } 
@@ -508,7 +508,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         } else {
                             %>
-                            System.err.print(e.getMessage());
+                            System.err.println(e.getMessage());
                             <%
                         }
                     } 
@@ -570,7 +570,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                     } else {
                         %>
-                        System.err.print(e.getMessage());
+                        System.err.println(e.getMessage());
                         <%
                     }
                 } 
