@@ -974,17 +974,18 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String port = getValueFromRepositoryName(element, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
 
+        String dir = getValueFromRepositoryName(element, EConnectionParameterName.DIRECTORY.getName());
+        connParameters.setDirectory(dir);
+
+        // qli modified to fix the bug "7364".
+        String file = getValueFromRepositoryName(element, EConnectionParameterName.FILE.getName());
+        connParameters.setFilename(file);
+
         String datasource = getValueFromRepositoryName(element, EConnectionParameterName.DATASOURCE.getName());
         connParameters.setDatasource(datasource);
 
         String dbName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
         connParameters.setDbName(dbName);
-
-        String file = getValueFromRepositoryName(element, EConnectionParameterName.FILE.getName());
-        connParameters.setFilename(file);
-
-        String dir = getValueFromRepositoryName(element, EConnectionParameterName.DIRECTORY.getName());
-        connParameters.setDirectory(dir);
 
         // General jdbc
         String url = getValueFromRepositoryName(element, EConnectionParameterName.URL.getName());
@@ -1013,7 +1014,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
 
-        connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
+        // qli modified to fix the bug "7364".
+        if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && "" //$NON-NLS-1$
+        .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
+            connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
+        }
         connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context));
         connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context));
         connParameters.setSchema(getParameterValueWithContext(element, EConnectionParameterName.SCHEMA.getName(), context));
@@ -1027,16 +1032,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 EConnectionParameterName.DRIVER_CLASS.getName(), context)));
         connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.DRIVER_JAR.getName(), context)));
-
-        if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && "" //$NON-NLS-1$
-        .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
-            connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
-        }
-
         connParameters.setJdbcProperties(getParameterValueWithContext(element, EConnectionParameterName.PROPERTIES_STRING
                 .getName(), context));
         connParameters
                 .setDatasource(getParameterValueWithContext(element, EConnectionParameterName.DATASOURCE.getName(), context));
+        connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
     }
 
     private String getParameterValueWithContext(IElement elem, String key, IContext context) {
