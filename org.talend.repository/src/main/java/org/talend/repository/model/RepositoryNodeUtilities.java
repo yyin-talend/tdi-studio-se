@@ -14,6 +14,7 @@ package org.talend.repository.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -229,8 +230,65 @@ public class RepositoryNodeUtilities {
         return null;
     }
 
-    public static void expandNode(IRepositoryView view, RepositoryNode curNode) {
-        getRepositoryNode(view.getRoot(), curNode.getObject(), view, true);
+    public static void expandNode(IRepositoryView view, RepositoryNode curNode, Set<RepositoryNode> nodes) {
+        getRepositoryCheckedNode(view.getRoot(), curNode.getObject(), view, true, nodes);
+    }
+
+    private static RepositoryNode getRepositoryCheckedNode(RepositoryNode rootNode, IRepositoryObject curNode,
+            IRepositoryView view, boolean expanded, Set<RepositoryNode> nodes) {
+        if (rootNode == null || curNode == null || view == null) {
+            return null;
+        }
+        if (expanded) {
+            // expande the unvisible node
+            expandNode(rootNode, curNode, view);
+        }
+        final List<RepositoryNode> children = rootNode.getChildren();
+
+        if (children != null) {
+            // in the first, search the current folder
+            List<RepositoryNode> folderChild = new ArrayList<RepositoryNode>();
+
+            for (RepositoryNode childNode : children) {
+                if (isRepositoryFolder(childNode) || childNode.getType() == ENodeType.REFERENCED_PROJECT) {
+                    if (hasCheckedChild(childNode, nodes)) {
+                        folderChild.add(childNode);
+
+                    }
+
+                } else if (childNode.getId().equals(curNode.getId()) && childNode.getObjectType() == curNode.getType()) {
+                    return childNode;
+                }
+
+            }
+            for (RepositoryNode folderNode : folderChild) {
+                final RepositoryNode repositoryNode = getRepositoryCheckedNode(folderNode, curNode, view, expanded, nodes);
+                if (repositoryNode != null) {
+                    return repositoryNode;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static boolean hasCheckedChild(RepositoryNode fatherNode, Set<RepositoryNode> nodes) {
+
+        if (!fatherNode.getChildren().isEmpty()) {
+            for (RepositoryNode node : fatherNode.getChildren()) {
+                boolean flag = hasCheckedChild(node, nodes);
+                if (flag) {
+                    return true;
+                }
+            }
+        } else {
+            for (RepositoryNode node : nodes) {
+                if (node.equals(fatherNode)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static void expandNode(RepositoryNode rootNode, IRepositoryObject curNode, IRepositoryView view) {
