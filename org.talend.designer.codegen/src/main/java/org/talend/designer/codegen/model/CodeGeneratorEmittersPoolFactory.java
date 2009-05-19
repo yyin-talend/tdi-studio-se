@@ -80,6 +80,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     private static boolean initialized = false;
 
+    private static boolean initializeStart = false;
+
     private static Logger log = Logger.getLogger(CodeGeneratorEmittersPoolFactory.class);
 
     private static List<JetBean> jetFilesCompileFail = new ArrayList<JetBean>();
@@ -103,6 +105,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
         public JobRunnable(String name) {
             super(name);
+            initializeStart = true;
         }
 
         public void run() {
@@ -111,6 +114,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
         public IStatus doRun() {
             try {
+
                 ComponentsFactoryProvider.saveComponentVisibilityStatus();
 
                 jetFilesCompileFail.clear();
@@ -125,7 +129,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
                         .getInstance();
                 templatesFactory.init();
-                
+
                 IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
                 // do not call init because it may be already loaded by
                 // ComponentsFactoryProvider.saveComponentVisibilityStatus
@@ -195,6 +199,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                 // remove compilations markers
                 ComponentCompilations.deleteMarkers();
+                initializeStart = false;
 
             } catch (Exception e) {
                 log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
@@ -235,7 +240,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     };
 
     public static Job initialize() {
-        Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) { //$NON-NLS-1$
+        Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage") + "@@@@@@@@@@@@@") { //$NON-NLS-1$
 
             @Override
             protected IStatus doRun(IProgressMonitor monitor) {
@@ -572,7 +577,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @return the emitterPool
      */
     public static HashMap<JetBean, JETEmitter> getEmitterPool() {
-        if (!isInitialized()) {
+        if (!isInitialized() && !isInitializeStart()) {
             initialize();
         }
         return emitterPool;
@@ -585,7 +590,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @return
      */
     public static JETEmitter getJETEmitter(JetBean jetBean) {
-        if (!isInitialized()) {
+        if (!isInitialized() && !isInitializeStart()) {
             initialize();
         }
 
@@ -678,5 +683,9 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
         }
 
+    }
+
+    public static boolean isInitializeStart() {
+        return initializeStart;
     }
 }
