@@ -23,7 +23,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
- * Migration task to rename tFSUniq into tFSUnique.
+ * Migration task to rename tFSUniq into tFSUnique, tFSGeneric into tFSCode.
  */
 
 public class RenametFSUniq extends AbstractJobMigrationTask {
@@ -35,6 +35,7 @@ public class RenametFSUniq extends AbstractJobMigrationTask {
         }
         try {
             ModifyComponentsAction.searchAndRename(item, processType, "tFSUniq", "tFSUnique"); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndRename(item, processType, "tFSGeneric", "tFSCode"); //$NON-NLS-1$ //$NON-NLS-2$
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
