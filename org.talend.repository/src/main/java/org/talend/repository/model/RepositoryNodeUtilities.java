@@ -253,7 +253,6 @@ public class RepositoryNodeUtilities {
                 if (isRepositoryFolder(childNode) || childNode.getType() == ENodeType.REFERENCED_PROJECT) {
                     if (hasCheckedChild(childNode, nodes)) {
                         folderChild.add(childNode);
-
                     }
 
                 } else if (childNode.getId().equals(curNode.getId()) && childNode.getObjectType() == curNode.getType()) {
@@ -273,9 +272,13 @@ public class RepositoryNodeUtilities {
     }
 
     private static boolean hasCheckedChild(RepositoryNode fatherNode, Set<RepositoryNode> nodes) {
-
         if (!fatherNode.getChildren().isEmpty()) {
             for (RepositoryNode node : fatherNode.getChildren()) {
+                for (RepositoryNode pnode : nodes) {
+                    if (node.equals(pnode)) {
+                        return true;
+                    }
+                }
                 boolean flag = hasCheckedChild(node, nodes);
                 if (flag) {
                     return true;
