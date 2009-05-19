@@ -40,6 +40,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.EDatabaseConnVar;
+import org.talend.core.database.conn.template.EDatabaseConnTemplate;
+import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -58,7 +61,6 @@ import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.preferences.StatsAndLogsPreferencePage.FileFieldEditorWithQuotes;
 import org.talend.designer.core.ui.views.jobsettings.ImplicitContextLoadHelper;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
-import org.talend.repository.ui.utils.DataStringConnection;
 
 /**
  * DOC hcw class global comment. Detailled comment
@@ -314,16 +316,14 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
         } else if (!isBuiltIn && connectionItem != null) {
             // check connection url
             DatabaseConnection conn = (DatabaseConnection) connectionItem.getConnection();
-            DataStringConnection url = new DataStringConnection();
-            String[] connectionTypeLabels = url.getItem();
-            int selectionIndex = 0;
-            for (; selectionIndex < connectionTypeLabels.length; selectionIndex++) {
-                if (connectionTypeLabels[selectionIndex].equals(conn.getDatabaseType())) {
-                    break;
-                }
+
+            String databaseType = conn.getDatabaseType();
+            EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(databaseType);
+            EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersion(conn.getDbVersionString());
+            String stringConnection = ""; //$NON-NLS-1$
+            if (template != null) {
+                stringConnection = template.getUrlTemplate(version);
             }
-            url.setSelectionIndex(selectionIndex);
-            String stringConnection = url.getStringConnectionTemplate();
 
             setDbFieldsEnable(false);
 
@@ -334,15 +334,15 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
 
             boolean visible = true;
 
-            if (stringConnection.contains("<host>")) { //$NON-NLS-1$
+            if (stringConnection.contains(EDatabaseConnVar.HOST.getVariable())) {
                 hostField.setEnabled(visible, parent);
             }
-            if (stringConnection.contains("<port>")) { //$NON-NLS-1$
+            if (stringConnection.contains(EDatabaseConnVar.PORT.getVariable())) {
                 portField.setEnabled(visible, parent);
             }
 
-            if (stringConnection.contains("<filename>")) { // && //$NON-NLS-1$
-                if (EDatabaseTypeName.getTypeFromDisplayName(conn.getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
+            if (stringConnection.contains(EDatabaseConnVar.FILENAME.getVariable())) {
+                if (EDatabaseTypeName.getTypeFromDisplayName(databaseType).equals(EDatabaseTypeName.SQLITE)) {
                     userField.setEnabled(false, parent);
                     passwordField.setEnabled(false, parent);
                 } else {
@@ -352,15 +352,15 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
                 dabasePathField.setEnabled(visible, parent);
             }
 
-            if (url.isSchemaNeeded()) {
+            if (EDatabaseConnTemplate.isSchemaNeeded(databaseType)) {
                 schemaField.setEnabled(visible, parent);
             }
 
-            if (url.isAddtionParamsNeeded() && additionParamField != null) {
+            if (EDatabaseConnTemplate.isAddtionParamsNeeded(databaseType) && additionParamField != null) {
                 additionParamField.setEnabled(visible, parent);
             }
 
-            if (url.isDatabaseNeeded()) {
+            if (EDatabaseConnTemplate.isDatabaseNeeded(databaseType)) {
                 dbNameField.setEnabled(visible, parent);
             }
 
@@ -377,7 +377,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
                 processDbField(additionParamField, conn.getAdditionalParams() == null ? "" : processQuotes(conn //$NON-NLS-1$
                         .getAdditionalParams()));
             }
-            if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) { //$NON-NLS-1$
+            if (template == EDatabaseConnTemplate.MSSQL) {
                 schemaField.getTextControl(parent).setEditable(true);
                 if (schemaField.getTextControl(parent).getText().equals("")) { //$NON-NLS-1$
                     schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes("dbo")); //$NON-NLS-1$

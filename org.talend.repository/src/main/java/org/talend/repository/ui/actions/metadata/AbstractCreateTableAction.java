@@ -22,6 +22,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
+import org.talend.core.database.conn.DatabaseConnStrUtil;
+import org.talend.core.database.conn.template.EDatabaseConnTemplate;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -59,7 +61,6 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaTableWizard;
@@ -715,15 +716,14 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     final ManagerConnection managerConnection = new ManagerConnection();
 
                     IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
-                    DataStringConnection dataString = new DataStringConnection();
-                    if (!metadataConnection.getDbType().equals(DataStringConnection.GENERAL_JDBC)
-                            && !metadataConnection.getDbType().equals("Access")) {
-                        metadataConnection.setUrl(dataString.getString(dataString.getDBTypes().indexOf(
-                                metadataConnection.getDbType()), metadataConnection.getServerName(), metadataConnection
-                                .getUsername(), metadataConnection.getPassword(), metadataConnection.getPort(),
-                                metadataConnection.getDatabase(), metadataConnection.getFileFieldName(), metadataConnection
-                                        .getDataSourceName(), metadataConnection.getDbRootPath(), metadataConnection
-                                        .getAdditionalParams()));
+                    if (!metadataConnection.getDbType().equals(EDatabaseConnTemplate.GODBC.getDBTypeName())
+                            && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.ACCESS.getDBTypeName())) {
+                        String genUrl = DatabaseConnStrUtil.getURLString(metadataConnection.getDbType(), metadataConnection
+                                .getDbVersionString(), metadataConnection.getServerName(), metadataConnection.getUsername(),
+                                metadataConnection.getPassword(), metadataConnection.getPort(), metadataConnection.getDatabase(),
+                                metadataConnection.getFileFieldName(), metadataConnection.getDataSourceName(), metadataConnection
+                                        .getDbRootPath(), metadataConnection.getAdditionalParams());
+                        metadataConnection.setUrl(genUrl);
                     }
 
                     final boolean skipStep = checkConnectStatus(managerConnection, metadataConnection);

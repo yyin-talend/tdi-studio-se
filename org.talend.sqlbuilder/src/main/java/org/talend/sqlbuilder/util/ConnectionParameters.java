@@ -20,6 +20,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
@@ -29,7 +30,6 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
@@ -484,12 +484,8 @@ public class ConnectionParameters {
         if (isRepository()) {
             throw new RuntimeException(Messages.getString("ConnectionParameters.exceptionMessage")); //$NON-NLS-1$
         }
-        DataStringConnection urlDataStringConnection = new DataStringConnection();
-        int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
-        urlDataStringConnection.setSelectionIndex(dbIndex);
-        urlDataStringConnection.setDbVersion(dbVersion);
-        String url = urlDataStringConnection.getString(dbIndex, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
-                getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
+        String url = DatabaseConnStrUtil.getURLString(getDbType(), getDbVersion(), getHost(), getUserName(), getPassword(),
+                getPort(), getDbName(), getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
         return url;
 
     }

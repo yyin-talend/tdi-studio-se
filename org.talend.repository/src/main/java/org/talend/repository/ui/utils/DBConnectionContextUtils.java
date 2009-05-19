@@ -19,6 +19,8 @@ import java.util.Set;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.DatabaseConnStrUtil;
+import org.talend.core.database.conn.template.EDatabaseConnTemplate;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.PasswordEncryptUtil;
@@ -231,17 +233,13 @@ public final class DBConnectionContextUtils {
         filePath = TalendTextUtils.removeQuotes(filePath);
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
         // url
-        DataStringConnection dataStringConn = new DataStringConnection();
-        dataStringConn.setSelectionIndex(dbTypeIndex);
-        dataStringConn.setDbVersion(dbConn.getDbVersionString());
-        dataStringConn.getString(dbTypeIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(),
-                datasource, dbRootPath, additionParam);
 
         String urlConnection;
-        if (dbConn.getDatabaseType().equals(DataStringConnection.GENERAL_JDBC)) {
+        if (dbConn.getDatabaseType().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName())) {
             urlConnection = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getURL());
         } else {
-            urlConnection = dataStringConn.getUrlConnectionStr();
+            urlConnection = DatabaseConnStrUtil.getURLString(dbConn.getDatabaseType(), dbConn.getDbVersionString(), server,
+                    username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource, dbRootPath, additionParam);
         }
 
         if (dbConn.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
@@ -261,8 +259,8 @@ public final class DBConnectionContextUtils {
      * 
      * if display is false, the string connection will be returned by default context.
      */
-    public static DataStringConnection getUrlConnectionString(int dbIndex, ConnectionItem connectionItem, boolean defaultContext) {
-        if (dbIndex < 0 || connectionItem == null) {
+    public static String getUrlConnectionString(ConnectionItem connectionItem, boolean defaultContext) {
+        if (connectionItem == null) {
             return null;
         }
         DatabaseConnection dbConn = (DatabaseConnection) connectionItem.getConnection();
@@ -286,12 +284,11 @@ public final class DBConnectionContextUtils {
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
-        DataStringConnection dataStringConn = new DataStringConnection();
-        dataStringConn.setSelectionIndex(dbIndex);
-        dataStringConn.setDbVersion(dbConn.getDbVersionString());
-        dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
-                dbRootPath, additionParam, jdbcUrl, driverJar, className, mappingFile);
-        return dataStringConn;
+
+        String newUrl = DatabaseConnStrUtil.getURLString(dbConn.getDatabaseType(), dbConn.getDbVersionString(), server, username,
+                password, port, sidOrDatabase, filePath.toLowerCase(), datasource, dbRootPath, additionParam, jdbcUrl, driverJar,
+                className, mappingFile);
+        return newUrl;
 
     }
 
@@ -391,20 +388,13 @@ public final class DBConnectionContextUtils {
          */
         // cloneConn.setContextId(dbConn.getContextId());
         // cloneConn.setContextMode(dbConn.isContextMode());
-        DataStringConnection dataStringConn = new DataStringConnection();
-        int dbIndex = 0;
-        if (cloneConn.getDatabaseType() != null) {
-            dbIndex = dataStringConn.getIndexOfLabel(cloneConn.getDatabaseType());
-        }
-        dataStringConn.setSelectionIndex(dbIndex);
-        dataStringConn.setDbVersion(dbConn.getDbVersionString());
-        dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
-                dbRootPath, additionParam);
         if (dbConn.getURL() != null && !dbConn.getURL().equals("")) { //$NON-NLS-1$
             // for general db, url is given directly.
             cloneConn.setURL(url);
         } else {
-            cloneConn.setURL(dataStringConn.getUrlConnectionStr());
+            String newURL = DatabaseConnStrUtil.getURLString(cloneConn.getDatabaseType(), dbConn.getDbVersionString(), server,
+                    username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource, dbRootPath, additionParam);
+            cloneConn.setURL(newURL);
         }
 
         return cloneConn;

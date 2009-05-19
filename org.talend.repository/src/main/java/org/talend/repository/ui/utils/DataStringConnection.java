@@ -29,7 +29,7 @@ import org.talend.repository.i18n.Messages;
 
 /**
  * @author ocarbone
- * 
+ * @deprecated by cli
  */
 public class DataStringConnection {
 

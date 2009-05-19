@@ -17,6 +17,7 @@ package org.talend.repository.ui.utils;
  * 
  * $Id$
  * 
+ * @Deprecated by 7052
  */
 public class DataConnection {
 

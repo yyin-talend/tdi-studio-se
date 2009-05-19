@@ -45,12 +45,15 @@ import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.DatabaseConnStrUtil;
+import org.talend.core.database.conn.EDatabaseConnVar;
+import org.talend.core.database.conn.template.EDatabaseConnTemplate;
+import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.PasswordEncryptUtil;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.database.EDatabaseDriver4Version;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -58,7 +61,6 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
-import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.utils.DBConnectionContextUtils.EDBParamName;
 
@@ -82,8 +84,6 @@ public class DatabaseForm extends AbstractForm {
      * Main Vars.
      */
     private final ConnectionItem connectionItem;
-
-    private DataStringConnection urlDataStringConnection;
 
     /**
      * Flags.
@@ -189,10 +189,9 @@ public class DatabaseForm extends AbstractForm {
      */
     @Override
     public void initialize() {
-        Integer indexOfCombo = urlDataStringConnection.getIndexOfLabel(getConnection().getDatabaseType());
+        Integer indexOfCombo = EDatabaseConnTemplate.indexOf(getConnection().getDatabaseType());
         if (indexOfCombo > -1) {
             dbTypeCombo.select(indexOfCombo);
-            urlDataStringConnection.setSelectionIndex(indexOfCombo);
 
             if (isGeneralJDBC()) {
                 switchBetweenTypeandGeneralDB(false);
@@ -329,7 +328,6 @@ public class DatabaseForm extends AbstractForm {
         // Main Fields
 
         // Database Type Combo
-        urlDataStringConnection = new DataStringConnection();
 
         addDBSelectCombo();
 
@@ -369,7 +367,6 @@ public class DatabaseForm extends AbstractForm {
                 .getString("DatabaseForm.dbversion.tip"), new String[0], 2, true); //$NON-NLS-1$
 
         // Field connectionString
-        urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
         urlConnectionStringText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
         urlConnectionStringText.setEditable(false);
 
@@ -402,18 +399,9 @@ public class DatabaseForm extends AbstractForm {
      */
     private List<String> getVersionDrivers(String dbType) {
         List<String> result = new ArrayList<String>();
-        for (EDatabaseDriver4Version d4v : EDatabaseDriver4Version.values()) {
-            if (dbType.equals("Oracle with SID") || dbType.equals("Oracle with service name")) { //$NON-NLS-1$ //$NON-NLS-2$
-                if (d4v.getDbType().equals("Oracle")) { //$NON-NLS-1$
-                    result.add(d4v.getDbVersionName());
-                }
-            } else if (dbType.equals("AS400") && d4v.getDbType().equals("AS400")) { //$NON-NLS-1$ //$NON-NLS-2$
-                result.add(d4v.getDbVersionName());
-            }
-        }
-        if (dbType.equals("Access")) { //$NON-NLS-1$
-            result.add("Access 2003"); //$NON-NLS-1$
-            result.add("Access 2007"); //$NON-NLS-1$
+        List<EDatabaseVersion4Drivers> v4dList = EDatabaseVersion4Drivers.indexOfByDbType(dbType);
+        for (EDatabaseVersion4Drivers v4d : v4dList) {
+            result.add(v4d.getVersionDisplay());
         }
         return result;
     }
@@ -547,7 +535,7 @@ public class DatabaseForm extends AbstractForm {
         // project MODE (Perl/Java).
 
         dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getDBTypes().toArray(new String[0]), 2, true); //$NON-NLS-1$
+                .getString("DatabaseForm.dbTypeTip"), EDatabaseConnTemplate.getDBTypes().toArray(new String[0]), 2, true); //$NON-NLS-1$
 
         // configure the visible item of database combo
         int visibleItemCount = dbTypeCombo.getCombo().getItemCount();
@@ -592,7 +580,7 @@ public class DatabaseForm extends AbstractForm {
             String urlStr = DBConnectionContextUtils.setManagerConnectionValues(managerConnection, connectionItem, dbTypeCombo
                     .getItem(dbTypeCombo.getSelectionIndex()), dbTypeCombo.getSelectionIndex());
             if (urlStr == null) {
-                if (dbTypeCombo.getText().equals(DataStringConnection.GENERAL_JDBC)) {
+                if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName())) {
                     DatabaseConnection dbConn = (DatabaseConnection) connectionItem.getConnection();
 
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn);
@@ -603,6 +591,11 @@ public class DatabaseForm extends AbstractForm {
             }
             urlConnectionStringText.setText(urlStr);
         } else {
+            String versionStr = dbVersionCombo.getText();
+            EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersionDisplay(versionStr);
+            if (version != null) {
+                versionStr = version.getVersionValue();
+            }
             // set the value
             managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()),
                     isGeneralJDBC() ? generalJdbcUrlText.getText() : urlConnectionStringText.getText(), serverText.getText(),
@@ -610,7 +603,7 @@ public class DatabaseForm extends AbstractForm {
                     isGeneralJDBC() ? generalJdbcPasswordText.getText() : passwordText.getText(), sidOrDatabaseText.getText(),
                     portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? "" : schemaText //$NON-NLS-1$
                             .getText(), additionParamText.getText(), generalJdbcClassNameText.getText(), generalJdbcDriverjarText
-                            .getText(), oracleVersionEnable() || as400VersionEnable() ? dbVersionCombo.getText() : null);
+                            .getText(), oracleVersionEnable() || as400VersionEnable() ? versionStr : null);
 
             managerConnection.setDbRootPath(directoryField.getText());
 
@@ -677,32 +670,32 @@ public class DatabaseForm extends AbstractForm {
                         }
                         databaseSettingIsValide = false;
                         checkButton.setEnabled(true);
-                        urlDataStringConnection.setDbVersion(dbVersionCombo.getText());
-                        String[] s = urlDataStringConnection.getAnalyse(urlConnectionStringText.getText());
+                        String[] s = DatabaseConnStrUtil.analyseURL(getConnection().getDatabaseType(), getConnection()
+                                .getDbVersionString(), urlConnectionStringText.getText());
                         // if the ConnectionString write manually don't
                         // correspond width selectedIndex of combo DbType
                         // we search if another regex corresponding at this
                         // string
-                        int selection = new Integer(s[0]);
-                        if (selection != dbTypeCombo.getSelectionIndex()) {
-                            dbTypeCombo.select(new Integer(s[0]));
+                        String selection = s[0];
+                        if (!dbTypeCombo.getText().equals(selection)) {
+                            dbTypeCombo.setText(selection);
                             dbTypeCombo.forceFocus();
                         }
 
                         int index = 1;
                         if (s[index] != "") {//$NON-NLS-1$
-                            if (selection == DataStringConnection.DBTYPE_GENERIC_ODBC
-                                    || selection == DataStringConnection.DBTYPE_MICORSOFT_SQL_SERVER_ODBC_DRIVER) {
+                            if (selection.equals(EDatabaseConnTemplate.GODBC.getDBTypeName())
+                                    || selection.equals(EDatabaseConnTemplate.MSODBC.getDBTypeName())) {
                                 datasourceText.setText(s[index]);
                                 getConnection().setDatasourceName(s[index]);
-                            } else if (selection == DataStringConnection.DBTYPE_SQLITE
-                                    || selection == DataStringConnection.DBTYPE_ACCESS) {
+                            } else if (selection.equals(EDatabaseConnTemplate.SQLITE.getDBTypeName())
+                                    || selection.equals(EDatabaseConnTemplate.ACCESS.getDBTypeName())) {
                                 fileField.setText(s[index]);
                                 getConnection().setFileFieldName(s[index]);
-                            } else if (selection == DataStringConnection.DBTYPE_JAVADB_EMBEDED) {
+                            } else if (selection.equals(EDatabaseConnTemplate.JAVADB_EMBEDED.getDBTypeName())) {
                                 sidOrDatabaseText.setText(s[index]);
                                 getConnection().setSID(s[index]);
-                            } else if (selection == DataStringConnection.DBTYPE_HSQLDB_IN_PROCESS) {
+                            } else if (selection.equals(EDatabaseConnTemplate.HSQLDB_IN_PROGRESS.getDBTypeName())) {
                                 directoryField.setText(s[index]);
                                 getConnection().setDBRootPath(s[index]);
                             } else {
@@ -713,13 +706,13 @@ public class DatabaseForm extends AbstractForm {
 
                         index = 2;
                         if (s[index] != "") { //$NON-NLS-1$
-                            if (selection == DataStringConnection.DBTYPE_INTERBASE
-                                    || selection == DataStringConnection.DBTYPE_TERDATA
-                                    || selection == DataStringConnection.DBTYPE_AS400
-                                    || selection == DataStringConnection.DBTYPE_HSQLDB_IN_PROCESS) {
+                            if (selection.equals(EDatabaseConnTemplate.INTERBASE.getDBTypeName())
+                                    || selection.equals(EDatabaseConnTemplate.TERADATA.getDBTypeName())
+                                    || selection.equals(EDatabaseConnTemplate.AS400.getDBTypeName())
+                                    || selection.equals(EDatabaseConnTemplate.HSQLDB_IN_PROGRESS.getDBTypeName())) {
                                 sidOrDatabaseText.setText(s[index]);
                                 getConnection().setSID(s[index]);
-                            } else if (selection == DataStringConnection.DBTYPE_FIREBIRD) {
+                            } else if (selection.equals(EDatabaseConnTemplate.FIREBIRD.getDBTypeName())) {
                                 fileField.setText(s[index]);
                                 getConnection().setFileFieldName(s[index]);
                             } else {
@@ -730,7 +723,7 @@ public class DatabaseForm extends AbstractForm {
 
                         index = 3;
                         if (s[index] != "") { //$NON-NLS-1$
-                            if (selection != DataStringConnection.DBTYPE_AS400) {
+                            if (selection.equals(EDatabaseConnTemplate.AS400.getDBTypeName())) {
                                 sidOrDatabaseText.setText(s[index]);
                                 getConnection().setSID(s[index]);
                             }
@@ -738,7 +731,7 @@ public class DatabaseForm extends AbstractForm {
 
                         index = 4;
                         if (s[index] != "") { //$NON-NLS-1$
-                            if (selection == DataStringConnection.DBTYPE_INFORMIX) {
+                            if (selection.equals(EDatabaseConnTemplate.INFORMIX.getDBTypeName())) {
                                 datasourceText.setText(s[index]);
                                 getConnection().setDatasourceName(s[index]);
                             } else {
@@ -930,7 +923,11 @@ public class DatabaseForm extends AbstractForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
-                    getConnection().setDbVersionString(dbVersionCombo.getText());
+                    EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersionDisplay(dbVersionCombo.getText());
+                    if (version != null) {
+                        getConnection().setDbVersionString(version.getVersionValue());
+                    }
+                    urlConnectionStringText.setText(getStringConnection());
                     checkFieldsValue();
                 }
             }
@@ -984,10 +981,10 @@ public class DatabaseForm extends AbstractForm {
                 switchBetweenTypeandGeneralDB(hiddenGeneral);
 
                 if (!isContextMode()) {
-                    urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
                     setPropertiesFormEditable(true);
                     getConnection().setDatabaseType(dbTypeCombo.getText());
-                    portText.setText(urlDataStringConnection.getDefaultPort());
+                    EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
+                    portText.setText(template.getDefaultPort());
 
                     final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType())
                             .getProduct();
@@ -995,7 +992,7 @@ public class DatabaseForm extends AbstractForm {
 
                     String mapping = null;
 
-                    if (product == null || product.equals("General JDBC")) { //$NON-NLS-1$
+                    if (product == null || product.equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName())) {
                         mapping = generalMappingFileText.getText();
                     } else {
                         if (MetadataTalendType.getDefaultDbmsFromProduct(product) != null) {
@@ -1007,13 +1004,13 @@ public class DatabaseForm extends AbstractForm {
                     }
 
                     getConnection().setDbmsId(mapping);
-                    if (dbTypeCombo.getSelectionIndex() == 0) {
+                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.MYSQL.getDBTypeName())) {
                         // additionParamText.setText(DataStringConnection.
                         // mySQlDefaultValue);
-                        additionParamText.setText(DataStringConnection.mySQlDefaultValue);
+                        additionParamText.setText(EDatabaseConnTemplate.MYSQL.getAdditionProperty());
                     }
-                    if (dbTypeCombo.getSelectionIndex() == 16) {
-                        additionParamText.setText(DataStringConnection.as400DefaultValue);
+                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.AS400.getDBTypeName())) {
+                        additionParamText.setText(EDatabaseConnTemplate.AS400.getAdditionProperty());
                     }
                     checkAS400SpecificCase();
                     checkFieldsValue();
@@ -1053,7 +1050,11 @@ public class DatabaseForm extends AbstractForm {
                     if (dbTypeCombo.getSelectionIndex() == -1) {
                         dbTypeCombo.forceFocus();
                     } else {
-                        if (urlDataStringConnection.getStringConnectionTemplate().contains("<filename>")) { //$NON-NLS-1$
+                        EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
+                        EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersionDisplay(getConnection()
+                                .getDbVersionString());
+                        if (template != null
+                                && template.getUrlTemplate(version).contains(EDatabaseConnVar.FILENAME.getVariable())) {
                             setPropertiesFormEditable(true);
                             urlConnectionStringText.setEditable(false);
                         }
@@ -1159,22 +1160,30 @@ public class DatabaseForm extends AbstractForm {
         String selectedVersion = getConnection().getDbVersionString();
         dbVersionCombo.removeAll();
         dbVersionCombo.setHideWidgets(true);
-        if (dbTypeCombo.getText().startsWith("Oracle")) { //$NON-NLS-1$
+        if (dbType.equals(EDatabaseConnTemplate.ORACLEFORSID.getDBTypeName())
+                || dbType.equals(EDatabaseConnTemplate.ORACLESN.getDBTypeName())) {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(!isOracle);
-        } else if (dbTypeCombo.getText().startsWith("AS400")) { //$NON-NLS-1$
+        } else if (dbType.equals(EDatabaseConnTemplate.AS400.getDBTypeName())) {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(!isAS400);
-        } else if (dbTypeCombo.getText().startsWith("Access")) { //$NON-NLS-1$
+        } else if (dbType.equals(EDatabaseConnTemplate.ACCESS.getDBTypeName())) {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(false);
         }
         if (selectedVersion != null && !"".equals(selectedVersion)) {
-            dbVersionCombo.setText(selectedVersion);
+            EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersion(selectedVersion);
+            if (version != null) {
+                dbVersionCombo.setText(version.getVersionDisplay());
+            }
         } else {
             dbVersionCombo.select(0);
-            getConnection().setDbVersionString(dbVersionCombo.getText());
+            EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersionDisplay(dbVersionCombo.getText());
+            if (version != null) {
+                getConnection().setDbVersionString(version.getVersionValue());
+            }
         }
+        urlConnectionStringText.setText(getStringConnection());
     }
 
     /**
@@ -1295,7 +1304,7 @@ public class DatabaseForm extends AbstractForm {
      * @return
      */
     private boolean isGeneralJDBC() {
-        return dbTypeCombo.getText().equals(DataStringConnection.GENERAL_JDBC);
+        return dbTypeCombo.getText().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName());
     }
 
     /**
@@ -1307,7 +1316,7 @@ public class DatabaseForm extends AbstractForm {
         boolean checkGeneralDB = isGeneralJDBC();
 
         // See bug 004800
-        if (!checkGeneralDB || dbTypeCombo.getText().startsWith("Access")) {
+        if (!checkGeneralDB || dbTypeCombo.getText().equals(EDatabaseConnTemplate.ACCESS.getDBTypeName())) {
             getConnection().setURL(getStringConnection());
         }
 
@@ -1316,7 +1325,11 @@ public class DatabaseForm extends AbstractForm {
         }
         databaseSettingIsValide = false;
         urlConnectionStringText.setText(getStringConnection());
-        urlConnectionStringText.setToolTipText(urlDataStringConnection.getStringConnectionTemplate());
+        EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
+        if (template != null) {
+            EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersion(getConnection().getDbVersionString());
+            urlConnectionStringText.setToolTipText(template.getUrlTemplate(version));
+        }
         updateCheckButton();
         setPropertiesFormEditable(false);
 
@@ -1401,33 +1414,36 @@ public class DatabaseForm extends AbstractForm {
     private boolean checkTypeDBFieldValues() {
 
         // Another fields depend on DbType
-        String s = urlDataStringConnection.getStringConnectionTemplate();
-        if (s.contains("<host>") && serverText.getCharCount() == 0) { //$NON-NLS-1$
+        EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
+        EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersion(getConnection().getDbVersionString());
+        String s = template.getUrlTemplate(version);
+        if (s.contains(EDatabaseConnVar.HOST.getVariable()) && serverText.getCharCount() == 0) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", serverText.getLabelText())); //$NON-NLS-1$
             return false;
         }
-        if (s.contains("<port>") && portText.getCharCount() == 0) { //$NON-NLS-1$
+        if (s.contains(EDatabaseConnVar.PORT.getVariable()) && portText.getCharCount() == 0) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", portText.getLabelText())); //$NON-NLS-1$
             return false;
         }
-        if ((s.contains("<sid>") || s.contains("<service_name>")) && sidOrDatabaseText.getCharCount() == 0) { //$NON-NLS-1$ //$NON-NLS-2$
+        if ((s.contains(EDatabaseConnVar.SID.getVariable()) || s.contains(EDatabaseConnVar.SERVICE_NAME.getVariable()))
+                && sidOrDatabaseText.getCharCount() == 0) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", sidOrDatabaseText.getLabelText())); //$NON-NLS-1$
             return false;
         }
-        if (s.contains("<filename>") && fileField.getText() == "") { //$NON-NLS-1$ //$NON-NLS-2$
+        if (s.contains(EDatabaseConnVar.FILENAME.getVariable()) && fileField.getText() == "") { //$NON-NLS-1$ 
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", fileField.getLabelText())); //$NON-NLS-1$
             return false;
         }
-        if (s.contains("<datasource>") && datasourceText.getText() == "") { //$NON-NLS-1$ //$NON-NLS-2$
+        if (s.contains(EDatabaseConnVar.DATASOURCE.getVariable()) && datasourceText.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", datasourceText.getLabelText())); //$NON-NLS-1$
             return false;
         }
-        if (s.contains("<dbRootPath>") && directoryField.getText() == "") { //$NON-NLS-1$ //$NON-NLS-2$
+        if (s.contains(EDatabaseConnVar.DBROOTPATH.getVariable()) && directoryField.getText() == "") { //$NON-NLS-1$ 
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", directoryField.getLabelText())); //$NON-NLS-1$
             return false;
         }
 
-        if (urlDataStringConnection.isSchemaNeeded() && schemaText.getCharCount() == 0) {
+        if (EDatabaseConnTemplate.isSchemaNeeded(getConnection().getDatabaseType()) && schemaText.getCharCount() == 0) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", schemaText.getLabelText())); //$NON-NLS-1$
             return false;
         }
@@ -1439,17 +1455,16 @@ public class DatabaseForm extends AbstractForm {
     private String getStringConnection() {
         String s = null;
         if (isContextMode()) {
-            s = DBConnectionContextUtils.getUrlConnectionString(dbTypeCombo.getSelectionIndex(), connectionItem, true)
-                    .getUrlConnectionStr();
+            s = DBConnectionContextUtils.getUrlConnectionString(connectionItem, true);
         } else {
-            urlDataStringConnection.setDbVersion(dbVersionCombo.getText());
-            s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(), usernameText.getText(),
+            String versionStr = dbVersionCombo.getText();
+            EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersionDisplay(versionStr);
+            if (version != null) {
+                versionStr = version.getVersionValue();
+            }
+            s = DatabaseConnStrUtil.getURLString(dbTypeCombo.getText(), versionStr, serverText.getText(), usernameText.getText(),
                     passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(), fileField.getText().toLowerCase(),
                     datasourceText.getText(), directoryField.getText(), additionParamText.getText());
-        }
-
-        if (dbTypeCombo.getText().startsWith("Access") && dbVersionCombo.getText().equals("Access 2003")) {
-            return s.replaceFirst(",\\s\\*\\.accdb", "");
         }
 
         return s;
@@ -1460,8 +1475,11 @@ public class DatabaseForm extends AbstractForm {
         if (isContextMode()) {
             checkButton.setEnabled(true);
         } else {
-            checkButton.setEnabled((dbTypeCombo.getSelectionIndex() >= 0)
-                    && (getStringConnection() != urlDataStringConnection.getStringConnectionTemplate()));
+            EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
+            EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersionDisplay(getConnection()
+                    .getDbVersionString());
+            checkButton.setEnabled((dbTypeCombo.getSelectionIndex() >= 0) && template != null
+                    && (getStringConnection() != template.getUrlTemplate(version)));
             if (isGeneralJDBC()) {
                 checkButton.setEnabled(true);
             }
@@ -1477,8 +1495,8 @@ public class DatabaseForm extends AbstractForm {
         clearContextParams();
         EDBParamName sidOrDatabase = null;
         // update the UI label
-        if (urlDataStringConnection.isSchemaNeeded()) {
-            if (urlDataStringConnection.getStringConnectionTemplate().contains("(description=(address=(protocol=tcp)")) { //$NON-NLS-1$
+        if (EDatabaseConnTemplate.isSchemaNeeded(getConnection().getDatabaseType())) {
+            if (EDatabaseConnTemplate.ORACLESN.getDBTypeName().equals(getConnection().getDatabaseType())) {
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.service_name")); //$NON-NLS-1$
                 sidOrDatabaseText.setLabelWidth(65);
                 sidOrDatabase = EDBParamName.ServiceName;
@@ -1492,7 +1510,7 @@ public class DatabaseForm extends AbstractForm {
 
         }
         // hshen
-        if (DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {//$NON-NLS-1$
+        if (EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText())) {
             addContextParams(EDBParamName.JdbcUrl, visible);
             addContextParams(EDBParamName.DriverJar, visible);
             addContextParams(EDBParamName.MappingFile, visible);
@@ -1506,7 +1524,8 @@ public class DatabaseForm extends AbstractForm {
         boolean isOracle = visible && oracleVersionEnable();
         boolean isAS400 = visible && as400VersionEnable();
 
-        dbVersionCombo.setEnabled(isOracle || isAS400 || dbTypeCombo.getText().startsWith("Access"));
+        dbVersionCombo.setEnabled(isOracle || isAS400
+                || EDatabaseConnTemplate.ACCESS.getDBTypeName().equals(dbTypeCombo.getText()));
         usernameText.setEditable(visible);
         passwordText.setEditable(visible);
         serverText.setEditable(false);
@@ -1520,10 +1539,15 @@ public class DatabaseForm extends AbstractForm {
         if (dbTypeCombo.getSelectionIndex() < 0) {
             urlConnectionStringText.setEditable(false);
         } else {
-            String s = urlDataStringConnection.getStringConnectionTemplate();
+            EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(dbTypeCombo.getText());
+            String s = ""; //$NON-NLS-1$
+            if (template != null) {
+                EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersionDisplay(dbVersionCombo.getText());
+                s = template.getUrlTemplate(version);
+            }
             urlConnectionStringText.setEditable(!visible);
 
-            if (s != null && (s.startsWith("jdbc:jtds:sqlserver:"))) { //$NON-NLS-1$
+            if (template == EDatabaseConnTemplate.MSSQL) {
                 // schemaText.show();
                 schemaText.setEditable(true);
                 addContextParams(EDBParamName.Schema, true);
@@ -1535,30 +1559,30 @@ public class DatabaseForm extends AbstractForm {
                 addContextParams(EDBParamName.Schema, false);
             }
 
-            if (s.contains("<host>")) {
-                if (!DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {
+            if (s.contains(EDatabaseConnVar.HOST.getVariable())) {
+                if (!EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText())) {
                     serverText.setEditable(visible);
                     addContextParams(EDBParamName.Server, visible);
                 }
 
             }
-            if (s.contains("<port>")) { //$NON-NLS-1$
+            if (s.contains(EDatabaseConnVar.PORT.getVariable())) {
                 portText.setEditable(visible);
                 addContextParams(EDBParamName.Port, visible);
             }
-            if (s.contains("<sid>") || s.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
-                if (!DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText())) {
+            if (s.contains(EDatabaseConnVar.SID.getVariable()) || s.contains(EDatabaseConnVar.SERVICE_NAME.getVariable())) {
+                if (!EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText())) {
                     sidOrDatabaseText.setEditable(visible);
                     addContextParams(sidOrDatabase, visible);
                 }
 
             }
-            if (s.contains("<filename>")) { // && //$NON-NLS-1$
+            if (s.contains(EDatabaseConnVar.FILENAME.getVariable())) {
                 fileField.show();
                 fileField.setEditable(visible);
                 addContextParams(EDBParamName.File, visible);
                 boolean isSqlLite = false;
-                if (EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
+                if (template.getDbType() == EDatabaseTypeName.SQLITE) {
                     isSqlLite = true;
                 } else {
                     isSqlLite = false;
@@ -1571,7 +1595,7 @@ public class DatabaseForm extends AbstractForm {
                 fileField.hide();
                 addContextParams(EDBParamName.File, false);
             }
-            if (s.contains("<datasource>")) { //$NON-NLS-1$
+            if (s.contains(EDatabaseConnVar.DATASOURCE.getVariable())) {
                 datasourceText.show();
                 datasourceText.setEditable(visible);
                 addContextParams(EDBParamName.Datasource, visible);
@@ -1580,7 +1604,7 @@ public class DatabaseForm extends AbstractForm {
                 addContextParams(EDBParamName.Datasource, false);
             }
 
-            if (s.contains("<dbRootPath>")) { //$NON-NLS-1$
+            if (s.contains(EDatabaseConnVar.DBROOTPATH.getVariable())) {
                 directoryField.show();
                 directoryField.setEditable(visible);
                 sidOrDatabaseText.setEditable(visible);
@@ -1591,13 +1615,13 @@ public class DatabaseForm extends AbstractForm {
                 addContextParams(EDBParamName.DBRootPath, false);
             }
 
-            if (urlDataStringConnection.isSchemaNeeded()) {
+            if (EDatabaseConnTemplate.isSchemaNeeded(getConnection().getDatabaseType())) {
                 schemaText.show();
                 schemaText.setEditable(visible);
                 addContextParams(EDBParamName.Schema, visible);
             }
-            if (urlDataStringConnection.isAddtionParamsNeeded()
-                    && !DataStringConnection.GENERAL_JDBC.equals(dbTypeCombo.getText()) && visible) {
+            if (EDatabaseConnTemplate.isAddtionParamsNeeded(getConnection().getDatabaseType())
+                    && !EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText()) && visible) {
                 additionParamText.show();
                 additionParamText.setEditable(true);
                 addContextParams(EDBParamName.AdditionalParams, true);
@@ -1656,7 +1680,8 @@ public class DatabaseForm extends AbstractForm {
         if (isContextMode()) {
             adaptFormToEditable();
         } else {
-            setPropertiesFormEditable((urlDataStringConnection.getIndexOfLabel(getConnection().getDatabaseType()) > -1));
+            EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
+            setPropertiesFormEditable(template != null);
         }
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();

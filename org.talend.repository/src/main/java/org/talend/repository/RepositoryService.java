@@ -73,7 +73,6 @@ import org.talend.repository.ui.dialog.ContextRepositoryReviewDialog;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
-import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -521,16 +520,6 @@ public class RepositoryService implements IRepositoryService {
         return null;
     }
 
-    /**
-     * wzhang Comment method "getDatabaseStringURL".
-     * 
-     * @param conn
-     * @return
-     */
-    public String getDatabaseStringURL(DatabaseConnection conn) {
-        DataStringConnection dataStrConn = new DataStringConnection();
-        return dataStrConn.getUrlConnectionStr(conn);
-    }
 
     public Action getRepositoryViewDoubleClickAction() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
