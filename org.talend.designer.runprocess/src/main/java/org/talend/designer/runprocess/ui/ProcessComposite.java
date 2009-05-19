@@ -370,15 +370,17 @@ public class ProcessComposite extends Composite {
         // see the feature 6366,qli comment.
         // make a judge when the text change in diffrent languages.
 
+        Point debugSize = null;
+        Point execSize = null;
         formData.left = new FormAttachment(0);
         if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
             // set debug text to judge size
             itemDropDown.setText(debugMenuItem.getText());
-            Point debugSize = computeSize(itemDropDown.getText());
+            debugSize = computeSize(itemDropDown.getText());
 
             // set exec text to judge size
             itemDropDown.setText(menuItem1.getText());
-            Point execSize = computeSize(itemDropDown.getText());
+            execSize = computeSize(itemDropDown.getText());
             if (debugSize.x > execSize.x) {
                 formData.right = new FormAttachment(0, debugSize.x + 70);
             } else {
@@ -387,7 +389,7 @@ public class ProcessComposite extends Composite {
         } else {
             // set exec text to judge size
             itemDropDown.setText(menuItem1.getText());
-            Point execSize = computeSize(itemDropDown.getText());
+            execSize = computeSize(itemDropDown.getText());
             formData.right = new FormAttachment(0, execSize.x + 70);
         }
         toolBar.setLayoutData(formData);
@@ -402,7 +404,22 @@ public class ProcessComposite extends Composite {
         formData.top = new FormAttachment(toolBar, 0, SWT.TOP);
         formData.left = new FormAttachment(toolBar, 0, SWT.RIGHT);
         // qli modified to fix the bug "7302".
-        formData.right = new FormAttachment(toolBar, itemDropDown.getWidth() + 50, SWT.RIGHT);
+        Point killSize = computeSize(killBtn.getText());
+        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            if ((killSize.x > debugSize.x) && (killSize.x > execSize.x)) {
+                formData.right = new FormAttachment(toolBar, killSize.x + 70, SWT.RIGHT);
+            } else if (debugSize.x > execSize.x) {
+                formData.right = new FormAttachment(toolBar, debugSize.x + 70, SWT.RIGHT);
+            } else {
+                formData.right = new FormAttachment(toolBar, execSize.x + 70, SWT.RIGHT);
+            }
+        } else {
+            if (killSize.x > execSize.x) {
+                formData.right = new FormAttachment(toolBar, killSize.x + 70, SWT.RIGHT);
+            } else {
+                formData.right = new FormAttachment(toolBar, execSize.x + 70, SWT.RIGHT);
+            }
+        }
         formData.height = 30;
         killBtn.setLayoutData(formData);
 
