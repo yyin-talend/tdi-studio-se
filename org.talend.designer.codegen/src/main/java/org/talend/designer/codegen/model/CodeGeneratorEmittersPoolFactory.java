@@ -240,7 +240,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     };
 
     public static Job initialize() {
-        Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage") + "@@@@@@@@@@@@@") { //$NON-NLS-1$
+        Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) { //$NON-NLS-1$
 
             @Override
             protected IStatus doRun(IProgressMonitor monitor) {
