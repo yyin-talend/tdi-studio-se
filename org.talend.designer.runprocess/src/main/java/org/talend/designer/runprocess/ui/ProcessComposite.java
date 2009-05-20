@@ -1021,6 +1021,12 @@ public class ProcessComposite extends Composite {
             break;
         }
         style.foreground = color;
+
+        // added by hyWang for bug 0007411
+        if ((style.start + style.length) > consoleText.getCharCount()) {
+            style.length = consoleText.getCharCount() - style.start;
+        }
+
         consoleText.setStyleRange(style);
 
     }
