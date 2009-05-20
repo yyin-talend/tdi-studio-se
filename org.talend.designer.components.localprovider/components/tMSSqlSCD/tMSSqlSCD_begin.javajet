@@ -48,6 +48,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
     String dbType = MSSQL;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -70,8 +71,19 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         tableName_<%=cid%> = schema_<%=cid%> + "].[" + <%=dbtable%>;
     }
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
+    java.sql.Connection connection_<%=cid%> = null;
+    <%if (useExistingConnection){
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String conn = "conn_" + connection;
+    %>
+	connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");    
+    <%
+    }else {
+    %>
     String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
-    java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
+    connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
+    <%
+    }%>
     java.sql.Timestamp timestamp_<%=cid%> = null;
     String tmpValue_<%=cid%> = null;    
     <%
