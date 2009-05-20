@@ -984,8 +984,9 @@ public class DatabaseForm extends AbstractForm {
                     setPropertiesFormEditable(true);
                     getConnection().setDatabaseType(dbTypeCombo.getText());
                     EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
-                    portText.setText(template.getDefaultPort());
-
+                    if (template != null) {
+                        portText.setText(template.getDefaultPort());
+                    }
                     final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType())
                             .getProduct();
                     getConnection().setProductId(product);
@@ -1416,7 +1417,11 @@ public class DatabaseForm extends AbstractForm {
         // Another fields depend on DbType
         EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
         EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersion(getConnection().getDbVersionString());
-        String s = template.getUrlTemplate(version);
+        String s = ""; //$NON-NLS-1$
+        if (template != null) {
+            s = template.getUrlTemplate(version);
+        }
+
         if (s.contains(EDatabaseConnVar.HOST.getVariable()) && serverText.getCharCount() == 0) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", serverText.getLabelText())); //$NON-NLS-1$
             return false;
