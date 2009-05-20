@@ -104,17 +104,10 @@ for (IConnection iterateConn : iterateConnSet) { //1
 				}
 			}
 			
-			String schemaInstanceDeclaration = createPriveClassMethodDeclaration(subTree.getRootNode(), subTree.getRootNode().getOutgoingConnections().get(0).getName(), false, new java.util.HashSet<String>());
-			if (schemaInstanceDeclaration.length()>0) {
-				schemaInstanceDeclaration = "," + schemaInstanceDeclaration.substring(0,schemaInstanceDeclaration.length()-1); 
-			}
 %>
 	
-		public <%=node.getUniqueName() %>Thread(java.util.Map<String, Object> globalMap<%=schemaInstanceDeclaration %>, int threadID) {
+		public <%=node.getUniqueName() %>Thread(java.util.Map<String, Object> globalMap, int threadID) {
 			super();
-			<% for (IConnection conn : allSubProcessConnection) { %>
-			this.<%=conn.getUniqueName() %> = <%=conn.getUniqueName() %>;
-			<% } %>
 			synchronized (<%=process.getName()%>.this.obj) {
 				this.globalMap = java.util.Collections.synchronizedMap(new ThreadedMap(globalMap));
 			}
