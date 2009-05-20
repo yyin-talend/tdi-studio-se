@@ -16,6 +16,19 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+String algorithm = ElementParameterParser.getValue(
+    node,
+    "__ALGORITHM__"
+);
+
+String perlFunction = null;
+if (algorithm.equals("MD5")) {
+    perlFunction = "md5_hex";
+}
+if (algorithm.equals("SHA1")) {
+    perlFunction = "sha1";
+}
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -73,7 +86,7 @@ $branch_<%=connName%>_is_active = false;
         }
 %>
 
-if (++$<%=cid%>{ md5_hex( join( $; , <%=hashKey%> ) ) } > 1) {
+if (++$<%=cid%>{ <%=perlFunction%>( join( $; , <%=hashKey%> ) ) } > 1) {
 <%
         for (IConnection outConn: node.getOutgoingConnections("DUPLICATE")) {
             String connName = outConn.getName();
