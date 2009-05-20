@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.components.ui;
 
+import java.io.File;
+
 import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -20,6 +22,8 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -208,11 +212,29 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     public void createFieldEditors() {
-        Composite parent = getFieldEditorParent();
+        final Composite parent = getFieldEditorParent();
         filePathTemp = new DirectoryFieldEditor(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, Messages
                 .getString("ComponentsPreferencePage.directoryFieldLabel"), //$NON-NLS-1$
                 parent);
         addField(filePathTemp);
+
+        filePathTemp.getTextControl(parent).addModifyListener(new ModifyListener() {
+
+            String oldPath = getPreferenceStore().getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
+
+            public void modifyText(ModifyEvent e) {
+                String newPath = filePathTemp.getTextControl(parent).getText();
+                File file = new File(newPath);
+                if (!file.exists()) {
+                    // getPreferenceStore().setValue(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, "");
+                    filePathTemp.showErrorMessage();
+                    setValid(false);
+                } else {
+                    setValid(true);
+                }
+            }
+
+        });
 
         if (PluginChecker.isPreviewPluginLoaded()) {
             createForDataViewer(parent);
@@ -223,7 +245,6 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     public void propertyChangeForComponents(PropertyChangeEvent event) {
-
         MessageDialog warningMessageDialog = new MessageDialog(getFieldEditorParent().getShell(), Messages
                 .getString("ComponentsPreferencePage.WarningTitle"), null, //$NON-NLS-1$
                 Messages.getString("ComponentsPreferencePage.WarningMsg"), MessageDialog.WARNING, //$NON-NLS-1$
@@ -244,4 +265,5 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
                 new java.beans.PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
         return flag;
     }
+
 }
