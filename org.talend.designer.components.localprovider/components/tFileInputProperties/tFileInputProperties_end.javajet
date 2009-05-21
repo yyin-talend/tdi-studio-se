@@ -25,5 +25,22 @@
     }   	
 %>
 	tos_count_<%=cid %>++;
+<%
+	if(("PROPERTIES_FORMAT").equals(ElementParameterParser.getValue(node,"__FILE_FORMAT__"))){
+%>
+		}
+<%
+	}else{
+		if(("RETRIVE_ALL").equals(ElementParameterParser.getValue(node,"__RETRIVE_MODE__"))){
+%>
+	}
 }
+<%
+		}else{
+%>
+}
+<%
+		}
+	}
+%>
 globalMap.put("<%=cid %>_NB_LINE", tos_count_<%=cid %>);

@@ -32,7 +32,6 @@ if(("PROPERTIES_FORMAT").equals(fileFormat)){
 %>
 	java.util.Properties properties_<%=cid%> = new java.util.Properties();
 	properties_<%=cid%>.load(new java.io.FileInputStream(file_<%=cid%>));
-	
 	java.util.Enumeration enumeration_<%=cid%> = properties_<%=cid%>.propertyNames();
 	while (enumeration_<%=cid%>.hasMoreElements()) {
 		<%=outConnName %>.key = (String)enumeration_<%=cid%>.nextElement();
@@ -40,16 +39,30 @@ if(("PROPERTIES_FORMAT").equals(fileFormat)){
 <%
 }else if(("INI_FORMAT").equals(fileFormat)){
 	String sectionName = ElementParameterParser.getValue(node,"__SECTION_NAME__");
+	String retriveMode = ElementParameterParser.getValue(node,"__RETRIVE_MODE__");
 %>
     org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));
     ini_<%=cid%>.getConfig().setFileEncoding(java.nio.charset.Charset.forName(<%=encoding %>));
-    org.ini4j.Profile.Section section_<%=cid%> = ini_<%=cid%>.get(<%=sectionName%>);
-    java.util.Set<String> names_<%=cid%> = section_<%=cid%>.keySet();
-    java.util.Iterator<String> it_<%=cid%> = names_<%=cid%>.iterator();
-	while (it_<%=cid%>.hasNext()) {
-	    String key_<%=cid%> = it_<%=cid%>.next();
-		<%=outConnName %>.key = key_<%=cid%>;
-		<%=outConnName %>.value = section_<%=cid%>.get(key_<%=cid%>);
 <%
+	if(("RETRIVE_ALL").equals(retriveMode)){
+%>
+		for(org.ini4j.Profile.Section section_<%=cid%> : ini_<%=cid%>.values()){
+	    	for(String key_<%=cid%> : section_<%=cid%>.keySet()){
+				<%=outConnName %>.key = key_<%=cid%>;
+				<%=outConnName %>.value = section_<%=cid%>.get(key_<%=cid%>);
+<%
+	}else if(("RETRIVE_SECTIONS").equals(retriveMode)){
+%>
+		for(String names_<%=cid%> : ini_<%=cid%>.keySet()){
+		    <%=outConnName %>.section = names_<%=cid%>;
+<%
+	}else if(("RETRIVE_BY_SECTION").equals(retriveMode)){
+%>
+	    org.ini4j.Profile.Section section_<%=cid%> = ini_<%=cid%>.get(<%=sectionName%>);
+	    for(String key_<%=cid%> : section_<%=cid%>.keySet()){
+			<%=outConnName %>.key = key_<%=cid%>;
+			<%=outConnName %>.value = section_<%=cid%>.get(key_<%=cid%>);
+<%
+	}
 }
 %>
