@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
-import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
@@ -59,6 +58,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     private final String mapper = "Mapper "; //$NON-NLS-1$
 
     private final String tRunJob = "tRunJob"; //$NON-NLS-1$
+
+    private static String oldPath = null;
 
     /**
      * This class exists to provide visibility to the <code>refreshValidState</code> method and to perform more
@@ -259,10 +260,14 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     public boolean performOk() {
         boolean flag = super.performOk();
-        IComponentsFactory components = ComponentsFactoryProvider.getInstance();
-        components.loadUserComponentsFromComponentsProviderExtension();
-        CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
-                new java.beans.PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
+        String newPath = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore().getString(
+                IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
+        if (this.oldPath != newPath) {
+            IComponentsFactory components = ComponentsFactoryProvider.getInstance();
+            components.loadUserComponentsFromComponentsProviderExtension();
+            ComponentUtilities.updatePalette();
+            this.oldPath = newPath;
+        }
         return flag;
     }
 

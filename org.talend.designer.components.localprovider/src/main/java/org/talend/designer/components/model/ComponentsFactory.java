@@ -61,6 +61,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static List<IComponent> componentList = null;
 
+    private List<IComponent> userComponentList = null;
+
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
     // keep a list of the current provider for the selected component, to have the family translation
@@ -136,6 +138,15 @@ public class ComponentsFactory implements IComponentsFactory {
         AbstractComponentsProvider componentsProvider = componentsProviderManager.loadUserComponentsProvidersFromExtension();
         try {
             componentsProvider.preComponentsLoad();
+            // remove old user components
+            if (this.userComponentList != null) {
+                for (IComponent component : userComponentList) {
+                    if (componentList.contains(component)) {
+                        componentList.remove(component);
+                    }
+                }
+
+            }
             if (componentsProvider.getInstallationFolder().exists()) {
                 loadComponentsFromFolder(componentsProvider.getComponentsLocation(), componentsProvider);
             }
@@ -175,7 +186,7 @@ public class ComponentsFactory implements IComponentsFactory {
         TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
 
         // TimeMeasure.display=false;
-
+        this.userComponentList = new ArrayList<IComponent>();
         File source = getComponentsLocation(pathSource);
         File[] childDirectories;
 
@@ -254,6 +265,9 @@ public class ComponentsFactory implements IComponentsFactory {
                         loadIcons(currentFolder, currentComp);
                         TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
                         componentList.add(currentComp);
+                        if (pathSource != null && pathSource.equals("components/ext/user")) {//$NON-NLS-1$
+                            userComponentList.add(currentComp);
+                        }
                     }
 
                     if (CommonsPlugin.isHeadless()) {
