@@ -50,6 +50,7 @@ if(("PROPERTIES_FORMAT").equals(fileFormat)){
 	    	for(String key_<%=cid%> : section_<%=cid%>.keySet()){
 				<%=outConnName %>.key = key_<%=cid%>;
 				<%=outConnName %>.value = section_<%=cid%>.get(key_<%=cid%>);
+				<%=outConnName %>.section = section_<%=cid%>.getName();
 <%
 	}else if(("RETRIVE_SECTIONS").equals(retriveMode)){
 %>

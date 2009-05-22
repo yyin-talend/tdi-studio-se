@@ -32,11 +32,11 @@
   
   <PARAMETERS>
 
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="10" READONLY="true"
-    >
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="10" READONLY="true">
       <TABLE READONLY="true" IF="RETRIVE_MODE=='RETRIVE_ALL'">
         <COLUMN NAME="key" TYPE="id_String" LENGTH="255" READONLY="true"/>
         <COLUMN NAME="value" TYPE="id_String" LENGTH="255" READONLY="true"/>
+        <COLUMN NAME="section" TYPE="id_String" LENGTH="255" READONLY="true"/>
       </TABLE>
       
       <TABLE READONLY="true" IF="RETRIVE_MODE=='RETRIVE_SECTIONS'">
@@ -48,6 +48,10 @@
         <COLUMN NAME="value" TYPE="id_String" LENGTH="255" READONLY="true"/>
       </TABLE>
       
+      <TABLE READONLY="true" IF="FILE_FORMAT=='PROPERTIES_FORMAT'">
+        <COLUMN NAME="key" TYPE="id_String" LENGTH="255" READONLY="true"/>
+        <COLUMN NAME="value" TYPE="id_String" LENGTH="255" READONLY="true"/>
+      </TABLE>
     </PARAMETER>
     
     <PARAMETER NAME="FILE_FORMAT" FIELD="CLOSED_LIST" NUM_ROW="15" REQUIRED="false">
