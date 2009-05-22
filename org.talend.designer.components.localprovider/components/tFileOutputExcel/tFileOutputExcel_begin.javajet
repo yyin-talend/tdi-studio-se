@@ -101,9 +101,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         //modif start
 <%if(firstCellYAbsolute){%>
-        int startRowNum_<%=cid %> = Integer.parseInt(<%=firstCellYStr%>);
+        int startRowNum_<%=cid %> = <%=firstCellYStr%>;
 <%}else{%>
-		int startRowNum_<%=cid %> = writableSheet_<%=cid %>.getRows() + Integer.parseInt(<%=firstCellYStr%>);
+		int startRowNum_<%=cid %> = writableSheet_<%=cid %>.getRows() + <%=firstCellYStr%>;
 <%}%>
 		//modif end
 		
@@ -148,14 +148,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 <%if(isIncludeHeader){ %>
 //modif start
-		if (startRowNum_<%=cid %>==Integer.parseInt((<%=firstCellYStr%>)){
+		if (startRowNum_<%=cid %> == <%=firstCellYStr%>){
 //modif end
 <%
     	for (int i = 0; i < columns.size(); i++) {
     		IMetadataColumn column = columns.get(i);
 %>
 //modif start
-				writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + Integer.parseInt(<%=firstCellXStr%>), startRowNum_<%=cid %>, "<%=column.getLabel() %>",format_<%=cid%>));		
+				writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %>, "<%=column.getLabel() %>",format_<%=cid%>));		
 //modif end
 				fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]><%=column.getLabel().length()%>?fitWidth_<%=cid%>[<%=i%>]:<%=column.getLabel().length()%>;
 <% } %>

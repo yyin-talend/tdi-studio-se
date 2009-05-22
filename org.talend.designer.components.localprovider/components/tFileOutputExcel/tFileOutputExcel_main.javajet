@@ -68,7 +68,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						%>Number<%
 					}
 //modif start
-%>(<%=i%> + Integer.parseInt(<%=firstCellXStr%>), startRowNum_<%=cid %> + nb_line_<%=cid%> ,<%
+%>(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%> ,<%
 //modif end
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
