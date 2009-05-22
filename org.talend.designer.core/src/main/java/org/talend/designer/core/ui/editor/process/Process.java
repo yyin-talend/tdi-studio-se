@@ -878,8 +878,6 @@ public class Process extends Element implements IProcess2 {
                         // end of fix for bug 2193
                     } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         elemParam.setPropertyValue(pType.getName(), value);
-                    } else if (param.getName().equals(EParameterName.DB_TYPE)) {
-                        System.out.println();
                     }
                 } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
                         && "true".equals(pType.getValue()) //$NON-NLS-1$
