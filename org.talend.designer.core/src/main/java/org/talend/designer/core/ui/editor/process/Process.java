@@ -112,6 +112,7 @@ import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.JavaProcessUtil;
@@ -809,6 +810,14 @@ public class Process extends Element implements IProcess2 {
                         if (!valueSet) {
                             elemParam.setPropertyValue(pType.getName(), value);
                         }
+                        if (param.getName().equals(EParameterName.DB_TYPE.getName())) {
+                            IElementParameter elementParameter = elemParam.getElementParameter(EParameterName.DB_VERSION
+                                    .getName());
+                            setDbVerdion(elementParameter, value);
+                        } else if (param.getName().equals("DB_TYPE_IMPLICIT_CONTEXT")) {//$NON-NLS-2$
+                            IElementParameter elementParameter = elemParam.getElementParameter("DB_VERSION_IMPLICIT_CONTEXT");//$NON-NLS-2$
+                            setDbVerdion(elementParameter, value);
+                        }
                     } else if (param.getField().equals(EParameterFieldType.TABLE)) {
                         List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                         String[] codeList = param.getListItemsDisplayCodeName();
@@ -869,6 +878,8 @@ public class Process extends Element implements IProcess2 {
                         // end of fix for bug 2193
                     } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         elemParam.setPropertyValue(pType.getName(), value);
+                    } else if (param.getName().equals(EParameterName.DB_TYPE)) {
+                        System.out.println();
                     }
                 } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
                         && "true".equals(pType.getValue()) //$NON-NLS-1$
@@ -877,6 +888,22 @@ public class Process extends Element implements IProcess2 {
                     UpdateTheJobsActionsOnTable.isClear = false;
                 }
             }
+        }
+    }
+
+    private void setDbVerdion(IElementParameter elementParameter, String value) {
+        if (value.indexOf("Access") != -1) {//$NON-NLS-1$
+            elementParameter.setValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER[1]);
+            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER);
+        } else if (value.indexOf("Oracle") != -1) {//$NON-NLS-1$
+            elementParameter.setValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER[1]);
+            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
+        } else if (value.indexOf("AS400") != -1) {//$NON-NLS-1$
+            elementParameter.setValue(StatsAndLogsConstants.AS400_VERSION_DRIVER[1]);
+            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_DRIVER);
         }
     }
 

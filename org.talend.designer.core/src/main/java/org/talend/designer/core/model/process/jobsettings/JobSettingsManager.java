@@ -373,7 +373,7 @@ public class JobSettingsManager {
         param.setNumRow(42);
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
-        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE')"); //$NON-NLS-1$ //$NON-NLS-2$
+        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " =='ACCESS')"); //$NON-NLS-1$ //$NON-NLS-2$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
