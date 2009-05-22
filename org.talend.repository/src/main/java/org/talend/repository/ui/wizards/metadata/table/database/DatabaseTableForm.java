@@ -330,9 +330,10 @@ public class DatabaseTableForm extends AbstractForm {
                 } else if (returnValue.equalsIgnoreCase("null")) { //$NON-NLS-1$
                     returnValue = "null"; //$NON-NLS-1$
                 } else {
-                    returnValue = returnValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                    // hywang modified for bug 7038
+                    //                    returnValue = returnValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                     returnValue = returnValue.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                    returnValue = "\"" + returnValue + "\""; //$NON-NLS-1$ //$NON-NLS-2$
+                    //                    returnValue = "\"" + returnValue + "\""; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 bean.setDefaultValue(returnValue);
             }
