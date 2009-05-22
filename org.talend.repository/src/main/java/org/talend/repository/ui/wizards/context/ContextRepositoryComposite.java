@@ -32,21 +32,8 @@ import org.talend.core.ui.context.ContextComposite;
  */
 public class ContextRepositoryComposite extends ContextComposite {
 
-    private IContextManager contextManager;
-
     public ContextRepositoryComposite(Composite parent, IContextManager contextManager) {
-        super(parent);
-        this.contextManager = contextManager;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.ui.context.ContextComposite#getContextManager()
-     */
-    @Override
-    public IContextManager getContextManager() {
-        return contextManager;
+        super(parent, contextManager);
     }
 
     /*
