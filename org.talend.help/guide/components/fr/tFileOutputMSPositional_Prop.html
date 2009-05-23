@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="05/22/09 11:50:53">
+    <title>tFileOutputMSPositional </title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputMSPositional_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileOutputMSPositional_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2278776"> </a><h2 class="pHeading1">
+tFileOutputMSPositional 
+</h2>
+<a name="wp2278785"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tFileOutputMSPositional_icon32.png" id="wp2278780" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2278792"> </a><h2 class="pHeading2">
+Propriétés du tFileOutputMSPositional
+</h2>
+<a name="wp2278911"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2278800table2278795">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2278800"> </a><div class="pCellBody">
+<b class="cBold">Famille du composant</b>
+</div>
+</td>
+    <td><a name="wp2278802"> </a><div class="pCellBody">
+MultiSchema
+</div>
+</td>
+    <td><a name="wp2279626"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_iconai.png" id="wp2279634" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2278815"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2279660"> </a><div class="pCellBody">
+Le composant <b class="cBold">tFileOutputMSPositional </b>permet d&#39;écrire des schémas multiples dans un fichier positionnel.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2278828"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2279689"> </a><div class="pCellBody">
+Le <b class="cBold">tFileOutputMSPositional </b>crée un fichier multi&#160;structure complexe à l&#39;aide de la structure des données (schémas) venant des différents flux d&#39;entrée de type <b class="cBold">Row</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="3"><a name="wp2278842"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2278847"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name</em>
+</div>
+</td>
+    <td><a name="wp2279733"> </a><div class="pCellBody">
+Chemin d&#39;accès au fichier à créer. <br />Voir également&#160;: <em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2278862"> </a><div class="pCellHeading">
+<em class="cEmphasis">Row separator</em>
+</div>
+</td>
+    <td><a name="wp2279773"> </a><div class="pCellBody">
+Chaîne (ex&#160;: &quot;\n&quot; sous Unix) séparant les lignes.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2278871"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schemas</em>
+</div>
+</td>
+    <td><a name="wp2278873"> </a><div class="pCellBody">
+La table est automatiquement chargée avec des schémas résultant des différents flux d&#39;entrée connectés au composant <b class="cBold">tFileOutputMSPositional</b>. Renseignez les relations de dépendance entre les différents schémas&#160;: <br /><b class="cBold">Parent row</b>: Entrez le nom du flux père (en fonction du nom du lien Row qui transfère les données). <br /><b class="cBold">Parent key column</b>: Entrez le nom de la colonne clé du flux père. <br /><b class="cBold">Key column</b>: Entrez le nom de la colonne clé pour la ligne sélectionnée. <br /><b class="cBold">Pattern</b>: Entrez le modèle (pattern) qui permet de positionner les séparateurs de champ pour chaque ligne d&#39;entrée. <br /><b class="cBold">Padding char</b>: Entrez le caractère de remplissage à utiliser. <br /><b class="cBold">Alignment</b>: Sélectionnez le paramètre d&#39;alignement approprié. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2278904"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2278906"> </a><div class="pCellBody">
+Utilisez ce composant pour écrire un fichier positionnel multi&#160;structure et séparer les champs à l&#39;aide d&#39;un séparateur de position. 
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputMSPositional_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileOutputMSPositional_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

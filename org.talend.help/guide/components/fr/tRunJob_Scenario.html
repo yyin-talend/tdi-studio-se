@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="05/22/09 11:51:59">
+    <title>Scénario&#160;: Exécuter un job distant</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tRunJob_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSSH_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1188077"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1295914"> </a><h2 class="pHeading2">
+Scénario&#160;: Exécuter un job distant
+</h2>
+<a name="wp1289142"> </a><p class="pIndented1">
+Le scénario suivant décrit un job à un composant appelant et exécutant un autre job. Le job à exécuter lit un fichier délimité de base et affiche son contenu dans la console de la vue <b class="cBold">Run</b>. La particularité de ce job réside dans le fait que ce dernier est exécuté à partir d&#39;un autre job et utilise la variable de contexte provenant du fichier d&#39;entrée devant être traité.
+</p>
+<a name="wp1188107"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRunJob1.png" id="wp1239086" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1239081"> </a><p class="pIndented1">
+Créez le premier job lisant le fichier délimité.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1188119"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants <b class="cBold">tFileInputDelimited</b> et <b class="cBold">tLogRow</b> dans l&#39;espace de modélisation.</li></div>
+<a name="wp1188126"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b> du tFileInputDelimited, paramétrez les propriétés du composant d&#39;entrée.</li></div>
+<a name="wp1188137"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Property type</b>, sélectionnez l&#39;option <b class="cBold">Built-In</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1188144"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRunJob3.png" id="wp1188141" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1188152"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">File Name</b>, renseignez le chemin d&#39;accès au fichier d&#39;entrée. Dans cet exemple, ce fichier est le fichier <em class="cEmphasis">Comprehensive.txt</em>.</li></div>
+<a name="wp1188160"> </a><div class="pSmartList2"><li>Sélectionnez ce chemin d&#39;accès et appuyez sur la touche <b class="cBold">F5</b> pour ouvrir la fenêtre de configuration de variable.</li></div>
+<a name="wp1188165"> </a><div class="pSmartList2"><li>Nommez cette nouvelle variable de contexte, ici appelez-la File.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1188172"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRunJob4.png" id="wp1188169" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1188180"> </a><div class="pSmartList2"><li>Pour cet exemple, laissez les paramètres par défaut, i.e. ne cochez pas la case <b class="cBold">Prompt for value</b> et laissez le champ <b class="cBold">Prompt</b> vide.</li></div>
+<a name="wp1188190"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Finish</b> pour valider et appuyez sur <b class="cBold">Enter</b> pour vous assurer que la nouvelle variable de contexte est conservée dans le champ <b class="cBold">File Name</b>.</li></div>
+<a name="wp1550785"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Field</b> et <b class="cBold">Row separators</b> de l&#39;onglet <b class="cBold">Basic settings</b>, renseignez les séparateurs de champs et de lignes utilisés dans le fichier d&#39;entrée.</li></div>
+<a name="wp1188204"> </a><div class="pSmartList2"><li>Dans cet exemple, le fichier ne possède ni d&#39;en-tête ni de pied de page. Ainsi, laissez les champs <b class="cBold">Header</b> et <b class="cBold">Footer</b> vides. Mais dans le <b class="cBold">Limit</b>, paramétrez le nombre de lignes à traiter à 50.</li></div>
+<a name="wp1188217"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Schema type</b>, sélectionnez l&#39;option <b class="cBold">Built-in</b>. Cliquez sur le bouton&#160;[...] pour configurer manuellement le schéma.</li></div>
+<a name="wp1188221"> </a><div class="pSmartList2"><li>Ajoutez deux colonnes et nommez-les comme les deux premières colonnes du fichier d&#39;entrée. Dans cet exemple&#160;: ID et Registration.</li></div>
+<a name="wp1188225"> </a><div class="pSmartList2"><li>Si vous avez stocké le schéma dans le Repository, sélectionnez la métadonnées correspondant à la structure de votre fichier d&#39;entrée.</li></div>
+<a name="wp1188234"> </a><div class="pSmartList2"><li>Puis connectez votre composant d&#39;entrée au composant de sortie&#160;: le <b class="cBold">tLogRow</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1188238"> </a><p class="pIndented1">
+Créez le deuxième job jouant le rôle d&#39;un job maître.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1188244"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b> du composant tRunJob, sélectionnez le job à exécuter.</li></div>
+<a name="wp1188247"> </a><div class="pSmartList2"><li>Nous vous conseillons d&#39;éxécuter une fois le job appelé avant de l&#39;exécuter via le composant <b class="cBold">tRunJob</b> pour vous assurez qu&#39;il s&#39;exécute correctement.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1188256"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRunJob5.png" id="wp1188253" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1551168"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Context</b>, sélectionnez le contexte adéquat. Pour cet exemple, seul le contexte <b class="cBold">Default</b> est disponible et contient la variable de contexte créée auparavant.</li></div>
+<a name="wp1337946"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Generate Code</b> pour valider le contexte sélectionné et généré le code correspondant.</li></div>
+<a name="wp1188267"> </a><div class="pSmartList2"><li>Enregistrez le job maître et appuyez sur la touche <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1188274"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRunJob6.png" id="wp1188271" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1188277"> </a><p class="pIndented1">
+Le job appelé lit les données contenues dans le fichier d&#39;entrée comme défini dans le schéma d&#39;entrée et le résultat de ce job est directement affiché dans la console <b class="cBold">Run</b>.
+</p>
+<a name="wp1209540"> </a><p class="pIndented1">
+Voir également&#160;: <a href="tLoop_Prop.html"><em class="cEmphasis">tLoop</em></a>
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tRunJob_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSSH_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

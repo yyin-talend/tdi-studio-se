@@ -1,0 +1,323 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="05/22/09 11:51:33">
+    <title>tCreateTable</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="Databases_group_introava.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tCreateTable_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1658078"> </a><h2 class="pHeading1">
+tCreateTable
+</h2>
+<a name="wp1658086"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tCreateTable_icon32_white.png" id="wp1658082" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1658093"> </a><h2 class="pHeading2">
+Propriétés du tCreateTable
+</h2>
+<a name="wp1658335"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp1658101table1658096">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658101"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp1658103"> </a><div class="pCellBody">
+Databases
+</div>
+</td>
+    <td><a name="wp1658111"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_iconai.png" id="wp1658108" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658116"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1658121"> </a><div class="pCellBody">
+Le <b class="cBold">tCreateTable</b> crée, supprime ou supprime et recrée une table spécifique.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658128"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1658130"> </a><div class="pCellBody">
+Ce composant spécifique Java permet de créer ou de supprimer n&#39;importe quelle table d&#39;une base de données
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658137"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp1658145"> </a><div class="pCellHeading">
+<em class="cEmphasis">DB Type</em> 
+</div>
+</td>
+    <td><a name="wp1658147"> </a><div class="pCellBody">
+Sélectionnez le type de SGBD dans la liste proposée.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658149"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658151"> </a><div class="pCellBody">
+Special Action
+</div>
+</td>
+    <td><a name="wp1658153"> </a><div class="pCellBody">
+Sélectionnez l&#39;action à effectuer sur la base de données&#160;:<br /><b class="cBold">Create table&#160;</b>: lorsque vous savez que la table n&#39;existe pas déjà.<br /><b class="cBold">Create table when not exists</b>&#160;: lorsque vous ne savez pas si la table existe déjà.<br /><b class="cBold">Drop and create table&#160;</b>: lorsque vous savez que la table existe déjà et que vous souhaitez la remplacer.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658164"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658168"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use existing connection</em>
+</div>
+</td>
+    <td><a name="wp1658174"> </a><div class="pCellBody">
+Cochez cette case si vous utilisez un composant <b class="cBold">tMysqlConnection</b> ou <b class="cBold">tOracleConnection</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658182"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658187"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp1658189"> </a><div class="pCellBody">
+Peut être Built-in ou Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658191"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658193"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658198"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Propriétés utilisées ponctuellement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658200"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658202"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658207"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Sélectionnez le fichier dans lequel sont stockées les propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658209"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658214"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp1658216"> </a><div class="pCellBody">
+Adresse IP du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658218"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658223"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp1658225"> </a><div class="pCellBody">
+Numéro du port d&#39;écoute du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658227"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658229"> </a><div class="pCellBody">
+Database
+</div>
+</td>
+    <td><a name="wp1658231"> </a><div class="pCellBody">
+Nom de la base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658233"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658238"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp1658243"> </a><div class="pCellBody">
+Informations d&#39;authentification de l&#39;utilisateur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658245"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658250"> </a><div class="pCellHeading">
+<em class="cEmphasis">New table name</em>
+</div>
+</td>
+    <td><a name="wp1658252"> </a><div class="pCellBody">
+Saisissez le nom de la nouvelle table entre guillemets.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658254"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658261"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema type</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp1659117"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.
+</div>
+<a name="wp1730376"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp1730339" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+Réinitialisez le type de base de données en cliquant sur le bouton correspondant afin de vous assurez que le type de données est correct.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658274"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658276"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658281"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658289"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658291"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658296"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658304"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658309"> </a><div class="pCellHeading">
+<em class="cEmphasis">Mapping</em>
+</div>
+</td>
+    <td><a name="wp1658311"> </a><div class="pCellBody">
+Sélectionnez le type de mapping en fonction du type de base de données utilisé dans le job. Cette option permet de vérifier les types de base de données du schéma défini. Si les types de base de données standard ne correspondent pas, ils seront affichés d&#39;une couleur différente dans le schéma lorsque vous cliquerez sur <b class="cBold">Edit Schema</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1658316"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1658321"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding</em>
+</div>
+</td>
+    <td><a name="wp1658323"> </a><div class="pCellBody">
+Sélectionnez l&#39;encodage dans la liste ou sélectionnez Custom et définissez-le manuellement. Ce champs est obligatoire pour le traitement des données d&#39;une base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1658328"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1658330"> </a><div class="pCellBody">
+Ce composant offre la flexibilité des requêtes de base de données et couvre toutes les possibilités des requêtes SQL. Plus de scénarios sont disponibles pour chaque composant d&#39;entrée de type base de données.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="Databases_group_introava.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tCreateTable_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

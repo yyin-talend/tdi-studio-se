@@ -1,0 +1,370 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="05/22/09 11:51:03">
+    <title>tMysqlInput</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMysqlConnection_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2314402"> </a><h2 class="pHeading1">
+tMysqlInput
+</h2>
+<a name="wp2314410"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tMysqlInput_icon32_white.png" id="wp2314406" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2314417"> </a><h2 class="pHeading2">
+Propriétés du tMysqlInput
+</h2>
+<a name="wp2314671"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2314425table2314420">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314425"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp2314427"> </a><div class="pCellBody">
+Databases/MySQL
+</div>
+</td>
+    <td><a name="wp2314436"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Components-06-120-081.jpg" height="59" width="112" id="wp2314432" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314441"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2314446"> </a><div class="pCellBody">
+Le composant <b class="cBold">tMysqlInput</b> lit une base de données et en extrait des champs à l&#39;aide de requêtes.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314453"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2314455"> </a><div class="pCellBody">
+Le <b class="cBold">tMysqlInput</b> exécute une requête en base de données selon un ordre strict qui doit correspondre à celui défini dans le schéma. La liste des champs récupérée est ensuite transmise au composant suivant via une connexion de flux (Main row). 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314462"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2314467"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp2314469"> </a><div class="pCellBody">
+Peut être Built-in ou Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314471"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314473"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314478"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Propriétés utilisées ponctuellement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314480"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314482"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314487"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Sélectionnez le fichier dans lequel sont stockées les propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2371107"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2371118"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Save_Icon.png" id="wp2371114" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+    <td><a name="wp2371121"> </a><div class="pCellBody">
+Cliquez sur cette icône pour ouvrir l&#39;assistant connexion de base de données et enregistrer les paramètres de connexion que vous avez définis dans la vue <b class="cBold">Basic settings </b>du composant. <br />Pour plus d&#39;informations sur comment définir et stocker des paramètres de connexion de base de données, consultez le chapitre <em class="cEmphasis">Configurer une connexion DB</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b> .
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314489"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314493"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use existing connection</em>
+</div>
+</td>
+    <td><a name="wp2314496"> </a><div class="pCellBody">
+Cochez cette case lorsque vous utilisez le composant <b class="cBold">tMySQLConnection</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314501"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314506"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp2314508"> </a><div class="pCellBody">
+Adresse IP du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314510"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314515"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp2314517"> </a><div class="pCellBody">
+Numéro du port d&#39;écoute du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314519"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314524"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp2314526"> </a><div class="pCellBody">
+Nom de la base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314528"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314533"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp2314538"> </a><div class="pCellBody">
+Informations d&#39;authentification de l&#39;utilisateur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314540"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314547"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema type</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2314550"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant (<span style="font-weight: bold">Repository</span>).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314552"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314554"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314559"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Le schéma sera créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314567"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314569"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314574"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314582"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314584"> </a><div class="pCellHeading">
+<em class="cEmphasis">Table Name</em>
+</div>
+</td>
+    <td><a name="wp2314586"> </a><div class="pCellBody">
+Nom de la table à lire.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314588"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314596"> </a><div class="pCellHeading">
+<em class="cEmphasis">Query type </em>et <em class="cEmphasis">Query</em>
+</div>
+</td>
+    <td><a name="wp2314598"> </a><div class="pCellBody">
+Saisissez votre requête de base de données en faisant attention à ce que l&#39;ordre des champs corresponde à celui défini dans le schéma. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314604"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2314608"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+</td>
+    <td><a name="wp2314611"> </a><div class="pCellBody">
+Ajoutez des informations de connexion supplémentaires nécessaires à la connexion à la base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314613"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314618"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding Type</em>
+</div>
+</td>
+    <td><a name="wp2314620"> </a><div class="pCellBody">
+Sélectionnez l&#39;encodage à partir de la liste ou sélectionnez <b class="cBold">Custom</b> et définissez-le manuellement. Ce champ est obligatoire pour la manipulation des données des bases de données. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314625"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314630"> </a><div class="pCellHeading">
+<em class="cEmphasis">Enable stream</em>
+</div>
+</td>
+    <td><a name="wp2314632"> </a><div class="pCellBody">
+Cochez cette case pour déterminer avec quels lignes vous souhaitez travailler. Cette option permet d&#39;améliorer les performances.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314634"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314638"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trim all the String/Char columns</em>
+</div>
+</td>
+    <td><a name="wp2314641"> </a><div class="pCellBody">
+Cochez cette case pour supprimer  les espaces en début et en fin de champ dans toutes les colonnes contenant des chaînes de caractères.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314643"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314648"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trim column</em>
+</div>
+</td>
+    <td><a name="wp2314650"> </a><div class="pCellBody">
+Supprimez  les espaces en début et en fin de champ dans les colonnes sélectionnées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2314652"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2314657"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2314659"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2314664"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2314666"> </a><div class="pCellBody">
+Ce composant couvre toutes les possibilités de requête SQL dans les bases de données Mysql.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMysqlConnection_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>
