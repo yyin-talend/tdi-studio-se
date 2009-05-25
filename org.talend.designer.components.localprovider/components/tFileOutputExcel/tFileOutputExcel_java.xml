@@ -91,7 +91,7 @@
       NUM_ROW="50"
 	  SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')AND(APPEND_FILE == 'true')AND(APPEND_SHEET == 'true')"
     >
-      <DEFAULT>"0"</DEFAULT>
+      <DEFAULT>0</DEFAULT>
     </PARAMETER>
 	
 	<PARAMETER
@@ -100,7 +100,7 @@
       NUM_ROW="50"
 	  SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')AND(APPEND_FILE == 'true')AND(APPEND_SHEET == 'true')"
     >
-      <DEFAULT>"0"</DEFAULT>
+      <DEFAULT>0</DEFAULT>
     </PARAMETER>
 	
 	

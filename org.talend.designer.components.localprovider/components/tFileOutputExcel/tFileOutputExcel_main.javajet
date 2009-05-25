@@ -17,14 +17,14 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
-
+String font = ElementParameterParser.getValue(node, "__FONT__"); 
 //modif start
+boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
 String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
 String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__");
-
 //modif end
 
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -67,9 +67,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						isNumber=true;
 						%>Number<%
 					}
+%>
 //modif start
-%>(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%> ,<%
+					<%if(firstCellYAbsolute){%>
+						(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%> ,
+					<%}else{%>
+						(<%=i%>, startRowNum_<%=cid %> + nb_line_<%=cid%>,
+					<%}%>
 //modif end
+<%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
 						staticWidth = pattern.trim().length();
@@ -77,19 +83,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								<%=conn.getName() %>.<%=column.getLabel() %>, cell_format_<%=column.getLabel() %>_<%= cid%>
 <%
 					} else {
-					if(javaType == JavaTypesManager.CHARACTER) {
+						if(javaType == JavaTypesManager.CHARACTER) {
 %>
-								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+							String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
 <%
-					} else if(javaType == JavaTypesManager.OBJECT){
+						} else if(javaType == JavaTypesManager.OBJECT){
 %>					
 								<%=conn.getName() %>.<%=column.getLabel() %>.toString()
 <%
-					} else if(javaType == JavaTypesManager.BYTE_ARRAY){
+						} else if(javaType == JavaTypesManager.BYTE_ARRAY){
 %>					
 								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
 <%
-					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+						} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %>
 							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
 							FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)				
@@ -97,7 +103,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)				
 							<% } %>
 <%
-					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+						} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>		
 							(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>).doubleValue()
 <%
@@ -106,10 +112,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								<%=conn.getName() %>.<%=column.getLabel() %>
 <%				
 					}
+					if(font !=null && font.length()!=0){ 
 %>
-							,format_<%=cid%>
+						,format_<%=cid%>
 <%
 					}
+				}
 %>
 							);
 							writableSheet_<%=cid %>.addCell(cell_<%=i%>_<%=cid%>);

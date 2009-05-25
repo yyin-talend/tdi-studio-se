@@ -28,23 +28,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String sheetname = ElementParameterParser.getValue(node, "__SHEETNAME__");
         
 		//modif start
+		boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
 		String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
 		String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__");
-		boolean firstCellYAbsolute = ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__").equals("true");
-	
         //modif end
 		
         String font = ElementParameterParser.getValue(node, "__FONT__");
 		
-        boolean isIncludeHeader = ElementParameterParser.getValue(node, "__INCLUDEHEADER__").equals("true");
-        boolean isAppendFile = ElementParameterParser.getValue(node, "__APPEND_FILE__" ).equals("true");
-        boolean isAppendSheet = ElementParameterParser.getValue(node, "__APPEND_SHEET__" ).equals("true");
+        boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
+        boolean isAppendFile = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_FILE__" ));
+        boolean isAppendSheet = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_SHEET__" ));
 %>
 
 		int nb_line_<%=cid%> = 0;
 		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
 		
-<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+<%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 //create directory only if not exists		  
           java.io.File parentFile_<%=cid %> = file_<%=cid %>.getParentFile();
           if (parentFile_<%=cid %> != null && !parentFile_<%=cid %>.exists()) {
@@ -101,9 +100,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         //modif start
 <%if(firstCellYAbsolute){%>
-        int startRowNum_<%=cid %> = <%=firstCellYStr%>;
+		int startRowNum_<%=cid %> = <%=firstCellYStr%>;
 <%}else{%>
-		int startRowNum_<%=cid %> = writableSheet_<%=cid %>.getRows() + <%=firstCellYStr%>;
+        int startRowNum_<%=cid %> = writableSheet_<%=cid %>.getRows() + <%=firstCellYStr%>;
 <%}%>
 		//modif end
 		
@@ -148,14 +147,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 <%if(isIncludeHeader){ %>
 //modif start
-		if (startRowNum_<%=cid %> == <%=firstCellYStr%>){
+		<%if(firstCellYAbsolute){%>
+			if (startRowNum_<%=cid %> == <%=firstCellYStr%>){
+		<%}else{%>
+			if (startRowNum_<%=cid %> == 0){
+		<%}%>
 //modif end
 <%
     	for (int i = 0; i < columns.size(); i++) {
     		IMetadataColumn column = columns.get(i);
 %>
 //modif start
-				writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %>, "<%=column.getLabel() %>",format_<%=cid%>));		
+				<%if(firstCellYAbsolute){%>
+					writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %>, "<%=column.getLabel() %>",format_<%=cid%>));		
+				<%}else{%>
+					writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>",format_<%=cid%>));
+				<%}%>
 //modif end
 				fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]><%=column.getLabel().length()%>?fitWidth_<%=cid%>[<%=i%>]:<%=column.getLabel().length()%>;
 <% } %>

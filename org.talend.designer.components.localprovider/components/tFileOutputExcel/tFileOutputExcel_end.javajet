@@ -15,18 +15,18 @@
 	String cid = node.getUniqueName();
 	
 	String filename = ElementParameterParser.getValue(node, "__FILENAME__");	
-	boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");	
-	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND_FILE__").equals("true");
+	boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));	
+	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND_FILE__"));
 	
 	String allColumnAutoSize = ElementParameterParser.getValue(node, "__IS_ALL_AUTO_SZIE__");
 	
 	//modif start
+	boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
 	String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
 	String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__");
-
 	//modif end
 	
-	boolean isAllColumnAutoSize = (allColumnAutoSize!=null&&!allColumnAutoSize.equals(""))?allColumnAutoSize.equals("true"):false;
+	boolean isAllColumnAutoSize = (allColumnAutoSize!=null&&!("").equals(allColumnAutoSize))?("true").equals(allColumnAutoSize):false;
 	List<Map<String, String>> autoSizeList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__AUTO_SZIE_SETTING__");
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -38,7 +38,11 @@
         		for(int i=0;i<columns.size();i++){
 %>
 //modif start
-	writableSheet_<%=cid %>.setColumnView(<%=i%> + <%=firstCellYStr%>, fitWidth_<%=cid %>[<%=i%>]+2);
+	<%if(firstCellYAbsolute){%>
+		writableSheet_<%=cid %>.setColumnView(<%=i%> + <%=firstCellYStr%>, fitWidth_<%=cid %>[<%=i%>]+2);
+	<%}else{%>
+		writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]+2);
+	<%}%>
 //modif end
 <%
     			}
@@ -46,7 +50,7 @@
     			if(autoSizeList.size() == columns.size()){
                 	for(int i=0;i<columns.size();i++){
                 		Map<String,String> tmp= autoSizeList.get(i);
-                		if(tmp.get("IS_AUTO_SIZE").equals("true")){
+                		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){ 
 %>
 	writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]+2);
 <%
