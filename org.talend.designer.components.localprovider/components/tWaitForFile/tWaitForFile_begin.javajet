@@ -200,11 +200,12 @@
             %>
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
-                        found_<%=cid %> = true;                    
+                        found_<%=cid %> = true;      
+                        originalFiles_<%=cid %>.add(file_<%=cid %>);              
                         break;
                     }
                 }
-                originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+               // originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                 <%
             } else if(("filedeleted").equals(triggerAction)) {
                 %>
@@ -212,11 +213,12 @@
                     if(!fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
-                        found_<%=cid %> = true;                    
+                        found_<%=cid %> = true;  
+                        originalFiles_<%=cid %>.remove(file_<%=cid %>);                  
                         break;
                     }
                 }
-                originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+               // originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                 <%
             } else if(("fileupdated").equals(triggerAction)) {
                 %>
@@ -225,11 +227,12 @@
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
-                        originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                        originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), file_<%=cid %>);
+                        /*originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                         originalMap_<%=cid%>.clear();
                         for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
                             originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
-                        }                        
+                        } */                       
                         break;                        
                     }                   
                 }                
@@ -242,13 +245,14 @@
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
                         if(fetchFilesOneTime_<%=cid %>.size() != originalFiles_<%=cid %>.size()) {
-                            originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                        originalFiles_<%=cid %>.remove(file_<%=cid %>);
+                            /*originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                             originalMap_<%=cid%>.clear();
                             for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
                                 originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
-                            }
+                            }*/
                         }
-                        fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();                        
+                        //fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();                        
                         break;
                     }
                 }
@@ -279,12 +283,13 @@
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
-                        originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                        originalFiles_<%=cid %>.add(file_<%=cid %>);
+                        /*originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                         originalMap_<%=cid%>.clear();
                         for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
                             originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
                         }
-                        fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();                    
+                        fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();       */             
                         break;
                     }
                 }
@@ -293,14 +298,15 @@
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
-                        originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                        originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid %>), file_<%=cid %>);//occur repeat value
+                       /* originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                         originalMap_<%=cid%>.clear();
                         for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
                             originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
-                        }                    
+                        }   */                 
                         break;
                     }
-                }                
+                }               
                 <%
             }
             %>
