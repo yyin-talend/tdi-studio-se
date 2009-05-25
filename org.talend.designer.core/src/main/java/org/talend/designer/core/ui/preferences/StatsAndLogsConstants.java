@@ -70,7 +70,7 @@ public class StatsAndLogsConstants {
 
     private static final String[] PERL_DB_COMPONENTS = new String[] {
             "tDBOutput", "tMysqlOutput", "tDBOutput", ORACLE_SID_ALIAS, ORACLE_SN_ALIAS, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput", "tAccessOutput", "tTeradataOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
+            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tSQLiteOutput", "tInformixOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
 
     private static final String[] JAVA_DB_COMPONENTS = new String[] {
             "tDBOutput", "tMysqlOutput", "tMSSqlOutput", ORACLE_SID_ALIAS, ORACLE_SN_ALIAS,//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -80,7 +80,7 @@ public class StatsAndLogsConstants {
             ORACLE_WITH_SERVICE_CONN_TYPE, POSTGRESQL, IBM_DB2, SYBASE, SQLITE, INFORMIX };
 
     private static final String[] PERL_CODE_LIST = new String[] { ODBC, MYSQL, ODBC, "OCLE", "OCLE", POSTGRESQL, //$NON-NLS-1$ //$NON-NLS-2$
-            IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
+            IBM_DB2, SYBASE, SQLITE, INFORMIX };
 
     private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, SQL_SERVER, ORACLE_WITH_SID_CONN_TYPE,
             ORACLE_WITH_SERVICE_CONN_TYPE, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
