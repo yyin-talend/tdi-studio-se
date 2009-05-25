@@ -100,7 +100,7 @@ public class StatsAndLogsConstants {
 
     public static final String[] ACCESS_VERSION_CODE = new String[] { "ACCESS_2003", "ACCESS_2007" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
-    public static final String[] ACCESS_VERSION_DRIVER = new String[] { "ACCESS_2003", "ACCESS_2003" }; //$NON-NLS-1$ //$NON-NLS-1$
+    public static final String[] ACCESS_VERSION_DRIVER = new String[] { "ACCESS_2003", "ACCESS_2007" }; //$NON-NLS-1$ //$NON-NLS-1$
 
     public static final String[] AS400_VERSION_DISPLAY = new String[] { "V5R3 to V6R1", "V5R2 to V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$
 
