@@ -42,6 +42,11 @@
 		for (IConnection iterateConn : iterateConnSet) {//2
 			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__")); 
 	        if (parallelIterate) {//3
+	        	String rowList=","; 
+				for (IConnection conn : allSubProcessConnection) {
+					rowList += conn.getUniqueName()+",";
+				}
+				rowList = rowList.substring(0, rowList.length()-1);
 				if(stat){
 %>
 				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",2,"exec"+globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
@@ -79,7 +84,7 @@
 		}
 	}
 
-	<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap,threadIdCounter++);
+	<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap<%=rowList %>,threadIdCounter++);
 	mtp_<%=node.getUniqueName() %>.execute(bt_<%=node.getUniqueName() %>);
 	
 <%
