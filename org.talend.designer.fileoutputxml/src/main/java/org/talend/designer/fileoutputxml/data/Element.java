@@ -41,6 +41,10 @@ public class Element extends FOXTreeNode {
         super(label);
     }
 
+    public Element(String label, String defauleValue) {
+        super(label, defauleValue);
+    }
+
     public void removeChild(FOXTreeNode child) {
         child.setParent(null);
         if (child instanceof Attribute) {
@@ -69,7 +73,8 @@ public class Element extends FOXTreeNode {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.fileoutputxml.data.FOXTreeNode#addChild(org.talend.designer.fileoutputxml.data.FOXTreeNode)
+     * @see
+     * org.talend.designer.fileoutputxml.data.FOXTreeNode#addChild(org.talend.designer.fileoutputxml.data.FOXTreeNode)
      */
     @Override
     public void addChild(FOXTreeNode child) {

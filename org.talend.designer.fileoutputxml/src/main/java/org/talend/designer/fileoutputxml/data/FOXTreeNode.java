@@ -34,6 +34,8 @@ public abstract class FOXTreeNode {
 
     private String label;
 
+    private String defaultValue;
+
     private List<FOXTreeNode> children = null;
 
     private FOXTreeNode parent = null;
@@ -61,6 +63,14 @@ public abstract class FOXTreeNode {
     public FOXTreeNode(String label) {
         children = new ArrayList<FOXTreeNode>();
         this.label = label;
+    }
+  /**
+     * FOXTreeNode constructor comment.
+   */
+    public FOXTreeNode(String label, String defaultValue) {
+        children = new ArrayList<FOXTreeNode>();
+        this.label = label;
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -143,6 +153,24 @@ public abstract class FOXTreeNode {
      */
     public String getLabelForViewer() {
         return this.label;
+    }
+
+    /**
+     * Getter for defaultValue.
+     * 
+     * @return the value
+     */
+    public String getDefaultValue() {
+        return this.defaultValue;
+    }
+
+    /**
+     * Sets the defaultValue.
+     * 
+     * @param value the defaultValue to set
+     */
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     /**

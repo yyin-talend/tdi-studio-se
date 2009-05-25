@@ -57,6 +57,7 @@ import org.talend.designer.fileoutputxml.action.CreateElementAction;
 import org.talend.designer.fileoutputxml.action.CreateNameSpaceAction;
 import org.talend.designer.fileoutputxml.action.DeleteNodeAction;
 import org.talend.designer.fileoutputxml.action.DisconnectAction;
+import org.talend.designer.fileoutputxml.action.FixValueAction;
 import org.talend.designer.fileoutputxml.action.ImportTreeFromXMLAction;
 import org.talend.designer.fileoutputxml.action.RemoveGroupAction;
 import org.talend.designer.fileoutputxml.action.SetForLoopAction;
@@ -100,6 +101,8 @@ public class FOXUI {
     private IAction deleteAction;
 
     private IAction disconnectAction;
+
+    private IAction fixValueAction;
 
     private IAction createAttributeAction;
 
@@ -311,15 +314,20 @@ public class FOXUI {
         tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
         column1.setText(Messages.getString("FOXUI.1")); //$NON-NLS-1$
-        column1.setWidth(250);
+        column1.setWidth(170);
 
+        // Related Column
         TreeColumn column2 = new TreeColumn(tree, SWT.CENTER);
-        column2.setText(Messages.getString("FOXUI.2")); //$NON-NLS-1$
-        column2.setWidth(110);
+        column2.setText(Messages.getString("FOXUI.2")); //$NON-NLS-1$ 
+        column2.setWidth(100);
 
         TreeColumn column3 = new TreeColumn(tree, SWT.CENTER);
         column3.setText(Messages.getString("FOXUI.3")); //$NON-NLS-1$
         column3.setWidth(90);
+
+        TreeColumn column4 = new TreeColumn(tree, SWT.CENTER);
+        column4.setText(Messages.getString("FOXUI.4")); //$NON-NLS-1$
+        column4.setWidth(90);
 
         tree.setHeaderVisible(true);
         // tree.setBackgroundMode(SWT.INHERIT_NONE);
@@ -401,6 +409,7 @@ public class FOXUI {
             manager.add(new Separator());
             manager.add(deleteAction);
             manager.add(disconnectAction);
+            manager.add(fixValueAction);
             manager.add(new Separator());
             // manager.add(guessLoopAction);
             manager.add(setLoopAction);
@@ -428,6 +437,7 @@ public class FOXUI {
         // editAction = new EditLabelAction(xmlViewer, "Edit Label");
         deleteAction = new DeleteNodeAction(xmlViewer, this, Messages.getString("FOXUI.12")); //$NON-NLS-1$
         disconnectAction = new DisconnectAction(xmlViewer, this, Messages.getString("FOXUI.13")); //$NON-NLS-1$
+        fixValueAction = new FixValueAction(xmlViewer, this, Messages.getString("FOXUI.41")); //$NON-NLS-1$
         // disconnectAction.setToolTipText("Disconnect the linker of the current tree node.");
         importFromXMLAction = new ImportTreeFromXMLAction(xmlViewer, this, Messages.getString("FOXUI.14")); //$NON-NLS-1$
         // importFromXMLAction

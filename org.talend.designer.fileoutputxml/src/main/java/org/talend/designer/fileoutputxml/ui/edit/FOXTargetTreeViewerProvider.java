@@ -120,6 +120,8 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
             } else {
                 return ""; //$NON-NLS-1$
             }
+        case 3:
+            return treeNode.getDefaultValue();
         default:
             return ""; //$NON-NLS-1$
         }
