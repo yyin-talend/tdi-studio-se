@@ -310,6 +310,7 @@ public class Schema2XMLDragAndDropHandler {
             if (dragdedData.size() == 1 && isDropRelatedColumn(event)) {
                 if (!targetNode.hasChildren()) {
                     IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                    targetNode.setDefaultValue(null);
                     targetNode.setColumn(metaColumn);
                     targetNode.setTable(table);
                     targetNode.setRow(row);
