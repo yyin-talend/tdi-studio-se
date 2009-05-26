@@ -164,6 +164,12 @@
         <ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
       </ITEMS>
     </PARAMETER>
+	
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="6"
+			NOT_SHOW_IF="TABLE_ACTION == 'NONE'"	
+		>
+		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
+	</PARAMETER>	
 
     <PARAMETER
       NAME="SCHEMA"

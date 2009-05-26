@@ -109,6 +109,12 @@
         <ITEM NAME="CLEAR" VALUE="CLEAR"/>
       </ITEMS>
     </PARAMETER>
+	
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="6"
+			NOT_SHOW_IF="TABLE_ACTION == 'NONE'"	
+		>
+		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
+	</PARAMETER>	
 
     <PARAMETER
       NAME="TABLE"

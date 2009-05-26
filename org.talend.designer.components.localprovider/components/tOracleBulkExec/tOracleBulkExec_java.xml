@@ -177,6 +177,12 @@
         <ITEM NAME="TRUNCATE" VALUE="TRUNCATE"/>
       </ITEMS>
     </PARAMETER>
+	
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="70"
+			NOT_SHOW_IF="TABLE_ACTION == 'NONE'"	
+		>
+		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
+	</PARAMETER>	
 
     <!-- FEATURE WANTED: multiple data files to load from. but the current TABLE model doesn't support item whose field is FILE -->
     <PARAMETER

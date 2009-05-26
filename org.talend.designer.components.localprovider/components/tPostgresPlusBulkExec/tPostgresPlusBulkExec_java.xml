@@ -75,6 +75,12 @@
 			</ITEMS>
 		</PARAMETER>
 
+		<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="5"
+				NOT_SHOW_IF="TABLE_ACTION == 'NONE'"	
+			>
+			<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
+		</PARAMETER>		
+
 		<PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="8"
 			REQUIRED="true">
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>

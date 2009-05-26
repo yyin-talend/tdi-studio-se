@@ -36,7 +36,7 @@ String pas = ElementParameterParser.getValue(node, "__PASS__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String codePage = ElementParameterParser.getValue(node, "__CODE_PAGE__");
 String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
-
+boolean convertToUppercase = false; // not active this function
 if(("EXPORT").equals(action)) {
     String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
     String server = ElementParameterParser.getValue(node, "__SERVER__");
@@ -175,61 +175,9 @@ if(("EXPORT").equals(action)) {
     Manager manager = null;
     List<Column> stmtStructure = null;
     if(columnList != null && columnList.size() > 0) {
-        stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
-        manager = getManager(dbmsId, cid);
-        if(("DROP_CREATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-            stmtDrop_<%=cid%>.close();
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.close();
-            <%
-        } else if(("CREATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.close();
-            <%
-        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-            %>
-            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-            java.sql.ResultSet rsTable_<%=cid%> = null;
-            if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
-                rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschema_<%=cid%>, <%=table%>, new String[]{"TABLE"});
-            } else {
-                rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, "dbo", <%=table%>, new String[]{"TABLE"});
-            }
-            boolean whetherExist_<%=cid%> = false;
-            while(rsTable_<%=cid%>.next()) {
-                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
-                    whetherExist_<%=cid%> = true;
-                    break;
-                }
-            }
-            rsTable_<%=cid%>.close();
-            if(!whetherExist_<%=cid%>) {
-                java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-                stmtCreate_<%=cid%>.close();
-            }
-            <%
-        } else if(("CLEAR").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
-            stmtClear_<%=cid%>.close();
-            <%
-        } else if(("TRUNCATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
-            stmtTrunc_<%=cid%>.close();
-            <%
-        }        
-    }    
+    %>    
+    <%@ include file="../templates/_tableAction.javajet"%>
+    <%
     if(("INSERT").equals(action)) {
         %>
         java.sql.Statement stmtBulkInsert_<%=cid %> = conn_<%=cid %>.createStatement();
@@ -269,6 +217,9 @@ if(("EXPORT").equals(action)) {
             <%
         }
     }
+}        
+    
+    
     if(!useExistingConnection) {
         %>
         if(conn_<%=cid %> != null && !conn_<%=cid %>.isClosed()) {

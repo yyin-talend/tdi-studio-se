@@ -31,7 +31,8 @@ String addlOptions = ElementParameterParser.getValue(node, "__ADDL_OPTIONS__");
 String fieldLayout = ElementParameterParser.getValue(node, "__FIELD_LAYOUT__");
 String fixedWidth = ElementParameterParser.getValue(node, "__FIXED_WIDTH__");
 String methodFixedWidth = ElementParameterParser.getValue(node, "__METHOD_FIXED_WIDTH__");
-
+boolean convertToUppercase = false; // not active this function
+boolean useExistingConnection = false; // not active this function
 boolean removeQuotes = ("true").equals(ElementParameterParser.getValue(node, "__REMOVE_QUOTES__"));
 boolean explicitIDs = ("true").equals(ElementParameterParser.getValue(node, "__EXPLICIT_IDS__"));
 
@@ -194,7 +195,7 @@ if (<%= logLevel %> > 0) {
 com.paraccel.Driver.setLogLevel(<%= logLevel %>);
 
 java.lang.Class.forName("com.paraccel.Driver").newInstance();
-java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>+"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3", <%=userName%>, <%=password%>);
+java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>+"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3", <%=userName%>, <%=password%>);
 
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
@@ -202,51 +203,17 @@ String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 List<Column> stmtStructure = null;
 Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
-    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
-    manager = getManager(dbmsId, cid);
-    if(("DROP_CREATE").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-        <%
-    } else if(("CREATE").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-        <%
-    } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-        %>
-        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
-        java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-        boolean whetherExist_<%=cid%> = false;
-        while(rsTable_<%=cid%>.next()) {
-            String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-            if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
-                whetherExist_<%=cid%> = true;
-                break;
-            }
-        }
-        if(!whetherExist_<%=cid%>) {
-            java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
-        }
-        <%
-    } else if(("CLEAR").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
-        <%
-    }    
+%>
+	<%@ include file="../templates/_tableAction.javajet"%>	
+<%
 }
     %>
-    java.sql.Statement stmtBulk_<%=cid %> = con_<%=cid %>.createStatement();
+    java.sql.Statement stmtBulk_<%=cid %> = conn_<%=cid %>.createStatement();
     //stmt.execute("SET client_encoding to 'UNICODE'");
 <%
 	if(("PARALLEL").equals(parallel)){
 %>
-    java.sql.Statement stmtXPX_<%=cid %> = con_<%=cid %>.createStatement();
+    java.sql.Statement stmtXPX_<%=cid %> = conn_<%=cid %>.createStatement();
     stmtXPX_<%=cid %>.execute(xpxSQL_<%=cid%>);
     stmtXPX_<%=cid %>.close();    
 <%
@@ -256,4 +223,4 @@ if(columnList != null && columnList.size() > 0) {
     stmtBulk_<%=cid %>.close();    
     <%
 %>
-con_<%=cid %>.close();
+conn_<%=cid %>.close();

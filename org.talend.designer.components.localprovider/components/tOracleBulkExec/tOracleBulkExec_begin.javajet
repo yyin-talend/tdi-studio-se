@@ -91,8 +91,8 @@ String password_<%=cid %> = null;
 String port_<%=cid%> = null;
 String connectionType_<%=cid%>=null;
 <%       
-String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(("true").equals(useExistingConn)) {
+boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+if(useExistingConnection) {
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
     String existHost = "host_" + connection;
@@ -229,61 +229,9 @@ if(columnList != null && columnList.size() > 0) {
     	}
     	columns += ")";
     }
-	
-    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
-    if(convertToUppercase) {
-        for(Column column : stmtStructure) {
-            column.setColumnName(column.getColumnName().toUpperCase());
-        }
-    }
-    manager = getManager(dbmsId, cid);
-    if(("DROP_CREATE").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-        stmtDrop_<%=cid%>.close();
-        java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-        stmtCreate_<%=cid%>.close();
-        <%
-    } else if(("CREATE").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-        stmtCreate_<%=cid%>.close();
-        <%
-    } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-        %>
-        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-        java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-        boolean whetherExist_<%=cid%> = false;
-        while(rsTable_<%=cid%>.next()) {
-            String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-            if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
-                whetherExist_<%=cid%> = true;
-                break;
-            }
-        }
-        rsTable_<%=cid%>.close();
-        if(!whetherExist_<%=cid%>) {
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.close();
-        }
-        <%
-    } else if(("CLEAR").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
-        stmtClear_<%=cid%>.close();
-        <%
-    } else if(("TRUNCATE").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
-        stmtTrunc_<%=cid%>.close();
-        <%
-    }    
+%>	
+	<%@ include file="../templates/_tableAction.javajet"%>	
+<%  
 }
 %>
 <%

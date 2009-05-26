@@ -36,7 +36,8 @@ String timeDelim = ElementParameterParser.getValue(node,"__TIME_DELIM__");
 String enableLogging = ElementParameterParser.getValue(node,"__ENABLE_LOGGING__");
 String logDir = ElementParameterParser.getValue(node,"__LOG_DIR__");
 String additionalOptions = ElementParameterParser.getValue(node,"__ADDITIONAL_OPTIONS__");
-
+boolean convertToUppercase = false; // not active this function
+boolean useExistingConnection= false;// not active this function
 List<IMetadataColumn> columnList = getColumnList(node);
 StringBuilder copyColumns = new StringBuilder("");
 if(columnList != null && columnList.size() > 0) {

@@ -24,6 +24,8 @@ String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 StringBuilder tableName = new StringBuilder();
 StringBuilder tmpTableName = new StringBuilder();
 boolean standardConformingString= ("true").equals(ElementParameterParser.getValue(node,"__STANDARD_CONFORMING_STRING__"));
+boolean convertToUppercase = false; // not active this function
+boolean useExistingConnection = false;// not active this function
 %>
 String tableName_<%=cid%> = null;
 <%
@@ -113,62 +115,16 @@ String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 %> 
 java.lang.Class.forName("org.postgresql.Driver").newInstance();
-java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
+java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 List<Column> stmtStructure = null;
 Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
-    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
-    manager = getManager(dbmsId, cid);
-    if(("DROP_CREATE").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-        stmtDrop_<%=cid%>.close();
-        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-        stmtCreate_<%=cid%>.close();
-        <%
-    } else if(("CREATE").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-        stmtCreate_<%=cid%>.close();
-        <%
-    } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-        %>
-        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
-        java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-        boolean whetherExist_<%=cid%> = false;
-        while(rsTable_<%=cid%>.next()) {
-            String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-            if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
-                whetherExist_<%=cid%> = true;
-                break;
-            }
-        }
-        rsTable_<%=cid%>.close();
-        if(!whetherExist_<%=cid%>) {
-            java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.close();
-        }
-        <%
-    } else if(("CLEAR").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
-        stmtClear_<%=cid%>.close();
-        <%
-    } else if(("TRUNCATE").equals(tableAction)) {
-        %>
-        java.sql.Statement stmtTrunc_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
-        stmtTrunc_<%=cid%>.close();
-        <%
-    }    
+%>
+<%@ include file="../templates/_tableAction.javajet"%>	
+<%    
 }
 if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {
@@ -185,25 +141,25 @@ if(("UPDATE").equals(dataAction)) {
         }
         String tmpTableName_<%=cid%> = tableName_<%=cid%>;
         tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;        
-        java.sql.Statement stmtCreateTmp_<%=cid%> = con_<%=cid%>.createStatement();
+        java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreateTmp_<%=cid%>.close();
         <%if(standardConformingString) {
    		%>
-   		java.sql.CallableStatement cs_<%=cid%> =con_<%=cid %>.prepareCall("set standard_conforming_strings=on");
+   		java.sql.CallableStatement cs_<%=cid%> =conn_<%=cid %>.prepareCall("set standard_conforming_strings=on");
    		cs_<%=cid%>.execute();
    		cs_<%=cid%>.close();
    		<%}%>    
-        java.sql.Statement stmtTmpBulk_<%=cid%> = con_<%=cid%>.createStatement();
+        java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtTmpBulk_<%=cid%>.execute(bulkSQL_<%=cid%>);
         stmtTmpBulk_<%=cid%>.close();
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
         tmpTableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
-        java.sql.Statement stmtUpdateBulk_<%=cid%> = con_<%=cid%>.createStatement();
+        java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
         stmtUpdateBulk_<%=cid%>.close();
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
-        java.sql.Statement stmtTmpDrop_<%=cid%> = con_<%=cid%>.createStatement();
+        java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
         stmtTmpDrop_<%=cid%>.close();
         <%
@@ -212,16 +168,16 @@ if(("UPDATE").equals(dataAction)) {
     %>
 	    <%if(standardConformingString) {
    		%>
-   		java.sql.CallableStatement cs_<%=cid%> =con_<%=cid %>.prepareCall("set standard_conforming_strings=on");
+   		java.sql.CallableStatement cs_<%=cid%> =conn_<%=cid %>.prepareCall("set standard_conforming_strings=on");
    		cs_<%=cid%>.execute();
    		cs_<%=cid%>.close();
    		<%}%>    
     
-    java.sql.Statement stmtBulk_<%=cid %> = con_<%=cid %>.createStatement();
+    java.sql.Statement stmtBulk_<%=cid %> = conn_<%=cid %>.createStatement();
     //stmt.execute("SET client_encoding to 'UNICODE'");
     stmtBulk_<%=cid %>.execute(bulkSQL_<%=cid%>);
     stmtBulk_<%=cid %>.close();    
     <%
 }
 %>
-con_<%=cid %>.close();
+conn_<%=cid %>.close();

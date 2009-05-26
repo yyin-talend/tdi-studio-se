@@ -45,8 +45,8 @@ if(("UPDATE").equals(dataAction)) {
 <%
 if(!useExistingConn) {
     %>
-    if(con_<%=cid%> != null && !con_<%=cid%>.isClosed()) {
-        con_<%=cid%>.close();
+    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
+        conn_<%=cid%>.close();
     }
     <%
 }
