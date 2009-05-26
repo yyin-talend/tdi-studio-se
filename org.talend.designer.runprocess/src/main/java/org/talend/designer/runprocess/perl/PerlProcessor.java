@@ -466,13 +466,13 @@ public class PerlProcessor extends Processor {
         String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
         if (os.indexOf("windows 9") > -1) { //$NON-NLS-1$
             p = r.exec("command.com /c path"); //$NON-NLS-1$
-        } else if ((os.indexOf("nt") > -1) || (os.indexOf("windows 2000") > -1) || (os.indexOf("windows xp") > -1)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } else if ((os.indexOf("nt") > -1) || (os.indexOf("windows 2000") > -1) || (os.indexOf("windows xp") > -1) || (os.indexOf("windows 2003") > -1)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-1$
             p = r.exec("cmd.exe /c path"); //$NON-NLS-1$
         } else {
             p = r.exec("env"); //$NON-NLS-1$
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
+        String line = null;
         while ((line = br.readLine()) != null) {
             int idx = line.indexOf('=');
             String key = line.substring(0, idx);
@@ -484,7 +484,9 @@ public class PerlProcessor extends Processor {
                 + CorePreferenceInitializer.PERL_EMBEDDED_INTERPRETER_DIRECTORY;
         File perlDir = new File(perlPath);
         if (!perlDir.exists()) {
-            perlPath = CorePreferenceInitializer.PERL_WIN32_INTERPRETER_PATH;
+            // perlPath = CorePreferenceInitializer.PERL_WIN32_INTERPRETER_PATH;
+            IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
+            perlPath = store.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
         }
         perlPath = new File(perlPath).getParentFile().getAbsolutePath();
 
