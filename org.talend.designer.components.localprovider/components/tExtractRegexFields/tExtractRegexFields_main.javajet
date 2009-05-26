@@ -55,11 +55,13 @@ if(inConn!=null){
 				String pattern = inputCol.getPattern() == null || inputCol.getPattern().trim().length() == 0 ? null : inputCol.getPattern();
 %>
 				java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(FormatterUtils.format_Date(<%=inConn.getName()%>.<%=field%>, <%=pattern%>));
+				java.util.regex.Matcher matcher_copy_<%= cid %> = pattern_<%= cid %>.matcher(FormatterUtils.format_Date(<%=inConn.getName()%>.<%=field%>, <%=pattern%>));
 <%			
 			}else{
 %>
 			    java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
-			    int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
+			    java.util.regex.Matcher matcher_copy_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
+			    //int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
 <%
 			}
 		}
@@ -72,9 +74,6 @@ if(outConn!=null && inConn!=null){
 	IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 	IMetadataTable inputMetadataTable = inConn.getMetadataTable();
 	for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
-		if(outputCol.getLabel().equals(field)){
-			continue;
-		}
 		boolean isOirginalColumn = false;
 		for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
@@ -100,7 +99,24 @@ if(!("true").equals(dieOnError)){
 <%
 }
 %>
-while(matcher_<%= cid %>.find()){
+boolean copyFind_<%=cid%> = true;
+if(!matcher_copy_<%=cid%>.find()){
+	copyFind_<%=cid%> = false;
+}
+while(matcher_<%= cid %>.find() || !copyFind_<%=cid%>){
+	if(!copyFind_<%=cid%>){
+<%
+		for(int i=0; i<newColumnList.size();i++){
+			IMetadataColumn column = newColumnList.get(i);
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+%>
+				<%=outConn.getName()%>.<%=column.getLabel() %> = <%=defaultValue%>;
+<%
+		}
+%>
+	copyFind_<%=cid%> = true;
+	}else{
 	for(int i_<%=cid%> = 0; i_<%=cid%> < matcher_<%=cid%>.groupCount(); i_<%=cid%>++){
 		String match_<%=cid%> = matcher_<%=cid%>.group(i_<%=cid%>+1);
 <%
@@ -259,4 +275,5 @@ while(matcher_<%= cid %>.find()){
 <%
 	}
 %>
+}
 }
