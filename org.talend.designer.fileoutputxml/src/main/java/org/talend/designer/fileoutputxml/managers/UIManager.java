@@ -138,6 +138,7 @@ public class UIManager {
         for (IMetadataColumn column : schemaData) {
             for (FOXTreeNode node : mappableNodes) {
                 if (node.getLabel().equals(column.getLabel())) {
+                    node.setDefaultValue(null);
                     node.setColumn(column);
                     break;
                 }
