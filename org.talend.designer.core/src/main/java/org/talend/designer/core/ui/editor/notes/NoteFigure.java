@@ -21,6 +21,7 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.utils.ResourceDisposeUtil;
 
 /**
  */
@@ -91,5 +92,15 @@ public class NoteFigure extends Figure {
      */
     public Label getLabel() {
         return this.label;
+    }
+
+    public void disposeColors() {
+        ResourceDisposeUtil.disposeColor(this.getBackgroundColor());
+        // if (this.getForegroundColor() != ColorConstants.orange)
+        // ResourceDisposeUtil.disposeColor(this.getForegroundColor());
+        // if (this.getLabel() != null) {
+        // if (this.getLabel().getForegroundColor() != ColorConstants.black)
+        // ResourceDisposeUtil.disposeColor(this.getLabel().getForegroundColor());
+        // }
     }
 }

@@ -152,6 +152,14 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             super.deactivate();
             ((Node) getModel()).removePropertyChangeListener(this);
         }
+
+    }
+
+    @Override
+    protected void unregisterVisuals() {
+        if (((NodeFigure) getFigure()).connection != null)
+            ((NodeFigure) getFigure()).connection.disposeColors();
+        super.unregisterVisuals();
     }
 
     /*

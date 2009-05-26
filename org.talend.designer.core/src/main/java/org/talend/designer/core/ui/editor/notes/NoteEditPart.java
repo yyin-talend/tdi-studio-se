@@ -43,6 +43,23 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
     private DirectEditManager directEditManager;
 
     @Override
+    protected void unregisterVisuals() {
+        ((NoteFigure) getFigure()).disposeColors();
+        this.disposeColors();
+        super.unregisterVisuals();
+    }
+
+    private void disposeColors() {
+        if (this.foreColor != null && !this.foreColor.isDisposed())
+            foreColor.dispose();
+        if (this.backColor != null && !this.backColor.isDisposed())
+            backColor.dispose();
+        if (this.labelColor != null && !this.labelColor.isDisposed())
+            labelColor.dispose();
+
+    }
+
+    @Override
     protected IFigure createFigure() {
         return new NoteFigure();
     }
@@ -85,22 +102,31 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         installEditPolicy(EditPolicy.LAYOUT_ROLE, new NoteResizableEditPolicy());
     }
 
+    Color foreColor = null;
+
+    Color backColor = null;
+
+    Color labelColor = null;
+
     @Override
     protected void refreshVisuals() {
         Note note = (Note) getModel();
         NoteFigure noteFigure = ((NoteFigure) getFigure());
-
+        noteFigure.disposeColors();
+        this.disposeColors();
         noteFigure.setLocation(note.getLocation());
         noteFigure.setSize(note.getSize());
         noteFigure.setText(note.getText());
         noteFigure.setOpaque(note.isOpaque());
-        noteFigure.setBackgroundColor(new Color(null, TalendTextUtils.stringToRGB((String) note
-                .getPropertyValue(EParameterName.NOTE_COLOR.getName()))));
-        noteFigure.setForegroundColor(new Color(null, TalendTextUtils.stringToRGB((String) note
-                .getPropertyValue(EParameterName.NOTE_LINECOLOR.getName()))));
-        noteFigure.getLabel().setForegroundColor(
-                new Color(null, TalendTextUtils.stringToRGB((String) note
-                        .getPropertyValue(EParameterName.NOTETXT_COLOR.getName()))));
+        foreColor = new Color(null, TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_LINECOLOR
+                .getName())));
+        backColor = new Color(null, TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_COLOR
+                .getName())));
+        labelColor = new Color(null, TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTETXT_COLOR
+                .getName())));
+        noteFigure.setBackgroundColor(backColor);
+        noteFigure.setForegroundColor(foreColor);
+        noteFigure.getLabel().setForegroundColor(labelColor);
         if ((Boolean) note.getPropertyValue(EParameterName.NOTETXT_LEFT.getName())) {
             noteFigure.getLabel().setLabelAlignment(PositionConstants.LEFT);
         }

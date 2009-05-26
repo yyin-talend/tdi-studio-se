@@ -32,6 +32,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.model.process.EConnectionType;
@@ -296,10 +297,13 @@ public class NodeFigure extends Figure {
      * 
      * @param startConnection the startConnection to set
      */
+    ConnectionFigure connection = null;
+
     public void addSourceConnection(ConnectionFigure sourceConnection) {
         if (!sourceDummyMap.keySet().contains(sourceConnection)) {
-            ConnectionFigure connection = new ConnectionFigure(sourceConnection.getConnection(), sourceConnection
-                    .getConnectionProperty(), node);
+            if (connection != null)
+                connection.disposeColors();
+            connection = new ConnectionFigure(sourceConnection.getConnection(), sourceConnection.getConnectionProperty(), node);
             connection.setTargetDecoration(null);
             add(connection);
             if (dummy) {
@@ -322,10 +326,10 @@ public class NodeFigure extends Figure {
         if (targetConnection != null && targetConnection.getSourceAnchor() != null) {
             targetConnection.getSourceAnchor().removeAnchorListener(targetListener);
         }
-
         this.targetConnection = targetConnection;
-        ConnectionFigure connection = new ConnectionFigure(targetConnection.getConnection(), targetConnection
-                .getConnectionProperty(), node);
+        if (connection != null)
+            connection.disposeColors();
+        connection = new ConnectionFigure(targetConnection.getConnection(), targetConnection.getConnectionProperty(), node);
         connection.setTargetDecoration(null);
         add(connection);
         if (dummy) {
@@ -346,6 +350,7 @@ public class NodeFigure extends Figure {
         for (ConnectionFigure curConn : sourceListeners.keySet()) {
             if (connectionFigure.equals(curConn) && curConn.getTargetAnchor() != null) {
                 curConn.getTargetAnchor().removeAnchorListener(sourceListeners.get(curConn));
+
             }
         }
     }
@@ -357,5 +362,17 @@ public class NodeFigure extends Figure {
             targetConnection.getSourceAnchor().removeAnchorListener(targetListener);
             targetConnection = null;
         }
+    }
+
+    public void disposeColors() {
+        if (connection != null) {
+            ResourceDisposeUtil.disposeColor(connection.getBackgroundColor());
+            ResourceDisposeUtil.disposeColor(connection.getForegroundColor());
+        }
+        // connection.disposeColors();
+        if (targetConnection != null)
+            targetConnection.disposeColors();
+        if (targetDummy != null)
+            targetDummy.disposeColors();
     }
 }

@@ -805,6 +805,7 @@ public class ProcessComposite extends Composite {
             processContext.removePropertyChangeListener(pcl);
         }
         super.dispose();
+
     }
 
     /**

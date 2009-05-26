@@ -16,6 +16,7 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.swt.graphics.Color;
+import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IConnectionProperty;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -95,7 +96,13 @@ public class ConnectionFigure extends PolylineConnection {
     protected void setConnectionProperty(IConnectionProperty connectionProperty) {
         this.connectionProperty = connectionProperty;
         setLineStyle(connectionProperty.getLineStyle());
-        setForegroundColor(new Color(null, connectionProperty.getRGB()));
+        ResourceDisposeUtil.setAndCheckColor(this, new Color(null, connectionProperty.getRGB()), true);
+    }
+
+    public void disposeColors() {
+        if (getForegroundColor() != null && !getForegroundColor().isDisposed()) {
+            getForegroundColor().dispose();
+        }
     }
 
     /**

@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
@@ -258,9 +259,15 @@ public class NodeContainerFigure extends Figure {
     }
 
     public void initializeNodeContainer(Rectangle rectangle) {
+        this.disposeColors();
         rectFig.setLocation(new Point(rectangle.x, rectangle.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height));
         rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(255, 102, 102)));
+
     }
 
+    public void disposeColors() {
+
+        ResourceDisposeUtil.disposeColor(rectFig.getForegroundColor());
+    }
 }

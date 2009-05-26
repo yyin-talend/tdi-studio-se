@@ -35,6 +35,7 @@ import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.IEditorInput;
+import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.designer.core.DesignerPlugin;
@@ -72,6 +73,15 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         return ((Process) this.getModel()).getElements();
     }
 
+    @Override
+    protected void unregisterVisuals() {
+        super.unregisterVisuals();
+        if (fig2 != null) {
+            ResourceDisposeUtil.disposeColor(fig2.getBackgroundColor());
+            ResourceDisposeUtil.disposeColor(fig2.getForegroundColor());
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -98,6 +108,8 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         }
         super.deactivate();
         ((Process) getModel()).removePropertyChangeListener(this);
+        fig2.getBackgroundColor().dispose();
+        fig2.getForegroundColor().dispose();
         fig2 = null;
         node = null;
     }
@@ -125,10 +137,12 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      */
     public void ajustReadOnly() {
         if (((Process) getModel()).isReadOnly()) {
+
             fig2.setBackgroundColor(new Color(null, DesignerColorUtils.getPreferenceReadonlyRGB(
                     DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_READONLY_COLOR)));
             fig2.setOpaque(true);
         } else {
+            ResourceDisposeUtil.disposeColor(fig2.getBackgroundColor());
             fig2.setBackgroundColor(new Color(null, DesignerColorUtils.getPreferenceDesignerEditorRGB(
                     DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_EDITOR_COLOR)));
             fig2.setOpaque(true);
@@ -271,4 +285,5 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         }
 
     }
+
 }

@@ -3114,6 +3114,7 @@ public class Process extends Element implements IProcess2 {
      * 
      * @see org.talend.core.model.process.IProcess#getOutputMetadataTable()
      */
+
     // this function is create for feature 0006265
     public IMetadataTable getOutputMetadataTable() {
         List<? extends Node> nodes = (List<? extends Node>) this.getGeneratingNodes();
@@ -3126,4 +3127,5 @@ public class Process extends Element implements IProcess2 {
         return null;
 
     }
+
 }

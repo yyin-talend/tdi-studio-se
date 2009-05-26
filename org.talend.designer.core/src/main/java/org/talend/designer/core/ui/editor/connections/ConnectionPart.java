@@ -55,6 +55,12 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         }
     }
 
+    @Override
+    protected void unregisterVisuals() {
+        super.unregisterVisuals();
+        ((ConnectionFigure) getFigure()).disposeColors();
+    }
+
     /*
      * (non-Javadoc)
      * 

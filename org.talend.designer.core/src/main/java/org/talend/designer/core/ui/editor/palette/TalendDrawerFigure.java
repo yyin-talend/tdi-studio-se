@@ -29,15 +29,20 @@ public class TalendDrawerFigure extends DrawerFigure {
 
     private static final int X_OFFSET = 17;
 
+    private static Color baseColor = FigureUtilities.mixColors(PaletteColorUtil.WIDGET_BACKGROUND,
+            PaletteColorUtil.WIDGET_LIST_BACKGROUND, 0.1);
+
     public TalendDrawerFigure(Control control, int childLevel) {
         super(control);
-
-        Color baseColor = FigureUtilities.mixColors(PaletteColorUtil.WIDGET_BACKGROUND, PaletteColorUtil.WIDGET_LIST_BACKGROUND,
-                0.1);
-        // control.getBackground();
         Color backgroundColor = new Color(Display.getCurrent(), getNewValue(baseColor.getRed(), childLevel), getNewValue(
                 baseColor.getGreen(), childLevel), getNewValue(baseColor.getBlue(), childLevel));
         getContentPane().setBackgroundColor(backgroundColor);
+    }
+
+    public void disposeColors() {
+        if (getContentPane().getBackgroundColor() != null && !getContentPane().getBackgroundColor().isDisposed()) {
+            getContentPane().getBackgroundColor().dispose();
+        }
     }
 
     private int getNewValue(int oldValue, int childLevel) {

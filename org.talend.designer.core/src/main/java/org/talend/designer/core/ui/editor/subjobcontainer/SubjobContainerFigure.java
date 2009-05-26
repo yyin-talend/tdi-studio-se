@@ -140,6 +140,7 @@ public class SubjobContainerFigure extends Figure {
     }
 
     public void initializeSubjobContainer(Rectangle rectangle) {
+        disposeColors();
         Point location = this.getLocation();
         collapseFigure.setCollapsed(subjobContainer.isCollapsed());
 
@@ -164,6 +165,21 @@ public class SubjobContainerFigure extends Figure {
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
         rectFig.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////////
         rectFig.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
+    }
+
+    public void disposeColors() {
+        if (rectFig.getForegroundColor() != null && !rectFig.getForegroundColor().isDisposed()) {
+            rectFig.getForegroundColor().dispose();
+        }
+        if (rectFig.getBackgroundColor() != null && !rectFig.getBackgroundColor().isDisposed()) {
+            rectFig.getBackgroundColor().dispose();
+        }
+        if (outlineFigure.getForegroundColor() != null && !outlineFigure.getForegroundColor().isDisposed()) {
+            outlineFigure.getForegroundColor().dispose();
+        }
+        if (outlineFigure.getBackgroundColor() != null && !outlineFigure.getBackgroundColor().isDisposed()) {
+            outlineFigure.getBackgroundColor().dispose();
+        }
     }
 
     /**

@@ -266,7 +266,5 @@ public class TerminalBusinessItemEditPart extends BusinessItemShapeEditPart {
         protected void setUseLocalCoordinates(boolean useLocalCoordinates) {
             myUseLocalCoordinates = useLocalCoordinates;
         }
-
     }
-
 }

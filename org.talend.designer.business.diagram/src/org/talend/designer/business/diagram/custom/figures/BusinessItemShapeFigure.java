@@ -20,6 +20,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gmf.runtime.gef.ui.figures.DefaultSizeNodeFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.utils.ResourceDisposeUtil;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -33,7 +34,9 @@ public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
 
     private IFigure nameFigure;
 
-    protected LineBorder border = new LineBorder() {
+    static Color borderColor = new Color(Display.getCurrent(), 255, 110, 0);
+
+    public LineBorder border = new LineBorder() {
 
         @Override
         public void paint(IFigure figure, Graphics graphics, Insets insets) {
@@ -49,7 +52,7 @@ public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
      */
     public BusinessItemShapeFigure() {
         super(50, 50);
-        border.setColor(new Color(Display.getCurrent(), 255, 110, 0));
+        border.setColor(borderColor);
         border.setWidth(3);
     }
 
@@ -85,4 +88,7 @@ public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
         this.drawFrame = drawFrame;
     }
 
+    public void disposeColors() {
+        ResourceDisposeUtil.disposeColor(border.getColor());
+    }
 }

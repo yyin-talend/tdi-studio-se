@@ -15,6 +15,7 @@ package org.talend.designer.business.diagram.custom.figures;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.talend.commons.utils.ResourceDisposeUtil;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -51,5 +52,9 @@ public class TerminalBusinessItemShapeFigure extends BusinessItemShapeFigure {
 
         graphics.fillRoundRectangle(r, corner.width, corner.height);
         graphics.drawRoundRectangle(r, corner.width, corner.height);
+    }
+
+    public void disposeColors() {
+        ResourceDisposeUtil.disposeColor(border.getColor());
     }
 }

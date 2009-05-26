@@ -42,6 +42,12 @@ import org.talend.designer.core.ui.editor.process.NodeSnapToGeometry;
 public class NodeContainerPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable {
 
     @Override
+    protected void unregisterVisuals() {
+        super.unregisterVisuals();
+        ((NodeContainerFigure) getFigure()).disposeColors();
+    }
+
+    @Override
     public boolean isSelectable() {
         return false;
     }

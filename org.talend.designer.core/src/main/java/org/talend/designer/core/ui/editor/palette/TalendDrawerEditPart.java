@@ -21,7 +21,33 @@ import org.eclipse.gef.palette.PaletteDrawer;
 /**
  * 
  */
+/**
+ * DOC Administrator class global comment. Detailled comment
+ */
 public class TalendDrawerEditPart extends DrawerEditPart {
+
+    @Override
+    protected void unregister() {
+        super.unregister();
+    }
+
+    @Override
+    protected void unregisterVisuals() {
+        if (getFigure() instanceof TalendDrawerFigure) {
+            ((TalendDrawerFigure) getFigure()).disposeColors();
+        }
+        super.unregisterVisuals();
+
+    }
+
+    @Override
+    public void deactivate() {
+        if (getFigure() instanceof TalendDrawerFigure) {
+            ((TalendDrawerFigure) getFigure()).disposeColors();
+        }
+        super.deactivate();
+
+    }
 
     private int childLevel = 0;
 
@@ -31,6 +57,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
 
     public IFigure createFigure() {
         if (getParent() instanceof TalendDrawerEditPart) {
+
             TalendDrawerEditPart parent = (TalendDrawerEditPart) getParent();
             childLevel = parent.childLevel + 1;
             getViewer().getControl().setData("ANIMATE", Boolean.FALSE); //$NON-NLS-1$

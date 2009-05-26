@@ -37,6 +37,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage;
 import org.talend.commons.ui.image.OverlayImage.EPosition;
+import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
@@ -83,6 +84,26 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
     public BusinessItemShapeEditPart(View view) {
         super(view);
         tooltipFigure = new BusinessTooltipFigure();
+    }
+
+    @Override
+    protected NodeFigure createNodeFigure() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected void unregisterVisuals() {
+        ((BusinessItemShapeFigure) getFigure()).disposeColors();
+        super.unregisterVisuals();
+    }
+
+    @Override
+    public void deactivate() {
+        if (this.tooltipFigure != null) {
+            ResourceDisposeUtil.disposeColor(this.tooltipFigure.getBackgroundColor());
+        }
+        super.deactivate();
     }
 
     /*

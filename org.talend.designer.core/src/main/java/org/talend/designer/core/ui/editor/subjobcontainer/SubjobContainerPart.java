@@ -47,6 +47,12 @@ import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
  */
 public class SubjobContainerPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable, NodeEditPart {
 
+    @Override
+    protected void unregisterVisuals() {
+        super.unregisterVisuals();
+        ((SubjobContainerFigure) getFigure()).disposeColors();
+    }
+
     /*
      * (non-Javadoc)
      * 

@@ -164,7 +164,7 @@ public class TalendPaletteViewer extends PaletteViewer {
                 startFiltering(text);
             }
         });
-
+        okImage.dispose();
         return container;
     }
 
