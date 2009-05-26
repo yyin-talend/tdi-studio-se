@@ -111,7 +111,7 @@ for(int i=0; i<newColumnList.size();i++){
 if(flag_<%=cid %>){
 	try{
 		<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
-	}catch(IllegalStateException e){
+	}catch(Exception e){
 		<%=outConn.getName()%>.<%=column.getLabel() %> = null;
 		flag_<%=cid %> = false;
 	}
@@ -192,7 +192,7 @@ try{
 		}
 %>
 	}
-}catch(IllegalStateException e){
+}catch(Exception e){
 <%
 		if(defaultValue != null){
 %>
