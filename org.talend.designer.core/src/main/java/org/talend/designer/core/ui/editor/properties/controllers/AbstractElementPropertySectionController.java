@@ -982,7 +982,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String dbName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
         connParameters.setDbName(dbName);
 
-        if (connParameters.getDbType().equals("SQLite")) {
+        if (connParameters.getDbType().equals("SQLite")) {//$NON-NLS-1$
             String file = getValueFromRepositoryName(element, EConnectionParameterName.FILE.getName());
             connParameters.setFilename(file);
         }
@@ -1034,7 +1034,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.DRIVER_JAR.getName(), context)));
 
-        if (connParameters.getDbType().equals("SQLite")) {
+        if (connParameters.getDbType().equals("SQLite")) {//$NON-NLS-1$
             if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && "" //$NON-NLS-1$
             .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
                 connParameters
