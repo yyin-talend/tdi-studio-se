@@ -72,7 +72,7 @@
     	}
     	if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
     	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-		String[] listings<%=cid %> = ftp<%=cid %>.dir(".", false);
+		String[] listings<%=cid %> = ftp<%=cid %>.dir(null, false);
 		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
 		{  
 			if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))

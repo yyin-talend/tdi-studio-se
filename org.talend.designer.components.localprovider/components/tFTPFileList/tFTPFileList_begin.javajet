@@ -154,14 +154,14 @@ if(useProxy){
 	<%} %>	    
 	
 	String remotedir_<%=cid %> = <%=remotedir%>;
-	//ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
+	ftp<%=cid %>.chdir(remotedir_<%=cid %>);
     
     String[] fileList_<%=cid %>;
     if (<%=dirFull %>) {
-        fileList_<%=cid %> = ftp<%=cid %>.dir(remotedir_<%=cid %>, true);
+        fileList_<%=cid %> = ftp<%=cid %>.dir(null, true);
     }
     else {
-        fileList_<%=cid %> = ftp<%=cid %>.dir(remotedir_<%=cid %>, false);
+        fileList_<%=cid %> = ftp<%=cid %>.dir(null, false);
     }
     
     int i<%=cid %> = -1;
