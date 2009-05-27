@@ -50,7 +50,8 @@ public class RegisterWizardPage extends WizardPage {
     /**
      * 
      */
-    private static final String DESCRIPTION = Messages.getString("RegisterWizardPage.description"); //$NON-NLS-1$
+    private static final String DESCRIPTION = Messages.getString("RegisterWizardPage.description", //$NON-NLS-1$
+            ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getFullProductName()); //$NON-NLS-1$
 
     /** EMail field. */
     private Text emailText;
