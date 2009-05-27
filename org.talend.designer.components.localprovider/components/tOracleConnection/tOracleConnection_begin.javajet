@@ -19,37 +19,12 @@ imports="
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-    boolean useTNSFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_TNS_FILE__"));
-    String tnsFile = ElementParameterParser.getValue(node, "__TNS_FILE__");
     boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
     String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
 java.sql.Connection conn_<%=cid%> = null;
 <%
-if(useTNSFile) {
-    %>     
-    java.util.List<org.talend.tns.TNSParser.TNSEntry> entryList_<%=cid%> = org.talend.tns.TNSParser.parse(<%=tnsFile%>);
-    if(entryList_<%=cid%> == null || entryList_<%=cid%>.size() == 0) {
-        throw new RuntimeException("Maybe there is something wrong with the tns file, please check it.");
-    } else {
-        org.talend.tns.ConnectionManager.ConnObject connObject_<%=cid%> = org.talend.tns.ConnectionManager.getFirstAvailableConnObject(entryList_<%=cid%>, <%=dbuser%>, <%=dbpass%>);
-        
-        conn_<%=cid%> = connObject_<%=cid%>.getConn();
-        conn_<%=cid%>.setAutoCommit(false);
-        
-        globalMap.put("host_" + "<%=cid%>", connObject_<%=cid%>.getHost());
-        globalMap.put("port_" + "<%=cid%>", connObject_<%=cid%>.getPort());
-        if(connObject_<%=cid%>.getSid() != null) {
-            globalMap.put("dbname_" + "<%=cid%>", connObject_<%=cid%>.getSid());
-            globalMap.put("connectionType_" + "<%=cid%>", "ORACLE_SID");
-        } else {
-            globalMap.put("dbname_" + "<%=cid%>", connObject_<%=cid%>.getServiceName());
-            globalMap.put("connectionType_" + "<%=cid%>", "ORACLE_SERVICE_NAME");
-        }
-    }
-    <%
-} else {
     String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");    
     if(("ORACLE_SID").equals(connectionType)) {
         %>
@@ -94,7 +69,6 @@ if(useTNSFile) {
         globalMap.put("dbname_" + "<%=cid%>",<%=dbname%>);
         <%
     }
-}
 %>
 
 globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
