@@ -149,6 +149,7 @@ public enum EParameterName {
     PROPERTIES(Messages.getString("EParameterName.additionParam")), //$NON-NLS-1$
     DBFILE(Messages.getString("EParameterName.database")), //$NON-NLS-1$
     DB_VERSION(Messages.getString("EParameterName.dbVersion")), //$NON-NLS-1$
+    DATASOURCE(Messages.getString("EParameterName.dataSource")), //$NON-NLS-1$
     STATS_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.StatDefaultProjectsetting")), //$NON-NLS-1$
     /**
      * For Job Settings extra parameters.

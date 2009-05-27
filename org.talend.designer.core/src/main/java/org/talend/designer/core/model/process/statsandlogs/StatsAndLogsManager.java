@@ -755,6 +755,20 @@ public class StatsAndLogsManager {
                 .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD')"); //$NON-NLS-1$
         paramList.add(param);
 
+        // databaseSource
+        // gcui:see bug 7456.
+        param = new ElementParameter(process);
+        param.setName(EParameterName.DATASOURCE.getName());
+        param.setDisplayName(EParameterName.DATASOURCE.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.DATASOURCE.getName())));
+        param.setNumRow(53);
+        param.setRepositoryValue("DATASOURCE"); //$NON-NLS-1$
+        param
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')and (DB_TYPE =='INFORMIX' or DB_TYPE =='GODBC' or DB_TYPE =='MSODBC') "); //$NON-NLS-1$
+        paramList.add(param);
+
         // dbName
         param = new ElementParameter(process);
         param.setName(EParameterName.DBNAME.getName());
