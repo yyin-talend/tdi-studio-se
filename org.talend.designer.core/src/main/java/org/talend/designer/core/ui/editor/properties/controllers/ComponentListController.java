@@ -255,6 +255,9 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     continue;
                 }
                 String displayName = (String) node.getElementParameter("LABEL").getValue(); //$NON-NLS-1$
+                if (displayName == null) {
+                    displayName = uniqueName + " - " + displayName; //$NON-NLS-1$
+                }
                 if (displayName.indexOf("__UNIQUE_NAME__") != -1) { //$NON-NLS-1$
                     displayName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName); //$NON-NLS-1$
                 } else {
