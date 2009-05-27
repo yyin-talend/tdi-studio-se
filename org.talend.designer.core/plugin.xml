@@ -567,6 +567,12 @@
            mapping="ICON_SELECTION"
            name="Icon Selection">
      </generator>     
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.TNSEditorGenerator"
+           mapping="TNS_EDITOR"
+           name="Tns Deitor">
+     </generator>     
+	 
    </extension>
    
    <extension
