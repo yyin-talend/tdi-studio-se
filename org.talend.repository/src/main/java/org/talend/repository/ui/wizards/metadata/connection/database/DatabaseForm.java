@@ -603,7 +603,7 @@ public class DatabaseForm extends AbstractForm {
                     isGeneralJDBC() ? generalJdbcPasswordText.getText() : passwordText.getText(), sidOrDatabaseText.getText(),
                     portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? "" : schemaText //$NON-NLS-1$
                             .getText(), additionParamText.getText(), generalJdbcClassNameText.getText(), generalJdbcDriverjarText
-                            .getText(), oracleVersionEnable() || as400VersionEnable() ? versionStr : null);
+                            .getText(), enableDbVersion() ? versionStr : null);
 
             managerConnection.setDbRootPath(directoryField.getText());
 
@@ -639,6 +639,11 @@ public class DatabaseForm extends AbstractForm {
             }
             new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, managerConnection.getMessageException());
         }
+    }
+
+    private boolean enableDbVersion() {
+        return oracleVersionEnable() || as400VersionEnable()
+                || EDatabaseConnTemplate.ACCESS.getDBTypeName().equals(dbTypeCombo.getText());
     }
 
     /**

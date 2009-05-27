@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
@@ -148,6 +150,7 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
             connectionItem = PropertiesFactory.eINSTANCE.createSalesforceSchemaConnectionItem();
             connectionItem.setProperty(connectionProperty);
             connectionItem.setConnection(connection);
+            initProxySettings(connection);
             break;
 
         case REPOSITORY_ELEMENT:
@@ -199,6 +202,7 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
             connectionItem = PropertiesFactory.eINSTANCE.createSalesforceSchemaConnectionItem();
             connectionItem.setProperty(connectionProperty);
             connectionItem.setConnection(connection);
+            initProxySettings(connection);
             break;
 
         case REPOSITORY_ELEMENT:
@@ -222,6 +226,21 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
                     .getConnection());
             contextModeManager.setSelectedContextType(contextTypeForContextMode);
         }
+    }
+
+    private void initProxySettings(SalesforceSchemaConnection ssCon) {
+
+        Properties properties = System.getProperties();
+        String oldProxyHost = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_HOST);
+        String oldProxyPort = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_PORT);
+        String oldProxyUser = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_USERNAME);
+        String oldProxyPwd = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_PASSWORD);
+
+        ssCon.setProxyHost(oldProxyHost);
+        ssCon.setProxyPort(oldProxyPort);
+        ssCon.setProxyUsername(oldProxyUser);
+        ssCon.setProxyPassword(oldProxyPwd);
+
     }
 
     @Override

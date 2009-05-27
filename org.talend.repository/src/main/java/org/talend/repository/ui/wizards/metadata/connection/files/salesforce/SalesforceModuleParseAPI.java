@@ -17,6 +17,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.rpc.ServiceException;
 
@@ -44,6 +45,14 @@ import com.sforce.soap.enterprise.sobject.SObject;
  */
 public class SalesforceModuleParseAPI {
 
+    public static final String SOCKS_PROXY_HOST = "socksProxyHost"; //$NON-NLS-1$
+
+    public static final String SOCKS_PROXY_PORT = "socksProxyPort"; //$NON-NLS-1$
+
+    public static final String SOCKS_PROXY_USERNAME = "java.net.socks.username"; //$NON-NLS-1$
+
+    public static final String SOCKS_PROXY_PASSWORD = "java.net.socks.password"; //$NON-NLS-1$
+
     private String url = null;
 
     private String name = null;
@@ -51,6 +60,17 @@ public class SalesforceModuleParseAPI {
     private String pwd = null;
 
     private boolean loginOk = false;
+
+    /*
+     * 
+     */
+    private String proxyHost = null;
+
+    private String proxyPort = null;
+
+    private String proxyUsername = null;
+
+    private String proxyPassword = null;
 
     private SoapBindingStub binding = null;
 
@@ -65,7 +85,8 @@ public class SalesforceModuleParseAPI {
     /**
      * DOC YeXiaowei Comment method "login".
      */
-    public SoapBindingStub login(String endPoint, String username, String password) throws Exception {
+    public SoapBindingStub login(String endPoint, String username, String password, String proxyHost, String proxyPort,
+            String proxyUsername, String proxyPassword) throws Exception {
         if (endPoint == null) {
             throw new RemoteException(Messages.getString("SalesforceModuleParseAPI.URLInvalid")); //$NON-NLS-1$
         }
@@ -74,32 +95,78 @@ public class SalesforceModuleParseAPI {
         }
 
         if (name != null && pwd != null && url != null) {
-            if (!url.equals(endPoint) || !name.equals(username) || !pwd.equals(password)) {
-                doLogin(endPoint, username, password);
+            if (!url.equals(endPoint) || !name.equals(username) || !pwd.equals(password)
+                    || !checkString(proxyHost, this.proxyHost) || !checkString(proxyPort, this.proxyPort)
+                    || !checkString(proxyUsername, this.proxyUsername) || !checkString(proxyPassword, this.proxyPassword)) {
+                doLogin(endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword);
             } else {
                 if (isLogin()) {
                     return binding;
                 }
             }
         } else {
-            doLogin(endPoint, username, password);
+            doLogin(endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword);
         }
 
         this.name = username;
         this.pwd = password;
         this.url = endPoint;
+        this.proxyHost = proxyHost;
+        this.proxyPort = proxyPort;
+        this.proxyUsername = proxyUsername;
+        this.proxyPassword = proxyPassword;
         return binding;
     }
 
-    protected SoapBindingStub doLogin(String endPoint, String userName, String pwd) throws RemoteException, ServiceException,
-            MalformedURLException {
+    private boolean checkString(String str1, String str2) {
+        if (str1 == str2) {
+            return true;
+        }
+        if (str1 != null && str2 != null) {
+            return str1.equals(str2);
+        }
+        return false;
+    }
 
+    public SoapBindingStub login(String endPoint, String username, String password) throws Exception {
+        return login(endPoint, username, password, null, null, null, null);
+    }
+
+    protected SoapBindingStub doLogin(String endPoint, String userName, String pwd, String proxyHost, String proxyPort,
+            String proxyUsername, String proxyPassword) throws RemoteException, ServiceException, MalformedURLException {
+        // set proxy
+        boolean enableProxy = false;
+
+        String oldProxyHost = null;
+        String oldProxyPort = null;
+        String oldProxyUser = null;
+        String oldProxyPwd = null;
+
+        if (proxyHost != null && "".equals(proxyHost.trim()) && proxyPort != null && "".equals(proxyPort.trim())) { //$NON-NLS-1$ //$NON-NLS-2$
+            enableProxy = true;
+            Properties properties = System.getProperties();
+            oldProxyHost = (String) properties.get(SOCKS_PROXY_HOST);
+            properties.put(SOCKS_PROXY_HOST, proxyHost);
+            oldProxyPort = (String) properties.get(SOCKS_PROXY_PORT);
+            properties.put(SOCKS_PROXY_PORT, proxyPort);
+            oldProxyUser = (String) properties.get(SOCKS_PROXY_USERNAME);
+            properties.put(SOCKS_PROXY_USERNAME, proxyUsername == null ? "" : proxyUsername); //$NON-NLS-1$
+            oldProxyPwd = (String) properties.get(SOCKS_PROXY_PASSWORD);
+            properties.put(SOCKS_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
+
+        }
         URL soapAddress = new java.net.URL(endPoint);
         binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
 
         loginResult = binding.login(userName, pwd);
         setLogin(true);
-
+        if (enableProxy) {
+            Properties properties = System.getProperties();
+            properties.put(SOCKS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
+            properties.put(SOCKS_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
+            properties.put(SOCKS_PROXY_USERNAME, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
+            properties.put(SOCKS_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
+        }
         // on a successful login, you should always set up your session id
         // and the url for subsequent calls
 

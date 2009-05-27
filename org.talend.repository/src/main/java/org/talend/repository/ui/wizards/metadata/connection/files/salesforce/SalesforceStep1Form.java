@@ -69,6 +69,19 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private UtilsButton cancelButton = null;
 
+    /*
+     * 
+     */
+    private Button useProxyBtn = null;
+
+    private LabelledText proxyHostText = null;
+
+    private LabelledText proxyPortText = null;
+
+    private LabelledText proxyUsernameText = null;
+
+    private LabelledText proxyPasswordText = null;
+
     private Button checkButton = null;
 
     private boolean loginOk = false;
@@ -121,19 +134,36 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     @Override
     protected void addFields() {
 
-        Group group = Form.createGroup(this, 3, "Salesforce parameters"); //$NON-NLS-1$
+        Group group = Form.createGroup(this, 3, Messages.getString("SalesforceStep1Form.SalesforceParam")); //$NON-NLS-1$
 
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         group.setLayoutData(data);
 
-        webServiceUrlText = new LabelledText(group, "Web service URL", 2, true); //$NON-NLS-1$
+        webServiceUrlText = new LabelledText(group, Messages.getString("SalesforceStep1Form.webURL"), 2, true); //$NON-NLS-1$
 
-        userNameText = new LabelledText(group, "User name", 2); //$NON-NLS-1$
+        userNameText = new LabelledText(group, Messages.getString("SalesforceStep1Form.Username"), 2); //$NON-NLS-1$
 
-        passwordText = new LabelledText(group, "Password ", 2); //$NON-NLS-1$
+        passwordText = new LabelledText(group, Messages.getString("SalesforceStep1Form.Password"), 2); //$NON-NLS-1$
         passwordText.getTextControl().setEchoChar(pwdEhcoChar);
 
-        moduleNameCombo = new LabelledCombo(group, Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
+        Group proxyGroup = Form.createGroup(group, 4, Messages.getString("SalesforceStep1Form.SocksProxyParam")); //$NON-NLS-1$
+        GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 3;
+        proxyGroup.setLayoutData(layoutData);
+        useProxyBtn = new Button(proxyGroup, SWT.CHECK);
+        layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 4;
+        useProxyBtn.setLayoutData(layoutData);
+        useProxyBtn.setText(Messages.getString("SalesforceStep1Form.EnabledProxy")); //$NON-NLS-1$
+        proxyHostText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyHost")); //$NON-NLS-1$
+        proxyPortText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyPort")); //$NON-NLS-1$
+        proxyUsernameText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyUsername")); //$NON-NLS-1$
+        proxyPasswordText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyPassword")); //$NON-NLS-1$
+        enableProxyParameters(false);
+
+        moduleNameCombo = new LabelledCombo(
+                group,
+                Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
                 null, 2, false);
 
         initModuleNames();
@@ -225,7 +255,59 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 }
             }
         });
+        useProxyBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+
+                checkFieldsValue();
+                enableProxyParameters(useProxyBtn.getSelection());
+                getConnection().setUseProxy(useProxyBtn.getSelection());
+            }
+
+        });
+        proxyHostText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setProxyHost(proxyHostText.getText());
+                }
+
+            }
+
+        });
+        proxyPortText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setProxyPort(proxyPortText.getText());
+                }
+
+            }
+
+        });
+        proxyUsernameText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setProxyUsername(proxyUsernameText.getText());
+                }
+            }
+
+        });
+        proxyPasswordText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setProxyPassword(proxyPasswordText.getText());
+                }
+            }
+
+        });
         moduleNameCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -281,6 +363,13 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             }
         });
 
+    }
+
+    private void enableProxyParameters(boolean enable) {
+        proxyHostText.setEnabled(enable);
+        proxyPortText.setEnabled(enable);
+        proxyUsernameText.setEnabled(enable);
+        proxyPasswordText.setEnabled(enable);
     }
 
     Object[] modulename = null;
@@ -497,8 +586,13 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         }
 
         setTextValue(getConnection().getUserName(), userNameText);
-
         setTextValue(getConnection().getPassword(), passwordText);
+
+        useProxyBtn.setSelection(getConnection().isUseProxy());
+        setTextValue(getConnection().getProxyHost(), proxyHostText);
+        setTextValue(getConnection().getProxyPort(), proxyPortText);
+        setTextValue(getConnection().getProxyUsername(), proxyUsernameText);
+        setTextValue(getConnection().getProxyPassword(), proxyPasswordText);
 
         boolean useCustom = false;
         useCustom = getConnection().isUseCustomModuleName();
@@ -538,11 +632,17 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         webServiceUrlText.setEditable(!isContextMode());
         userNameText.setEditable(!isContextMode());
         passwordText.setEditable(!isContextMode());
+        proxyHostText.setEditable(!isContextMode());
+        proxyPortText.setEditable(!isContextMode());
+        proxyUsernameText.setEditable(!isContextMode());
+        proxyPasswordText.setEditable(!isContextMode());
         if (isContextMode()) {
             passwordText.getTextControl().setEchoChar('\0');
+            proxyPasswordText.getTextControl().setEchoChar('\0');
             checkButton.setEnabled(isContextMode());
         } else {
-            passwordText.getTextControl().setEchoChar('*');
+            passwordText.getTextControl().setEchoChar(pwdEhcoChar);
+            proxyPasswordText.getTextControl().setEchoChar(pwdEhcoChar);
         }
     }
 
