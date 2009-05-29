@@ -41,7 +41,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__LIMIT__"
         );
 
-        if (limit.equals("")) {
+        if (limit.equals("") || limit.startsWith("-")) {
             limit = "undef";
         }
 %>
