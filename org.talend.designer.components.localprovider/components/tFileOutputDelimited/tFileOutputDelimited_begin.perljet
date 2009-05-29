@@ -54,6 +54,11 @@ String textEnclosure = ElementParameterParser.getValue(
     "__TEXT_ENCLOSURE__"
 );
 
+boolean alwaysQuote = ElementParameterParser.getValue(
+    node,
+    "__ALWAYS_QUOTE__"
+).equals("true");
+
 String encoding = ElementParameterParser.getValue(
     node,
     "__ENCODING__"
@@ -101,6 +106,13 @@ my $csv_<%=cid%> = Text::CSV_XS->new({
     escape_char  => <%=escapeChar%>,
     quote_char   => <%=textEnclosure%>,
     binary       => 1,
+<%
+        if (alwaysQuote) {
+%>
+    always_quote => 1,
+<%
+        }
+%>
 });
 <%
         }

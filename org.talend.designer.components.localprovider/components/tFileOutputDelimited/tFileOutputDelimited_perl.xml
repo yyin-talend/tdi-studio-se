@@ -136,6 +136,16 @@
     >
       <DEFAULT>'"'</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="ALWAYS_QUOTE"
+      FIELD="CHECK"
+      NUM_ROW="13"
+      SHOW_IF="CSV_OPTION == 'true'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
