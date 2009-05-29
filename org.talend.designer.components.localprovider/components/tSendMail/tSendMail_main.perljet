@@ -57,16 +57,16 @@ use File::Basename;
 {
     my $msg = MIME::Lite->new(
         From    => <%=from%>,
-        To      => <%=to%>,
+        To      => join(', ', <%=to%>),
 <%
 if( ! cc.equals("") ){
 %>
-        Cc      => <%= cc %>,
+        Cc      => join(', ', <%= cc %>),
 <%
 }
 if( ! bcc.equals("") ){
 %>
-        Bcc     => <%= bcc %>,
+        Bcc     => join(', ', <%= bcc %>),
 <%
 }
 %>
@@ -119,16 +119,16 @@ for (int i = 0; i < headers.size(); i++) {
   }
 %>    
     $smtp->mail(<%=from%>);
-    $smtp->to(<%=to%>);
+    $smtp->to(extractMailAddresses(join(', ', <%=to%>)));
 <%
 if( ! cc.equals("") ){
 %>
-    $smtp->cc(<%= cc %>);
+    $smtp->cc(extractMailAddresses(join(', ', <%=cc%>)));
 <%
 }
 if( ! bcc.equals("") ){
 %>
-    $smtp->bcc(<%= bcc %>);
+    $smtp->bcc(extractMailAddresses(join(', ', <%=bcc%>)));
 <%
 }
 %>    
