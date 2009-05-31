@@ -180,7 +180,7 @@ class GenerateToolByDom4j{
 				}
 			}else{
 %>
-		if(<%tool.getValue(node);%>!=null){
+		if(<%tool.getValue(node); %>!=null){
 			nestXMLTool_<%=cid%> .setText(<%=currEleName%>_<%=cid%>,<%tool.getValue(node);%>);
 		}
 <%
@@ -193,14 +193,23 @@ class GenerateToolByDom4j{
 <%
 				}
 			}
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+		nestXMLTool_<%=cid %>.parseAndAdd(<%=currEleName %>_<%=cid %>,"<%=node.defaultValue %>");
+
+<%
 		}
 	}
 	private void addAttribute(String currEleName, XMLNode node){
 		if(node.relatedColumn!=null){
 %>
-		if(<%tool.getValue(node);%>!=null){
-			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>",<%tool.getValue(node);%>);
+		if(<%tool.getValue(node); %>!=null){
+			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>",<%tool.getValue(node); %>);
 		}
+<%
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", "<%=node.defaultValue %>");
 <%
 		}
 	}
@@ -219,6 +228,16 @@ class GenerateToolByDom4j{
 %>
 		}
 <%
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+			<%=currEleName %>_<%=cid %>.addNamespace("<%=node.path %>",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"));
+<%
+			if(node.path ==null || node.path.length()==0){
+%>
+        	<%=currEleName %>_<%=cid %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>_<%=cid %>.getName(),
+        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"))));
+<%
+			}
 		}
 	}
 }
@@ -242,6 +261,12 @@ class GenerateExprCmpByDom4j{
  <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
  <%generateCmnExpr(arrNames, parentName); %>.getText().equals(<%tool.getValue(node); %>)
 <%
+		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
+%>
+ <%generateCmnExpr(arrNames, parentName); %>!=null
+ <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
+ <%generateCmnExpr(arrNames, parentName); %>.getText().equals("<%=node.defaultValue %>")
+<%
 		}
 		
 		//first generate the attribute comparision	
@@ -253,9 +278,15 @@ class GenerateExprCmpByDom4j{
  <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
  <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals(<%tool.getValue(attri); %>)
 <%
+				}else if(attri.defaultValue !=null && !("").equals(attri.defaultValue) ){
+%>
+ <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>")!=null
+ <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
+ <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals("<%=attri.defaultValue %>")
+<%
 				}
 			}
-		}	
+		}
 		
 		if(node.elements!=null){
 			for(XMLNode child:node.elements){
@@ -263,7 +294,7 @@ class GenerateExprCmpByDom4j{
 					generateCode(child,parentName);
 				}
 			}
-		}		
+		}
 	}
 	
 	private void generateCmnExpr(String[] arrNames, String parentName){
@@ -293,14 +324,17 @@ class GenerateToolByNull{
 			XMLNode mainNode = null;
 			for(XMLNode child:node.elements){
 				if(!child.isMainNode()){ //make the main node output last
-					if(!outputAsXSD && !allowEmpty && (child.relatedColumn != null || child.childrenColumnList.size()>0)){
+					if(!outputAsXSD && !allowEmpty 
+						&& (child.relatedColumn != null || child.childrenColumnList.size()>0
+							 || child.hasDefaultValue == true ) ){
 %>
 		if( false
 <%
                     	for(IMetadataColumn column : child.childrenColumnList){
                     		%> || valueMap_<%=cid%>.get("<%=column.getLabel()%>") != null<%
                     	}
-%>
+                    	if(child.hasDefaultValue == true){%> || true 
+                    	<%}%>
 		){
 <%
 						generateCode(child,emptySpace+"  ");
@@ -337,7 +371,7 @@ class GenerateToolByNull{
 		}
 		if(outputAsXSD && node.relatedColumn != null){
 %>
-		if(<%tool.getValue(node);%>==null){
+		if(<%tool.getValue(node); %> == null){
 			buf_<%=cid%>.append(" xsi:nil=\"true\"");
 		}
 <%
@@ -375,14 +409,22 @@ class GenerateToolByNull{
 		}
 <%
 			}
+		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
+%>
+		buf_<%=cid %>.append("<%=node.defaultValue %>");
+<%
 		}
 	}
 	private void addAttribute(XMLNode node){
 		if(node.relatedColumn!=null){
 %>
-		if(<%tool.getValue(node);%>!=null){
+		if(<%tool.getValue(node); %>!=null){
 			buf_<%=cid%>.append(" <%=node.path%>=\""+TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>)+"\"");
 		}
+<%
+		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
+%>
+		buf_<%=cid%>.append(" <%=node.path%>=\""+TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>")+"\"");
 <%
 		}
 	}
@@ -403,6 +445,16 @@ class GenerateToolByNull{
 %>
 		}
 <%
+		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
+			if(node.path ==null || node.path.length()==0){
+%>
+        	buf_<%=cid%>.append(" xmlns=\""+TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>")+"\"");
+<%
+			}else{
+%>
+			buf_<%=cid%>.append(" xmlns:<%=node.path%>=\""+TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>")+"\"");
+<%
+			}
 		}
 	}
 }
@@ -481,7 +533,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 				for(IMetadataColumn column :metadata.getListColumns()){
 %>
-	valueMap_<%=cid%>.put("<%=column.getLabel()%>",<%tool.getValue(column);%>);
+	valueMap_<%=cid%>.put("<%=column.getLabel()%>", <% tool.getValue(column); %>);
 <%
 				}
 // ------------------- *** Common code end *** ------------------- //
@@ -685,7 +737,7 @@ else if(("Null").equals(mode)){
 		needRoot_<%=cid%>=false;
 <%
 	String rootEmptySpace = "";
-	for(int i=0;i<mainList.size();i++){
+	for(int i=0;i < mainList.size();i++){
 		generateToolByNull.generateCode(mainList.get(i),rootEmptySpace);
 		rootEmptySpace+="  ";
 		
@@ -894,7 +946,8 @@ else if(("Null").equals(mode)){
     	for(IMetadataColumn column : loop.childrenColumnList){
     		%> || valueMap_<%=cid%>.get("<%=column.getLabel()%>") != null<%
     	}
-%>
+    	if(loop.hasDefaultValue == true){%> || true 
+    	<%}%>
 		){
 <%
 	}
