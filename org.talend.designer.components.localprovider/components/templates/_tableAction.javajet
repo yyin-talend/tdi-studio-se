@@ -1,12 +1,6 @@
 <%@ jet 
 %>
-<% 
-stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);  
-    if(convertToUppercase) {
-        for(Column column : stmtStructure) {
-            column.setColumnName(column.getColumnName().toUpperCase());
-        }
-    }
+<%  
 manager = getManager(dbmsId, cid);   
 
 if(!("NONE").equals(tableAction)) {
@@ -72,9 +66,16 @@ if(!("NONE").equals(tableAction)) {
            <%
         }else if(("TRUNCATE").equals(tableAction)) {
             %>
+            java.sql.Statement stmtTruncCount_<%=cid%> = conn_<%=cid%>.createStatement();
+            java.sql.ResultSet rsTruncCount_<%=cid%> = stmtTruncCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
             java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
-            stmtTrunc_<%=cid%>.close();
+            while(rsTruncCount_<%=cid%>.next()) {
+                deletedCount_<%=cid%> += rsTruncCount_<%=cid%>.getInt(1);
+            }
+            rsTruncCount_<%=cid%>.close();
+            stmtTruncCount_<%=cid%>.close();
+            stmtTrunc_<%=cid%>.close();            
             <%
         }         
         

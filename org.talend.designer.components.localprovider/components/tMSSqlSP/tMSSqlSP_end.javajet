@@ -21,7 +21,7 @@ statement_<%=cid%>.close();
 <%
 if (!("true").equals(useExistingConn)) {
 	%>
-	connection_<%=cid%> .close();
+	conn_<%=cid%> .close();
 	<%
 }
 %>

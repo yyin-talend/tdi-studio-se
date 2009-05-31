@@ -26,13 +26,13 @@ String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINA
 String row_separator = ElementParameterParser.getValue(node, "__ROW_TERMINATED_BY__");
 String first_row = ElementParameterParser.getValue(node, "__FIRST_ROW__");
 String file = ElementParameterParser.getValue(node, "__REMOTE_FILENAME__");
-String host = ElementParameterParser.getValue(node, "__HOST__");
-String port = ElementParameterParser.getValue(node, "__PORT__");
-String db = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+String dbport = ElementParameterParser.getValue(node, "__PORT__");
+String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-String user = ElementParameterParser.getValue(node, "__USER__");
-String pas = ElementParameterParser.getValue(node, "__PASS__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String codePage = ElementParameterParser.getValue(node, "__CODE_PAGE__");
 String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
@@ -66,13 +66,13 @@ if(("EXPORT").equals(action)) {
         command.append(" -S");
         command.append(server.replaceAll("\"",""));
     }
-    if((("").equals(user)||("\"\"").equals(user)||user==null)&&(("").equals(pas)||pas==null||("\"\"").equals(pas))){
+    if((("").equals(dbuser)||("\"\"").equals(dbuser)||dbuser==null)&&(("").equals(dbpwd)||dbpwd==null||("\"\"").equals(dbpwd))){
         command.append(" -T");
     }else{
         command.append(" -U");
-        command.append(user.replaceAll("\"",""));
+        command.append(dbuser.replaceAll("\"",""));
         command.append(" -P");
-        command.append(pas.replaceAll("\"",""));
+        command.append(dbpwd.replaceAll("\"",""));
     }
     command.append(" -t");
     command.append(field_separator.replaceAll("\"",""));
@@ -143,27 +143,11 @@ if(("EXPORT").equals(action)) {
     error_<%=cid%>.interrupt();
     <%    
 } else {
-    List<IMetadataColumn> columnList = getColumnList(node);
-    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
-	
-    if(useExistingConnection) {
-    	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-    	String conn = "conn_" + connection;
-    	String schema = "dbschema_" + connection;
-        %>
-        java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-        String dbschema_<%=cid%> = (String)globalMap.get("<%=schema %>");
-        <%
-    } else { 
-        %>
-        java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
-        String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
-        java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
-    	String dbschema_<%=cid%> = <%=dbschema%>;
-    	<%
-    }
+    List<IMetadataColumn> columnList = getColumnList(node);    
     %>
-    String tableName_<%=cid%> = null;
+    String dbschema_<%=cid%> = "";
+    <%@ include file="../templates/tMSSql/_tMSSqlConnection.javajet"%>
+    String tableName_<%=cid%> = null;    
     if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
         tableName_<%=cid%> = <%=table%>;
     } else {
@@ -175,6 +159,7 @@ if(("EXPORT").equals(action)) {
     Manager manager = null;
     List<Column> stmtStructure = null;
     if(columnList != null && columnList.size() > 0) {
+    	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
     %>    
     <%@ include file="../templates/_tableAction.javajet"%>
     <%

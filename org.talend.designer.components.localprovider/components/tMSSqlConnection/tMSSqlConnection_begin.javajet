@@ -22,10 +22,18 @@ imports="
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
 	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
-
 %>
 
-String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
+String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> ;
+String port_<%=cid%> = <%=dbport%>;
+String dbname_<%=cid%> = <%=dbname%> ;
+    if (!"".equals(port_<%=cid%>)) {
+    	url_<%=cid %> += ":" + <%=dbport%>;
+    }
+    if (!"".equals(dbname_<%=cid%>)) {
+    	url_<%=cid%> += "//" + <%=dbname%>; 
+    }
+url_<%=cid%> += ";appName=" + projectName + ";" + <%=dbproperties%>;  
 
 String userName_<%=cid%> = <%=dbuser%>;
 

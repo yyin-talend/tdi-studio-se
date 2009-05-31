@@ -48,7 +48,6 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
-    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
     String dbType = MSSQL;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -70,27 +69,14 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     } else {
         tableName_<%=cid%> = schema_<%=cid%> + "].[" + <%=dbtable%>;
     }
-    java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
-    java.sql.Connection connection_<%=cid%> = null;
-    <%if (useExistingConnection){
-    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-    String conn = "conn_" + connection;
-    %>
-	connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");    
-    <%
-    }else {
-    %>
-    String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
-    connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
-    <%
-    }%>
+	<%@ include file="../templates/tMSSql/_tMSSqlConnection.javajet"%>
     java.sql.Timestamp timestamp_<%=cid%> = null;
     String tmpValue_<%=cid%> = null;    
     <%
     if(isEnableSaveMemMode) {
         %>
         String searching_<%=cid%> = "<%=scdManager.createSearchingSQL(scdConfiger)%>";
-        java.sql.PreparedStatement searchingStmt_<%=cid%> = connection_<%=cid%>.prepareStatement(searching_<%=cid%>);
+        java.sql.PreparedStatement searchingStmt_<%=cid%> = conn_<%=cid%>.prepareStatement(searching_<%=cid%>);
         java.sql.ResultSet searchingResult_<%=cid%> = null;
         <%
     } else {
@@ -98,7 +84,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         List<Column> sourceKeys = scdConfiger.getSourceKeys();
         %>
         String search_<%=cid%> = "<%=scdManager.createSelectionSQL(scdConfiger)%>";
-        java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
+        java.sql.Statement statement_<%=cid%> = conn_<%=cid%>.createStatement();
         java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(search_<%=cid %>);
         java.util.Map<SCDSK_<%=cid%>, SCDStruct_<%=cid%>> cache_<%=cid%> = new java.util.HashMap<SCDSK_<%=cid%>, SCDStruct_<%=cid%>>();
         while(resultSet_<%=cid%>.next()) {
@@ -193,7 +179,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         }
         %>
         String tmpQuery_<%=cid%> = "SELECT MAX([<%=scdConfiger.getSurrogateKeyField()%>]) FROM [" + tableName_<%=cid%> + "]";
-        java.sql.Statement tmpStmt_<%=cid%> = connection_<%=cid%>.createStatement();
+        java.sql.Statement tmpStmt_<%=cid%> = conn_<%=cid%>.createStatement();
         java.sql.ResultSet tmpRS_<%=cid%> = tmpStmt_<%=cid%>.executeQuery(tmpQuery_<%=cid%>);
         <%
         String tmpType = null;        
@@ -217,7 +203,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     }
     %>
     String insertionSQL_<%=cid%> = "<%=scdManager.createInsertionSQL(scdConfiger)%>";
-    java.sql.PreparedStatement insertionStatement_<%=cid%> = connection_<%=cid%>.prepareStatement(insertionSQL_<%=cid%>);
+    java.sql.PreparedStatement insertionStatement_<%=cid%> = conn_<%=cid%>.prepareStatement(insertionSQL_<%=cid%>);
     <%
     if(scdConfiger.isEnableType2()) {
         int paramIndex = 0;
@@ -245,13 +231,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     if(scdConfiger.isEnableType1()) {
         %>
         String updateSQLForType1_<%=cid%> = "<%=scdManager.createUpdateSQLForType1(scdConfiger)%>";
-        java.sql.PreparedStatement updateForType1_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType1_<%=cid%>);        
+        java.sql.PreparedStatement updateForType1_<%=cid%> = conn_<%=cid%>.prepareStatement(updateSQLForType1_<%=cid%>);        
         <%
     }
     if(scdConfiger.isEnableType2()) {
         %>
         String updateSQLForType2_<%=cid%> = "<%=scdManager.createUpdateSQLForType2(scdConfiger)%>";
-        java.sql.PreparedStatement updateForType2_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType2_<%=cid%>);
+        java.sql.PreparedStatement updateForType2_<%=cid%> = conn_<%=cid%>.prepareStatement(updateSQLForType2_<%=cid%>);
         <%
         if(("JOB_START_TIME").equals(scdConfiger.getDimensionType2Configer().getStartDateValueType())) {
             %>
@@ -262,7 +248,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     if(scdConfiger.isEnableType3()) {
         %>
         String updateSQLForType3_<%=cid%> = "<%=scdManager.createUpdateSQLForType3(scdConfiger)%>";
-        java.sql.PreparedStatement updateForType3_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType3_<%=cid%>);
+        java.sql.PreparedStatement updateForType3_<%=cid%> = conn_<%=cid%>.prepareStatement(updateSQLForType3_<%=cid%>);
         <%
     }
     %>

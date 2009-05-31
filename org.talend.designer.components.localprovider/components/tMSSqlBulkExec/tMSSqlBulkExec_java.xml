@@ -79,6 +79,15 @@
       <DEFAULT>"1433"</DEFAULT>
     </PARAMETER>
   
+   <PARAMETER
+      NAME="DB_SCHEMA"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="SCHEMA"
+      SHOW_IF="((ACTION=='INSERT') or (ACTION=='UPDATE')) and (USE_EXISTING_CONNECTION == 'false')"          
+    >
+      <DEFAULT>"dbo"</DEFAULT>
+    </PARAMETER>
         
    	<PARAMETER
       NAME="BCP_UTILITY"
@@ -109,15 +118,12 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="DB_SCHEMA"
-      FIELD="TEXT"
-      NUM_ROW="4"
-      REPOSITORY_VALUE="SCHEMA"
-      SHOW_IF="((ACTION=='INSERT') or (ACTION=='UPDATE')) and (USE_EXISTING_CONNECTION == 'false')"          
-    >
-      <DEFAULT>"dbo"</DEFAULT>
-    </PARAMETER>
+	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" 
+		REPOSITORY_VALUE="PROPERTIES_STRING"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+		>
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
     
     <PARAMETER
       NAME="USER"
