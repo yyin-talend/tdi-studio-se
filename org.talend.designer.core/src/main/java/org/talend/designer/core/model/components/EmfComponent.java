@@ -97,6 +97,7 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -609,7 +610,7 @@ public class EmfComponent implements IComponent {
         FORMATType formatTypeInXML = compType.getHEADER().getFORMAT();
 
         // qli modified to fix the bug 7074.
-        String formatId = getNodeFormatIdWithoutFormatType(node.getLabel(), getTranslatedFamilyName());
+        String formatId = getNodeFormatIdWithoutFormatType(getName(), getTranslatedFamilyName());
 
         param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
@@ -624,6 +625,12 @@ public class EmfComponent implements IComponent {
             param.setValue(formatTypeInXML.getLABEL());
         } else if (formatId != null) {
             String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
+            if (!"".equals(label)) { //$NON-NLS-1$
+                param.setValue(label);
+            }
+        } else {
+            // in case label/format is not set in the preferences.
+            String label = DesignerPlugin.getDefault().getPreferenceStore().getString(TalendDesignerPrefConstants.DEFAULT_LABEL);
             if (!"".equals(label)) { //$NON-NLS-1$
                 param.setValue(label);
             }
@@ -644,6 +651,12 @@ public class EmfComponent implements IComponent {
             param.setValue(formatTypeInXML.getHINT());
         } else if (formatId != null) {
             String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
+            if (!"".equals(label)) { //$NON-NLS-1$
+                param.setValue(label);
+            }
+        } else {
+            // in case hint/format is not set in the preferences.
+            String label = DesignerPlugin.getDefault().getPreferenceStore().getString(TalendDesignerPrefConstants.DEFAULT_HINT);
             if (!"".equals(label)) { //$NON-NLS-1$
                 param.setValue(label);
             }
