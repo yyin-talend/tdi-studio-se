@@ -86,7 +86,7 @@ public class GuessSchemaProcess {
         this.property = property;
         this.node = node;
         this.selectContext = selectContext;
-        this.memoSQL = memoSQL.replace("\n", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        this.memoSQL = memoSQL.replace("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$
         this.info = info;
         this.conn = info.getConn();
         initOutpath();
@@ -133,6 +133,8 @@ public class GuessSchemaProcess {
         }
         String codeStart, codeMain, codeEnd;
         temppath = (Path) buildTempCSVFilename();
+        // Should also replace "/r". NMa.
+        memoSQL = memoSQL.replace("\r", "");
         codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername() //$NON-NLS-1$ //$NON-NLS-2$
                 + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement();\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
