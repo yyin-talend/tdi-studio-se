@@ -155,6 +155,7 @@ if(isRunInMultiThread){
 %>
 	}
 	private ContextProperties context = new ContextProperties();
+	private final String jobVersion = "<%=process.getVersion() %>";
 	private final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
 	public Integer errorCode = null;
