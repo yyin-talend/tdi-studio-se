@@ -304,52 +304,65 @@ public class CLASS {
                         String prefix = "";
                         String suffix = "";
                         String comma = "";
-                        if (mappingType.isPreBeforeLength(getDBMSId(), dataType)) {
-                            if (!precisionIgnored) {
-                                prefix = "(";
-                                suffix = ") ";
-                                createSQL.append(prefix + precision);
-                            }
-                            if (!lengthIgnored) {
-                                prefix = (prefix.equals("") ? "(" : prefix);
-                                suffix = (suffix.equals("") ? ") " : suffix);
-                                if (precisionIgnored) {
-                                    createSQL.append(prefix);
-                                    comma = "";
-                                } else {
-                                    comma = ",";
-                                }
-                                createSQL.append(comma + length);
-                            }
-                            createSQL.append(suffix);
-                        } else {
-                            if (!lengthIgnored) {
-                                if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && column.getColumn().getLength() == null) {                                    
-                                } else { 
+                        
+                        if ( ("oracle_id".equalsIgnoreCase(getDBMSId()))
+                                && "NUMBER".equalsIgnoreCase(dataType)
+                                && (column.getColumn().getLength() == null || 0 == column.getColumn().getLength())
+                                && (column.getColumn().getPrecision() == null || 0 == column.getColumn().getPrecision())
+                        ){
+                            
+                        }else {
+                            if (mappingType.isPreBeforeLength(getDBMSId(), dataType)) {
+                                if (!precisionIgnored) {
                                     prefix = "(";
                                     suffix = ") ";
-                                    createSQL.append(prefix + length);                                    
+                                    createSQL.append(prefix + precision);
                                 }
-                            }
-                            if (!precisionIgnored) {
-                                prefix = (prefix.equals("") ? "(" : prefix);
-                                suffix = (suffix.equals("") ? ") " : suffix);
-                                if (lengthIgnored) {
-                                    createSQL.append(prefix);
-                                    comma = "";
-                                } else {
-                                    comma = ",";
+                                if (!lengthIgnored) {
+                                    prefix = (prefix.equals("") ? "(" : prefix);
+                                    suffix = (suffix.equals("") ? ") " : suffix);
+                                    if (precisionIgnored) {
+                                        createSQL.append(prefix);
+                                        comma = "";
+                                    } else {
+                                        comma = ",";
+                                    }
+                                    createSQL.append(comma + length);
                                 }
-                                createSQL.append(comma + precision);
-                            }
-                            if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && column.getColumn().getLength() == null) {                                
-                            } else {
                                 createSQL.append(suffix);
-                            }
-                            if("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {
-                                createSQL.append("UNSIGNED");
-                            }
+                            } else {
+                                if (!lengthIgnored) {
+                                    if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && column.getColumn().getLength() == null) {                                    
+                                    } else { 
+                                        prefix = "(";
+                                        suffix = ") ";
+                                        createSQL.append(prefix + length);                                    
+                                    }
+                                }
+                                if (!precisionIgnored) {
+                                    prefix = (prefix.equals("") ? "(" : prefix);
+                                    suffix = (suffix.equals("") ? ") " : suffix);
+                                    if (lengthIgnored) {
+                                        createSQL.append(prefix);
+                                        comma = "";
+                                    } else {
+                                        comma = ",";
+                                    }
+                                    createSQL.append(comma + precision);
+                                }
+                                if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && column.getColumn().getLength() == null) {                                
+                                } else {
+                                    createSQL.append(suffix);
+                                }
+                                if("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {
+                                    createSQL.append("UNSIGNED");
+                                }
+                            }                            
+                            
                         }
+                        
+
+                        
                         if(column.isAutoIncrement()) {
                             createSQL.append(getAutoIncrement(column.getStartValue(), column.getStep()));
                         } else {
