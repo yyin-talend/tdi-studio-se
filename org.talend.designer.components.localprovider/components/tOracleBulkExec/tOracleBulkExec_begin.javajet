@@ -229,6 +229,12 @@ if(columnList != null && columnList.size() > 0) {
     	}
     	columns += ")";
     }
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+    if(convertToUppercase) {
+        for(Column column : stmtStructure) {
+            column.setColumnName(column.getColumnName().toUpperCase());
+        }
+    }
 %>	
 	<%@ include file="../templates/_tableAction.javajet"%>	
 <%  

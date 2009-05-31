@@ -41,7 +41,6 @@ String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 String dateformat = ElementParameterParser.getValue(node, "__DATE_FORMAT__");
 String timeformat = ElementParameterParser.getValue(node, "__TIME_FORMAT__");
 String timestampformat = ElementParameterParser.getValue(node, "__TIMESTAMP_FORMAT__");
-boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -77,9 +76,7 @@ Manager manager = null;
 		
 <%
 if(columnList != null && columnList.size() > 0) {
-	//stmtStructure
-	//manager
-	//table action	       
+	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);      
 %>
 <%@ include file="../templates/_tableAction.javajet"%>
 <%    
