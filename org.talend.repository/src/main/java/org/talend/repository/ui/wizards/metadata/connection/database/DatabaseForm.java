@@ -189,9 +189,9 @@ public class DatabaseForm extends AbstractForm {
      */
     @Override
     public void initialize() {
-        Integer indexOfCombo = EDatabaseConnTemplate.indexOf(getConnection().getDatabaseType());
-        if (indexOfCombo > -1) {
-            dbTypeCombo.select(indexOfCombo);
+        EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(getConnection().getDatabaseType());
+        if (template != null) {
+            dbTypeCombo.setText(template.getDbType().getDisplayName());
 
             if (isGeneralJDBC()) {
                 switchBetweenTypeandGeneralDB(false);
@@ -535,7 +535,7 @@ public class DatabaseForm extends AbstractForm {
         // project MODE (Perl/Java).
 
         dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                .getString("DatabaseForm.dbTypeTip"), EDatabaseConnTemplate.getDBTypes().toArray(new String[0]), 2, true); //$NON-NLS-1$
+                .getString("DatabaseForm.dbTypeTip"), EDatabaseConnTemplate.getDBTypeDisplay().toArray(new String[0]), 2, true); //$NON-NLS-1$
 
         // configure the visible item of database combo
         int visibleItemCount = dbTypeCombo.getCombo().getItemCount();
@@ -580,7 +580,7 @@ public class DatabaseForm extends AbstractForm {
             String urlStr = DBConnectionContextUtils.setManagerConnectionValues(managerConnection, connectionItem, dbTypeCombo
                     .getItem(dbTypeCombo.getSelectionIndex()), dbTypeCombo.getSelectionIndex());
             if (urlStr == null) {
-                if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName())) {
+                if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
                     DatabaseConnection dbConn = (DatabaseConnection) connectionItem.getConnection();
 
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn);
@@ -643,7 +643,7 @@ public class DatabaseForm extends AbstractForm {
 
     private boolean enableDbVersion() {
         return oracleVersionEnable() || as400VersionEnable()
-                || EDatabaseConnTemplate.ACCESS.getDBTypeName().equals(dbTypeCombo.getText());
+                || EDatabaseConnTemplate.ACCESS.getDBDisplayName().equals(dbTypeCombo.getText());
     }
 
     /**
@@ -689,18 +689,18 @@ public class DatabaseForm extends AbstractForm {
 
                         int index = 1;
                         if (s[index] != "") {//$NON-NLS-1$
-                            if (selection.equals(EDatabaseConnTemplate.GODBC.getDBTypeName())
-                                    || selection.equals(EDatabaseConnTemplate.MSODBC.getDBTypeName())) {
+                            if (selection.equals(EDatabaseConnTemplate.GODBC.getDBDisplayName())
+                                    || selection.equals(EDatabaseConnTemplate.MSODBC.getDBDisplayName())) {
                                 datasourceText.setText(s[index]);
                                 getConnection().setDatasourceName(s[index]);
-                            } else if (selection.equals(EDatabaseConnTemplate.SQLITE.getDBTypeName())
-                                    || selection.equals(EDatabaseConnTemplate.ACCESS.getDBTypeName())) {
+                            } else if (selection.equals(EDatabaseConnTemplate.SQLITE.getDBDisplayName())
+                                    || selection.equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())) {
                                 fileField.setText(s[index]);
                                 getConnection().setFileFieldName(s[index]);
-                            } else if (selection.equals(EDatabaseConnTemplate.JAVADB_EMBEDED.getDBTypeName())) {
+                            } else if (selection.equals(EDatabaseConnTemplate.JAVADB_EMBEDED.getDBDisplayName())) {
                                 sidOrDatabaseText.setText(s[index]);
                                 getConnection().setSID(s[index]);
-                            } else if (selection.equals(EDatabaseConnTemplate.HSQLDB_IN_PROGRESS.getDBTypeName())) {
+                            } else if (selection.equals(EDatabaseConnTemplate.HSQLDB_IN_PROGRESS.getDBDisplayName())) {
                                 directoryField.setText(s[index]);
                                 getConnection().setDBRootPath(s[index]);
                             } else {
@@ -711,13 +711,13 @@ public class DatabaseForm extends AbstractForm {
 
                         index = 2;
                         if (s[index] != "") { //$NON-NLS-1$
-                            if (selection.equals(EDatabaseConnTemplate.INTERBASE.getDBTypeName())
-                                    || selection.equals(EDatabaseConnTemplate.TERADATA.getDBTypeName())
-                                    || selection.equals(EDatabaseConnTemplate.AS400.getDBTypeName())
-                                    || selection.equals(EDatabaseConnTemplate.HSQLDB_IN_PROGRESS.getDBTypeName())) {
+                            if (selection.equals(EDatabaseConnTemplate.INTERBASE.getDBDisplayName())
+                                    || selection.equals(EDatabaseConnTemplate.TERADATA.getDBDisplayName())
+                                    || selection.equals(EDatabaseConnTemplate.AS400.getDBDisplayName())
+                                    || selection.equals(EDatabaseConnTemplate.HSQLDB_IN_PROGRESS.getDBDisplayName())) {
                                 sidOrDatabaseText.setText(s[index]);
                                 getConnection().setSID(s[index]);
-                            } else if (selection.equals(EDatabaseConnTemplate.FIREBIRD.getDBTypeName())) {
+                            } else if (selection.equals(EDatabaseConnTemplate.FIREBIRD.getDBDisplayName())) {
                                 fileField.setText(s[index]);
                                 getConnection().setFileFieldName(s[index]);
                             } else {
@@ -728,7 +728,7 @@ public class DatabaseForm extends AbstractForm {
 
                         index = 3;
                         if (s[index] != "") { //$NON-NLS-1$
-                            if (selection.equals(EDatabaseConnTemplate.AS400.getDBTypeName())) {
+                            if (selection.equals(EDatabaseConnTemplate.AS400.getDBDisplayName())) {
                                 sidOrDatabaseText.setText(s[index]);
                                 getConnection().setSID(s[index]);
                             }
@@ -736,7 +736,7 @@ public class DatabaseForm extends AbstractForm {
 
                         index = 4;
                         if (s[index] != "") { //$NON-NLS-1$
-                            if (selection.equals(EDatabaseConnTemplate.INFORMIX.getDBTypeName())) {
+                            if (selection.equals(EDatabaseConnTemplate.INFORMIX.getDBDisplayName())) {
                                 datasourceText.setText(s[index]);
                                 getConnection().setDatasourceName(s[index]);
                             } else {
@@ -998,7 +998,7 @@ public class DatabaseForm extends AbstractForm {
 
                     String mapping = null;
 
-                    if (product == null || product.equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName())) {
+                    if (product == null || product.equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
                         mapping = generalMappingFileText.getText();
                     } else {
                         if (MetadataTalendType.getDefaultDbmsFromProduct(product) != null) {
@@ -1010,12 +1010,12 @@ public class DatabaseForm extends AbstractForm {
                     }
 
                     getConnection().setDbmsId(mapping);
-                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.MYSQL.getDBTypeName())) {
+                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.MYSQL.getDBDisplayName())) {
                         // additionParamText.setText(DataStringConnection.
                         // mySQlDefaultValue);
                         additionParamText.setText(EDatabaseConnTemplate.MYSQL.getAdditionProperty());
                     }
-                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.AS400.getDBTypeName())) {
+                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.AS400.getDBDisplayName())) {
                         additionParamText.setText(EDatabaseConnTemplate.AS400.getAdditionProperty());
                     }
                     checkAS400SpecificCase();
@@ -1166,14 +1166,14 @@ public class DatabaseForm extends AbstractForm {
         String selectedVersion = getConnection().getDbVersionString();
         dbVersionCombo.removeAll();
         dbVersionCombo.setHideWidgets(true);
-        if (dbType.equals(EDatabaseConnTemplate.ORACLEFORSID.getDBTypeName())
-                || dbType.equals(EDatabaseConnTemplate.ORACLESN.getDBTypeName())) {
+        if (dbType.equals(EDatabaseConnTemplate.ORACLEFORSID.getDBDisplayName())
+                || dbType.equals(EDatabaseConnTemplate.ORACLESN.getDBDisplayName())) {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(!isOracle);
-        } else if (dbType.equals(EDatabaseConnTemplate.AS400.getDBTypeName())) {
+        } else if (dbType.equals(EDatabaseConnTemplate.AS400.getDBDisplayName())) {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(!isAS400);
-        } else if (dbType.equals(EDatabaseConnTemplate.ACCESS.getDBTypeName())) {
+        } else if (dbType.equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())) {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(false);
         }
@@ -1310,7 +1310,7 @@ public class DatabaseForm extends AbstractForm {
      * @return
      */
     private boolean isGeneralJDBC() {
-        return dbTypeCombo.getText().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName());
+        return dbTypeCombo.getText().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName());
     }
 
     /**
@@ -1322,7 +1322,7 @@ public class DatabaseForm extends AbstractForm {
         boolean checkGeneralDB = isGeneralJDBC();
 
         // See bug 004800
-        if (!checkGeneralDB || dbTypeCombo.getText().equals(EDatabaseConnTemplate.ACCESS.getDBTypeName())) {
+        if (!checkGeneralDB || dbTypeCombo.getText().equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())) {
             getConnection().setURL(getStringConnection());
         }
 
@@ -1506,7 +1506,7 @@ public class DatabaseForm extends AbstractForm {
         EDBParamName sidOrDatabase = null;
         // update the UI label
         if (EDatabaseConnTemplate.isSchemaNeeded(getConnection().getDatabaseType())) {
-            if (EDatabaseConnTemplate.ORACLESN.getDBTypeName().equals(getConnection().getDatabaseType())) {
+            if (EDatabaseConnTemplate.ORACLESN.getDBDisplayName().equals(getConnection().getDatabaseType())) {
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.service_name")); //$NON-NLS-1$
                 sidOrDatabaseText.setLabelWidth(65);
                 sidOrDatabase = EDBParamName.ServiceName;
@@ -1656,8 +1656,8 @@ public class DatabaseForm extends AbstractForm {
         if (dbTypeCombo == null) {
             return false;
         }
-
-        return dbTypeCombo.getText().startsWith("Oracle"); //$NON-NLS-1$
+        EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(dbTypeCombo.getText());
+        return template != null && (template == EDatabaseConnTemplate.ORACLEFORSID || template == EDatabaseConnTemplate.ORACLESN);
     }
 
     /**
@@ -1671,8 +1671,9 @@ public class DatabaseForm extends AbstractForm {
         if (dbTypeCombo == null) {
             return false;
         }
-
-        return dbTypeCombo.getText().startsWith("AS400") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA); //$NON-NLS-1$
+        EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(dbTypeCombo.getText());
+        return template != null && template == EDatabaseConnTemplate.AS400
+                && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA);
     }
 
     /*

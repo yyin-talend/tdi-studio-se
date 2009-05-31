@@ -716,9 +716,9 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     final ManagerConnection managerConnection = new ManagerConnection();
 
                     IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
-                    if (!metadataConnection.getDbType().equals(EDatabaseConnTemplate.GODBC.getDBTypeName())
-                            && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.ACCESS.getDBTypeName())
-                            && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName())) {
+                    if (!metadataConnection.getDbType().equals(EDatabaseConnTemplate.GODBC.getDBDisplayName())
+                            && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())
+                            && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
                         String genUrl = DatabaseConnStrUtil.getURLString(metadataConnection.getDbType(), metadataConnection
                                 .getDbVersionString(), metadataConnection.getServerName(), metadataConnection.getUsername(),
                                 metadataConnection.getPassword(), metadataConnection.getPort(), metadataConnection.getDatabase(),

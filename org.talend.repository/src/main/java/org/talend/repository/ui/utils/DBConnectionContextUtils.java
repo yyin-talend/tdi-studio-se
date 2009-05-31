@@ -235,7 +235,7 @@ public final class DBConnectionContextUtils {
         // url
 
         String urlConnection;
-        if (dbConn.getDatabaseType().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName())) {
+        if (dbConn.getDatabaseType().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
             urlConnection = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getURL());
         } else {
             urlConnection = DatabaseConnStrUtil.getURLString(dbConn.getDatabaseType(), dbConn.getDbVersionString(), server,
