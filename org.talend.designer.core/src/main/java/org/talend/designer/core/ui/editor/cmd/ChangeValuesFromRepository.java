@@ -24,6 +24,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
@@ -46,6 +47,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.UpdateRepositoryUtils;
@@ -179,7 +181,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             IElementParameter propertyParam = elem.getElementParameter(propertyName);
             EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
-
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
                         && (!param.getName().equals(propertyTypeName))) {
@@ -191,8 +192,19 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
-
                         if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                            String dbVersion = "";
+                            if (connection instanceof DatabaseConnection) {
+                                dbVersion = ((DatabaseConnection) connection).getDbVersionString();
+                            }
+                            IElementParameter elementParameter = null;
+                            if (EParameterName.DB_TYPE.getName().equals(param.getName())) {
+                                elementParameter = elem.getElementParameter(EParameterName.DB_VERSION.getName());
+                            } else {
+                                elementParameter = elem.getElementParameter(JobSettingsConstants
+                                        .getExtraParameterName(EParameterName.DB_VERSION.getName()));
+                            }
+                            setDbVerdion(elementParameter, dbVersion);
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -277,6 +289,25 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
         if (elem instanceof Node) {
             ((Process) ((Node) elem).getProcess()).checkProcess();
+        }
+    }
+
+    private void setDbVerdion(IElementParameter elementParameter, String value) {
+        if (elementParameter == null || value == null) {
+            return;
+        }
+        if (value.indexOf("ACCESS") != -1) {//$NON-NLS-1$
+            elementParameter.setValue(value);
+            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER);
+        } else if (value.indexOf("ORACLE") != -1) {//$NON-NLS-1$
+            elementParameter.setValue(value);
+            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
+        } else if (value.indexOf("AS400") != -1) {//$NON-NLS-1$
+            elementParameter.setValue(value);
+            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_DRIVER);
         }
     }
 

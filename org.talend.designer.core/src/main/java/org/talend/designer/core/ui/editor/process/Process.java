@@ -92,6 +92,7 @@ import org.talend.designer.core.model.metadata.MetadataEmfFactory;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.DataProcess;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -814,8 +815,10 @@ public class Process extends Element implements IProcess2 {
                             IElementParameter elementParameter = elemParam.getElementParameter(EParameterName.DB_VERSION
                                     .getName());
                             setDbVerdion(elementParameter, value);
-                        } else if (param.getName().equals("DB_TYPE_IMPLICIT_CONTEXT")) {//$NON-NLS-2$
-                            IElementParameter elementParameter = elemParam.getElementParameter("DB_VERSION_IMPLICIT_CONTEXT");//$NON-NLS-2$
+                        } else if (param.getName().equals(
+                                JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {
+                            IElementParameter elementParameter = elemParam.getElementParameter(JobSettingsConstants
+                                    .getExtraParameterName(EParameterName.DB_VERSION.getName()));
                             setDbVerdion(elementParameter, value);
                         }
                     } else if (param.getField().equals(EParameterFieldType.TABLE)) {

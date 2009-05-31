@@ -173,8 +173,9 @@ public class PropertyChangeCommand extends Command {
         if (propName.equals(EParameterName.DB_TYPE.getName())) {
             IElementParameter elementParameter = elem.getElementParameter(EParameterName.DB_VERSION.getName());
             setDbVerdion(elementParameter, dbType);
-        } else if (propName.equals("DB_TYPE_IMPLICIT_CONTEXT")) {//$NON-NLS-1$
-            IElementParameter elementParameter = elem.getElementParameter("DB_VERSION_IMPLICIT_CONTEXT");//$NON-NLS-1$
+        } else if (propName.equals(JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName()))) {//$NON-NLS-1$
+            IElementParameter elementParameter = elem.getElementParameter(JobSettingsConstants
+                    .getExtraParameterName(EParameterName.DB_VERSION.getName()));
             setDbVerdion(elementParameter, dbType);
         }
         if (!toUpdate

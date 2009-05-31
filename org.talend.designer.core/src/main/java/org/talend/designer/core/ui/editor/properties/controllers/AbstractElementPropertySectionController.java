@@ -982,7 +982,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String dbName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
         connParameters.setDbName(dbName);
 
-        if (connParameters.getDbType().equals("SQLite")) {//$NON-NLS-1$
+        if (connParameters.getDbType().equals("SQLite") || connParameters.getDbType().equals("Access")) {//$NON-NLS-1$ //$NON-NLS-1$
             String file = getValueFromRepositoryName(element, EConnectionParameterName.FILE.getName());
             connParameters.setFilename(file);
         }
