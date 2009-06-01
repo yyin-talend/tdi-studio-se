@@ -567,11 +567,19 @@ public class Problems {
         }
 
         if (lineNum > first && lineNum < second && result != null) {
-            int index1 = result[1][1].indexOf("[");//$NON-NLS-1$
-            int index2 = result[1][1].indexOf("]");//$NON-NLS-1$
+            int index1 = 0;
+            int index2 = 0;
+            int inde1 = 0;
+            int inde2 = 0;
+            if (result[1][1] != null) {
+                index1 = result[1][1].indexOf("[");//$NON-NLS-1$
+                index2 = result[1][1].indexOf("]");//$NON-NLS-1$
+            }
 
-            int inde1 = result[0][1].indexOf("[");//$NON-NLS-1$
-            int inde2 = result[0][1].indexOf("]");//$NON-NLS-1$
+            if (result[0][1] != null) {
+                inde1 = result[0][1].indexOf("[");//$NON-NLS-1$
+                inde2 = result[0][1].indexOf("]");//$NON-NLS-1$
+            }
 
             String uniNameFir = null;
             String uniNameSec = null;
@@ -593,7 +601,7 @@ public class Problems {
 
             }
 
-            if (uniNameFir.equals(uniNameSec)) {
+            if ((uniNameFir != null) && (uniNameSec != null) && (uniNameFir.equals(uniNameSec))) {
                 uniName = uniNameFir;
             }
 

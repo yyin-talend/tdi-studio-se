@@ -112,6 +112,7 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
+import org.talend.repository.ProjectManager;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -301,7 +302,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
                 String javaLib = ""; //$NON-NLS-1$
-                String currentJavaProject = JavaResourcesHelper.getProjectFolderName(getProcess().getProperty().getItem(), false);
+                String currentJavaProject = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
