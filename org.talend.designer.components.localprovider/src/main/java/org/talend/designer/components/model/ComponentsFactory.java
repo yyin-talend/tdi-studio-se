@@ -186,7 +186,14 @@ public class ComponentsFactory implements IComponentsFactory {
         TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
 
         // TimeMeasure.display=false;
-        this.userComponentList = new ArrayList<IComponent>();
+        if (pathSource != null) {
+            Path userComponent = new Path(pathSource);
+            Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
+                    + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar + OLD_COMPONENTS_USER_INNER_FOLDER);
+            if (userComponent.equals(templatePath)) {
+                this.userComponentList = new ArrayList<IComponent>();
+            }
+        }
         File source = getComponentsLocation(pathSource);
         File[] childDirectories;
 
@@ -265,8 +272,14 @@ public class ComponentsFactory implements IComponentsFactory {
                         loadIcons(currentFolder, currentComp);
                         TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
                         componentList.add(currentComp);
-                        if (pathSource != null && pathSource.equals("components/ext/user")) {//$NON-NLS-1$
-                            userComponentList.add(currentComp);
+                        if (pathSource != null) {
+                            Path userComponent = new Path(pathSource);
+                            Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
+                                    + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar
+                                    + OLD_COMPONENTS_USER_INNER_FOLDER);
+                            if (userComponent.equals(templatePath)) {
+                                userComponentList.add(currentComp);
+                            }
                         }
                     }
 
