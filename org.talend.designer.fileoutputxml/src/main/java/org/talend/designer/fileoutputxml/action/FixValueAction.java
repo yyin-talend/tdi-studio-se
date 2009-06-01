@@ -63,7 +63,7 @@ public class FixValueAction extends SelectionProviderAction {
 
     private void setFixValue(FOXTreeNode node) {
         String label = null; //$NON-NLS-1$
-        while (!StringUtil.validateLabelForXML(label)) {
+        while (!StringUtil.validateLabelForFixedValue(label)) {
             InputDialog dialog = new InputDialog(null, Messages.getString("FixValueAction.1"), //$NON-NLS-1$
                     Messages.getString("FixValueAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
             int status = dialog.open();

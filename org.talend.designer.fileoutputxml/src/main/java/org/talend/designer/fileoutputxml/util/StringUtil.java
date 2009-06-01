@@ -41,4 +41,23 @@ public class StringUtil {
         return true;
     }
 
+    public static boolean validateLabelForFixedValue(String label) {
+        if (label == null) {
+            return false;
+        }
+        if (label.length() < 1) {
+            return false;
+        }
+        if (label.toLowerCase().startsWith("xml")) { //$NON-NLS-1$
+            return false;
+        }
+        char[] array = label.toCharArray();
+        for (int i = 0; i < array.length; i++) {
+            if (Character.isSpaceChar(array[i]) || Character.isWhitespace(array[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
