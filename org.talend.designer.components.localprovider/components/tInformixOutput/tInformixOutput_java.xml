@@ -187,6 +187,14 @@
       <DEFAULT>informix_id</DEFAULT>
     </PARAMETER>    
     
+	<PARAMETER
+      NAME="USE_TRANSACTION"
+      FIELD="CHECK"
+      NUM_ROW="10"      
+    >       
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>    
+	
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>

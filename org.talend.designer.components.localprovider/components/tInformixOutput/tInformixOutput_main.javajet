@@ -37,6 +37,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+    boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));    
     String incomingConnName = null;
     List<IMetadataColumn> columnList = getColumnList(node);
     
@@ -591,7 +592,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         }    
         
         ////////////commit every////////////
-        if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+        if(useTransaction &&  !("").equals(commitEvery) && !("0").equals(commitEvery)) {
             %>
             commitCounter_<%=cid%>++;
             
