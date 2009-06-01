@@ -20,12 +20,12 @@ if(("PING").equals(protocol)) {
         java.net.InetAddress address_<%=cid%> = java.net.InetAddress.getByName(<%=host%>);
         boolean isAlive_<%=cid%> = address_<%=cid%>.isReachable(<%=timeoutInterval%> * 1000);
         if(isAlive_<%=cid%>) {
-            globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","OK");
+            globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",true);
         } else {
-            globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","KO");
+            globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",false);
         }
     } catch(Exception e) {
-        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","KO");
+        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",false);
     }
     <%
 } else {
@@ -51,10 +51,10 @@ if(("PING").equals(protocol)) {
         java.net.InetSocketAddress address_<%=cid%> = new java.net.InetSocketAddress(<%=host%>, <%=port%>);
         server_<%=cid%>.connect(address_<%=cid%>, <%=timeoutInterval%> * 1000);
         server_<%=cid%>.close();
-        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","OK");
+        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",true);
     } catch(Exception e) {
-        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","KO");
+        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",false);
     }
-    <%   
+    <%
 }
 %>
