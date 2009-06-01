@@ -92,10 +92,12 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         Object[] children = treeNode.getChildren();
         if (children != null) {
             for (int i = 0; i < children.length; i++) {
-                ATreeNode child = (ATreeNode) children[i];
-                FOXTreeNode foxChild = cloneATreeNode(child, schemaName);
-                foxChild.setRow(schemaName);
-                node.addChild(foxChild);
+                if (children[i] instanceof ATreeNode) {
+                    ATreeNode child = (ATreeNode) children[i];
+                    FOXTreeNode foxChild = cloneATreeNode(child, schemaName);
+                    foxChild.setRow(schemaName);
+                    node.addChild(foxChild);
+                }
             }
         }
         return node;
