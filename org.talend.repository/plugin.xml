@@ -943,7 +943,12 @@
              id="org.talend.repository.model.migration.RenametFSUniq"
              name="Rename tFSUniq to tFSUnique">
        </projecttask>
-
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.RenametLaunchDQAnalyseTotLaunchDQReports"
+             id="org.talend.repository.model.migration.RenametLaunchDQAnalyseTotLaunchDQReports"
+             name="Rename tLaunchDQAnalyse to tLaunchDQReports ">
+       </projecttask>
          
    </extension>
    <extension
