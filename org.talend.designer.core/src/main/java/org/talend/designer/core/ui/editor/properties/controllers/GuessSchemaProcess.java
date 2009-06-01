@@ -86,7 +86,7 @@ public class GuessSchemaProcess {
         this.property = property;
         this.node = node;
         this.selectContext = selectContext;
-        this.memoSQL = memoSQL.replace("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        this.memoSQL = memoSQL.replace("\n", " "); //$NON-NLS-1$ //$NON-NLS-2$
         this.info = info;
         this.conn = info.getConn();
         initOutpath();
