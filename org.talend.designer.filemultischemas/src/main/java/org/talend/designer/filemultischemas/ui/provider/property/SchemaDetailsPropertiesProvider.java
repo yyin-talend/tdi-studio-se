@@ -22,12 +22,20 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.designer.filemultischemas.data.MultiMetadataColumn;
 import org.talend.designer.filemultischemas.data.MultiSchemasMetadataColumn;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
+import org.talend.designer.filemultischemas.managers.UIManager;
 import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsProvider;
 
 /**
  * cLi class global comment. Detailled comment
  */
 public class SchemaDetailsPropertiesProvider extends SchemaDetailsProvider {
+
+    // hywang add for feature 7373
+    private UIManager uiManager;
+
+    public SchemaDetailsPropertiesProvider(UIManager uiManager) {
+        this.uiManager = uiManager;
+    }
 
     /*
      * (non-Javadoc)
@@ -127,7 +135,9 @@ public class SchemaDetailsPropertiesProvider extends SchemaDetailsProvider {
                 MultiMetadataColumn multiMetadataColumn = (MultiMetadataColumn) element;
                 // first column(record type)
                 SchemasKeyData container = multiMetadataColumn.getContainer();
-                if (container != null && container.getMetadataColumnsInModel().indexOf(multiMetadataColumn) == 0) {
+                if (container != null
+                        && container.getMetadataColumnsInModel().indexOf(multiMetadataColumn) == uiManager
+                                .getSelectedColumnIndex()) {
                     return null;
                 }
                 return validateValue(multiMetadataColumn.isKey());

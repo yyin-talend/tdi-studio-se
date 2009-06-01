@@ -52,11 +52,15 @@ public class SchemaDetailsColumnMouseAdapter extends MouseAdapter {
 
     private Point currentPoint;
 
-    public SchemaDetailsColumnMouseAdapter(TreeViewer schemaDetailsViewer, TreeEditor treeEditor) {
+    // hywang add for feature 7373
+    private UIManager uiManager;
+
+    public SchemaDetailsColumnMouseAdapter(TreeViewer schemaDetailsViewer, TreeEditor treeEditor, UIManager uiManager) {
         super();
         this.schemaDetailsViewer = schemaDetailsViewer;
         this.treeEditor = treeEditor;
         this.redColor = schemaDetailsViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_RED);
+        this.uiManager = uiManager;
     }
 
     protected Control getEditor() {
@@ -132,7 +136,8 @@ public class SchemaDetailsColumnMouseAdapter extends MouseAdapter {
                  * 
                  * if existed key column, should not edit other key.
                  */
-                if (getColumnIndex() == 1 || UIManager.existedKeyColumn(metadataColumnsInModel, multiMetadataColumn)) {
+                if (getColumnIndex() == uiManager.getSelectedColumnIndex() + 1
+                        || UIManager.existedKeyColumn(metadataColumnsInModel, multiMetadataColumn)) {
                     break;
                 }
                 newEditor = createCheckBoxControl(item, property, multiMetadataColumn);

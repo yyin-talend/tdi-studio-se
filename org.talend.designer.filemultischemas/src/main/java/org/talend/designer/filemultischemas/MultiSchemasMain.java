@@ -35,7 +35,7 @@ public class MultiSchemasMain {
     public MultiSchemasMain(MultiSchemasComponent connector) {
         super();
         this.connector = connector;
-        this.multiSchemaManager = new MultiSchemasManager(connector);
+        this.multiSchemaManager = new MultiSchemasManager(connector, 0);// add the parameter for feature 7373
     }
 
     public void loadInitialParamters() {

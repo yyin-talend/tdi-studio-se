@@ -70,6 +70,11 @@ public class UIManager {
         this.dialogResponse = dialogResponse;
     }
 
+    // hywang add this method for feature 7373
+    public int getSelectedColumnIndex() {
+        return multiSchemaManager.getSelectedColumnIndex();
+    }
+
     /**
      * 
      * cLi Comment method "refreshSchemasDetailView".
@@ -102,7 +107,7 @@ public class UIManager {
 
         SchemaDetailsProvider provider = null;
         if (model) { // is properties model
-            provider = new SchemaDetailsPropertiesProvider();
+            provider = new SchemaDetailsPropertiesProvider(this);
 
             List<String> columnProperties = new ArrayList<String>();
             List<CellEditor> cellEidors = new ArrayList<CellEditor>();
@@ -140,7 +145,7 @@ public class UIManager {
             }
             schemaDetailsViewer.setColumnProperties(columnProperties.toArray(new String[0]));
             schemaDetailsViewer.setCellEditors(cellEidors.toArray(new CellEditor[0]));
-            schemaDetailsViewer.setCellModifier(new SchemaDetailsPropertiesCellModifier(schemaDetailsViewer));
+            schemaDetailsViewer.setCellModifier(new SchemaDetailsPropertiesCellModifier(schemaDetailsViewer, this));
 
             // set sorter
             TreeColumn sorterColumn = tree.getColumn(0);
@@ -152,7 +157,7 @@ public class UIManager {
 
         } else { // is column model
 
-            provider = new SchemaDetailsColumnsProvider();
+            provider = new SchemaDetailsColumnsProvider(this);
             // first columm is fixed.
             TreeColumn propertyColumn = new TreeColumn(tree, SWT.NONE);
             propertyColumn.setWidth(80);
@@ -163,7 +168,7 @@ public class UIManager {
             columnTreeEditor.horizontalAlignment = SWT.LEFT;
             columnTreeEditor.grabHorizontal = true;
 
-            columnMouseListener = new SchemaDetailsColumnMouseAdapter(schemaDetailsViewer, columnTreeEditor);
+            columnMouseListener = new SchemaDetailsColumnMouseAdapter(schemaDetailsViewer, columnTreeEditor, this);
             tree.addMouseListener(columnMouseListener);
 
         }

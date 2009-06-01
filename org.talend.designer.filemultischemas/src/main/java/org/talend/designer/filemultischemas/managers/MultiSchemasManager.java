@@ -72,10 +72,22 @@ public class MultiSchemasManager {
 
     private DelimitedFileConnection recordConnection;
 
-    public MultiSchemasManager(MultiSchemasComponent connector) {
+    // hywang add for featture7373
+    private int selectedColumnIndex;
+
+    public int getSelectedColumnIndex() {
+        return this.selectedColumnIndex;
+    }
+
+    public void setSelectedColumnIndex(int selectedColumnIndex) {
+        this.selectedColumnIndex = selectedColumnIndex;
+    }
+
+    public MultiSchemasManager(MultiSchemasComponent connector, int selectedColumnIndex) {
         super();
         this.connector = connector;
         recordConnection = ConnectionFactory.eINSTANCE.createDelimitedFileConnection();
+        this.selectedColumnIndex = selectedColumnIndex;
     }
 
     public DelimitedFileConnection getRecordConnection() {
@@ -149,23 +161,24 @@ public class MultiSchemasManager {
      * @param csvArray
      * @return tree of data.
      */
-    public SchemasKeyData createSchemasTree(CsvArray csvArray) {
+    public SchemasKeyData createSchemasTree(CsvArray csvArray, int selectColumnIndex) {
         if (csvArray == null) {
             return null;
         }
-        final int columnIndex = 2;
+        // final int columnIndex = 2;
         final SchemasKeyData rootSchemasKeyData = new SchemasKeyData(""); //$NON-NLS-1$
 
         for (String[] line : csvArray.getRows()) {
-            if (line.length < columnIndex) { // must contain 2 columns
-                continue;
-            }
-            final String key = precessString(line[0]);
+            // if (line.length < columnIndex) { // must contain 2 columns
+            // continue;
+            // }
+            final String key = precessString(line[selectColumnIndex]);
             if (key == null) {
                 continue;
             }
 
             //
+
             SchemasKeyData schemaData = findSchemasKeyData(rootSchemasKeyData, key);
             if (schemaData == null) {
                 schemaData = new SchemasKeyData(key);
@@ -174,7 +187,7 @@ public class MultiSchemasManager {
                 rootSchemasKeyData.addChild(schemaData);
             }
             //
-            MultiSchemaRowData rowData = createRowData(line);
+            MultiSchemaRowData rowData = createRowData(line, selectColumnIndex);
             if (rowData != null) {
                 schemaData.addRowsData(rowData);
             }
@@ -256,7 +269,7 @@ public class MultiSchemasManager {
      * @param line
      * @return
      */
-    private MultiSchemaRowData createRowData(String[] line) {
+    private MultiSchemaRowData createRowData(String[] line, int selectColumnIndex) {
         if (line == null || line.length < 1) {
             return null;
         }
@@ -276,7 +289,7 @@ public class MultiSchemasManager {
             }
         }
 
-        MultiSchemaRowData rowData = new MultiSchemaRowData(precessString(line[0]));
+        MultiSchemaRowData rowData = new MultiSchemaRowData(precessString(line[selectColumnIndex]));
 
         for (int i = newDatas.size() - 1; i > -1; i--) {
             final String data = newDatas.get(i);
@@ -597,7 +610,7 @@ public class MultiSchemasManager {
         return value;
     }
 
-    public CsvArray retrieveCsvArrayInUniqueModel(ProcessDescription processDesc, boolean checked) {
+    public CsvArray retrieveCsvArrayInUniqueModel(ProcessDescription processDesc, boolean checked, int selectColumnIndex) {
         if (processDesc == null || !checked) {
             return null;
         }
@@ -612,15 +625,15 @@ public class MultiSchemasManager {
         final boolean splitRecord = processDesc.isSplitRecord();
         if (processDesc.isCSVOption()) {
             return retrieveCsvArrayByCSVOption(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord,
-                    splitRecord);
+                    splitRecord, selectColumnIndex);
         } else {
             return retrieveCsvArrayByDelimited(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord,
-                    splitRecord);
+                    splitRecord, selectColumnIndex);
         }
     }
 
     public CsvArray retrieveCsvArrayByCSVOption(final String filePath, final String encoding, final String fieldSeparator,
-            final String rowSeparator, final boolean needSkpipEmptyRecord, final boolean splitRecord) {
+            final String rowSeparator, final boolean needSkpipEmptyRecord, final boolean splitRecord, int selectColumnIndex) {
         CsvArray csvArray = new CsvArray();
         CsvReader multiSchameCsvReader = null;
         try {
@@ -647,7 +660,7 @@ public class MultiSchemasManager {
                 if (values == null || values.length < 1) {
                     continue;
                 }
-                final String first = values[0];
+                final String first = values[selectColumnIndex];
                 if ("".equals(first.trim())) { // must be contain first //$NON-NLS-1$
                     continue;
                 }
@@ -666,7 +679,7 @@ public class MultiSchemasManager {
                 multiSchameCsvReader.close();
             }
         }
-
+        // return handlerCSVArray(csvArray, selectColumnIndex, multiSchameCsvReader);
         return csvArray;
     }
 
@@ -688,7 +701,7 @@ public class MultiSchemasManager {
      * cli Comment method "retrieveCsvArrayByDelimited".
      */
     private CsvArray retrieveCsvArrayByDelimited(final String filePath, final String encoding, final String fieldSeparator,
-            final String rowSeparator, final boolean needSkpipEmptyRecord, final boolean splitRecord) {
+            final String rowSeparator, final boolean needSkpipEmptyRecord, final boolean splitRecord, int selectColumnIndex) {
         CsvArray csvArray = new CsvArray();
         FileInputDelimited fileInputDelimited = null;
         try {
@@ -712,15 +725,7 @@ public class MultiSchemasManager {
                     continue;
                 }
                 uniqueKey.add(currentRowKey);
-
-                String[] lineDatas = new String[maxColumnCount];
-                lineDatas[0] = first;
-
-                for (int i = 1; i < maxColumnCount; i++) {
-                    final String value = fileInputDelimited.get(i);
-                    lineDatas[i] = value;
-                }
-                csvArray.add(lineDatas);
+                handlerDelimitedArray(csvArray, maxColumnCount, first, fileInputDelimited);
             }
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -731,7 +736,47 @@ public class MultiSchemasManager {
             }
         }
 
-        //
         return csvArray;
     }
+
+    /**
+     * hywang Comment method "handlerDelimitedArray" for feature 7373.
+     */
+    private void handlerDelimitedArray(CsvArray csvArray, int maxColumnCount, String first, FileInputDelimited fileInputDelimited)
+            throws IOException {
+
+        String[] lineDatas = new String[maxColumnCount];
+        lineDatas[0] = first;
+
+        for (int i = 1; i < lineDatas.length; i++) {
+            String value = fileInputDelimited.get(i);
+            lineDatas[i] = value;
+        }
+        csvArray.add(lineDatas);
+    }
+
+    // /**
+    // * hywang Comment method "handlerCSVArray" for feature 7373.
+    // */
+    // private CsvArray handlerCSVArray(CsvArray csvArray, int selectColumnIndex, CsvReader multiSchameCsvReader) {
+    // CsvArray newArray = new CsvArray();
+    // int maxRowCount = csvArray.getRows().size();
+    // int maxColumnCount = csvArray.getRows().get(0).length;
+    // int lineDataSize = maxColumnCount - selectColumnIndex;
+    //
+    // String first = null;
+    //
+    // for (int i = 0; i < maxRowCount; i++) {
+    // String[] lineDatas = new String[lineDataSize];
+    // first = csvArray.getRows().get(i)[selectColumnIndex];
+    // lineDatas[0] = first;
+    // for (int j = 1; j < lineDataSize; j++) {
+    // String value = csvArray.getRows().get(i)[selectColumnIndex + j];
+    // lineDatas[j] = value;
+    // }
+    // newArray.add(lineDatas);
+    // }
+    // multiSchameCsvReader.close();
+    // return newArray;
+    // }
 }

@@ -33,6 +33,14 @@ import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsProvider;
  */
 public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
 
+    // hywang add for feature 7373
+    private UIManager uiManager;
+
+    public SchemaDetailsColumnsProvider(UIManager uiManager) {
+        super();
+        this.uiManager = uiManager;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -123,7 +131,7 @@ public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
                         }
                         break;
                     case KEY:
-                        if (columnIndex == 1) { // the first record type column.
+                        if (columnIndex == uiManager.getSelectedColumnIndex() + 1) { // record type column.
                             return null;
                         }
                         return validateValue(columnData.isKey());

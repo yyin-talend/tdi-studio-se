@@ -28,8 +28,12 @@ import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsCellModifie
  */
 public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifier {
 
-    public SchemaDetailsPropertiesCellModifier(TreeViewer schemaDetailsViewer) {
+    // hywang add for feature 7373
+    private UIManager uiManager;
+
+    public SchemaDetailsPropertiesCellModifier(TreeViewer schemaDetailsViewer, UIManager uiManager) {
         super(schemaDetailsViewer);
+        this.uiManager = uiManager;
     }
 
     /*
@@ -51,7 +55,8 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
              * if existed key column, should not edit other key.
              */
             if (EPropertyName.KEY.name().equals(property)
-                    && (metadataColumnsInModel.indexOf(column) < 1 || UIManager.existedKeyColumn(metadataColumnsInModel, column))) {
+                    && (metadataColumnsInModel.indexOf(column) == uiManager.getSelectedColumnIndex() || UIManager
+                            .existedKeyColumn(metadataColumnsInModel, column))) {
                 return false;
             }
             if (!EPropertyName.TAGLEVEL.name().equals(property)) {

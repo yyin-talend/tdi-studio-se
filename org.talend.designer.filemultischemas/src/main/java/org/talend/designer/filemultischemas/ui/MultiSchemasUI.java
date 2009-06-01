@@ -1017,9 +1017,11 @@ public class MultiSchemasUI {
                             SchemasKeyData schemasModel = null;
                             boolean checked = (csvArray != null && csvArray.getRows().size() > 0);
                             final CsvArray uniqueCsvArray = getMultiSchemaManager().retrieveCsvArrayInUniqueModel(
-                                    getProcessDescription(), checked);
+                                    getProcessDescription(), checked, multiSchemasFilePreview.getSelectColumnIndex());
 
-                            schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray);
+                            schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray,
+                                    multiSchemasFilePreview.getSelectColumnIndex());
+                            getMultiSchemaManager().setSelectedColumnIndex(multiSchemasFilePreview.getSelectColumnIndex());
                             schemaTreeViewer.setInput(schemasModel);
                             getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
                             clearSchemaDetail();
