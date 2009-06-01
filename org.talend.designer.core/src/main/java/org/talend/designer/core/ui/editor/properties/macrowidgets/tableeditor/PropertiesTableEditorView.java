@@ -302,7 +302,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 Map<String, Object> valueMap = (Map<String, Object>) bean;
                                 String value = (String) valueMap.get(IEbcdicConstant.FIELD_SCHEMA);
                                 if (value != null && !"".equals(value)) { //$NON-NLS-1$
-                                    IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(node, value);
+                                    IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNodeTableName(node, value);
                                     if (metadataTable != null) {
                                         if (isEBCDICNode(node)) {
                                             if (isRepositorySchemaLine(node, valueMap)) {
