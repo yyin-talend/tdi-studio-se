@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.ldap;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +61,6 @@ import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 import com.ca.commons.jndi.ConnectionData;
 import com.ca.commons.jndi.SchemaOps;
-import com.ca.commons.naming.DN;
 import com.ca.directory.jxplorer.broker.CBGraphicsOps;
 import com.ca.directory.jxplorer.broker.JNDIBroker;
 import com.ca.directory.jxplorer.broker.JNDIBroker.DataConnectionQuery;
@@ -82,8 +82,6 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
     private Label previewInformationLabel;
 
     private ShadowProcessPreview ldapSchemaPreview;
-
-    static DN dn;
 
     static CBGraphicsOps dirOps;
 
@@ -567,9 +565,11 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         itemTableNameList = new ArrayList<String>();
 
         // qli modified to fix the bug "6648".
-        SchemaOps schemaOps = getSchema(getOriginalValueConnection());
+        // 7349&7545
+        final LDAPSchemaConnection originalValueConnection = getOriginalValueConnection();
 
-        Object[] attributeList = LDAPConnectionUtils.getAttributes(schemaOps);
+        SchemaOps schemaOps = getSchema(originalValueConnection);
+        Object[] attributeList = LDAPConnectionUtils.getAttributes(schemaOps, originalValueConnection);
 
         if (attributeList != null && attributeList.length > 0) {
             for (Object object : attributeList) {
@@ -590,7 +590,16 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         SchemaOps schemaOps = null;
         ConnectionData newCon = new ConnectionData();
         newCon.protocol = ConnectionData.LDAP;
-        newCon.setURL(talendLDAPConnection.getHost());
+        String url = null;
+        try {
+            url = getURL(talendLDAPConnection.getHost(), talendLDAPConnection.getPort());
+        } catch (NumberFormatException e1) {
+            e1.printStackTrace();
+        } catch (URISyntaxException e1) {
+            e1.printStackTrace();
+        }
+        newCon.setURL(url);
+        newCon.referralType = "ignore";//$NON-NLS-1$
         newCon.version = 3;
         newCon.useGSSAPI = false;
         newCon.userDN = talendLDAPConnection.getBindPrincipal();
@@ -598,7 +607,6 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         newCon.useSSL = false;
         newCon.baseDN = (String) talendLDAPConnection.getBaseDNs().get(0);
         // finish the connection
-        dn = new DN(newCon.baseDN);
 
         JNDIBroker jndiBroker = new JNDIBroker();
 
@@ -615,6 +623,40 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         }
         return schemaOps;
 
+    }
+
+    /**
+     * 
+     * qli comment the method "getURL".
+     * 
+     * @param host, portString
+     * 
+     * */
+    private String getURL(String host, String portString) throws NumberFormatException, URISyntaxException {
+
+        if (host == null || host.length() < 1) {
+            return null;
+        }
+
+        if (portString == null || portString.length() < 1) {
+            return null;
+        }
+
+        if (host != null)
+            host = host.trim();
+
+        if (portString != null)
+            portString = portString.trim();
+
+        int port = Integer.parseInt(portString);
+
+        if (port < 0)
+            return null;
+
+        if (port > 65536)
+            return null;
+
+        return "ldap://" + host + ":" + port;//$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**

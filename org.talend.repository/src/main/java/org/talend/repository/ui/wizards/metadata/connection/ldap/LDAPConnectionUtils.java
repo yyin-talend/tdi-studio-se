@@ -23,6 +23,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.InitialLdapContext;
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.ldap.AdvancedSocketFactory;
@@ -31,6 +32,7 @@ import org.talend.repository.model.EAuthenticationMethod;
 import org.talend.repository.model.EEncryptionMethod;
 
 import com.ca.commons.jndi.SchemaOps;
+import com.ca.commons.naming.DN;
 import com.ca.commons.naming.DXAttributes;
 
 /**
@@ -59,7 +61,7 @@ public class LDAPConnectionUtils {
      * @return array
      */
 
-    public static Object[] getAttributes(SchemaOps schema) {
+    public static Object[] getAttributes(SchemaOps schema, LDAPSchemaConnection talendLDAPConnection) {
 
         Set<String> attributeSet = new TreeSet<String>();
         if (schema == null) {
@@ -67,13 +69,20 @@ public class LDAPConnectionUtils {
         }
         Attribute oc = null;
         DXAttributes dx = null;
+        DN dn = null;
         try {
-            dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(LDAPSchemaStep3Form.dn, null));
+            final EList baseDNs = talendLDAPConnection.getBaseDNs();
+            for (int i = 0; i < baseDNs.size(); i++) {
+                dn = new DN((String) baseDNs.get(i));
+                dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(dn, null));
+                oc = dx.getAllObjectClasses();
+                if (oc != null) {
+                    break;
+                }
+            }
         } catch (NamingException e1) {
             e1.printStackTrace();
         }
-
-        oc = dx.getAllObjectClasses();
         try {
             if (oc.contains(SchemaOps.SCHEMA_FAKE_OBJECT_CLASS_NAME))
                 return null;
