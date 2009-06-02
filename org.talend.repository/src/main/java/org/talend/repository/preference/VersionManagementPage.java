@@ -71,6 +71,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -782,6 +783,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                         types.add(object.getRepositoryNode().getObjectType());
 
                         try {
+                            project = ProjectManager.getInstance().getCurrentProject();
                             FACTORY.save(project, item);
                         } catch (PersistenceException e) {
                             ExceptionHandler.process(e);
