@@ -85,6 +85,8 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
@@ -314,6 +316,9 @@ public class ProcessComposite extends Composite {
                     menu.setLocation(point);
                     menu.setVisible(true);
                 } else {
+                    // qli modified to fix the bug 6659.
+                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
+                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.JOBLET);
                     ToolItem item = (ToolItem) event.widget;
                     errorMessMap.clear();
                     if (item.getData().equals(ProcessView.DEBUG_ID)) {
