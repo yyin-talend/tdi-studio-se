@@ -306,7 +306,7 @@ public class CLASS {
                         String comma = "";
                         
                         if ( ("oracle_id".equalsIgnoreCase(getDBMSId()))
-                                && "NUMBER".equalsIgnoreCase(dataType)
+                                && (("NUMBER".equalsIgnoreCase(dataType)) || ("CHAR".equalsIgnoreCase(dataType)) || ("NCHAR".equalsIgnoreCase(dataType)))
                                 && (column.getColumn().getLength() == null || 0 == column.getColumn().getLength())
                                 && (column.getColumn().getPrecision() == null || 0 == column.getColumn().getPrecision())
                         ){
