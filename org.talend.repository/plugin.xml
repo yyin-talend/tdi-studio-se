@@ -946,6 +946,7 @@
        <projecttask
              beforeLogon="false"
              class="org.talend.repository.model.migration.RenametLaunchDQAnalyseTotLaunchDQReports"
+             description="Rename tLaunchDQAnalyse to tLaunchDQReports "
              id="org.talend.repository.model.migration.RenametLaunchDQAnalyseTotLaunchDQReports"
              name="Rename tLaunchDQAnalyse to tLaunchDQReports ">
        </projecttask>
