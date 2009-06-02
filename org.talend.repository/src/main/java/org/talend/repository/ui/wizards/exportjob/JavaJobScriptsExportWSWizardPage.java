@@ -376,7 +376,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
-            zipOption = String.valueOf(chkButton.getSelection());
+            if (chkButton.isVisible()) {
+                zipOption = String.valueOf(chkButton.getSelection());
+            } else {
+                zipOption = "false";
+            }
+
         }
 
         if (process.length > 0) {
