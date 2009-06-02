@@ -310,7 +310,6 @@ public class CLASS {
                                 && (column.getColumn().getLength() == null || 0 == column.getColumn().getLength())
                                 && (column.getColumn().getPrecision() == null || 0 == column.getColumn().getPrecision())
                         ){
-                            
                         }else {
                             if (mappingType.isPreBeforeLength(getDBMSId(), dataType)) {
                                 if (!precisionIgnored) {
@@ -360,9 +359,6 @@ public class CLASS {
                             }                            
                             
                         }
-                        
-
-                        
                         if(column.isAutoIncrement()) {
                             createSQL.append(getAutoIncrement(column.getStartValue(), column.getStep()));
                         } else {
@@ -765,9 +761,10 @@ public class CLASS {
                 setStmt.append(prefix + cid + ".setBytes(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
             } else if(typeToGenerate.equals("String") && (dbType != null && dbType.equals("CLOB"))) {
                 setStmt.append(prefix + cid + ".setCharacterStream(" + index + ", new java.io.StringReader(" + incomingConnName + "." + column.getName() + "), " + incomingConnName + "." + column.getName() + ".length());\r\n");                
-            } else if(typeToGenerate.equals("Object") && (dbType != null && dbType.equals("BLOB"))) {
-                setStmt.append(prefix + cid + ".setBLOB(" + index + ", (oracle.sql.BLOB)" + incomingConnName + "." + column.getName() + ");\r\n");
-            } else {
+            } else if (typeToGenerate.equals("Bytes") && (dbType != null && dbType.equals("BLOB"))) {
+                setStmt.append(prefix + cid + ".setBinaryStream(" + index + ", new java.io.ByteArrayInputStream((byte[])" + incomingConnName + "." + column.getName() + "), ((byte[])" + incomingConnName + "." + column.getName() + ").length());\r\n");
+            }
+            else {
                 setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
             }
             if(isObject) {
