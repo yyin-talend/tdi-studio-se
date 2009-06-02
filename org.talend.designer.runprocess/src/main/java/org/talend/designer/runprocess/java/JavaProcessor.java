@@ -302,7 +302,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
                 String javaLib = ""; //$NON-NLS-1$
-                String currentJavaProject = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel();
+                String currentJavaProject = ProjectManager.getInstance().getProject(getProcess().getProperty().getItem())
+                        .getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
