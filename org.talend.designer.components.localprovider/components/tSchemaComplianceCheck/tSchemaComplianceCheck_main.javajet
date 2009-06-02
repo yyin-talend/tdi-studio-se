@@ -246,7 +246,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 %>
 						java.text.DateFormat df_<%=cid%> = new java.text.SimpleDateFormat(<%=pattern%>); 
 						df_<%=cid%>.setLenient(false);
-						df_<%=cid%>.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>); 
+						df_<%=cid%>.parse((<%=incomingConnName%>.<%=metadataColumn.getLabel()%>).toString()); 
 <%
 					} else {
 %>
