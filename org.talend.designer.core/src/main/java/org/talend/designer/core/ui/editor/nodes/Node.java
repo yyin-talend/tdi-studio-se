@@ -2255,6 +2255,20 @@ public class Node extends Element implements INode {
 
         if (!isExternalNode()) {
             if (canEditSchema) {
+                for (int i = 0; i < getMetadataFromConnector(mainConnector.getName()).getListColumns().size(); i++) {
+                    IMetadataColumn column = getMetadataFromConnector(mainConnector.getName()).getListColumns().get(i);
+                    String value = column.getPattern();
+                    String typevalue = column.getTalendType();
+                    if ("id_Date".equals(typevalue)) {
+                        if (value == null || "".equals(value)) {
+                            String errorMessage = "The Date Pattern must set value";
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            noSchema = true;
+                        }
+                    }
+
+                }
+
                 if ((mainConnector.getMaxLinkInput() == 0) && (mainConnector.getMaxLinkOutput() != 0)) {
                     if (getMetadataFromConnector(mainConnector.getName()).getListColumns().size() == 0) {
                         String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
