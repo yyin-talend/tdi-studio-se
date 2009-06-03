@@ -138,9 +138,10 @@
 	
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-Informix" MODULE="jt400.jar" REQUIRED="true" />
-     </IMPORTS>
-   </CODEGENERATION>
+       <IMPORT NAME="Driver-V5R2_V5R4" MODULE="jt400_V5R2.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-V5R3_V6R1" MODULE="jt400_V5R3.jar" REQUIRED="false" />
+     </IMPORTS>	
+	</CODEGENERATION>
 
    <RETURNS/>
 </COMPONENT>
