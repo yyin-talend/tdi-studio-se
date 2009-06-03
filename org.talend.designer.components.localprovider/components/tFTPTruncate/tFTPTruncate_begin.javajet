@@ -27,7 +27,7 @@
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");	
 	String cid = node.getUniqueName();
 	
-    boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__UES_PROXY__"));
+    boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
     String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
     String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
     String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
@@ -40,11 +40,11 @@
 //And it can not work with the FTP proxy directly, only support the socks proxy.
 if(useProxy){
 %>
-        java.util.Properties props = System.getProperties();
-        props.put("socksProxyPort", <%=proxyPort %>);
-        props.put("socksProxyHost", <%=proxyHost %>);
-        props.put("java.net.socks.username", <%=proxyUser %>);
-        props.put("java.net.socks.password", <%=proxyPassword %>);        
+        java.util.Properties props_<%=cid%> = System.getProperties();
+        props_<%=cid%>.put("socksProxyPort", <%=proxyPort %>);
+        props_<%=cid%>.put("socksProxyHost", <%=proxyHost %>);
+        props_<%=cid%>.put("java.net.socks.username", <%=proxyUser %>);
+        props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);        
 <%}%>
 
 	int nb_file_<%=cid%> = 0;
