@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -163,7 +166,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         Image img = null;
         if (itemType == ERepositoryObjectType.JOBLET) {
             img = getJobletCustomIcon(property);
-            img = ImageUtils.scale(img, ICON_SIZE.ICON_16);
+            // img = ImageUtils.scale(img, ICON_SIZE.ICON_16);
+            img = ImageUtils.propertyLabelScale(property.getId(), img, ICON_SIZE.ICON_16);
         } else {
             img = CoreImageProvider.getImage(itemType);
         }
@@ -239,12 +243,22 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
             image = getDefaultJobletImage();
         } else {
+
             ImageDescriptor imageDesc = ImageUtils.createImageFromData(item.getIcon().getInnerContent());
             imageDesc = ImageUtils.scale(imageDesc, ICON_SIZE.ICON_32);
-            image = imageDesc.createImage();
+
+            image = cachedImages.get(item.getIcon().getInnerContent());
+            if (image == null || image.isDisposed()) {
+                image = imageDesc.createImage();
+                cachedImages.put(item.getIcon().getInnerContent(), image);
+            } else {
+                // image = imageDesc.createImage();
+            }
         }
         return image;
     }
+
+    private static Map<byte[], Image> cachedImages = new HashMap<byte[], Image>();
 
     public Image getImage(Object obj) {
         if (obj instanceof Property) {
