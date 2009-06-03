@@ -24,6 +24,7 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -104,6 +105,13 @@ public class QueryGuessCommand extends Command {
         }
         if (this.realTableId != null && this.dbNameAndDbTypeMap.containsKey(this.realTableId)) {
             dbType = this.dbNameAndDbTypeMap.get(this.realTableId);
+        }
+
+        // hywang add for bug 7575
+        if (dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
+            String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
+            driverClassName = TalendTextUtils.removeQuotes(driverClassName);
+            dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
         }
 
         if (dbNameAndSchemaMap != null) {
