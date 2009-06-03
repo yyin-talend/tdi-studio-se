@@ -41,6 +41,10 @@ public abstract class AbstractProcessProvider {
 
     public static final String ATTR_PID = "pluginId"; //$NON-NLS-1$
 
+    private static boolean canCreateNode = true;
+
+    private static Process componentProcess = null;
+
     // public abstract List<Node> buildReplaceNodesInDataProcess(Node node, Map<INode, INode> buildCheckMap,
     // DataProcess currDataProcess);
 
@@ -215,4 +219,21 @@ public abstract class AbstractProcessProvider {
      * bug 6158
      */
     public abstract Item getJobletItem(INode node);
+
+    public boolean containNodeInMemoryNotProcess() {
+        return this.canCreateNode;
+    }
+
+    public void setCanCreateNode(boolean flag) {
+        this.canCreateNode = flag;
+    }
+
+    public static Process getComponentProcess() {
+        return componentProcess;
+    }
+
+    public static void setComponentProcess(Process componentProcess) {
+        AbstractProcessProvider.componentProcess = componentProcess;
+    }
+
 }

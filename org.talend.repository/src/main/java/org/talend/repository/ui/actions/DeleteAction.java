@@ -265,16 +265,21 @@ public class DeleteAction extends AContextualAction {
             if (property != null) {
                 String label = property.getLabel();
                 String version = property.getVersion();
+                Item item = property.getItem();
 
                 EList nodesList = null;
                 for (IRepositoryObject process : deleteActionCache.getProcessList()) {
-                    // node = (EList) process.getGraphicalNodes();
+                    // node = (EList) process.getGraphicalNodes();item
+
                     Property property2 = process.getProperty();
 
                     boolean isDelete = factory.getStatus(process) == ERepositoryStatus.DELETED;
                     boolean isJob = true;
 
                     Item item2 = property2.getItem();
+                    if (property.getLabel().equals(property2.getLabel()) && item.getClass() == item2.getClass()) {
+                        continue;
+                    }
                     if (!isOpenedItem(item2, deleteActionCache.getOpenProcessMap())) {
                         if (item2 instanceof ProcessItem) {
                             nodesList = ((ProcessItem) item2).getProcess().getNode();
@@ -362,8 +367,7 @@ public class DeleteAction extends AContextualAction {
         IRepositoryObject nodeObject = node.getObject();
         // Avoid to delete node which is locked.
         if (nodeObject != null && nodeObject.getProperty().getItem().getState().isLocked()
-                && RepositoryManager.isOpenedItemInEditor(nodeObject)
-                && !(DELETE_FOREVER_TITLE.equals(getText()))) {
+                && RepositoryManager.isOpenedItemInEditor(nodeObject) && !(DELETE_FOREVER_TITLE.equals(getText()))) {
             return true;
         }
 

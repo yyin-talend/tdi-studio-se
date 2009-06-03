@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.designer.core.i18n.Messages;
@@ -78,17 +79,30 @@ public class CreateNodeContainerCommand extends CreateCommand {
         if (this.location != null) {
             this.nodeContainer.getNode().setLocation(this.location);
         }
-        this.process.addNodeContainer(this.nodeContainer);
-        process.checkStartNodes();
-        nodeContainer.getNode().checkAndRefreshNode();
-        // update joblet context.
-        // AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
-        // .getComponent().getPluginFullName());
-        // if (provider != null) {
-        // provider.updateJobletContext(nodeContainer.getNode());
-        // }
-        if (nodeContainer.getNode().getComponent().getComponentType() == EComponentType.JOBLET) {
-            process.getUpdateManager().update(EUpdateItemType.JOBLET_CONTEXT);
+        AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
+                .getComponent().getPluginFullName());
+        if (provider == null || (provider != null && provider.containNodeInMemoryNotProcess())) {
+            this.process.addNodeContainer(this.nodeContainer);
+            process.checkStartNodes();
+
+            nodeContainer.getNode().checkAndRefreshNode();
+            // update joblet context.
+            // AbstractProcessProvider provider =
+            // AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
+            // .getComponent().getPluginFullName());
+            // if (provider != null) {
+            // provider.updateJobletContext(nodeContainer.getNode());
+            // }
+            if (nodeContainer.getNode().getComponent().getComponentType() == EComponentType.JOBLET) {
+                process.getUpdateManager().update(EUpdateItemType.JOBLET_CONTEXT);
+            }
+        } else {
+            String name = provider.getComponentProcess().getName() + " " + provider.getComponentProcess().getVersion();
+            MessageDialog warningMessageDialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell(), "Can't create node", null, "Joblet process " + name + " is not saved. Please save it first",
+                    MessageDialog.OK, new String[] { "OK" }, 0);
+            warningMessageDialog.open();
+
         }
     }
 

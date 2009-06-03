@@ -211,6 +211,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         selectPaletteEntry(componentName, paletteViewer, root.getChildren());
     }
 
+    public PaletteViewer getPaletteViewer2() {
+        return getPaletteViewerProvider().getEditDomain().getPaletteViewer();
+    }
+
     /**
      * DOC hcw Comment method "collapsePalette".
      * 
