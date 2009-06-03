@@ -274,6 +274,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
         	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
         	if ("".equals(textEnclosure)) textEnclosure = "\0";
+        	if(("'").equals(textEnclosure)){
+    			textEnclosure = "\\'";
+    		}
         	boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
         	
         	boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
