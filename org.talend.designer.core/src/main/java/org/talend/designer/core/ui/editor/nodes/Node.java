@@ -924,16 +924,26 @@ public class Node extends Element implements INode {
                         }
                     }
                 }
+                String inputConnector = null;
+
+                IMetadataTable inputTable = connection.getMetadataTable();
+                // if current table has custom columns, input parameter used will be from currrent connector
+                // if no custom columns, it will use main connector, so it will allow to propagate repository information.
+                if (MetadataTool.hasCustomColumns(inputTable)) {
+                    inputConnector = conn.getConnectorName();
+                } else {
+                    inputConnector = mainConnector.getName();
+                }
                 IElementParameter inputSchemaParam = null;
+                
                 for (IElementParameter param : conn.getSource().getElementParameters()) {
                     if ((param.getField().equals(EParameterFieldType.SCHEMA_TYPE))
-                            && (param.getContext().equals(mainConnector.getName()))) {
+                            && (param.getContext().equals(inputConnector))) {
                         inputSchemaParam = param;
                         break;
                     }
                 }
 
-                IMetadataTable inputTable = connection.getMetadataTable();
 
                 if (component.isSchemaAutoPropagated() && !repositoryMode && (inputTable.getListColumns().size() != 0)) {
 
