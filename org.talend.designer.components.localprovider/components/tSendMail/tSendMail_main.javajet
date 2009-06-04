@@ -20,6 +20,9 @@
 	boolean ifSSL = ("true").equals(ElementParameterParser.getValue(node, "__SSL__"));
 	boolean startTLS = ("true").equals(ElementParameterParser.getValue(node, "__STARTTLS__"));
 	boolean checkAttachementOnSend = ("true").equals(ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__"));
+	
+	boolean needPersonalName = ("true").equals(ElementParameterParser.getValue(node, "__NEED_PERSONAL_NAME__"));
+	String personalName = needPersonalName?ElementParameterParser.getValue(node, "__PERSONAL_NAME__"):null;
 %>
 <%
  
@@ -69,7 +72,7 @@
   }
 %>
      javax.mail.Message msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>);
-     msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>));
+     msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>,<%=personalName%>));
      msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.TO,javax.mail.internet.InternetAddress.parse(to_<%=cid %>, false));
      if(cc_<%=cid %>!=null)  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.CC, javax.mail.internet.InternetAddress.parse(cc_<%=cid %>, false));
      if(bcc_<%=cid %>!=null)  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.BCC, javax.mail.internet.InternetAddress.parse(bcc_<%=cid %>, false));
