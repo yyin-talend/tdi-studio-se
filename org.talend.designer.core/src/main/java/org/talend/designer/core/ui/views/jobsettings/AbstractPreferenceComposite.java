@@ -384,12 +384,13 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         // achen modify to fix 0005991& 0005993
         onReloadPreference();
 
-        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-
-        if (activeEditor != null) {
-            AbstractTalendEditor workbenchPart = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
-            workbenchPart.setDirty(true);
-        }
+        // IEditorPart activeEditor =
+        // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        //
+        // if (activeEditor != null) {
+        // AbstractTalendEditor workbenchPart = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+        // workbenchPart.setDirty(true);
+        // }
 
         addComponents(true);
         refresh();

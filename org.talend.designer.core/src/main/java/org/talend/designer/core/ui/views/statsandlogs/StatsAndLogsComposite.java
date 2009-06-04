@@ -15,12 +15,16 @@ package org.talend.designer.core.ui.views.statsandlogs;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
@@ -112,6 +116,17 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         PropertyChangeCommand cmd = new PropertyChangeCommand(elem, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
                 Boolean.valueOf(flag));
         getCommandStack().execute(cmd);
+
+        // hywang add for bug 7587
+        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (activeEditor != null) {
+            AbstractTalendEditor workbenchPart = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+            Boolean currentEditorDirty = workbenchPart.isDirty();
+            if (!currentEditorDirty) {
+                workbenchPart.setDirty(true);
+            }
+        }
+
         if (flag) {
             useProjectSetting();
         }
@@ -142,4 +157,11 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         return true;
     }
 
+    private boolean judgeOldSelection(boolean oldDirty, boolean selection) {
+        Boolean a = new Boolean(oldDirty);
+        if (a.compareTo(selection) == 0) {
+            return false;
+        }
+        return true;
+    }
 }
