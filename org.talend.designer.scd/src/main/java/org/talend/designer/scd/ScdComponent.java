@@ -103,10 +103,8 @@ public class ScdComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#open(org.eclipse.swt.widgets.Display)
      */
     public int open(Display display) {
-        ScdUI ui = new ScdUI();
-        ScdManager manager = new ScdManager(this);
-        ui.createUI(display, manager);
-        return manager.getDialogResponse();
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     /*
@@ -115,7 +113,10 @@ public class ScdComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#open(org.eclipse.swt.widgets.Composite)
      */
     public int open(Composite parent) {
-        return open(parent.getDisplay());
+        ScdUI ui = new ScdUI();
+        ScdManager manager = new ScdManager(this);
+        ui.createUI(parent, manager);
+        return manager.getDialogResponse();
     }
 
     /*

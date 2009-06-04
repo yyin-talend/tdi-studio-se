@@ -69,7 +69,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
      */
     public AbstractScdDialog(Shell shell) {
         super(shell);
-        setShellStyle(SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE);
+        setShellStyle(SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE | SWT.APPLICATION_MODAL);
     }
 
     // /**
