@@ -258,6 +258,11 @@ public class StatsAndLogsManager {
                         EParameterName.DB_TYPE.getName()).getValue()));
 
         dataNode.getMetadataFromConnector(connectionUID);
+        if (process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue().toString().indexOf("Access") != -1) {//$NON-NLS-1$
+            dataNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
+                    process.getElementParameter(EParameterName.DBFILE.getName()).getValue());
+        }
+
     }
 
     private static DataNode addConnection(DataNode connectionNode, Process process, String connectionUID, DataNode dataNode,
