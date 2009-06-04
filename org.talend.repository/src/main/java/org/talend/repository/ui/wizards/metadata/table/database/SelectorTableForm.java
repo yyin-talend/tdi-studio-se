@@ -118,6 +118,10 @@ public class SelectorTableForm extends AbstractForm {
 
     private int count = 0;
 
+    private int countSuccess = 0;
+
+    private int countPending = 0;
+
     private final WizardPage parentWizardPage;
 
     CustomThreadPoolExecutor threadExecutor;
@@ -402,6 +406,7 @@ public class SelectorTableForm extends AbstractForm {
                     TableItem tableItem = tableItems[i];
                     if (!tableItem.getChecked()) {
                         tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
+                        countPending++;
                         parentWizardPage.setPageComplete(false);
                         refreshTable(tableItem, size);
                     } else {
@@ -417,6 +422,8 @@ public class SelectorTableForm extends AbstractForm {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 count = 0;
+                countSuccess = 0;
+                countPending = 0;
                 TableItem[] tableItems = table.getItems();
                 for (int i = 0; i < tableItems.length; i++) {
                     TableItem tableItem = tableItems[i];
@@ -446,10 +453,15 @@ public class SelectorTableForm extends AbstractForm {
                     if (promptNeeded) {
                         tableItem.setText(2, ""); //$NON-NLS-1$
                         tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
+                        countPending++;
                         parentWizardPage.setPageComplete(false);
                         refreshTable(tableItem, -1);
                     } else {
                         clearTableItem(tableItem);
+                        if (tableItem.getText() != null
+                                && tableItem.getText().equals(Messages.getString("SelectorTableForm.Pending"))) {
+                            countPending--;
+                        }
                     }
                 }
             }
@@ -575,6 +587,7 @@ public class SelectorTableForm extends AbstractForm {
 
             tableItem.setText(2, "" + metadataColumns.size()); //$NON-NLS-1$
             tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
+            countSuccess++;
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
@@ -792,6 +805,7 @@ public class SelectorTableForm extends AbstractForm {
             if (checkConnectionIsDone) {
                 tableItem.setText(2, "" + metadataColumns.size()); //$NON-NLS-1$
                 tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
+                countSuccess++;
                 tableColumnNums.put(tableItem.getText(0), metadataColumns.size());
             } else {
                 updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
@@ -805,7 +819,8 @@ public class SelectorTableForm extends AbstractForm {
             // selectNoneTablesButton.setEnabled(true);
             // checkConnectionButton.setEnabled(true);
 
-            parentWizardPage.setPageComplete(threadExecutor.getQueue().isEmpty() && threadExecutor.getActiveCount() == 0);
+            parentWizardPage.setPageComplete(threadExecutor.getQueue().isEmpty()
+                    && (threadExecutor.getActiveCount() == 0 || countSuccess == countPending));
         }
     }
 
