@@ -48,6 +48,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.ui.utils.DBConnectionContextUtils;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -69,7 +70,8 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(SelectionEvent selectionEvent) {
         Set<String> elementsName;
@@ -126,7 +128,8 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -200,8 +203,9 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -329,7 +333,8 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
                 String metaRepositoryName = (String) node.getElementParameter("REPOSITORY_SCHEMA_TYPE").getValue(); //$NON-NLS-1$
                 Connection connection = MetadataTool.getConnectionFromRepository(metaRepositoryName);
                 if (connection instanceof DatabaseConnection) {
-                    currentDbms = ((DatabaseConnection) connection).getDbmsId();
+                    currentDbms = (DBConnectionContextUtils.cloneOriginalValueConnection((DatabaseConnection) connection))
+                            .getDbmsId();
                 }
             } else {
                 String componentDbType = ""; //$NON-NLS-1$
