@@ -72,12 +72,12 @@
     	}
     	if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
     	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-		String[] listings<%=cid %> = ftp<%=cid %>.dir(null, false);
-		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
+		com.enterprisedt.net.ftp.FTPFile[] fileList_<%=cid%> = ftp<%=cid%>.dirDetails(null);
+		for (com.enterprisedt.net.ftp.FTPFile file_<%=cid%> : fileList_<%=cid%>)
 		{  
-			if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
+			if ((file_<%=cid%>.getName()).matches(mask<%=cid %>))
 			{
-				ftp<%=cid %>.delete(listings<%=cid %>[m<%=cid %>]);
+				ftp<%=cid %>.delete(file_<%=cid%>.getName());
 				globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
 				nb_file_<%=cid%>++;
 			}
