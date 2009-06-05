@@ -149,6 +149,9 @@
                 }
             }
             
+            
+List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+/*            
             //intial the schema in buffer
             SchemaUtil schemaUtil = new SchemaUtil();
             
@@ -160,7 +163,8 @@
 				System.out.println(configRow.get("SCHEMA_COLUMN") + " " + configRow.get("SAP_PARAMETER_TYPE") + " " + configRow.get("SAP_TABLE_NAME") + " " + configRow.get("SAP_PARAMETER_NAME") + " " + configRow.get("SAP_PARAMETER_VALUE"));
 				}
 			}
-			
+*/			
+
             //intial the input configuration in buffer
             SchemaUtil schemaUtil_input = new SchemaUtil();			
 			
@@ -301,106 +305,117 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 %>        
 
         client_<%=cid %>.execute(function_<%=cid %>);
-
-<%if(("output_single").equals(iterate_out_type)){%>
-
+        
 <%
-        /* the following is input part, it will extract data from SAP. */
-        // "output_single"
-        Map<String, List<SchemaUtil.SAPSchema>> output_single_map = schemaUtil.extractSchemaMap("output_single");
-        for (String key : output_single_map.keySet()) {
-        startIterate = true;
-%> 
-		for(int k_<%=cid %> = 0; k_<%=cid %> < 1; k_<%=cid %>++) {//block            
-<%          List<SchemaUtil.SAPSchema> oneTableNamelist = output_single_map.get(key);
-            for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
-            IMetadataColumn column = metadata.getColumn(schema.getSchemaName());
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());			            
-%>              
-		<%=firstDataConnName %>.<%=schema.getSchemaName() %> = ParserUtils.parseTo_<%= typeToGenerate %>(exportParameterList_<%=cid %>.getString(<%=schema.getSapParameterName() %>)); // "output_single"--<%=schema.getSchemaName() %>
-<%          }
-        }
+for(Map<String, String> schemaMap : schemas) {
+	String schemaName = schemaMap.get("SCHEMA");
+	String paramType = schemaMap.get("SAP_ITERATE_OUT_TYPE");	
+	String tableName = schemaMap.get("SAP_TABLE_NAME");	
+%>
+	boolean go_<%=schemaName %> = true;
+	<%if(paramType.equals("output_table") || paramType.equals("table_output")){%>
+		com.sap.mw.jco.JCO.Table table_<%=schemaName %>_<%=cid %> = tableParameterList_<%=cid %>.getTable(<%=tableName %>);
+	<%}%>	
+<%	
+}
 %>
 
-<%}else if(("output_structure").equals(iterate_out_type)){%>
+while(<%
+boolean firstWhilePart = true;
+for(Map<String, String> schemaMap : schemas) {
+	String schemaName = schemaMap.get("SCHEMA");
+%>
+	<%=!firstWhilePart?"||":"" %>go_<%=schemaName %>
+<%	
+	firstWhilePart = false;
+}
+%>){
 
 <%
-        // "output_structure"
-        Map<String, List<SchemaUtil.SAPSchema>> output_structure_map = schemaUtil.extractSchemaMap("output_structure");
-        boolean isFirstLoop = true;
-        for (String key : output_structure_map.keySet()) {
-        	if(!iterate_out_multi_list.contains(key)) {continue;} //only iterate one table
-        	startIterate = true;
-%>          
-			
-<%if(isFirstLoop){%>
-		for(int k_<%=cid %> = 0; k_<%=cid %> < 1; k_<%=cid %>++) {//block
-			com.sap.mw.jco.JCO.Structure output_structure_structure_<%=cid %> = null;
-<%}%>
-			output_structure_structure_<%=cid %> = exportParameterList_<%=cid %>.getStructure(<%=key %>);
-<%          List<SchemaUtil.SAPSchema> oneTableNamelist = output_structure_map.get(key);
-            for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
-            IMetadataColumn column = metadata.getColumn(schema.getSchemaName());
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());            
-%>              
-		<%=firstDataConnName %>.<%=schema.getSchemaName() %> = ParserUtils.parseTo_<%= typeToGenerate %>(output_structure_structure_<%=cid %>.getString(<%=schema.getSapParameterName() %>)); // "output_structure"--<%=schema.getSchemaName() %>
-<%          }
-			isFirstLoop = false;
-        }        
+for(Map<String, String> schemaMap : schemas) {
+	String schemaName = schemaMap.get("SCHEMA");
+%>
+	<%=schemaName %> = null;
+<%	
+}
 %>
 
-<%}else if(("output_table").equals(iterate_out_type)){%>
 
 <%
-        // "output_table"
-        Map<String, List<SchemaUtil.SAPSchema>> output_table_map = schemaUtil.extractSchemaMap("output_table");
-        for (String key : output_table_map.keySet()) {        
-        	if(!iterate_out_tablename.equals(key)) {continue;} //only iterate one table
-        	startIterate = true;
-%>          
-		com.sap.mw.jco.JCO.Table output_table_table_<%=cid %> = exportParameterList_<%=cid %>.getTable(<%=key %>);
-        output_table_table_<%=cid %>.firstRow();
-        for (int irow_<%=cid %> = 0; irow_<%=cid %> < output_table_table_<%=cid %>.getNumRows(); irow_<%=cid %>++) {
-<%          List<SchemaUtil.SAPSchema> oneTableNamelist = output_table_map.get(key);
-            for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
-            IMetadataColumn column = metadata.getColumn(schema.getSchemaName());
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());             
-%>              
-		<%=firstDataConnName %>.<%=schema.getSchemaName() %> = ParserUtils.parseTo_<%= typeToGenerate %>(output_table_table_<%=cid %>.getString(<%=schema.getSapParameterName() %>)); // "output_table"--<%=schema.getSchemaName() %>
-<%          }
+for(Map<String, String> schemaMap : schemas) {
+	String schemaName = schemaMap.get("SCHEMA");
+	String paramType = schemaMap.get("SAP_ITERATE_OUT_TYPE");
+	String tableName = schemaMap.get("SAP_TABLE_NAME");	
+	String mapping = schemaMap.get("MAPPING");	
+	String[] paramNames = null;
+	if(mapping != null){
+		paramNames = mapping.split(",");
+	}	
+	IConnection justConn = null; //------->get the right output connection--->to get the columns info
+	if(conns != null && conns.size() > 0){
+		for(IConnection conn : conns){
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				if(schemaName.equals(conn.getName())){
+					justConn = conn;
+					break;
+				}
+			}
+		}
+	}
+	
+	IMetadataTable justMetadata = justConn.getMetadataTable();
+	List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
 %>
-		output_table_table_<%=cid %>.nextRow();	
-<%
-        }
-%>        
-
-<%}else if(("table_output").equals(iterate_out_type)){%>
-
-<%
-        // "table_output"
-        Map<String, List<SchemaUtil.SAPSchema>> table_output_map = schemaUtil.extractSchemaMap("table_output");
-        for (String key : table_output_map.keySet()) {
-        	if(!iterate_out_tablename.equals(key)) {continue;} //only iterate one table
-        	startIterate = true;
-%>          
-		com.sap.mw.jco.JCO.Table table_output_table_<%=cid %> = tableParameterList_<%=cid %>.getTable(<%=key %>);
-        table_output_table_<%=cid %>.firstRow();
-        for (int irow_<%=cid %> = 0; irow_<%=cid %> < table_output_table_<%=cid %>.getNumRows(); irow_<%=cid %>++) {
-<%          List<SchemaUtil.SAPSchema> oneTableNamelist = table_output_map.get(key);
-            for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
-            IMetadataColumn column = metadata.getColumn(schema.getSchemaName());
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());             
-%>              
-		<%=firstDataConnName %>.<%=schema.getSchemaName() %> = ParserUtils.parseTo_<%= typeToGenerate %>(table_output_table_<%=cid %>.getString(<%=schema.getSapParameterName() %>)); // "table_output"--<%=schema.getSchemaName() %>
-<%          }
+	if(go_<%=schemaName %>){
+		<%if(paramType.equals("output_single")){%>
+			go_<%=schemaName %> = false;	
+    		<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
+            <%
+                int i = 0;
+                for(IMetadataColumn justColumn : justColumnList){            	
+            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(justColumn.getTalendType(), justColumn.isNullable());
+            %>
+            	<%=justConn.getName() %>.<%=justColumn.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(exportParameterList_<%=cid %>.getString(<%=paramNames[i] %>)); // "output_single"--<%=justColumn.getLabel() %>
+            <%	
+            	i++;	
+            	}
+            %>            	
+        <%}else if(paramType.equals("output_structure")){%>
+        	go_<%=schemaName %> = false;
+        	com.sap.mw.jco.JCO.Structure output_structure_<%=justConn.getName() %>_<%=cid %> = exportParameterList_<%=cid %>.getStructure(<%=tableName %>);
+    		<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
+            <%
+                int i = 0;
+                for(IMetadataColumn justColumn : justColumnList){            	
+            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(justColumn.getTalendType(), justColumn.isNullable());
+            %>
+            	<%=justConn.getName() %>.<%=justColumn.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(output_structure_<%=justConn.getName() %>_<%=cid %>.getString(<%=paramNames[i] %>)); // "output_structure"--<%=justColumn.getLabel() %>
+            <%	
+            	i++;	
+            	}
+            %>            	        
+        
+		<%}else if(paramType.equals("output_table") || paramType.equals("table_output")){%>
+    		if(table_<%=schemaName %>_<%=cid %>.isLastRow()){ //check the flag first
+    			go_<%=schemaName %> = false;
+    		}        	
+    		<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
+            <%
+                int i = 0;
+                for(IMetadataColumn justColumn : justColumnList){            	
+            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(justColumn.getTalendType(), justColumn.isNullable());
+            %>
+            	<%=justConn.getName() %>.<%=justColumn.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(table_<%=schemaName %>_<%=cid %>.getString(<%=paramNames[i] %>)); // "output_structure"--<%=justColumn.getLabel() %>
+            <%	
+            	i++;
+            	}
+            %>
+            
+            if(go_<%=schemaName %>){
+            	table_<%=schemaName %>_<%=cid %>.nextRow();
+            }             		
+		<%}%>
+	}
+<%	
+}
 %>
-		table_output_table_<%=cid %>.nextRow();	
-<%
-        }
-%> 
-
-<%}%>
-
-<% if(!startIterate){%>
-	for(int k_<%=cid %> = 0; k_<%=cid %> < 1; k_<%=cid %>++) {//block
-<%}%>
