@@ -58,6 +58,14 @@
      >
      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.html"</DEFAULT>
     </PARAMETER>
+	
+	<PARAMETER NAME="PARAMS" FIELD="TABLE" NUM_ROW="6" NB_LINES="8">
+      <ITEMS>
+   		<ITEM NAME="NAME"/>
+        <ITEM NAME="VALUE"/>
+      </ITEMS>
+    </PARAMETER>
+
   </PARAMETERS>
   
 	<CODEGENERATION>
