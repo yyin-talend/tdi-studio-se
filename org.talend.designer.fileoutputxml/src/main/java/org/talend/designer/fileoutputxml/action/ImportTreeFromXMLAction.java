@@ -86,8 +86,13 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         } else {
             node = new Element();
         }
-
-        node.setLabel((String) treeNode.getValue());
+        // zli fixed for bug 7414
+        if (treeNode.getType() == ATreeNode.NAMESPACE_TYPE) {
+            node.setLabel("xmlns:(default)");//$NON-NLS-1$
+            node.setDefaultValue((String) treeNode.getValue());
+        } else {
+            node.setLabel((String) treeNode.getValue());
+        }
 
         Object[] children = treeNode.getChildren();
         if (children != null) {
