@@ -1612,7 +1612,7 @@ public class EmfComponent implements IComponent {
             listItemsDisplayCodeValue[k] = item.getNAME();
             listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
             if (type != EParameterFieldType.TABLE) {
-                listItemsValue[k] = item.getVALUE().toUpperCase();
+                listItemsValue[k] = item.getVALUE();
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
                 newParam = new ElementParameter(node);

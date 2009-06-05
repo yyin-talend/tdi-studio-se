@@ -950,6 +950,13 @@
              id="org.talend.repository.model.migration.RenametLaunchDQAnalyseTotLaunchDQReports"
              name="Rename tLaunchDQAnalyse to tLaunchDQReports ">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.RenameAccessDbVersionInConnection"
+             description="Rename the db version(Access 2003/2007) for access"
+             id="org.talend.repository.model.migration.RenameAccessDbVersionInConnection"
+             name="Rename the db version for access">
+       </projecttask>
          
    </extension>
    <extension
