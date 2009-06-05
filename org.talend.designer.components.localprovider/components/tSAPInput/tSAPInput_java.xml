@@ -96,7 +96,8 @@
 			</ITEM>
 						
 			<ITEM NAME="SAP_TABLE_NAME" FIELD="String" />			
-			<ITEM NAME="SAP_PARAMETER_NAME" FIELD="String" />					
+			<ITEM NAME="SAP_PARAMETER_NAME" FIELD="String" />
+			<ITEM NAME="SAP_TABLE_ROWNUMBER" FIELD="String" />					
 		</ITEMS>
 	</PARAMETER>
 	
