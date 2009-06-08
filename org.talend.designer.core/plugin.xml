@@ -357,26 +357,26 @@
    <key
          commandId="showComponentSettingView"
          contextId="talend.global"
-         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         schemeId="org.talend.core.scheme"
          sequence="F2"/>
    <key
          commandId="showProblemsView"
          contextId="talend.global"
-         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         schemeId="org.talend.core.scheme"
          sequence="CTRL+F3"/>
    <key
          commandId="showEditorCodePage"
          contextId="talend.global"
-         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         schemeId="org.talend.core.scheme"
          sequence="CTRL+G"/>
    <key
          commandId="showEditorDesignerPage"
          contextId="talend.global"
-         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         schemeId="org.talend.core.scheme"
          sequence="CTRL+H"/>
    <key
          contextId="org.eclipse.ui.contexts.window"
-         schemeId="org.talend.designer.core.delete.binding.window"
+         schemeId="org.talend.core.scheme"
          sequence="F2">
    </key>
    <key
@@ -392,7 +392,7 @@
    <key
             sequence="M1+M2+J"
             commandId="org.talend.designer.core.ui.open.type"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+            schemeId="org.talend.core.scheme"/>
    </extension>
    <extension
          point="org.talend.core.global_actions">

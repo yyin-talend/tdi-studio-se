@@ -368,12 +368,12 @@
       <key
             commandId="restoreItem"
             contextId="talend.repository"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            schemeId="org.talend.core.scheme"
             sequence="CTRL+R"/>
       <key
             commandId="refresh"
             contextId="talend.repository"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            schemeId="org.talend.core.scheme"
             sequence="F5"/>
    </extension>
    <extension
@@ -1052,7 +1052,7 @@
       <key
             commandId="org.talend.repository.integration.bootTalend"
             contextId="org.eclipse.ui.contexts.window"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            schemeId="org.talend.core.scheme"
             sequence="Ctrl+Shift+B">
       </key>
    </extension>

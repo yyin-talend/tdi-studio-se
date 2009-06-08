@@ -14,7 +14,7 @@
       <key
             commandId="refreshTemplates"
             contextId="talend.global"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            schemeId="org.talend.core.scheme"
             sequence="CTRL+SHIFT+F3"/>
    </extension>
    <extension

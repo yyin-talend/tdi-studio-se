@@ -41,8 +41,8 @@
          point="org.eclipse.ui.bindings">
       <key
             commandId="org.talend.sqlbuilder.actions.ExecSQLAction"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+L">
+            schemeId="org.talend.core.scheme"
+            sequence="Ctrl+L">
       </key>
    </extension>
    <extension-point id="editorAction" name="SQL Editor Action" schema="schema/editorAction.exsd"/>
