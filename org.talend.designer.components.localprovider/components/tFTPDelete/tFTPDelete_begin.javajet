@@ -34,6 +34,8 @@
 	String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");	
     String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");	
+    
+    String fileOrDir = ElementParameterParser.getValue(node, "__FILE_OR_DIRECTORY__");
 %>
 <%
 //The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 

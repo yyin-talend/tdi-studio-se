@@ -15,6 +15,7 @@
 	String cid = node.getUniqueName();
 	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	String targetType = ElementParameterParser.getValue(node, "__TARGET_TYPE__");
 	if(sftp){
 %>
 
@@ -40,7 +41,17 @@
 			if ( filePath<%=cid%>.matches(mask<%=cid %>))
 			{
 			try {
-				 c<%=cid%>.rm((<%=remotedir %>)+"/"+ filePath<%=cid%>);
+<%
+				if("FILE".equals(targetType)){
+%>			
+				 	c<%=cid%>.rm((<%=remotedir %>)+"/"+ filePath<%=cid%>);
+<%
+				}else{
+%>
+				 	c<%=cid%>.rmdir((<%=remotedir %>)+"/"+ filePath<%=cid%>);
+<%
+				}
+%>
 				 globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
 				 } catch (com.jcraft.jsch.SftpException se) {
                        globalMap.put("<%=cid %>_CURRENT_STATUS", "Deleting file action error");
@@ -77,7 +88,17 @@
 		{  
 			if ((file_<%=cid%>.getName()).matches(mask<%=cid %>))
 			{
-				ftp<%=cid %>.delete(file_<%=cid%>.getName());
+<%
+				if("FILE".equals(targetType)){
+%>				
+					ftp<%=cid %>.delete(file_<%=cid%>.getName());
+<%
+				}else{
+%>					
+					ftp<%=cid %>.rmdir(file_<%=cid%>.getName());
+<%
+				}
+%>					
 				globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
 				nb_file_<%=cid%>++;
 			}
