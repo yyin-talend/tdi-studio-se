@@ -86,7 +86,8 @@ public class StatsAndLogsConstants {
             ORACLE_WITH_SERVICE_CONN_TYPE, POSTGRESPLUS, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD,
             INFORMIX, ACCESS, TERADATA };
 
-    private static final String[] JAVA_CODE_LIST = new String[] { ODBC, MYSQL, "OCLE", "OCLE", POSTGRESPLUS, POSTGRESQL, //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] JAVA_CODE_LIST = new String[] { ODBC, MYSQL,
+            "OCLE", "OCLE", SQL_SERVER, POSTGRESPLUS, POSTGRESQL, //$NON-NLS-1$ //$NON-NLS-2$
             IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
 
     public static final String[] ORACLE_VERSION_DISPLAY = new String[] { "Oracle 11", "Oracle 10", "Oracle 9", "Oracle 8" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
