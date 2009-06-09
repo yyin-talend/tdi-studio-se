@@ -21,6 +21,10 @@ public final class JobSettingsConstants {
 
     public static final String ORACLE_INOUT_SN_ALIAS = "tOracleInput_servername"; //$NON-NLS-1$
 
+    public static final String ORACLE_OUTPUT_SID_ALIAS = "tOracleOutput_sid"; //$NON-NLS-1$
+
+    public static final String ORACLE_OUTPUT_SN_ALIAS = "tOracleOutput_servername"; //$NON-NLS-1$
+
     /**
      * 
      */

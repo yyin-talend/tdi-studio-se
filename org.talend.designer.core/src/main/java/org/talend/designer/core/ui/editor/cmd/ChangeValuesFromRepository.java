@@ -49,6 +49,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
+import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -197,14 +198,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             if (connection instanceof DatabaseConnection) {
                                 dbVersion = ((DatabaseConnection) connection).getDbVersionString();
                             }
-                            IElementParameter elementParameter = null;
-                            if (EParameterName.DB_TYPE.getName().equals(param.getName())) {
-                                elementParameter = elem.getElementParameter(EParameterName.DB_VERSION.getName());
-                            } else {
-                                elementParameter = elem.getElementParameter(JobSettingsConstants
-                                        .getExtraParameterName(EParameterName.DB_VERSION.getName()));
-                            }
-                            setDbVerdion(elementParameter, dbVersion);
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -213,6 +206,19 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     elem.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
                                 }
                             }
+                            IElementParameter elementParameter = null;
+                            IElementParameter elementParameter2 = null;
+                            if (EParameterName.DB_TYPE.getName().equals(param.getName())) {
+                                elementParameter = elem.getElementParameter(EParameterName.DB_VERSION.getName());
+                                elementParameter2 = elem.getElementParameter(EParameterName.SCHEMA_DB.getName());
+                            } else {
+                                elementParameter = elem.getElementParameter(JobSettingsConstants
+                                        .getExtraParameterName(EParameterName.DB_VERSION.getName()));
+                                elementParameter2 = elem.getElementParameter(JobSettingsConstants
+                                        .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
+                            }
+                            setDbVersion(elementParameter, dbVersion);
+                            DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
                         } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                 && param.getRepositoryValue().equals("FRAMEWORK_TYPE")) { //$NON-NLS-1$
                             String[] list = param.getListItemsDisplayName();
@@ -292,7 +298,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
     }
 
-    private void setDbVerdion(IElementParameter elementParameter, String value) {
+    private void setDbVersion(IElementParameter elementParameter, String value) {
         if (elementParameter == null || value == null) {
             return;
         }

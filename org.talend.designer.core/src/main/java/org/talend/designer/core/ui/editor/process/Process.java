@@ -116,6 +116,7 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -814,12 +815,18 @@ public class Process extends Element implements IProcess2 {
                         if (param.getName().equals(EParameterName.DB_TYPE.getName())) {
                             IElementParameter elementParameter = elemParam.getElementParameter(EParameterName.DB_VERSION
                                     .getName());
-                            setDbVerdion(elementParameter, value);
+                            setDbVersion(elementParameter, value);
+                            IElementParameter elementParameter2 = elemParam.getElementParameter(EParameterName.SCHEMA_DB
+                                    .getName());
+                            DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
                         } else if (param.getName().equals(
                                 JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {
                             IElementParameter elementParameter = elemParam.getElementParameter(JobSettingsConstants
                                     .getExtraParameterName(EParameterName.DB_VERSION.getName()));
-                            setDbVerdion(elementParameter, value);
+                            setDbVersion(elementParameter, value);
+                            IElementParameter elementParameter2 = elemParam.getElementParameter(JobSettingsConstants
+                                    .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
+                            DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
                         }
                     } else if (param.getField().equals(EParameterFieldType.TABLE)) {
                         List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
@@ -892,7 +899,7 @@ public class Process extends Element implements IProcess2 {
         }
     }
 
-    private void setDbVerdion(IElementParameter elementParameter, String value) {
+    private void setDbVersion(IElementParameter elementParameter, String value) {
         if (value.indexOf("Access") != -1) {//$NON-NLS-1$
             elementParameter.setValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER[1]);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);

@@ -21,12 +21,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -123,5 +125,19 @@ public class DesignerUtilities {
         }
         String underLine = "__";//$NON-NLS-1$
         return underLine + paramName + underLine;
+    }
+
+    public static void setSchemaDB(IElementParameter schemaDB, Object value) {
+        if (value instanceof String) {
+            if (JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS.equals((String) value)
+                    || JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS.equals((String) value)
+                    || JobSettingsConstants.ORACLE_INOUT_SN_ALIAS.equals((String) value)
+                    || JobSettingsConstants.ORACLE_INPUT_SID_ALIAS.equals((String) value)) {
+                schemaDB.setRequired(true);
+            } else {
+                schemaDB.setRequired(false);
+            }
+        }
+
     }
 }

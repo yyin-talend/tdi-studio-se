@@ -35,6 +35,7 @@ import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
+import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.runprocess.ItemCacheManager;
 
 /**
@@ -172,11 +173,16 @@ public class PropertyChangeCommand extends Command {
         }
         if (propName.equals(EParameterName.DB_TYPE.getName())) {
             IElementParameter elementParameter = elem.getElementParameter(EParameterName.DB_VERSION.getName());
-            setDbVerdion(elementParameter, dbType);
-        } else if (propName.equals(JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName()))) {//$NON-NLS-1$
+            IElementParameter elementParameter2 = elem.getElementParameter(EParameterName.SCHEMA_DB.getName());
+            setDbVersion(elementParameter, dbType);
+            DesignerUtilities.setSchemaDB(elementParameter2, newValue);
+        } else if (propName.equals(JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {//$NON-NLS-1$
             IElementParameter elementParameter = elem.getElementParameter(JobSettingsConstants
                     .getExtraParameterName(EParameterName.DB_VERSION.getName()));
-            setDbVerdion(elementParameter, dbType);
+            IElementParameter elementParameter2 = elem.getElementParameter(JobSettingsConstants
+                    .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
+            setDbVersion(elementParameter, dbType);
+            DesignerUtilities.setSchemaDB(elementParameter2, newValue);
         }
         if (!toUpdate
                 && (currentParam.getField().equals(EParameterFieldType.RADIO)
@@ -262,7 +268,7 @@ public class PropertyChangeCommand extends Command {
         }
     }
 
-    private void setDbVerdion(IElementParameter elementParameter, String value) {
+    private void setDbVersion(IElementParameter elementParameter, String value) {
         if (value.indexOf("Access") != -1) {//$NON-NLS-1$
             elementParameter.setValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER[1]);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
