@@ -38,9 +38,19 @@ public class MultiSchemasUIThreadProcessor extends SWTUIThreadProcessor {
 
     boolean firstRowIsCatption = false;
 
+    private int selectedColumnIndex = 0;
+
     public MultiSchemasUIThreadProcessor(MultiSchemasUI multiSchemaUI) {
         super();
         this.multiSchemaUI = multiSchemaUI;
+    }
+
+    public int getSelectedColumnIndex() {
+        return this.selectedColumnIndex;
+    }
+
+    public void setSelectedColumnIndex(int selectedColumnIndex) {
+        this.selectedColumnIndex = selectedColumnIndex;
     }
 
     public MultiSchemasUI getMultiSchemaUI() {
@@ -109,7 +119,7 @@ public class MultiSchemasUIThreadProcessor extends SWTUIThreadProcessor {
             getMultiSchemaUI().getMultiSchemasFilePreview().removePreviewContent();
             return;
         }
-        getMultiSchemaUI().getMultiSchemasFilePreview().refreshTablePreview(csvArray, firstRowIsCatption);
+        getMultiSchemaUI().getMultiSchemasFilePreview().refreshTablePreview(csvArray, firstRowIsCatption, selectedColumnIndex);
     }
 
     public void updateUIInThreadIfThreadFinally() {

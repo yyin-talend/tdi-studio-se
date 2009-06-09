@@ -430,9 +430,10 @@ public class MultiSchemasManager {
      * cLi Comment method "saveProperties".
      * 
      */
-    public void savePropertiesToComponent(SchemasKeyData data, DelimitedFileConnection connection) {
+    public void savePropertiesToComponent(SchemasKeyData data, DelimitedFileConnection connection, int selectedIndex) {
         if (data != null) {
-            ChangeMultiSchemasCommand cmd = new ChangeMultiSchemasCommand(getMultiSchemasComponent(), data, connection);
+            ChangeMultiSchemasCommand cmd = new ChangeMultiSchemasCommand(getMultiSchemasComponent(), data, connection,
+                    selectedIndex);
             executeCommand(cmd);
         }
     }

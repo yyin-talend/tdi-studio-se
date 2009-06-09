@@ -41,6 +41,10 @@ import org.talend.repository.preview.ProcessDescription;
  */
 public class ShadowProcessPreview {
 
+    public void setSelectColumnIndex(int selectColumnIndex) {
+        this.selectColumnIndex = selectColumnIndex;
+    }
+
     protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
@@ -57,13 +61,21 @@ public class ShadowProcessPreview {
 
     protected Table table;
 
+    public Table getTable() {
+        return this.table;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
+    }
+
     protected Composite composite;
 
     // hywang add varriable "key" for feature 7373
     private int selectColumnIndex = dftSelectedColumn;
 
     // hywang add varrible "dftSelectedColumn" for feature 7373
-    private static int dftSelectedColumn = 0;
+    private static int dftSelectedColumn = -1;
 
     public int getSelectColumnIndex() {
         return this.selectColumnIndex;
@@ -140,7 +152,7 @@ public class ShadowProcessPreview {
      * @param csvArray
      * @param firstRowIsLabel
      */
-    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel) {
+    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel, int... selectedColumnIndex) {
         List<String[]> csvRows = csvArray.getRows();
 
         if (csvRows.isEmpty()) {
@@ -187,7 +199,7 @@ public class ShadowProcessPreview {
 
         // refresh the Header and the Item of the table
         refreshPreviewHeader(title);
-        refreshPreviewItem(csvRows, firstRowIsLabel);
+        refreshPreviewItem(csvRows, firstRowIsLabel, selectedColumnIndex);
 
         refreshPreviewHeader(title);
 
@@ -421,7 +433,8 @@ public class ShadowProcessPreview {
      * @param csvRows
      * @param firstRowIsLabel
      */
-    private void refreshPreviewItem(final List<String[]> csvRows, final boolean firstRowIsLabel) {
+    private void refreshPreviewItem(final List<String[]> csvRows, final boolean firstRowIsLabel, int... selectedColumnIndex) {
+        this.selectColumnIndex = selectedColumnIndex[0];
         int existingItemCount = table.getItemCount();
 
         int end = csvRows.size();
@@ -434,8 +447,8 @@ public class ShadowProcessPreview {
         // hywang add for feature 7373
         for (int i = 0; i < table.getColumnCount(); i++) {
             final TableColumn tc = table.getColumn(i);
-            if (i == 0) {
-                tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON)); // default selected column is column0
+            if (i == selectedColumnIndex[0]) {
+                tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON)); // default selected column is from component
             } else {
                 tc.setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
             }

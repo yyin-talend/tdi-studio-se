@@ -56,6 +56,9 @@ public class ChangeMultiSchemasCommand extends Command {
 
     private Object oldEscapeChar, newEscapeChar;
 
+    // hywang add for feature 7373
+    private Object oldSelectedColumnIndex, newSelectedColumnIndex;
+
     private boolean oldCsvOption, newCsvOption;
 
     private List<Map<String, String>> oldSchemasListMap, newSchemasListMap;
@@ -64,16 +67,17 @@ public class ChangeMultiSchemasCommand extends Command {
 
     private DelimitedFileConnection fakeConnection;
 
-    public ChangeMultiSchemasCommand(INode node, SchemasKeyData rootSchemaData, DelimitedFileConnection fakeConnection) {
+    public ChangeMultiSchemasCommand(INode node, SchemasKeyData rootSchemaData, DelimitedFileConnection fakeConnection,
+            Object index) {
         super();
         this.node = node;
         this.rootSchemaData = rootSchemaData;
         this.fakeConnection = fakeConnection;
-        initNew();
+        initNew(index);
         initOld();
     }
 
-    private void initNew() {
+    private void initNew(Object index) {
         this.newFieldSeperator = fakeConnection.getFieldSeparatorValue();
         this.newRowSeperator = fakeConnection.getRowSeparatorValue();
         this.newEncoding = TalendTextUtils.addQuotes(fakeConnection.getEncoding());
@@ -99,6 +103,11 @@ public class ChangeMultiSchemasCommand extends Command {
         this.newSchemasListMap = new ArrayList<Map<String, String>>();
         // metadata table
         this.newMetadataTable = new ArrayList<IMetadataTable>();
+
+        // hywang add for feature7373
+
+        this.newSelectedColumnIndex = TalendTextUtils.QUOTATION_MARK + String.valueOf(index) + TalendTextUtils.QUOTATION_MARK;
+
         addSchemasMap(newSchemasListMap, newMetadataTable, this.rootSchemaData);
 
     }
@@ -186,6 +195,13 @@ public class ChangeMultiSchemasCommand extends Command {
         if (elementParameter != null) {
             this.oldCsvOption = (Boolean) elementParameter.getValue();
         }
+
+        // hywang add for feature7373
+        elementParameter = this.node.getElementParameter(EParameterName.COLUMNINDEX.getName());
+        if (elementParameter != null) {
+            this.oldSelectedColumnIndex = String.valueOf(elementParameter.getValue());
+        }
+
         // schema table
         elementParameter = this.node.getElementParameter(EParameterName.SCHEMAS.getName());
         if (elementParameter != null) {
@@ -253,7 +269,7 @@ public class ChangeMultiSchemasCommand extends Command {
         setParameterValues(EParameterName.TEXT_ENCLOSURE, this.oldTextEnclosure, this.newTextEnclosure, undo);
         setParameterValues(EParameterName.ESCAPE_CHAR, this.oldEscapeChar, this.newEscapeChar, undo);
         setParameterValues(EParameterName.CSV_OPTION, this.oldCsvOption, this.newCsvOption, undo);
-
+        setParameterValues(EParameterName.COLUMNINDEX, this.oldSelectedColumnIndex, this.newSelectedColumnIndex, undo);
         // PTODO need check again.
         elementParameter = this.node.getElementParameter(EParameterName.SCHEMAS.getName());
 

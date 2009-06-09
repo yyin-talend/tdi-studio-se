@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
@@ -182,6 +183,14 @@ public class MultiSchemasUI {
 
     private MultiSchemaEventListener listener;
 
+    private static int DEFAULT_INDEX = 0;
+
+    private int selectedColumnIndex = DEFAULT_INDEX;
+
+    public int getSelectedColumnIndex() {
+        return this.selectedColumnIndex;
+    }
+
     public MultiSchemasUI(Composite uiParent, MultiSchemasManager multiSchemaManager) {
         super();
         this.uiParent = uiParent;
@@ -259,6 +268,15 @@ public class MultiSchemasUI {
     }
 
     private void initFieldValues() {
+        // hywang add for feature 7373
+
+        String selectedColumn = getMultiSchemaManager().getParameterValue(EParameterName.COLUMNINDEX);
+        selectedColumn = TalendTextUtils.removeQuotes(selectedColumn);
+        if (selectedColumn != null && !selectedColumn.equals("")) {
+            selectedColumnIndex = Integer.parseInt(selectedColumn);
+            processor.setSelectedColumnIndex(selectedColumnIndex);
+        }
+
         String filePath = getMultiSchemaManager().getParameterValue(EParameterName.FILENAME);
         getConnection().setFilePath(TalendTextUtils.removeQuotes(filePath));
         getConnection().setRowSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.ROWSEPARATOR));
@@ -1016,16 +1034,27 @@ public class MultiSchemasUI {
                         public void run() {
                             SchemasKeyData schemasModel = null;
                             boolean checked = (csvArray != null && csvArray.getRows().size() > 0);
-                            final CsvArray uniqueCsvArray = getMultiSchemaManager().retrieveCsvArrayInUniqueModel(
-                                    getProcessDescription(), checked, multiSchemasFilePreview.getSelectColumnIndex());
+                            CsvArray uniqueCsvArray = null;
 
-                            schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray,
-                                    multiSchemasFilePreview.getSelectColumnIndex());
-                            getMultiSchemaManager().setSelectedColumnIndex(multiSchemasFilePreview.getSelectColumnIndex());
-                            schemaTreeViewer.setInput(schemasModel);
-                            getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
-                            clearSchemaDetail();
-                            checkDialog();
+                            if (multiSchemasFilePreview.getSelectColumnIndex() < 0 && selectedColumnIndex != 0) {
+                                uniqueCsvArray = getMultiSchemaManager().retrieveCsvArrayInUniqueModel(getProcessDescription(),
+                                        checked, selectedColumnIndex);
+
+                                schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray, selectedColumnIndex);
+
+                            } else {
+
+                                uniqueCsvArray = getMultiSchemaManager().retrieveCsvArrayInUniqueModel(getProcessDescription(),
+                                        checked, multiSchemasFilePreview.getSelectColumnIndex());
+
+                                schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray,
+                                        multiSchemasFilePreview.getSelectColumnIndex());
+                                getMultiSchemaManager().setSelectedColumnIndex(multiSchemasFilePreview.getSelectColumnIndex());
+                                schemaTreeViewer.setInput(schemasModel);
+                                getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
+                                clearSchemaDetail();
+                                checkDialog();
+                            }
                         }
                     });
                     monitor.done();
@@ -1066,6 +1095,7 @@ public class MultiSchemasUI {
      * refreshPreview use ShadowProcess to refresh the preview.
      */
     void refreshPreview() {
+
         Display.getCurrent().asyncExec(new Runnable() {
 
             public void run() {
@@ -1227,9 +1257,17 @@ public class MultiSchemasUI {
      * 
      */
     public void saveProperties() {
+        TableColumn[] tcs = this.multiSchemasFilePreview.getTable().getColumns();
+        int currentIndexIntable = 0;
+        for (int i = 0; i < this.multiSchemasFilePreview.getTable().getColumnCount(); i++) {
+            if (tcs[i].getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON))) {
+                currentIndexIntable = i;
+            }
+        }
+
         final Object input = schemaTreeViewer.getInput();
         if (input != null) {
-            getMultiSchemaManager().savePropertiesToComponent((SchemasKeyData) input, getConnection());
+            getMultiSchemaManager().savePropertiesToComponent((SchemasKeyData) input, getConnection(), currentIndexIntable);
         }
     }
 
