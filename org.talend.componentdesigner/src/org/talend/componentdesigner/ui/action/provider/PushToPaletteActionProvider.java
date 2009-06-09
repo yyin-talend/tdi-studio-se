@@ -27,6 +27,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
+import org.talend.componentdesigner.ComponentDesigenerPlugin;
+import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.util.file.FileCopy;
 import org.talend.core.CorePlugin;
@@ -100,12 +102,19 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
                         Messages.getString("PushToPaletteActionProvider.ErrorMSG2"), MessageDialog.ERROR, new String[] { Messages.getString("PushToPaletteActionProvider.OK2") }, 0).open(); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
             }
-            for (IFolder selectedFolder : selectedFolderList) {
-                File sourceFile = selectedFolder.getRawLocation().toFile();
-                String sourceComponentFolder = sourceFile.getAbsolutePath();
-                String targetComponentFolder = targetFile.getAbsolutePath() + File.separator + sourceFile.getName();
 
-                FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
+            // fix issue 7636: Don't need to copy if component project URL and
+            // user components folder are the same.
+            String projectURL = ComponentDesigenerPlugin.getDefault().getPreferenceStore().getString(PluginConstant.PROJECT_URL);
+            File source = new File(projectURL);
+            if (!targetFile.equals(source)) {
+                for (IFolder selectedFolder : selectedFolderList) {
+                    File sourceFile = selectedFolder.getRawLocation().toFile();
+                    String sourceComponentFolder = sourceFile.getAbsolutePath();
+                    String targetComponentFolder = targetFile.getAbsolutePath() + File.separator + sourceFile.getName();
+
+                    FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
+                }
             }
 
             MessageDialog warningMessageDialog = new MessageDialog(
