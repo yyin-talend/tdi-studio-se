@@ -1,6 +1,7 @@
 <%@ jet 
 	imports="
 		org.talend.core.model.process.INode  
+		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	    org.talend.core.model.process.IConnection
 	    org.talend.core.model.process.IConnectionCategory
@@ -14,6 +15,7 @@ INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
 List< ? extends IConnection> connections = node.getOutgoingSortedConnections();
+String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 
 if(connections!=null && connections.size()>0){
 
@@ -25,12 +27,12 @@ if(connections!=null && connections.size()>0){
 			hasConn = true;
 		}
 	}
-	if(hasConn == true){
+	if(hasConn == true && ("Dom4j").equals(mode)){
 %>
 	}//while
 <%
 	}
 }
 %>
-}//for
+}
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
