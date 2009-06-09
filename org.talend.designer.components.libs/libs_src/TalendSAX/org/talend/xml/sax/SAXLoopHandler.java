@@ -55,6 +55,9 @@ public class SAXLoopHandler extends DefaultHandler {
     private LoopEntry entry;
 
     List<Map<String, Object>> listArgs = new ArrayList<Map<String, Object>>();
+    //===============add for bug7632 begin======================================
+    private SAXLooper saxLooper;
+    //========================end===============================================
 
     public SAXLoopHandler(LoopEntry entry) {
         this.entry = entry;
@@ -65,6 +68,11 @@ public class SAXLoopHandler extends DefaultHandler {
         } else {
             this.subLoopPath = loopPath;
         }
+    }
+    
+    public SAXLoopHandler(SAXLooper saxLooper,LoopEntry entry) {
+    	this(entry);
+    	this.saxLooper = saxLooper;
     }
 
     /**
@@ -254,9 +262,13 @@ public class SAXLoopHandler extends DefaultHandler {
             currentRow[currentRow.length - 1] = Integer.toString(subLoopCount);
             if (isNotNull(currentRow, currentRow.length - 1)) {
                 entry.getRows().add(currentRow);
+                // ===========add for bug7632==========================
+                if (this.entry.getOriginalLoopPath() != null) {
+                	this.saxLooper.addLoopOrder(this.entry.getOriginalLoopPath());
+                }
+                // =================end================================
             }
         }
-
         currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
     }
 
@@ -269,9 +281,4 @@ public class SAXLoopHandler extends DefaultHandler {
         }
         return false;
     }
-
-    public void clearEntryRows() {
-        this.entry.clearRows();
-    }
-
 }

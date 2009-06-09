@@ -1,6 +1,7 @@
 package org.talend.xml.sax;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,8 +34,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SAXLooper {
 
-    SAXLoopCompositeHandler result;
-
     // loop path in the tFileInputXML component.
     private String loopPath;
 
@@ -42,6 +41,8 @@ public class SAXLooper {
     private String[] nodePaths;
 
     private LoopEntry entry;
+
+    private SAXLoopCompositeHandler result;
 
     /**
      * DOC xzhang SAXLooper constructor comment.
@@ -74,7 +75,9 @@ public class SAXLooper {
 
     public SAXLooper(String rootPath, String[] arrLoopPath, String[][] arrNodePaths) {
 
-        this.arrLoopPath = new String[arrLoopPath.length];
+        this.arrOrigLoopPath = arrLoopPath;
+
+        // this.arrLoopPath = new String[arrLoopPath.length];
 
         this.arrOrigLoopPath = arrLoopPath;
 
@@ -87,26 +90,33 @@ public class SAXLooper {
 
         this.rootPath = tmpRootPath;
 
-        for (int i = 0; i < arrLoopPath.length; i++) {
-            String tmpLoopPath = arrLoopPath[i];
-
-            if (tmpLoopPath.startsWith("/")) {
-                tmpLoopPath = tmpLoopPath.substring(1);
-            }
-            this.arrLoopPath[i] = tmpRootPath + "/" + tmpLoopPath;
-        }
-
+        this.arrLoopPath = getLoopPaths(arrLoopPath);
         entries = new LoopEntry[arrLoopPath.length];
 
         initLoopEntries();
     }
 
-    protected String getRootPath() {
-        return this.rootPath;
-    }
+    private String[] getLoopPaths(String[] arrLoops) {
 
-    protected String[] getArrLoopPaths() {
-        return this.arrLoopPath;
+        String[] loopPaths = new String[arrLoops.length];
+
+        for (int i = 0; i < arrLoops.length; i++) {
+            String column = arrLoops[i];
+            String resultCol = this.rootPath;
+            String[] splits = column.split("/");
+            for (String tmp : splits) {
+                if (tmp.equals("..")) {
+                    resultCol = resultCol.substring(0, resultCol.lastIndexOf("/"));
+                } else if (tmp.equals(".")) {
+                } else if (!("").equals(tmp)) {
+                    resultCol += "/" + tmp;
+                }
+            }
+
+            loopPaths[i] = resultCol;
+        }
+
+        return loopPaths;
     }
 
     /**
@@ -142,18 +152,17 @@ public class SAXLooper {
         return new SAXLoopIterator(this.entry);
     }
 
+    public Iterator<Map<String, Map<String, String>>> multiIterator() {
+        return new SAXMultiLoopIterator(this, this.entries);
+    }
+
     /**
      * create a handler
      * 
      * @return
      */
     private DefaultHandler newHandler() {
-        SAXLoopCompositeHandler result;
-        if (rootPath == null || rootPath.equals("")) {
-            result = new SAXLoopCompositeHandler();
-        } else {
-            result = new SAXLoopCompositeHandler(this);
-        }
+        result = new SAXLoopCompositeHandler();
         LoopEntry tmpEntry = this.entry;
         while (tmpEntry != null) {
             result.register(new SAXLoopHandler(tmpEntry));
@@ -169,17 +178,18 @@ public class SAXLooper {
      */
     private DefaultHandler newHandler2() {
 
-        if (rootPath == null || rootPath.equals("")) {
-            result = new SAXLoopCompositeHandler();
-        } else {
-            result = new SAXLoopCompositeHandler(this);
-        }
+        // if (rootPath == null || rootPath.equals("")) {
+        result = new SAXLoopCompositeHandler();
+        // } else {
+        // result = new SAXLoopCompositeHandler(this);
+        // }
         for (int i = 0; i < this.entries.length; i++) {
             LoopEntry tmpEntry = this.entries[i];
             while (tmpEntry != null) {
-                result.register(new SAXLoopHandler(tmpEntry));
+                result.register(new SAXLoopHandler(this, tmpEntry));
                 tmpEntry = tmpEntry.getSubLoop();
             }
+
         }
         return result;
     }
@@ -360,51 +370,30 @@ public class SAXLooper {
                     }
                 }
             }
+            // ================add for bug7632 start==========================
+            tmpentry.setOriginalLoopPath(this.arrOrigLoopPath[i]);
+            // =======================bug7632 end=============================
 
         }// for(int i=0;i<length;i++)
 
     }
 
-    /**
-     * 
-     * DOC wliu Comment method "getRootLoopList".
-     * 
-     * @return
-     */
+    // ===============add for bug7632 begin======================================
+    private List<String> arrOrder = new ArrayList<String>(); // is used to tell the order of the xml data
 
-    protected Map<String, Object> getSubRootLoopMap(String tmpLoopPath) {
-
-        Map<String, Object> mapping = new HashMap<String, Object>();
-
-        if (this.rootPath == null || rootPath.equals("")) {
-            return null;
-        }
-
-        for (int i = 0; i < this.entries.length; i++) {
-            if (entries[i].getLoop().equals(tmpLoopPath)) {
-                Iterator<Map<String, String>> iter = new SAXLoopIterator(this.entries[i]);
-                if (iter.hasNext()) {
-                    mapping.put("value", iter.next());
-                }
-                mapping.put("path", this.arrOrigLoopPath[i]);
-
-                this.entries[i].clearRows();
-
-                break;
-            }
-        }
-
-        return mapping;
+    protected List<String> getLoopOrders() {
+        return this.arrOrder;
     }
 
-    public List<List<Map<String, Object>>> getAllResultList() {
-        if (rootPath != null && !rootPath.equals("")) {
-            return result.getAllResult();
-        }
-
-        return null;
+    protected void addLoopOrder(String string) {
+        this.arrOrder.add(string);
     }
 
+    protected void clearLoopOrderArr() {
+        this.arrOrder.clear();
+    }
+
+    // =================end================================
     /**
      * Testing code
      * 
@@ -419,42 +408,72 @@ public class SAXLooper {
             long timeStart = System.currentTimeMillis();
 
             String file = "./src/org/talend/xml/sax/in.xml";
-            String rootPath = "/orderdata/order/";
-            String[] loopPath = new String[] { "/header", "line-detail" };
+            String rootPath = "/orderdata/order/header";
+            String[] loopPath = new String[] { "/.", "/../line-detail" };
             String[][] pathList = new String[][] {
                     { "cust-vendor-num", "cust-vendor-num" + "/@xsi:nil", "cust", "cust" + "/@xsi:nil" },
                     { "prod-num", "prod-num" + "/@xsi:nil", "custom-var", "custom-var" + "/@xsi:nil" } };
+            // String rootPath = "/orderdata/order/";
+            // String[] loopPath = new String[] { "/header", "line-detail" };
+            // String[][] pathList = new String[][] {
+            // { "cust-vendor-num", "cust-vendor-num" + "/@xsi:nil", "cust", "cust" + "/@xsi:nil" },
+            // { "prod-num", "prod-num" + "/@xsi:nil", "custom-var", "custom-var" + "/@xsi:nil" } };
+            // String file = "./src/org/talend/xml/sax/in.xml";
+            // String loopPath = "/row/subrow/*[name()]";
+            // String[] pathList = new String[] { ".", "." + "/@xsi:nil" };
 
+            // String file = "./src/org/talend/xml/sax/in1.xml";
+            // String loopPath = "/schools/school/class/student";// "/areas/area/street/home";
+            // String[] pathList = new String[] { "../../@school_name", "../@class_name", "@stu_no", "name", "name" +
+            // "/@xsi:nil",
+            // "age", "age" + "/@xsi:nil", "sex", "sex" + "/@xsi:nil", "/*[name()]" };// new String[] { "@number",
+            // "owner",
+            // "house", "../../@city", "../@name",
+            // "../@id",
+            // "../length","../../../@provite" };
+
+            // String file = "F:/test/XML/multiNS.xml";
+            // String loopPath = "/pol:root/pol:order/pol:project";
+            // String[] pathList = new String[] { "pol:code", "pol:name", "pol:customer/pol:code",
+            // "pol:customer/pol:name" };
+
+            // String file = "F:/to others/toMicheal/outt.xml";
+            // String loopPath = "/REF-ETI/ID-COURIE/DOC-REF/EXPLRE-DOC-REF";
+            // String[] pathList = new String[] { "../../../@REF-ETI", "../../../AUTEUR", "../../@ID-COURIE",
+            // "../../INFO-COURIE/STE-JUR-CT", "../../INFO-COURIE/POL-NUM-STE", "../../INFO-COURIE/PERS-NUM",
+            // "../../INFO-COURIE/ID-ARV", "../../INFO-COURIE/COD-EVC", "../../VAR-COURIE/MASTER-I",
+            // "../../VAR-COURIE/INTERFACE", "../../VAR-COURIE/INTERFACE/CPOST-APPORT-INT", "../../GEST-REJET",
+            // "../@DOC-REF", "../../DOC-EXTN/ID-DOC-EXTN", "COD-ROUTAG", "POSTAL-COD", "NUM-PST-DEST" };
+
+            // SAXLooper looper = new SAXLooper(loopPath, pathList);
+            // looper.parse(file);
+            // Iterator<Map<String, String>> it = looper.iterator();
+            // while (it.hasNext()) {
+            // Map<String, String> tmp = it.next();
+            // for (String value : pathList) {
+            // System.out.print("|" + tmp.get(value));
+            // }
+            // System.out.println();
+            // }
             SAXLooper looper = new SAXLooper(rootPath, loopPath, pathList);
             looper.parse(file);
 
-            List<List<Map<String, Object>>> rootlist = looper.getAllResultList();
+            Iterator<Map<String, Map<String, String>>> iter = looper.multiIterator();
 
-            for (List<Map<String, Object>> subList : rootlist) {
-
-                Iterator<Map<String, Object>> itGroup = subList.iterator();
-                while (itGroup.hasNext()) {
-
-                    Map<String, Object> map = itGroup.next();
-                    System.out.print(map.get("path") + "|");
-                    Map<String, String> tmpMap = (Map<String, String>) map.get("value");
-
-                    String tmpLoopPath = null;
-                    int i = 0;
-                    for (; i < loopPath.length; i++) {
-                        if (loopPath[i].equals(map.get("path"))) {
-                            break;
-                        }
+            while (iter.hasNext()) {
+                Map<String, Map<String, String>> map = iter.next();
+                // Map<String, String> tmpMap = (Map<String, String>) map.get("value");
+                int i;
+                for (i = 0; i < loopPath.length; i++) {
+                    if (map.get(loopPath[i]) != null) {
+                        break;
                     }
-                    for (int j = 0; j < pathList[i].length; j++) {
-                        if (j == pathList[i].length - 1) {
-                            System.out.println(tmpMap.get(pathList[i][j]));
-                        } else {
-                            System.out.print(tmpMap.get(pathList[i][j]) + "|");
-                        }
-                    }
-
                 }
+
+                for (int j = 0; j < pathList[i].length; j++) {
+                    System.out.print(map.get(loopPath[i]).get(pathList[i][j]));
+                }
+                System.out.println();
 
             }
 

@@ -45,7 +45,18 @@ public class LoopEntry {
     public LoopEntry(String loop) {
         this.loop = loop;
     }
+    // =================add for bug7632 start========================
+    private String originalLoopPath = null;
 
+    public void setOriginalLoopPath(String originalLoopPath) {
+        this.originalLoopPath = originalLoopPath;
+    }
+
+    public String getOriginalLoopPath() {
+        return this.originalLoopPath;
+    }
+
+    // =====================bug7632 end==============================
     /**
      * This use in init LoopEntry object. DOC s Comment method "addPath".
      * 
@@ -109,10 +120,6 @@ public class LoopEntry {
      */
     public List<String[]> getRows() {
         return this.rows;
-    }
-
-    public void clearRows() {
-        this.rows.clear();
     }
 
     private Map<String, Function> listFuncs = new HashMap<String, Function>();
