@@ -72,6 +72,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
@@ -845,6 +846,11 @@ public class DatabaseTableForm extends AbstractForm {
                 Iterator iterate = metadataColumns.iterator();
                 while (iterate.hasNext()) {
                     MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
+                    if (metadataColumn.getTalendType().equals(JavaTypesManager.DATE.getId())) {
+                        if (metadataColumn.getPattern().equals("")) {
+                            metadataColumn.setPattern("dd-MM-yyyy");
+                        }
+                    }
 
                     String columnLabel = metadataColumn.getLabel();
                     // Check the label and add it to the table
