@@ -46,6 +46,7 @@ String filename = filename_o;
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
 String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
+String columnIndex = ElementParameterParser.getValue(node,"__COLUMNINDEX__");
 
 if (hasDataLink) {//FIM_000
 ////////////////////////
@@ -128,7 +129,7 @@ while (fid_<%=cid %>.nextRecord()) {
 		Map<String, String> schema = schemas.get(i);
 		String record = schema.get("RECORD");
 %>
-	<%=(i==0) ? "" : "else " %>if(fid_<%=cid %>.get(0).equals(<%=record %>)){
+	<%=(i==0) ? "" : "else " %>if(fid_<%=cid %>.get(Integer.parseInt(<%=columnIndex %>)).equals(<%=record %>)){
 <%
 		String schemaName = schema.get("SCHEMA");
 		boolean keyUpdated = false;
