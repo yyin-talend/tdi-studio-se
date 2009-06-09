@@ -506,7 +506,7 @@ public class PerlProcessor extends Processor {
         // perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         String[] cmd = getCommandLineByCondition(getDefaultInterpreter(), absCodePath, perlInterpreterLibOption,
-                perlModuleDirectoryOption);
+                perlModuleDirectoryOption, true);
         cmd = addCommmandLineAttch(cmd, contextName, statOption, traceOption, codeOptions);
         Processor.logCommandLine(cmd, level);
         try {
@@ -538,21 +538,24 @@ public class PerlProcessor extends Processor {
      * @throws ProcessorException
      */
     private static String[] getCommandLineByCondition(String perlInterpreter, IPath absCodePath, String perlInterpreterLibOption,
-            String perlModuleDirectoryOption) throws ProcessorException {
+            String perlModuleDirectoryOption, boolean isExe) throws ProcessorException {
         assert (absCodePath != null);
         String[] cmd = new String[] {};
-        // see bug 6972
-        String os = Platform.getOS();
-        if (os.equals(Platform.OS_WIN32)) {
-            cmd = (String[]) ArrayUtils.add(cmd, "cmd.exe"); //$NON-NLS-1$
-            cmd = (String[]) ArrayUtils.add(cmd, "/c"); //$NON-NLS-1$
-            cmd = (String[]) ArrayUtils.add(cmd, "set"); //$NON-NLS-1$
-            try {
-                cmd = (String[]) ArrayUtils.add(cmd, "path=" + getPerlPathCommand()); //$NON-NLS-1$
-            } catch (IOException e) {
-                throw new ProcessorException(e);
+        // see bug 7622.
+        if (isExe) {
+            // see bug 6972
+            String os = Platform.getOS();
+            if (os.equals(Platform.OS_WIN32)) {
+                cmd = (String[]) ArrayUtils.add(cmd, "cmd.exe"); //$NON-NLS-1$
+                cmd = (String[]) ArrayUtils.add(cmd, "/c"); //$NON-NLS-1$
+                cmd = (String[]) ArrayUtils.add(cmd, "set"); //$NON-NLS-1$
+                try {
+                    cmd = (String[]) ArrayUtils.add(cmd, "path=" + getPerlPathCommand()); //$NON-NLS-1$
+                } catch (IOException e) {
+                    throw new ProcessorException(e);
+                }
+                cmd = (String[]) ArrayUtils.add(cmd, "&"); //$NON-NLS-1$
             }
-            cmd = (String[]) ArrayUtils.add(cmd, "&"); //$NON-NLS-1$
         }
         cmd = (String[]) ArrayUtils.add(cmd, perlInterpreter);
 
@@ -618,7 +621,8 @@ public class PerlProcessor extends Processor {
         perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
         IPath absCodePath = Path.fromOSString(getCodeLocation()).append(this.getCodePath());
-        String[] cmd = getCommandLineByCondition(interpreter, absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);
+        String[] cmd = getCommandLineByCondition(interpreter, absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption,
+                false);
         // achen modify to fix 0001268
         if (!ProcessorUtilities.isExportConfig()) {
             return cmd;
