@@ -266,6 +266,9 @@ public class DeleteAction extends AContextualAction {
                 String label = property.getLabel();
                 String version = property.getVersion();
                 Item item = property.getItem();
+                if (item instanceof ProcessItem) {
+                    return list;
+                }
 
                 EList nodesList = null;
                 for (IRepositoryObject process : deleteActionCache.getProcessList()) {
@@ -277,7 +280,7 @@ public class DeleteAction extends AContextualAction {
                     boolean isJob = true;
 
                     Item item2 = property2.getItem();
-                    if (property.getLabel().equals(property2.getLabel()) && item.getClass() == item2.getClass()) {
+                    if (item == item2) {
                         continue;
                     }
                     if (!isOpenedItem(item2, deleteActionCache.getOpenProcessMap())) {
