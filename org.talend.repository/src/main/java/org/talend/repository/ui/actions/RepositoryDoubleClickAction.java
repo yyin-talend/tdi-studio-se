@@ -108,7 +108,8 @@ public class RepositoryDoubleClickAction extends Action {
                     RepositoryNode pNode = node.getParent().getParent();
                     if (pNode != null) {
                         ERepositoryObjectType nodeType = (ERepositoryObjectType) pNode.getProperties(EProperties.CONTENT_TYPE);
-                        if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType) && pNode.getObject() != null) {
+                        if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType) && pNode.getObject() != null
+                                && pNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem) {
                             DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) pNode.getObject()
                                     .getProperty().getItem()).getConnection();
                             if (connection != null) {
