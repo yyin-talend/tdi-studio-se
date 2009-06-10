@@ -34,6 +34,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
 import org.talend.repository.ui.wizards.newproject.copyfromeclipse.TalendWizardProjectsImportPage;
@@ -65,6 +66,8 @@ public class ImportProjectAsWizard extends Wizard {
         super();
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROJECT_WIZ));
         setNeedsProgressMonitor(true);
+        setDialogSettings(RepositoryPlugin.getDefault().getDialogSettings());
+        getDialogSettings().put("WizardProjectsImportPage.STORE_COPY_PROJECT_ID", true);
     }
 
     /**
