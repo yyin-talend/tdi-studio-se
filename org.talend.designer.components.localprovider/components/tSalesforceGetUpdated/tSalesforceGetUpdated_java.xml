@@ -272,9 +272,9 @@
          <COLUMN KEY="false" LENGTH="0" NAME="IsCompetitorProduct" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="80" NAME="SerialNumber" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="InstallDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="PurchaseDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="UsageEndDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="InstallDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="PurchaseDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="UsageEndDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Status" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="Price" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="Quantity" TYPE="id_Double"/>
@@ -329,8 +329,8 @@
          <COLUMN KEY="false" LENGTH="80" NAME="Name" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Type" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Status" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="StartDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="EndDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="StartDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="EndDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="0" NAME="ExpectedRevenue" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="BudgetedCost" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="ActualCost" TYPE="id_String"/>
@@ -430,7 +430,7 @@
          <COLUMN KEY="false" LENGTH="80" NAME="Department" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="AssistantName" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="LeadSource" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="Birthdate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="Birthdate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
       </TABLE>
@@ -441,7 +441,7 @@
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
          <COLUMN KEY="false" LENGTH="18" NAME="AccountId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="OwnerExpirationNotice" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="StartDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="StartDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="BillingStreet" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="BillingCity" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="BillingState" TYPE="id_String"/>
@@ -451,10 +451,10 @@
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Status" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="CompanySignedId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="CompanySignedDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="CompanySignedDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="18" NAME="CustomerSignedId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="CustomerSignedTitle" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="CustomerSignedDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="CustomerSignedDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="4000" NAME="SpecialTerms" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
       </TABLE>
@@ -504,14 +504,14 @@
          <COLUMN KEY="false" LENGTH="80" NAME="Location" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsAllDayEvent" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="20" NAME="ActivityDateTime" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="ActivityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="ActivityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="0" NAME="DurationInMinutes" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsPrivate" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="40" NAME="ShowAs" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="RecurrenceStartDateTime" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="RecurrenceEndDateOnly" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="RecurrenceEndDateOnly" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="40" NAME="RecurrenceTimeZoneSidKey" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="RecurrenceType" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="RecurrenceInterval" TYPE="id_Integer"/>
@@ -613,7 +613,7 @@
          <COLUMN KEY="false" LENGTH="0" NAME="Amount" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="Probability" TYPE="id_Double"/>
          <COLUMN KEY="false" LENGTH="0" NAME="TotalOpportunityQuantity" TYPE="id_Double"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="CloseDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="CloseDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Type" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="NextStep" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="LeadSource" TYPE="id_String"/>
@@ -642,7 +642,7 @@
          <COLUMN KEY="false" LENGTH="0" NAME="Quantity" TYPE="id_Double"/>
          <COLUMN KEY="false" LENGTH="0" NAME="TotalPrice" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UnitPrice" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="ServiceDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="ServiceDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="255" NAME="Description" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityPartner')">
@@ -818,7 +818,7 @@
          <COLUMN KEY="false" LENGTH="18" NAME="WhoId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="WhatId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="80" NAME="Subject" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="ActivityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="ActivityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Status" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Priority" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>

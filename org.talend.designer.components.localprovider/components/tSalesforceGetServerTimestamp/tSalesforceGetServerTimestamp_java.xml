@@ -68,7 +68,7 @@
       NUM_ROW="1"
     >
       <TABLE READONLY="true">
-         <COLUMN KEY="false" LENGTH="20" NAME="ServerTimestamp" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="ServerTimestamp" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
       </TABLE>
     
    </PARAMETER>
