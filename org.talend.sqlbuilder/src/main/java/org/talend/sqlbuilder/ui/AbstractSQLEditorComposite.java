@@ -206,6 +206,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
             getMultiPageEditor().getDeactivePageSaveSQLAction().setQuery(query);
             getMultiPageEditor().setItemData(query);
             getDialog().notifySQLBuilder(getRepositoryNode().getObject());
+            this.getConnParam().setQueryObject(query); // hyWang add for bug 0007634
             return query;
 
         }
