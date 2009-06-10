@@ -29,9 +29,15 @@
     
 <%
 if(files.size() == 0){
+	if(useGlob){
 %>
 	maskList_<%=cid %>.add("*");
 <%
+	}else{
+%>
+	maskList_<%=cid %>.add(".*");
+<%
+	}
 }
 for (int i=0; i<files.size(); i++) {
    Map<String, String> line = files.get(i);
