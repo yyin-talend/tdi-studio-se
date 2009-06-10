@@ -13,7 +13,9 @@
 package org.talend.designer.rowgenerator.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -34,9 +36,12 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
+import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
@@ -80,6 +85,12 @@ public class RowGeneratorUI {
     private final RowGeneratorComponent externalNode;
 
     private final FunctionManagerExt functionManager;
+
+    private Map<String, String> changedNameColumns = new HashMap<String, String>();
+
+    public Map<String, String> getChangedNameColumns() {
+        return this.changedNameColumns;
+    }
 
     public RowGeneratorUI(Composite parent, RowGeneratorManager generatorManager) {
         super();
@@ -188,6 +199,23 @@ public class RowGeneratorUI {
         dataTableView.setGeneratorUI(this);
         dataTableView.setShowDbTypeColumn(true, true, false);
         dataTableView.setShowDbColumnName(false, false);
+        metadataTableEditor.setModifiedBeanListenable(dataTableView.getTableViewerCreator());
+        // see bug 7471,record the modification of the column value.
+        metadataTableEditor.addModifiedBeanListener(new IModifiedBeanListener<IMetadataColumn>() {
+
+            public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
+                if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())) {
+                    IMetadataColumn modifiedObject = (IMetadataColumn) event.bean;
+                    if (modifiedObject != null) {
+                        String originalLabel = changedNameColumns.get(modifiedObject);
+                        if (originalLabel == null) {
+                            changedNameColumns.put(modifiedObject.getLabel(), (String) event.previousValue);
+                        }
+                    }
+                }
+            }
+
+        });
         // dataTableView.
         // resize all the columns but not the table
         for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {

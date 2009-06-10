@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -36,7 +37,9 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.genhtml.IJobSettingConstants;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -61,6 +64,7 @@ import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.ConvertRepositoryNodeToProcessNode;
 import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
@@ -613,4 +617,67 @@ public class DesignerCoreService implements IDesignerCoreService {
 
         return array;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#updateTraceColumnValues(org.talend.core.model.process.IConnection,
+     * java.util.Map, java.util.Set)
+     */
+    public void updateTraceColumnValues(IConnection conn, Map<String, String> changedNameColumns, Set<String> addedColumns) {
+        if (changedNameColumns == null) {
+            for (String curColumnName : addedColumns) {
+                TracesConnectionUtils.setTraceColumnValues(conn, curColumnName, null, true); // set default
+                // (true)
+            }
+            return;
+        } else {
+            List<Map<String, Object>> traceFilterValues = TracesConnectionUtils.getTraceConnectionFilterValues(conn);
+            for (String newName : changedNameColumns.keySet()) {
+                // update the column name in TRACES_CONNECTION_FILTER parameter.
+                String oldName = changedNameColumns.get(newName);
+                if (oldName != null) {
+                    Map<String, Object> foundLine = null;
+                    for (Map<String, Object> line : traceFilterValues) {
+                        Object column = line.get(IConnection.TRACE_SCHEMA_COLUMN);
+                        if (oldName.equals(column)) {// found
+                            foundLine = line;
+                            break;
+                        }
+                    }
+                    if (foundLine != null) { // found, update
+                        foundLine.put(IConnection.TRACE_SCHEMA_COLUMN, newName);
+                    }
+                }
+            }
+            // when create new column
+            for (String colName : addedColumns) {
+                TracesConnectionUtils.setTraceColumnValues(conn, colName, null, true); // set default
+                // (true)
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getConnection(java.util.List,
+     * org.talend.core.model.metadata.IMetadataTable)
+     */
+    public IConnection getConnection(List<? extends IConnection> connections, IMetadataTable table) {
+        return TracesConnectionUtils.getConnection(connections, table);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#setTraceFilterParameters(org.talend.core.model.process.INode,
+     * org.talend.core.model.metadata.IMetadataTable, java.util.Set, java.util.Map)
+     */
+    public void setTraceFilterParameters(INode node, IMetadataTable table, Set<String> preColumnSet,
+            Map<String, String> changedNameColumns) {
+        TracesConnectionUtils.setTraceFilterParameters(node, table, preColumnSet, changedNameColumns);
+    }
+
 }

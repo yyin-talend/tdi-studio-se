@@ -12,17 +12,15 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.dialogs;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -32,13 +30,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.actions.RetargetAction;
-import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.rowgenerator.RowGenMain;
-import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.UIManager;
-import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.tabs.FunParaTableView2;
 
 /**
@@ -59,6 +56,12 @@ public class RowGeneratorDialog extends Dialog {
 
     private RowGenMain rowGenMain;
 
+    private IMetadataTable metadataTable;
+
+    private Set<String> preOutputColumnSet = new HashSet<String>();
+
+    private Map<String, String> changedNameColumns = new HashMap<String, String>();
+
     /**
      * zhangyi RowGeneratorDialog constructor comment.
      * 
@@ -67,6 +70,12 @@ public class RowGeneratorDialog extends Dialog {
     public RowGeneratorDialog(Shell parentShell, RowGenMain rowGenMain) {
         super(parentShell);
         this.rowGenMain = rowGenMain;
+        metadataTable = rowGenMain.getRowGenManager().getRowGeneratorComponent().getMetadataList().get(0);
+        // record the preColumn
+        List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+        for (IMetadataColumn preColumn : listColumns) {
+            preOutputColumnSet.add(preColumn.getLabel());
+        }
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
 
@@ -175,7 +184,37 @@ public class RowGeneratorDialog extends Dialog {
         uiManager.closeRowGenerator(SWT.OK, true);
         rowGenMain.buildExternalData();
         super.okPressed();
-
+        // see bug 7471
+        List<? extends IConnection> connection = rowGenMain.getRowGenManager().getRowGeneratorComponent()
+                .getOutgoingConnections();
+        IConnection curConnection = null;
+        for (IConnection conn : connection) {
+            IMetadataTable metadataTable = conn.getMetadataTable();
+            if (metadataTable != null) {
+                String tabName = metadataTable.getTableName();
+                if (tabName.equals(metadataTable.getTableName())) {
+                    curConnection = conn;
+                }
+            }
+        }
+        if (curConnection != null) {
+            Set<String> addedColumns = new HashSet<String>();
+            changedNameColumns = rowGenMain.getGeneratorUI().getChangedNameColumns();
+            for (String changedColName : changedNameColumns.keySet()) {
+                String columnName = changedNameColumns.get(changedColName);
+                if (preOutputColumnSet.contains(columnName)) {
+                    preOutputColumnSet.remove(columnName);
+                    preOutputColumnSet.add(changedColName);
+                }
+            }
+            for (IMetadataColumn curColumn : metadataTable.getListColumns()) {
+                if (!(preOutputColumnSet.contains(curColumn.getLabel()))) {
+                    addedColumns.add(curColumn.getLabel());
+                }
+            }
+            CorePlugin.getDefault().getDesignerCoreService().updateTraceColumnValues(curConnection, changedNameColumns,
+                    addedColumns);
+        }
     }
 
     /*

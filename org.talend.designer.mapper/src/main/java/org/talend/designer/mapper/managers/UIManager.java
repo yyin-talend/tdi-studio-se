@@ -14,8 +14,10 @@ package org.talend.designer.mapper.managers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -58,10 +60,12 @@ import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.commons.utils.image.ImageCapture;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.threading.AsynchronousThreading;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -171,6 +175,8 @@ public class UIManager extends AbstractUIManager {
     private Display display;
 
     private boolean closeWithoutPrompt;
+
+    private Map<IConnection, Map<String, String>> changedNameColumns = new HashMap<IConnection, Map<String, String>>();
 
     /**
      * DOC amaumont UIManager constructor comment.
@@ -409,6 +415,29 @@ public class UIManager extends AbstractUIManager {
                         TableEntryLocation tableEntryLocation = new TableEntryLocation(dataMapTableView.getDataMapTable()
                                 .getName(), (String) event.previousValue);
                         final ITableEntry dataMapTableEntry = mapperManager.retrieveTableEntry(tableEntryLocation);
+                        // see bug 7471,record the modification about the column value
+                        String curConnName = null;
+                        if (dataMapTableEntry != null) {
+                            curConnName = dataMapTableEntry.getParentName();
+                        }
+                        List<? extends IConnection> curInConns = mapperManager.getAbstractMapComponent().getIncomingConnections();
+                        List<? extends IConnection> curOutConns = mapperManager.getAbstractMapComponent()
+                                .getOutgoingConnections();
+                        for (IConnection curInConn : curInConns) {
+                            if (curConnName.equals(curInConn.getUniqueName())) {
+                                Map<String, String> changedNameInColumns = new HashMap<String, String>();
+                                changedNameInColumns.put((String) event.newValue, (String) event.previousValue);
+                                changedNameColumns.put(curInConn, changedNameInColumns);
+                            }
+                        }
+                        for (IConnection curOutConn : curOutConns) {
+                            if (curConnName.equals(curOutConn.getUniqueName())) {
+                                Map<String, String> changedNameOutColumns = new HashMap<String, String>();
+                                changedNameOutColumns.put((String) event.newValue, (String) event.previousValue);
+                                changedNameColumns.put(curOutConn, changedNameOutColumns);
+                            }
+                        }
+
                         processColumnNameChanged((String) event.previousValue, (String) event.newValue, dataMapTableView,
                                 dataMapTableEntry);
                     }
@@ -665,9 +694,48 @@ public class UIManager extends AbstractUIManager {
         if (response == SWT.OK) {
             createVisualMapImage();
             closeWithoutPrompt = true;
+            // see bug 7471
+            Map<IConnection, Set<String>> preColumnSets = mapperUI.getPreColumnSet();
+            List<InputTable> inputTables = mapperManager.getInputTables();
+            List<OutputTable> outputTables = mapperManager.getOutputTables();
+            setTraceFilterParaMapper(preColumnSets, inputTables, changedNameColumns);
+            setTraceFilterParaMapper(preColumnSets, outputTables, changedNameColumns);
         }
 
         mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
+    }
+
+    /**
+     * DOC wzhang Comment method "setTraceFilterParaMapper".
+     */
+    public void setTraceFilterParaMapper(Map<IConnection, Set<String>> preColumnSet,
+            List<? extends AbstractInOutTable> curTables, Map<IConnection, Map<String, String>> changedColumnMap) {
+        for (IConnection curConn : preColumnSet.keySet()) {
+            Set<String> addedColumns = new HashSet<String>();
+            Set<String> preColSet = preColumnSet.get(curConn);
+            Map<String, String> changedColumns = changedColumnMap.get(curConn);
+            for (AbstractInOutTable table : curTables) {
+                String curTableName = table.getName();
+                if (curTableName.equals(curConn.getUniqueName())) {
+                    if (changedColumns != null) {
+                        for (String newName : changedColumns.keySet()) {
+                            String oldName = changedColumns.get(newName);
+                            if (preColSet.contains(oldName)) {
+                                preColSet.remove(oldName);
+                                preColSet.add(newName);
+                            }
+                        }
+                    }
+                    List<IMetadataColumn> curTableColumn = table.getMetadataTable().getListColumns();
+                    for (IMetadataColumn curColumn : curTableColumn) {
+                        if (!(preColSet.contains(curColumn.getLabel()))) {
+                            addedColumns.add(curColumn.getLabel());
+                        }
+                    }
+                }
+            }
+            CorePlugin.getDefault().getDesignerCoreService().updateTraceColumnValues(curConn, changedColumns, addedColumns);
+        }
     }
 
     private void removeUnsavedOutputsFromProcess() {

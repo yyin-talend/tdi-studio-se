@@ -14,13 +14,17 @@ package org.talend.designer.core.ui.editor.connections;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
 
 /**
@@ -182,7 +186,7 @@ public class TracesConnectionUtils {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<Map<String, Object>> getTraceConnectionFilterValues(IConnection conn) {
+    public static List<Map<String, Object>> getTraceConnectionFilterValues(IConnection conn) {
         IElementParameter elementParameter = conn.getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName());
         if (elementParameter != null) {
             Object value = elementParameter.getValue();
@@ -203,5 +207,43 @@ public class TracesConnectionUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * DOC wzhang Comment method "setTraceFilterParameters".
+     */
+    public static void setTraceFilterParameters(INode node, IMetadataTable table, Set<String> preColumnSet,
+            Map<String, String> changedNameColumns) {
+        if (node != null && table != null && preColumnSet != null) {
+            IConnection curConnection = getConnection(node.getOutgoingConnections(), table);
+            if (curConnection != null) {
+                Set<String> addedColumns = new HashSet<String>();
+                for (IMetadataColumn curColumn : table.getListColumns()) {
+                    if (!(preColumnSet.contains(curColumn.getLabel()))) {
+                        addedColumns.add(curColumn.getLabel());
+                    }
+                }
+                CorePlugin.getDefault().getDesignerCoreService().updateTraceColumnValues(curConnection, changedNameColumns,
+                        addedColumns);
+            }
+        }
+    }
+
+    /**
+     * DOC wzhang Comment method "getConnection".
+     */
+    public static IConnection getConnection(List<? extends IConnection> connections, IMetadataTable table) {
+        if (table != null && connections != null) {
+            for (IConnection conn : connections) {
+                IMetadataTable metaTable = conn.getMetadataTable();
+                if (metaTable != null) {
+                    String tabName = metaTable.getTableName();
+                    if (tabName.equals(table.getTableName())) {
+                        return conn;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

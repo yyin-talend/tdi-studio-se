@@ -13,7 +13,11 @@
 package org.talend.designer.mapper.ui;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -52,6 +56,8 @@ import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -179,6 +185,8 @@ public class MapperUI {
 
     private FooterComposite footerComposite;
 
+    private Map<IConnection, Set<String>> preColumnSet = new HashMap<IConnection, Set<String>>();
+
     public MapperUI(Composite parent, MapperManager mapperManager) {
         super();
         this.mapperManager = mapperManager;
@@ -300,7 +308,34 @@ public class MapperUI {
         // mapperManager.setCommandStack(commandStack);
 
         updateBackgroundEnabled = false;
-
+        List<? extends IConnection> inConnections = mapperManager.getAbstractMapComponent().getIncomingConnections();
+        List<? extends IConnection> outConnections = mapperManager.getAbstractMapComponent().getOutgoingConnections();
+        // see bug 7471, record the precolumns value
+        for (IConnection conn : inConnections) {
+            conn.getMetadataTable();
+            List<IMetadataColumn> inputColumns = conn.getMetadataTable().getListColumns();
+            for (IMetadataColumn inputColumn : inputColumns) {
+                Set<String> columnSet = preColumnSet.get(conn);
+                if (columnSet == null) {
+                    columnSet = new HashSet<String>();
+                    preColumnSet.put(conn, columnSet);
+                }
+                columnSet.add(inputColumn.getLabel());
+                preColumnSet.put(conn, columnSet);
+            }
+        }
+        for (IConnection conn : outConnections) {
+            List<IMetadataColumn> outputColumns = conn.getMetadataTable().getListColumns();
+            for (IMetadataColumn outputColumn : outputColumns) {
+                Set<String> columnSet = preColumnSet.get(conn);
+                if (columnSet == null) {
+                    columnSet = new HashSet<String>();
+                    preColumnSet.put(conn, columnSet);
+                }
+                columnSet.add(outputColumn.getLabel());
+                preColumnSet.put(conn, columnSet);
+            }
+        }
         final UIManager uiManager = mapperManager.getUiManager();
         final ExternalMapperUiProperties uiProperties = uiManager.getUiProperties();
 
@@ -1034,6 +1069,13 @@ public class MapperUI {
         } else {
             return null;
         }
+    }
+
+    /**
+     * DOC wzhang Comment method "getPreColumnSet".
+     */
+    public Map<IConnection, Set<String>> getPreColumnSet() {
+        return this.preColumnSet;
     }
 
 }
