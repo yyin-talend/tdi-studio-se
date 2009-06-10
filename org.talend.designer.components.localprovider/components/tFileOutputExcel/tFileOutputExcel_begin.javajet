@@ -113,8 +113,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		jxl.write.WritableFont wf_<%=cid%> = new jxl.write.WritableFont(jxl.write.WritableFont.<%=font%>, 10, jxl.write.WritableFont.NO_BOLD, false);
         jxl.write.WritableCellFormat format_<%=cid%>  = new jxl.write.WritableCellFormat(wf_<%=cid%>); 
-<%}else{%>
-		jxl.write.WritableCellFormat format_<%=cid%>  = new jxl.write.WritableCellFormat();
 <%}%>
 
 <%
@@ -159,9 +157,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 //modif start
 				<%if(firstCellYAbsolute){%>
-					writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %>, "<%=column.getLabel() %>",format_<%=cid%>));		
+					writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %>, "<%=column.getLabel() %>"
+					<% if (font !=null && font.length()!=0) { %>
+					,format_<%=cid %>
+					<%}%>
+					));		
 				<%}else{%>
-					writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>",format_<%=cid%>));
+					writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"
+					<% if (font !=null && font.length()!=0) { %>
+					,format_<%=cid %>
+					<%}%>
+					));
 				<%}%>
 //modif end
 				fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]><%=column.getLabel().length()%>?fitWidth_<%=cid%>[<%=i%>]:<%=column.getLabel().length()%>;
