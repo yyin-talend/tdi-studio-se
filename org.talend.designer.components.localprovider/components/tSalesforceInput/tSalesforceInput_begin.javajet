@@ -23,6 +23,7 @@ INode node = (INode)codeGenArgument.getArgument();
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+   	String batchSize = ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 
 String cid = node.getUniqueName();
 
@@ -105,7 +106,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				com.sforce.soap.partner.SoapBindingStub binding_<%=cid %> = sfMgr_<%=cid%>.getBinding();
 				com.sforce.soap.partner.QueryResult qr_<%=cid %> = null;
 				com.sforce.soap.partner.QueryOptions qo_<%=cid %> = new com.sforce.soap.partner.QueryOptions();
-				qo_<%=cid %>.setBatchSize(new Integer(250));
+				qo_<%=cid %>.setBatchSize(new Integer(<%=batchSize%>));
 				binding_<%=cid %>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "QueryOptions", qo_<%=cid %>);
 				
 				qr_<%=cid %> = binding_<%=cid %>.query(<%=sql %>);
