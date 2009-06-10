@@ -33,7 +33,10 @@ import org.talend.repository.model.EEncryptionMethod;
 
 import com.ca.commons.jndi.SchemaOps;
 import com.ca.commons.naming.DN;
+import com.ca.commons.naming.DXAttribute;
 import com.ca.commons.naming.DXAttributes;
+import com.ca.commons.naming.DXEntry;
+import com.ca.commons.naming.DXNamingEnumeration;
 
 /**
  * This class is used for getting connection and retrieving data for LDAP. <br/>
@@ -69,6 +72,7 @@ public class LDAPConnectionUtils {
         }
         Attribute oc = null;
         DXAttributes dx = null;
+        DXEntry entry = null;
         DN dn = null;
         try {
             final EList baseDNs = talendLDAPConnection.getBaseDNs();
@@ -77,6 +81,7 @@ public class LDAPConnectionUtils {
                 dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(dn, null));
                 oc = dx.getAllObjectClasses();
                 if (oc != null) {
+                    entry = new DXEntry(dx, dn);
                     break;
                 }
             }
@@ -138,6 +143,21 @@ public class LDAPConnectionUtils {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
+        // qli modification to fix the bug 7545.
+        if (entry != null) {
+            DXNamingEnumeration possible = (DXNamingEnumeration) entry.getAll();
+            possible.sort();
+
+            while (possible.hasMore()) {
+                DXAttribute temp = (DXAttribute) possible.next();
+                String ldapName = temp.getID();
+                if (!attributeSet.contains(ldapName)) {
+                    attributeSet.add(ldapName);
+                }
+            }
+        }
+
         Object[] array = (Object[]) attributeSet.toArray();
 
         return array;
