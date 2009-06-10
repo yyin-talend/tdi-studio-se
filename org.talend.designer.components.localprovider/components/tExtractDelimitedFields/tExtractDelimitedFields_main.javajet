@@ -151,6 +151,6 @@ for(int i=0; i<newColumnList.size();i++){
 	}
 }
 %>
-
+nb_line_<%=cid%>++;
 	
 	
