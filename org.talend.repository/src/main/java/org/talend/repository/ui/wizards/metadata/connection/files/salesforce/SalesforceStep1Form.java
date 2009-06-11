@@ -329,7 +329,13 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     checkFieldsValue();
                 }
                 testSalesforceLogin();
-                loginOk = checkSalesfoceLogin(endPoint, username, pwd);
+                if (useProxyBtn.getSelection()) {
+                    loginOk = checkSalesfoceLogin(endPoint, username, pwd, proxyHostText.getText(), proxyPortText.getText(),
+                            proxyUsernameText.getText(), proxyPasswordText.getText());
+                } else {
+                    loginOk = checkSalesfoceLogin(endPoint, username, pwd, null, null, null, null);
+                }
+
                 if (useCostomModuleButton.getSelection()) {
                     getConnection().setModuleName(customModuleCombo.getText().trim());
                     // appendCustomModule(customModuleCombo.getText().trim());
@@ -546,8 +552,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 updateStatus(IStatus.ERROR, "Your must give module for using Salesforce service"); //$NON-NLS-1$
                 return false;
             }
-        }
-
+        }    
+                
         if (!loginOk) {
             updateStatus(IStatus.ERROR, "Click Check Login to make sure that URL, username, password are correct."); //$NON-NLS-1$
             return false;

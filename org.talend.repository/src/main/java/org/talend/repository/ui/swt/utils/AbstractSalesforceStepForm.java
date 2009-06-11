@@ -193,7 +193,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return salesforceAPI.isLogin();
     }
 
-    protected boolean checkSalesfoceLogin(final String endPoint, final String username, final String password) {
+    protected boolean checkSalesfoceLogin(final String endPoint, final String username, final String password,
+            final String proxyHost, final String proxyPort, final String proxyUsername, final String proxyPassword) {
         final List<String> errors = new ArrayList<String>();
 
         salesforceAPI.setLogin(false);
@@ -215,12 +216,10 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     }
 
                     try {
-                        binding = salesforceAPI.login(endPoint, username, password);
+                        binding = salesforceAPI.login(endPoint, username, password, proxyHost, proxyPort, proxyUsername,
+                                proxyPassword);
                         salesforceAPI.setLogin(true);
-
                     } catch (Throwable e) {
-                        MessageDialog.openInformation(getShell(), Messages.getString("SalesforceForm.checkConnectionTitle"), //$NON-NLS-1$
-                                password);
                         errors.add(e.getMessage());
                         ExceptionHandler.process(e);
                     }

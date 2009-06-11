@@ -142,7 +142,7 @@ public class SalesforceModuleParseAPI {
         String oldProxyUser = null;
         String oldProxyPwd = null;
 
-        if (proxyHost != null && "".equals(proxyHost.trim()) && proxyPort != null && "".equals(proxyPort.trim())) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (proxyHost != null || proxyPort != null) { //$NON-NLS-1$ //$NON-NLS-2$
             enableProxy = true;
             Properties properties = System.getProperties();
             oldProxyHost = (String) properties.get(SOCKS_PROXY_HOST);
@@ -154,6 +154,14 @@ public class SalesforceModuleParseAPI {
             oldProxyPwd = (String) properties.get(SOCKS_PROXY_PASSWORD);
             properties.put(SOCKS_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
 
+        }
+
+        if (!enableProxy) {
+            Properties properties = System.getProperties();
+            properties.put(SOCKS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
+            properties.put(SOCKS_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
+            properties.put(SOCKS_PROXY_USERNAME, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
+            properties.put(SOCKS_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
         }
         URL soapAddress = new java.net.URL(endPoint);
         binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
