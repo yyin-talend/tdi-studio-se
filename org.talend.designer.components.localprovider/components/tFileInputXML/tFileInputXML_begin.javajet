@@ -174,10 +174,21 @@ class XML_API_<%=cid%>{
                 if (newPath.length() > 0) {
                     newPath.append("/");
                 }
-                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 && tmp.indexOf("@") == -1) {
+                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 /*&& tmp.indexOf("@") == -1*/) {
                     int index = indexs[i + indexs.length - pathStrs.length];
                     if (index >= 0) {
-                        newPath.append("pre").append(index).append(":").append(tmp);
+                    	//==== add by wliu to support both filter and functions==
+						if(tmp.indexOf("[")>0 && tmp.indexOf("]")>tmp.indexOf("[")){//include filter
+							String tmpStr=replaceElementWithNS(tmp,"pre"+index+":");
+							newPath.append(tmpStr);
+						}else{
+							if(tmp.indexOf("@") != -1 || tmp.indexOf("(")<tmp.indexOf(")")){  // include attribute
+								newPath.append(tmp);
+							}else{
+						//==add end=======	
+                        		newPath.append("pre").append(index).append(":").append(tmp);
+                        	}
+                        }                    
                     } else {
                         newPath.append(tmp);
                     }
@@ -189,6 +200,30 @@ class XML_API_<%=cid%>{
         }
         return path;
     }
+
+	private String matches = "@*\\b[a-z|A-Z|_]+[[-]*\\w]*\\b[^'|^\\(]";
+    private java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(matches);
+    
+	private String replaceElementWithNS(String global, String pre){
+
+        java.util.regex.Matcher match = pattern.matcher(global);
+        StringBuffer sb = new StringBuffer();
+        match.reset();
+        while (match.find()) {
+            String group = match.group();
+            String tmp = "";
+            if (group.toLowerCase().matches("\\b(div|mod|and|or)\\b.*") || group.matches("@.*")) {
+                tmp = group;
+            } else {
+                tmp = tmp + pre + group;
+            }
+            match.appendReplacement(sb, tmp);
+        }
+        match.appendTail(sb);
+        
+        return sb.toString();
+	}    
+
 }
 
 XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
@@ -279,10 +314,21 @@ class NameSpaceTool_<%=cid%> {
                 if (newPath.length() > 0) {
                     newPath.append("/");
                 }
-                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 && tmp.indexOf("@") == -1) {
+                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 /*&& tmp.indexOf("@") == -1*/) {
                     int index = indexs[i + indexs.length - pathStrs.length];
                     if (index >= 0) {
-                        newPath.append("pre").append(index).append(":").append(tmp);
+                    	//==== add by wliu to support both filter and functions==
+						if(tmp.indexOf("[")>0 && tmp.indexOf("]")>tmp.indexOf("[")){//include filter
+							String tmpStr=replaceElementWithNS(tmp,"pre"+index+":");
+							newPath.append(tmpStr);
+						}else{
+							if(tmp.indexOf("@") != -1 || tmp.indexOf("(")<tmp.indexOf(")")){  // include attribute
+								newPath.append(tmp);
+							}else{
+						//==add end=======	
+                        		newPath.append("pre").append(index).append(":").append(tmp);
+                        	}
+                        }                    
                     } else {
                         newPath.append(tmp);
                     }
@@ -294,6 +340,30 @@ class NameSpaceTool_<%=cid%> {
         }
         return path;
     }
+
+	private String matches = "@*\\b[a-z|A-Z|_]+[[-]*\\w]*\\b[^'|^\\(]";
+    private java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(matches);
+    
+	private String replaceElementWithNS(String global, String pre){
+
+        java.util.regex.Matcher match = pattern.matcher(global);
+        StringBuffer sb = new StringBuffer();
+        match.reset();
+        while (match.find()) {
+            String group = match.group();
+            String tmp = "";
+            if (group.toLowerCase().matches("\\b(div|mod|and|or)\\b.*") || group.matches("@.*")) {
+                tmp = group;
+            } else {
+                tmp = tmp + pre + group;
+            }
+            match.appendReplacement(sb, tmp);
+        }
+        match.appendTail(sb);
+        
+        return sb.toString();
+	}    
+
 }
 
 class XML_API_<%=cid%>{
