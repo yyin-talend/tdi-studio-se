@@ -73,6 +73,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.utils.CsvArray;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -333,11 +334,34 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 int numbOfColumn = schemaContent.get(0).length;
 
                 for (int i = 1; i <= numbOfColumn; i++) {
+                    Boolean b = false;
                     IMetadataColumn oneColum = new MetadataColumn();
                     // get the column name from the temp file genenrated by GuessSchemaProcess.java
                     String labelName = (schemaContent.get(0))[i - 1];
+                    String sub = "";
+                    String sub2 = "";
+                    if (labelName != null && labelName.length() > 0) {
+                        sub = labelName.substring(1);
+                        if (sub != null && sub.length() > 0) {
+                            sub2 = sub.substring(1);
+                        }
+                    }
+                    if (KeywordsValidator.isKeyword(labelName) || KeywordsValidator.isKeyword(sub)
+                            || KeywordsValidator.isKeyword(sub2)) {
+                        labelName = "_" + labelName;
+                        b = true;
+                    }
                     oneColum.setLabel(labelName);
-                    oneColum.setOriginalDbColumnName(labelName);
+                    String label = labelName;
+                    if (b && label != null && label.length() > 0) {
+                        String substring = label.substring(1);
+                        if (label.startsWith("_")
+                                && (KeywordsValidator.isKeyword(substring) || KeywordsValidator.isKeyword(sub) || KeywordsValidator
+                                        .isKeyword(sub2))) {
+                            label = substring;
+                        }
+                    }
+                    oneColum.setOriginalDbColumnName(label);
                     if (schemaContent.size() > 5) {
                         oneColum.setPrecision(Integer.parseInt(schemaContent.get(2)[i - 1]));
                         oneColum.setLength(Integer.parseInt(schemaContent.get(3)[i - 1]));
