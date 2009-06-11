@@ -71,7 +71,9 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -777,9 +779,10 @@ public class SelectorTableForm extends AbstractForm {
             Iterator iterate = metadataColumns.iterator();
             while (iterate.hasNext()) {
                 MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
-                if (metadataColumn.getTalendType().equals(JavaTypesManager.DATE.getId())) {
-                    if (metadataColumn.getPattern().equals("")) {
-                        metadataColumn.setPattern("dd-MM-yyyy");
+                if (metadataColumn.getTalendType().equals(JavaTypesManager.DATE.getId())
+                        || metadataColumn.getTalendType().equals(PerlTypesManager.DATE)) {
+                    if ("".equals(metadataColumn.getPattern())) {
+                        metadataColumn.setPattern(TalendTextUtils.addQuotes("dd-MM-yyyy"));
                     }
                 }
                 // Check the label and add it to the table
