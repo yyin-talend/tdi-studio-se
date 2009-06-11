@@ -195,6 +195,12 @@
       </ITEMS>
     </PARAMETER>
 
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="81"
+			NOT_SHOW_IF="TABLE_ACTION == 'NONE'"	
+		>
+		<DEFAULT>Warning : this component configuration will automatically generate a commit before data insert/update/delete</DEFAULT>
+	</PARAMETER>	
+
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -366,9 +372,9 @@
   	  NAME="USE_BATCH_SIZE" 
   	  FIELD="CHECK"
 	  NUM_ROW="160"
-	  SHOW_IF=" (DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')"
+	  SHOW_IF="(USE_EXISTING_CONNECTION != 'true') AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
 	  >
-	  <DEFAULT>false</DEFAULT>
+	  <DEFAULT>true</DEFAULT>
 	</PARAMETER>            
 
   	<PARAMETER 
@@ -377,7 +383,7 @@
 	  NUM_ROW="160"
 	  SHOW_IF="USE_BATCH_SIZE == 'true'"
 	  >
-	  <DEFAULT></DEFAULT>
+	  <DEFAULT>10000</DEFAULT>
 	</PARAMETER>            
 
 	

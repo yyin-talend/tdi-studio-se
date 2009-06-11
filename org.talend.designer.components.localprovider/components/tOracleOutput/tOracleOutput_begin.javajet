@@ -32,7 +32,7 @@ String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 String dbport = ElementParameterParser.getValue(node, "__PORT__");	
 String dbuser= ElementParameterParser.getValue(node, "__USER__");	
 String dbpwd= ElementParameterParser.getValue(node, "__PASS__");	
-String tableName = ElementParameterParser.getValue(node,"__TABLE__");	
+String table = ElementParameterParser.getValue(node,"__TABLE__");	
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");	
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");	
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");	
@@ -47,6 +47,7 @@ String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
+Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
     if(convertToUppercase) {
@@ -109,12 +110,12 @@ boolean whetherReject_<%=cid%> = false;
 
 java.sql.Connection conn_<%=cid%> = null;
 
-//optional schema.table
+//optional table
 String dbschema_<%=cid%> = null;
 String tableName_<%=cid%> = null;
 <%
-String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(("true").equals(useExistingConn)) {
+boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+if(useExistingConnection) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
 	String schema = "dbschema_" + connection;
@@ -150,7 +151,7 @@ if(("true").equals(useExistingConn)) {
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
 	<%
 }
-if(!("true").equals(useExistingConn)) {
+if(!useExistingConnection) {
     if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
         %>
         conn_<%=cid%>.setAutoCommit(false);
@@ -186,7 +187,7 @@ if (useHintOptions) {
 		//get
 		if(option.get("HINT").matches("\"/\\*NORMALIZED_HINT\\*/\"")) {
 			String id = cid.replace(node.getComponent().getName() + "_", "");
-			hintValue = "\"/*\"+" + tableName + "+\".\" + "  + "\"" + option.get("SQL_STMT")+ ".\"" + "+" +  id   +  "+\"*/\" " ;
+			hintValue = "\"/*\"+" + table + "+\".\" + "  + "\"" + option.get("SQL_STMT")+ ".\"" + "+" +  id   +  "+\"*/\" " ;
 		}else if (option.get("HINT").matches("\"/\\*+.*\\*/\"")) {
 			hintValue = option.get("HINT");	
 		}
@@ -226,85 +227,16 @@ if (useHintOptions) {
 %>
 
 if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
-    tableName_<%=cid%> = <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+    tableName_<%=cid%> = <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 } else {
-    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;    
+    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;    
 }
-<%@ include file="../templates/_hintTableName.javajet" %>
+    <%@ include file="../templates/_hintTableName.javajet" %>
 <%
 if(columnList != null && columnList.size()>0) {    
-    if(!("NONE").equals(tableAction)) {
-        Manager manager = getManager(dbmsId, cid);
-        if(("DROP_CREATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-            stmtDrop_<%=cid%>.close();
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.close();
-            <%
-        } else if(("CREATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.close();
-            <%
-        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
-            %>
-            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-            boolean whetherExist_<%=cid%> = false;
-            while(rsTable_<%=cid%>.next()) {
-                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
-                    whetherExist_<%=cid%> = true;
-                    break;
-                }
-            }
-            rsTable_<%=cid%>.close();
-            <%
-            if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-                %>
-                if(!whetherExist_<%=cid%>) {
-                    java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-                    stmtCreate_<%=cid%>.close();
-                }                
-                <%
-            } else {
-                %>
-                if(whetherExist_<%=cid%>) {
-                    java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-                    stmtDrop_<%=cid%>.close();
-                }
-                java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-                stmtCreate_<%=cid%>.close();
-                <%
-            }
-        } else if(("CLEAR").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
-            stmtClear_<%=cid%>.close();
-            <%
-        } else if(("TRUNCATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtTruncCount_<%=cid%> = conn_<%=cid%>.createStatement();
-            java.sql.ResultSet rsTruncCount_<%=cid%> = stmtTruncCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
-            java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
-            while(rsTruncCount_<%=cid%>.next()) {
-                deletedCount_<%=cid%> += rsTruncCount_<%=cid%>.getInt(1);
-            }
-            rsTruncCount_<%=cid%>.close();
-            stmtTruncCount_<%=cid%>.close();
-            stmtTrunc_<%=cid%>.close();
-            <%
-        }
-    }    
+    %>
+    <%@ include file="../templates/_tableAction.javajet"%>
+    <%
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
