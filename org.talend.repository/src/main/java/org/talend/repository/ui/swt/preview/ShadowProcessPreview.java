@@ -17,15 +17,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -40,10 +36,6 @@ import org.talend.repository.preview.ProcessDescription;
  * 
  */
 public class ShadowProcessPreview {
-
-    public void setSelectColumnIndex(int selectColumnIndex) {
-        this.selectColumnIndex = selectColumnIndex;
-    }
 
     protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
@@ -70,16 +62,6 @@ public class ShadowProcessPreview {
     }
 
     protected Composite composite;
-
-    // hywang add varriable "key" for feature 7373
-    private int selectColumnIndex = dftSelectedColumn;
-
-    // hywang add varrible "dftSelectedColumn" for feature 7373
-    private static int dftSelectedColumn = -1;
-
-    public int getSelectColumnIndex() {
-        return this.selectColumnIndex;
-    }
 
     /**
      * Create Object to manage Preview and MetaData.
@@ -433,47 +415,14 @@ public class ShadowProcessPreview {
      * @param csvRows
      * @param firstRowIsLabel
      */
-    private void refreshPreviewItem(final List<String[]> csvRows, final boolean firstRowIsLabel, int... selectedColumnIndex) {
-        this.selectColumnIndex = selectedColumnIndex[0];
+    protected void refreshPreviewItem(final List<String[]> csvRows, final boolean firstRowIsLabel, int... selectedColumnIndex) {
+
         int existingItemCount = table.getItemCount();
 
         int end = csvRows.size();
         if (firstRowIsLabel) {
             end--;
         }
-
-        table.setRedraw(false);
-
-        // hywang add for feature 7373
-        for (int i = 0; i < table.getColumnCount(); i++) {
-            final TableColumn tc = table.getColumn(i);
-            if (i == selectedColumnIndex[0]) {
-                tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON)); // default selected column is from component
-            } else {
-                tc.setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
-            }
-            tc.addSelectionListener(new SelectionListener() {
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
-
-                public void widgetSelected(SelectionEvent e) {
-                    if (tc.getImage().equals(ImageProvider.getImage(EImage.UNCHECKED_ICON))) {
-                        tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON));
-                        for (int j = 0; j < table.getColumnCount(); j++) {
-                            if (table.getColumn(j).getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON))
-                                    && table.getColumn(j) != tc) {
-                                table.getColumn(j).setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
-                            }
-                            if (tc.equals(table.getColumn(j))) {
-                                selectColumnIndex = j;
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        table.setHeaderVisible(true);
 
         for (int f = 0; f < end; f++) {
             String[] csvFields;
