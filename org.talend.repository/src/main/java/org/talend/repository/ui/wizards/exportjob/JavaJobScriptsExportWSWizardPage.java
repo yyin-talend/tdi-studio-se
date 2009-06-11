@@ -311,6 +311,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
 
         String selectedFileName = dialog.open();
+        if (!selectedFileName.endsWith(this.getOutputSuffix()))
+            selectedFileName += this.getOutputSuffix();
         // when user change the name of job,will add the version auto
         if (selectedFileName != null && !selectedFileName.endsWith(this.getSelectedJobVersion() + this.getOutputSuffix())) {
             // String b = selectedFileName.substring(0, (selectedFileName.length() - 4));
