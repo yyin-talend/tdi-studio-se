@@ -269,7 +269,7 @@ if(("true").equals(use_existing_ctl_file)) {
         	value = "(" + value + ")";
         }
         
-        if ("PARALLEL".equals(key)) {
+        if ("PARALLEL".equals(key) && "true".equalsIgnoreCase(value)) {
         	parametersMap.remove("ROWS");
         }
         parametersMap.put(key, value);
