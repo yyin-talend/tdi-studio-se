@@ -166,6 +166,17 @@
 					</or>
 				</enablement>
 			</actionProvider>
+   <actionProvider
+         class="org.talend.componentdesigner.ui.action.provider.ValidateComponentXMLActionProvider"
+         id="org.talend.componentdesigner.ui.action.provider.ValidateComponentXMLActionProvider">
+      <enablement>
+         <or>
+            <adapt
+                  type="org.eclipse.core.resources.IFile">
+            </adapt>
+         </or>
+      </enablement>
+   </actionProvider>
 
 			<!-- <actionProvider 
 				id="org.talend.componentdesigner.ui.action.EditComponentActionProvider"
