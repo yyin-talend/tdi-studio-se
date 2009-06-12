@@ -57,8 +57,13 @@
             contextId="talend.global"
             schemeId="org.talend.core.scheme"
             sequence="F6"/>
-            
-                
+      
+      <key
+            commandId="org.eclipse.debug.ui.commands.StepOver"
+            contextId="talend.global"
+            schemeId="org.talend.core.scheme"
+            sequence="Alt+F6"/>
+     
       <key
             commandId="debugProcess"
             contextId="talend.runProcess"
