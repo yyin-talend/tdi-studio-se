@@ -79,6 +79,7 @@
         <ITEM NAME="UPDATE_OR_INSERT" VALUE="UPDATE_OR_INSERT"/>
  -->        
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
+		<ITEM NAME="MERGE"           VALUE="MERGE"/>
       </ITEMS>
     </PARAMETER>
 
@@ -89,14 +90,115 @@
     >
     </PARAMETER>
 
-    <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8">
+    <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8"
+	NOT_SHOW_IF="DATA_ACTION == 'MERGE'"
+	>
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+	
+	<PARAMETER
+      NAME="USE_MERGE_UPDATE"
+      FIELD="CHECK"
+      NUM_ROW="9"
+	  SHOW_IF="DATA_ACTION == 'MERGE'"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
+	 <PARAMETER
+      NAME="SCHEMA_UPDATE"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="9"
+      NB_LINES="5"
+	  SHOW_IF="(DATA_ACTION == 'MERGE') AND (USE_MERGE_UPDATE == 'true')"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">      	
+		<ITEM NAME="UPDATE" FIELD="CHECK" VALUE="false"/>
+      </ITEMS>
+    </PARAMETER>	
+	
+	
+	<PARAMETER
+      NAME="USE_MERGE_UPDATE_WHERE"
+      FIELD="CHECK"
+      NUM_ROW="10"
+	  SHOW_IF="(DATA_ACTION == 'MERGE') AND (USE_MERGE_UPDATE == 'true')"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER
+      NAME="MERGE_UPDATE_WHERE_STRING"
+      FIELD="TEXT"
+      NUM_ROW="10"
+	  SHOW_IF="(DATA_ACTION == 'MERGE') AND (USE_MERGE_UPDATE == 'true') AND (USE_MERGE_UPDATE_WHERE == 'true') "
+    >
+	<DEFAULT>" "</DEFAULT>	
+	</PARAMETER>
+		
+	<PARAMETER
+      NAME="USE_MERGE_UPDATE_DELETE_WHERE"
+      FIELD="CHECK"
+      NUM_ROW="11"
+	  SHOW_IF="(DATA_ACTION == 'MERGE') AND (USE_MERGE_UPDATE == 'true')"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER
+      NAME="MERGE_UPDATE_DELETE_WHERE_STRING"
+      FIELD="TEXT"
+      NUM_ROW="11"
+	  SHOW_IF="(DATA_ACTION == 'MERGE') AND (USE_MERGE_UPDATE == 'true') AND (USE_MERGE_UPDATE_DELETE_WHERE == 'true') "
+    >
+	<DEFAULT>" "</DEFAULT>	
+	</PARAMETER>
+	
+	<PARAMETER
+      NAME="USE_MERGE_INSERT"
+      FIELD="CHECK"
+      NUM_ROW="13"
+	  SHOW_IF="DATA_ACTION == 'MERGE'"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+	 <PARAMETER
+      NAME="SCHEMA_INSERT"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="13"
+      NB_LINES="5"
+	  SHOW_IF="(DATA_ACTION == 'MERGE') AND (USE_MERGE_INSERT == 'true')"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+		<ITEM NAME="INSERT" FIELD="CHECK" VALUE="false"/>
+      </ITEMS>
+    </PARAMETER>	
+	
+	<PARAMETER
+      NAME="USE_MERGE_INSERT_WHERE"
+      FIELD="CHECK"
+      NUM_ROW="14"
+	  SHOW_IF="(DATA_ACTION == 'MERGE') AND (USE_MERGE_INSERT == 'true')"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
+	  <PARAMETER
+      NAME="MERGE_INSERT_WHERE_STRING"
+      FIELD="TEXT"
+      NUM_ROW="14"
+	  SHOW_IF="(DATA_ACTION == 'MERGE') AND (USE_MERGE_INSERT == 'true') AND (USE_MERGE_INSERT_WHERE == 'true')"
+    >
+	<DEFAULT>" "</DEFAULT>	
+	</PARAMETER>
     
 	<PARAMETER
       NAME="ELT_TABLE_NAME"
       FIELD="TEXT"
-      NUM_ROW="10"
+      NUM_ROW="15"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -104,7 +206,7 @@
 	<PARAMETER
       NAME="ELT_SCHEMA_NAME"
       FIELD="TEXT"
-      NUM_ROW="10"
+      NUM_ROW="20"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>

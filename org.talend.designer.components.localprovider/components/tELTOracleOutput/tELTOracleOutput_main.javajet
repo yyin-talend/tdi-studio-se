@@ -40,6 +40,7 @@ imports="
 	    String previousComponentName = previousNode.getUniqueName();
 		dbtable = connection.getName();
 		uniqueNameConnection = connection.getUniqueName();
+		
 		%>
 		select_query = (String) globalMap.get("<%=previousComponentName%>"+"QUERY"+"<%=uniqueNameConnection%>");
 		
@@ -239,6 +240,8 @@ StringBuilder updateSetStmt = new StringBuilder();
 
 StringBuilder updateWhereStmt = new StringBuilder();
 
+StringBuilder mergeCondition = new StringBuilder ();
+
 List<Column> stmtStructure =  new LinkedList<Column>();
 
 for(IMetadataColumn column:columnList){
@@ -251,10 +254,18 @@ for(IMetadataColumn column:columnList){
 int counterOuter =0;
 boolean firstKey = true;
 boolean firstNoneKey = true;
-
+boolean isfirstKey = true;
 for(Column colStmt:stmtStructure){
 	String suffix = ",";
 	
+	if (colStmt.getColumn().isKey()){
+		if (isfirstKey) {
+			isfirstKey = false;
+		}else {
+			mergeCondition.append(" AND ");
+		}
+		mergeCondition.append("target." + colStmt.getColumn().getLabel() + "=source." + colStmt.getColumn().getLabel());
+	}
 	if(colStmt.isReplaced()){		
 		List<Column> replacedColumns = colStmt.getReplacement();
 		int counterReplace = 0;
@@ -377,6 +388,85 @@ String deleteQuery = "DELETE  FROM ("+select_query+") " + tableName_<%=cid%>
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 
 	<%		
+	}else if ("MERGE".equals(dataAction)) {	
+	// get parameter
+	boolean useMergeUpdate = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_MERGE_UPDATE__")); 
+	boolean useMergeInsert = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_MERGE_INSERT__"));
+	
+	boolean useUpdateWhere =  "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_MERGE_UPDATE_WHERE__"));
+	boolean useUpdateDeleteWhere = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_MERGE_UPDATE_DELETE_WHERE__"));
+	boolean useInsertWhere = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_MERGE_INSERT_WHERE__"));
+	
+	
+	
+	List<Map<String, String>> updateColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMA_UPDATE__");
+	List<Map<String, String>> insertColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMA_INSERT__");
+	
+	StringBuilder mergeUpdate = new StringBuilder() ;
+	StringBuilder mergeInsertName = new StringBuilder() ;
+	StringBuilder mergeInsertValue = new StringBuilder() ;
+	%>
+	String mergeQuery = "MERGE INTO "+ tableName_<%=cid%> +" target"  + " USING (" + select_query + ") source ON (" +
+	
+		"<%=mergeCondition%>" + ")" ;
+		
+		<%if (useMergeUpdate) {
+		boolean isfirstUpdateSet = true; 
+			for(Map<String, String> keyColumn:updateColumns){
+				if (keyColumn.get("UPDATE").equals("true")) {
+					if (isfirstUpdateSet) {
+					  	isfirstUpdateSet = false;
+					}else {
+						System.out.println("FFFFFFFFFFF");    
+						mergeUpdate.append(",");
+					}
+					mergeUpdate.append("target."  + keyColumn.get("SCHEMA_COLUMN") + "=source." + keyColumn.get("SCHEMA_COLUMN"));
+				}				
+			}
+		%>
+			mergeQuery += " WHEN MATCHED THEN UPDATE SET <%=mergeUpdate%> " ;	
+			<%if (useUpdateWhere) { 
+				String useUpdateWhereString = ElementParameterParser.getValue(node,"__MERGE_UPDATE_WHERE_STRING__");
+			%>
+				mergeQuery += "WHERE " + <%=useUpdateWhereString%> ;
+			<%
+			}%>
+			<%if (useUpdateDeleteWhere) { 
+				String useUpdateDeleteWhereString = ElementParameterParser.getValue(node,"__MERGE_UPDATE_DELETE_WHERE_STRING__");
+			%>
+				mergeQuery += "DELETE WHERE " + <%=useUpdateDeleteWhereString%> ;
+			<%
+			}%>
+		<%
+		}%>
+		<%if (useMergeInsert) {
+		    boolean isfirstInsertWhere = true;
+			for(Map<String, String> keyColumn:insertColumns){
+				if (isfirstInsertWhere) {
+	 			 	isfirstInsertWhere = false;
+				}else {
+					mergeInsertName.append(",");
+					mergeInsertValue.append(",");
+					
+				}
+				if (keyColumn.get("INSERT").equals("true")) {					
+					mergeInsertName.append(keyColumn.get("SCHEMA_COLUMN"));
+					mergeInsertValue.append("source." + keyColumn.get("SCHEMA_COLUMN"));
+				}				
+			}
+			%>
+				mergeQuery += " WHEN NOT MATCHED THEN INSERT ( <%=mergeInsertName%>) VALUES ( <%=mergeInsertValue%>) ";
+			<%
+			}
+			if (useInsertWhere) {
+			String useInsertWhereString = ElementParameterParser.getValue(node,"__MERGE_INSERT_WHERE_STRING__");
+			%>
+				mergeQuery += " WHERE " + <%=useInsertWhereString%> ;
+			<%
+			}
+			%>	
+ 			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(mergeQuery);
+	<%
 	}
 	%>
 int nb_line_<%=cid%> = 0;
@@ -578,6 +668,11 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 		nb_line_deleted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	System.out.println("--> " + nb_line_deleted_<%=cid%> + " rows deleted. \n");
 		<%
+	}else if (("MERGE").equals(dataAction)){
+	%>	
+	pstmt_<%=cid %>.executeUpdate();
+	System.out.println("Merge with : \n" + mergeQuery +"\n");
+	<%
 	}
 }
 
