@@ -194,7 +194,7 @@ public class RepositoryService implements IRepositoryService {
      * @see org.talend.repository.model.IRepositoryService#validateColumnName(java.lang.String, int)
      */
     public String validateColumnName(String columnName, int index) {
-        return ColumnNameValidator.validateColumnNameFormat(columnName);
+        return ColumnNameValidator.validateColumnNameFormat(columnName, index);
     }
 
     /*
@@ -519,7 +519,6 @@ public class RepositoryService implements IRepositoryService {
         }
         return null;
     }
-
 
     public Action getRepositoryViewDoubleClickAction() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();

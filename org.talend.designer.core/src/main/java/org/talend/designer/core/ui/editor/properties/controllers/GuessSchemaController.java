@@ -467,7 +467,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 for (int i = 1; i <= numbOfColumn; i++) {
                     IMetadataColumn oneColum = new MetadataColumn();
                     String labelName = rsmd.getColumnLabel(i);
-                    labelName = ColumnNameValidator.validateColumnNameFormat(labelName);
+                    labelName = ColumnNameValidator.validateColumnNameFormat(labelName, i);
                     oneColum.setLabel(getNextGeneratedColumnName(labelName, allNames));
                     oneColum.setOriginalDbColumnName(rsmd.getColumnName(i));
                     oneColum.setNullable(rsmd.isNullable(i) == 0 ? false : true);
@@ -571,7 +571,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 }
 
                 String labelName = rsmd.getColumnLabel(i + 1);
-                labelName = ColumnNameValidator.validateColumnNameFormat(labelName);
+                labelName = ColumnNameValidator.validateColumnNameFormat(labelName, i);
 
                 oneColum.setTalendType(talendType);
                 oneColum.setLength(lengthValue);

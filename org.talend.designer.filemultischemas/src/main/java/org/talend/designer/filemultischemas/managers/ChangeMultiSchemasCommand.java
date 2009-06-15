@@ -128,7 +128,7 @@ public class ChangeMultiSchemasCommand extends Command {
             map.put(IMultiSchemaConstant.CARDINALITY, keyData.getCard());
             newValueList.add(map);
             //
-            String connectionBaseName = MetadataTool.validateColumnName(MultiSchemasUtil.getConnectionBaseName(uniqueRecord));
+            String connectionBaseName = MetadataTool.validateColumnName(MultiSchemasUtil.getConnectionBaseName(uniqueRecord), 0);
             String uniqueConnName = node.getProcess().generateUniqueConnectionName(connectionBaseName);
             MetadataTable table = new MetadataTable();
             table.setLabel(uniqueRecord);

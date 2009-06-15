@@ -30,7 +30,7 @@ public class ColumnNameValidator {
      * @param columnName
      * @param index
      */
-    public static String validateColumnNameFormat(String columnName) {
-        return MetadataTool.validateColumnName(columnName);
+    public static String validateColumnNameFormat(String columnName, int index) {
+        return MetadataTool.validateColumnName(columnName, index);
     }
 }
