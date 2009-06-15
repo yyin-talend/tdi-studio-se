@@ -15,8 +15,8 @@ package org.talend.repository.ui.login.connections;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -145,7 +145,7 @@ public class ConnectionUserPerReader {
         proper.setProperty("connection.users", sb.toString());//$NON-NLS-1$
         try {
 
-            PrintWriter out = new PrintWriter(perfile);
+            FileOutputStream out = new FileOutputStream(perfile);
             proper.store(out, null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,9 +161,9 @@ public class ConnectionUserPerReader {
         String workSpace = bean.getWorkSpace();
         proper.setProperty("connection.lastConnection", userName);//$NON-NLS-1$
         proper.setProperty("connection.lastWorkSpace", workSpace);//$NON-NLS-1$
-        PrintWriter out;
+        FileOutputStream out;
         try {
-            out = new PrintWriter(perfile);
+            out = new FileOutputStream(perfile);
             proper.store(out, null);
         } catch (Exception e) {
             e.printStackTrace();
