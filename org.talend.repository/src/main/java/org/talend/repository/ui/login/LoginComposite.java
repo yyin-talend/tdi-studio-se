@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -34,6 +35,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -41,6 +43,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -49,6 +52,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -80,6 +84,7 @@ import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
+import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
@@ -143,6 +148,20 @@ public class LoginComposite extends Composite {
 
     private Label existingLabel;
 
+    private Composite differentWorkSpace;
+
+    private CLabel warningLabel;
+
+    private Button restartBut;
+
+    private List<ConnectionBean> storedConnections = null;
+
+    private String lastConnection = null;
+
+    public static boolean isRestart = false;
+
+    private ConnectionUserPerReader perReader = null;
+
     /**
      * Constructs a new LoginComposite.
      * 
@@ -153,6 +172,8 @@ public class LoginComposite extends Composite {
         super(parent, style);
 
         this.dialog = dialog;
+
+        perReader = ConnectionUserPerReader.getInstance();
 
         toolkit = new FormToolkit(this.getDisplay());
         Form form = toolkit.createForm(this);
@@ -291,7 +312,7 @@ public class LoginComposite extends Composite {
         data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
         manageViewer.getControl().setLayoutData(data);
 
-        existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre"));
+        existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(manageProjectLabel1, 0, SWT.CENTER);
         data.top = new FormAttachment(manageProjectLabel1, 40);
@@ -329,13 +350,39 @@ public class LoginComposite extends Composite {
         data.bottom = new FormAttachment(fillProjectsBtn, 0, SWT.CENTER);
         projectViewer.getControl().setLayoutData(data);
 
+        differentWorkSpace = toolkit.createComposite(formBody);
+        GridData diffWorkSData = new GridData(GridData.FILL_HORIZONTAL);
+        diffWorkSData.horizontalSpan = 3;
+        differentWorkSpace.setLayoutData(diffWorkSData);
+
+        GridLayout diffLay = new GridLayout();
+        diffLay.numColumns = 5;
+        differentWorkSpace.setLayout(diffLay);
+
+        warningLabel = new CLabel(differentWorkSpace, SWT.NONE);// toolkit.createLabel(differentWorkSpace,
+        // "The workspace is different,please restart");
+
+        warningLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
+        warningLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACE")); //$NON-NLS-1$
+        warningLabel.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
+        warningLabel.setVisible(false);
+        GridData warnData = new GridData(GridData.FILL_HORIZONTAL);
+        warnData.horizontalSpan = 4;
+        warningLabel.setLayoutData(warnData);
+
+        restartBut = toolkit.createButton(differentWorkSpace, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
+        restartBut.setVisible(false);
+        GridData restartData = new GridData(GridData.FILL_HORIZONTAL);
+        restartData.horizontalSpan = 1;
+        restartBut.setLayoutData(restartData);
+
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         if (prefManipulator.getBoolean(ImportDemoProjectAction.DEMO_ALREADY_IMPORTED)) {
             manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(1) }));
         } else {
             manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(0) }));
         }
-
+        readConnectionData();
         fillContents();
         addListeners();
     }
@@ -431,10 +478,22 @@ public class LoginComposite extends Composite {
         }
     }
 
-    private void fillContents() {
-        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+    private void readConnectionData() {
+        if (perReader.isHaveUserPer()) {
+            storedConnections = perReader.readConnections();
+            lastConnection = perReader.readLastConncetion();
+        } else {
+            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+            storedConnections = prefManipulator.readConnections();
+            lastConnection = prefManipulator.getLastConnection();
+        }
+    }
 
-        List<ConnectionBean> storedConnections = prefManipulator.readConnections();
+    private void fillContents() {
+        // PreferenceManipulator prefManipulator = new
+        // PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+        //
+        // List<ConnectionBean> storedConnections = prefManipulator.readConnections();
         connectionsViewer.setInput(storedConnections);
 
         // Check number of connection available.
@@ -443,8 +502,8 @@ public class LoginComposite extends Composite {
         } else if (storedConnections.size() == 1) {
             connectionsViewer.setSelection(new StructuredSelection(new Object[] { storedConnections.get(0) }));
         } else {
+
             // select last connection used
-            String lastConnection = prefManipulator.getLastConnection();
             boolean selected = false;
             for (ConnectionBean curent : storedConnections) {
                 String stringValue = ((LabelProvider) connectionsViewer.getLabelProvider()).getText(curent);
@@ -523,6 +582,7 @@ public class LoginComposite extends Composite {
                 passwordText.setText(getConnection().getPassword());
                 updateServerFields();
                 updateButtons();
+                updateVisible();
 
                 // Validate data
                 if (validateFields()) {
@@ -583,7 +643,11 @@ public class LoginComposite extends Composite {
                     PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
                             .getPreferenceStore());
                     prefManipulator.saveConnections(connectionsDialog.getConnections());
+
+                    LoginComposite.this.storedConnections = connectionsDialog.getConnections();
+                    perReader.saveConnections(LoginComposite.this.storedConnections);
                     fillContents();
+                    updateVisible();
                 }
             }
         });
@@ -599,6 +663,16 @@ public class LoginComposite extends Composite {
 
                 }
                 item.run();
+            }
+        });
+
+        restartBut.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                isRestart = true;
+                perReader.saveLastConnectionBean(getConnection());
+                dialog.okPressed();
             }
         });
     }
@@ -673,6 +747,33 @@ public class LoginComposite extends Composite {
             manageProjectLabel1.setVisible(true);
             manageProjectsButton.setVisible(true);
             existingLabel.setVisible(true);
+        }
+    }
+
+    private boolean isWorkSpaceSame() {
+        ConnectionBean bean = getConnection();
+        if (bean == null) {
+            return false;
+        }
+        String workspace = bean.getWorkSpace();
+        String defaultPath = Platform.getInstanceLocation().getURL().toString();
+        String filePath = defaultPath.substring(defaultPath.indexOf("/") + 1, defaultPath.length() - 1); //$NON-NLS-1$
+        return workspace.equals(filePath);
+    }
+
+    private void updateVisible() {
+        if (!isWorkSpaceSame()) {
+            manageViewer.getControl().setEnabled(false);
+            manageProjectsButton.setEnabled(false);
+            openProjectBtn.setEnabled(false);
+            warningLabel.setVisible(true);
+            restartBut.setVisible(true);
+        } else {
+            manageViewer.getControl().setEnabled(true);
+            manageProjectsButton.setEnabled(true);
+            openProjectBtn.setEnabled(true);
+            warningLabel.setVisible(false);
+            restartBut.setVisible(false);
         }
     }
 
@@ -975,5 +1076,9 @@ public class LoginComposite extends Composite {
             setErrorMessage(null);
         }
         return valid;
+    }
+
+    public List<ConnectionBean> getStoredConnections() {
+        return this.storedConnections;
     }
 }

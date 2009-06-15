@@ -41,6 +41,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.ui.branding.IBrandingService;
@@ -48,6 +49,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.license.LicenseManagement;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.wizards.license.LicenseWizard;
 import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
 
@@ -72,6 +74,8 @@ public class LoginDialog extends TrayDialog {
 
     private boolean isOK = true;
 
+    private ConnectionUserPerReader perReader;
+
     /**
      * Construct a new LoginDialog.
      * 
@@ -79,6 +83,7 @@ public class LoginDialog extends TrayDialog {
      */
     public LoginDialog(Shell parentShell) {
         super(parentShell);
+        perReader = ConnectionUserPerReader.getInstance();
         setHelpAvailable(false);
     }
 
@@ -117,11 +122,13 @@ public class LoginDialog extends TrayDialog {
         new ImageCanvas(container, brandingService.getLoginVImage()); //$NON-NLS-1$
 
         try {
-            if (!LicenseManagement.isLicenseValidated()) {
+
+            if (!perReader.isHaveUserPer()) {
                 LicenseWizard licenseWizard = new LicenseWizard();
                 LicenseWizardDialog dialog = new LicenseWizardDialog(getShell(), licenseWizard);
                 dialog.setTitle(Messages.getString("LicenseWizard.windowTitle")); //$NON-NLS-1$
                 if (dialog.open() == WizardDialog.OK) {
+                    perReader.createPropertyFile();
                     LicenseManagement.acceptLicense();
                 } else {
                     System.exit(0);
@@ -154,7 +161,15 @@ public class LoginDialog extends TrayDialog {
      */
     @Override
     protected void okPressed() {
-        logIn(loginComposite.getProject());
+        if (LoginComposite.isRestart == true) {
+            super.okPressed();
+        } else {
+            logIn(loginComposite.getProject());
+        }
+    }
+
+    public void saveLastConnBean(ConnectionBean connBean) {
+        perReader.saveLastConnectionBean(connBean);
     }
 
     /**
@@ -165,15 +180,16 @@ public class LoginDialog extends TrayDialog {
      */
     protected void logIn(final Project project) {
 
-        if (loginComposite.getConnection() == null || loginComposite.getConnection() == null || project == null
-                || project.getLabel() == null) {
+        ConnectionBean connBean = loginComposite.getConnection();
+        if (connBean == null || project == null || project.getLabel() == null) {
             return;
         }
 
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-        prefManipulator.setLastConnection(loginComposite.getConnection().getName());
+        prefManipulator.setLastConnection(connBean.getName());
         prefManipulator.setLastProject(project.getLabel());
+        saveLastConnBean(connBean);
 
         final Shell shell = this.getShell();
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);

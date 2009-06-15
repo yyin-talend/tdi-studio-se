@@ -41,9 +41,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ConnectionBean;
-import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -73,8 +71,10 @@ public class ConnectionsListComposite extends Composite {
     public ConnectionsListComposite(Composite parent, int style) {
         super(parent, style);
 
-        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-        this.list = prefManipulator.readConnections();
+        // PreferenceManipulator prefManipulator = new
+        // PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+        // this.list = prefManipulator.readConnections();
+        this.list = ConnectionUserPerReader.getInstance().readConnections();
 
         if (list.isEmpty()) {
             list.add(ConnectionBean.getDefaultConnectionBean());
