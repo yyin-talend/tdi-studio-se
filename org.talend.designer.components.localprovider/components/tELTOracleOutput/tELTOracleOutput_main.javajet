@@ -417,7 +417,6 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 					if (isfirstUpdateSet) {
 					  	isfirstUpdateSet = false;
 					}else {
-						System.out.println("FFFFFFFFFFF");    
 						mergeUpdate.append(",");
 					}
 					mergeUpdate.append("target."  + keyColumn.get("SCHEMA_COLUMN") + "=source." + keyColumn.get("SCHEMA_COLUMN"));
