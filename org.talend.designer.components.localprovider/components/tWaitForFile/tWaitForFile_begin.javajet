@@ -227,7 +227,7 @@
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
-                        originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), file_<%=cid %>);
+                        originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>), file_<%=cid %>);
                         /*originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                         originalMap_<%=cid%>.clear();
                         for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
