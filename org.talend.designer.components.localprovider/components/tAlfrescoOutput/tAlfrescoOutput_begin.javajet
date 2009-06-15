@@ -100,10 +100,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       
 	  fr.openwide.talendalfresco.rest.client.AlfrescoRestClient alfrescoRestClient_<%=cid%> = null;
       try {
-	      alfrescoRestClient_<%=cid%> = new fr.openwide.talendalfresco.rest.client.AlfrescoRestClient("<%=alfrescoServerUrl%>", <%=restEncodingString%>);
+	      alfrescoRestClient_<%=cid%> = new fr.openwide.talendalfresco.rest.client.AlfrescoRestClient(<%=alfrescoServerUrl%>, <%=restEncodingString%>);
 	      alfrescoRestClient_<%=cid%>.setTimeout(5000);
 	      // default server : localhost
-          alfrescoRestClient_<%=cid%>.login("<%=alfrescoUserLogin%>", "<%=alfrescoUserPassword%>");
+          alfrescoRestClient_<%=cid%>.login(<%=alfrescoUserLogin%>, <%=alfrescoUserPassword%>);
       } catch (fr.openwide.talendalfresco.rest.client.RestClientException e) {
          throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error initing client", e);
       }
