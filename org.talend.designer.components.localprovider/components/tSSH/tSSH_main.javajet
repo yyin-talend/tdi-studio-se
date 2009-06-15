@@ -107,11 +107,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%			
 		}else if(("TO_GLOBAL_VARIABLE").equals(errorOutput)){
 %>
-			System.out.println(stringStderr_<%=cid%>.toString());
+			
 			globalMap.put("<%=cid %>_STDERR", stringStderr_<%=cid%>.toString());
 <%		
 		}else if(("TO_CONSOLE_AND_GLOBAL_VARIABLE").equals(errorOutput)){
 %>
+			System.out.println(stringStderr_<%=cid%>.toString());
 			globalMap.put("<%=cid %>_STDERR", stringStderr_<%=cid%>.toString());
 <%		
 		}else if(("NORMAL_OUTPUT").equals(errorOutput)){
