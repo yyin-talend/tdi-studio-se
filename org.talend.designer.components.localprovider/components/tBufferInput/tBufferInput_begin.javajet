@@ -89,10 +89,12 @@ for (int n = 0; n < globalBuffer.size(); n++)
 	<%
 		}
 	%>
-	}else{
+	}
+	<%if(JavaTypesManager.isJavaPrimitiveType(javaType,false)==false){%>
+	else{
 		<%=connName%>.<%=columnName%> = null;
 	}
-<%
+<%	}
 //-----------
 					}
 				}		
