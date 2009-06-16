@@ -964,7 +964,13 @@
              id="org.talend.repository.model.migration.changeReturnTypeOfServerAliveResult"
              name="change the type of the return value Server_Alive_Result from String to Boolean">
        </projecttask>
-         
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.MigrationTaskForIssue7547"
+             description="Brackets Server field value of tAlfrescoOutput with double quotation marks for issue 7547"
+             id="org.talend.repository.model.migration.MigrationTaskForIssue7547"
+             name="Modify tAlfrescoOutput Server field value">
+       </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
