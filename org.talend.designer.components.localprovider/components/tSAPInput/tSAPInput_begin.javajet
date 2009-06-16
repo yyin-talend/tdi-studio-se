@@ -178,8 +178,28 @@ List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterPa
 			
 			List<Map<String, String>> sapMapping_input = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MAPPING_INPUT__");            
             
-			for(Map<String, String> configRow : sapMapping_input){			
-				schemaUtil_input.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), configRow.get("SAP_PARAMETER_VALUE"), configRow.get("SAP_TABLE_ROWNUMBER"));
+			for(Map<String, String> configRow : sapMapping_input){
+				
+				String parameterType = configRow.get("SAP_PARAMETER_TYPE");
+				if("input_table".equals(parameterType) || "table_input".equals(parameterType)) { // table can support multi-row
+				
+    				String multiValues = configRow.get("SAP_PARAMETER_VALUE");// the multi-value delimited by ,
+    				if(multiValues != null && multiValues.indexOf(",") != -1){
+    					String[] values = multiValues.split(",");    					
+    					for(int k = 0; k < values.length; k++){
+    						//add: entry_1
+    						schemaUtil_input.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), values[k], k+"");
+    					}
+    				}else{
+    						//add: entry_2
+    						schemaUtil_input.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), configRow.get("SAP_PARAMETER_VALUE"), configRow.get("SAP_TABLE_ROWNUMBER"));
+    				}
+				
+				}else {
+					//add: entry_3
+					schemaUtil_input.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), configRow.get("SAP_PARAMETER_VALUE"), configRow.get("SAP_TABLE_ROWNUMBER"));
+				}
+				
 				if(false){
 				System.out.println(configRow.get("SCHEMA_COLUMN") + " " + configRow.get("SAP_PARAMETER_TYPE") + " " + configRow.get("SAP_TABLE_NAME") + " " + configRow.get("SAP_PARAMETER_NAME") + " " + configRow.get("SAP_PARAMETER_VALUE")+ " " + configRow.get("SAP_TABLE_ROWNUMBER"));
 				}
