@@ -59,11 +59,15 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private String pwd = null;
 
+    private String batchSize = null;
+
     private LabelledText webServiceUrlText = null;
 
     private LabelledText userNameText = null;
 
     private LabelledText passwordText = null;
+
+    private LabelledText batchSizeText = null;
 
     private LabelledCombo moduleNameCombo = null;
 
@@ -145,6 +149,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
         passwordText = new LabelledText(group, Messages.getString("SalesforceStep1Form.Password"), 2); //$NON-NLS-1$
         passwordText.getTextControl().setEchoChar(pwdEhcoChar);
+
+        batchSizeText = new LabelledText(group, Messages.getString("SalesforceStep1Form.BatchSize"), 2); //$NON-NLS-1$
 
         Group proxyGroup = Form.createGroup(group, 4, Messages.getString("SalesforceStep1Form.SocksProxyParam")); //$NON-NLS-1$
         GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
@@ -251,6 +257,17 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     loginOk = false;
                     checkFieldsValue();
                     getConnection().setPassword(passwordText.getText());
+                    setCheckEnable();
+                }
+            }
+        });
+        batchSizeText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (!isContextMode()) {
+                    loginOk = false;
+                    checkFieldsValue();
+                    getConnection().setBatchSize(batchSizeText.getText());
                     setCheckEnable();
                 }
             }
@@ -409,6 +426,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         endPoint = webServiceUrlText.getText();
         username = userNameText.getText();
         pwd = passwordText.getText();
+        batchSize = batchSizeText.getText();
 
         if (isContextMode() && getContextModeManager() != null) {
             endPoint = getContextModeManager().getOriginalValue(endPoint);
@@ -552,8 +570,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 updateStatus(IStatus.ERROR, "Your must give module for using Salesforce service"); //$NON-NLS-1$
                 return false;
             }
-        }    
-                
+        }
+
         if (!loginOk) {
             updateStatus(IStatus.ERROR, "Click Check Login to make sure that URL, username, password are correct."); //$NON-NLS-1$
             return false;
@@ -593,7 +611,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
         setTextValue(getConnection().getUserName(), userNameText);
         setTextValue(getConnection().getPassword(), passwordText);
-
+        setTextValue(getConnection().getBatchSize(), batchSizeText);
         useProxyBtn.setSelection(getConnection().isUseProxy());
         setTextValue(getConnection().getProxyHost(), proxyHostText);
         setTextValue(getConnection().getProxyPort(), proxyPortText);

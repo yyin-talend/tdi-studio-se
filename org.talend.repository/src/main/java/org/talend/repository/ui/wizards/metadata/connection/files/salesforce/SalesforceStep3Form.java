@@ -299,12 +299,14 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         bean.setPassword(originalValueConnection.getPassword());
         bean.setModuleName(originalValueConnection.getModuleName());
         bean.setQueryCondition(originalValueConnection.getQueryCondition());
+        // add for feature 7507
+        bean.setBatchSize(originalValueConnection.getBatchSize());
 
         processDescription.setSalesforceSchemaBean(bean);
 
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
         IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(), bean
-                .getModuleName(), false);
+                .getModuleName(), bean.getBatchSize(), false);
 
         IMetadataTable table = new org.talend.core.model.metadata.MetadataTable();
         List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();

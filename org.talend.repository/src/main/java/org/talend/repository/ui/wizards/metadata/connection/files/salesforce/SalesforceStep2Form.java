@@ -213,13 +213,16 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         String webServiceUrl = getConnection().getWebServiceUrl();
         String userName = getConnection().getUserName();
         String password = getConnection().getPassword();
+        // add for feature 7507
+        String betchSize = getConnection().getBatchSize();
         if (isContextMode() && getContextModeManager() != null) {
             webServiceUrl = getContextModeManager().getOriginalValue(webServiceUrl);
             userName = getContextModeManager().getOriginalValue(userName);
             password = getContextModeManager().getOriginalValue(password);
+            betchSize = getContextModeManager().getOriginalValue(betchSize);
         }
 
-        IMetadataTable metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, true);
+        IMetadataTable metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize, true);
 
         List<IMetadataColumn> columns = metadataTable.getListColumns();
 
@@ -488,11 +491,12 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         bean.setModuleName(originalValueConnection.getModuleName());
         bean.setQueryCondition(originalValueConnection.getQueryCondition());
         bean.setUseCustomModule(originalValueConnection.isUseCustomModuleName());
+        bean.setBatchSize(originalValueConnection.getBatchSize());
 
         processDescription.setSalesforceSchemaBean(bean);
 
         IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(), bean
-                .getModuleName(), false);
+                .getModuleName(), bean.getBatchSize(), false);
 
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
         IMetadataTable table = new MetadataTable();
