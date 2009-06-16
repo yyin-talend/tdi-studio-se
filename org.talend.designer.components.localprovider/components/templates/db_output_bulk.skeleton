@@ -1265,37 +1265,50 @@ public class CLASS {
             return "";
         }
         public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
-            StringBuilder updateSetStmt = new StringBuilder();
-            StringBuilder updateWhereStmt = new StringBuilder();            
             StringBuilder updateBulkSQL = new StringBuilder();
-            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar());
-            boolean firstKeyColumn = true;
-            boolean firstUpdateColumn = true;            
+            StringBuilder updateSetStmt = new StringBuilder();
+            StringBuilder updateSetSelectStmt= new StringBuilder();           
+            StringBuilder updateWhereSubStmt = new StringBuilder();
+            StringBuilder updateWhereMainStmt = new StringBuilder();
             String keySeparator = null;
             String updateSeparator = null;
+            
+            boolean firstKeyColumn = true;
+            boolean firstUpdateColumn = true;
+            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar() );
             for(IMetadataColumn column : columnList) {
                 if(column.isKey()) {
                     if(firstKeyColumn) {
                         keySeparator = "";
                         firstKeyColumn = false;
-                        updateWhereStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + " WHERE \" + \"");
-                    } else {
+                        updateWhereSubStmt.append(" WHERE \" + \"");
+                        updateWhereMainStmt.append(" WHERE EXISTS ( SELECT 1 FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() );
+                    }else {
                         keySeparator = " AND ";
                     }
-                    updateWhereStmt.append(keySeparator);
-                    updateWhereStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());
-                } else {
+                    updateWhereSubStmt.append(keySeparator);                    
+                    updateWhereSubStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());                        
+
+                }else {
                     if(firstUpdateColumn) {
                         updateSeparator = "";
                         firstUpdateColumn = false;
+                        updateSetStmt.append(" SET \" + \" ( ");
+                        updateSetSelectStmt.append(" = (SELECT ");
                     } else {
                         updateSeparator = ", ";
                     }
                     updateSetStmt.append(updateSeparator);
-                    updateSetStmt.append(getLProtectedChar() + column.getLabel() + getRProtectedChar());
+                    updateSetStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());
+                    updateSetSelectStmt.append(updateSeparator);
+                    updateSetSelectStmt.append(getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar()) ;
                 }
             }
-            return updateBulkSQL.toString() + " SET(" + updateSetStmt.toString() + ") = (SELECT " + updateSetStmt.toString() + updateWhereStmt + ")";
+            updateSetStmt.append(" )");
+            updateSetSelectStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar());
+            updateWhereSubStmt.append(")");
+            
+            return updateBulkSQL.append(updateSetStmt).append(updateSetSelectStmt).append(updateWhereSubStmt).append(updateWhereMainStmt).append(updateWhereSubStmt).toString();
         }        
     }
     
