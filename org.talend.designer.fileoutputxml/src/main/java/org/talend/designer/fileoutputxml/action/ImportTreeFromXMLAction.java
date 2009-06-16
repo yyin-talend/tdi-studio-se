@@ -26,6 +26,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 
 /**
@@ -88,7 +89,8 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         }
         // zli fixed for bug 7414
         if (treeNode.getType() == ATreeNode.NAMESPACE_TYPE) {
-            node.setLabel("xmlns:(default)");//$NON-NLS-1$
+        	node = new NameSpaceNode();
+            node.setLabel("");//$NON-NLS-1$
             node.setDefaultValue((String) treeNode.getValue());
         } else {
             node.setLabel((String) treeNode.getValue());
