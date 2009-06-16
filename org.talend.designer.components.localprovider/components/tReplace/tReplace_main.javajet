@@ -46,8 +46,12 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 if(replaceStr != null && !("").equals(replaceStr)) {                	
                     String searchStr = substitution.get("SEARCH_PATTERN");
                     i++;
+                    if(("null").equals(searchStr.toLowerCase())){
 %>
+					String searchStr_<%=cid %>_<%=i %> = <%=searchStr %>;
+					<%}else{%>
 					String searchStr_<%=cid %>_<%=i %> = <%=searchStr %> + "";
+					<%}%>
                 <%if(("true").equals(substitution.get("USE_GLOB"))){%>
                     searchStr_<%=cid %>_<%=i %> = org.apache.oro.text.GlobCompiler.globToPerl5(searchStr_<%=cid %>_<%=i %>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
                 <%}%>
@@ -57,7 +61,11 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 <%if(("false").equals(substitution.get("CASE_SENSITIVE"))){%>
                     searchStr_<%=cid %>_<%=i %> = "(?i)" + searchStr_<%=cid %>_<%=i %>;
                 <%}%>
-                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%> + "");                    
+                <%if(("null").equals(replaceStr.toLowerCase())){%>
+                	<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%>);
+                <%}else{%>
+                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%> + "");
+                <%}%>                    
 <%
                 }
             }
@@ -76,8 +84,12 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             for(Map<String,String> pattern:patterns){
                 String replacePat = pattern.get("REPLACE_COLUMN");
                 if(replacePat != null && !("").equals(replacePat)) {
+                	if(("null").equals(replacePat.toLowerCase())){
 %>
-                    <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>, <%=pattern.get("SEARCH_COLUMN")%>, <%=pattern.get("REPLACE_COLUMN")%> + "");                
+					<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>, <%=pattern.get("SEARCH_COLUMN")%>, <%=pattern.get("REPLACE_COLUMN")%>);
+					<%}else{%>
+                    <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>, <%=pattern.get("SEARCH_COLUMN")%>, <%=pattern.get("REPLACE_COLUMN")%> + "");
+                    <%}%>                
 <%
                 }
             }
