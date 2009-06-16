@@ -82,8 +82,6 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
          }
 %>");
 	}
-  }else{
-    globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.FALSE);
   }
 <%
       }
