@@ -424,7 +424,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 			} else if(function.equals(FIRST)){
 					
 				%>
-				if(isFirstAdd_<%=cid %> /* <%if(outputColumn.isNullable()) {%> || operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> == null<%}%> */) {
+				if(isFirstAdd_<%=cid %> <%if(ignoreNull) {%> || operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> == null<%}%>) {
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> = <%=inputConn.getName() %>.<%=inputColumnName  %>;
 				}
 				<%
