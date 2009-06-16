@@ -324,7 +324,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 %>
                 CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
                 <%
-            }else if(escapeChar.equals(textEnclosure)){
+            }else if(escapeChar1.equals(textEnclosure1)){
                 %>
                 CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);
                 <%
