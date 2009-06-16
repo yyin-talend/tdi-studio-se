@@ -65,6 +65,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -280,7 +281,9 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * @return processDescription
      */
     private ProcessDescription getProcessDescription() {
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        XmlFileConnection connection2 = OtherConnectionContextUtils.getOriginalValueConnection(getConnection(),
+                this.connectionItem, isContextMode());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(connection2);
         return processDescription;
     }
 
@@ -291,15 +294,16 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
 
         // if no file, the process don't be executed
         // getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") &&
-        if (getConnection().getXmlFilePath() == null || getConnection().getXmlFilePath().equals("")) { //$NON-NLS-1$
+        XmlFileConnection connection2 = getConnection();
+        if (connection2.getXmlFilePath() == null || connection2.getXmlFilePath().equals("")) { //$NON-NLS-1$
             informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert") //$NON-NLS-1$ //$NON-NLS-2$
                     + "                                                                              "); //$NON-NLS-1$
             return;
         }
-        if (getConnection().getXmlFilePath().endsWith(".xsd")) { //$NON-NLS-1$
+        if (connection2.getXmlFilePath().endsWith(".xsd")) { //$NON-NLS-1$
             // no preview for XSD file
 
-            refreshMetaDataTable(null, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets());
+            refreshMetaDataTable(null, ((XmlXPathLoopDescriptor) connection2.getSchema().get(0)).getSchemaTargets());
             checkFieldsValue();
             return;
         }
@@ -312,7 +316,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
             } else {
-                refreshMetaDataTable(csvArray, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets());
+                refreshMetaDataTable(csvArray, ((XmlXPathLoopDescriptor) connection2.getSchema().get(0)).getSchemaTargets());
             }
 
         } catch (CoreException e) {

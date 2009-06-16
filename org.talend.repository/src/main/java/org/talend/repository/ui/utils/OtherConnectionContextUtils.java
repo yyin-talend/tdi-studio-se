@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -45,12 +46,13 @@ public final class OtherConnectionContextUtils {
     /**
      * 
      */
-    enum EParamName implements IConnParamName {
+    public enum EParamName implements IConnParamName {
         FilePath,
 
         // xml
         // Encoding,
         XmlFilePath,
+        XPathQuery,
 
         // Salesforce
         WebServiceUrl,
@@ -155,8 +157,24 @@ public final class OtherConnectionContextUtils {
         paramName = prefixName + EParamName.XmlFilePath;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getXmlFilePath(), JavaTypesManager.FILE);
 
-        // paramName = prefixName + EParamName.Encoding;
-        // ConnectionContextHelper.createParameters(varList, paramName, conn.getEncoding());
+        EList schema = conn.getSchema();
+        if (schema != null) {
+            Object object = schema.get(0);
+            if (object instanceof XmlXPathLoopDescriptor) {
+                XmlXPathLoopDescriptor loopDesc = (XmlXPathLoopDescriptor) object;
+                paramName = prefixName + EParamName.XPathQuery;
+                ConnectionContextHelper.createParameters(varList, paramName, loopDesc.getAbsoluteXPathQuery());
+
+            }
+        }
+
+        paramName = prefixName + EParamName.Encoding;
+        String encoding = conn.getEncoding();
+        if (LANGUAGE.equals(ECodeLanguage.PERL)) {
+            encoding = TalendTextUtils.addQuotes(encoding);
+        }
+        ConnectionContextHelper.createParameters(varList, paramName, encoding);
+
         return varList;
     }
 
@@ -170,8 +188,18 @@ public final class OtherConnectionContextUtils {
         paramName = prefixName + EParamName.XmlFilePath;
         conn.setXmlFilePath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
-        // paramName = prefixName + EParamName.Encoding;
-        // conn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+        EList schema = conn.getSchema();
+        if (schema != null) {
+            if (schema.get(0) instanceof XmlXPathLoopDescriptor) {
+                XmlXPathLoopDescriptor descriptor = (XmlXPathLoopDescriptor) schema.get(0);
+                paramName = prefixName + EParamName.XPathQuery;
+                descriptor.setAbsoluteXPathQuery(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+            }
+        }
+
+        paramName = prefixName + EParamName.Encoding;
+        conn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
     }
 
     static void revertXmlFilePropertiesForContextMode(XmlFileConnection conn, ContextType contextType) {
@@ -179,11 +207,21 @@ public final class OtherConnectionContextUtils {
             return;
         }
         String filePath = ConnectionContextHelper.getOriginalValue(contextType, conn.getXmlFilePath());
-        // String encoding = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getEncoding());
+        String encoding = ConnectionContextHelper.getOriginalValue(contextType, conn.getEncoding());
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         conn.setXmlFilePath(filePath);
-        // cloneConn.setEncoding(fileConn.getEncoding());
+        conn.setEncoding(encoding);
+
+        EList schema = conn.getSchema();
+        if (schema != null) {
+            if (schema.get(0) instanceof XmlXPathLoopDescriptor) {
+                XmlXPathLoopDescriptor descriptor = (XmlXPathLoopDescriptor) schema.get(0);
+                String xPahtQuery = ConnectionContextHelper.getOriginalValue(contextType, descriptor.getAbsoluteXPathQuery());
+                descriptor.setAbsoluteXPathQuery(xPahtQuery);
+            }
+        }
+
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -195,11 +233,11 @@ public final class OtherConnectionContextUtils {
         XmlFileConnection cloneConn = ConnectionFactory.eINSTANCE.createXmlFileConnection();
 
         String filePath = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getXmlFilePath());
-        // String encoding = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getEncoding());
+        String encoding = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getEncoding());
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         cloneConn.setXmlFilePath(filePath);
-        cloneConn.setEncoding(fileConn.getEncoding());
+        cloneConn.setEncoding(encoding);
         //
         cloneConn.setMaskXPattern(fileConn.getMaskXPattern());
         cloneConn.setXsdFilePath(fileConn.getXsdFilePath());
@@ -213,7 +251,8 @@ public final class OtherConnectionContextUtils {
         for (XmlXPathLoopDescriptor desc : descs) {
             XmlXPathLoopDescriptor cloneDesc = ConnectionFactory.eINSTANCE.createXmlXPathLoopDescriptor();
             cloneDesc.setLimitBoucle(desc.getLimitBoucle().intValue());
-            cloneDesc.setAbsoluteXPathQuery(desc.getAbsoluteXPathQuery());
+            String xPathQuery = ConnectionContextHelper.getOriginalValue(contextType, desc.getAbsoluteXPathQuery());
+            cloneDesc.setAbsoluteXPathQuery(xPathQuery);
 
             cloneDesc.getSchemaTargets().clear();
             List<SchemaTarget> schemaTargets = (List<SchemaTarget>) desc.getSchemaTargets();
@@ -627,4 +666,15 @@ public final class OtherConnectionContextUtils {
         }
         return cloneConn;
     }
+
+    public static XmlFileConnection getOriginalValueConnection(XmlFileConnection connection, ConnectionItem connectionItem,
+            boolean isContextMode) {
+        if (isContextMode) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+            return (XmlFileConnection) OtherConnectionContextUtils.cloneOriginalValueXmlFileConnection(connection, contextType);
+        }
+        return connection;
+
+    }
+
 }

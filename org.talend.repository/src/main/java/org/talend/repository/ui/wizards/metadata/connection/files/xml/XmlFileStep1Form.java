@@ -61,8 +61,10 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * @author ocarbone
@@ -142,8 +144,14 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         if (getConnection().getXmlFilePath() != null) {
             fileFieldXml.setText(getConnection().getXmlFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
             // init the fileViewer
-            valid = this.treePopulator.populateTree(fileFieldXml.getText(), treeNode);
             checkFieldsValue();
+            String xmlFilePath = fileFieldXml.getText();
+            if (isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+                xmlFilePath = ConnectionContextHelper.getOriginalValue(contextType, fileFieldXml.getText());
+            }
+            valid = this.treePopulator.populateTree(xmlFilePath, treeNode);
+
         }
 
         // Fields to the Group Delimited File Settings
@@ -157,6 +165,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // if (getConnection().getMaskXPattern() != null) {
         // fieldMaskXPattern.setText(getConnection().getMaskXPattern().replace("\\\\", "\\"));
         // }
+        adaptFormToEditable();
+
     }
 
     /**
@@ -171,6 +181,12 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // fieldMaskXPattern.setReadOnly(isReadOnly());
         // checkBoxIsGuess.setReadOnly(isReadOnly());
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        fileFieldXml.setEditable(!isContextMode());
+        encodingCombo.setReadOnly(isContextMode());
     }
 
     /*
@@ -409,7 +425,13 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             return false;
         }
         if (!valid) {
-            updateStatus(IStatus.ERROR, Messages.getString("XmlFileStep1Form.notFound", fileFieldXml.getText())); //$NON-NLS-1$
+            String xmlFilePath = fileFieldXml.getText();
+            if (isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+                xmlFilePath = ConnectionContextHelper.getOriginalValue(contextType, fileFieldXml.getText());
+            }
+            updateStatus(IStatus.ERROR, Messages.getString("XmlFileStep1Form.notFound", xmlFilePath)); //$NON-NLS-1$
+
             return false;
         }
         updateStatus(IStatus.OK, null);
@@ -458,6 +480,10 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                             .error(Messages.getString("FileStep.moduleFailure") + " XML::LibXML " + Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
+            if (isContextMode()) {
+                adaptFormToEditable();
+            }
+
         }
     }
 }

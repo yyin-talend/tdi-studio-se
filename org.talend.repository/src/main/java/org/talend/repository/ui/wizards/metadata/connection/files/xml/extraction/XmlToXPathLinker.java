@@ -71,7 +71,9 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd.XmlToSchemaDragAndDropHandler;
 import org.w3c.dom.Node;
@@ -250,9 +252,15 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
                     TableItem tableItem = loopTableItems[i];
                     XmlXPathLoopDescriptor xpathLoopDescriptor = xpathLoopDescriptorList.get(i);
-                    String xPathQuery = xpathLoopDescriptor.getAbsoluteXPathQuery();
-                    if (xPathQuery != null) {
-                        createLoopLinks(xPathQuery, tableItem, monitorWrap);
+                    ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(xpathLoopDescriptor
+                            .getConnection());
+                    String originalValue = xpathLoopDescriptor.getAbsoluteXPathQuery();
+                    if (contextType != null) {
+                        originalValue = ConnectionContextHelper.getOriginalValue(contextType, xpathLoopDescriptor
+                                .getAbsoluteXPathQuery());
+                    }
+                    if (originalValue != null) {
+                        createLoopLinks(originalValue, tableItem, monitorWrap);
                     }
 
                     monitorWrap.worked(1);

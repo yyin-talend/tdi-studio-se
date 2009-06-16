@@ -65,12 +65,14 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.IPreviewHandlerListener;
@@ -79,6 +81,8 @@ import org.talend.repository.preview.StoppablePreviewLoader;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionFieldsWithXPathEditorView;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionLoopWithXPathEditorView;
@@ -158,7 +162,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      */
     public XmlFileStep2Form(Composite parent, ConnectionItem connectionItem) {
         super(parent, connectionItem);
-        setupForm();
+        setupForm(true);
+
     }
 
     /**
@@ -192,6 +197,10 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         fieldsModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor.getSchemaTargets());
         fieldsTableEditorView.getTableViewerCreator().layout();
 
+        if (isContextMode()) {
+            adaptFormToEditable();
+        }
+
     }
 
     /**
@@ -200,6 +209,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
     @Override
     protected void adaptFormToReadOnly() {
         // readOnly = isReadOnly();
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        loopTableEditorView.setReadOnly(isContextMode());
+        this.fieldsTableEditorView.setReadOnly(isContextMode());
     }
 
     @Override
@@ -423,7 +439,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      * @return processDescription
      */
     private ProcessDescription getProcessDescription() {
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        XmlFileConnection connection2 = OtherConnectionContextUtils.getOriginalValueConnection(getConnection(),
+                this.connectionItem, isContextMode());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(connection2);
         return processDescription;
     }
 
@@ -601,7 +619,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
 
         previewInformationLabel.setText(""); //$NON-NLS-1$
 
-        if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$
+        String pathStr = getConnection().getXmlFilePath();
+        if (isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+            pathStr = ConnectionContextHelper.getOriginalValue(contextType, pathStr);
+        }
+        if (pathStr != null && pathStr.toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$
+
             previewButton.setEnabled(false);
         } else {
             previewButton.setEnabled(true);
@@ -711,14 +735,22 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             StringBuilder previewRows = new StringBuilder();
             BufferedReader in = null;
 
-            try {
+            String pathStr = "";
 
-                File file = new File(getConnection().getXmlFilePath());
+            try {
+                pathStr = getConnection().getXmlFilePath();
+                if (isContextMode()) {
+                    ContextType contextType = ConnectionContextHelper
+                            .getContextTypeForContextMode(connectionItem.getConnection());
+                    pathStr = ConnectionContextHelper.getOriginalValue(contextType, pathStr);
+                }
+
+                File file = new File(pathStr);
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                 String str;
-                in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
-                        guessedCharset.displayName()));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(pathStr), guessedCharset.displayName()));
+
                 while ((str = in.readLine()) != null) {
                     previewRows.append(str + "\n"); //$NON-NLS-1$
                 }
@@ -769,7 +801,14 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             if (this.linker != null) {
                 this.linker.removeAllLinks();
             }
-            this.treePopulator.populateTree(getConnection().getXmlFilePath(), treeNode);
+
+            String pathStr = getConnection().getXmlFilePath();
+            if (isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+                pathStr = ConnectionContextHelper.getOriginalValue(contextType, pathStr);
+            }
+            this.treePopulator.populateTree(pathStr, treeNode);
+
             ScrollBar verticalBar = availableXmlTree.getVerticalBar();
             if (verticalBar != null) {
                 verticalBar.setSelection(0);
@@ -783,16 +822,21 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 loopTableEditorView.setLinker(this.linker);
                 fieldsTableEditorView.setLinker(this.linker);
             } else {
+                this.linker.init(treePopulator);
                 this.linker.createLinks();
             }
             checkFilePathAndManageIt();
 
-            if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xsd")) { //$NON-NLS-1$
+            if (pathStr != null && pathStr.endsWith(".xsd")) { //$NON-NLS-1$
                 previewButton.setEnabled(false);
                 previewButton.setText(Messages.getString("XmlFileStep2Form.previewNotAvailable")); //$NON-NLS-1$
                 previewButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
                 previewButton.getParent().layout();
             }
+            if (isContextMode()) {
+                adaptFormToEditable();
+            }
+
         }
     }
 
@@ -800,9 +844,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      * see bug 0004206: bug on the loop limit case in XMLfile source metadata defining
      */
     private void resetStatusIfNecessary() {
-        if (xmlFilePath != null && getConnection().getXmlFilePath() != null) {
+        String curXmlPath = getConnection().getXmlFilePath();
+        if (xmlFilePath != null && curXmlPath != null) {
             // change xml file
-            if (!xmlFilePath.equals(getConnection().getXmlFilePath())) {
+            String oraginalPath = "";
+            if (isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+                oraginalPath = ConnectionContextHelper.getOriginalValue(contextType, curXmlPath);
+            }
+            if (!xmlFilePath.equals(curXmlPath) && !xmlFilePath.equals(oraginalPath)) {
                 // clear command stack
                 CommandStackForComposite commandStack = new CommandStackForComposite(schemaTargetGroup);
                 loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
@@ -826,7 +876,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 xmlFilePreview.removePreviewContent();
             }
         }
-        xmlFilePath = getConnection().getXmlFilePath();
+        xmlFilePath = curXmlPath;
     }
 
     /*

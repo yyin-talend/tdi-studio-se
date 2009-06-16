@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.ui.utils.FileConnectionContextUtils.EFileParamName;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils.EParamName;
 
 /**
  * DOC cantoine class global comment. Detailled comment <br/>
@@ -57,5 +59,18 @@ public abstract class AbstractXmlFileStepForm extends AbstractForm {
 
     protected XmlFileConnection getConnection() {
         return (XmlFileConnection) connectionItem.getConnection();
+    }
+
+    @Override
+    protected void exportAsContext() {
+        collectConnParams();
+        super.exportAsContext();
+    }
+
+    protected void collectConnParams() {
+        addContextParams(EFileParamName.File, true);
+        addContextParams(EFileParamName.Encoding, true);
+        addContextParams(EParamName.XPathQuery, true);
+
     }
 }

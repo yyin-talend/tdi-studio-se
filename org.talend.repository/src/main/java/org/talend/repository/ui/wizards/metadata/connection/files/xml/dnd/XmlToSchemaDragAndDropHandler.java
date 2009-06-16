@@ -249,6 +249,9 @@ public class XmlToSchemaDragAndDropHandler {
             List<TransferableXPathEntry> transferableEntryList = draggedData.getTransferableEntryList();
 
             ExtractionLoopWithXPathEditorView loopTableEditorView = linker.getLoopTableEditorView();
+            if (loopTableEditorView.isReadOnly()) {
+                return;
+            }
             ExtendedTableModel<XmlXPathLoopDescriptor> extendedTableModel = loopTableEditorView.getExtendedTableModel();
             XmlXPathLoopDescriptor pathLoopDescriptor = extendedTableModel.getBeansList().get(0);
 
@@ -262,24 +265,23 @@ public class XmlToSchemaDragAndDropHandler {
                     Display display = linker.getTree().getDisplay();
                     Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
                     linker.getTree().getShell().setCursor(cursor);
-                    loopTableEditorView.getTableViewerCreator().setBeanValue(xpathColumn, pathLoopDescriptor,
-                            absoluteXPath, true);
+                    loopTableEditorView.getTableViewerCreator()
+                            .setBeanValue(xpathColumn, pathLoopDescriptor, absoluteXPath, true);
                     linker.getTree().getShell().setCursor(null);
                 }
 
             } else {
 
                 ExtractionFieldsWithXPathEditorView tableEditorView = linker.getFieldsTableEditorView();
-                Integer startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(fieldsTable, new Point(
-                        event.x, event.y));
+                Integer startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(fieldsTable, new Point(event.x,
+                        event.y));
                 List<SchemaTarget> list = new ArrayList<SchemaTarget>(transferableEntryList.size());
                 for (TransferableXPathEntry entry : transferableEntryList) {
 
                     ArrayList<String> loopXpathNodes = linker.getLoopXpathNodes();
                     if (loopXpathNodes.size() > 0) {
                         String loopPath = loopXpathNodes.get(0);
-                        String relativeXPath = XPathPopulationUtil.populateColumnPath(loopPath, entry
-                                .getAbsoluteXPath());
+                        String relativeXPath = XPathPopulationUtil.populateColumnPath(loopPath, entry.getAbsoluteXPath());
 
                         if (relativeXPath.startsWith("/")) { //$NON-NLS-1$
                             relativeXPath = relativeXPath.substring(1);
@@ -293,9 +295,9 @@ public class XmlToSchemaDragAndDropHandler {
 
                         SchemaTarget newTargetEntry = linker.getNewSchemaTargetEntry(relativeXPath);
                         String name = extractLastWord(extractLastWord(relativeXPath));
-//                        if (!name.equals(relativeXPath)) {
-                            newTargetEntry.setTagName(name);
-//                        }
+                        // if (!name.equals(relativeXPath)) {
+                        newTargetEntry.setTagName(name);
+                        // }
                         list.add(newTargetEntry);
                     }
                 }
