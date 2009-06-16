@@ -19,6 +19,7 @@ imports="
 	String insertMode =ElementParameterParser.getValue(node, "__INSERT_MODE__");
 	String separatorText=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+	String dnColumnName = ElementParameterParser.getValue(node, "__DN_COLUMN_NAME__");
 	String separator = separatorText;
 	if(("\"|\"").equals(separatorText)){
 		separator="\"\\\\|\"";
@@ -57,14 +58,15 @@ imports="
     			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	
 %>
 	javax.naming.directory.Attributes entry_<%=cid%> = new javax.naming.directory.BasicAttributes(true);
+	
+	String dn_<%=cid%> = <%=conn.getName() %>.<%=dnColumnName%>.trim();
 <%
 					int index = 0;
 					for(IMetadataColumn column:columnList){		
-						if(index == 0){
-%> 
-	String dn_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.trim();
-<%
-						}else if(!("DELETE").equals(insertMode)){
+						if (dnColumnName.equals(column.getLabel().trim())) {
+							continue;
+						}
+						if(!("DELETE").equals(insertMode)){
 %>
 	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
     	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(<%=separatorText%>)>0){
