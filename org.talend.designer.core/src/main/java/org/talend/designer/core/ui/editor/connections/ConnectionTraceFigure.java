@@ -287,7 +287,6 @@ public class ConnectionTraceFigure extends Figure {
             setVisible(true);
 
         } else {
-
             if (traceFlag) {
                 Image enableImage = getTraceConnectionImage(flag);
 
@@ -302,8 +301,6 @@ public class ConnectionTraceFigure extends Figure {
                 setPreferredSize(0, 0);
                 setVisible(false);
             }
-            tooltip = null;
-
         }
         if (tooltip != null) {
             tooltip.setTraceData(data, flag, traceFlag);
