@@ -309,8 +309,13 @@ public class CLASS {
                                 && (("NUMBER".equalsIgnoreCase(dataType)) || ("CHAR".equalsIgnoreCase(dataType)) || ("NCHAR".equalsIgnoreCase(dataType)))
                                 && (column.getColumn().getLength() == null || 0 == column.getColumn().getLength())
                                 && (column.getColumn().getPrecision() == null || 0 == column.getColumn().getPrecision())
-                        ){
-                        }else {
+                        ){} 
+                        else if (("mysql_id".equalsIgnoreCase(getDBMSId()))
+                                && (("DECIMAL".equalsIgnoreCase(dataType)) || ("NUMERIC".equalsIgnoreCase(dataType)))
+                                && (column.getColumn().getLength() == null || 0 == column.getColumn().getLength())
+                                && (column.getColumn().getPrecision() == null || 0 == column.getColumn().getPrecision())
+                        ) {}
+                        else {
                             if (mappingType.isPreBeforeLength(getDBMSId(), dataType)) {
                                 if (!precisionIgnored) {
                                     prefix = "(";
