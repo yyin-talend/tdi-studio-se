@@ -23,6 +23,9 @@
 	
 	boolean needPersonalName = ("true").equals(ElementParameterParser.getValue(node, "__NEED_PERSONAL_NAME__"));
 	String personalName = needPersonalName?ElementParameterParser.getValue(node, "__PERSONAL_NAME__"):null;
+
+	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+	String mimesubtype = ElementParameterParser.getValue(node,"__TEXT_SUBTYPE__");	
 %>
 <%
  
@@ -88,7 +91,7 @@
      msg_<%=cid %>.setHeader("X-Priority","<%=priority %>"); //High->1 Normal->3 Low->5
      javax.mail.Multipart mp_<%=cid %> = new javax.mail.internet.MimeMultipart();
      javax.mail.internet.MimeBodyPart mbpText_<%=cid %> = new javax.mail.internet.MimeBodyPart();     
-     mbpText_<%=cid %>.setText(message_<%=cid %>);
+     mbpText_<%=cid %>.setText(message_<%=cid %>,<%=encoding %>,"<%=mimesubtype %>");
 	 mp_<%=cid %>.addBodyPart(mbpText_<%=cid %>);
 	 	
      for(int i_<%=cid %> = 0; i_<%=cid %> < attachments_<%=cid %>.size(); i_<%=cid %>++)
