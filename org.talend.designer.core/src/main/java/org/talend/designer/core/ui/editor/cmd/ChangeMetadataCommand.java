@@ -316,7 +316,10 @@ public class ChangeMetadataCommand extends Command {
                                 }
                                 IMetadataTable toCopy = newOutputMetadata.clone();
                                 // to keep customs
-                                MetadataTool.copyTable(toCopy, tmpClone);
+                                // MetadataTool.copyTable(toCopy, tmpClone);
+                                // wzhang modify to add feature 7611
+                                String dbmsId = targetNode.getMetadataFromConnector(baseConnector).getDbms();
+                                MetadataTool.copyTable(dbmsId, toCopy, tmpClone);
                                 toCopy = tmpClone;
                                 IMetadataTable copy;
                                 if (((Node) targetNode).getMetadataFromConnector(baseConnector) != null) {
@@ -327,7 +330,9 @@ public class ChangeMetadataCommand extends Command {
                                     final String mainConnector = "FLOW"; // can only be FLOW right now for this case. //$NON-NLS-1$
                                     copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
                                 }
-                                MetadataTool.copyTable(toCopy, copy);
+                                // MetadataTool.copyTable(toCopy, copy);
+                                // wzhang modify to add feature 7611
+                                MetadataTool.copyTable(dbmsId, toCopy, copy);
                                 ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null, copy,
                                         inputSchemaParam);
                                 if (outputdataContainer.getOuputs().size() > 0) {

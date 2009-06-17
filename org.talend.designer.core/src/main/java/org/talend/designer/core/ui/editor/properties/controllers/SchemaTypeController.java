@@ -817,12 +817,14 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
                         if (connec.getInputId() == 1) {
-                            MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
+                            // MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
+                            MetadataTool.copyTable(meta.getDbms(), connec.getMetadataTable().clone(), metaCopy);
                             inputFound = true;
                             break;
                         }
                     } else {
-                        MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
+                        // MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
+                        MetadataTool.copyTable(meta.getDbms(), connec.getMetadataTable().clone(), metaCopy);
                         inputFound = true;
                     }
                 }

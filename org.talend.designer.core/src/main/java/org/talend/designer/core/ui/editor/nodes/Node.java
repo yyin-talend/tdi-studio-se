@@ -928,22 +928,21 @@ public class Node extends Element implements INode {
 
                 IMetadataTable inputTable = connection.getMetadataTable();
                 // if current table has custom columns, input parameter used will be from currrent connector
-                // if no custom columns, it will use main connector, so it will allow to propagate repository information.
+                // if no custom columns, it will use main connector, so it will allow to propagate repository
+                // information.
                 if (MetadataTool.hasCustomColumns(inputTable)) {
                     inputConnector = conn.getConnectorName();
                 } else {
                     inputConnector = mainConnector.getName();
                 }
                 IElementParameter inputSchemaParam = null;
-                
+
                 for (IElementParameter param : conn.getSource().getElementParameters()) {
-                    if ((param.getField().equals(EParameterFieldType.SCHEMA_TYPE))
-                            && (param.getContext().equals(inputConnector))) {
+                    if ((param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) && (param.getContext().equals(inputConnector))) {
                         inputSchemaParam = param;
                         break;
                     }
                 }
-
 
                 if (component.isSchemaAutoPropagated() && !repositoryMode && (inputTable.getListColumns().size() != 0)) {
 
@@ -971,8 +970,10 @@ public class Node extends Element implements INode {
                                             .getLineStyle() == EConnectionType.FLOW_MERGE)) && (inputTable.getListColumns()
                                             .size() != 0))) {
                                 // For the auto propagate.
-                                MetadataTool.copyTable(inputTable, targetTable);
-
+                                // MetadataTool.copyTable(inputTable, targetTable);
+                                // add by wzhang for feature 7611.
+                                String dbmsId = targetTable.getDbms();
+                                MetadataTool.copyTable(dbmsId, inputTable, targetTable);
                                 ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable,
                                         inputSchemaParam);
                                 CommandStack cmdStack = getCommandStack();
