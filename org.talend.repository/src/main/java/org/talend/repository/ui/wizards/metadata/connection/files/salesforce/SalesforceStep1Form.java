@@ -73,6 +73,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private UtilsButton cancelButton = null;
 
+    private String defaultBatchSize = "250";
+
     /*
      * 
      */
@@ -611,7 +613,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
         setTextValue(getConnection().getUserName(), userNameText);
         setTextValue(getConnection().getPassword(), passwordText);
-        setTextValue(getConnection().getBatchSize(), batchSizeText);
+        String batchSize2 = getConnection().getBatchSize();
+        setTextValue((batchSize2 != null && !"".equals(batchSize2)) ? batchSize2 : defaultBatchSize, batchSizeText);
         useProxyBtn.setSelection(getConnection().isUseProxy());
         setTextValue(getConnection().getProxyHost(), proxyHostText);
         setTextValue(getConnection().getProxyPort(), proxyPortText);
