@@ -63,11 +63,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     int nb_line_update_<%=cid%> = 0;
     int nb_line_inserted_<%=cid%> = 0;
     String tableName_<%=cid%> = null;
-    String schema_<%=cid%> = <%=dbschema%>;
-    if(schema_<%=cid%> == null || schema_<%=cid%>.trim().length() == 0) {
+    
+    
+    String dbschema_<%=cid%> = <%=dbschema%>;
+    if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
         tableName_<%=cid%> = <%=dbtable%>;
     } else {
-        tableName_<%=cid%> = schema_<%=cid%> + "].[" + <%=dbtable%>;
+        tableName_<%=cid%> = dbschema_<%=cid%> + "].[" + <%=dbtable%>;
     }
 	<%@ include file="../templates/tMSSql/_tMSSqlConnection.javajet"%>
     java.sql.Timestamp timestamp_<%=cid%> = null;

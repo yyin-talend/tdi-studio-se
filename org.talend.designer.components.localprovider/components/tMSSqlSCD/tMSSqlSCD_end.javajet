@@ -56,8 +56,8 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     
     <%if(!useExistingConnection){
     %>
-    if(connection_<%=cid%> != null && !connection_<%=cid%>.isClosed()) {
-        connection_<%=cid%>.close();
+    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
+        conn_<%=cid%>.close();
     }    
     <%
     }%>
