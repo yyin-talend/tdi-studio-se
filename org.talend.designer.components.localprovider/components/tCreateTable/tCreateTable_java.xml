@@ -404,7 +404,8 @@
 
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-AS400" MODULE="jt400.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-V5R2_V5R4" MODULE="jt400_V5R2.jar" REQUIRED="false" />
+        <IMPORT NAME="Driver-V5R3_V6R1" MODULE="jt400_V5R3.jar" REQUIRED="false" />
 		<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-DB2-LICENSE-CISUZ" MODULE="db2jcc_license_cisuz.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-DB2-LICENSE-CU" MODULE="db2jcc_license_cu.jar" REQUIRED="true" />
