@@ -215,14 +215,26 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         String password = getConnection().getPassword();
         // add for feature 7507
         String betchSize = getConnection().getBatchSize();
+        boolean useProxy = getConnection().isUseProxy();
+        String proxyHost = getConnection().getProxyHost();
+        String proxyPort = getConnection().getProxyPort();
+        String proxyUsername = getConnection().getProxyHost();
+        String proxyPassword = getConnection().getProxyPassword();
+
         if (isContextMode() && getContextModeManager() != null) {
             webServiceUrl = getContextModeManager().getOriginalValue(webServiceUrl);
             userName = getContextModeManager().getOriginalValue(userName);
             password = getContextModeManager().getOriginalValue(password);
             betchSize = getContextModeManager().getOriginalValue(betchSize);
+            useProxy = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useProxy)));
+            proxyHost = getContextModeManager().getOriginalValue(proxyHost);
+            proxyPort = getContextModeManager().getOriginalValue(proxyPort);
+            proxyUsername = getContextModeManager().getOriginalValue(proxyUsername);
+            proxyPassword = getContextModeManager().getOriginalValue(proxyPassword);
         }
 
-        IMetadataTable metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize, true);
+        IMetadataTable metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize,
+                useProxy, proxyHost, proxyPort, proxyUsername, proxyPassword, true);
 
         List<IMetadataColumn> columns = metadataTable.getListColumns();
 
@@ -492,11 +504,17 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         bean.setQueryCondition(originalValueConnection.getQueryCondition());
         bean.setUseCustomModule(originalValueConnection.isUseCustomModuleName());
         bean.setBatchSize(originalValueConnection.getBatchSize());
+        bean.setUseProxy(originalValueConnection.isUseProxy());
+        bean.setProxyHost(originalValueConnection.getProxyHost());
+        bean.setProxyPort(originalValueConnection.getProxyPort());
+        bean.setProxyUsername(originalValueConnection.getProxyUsername());
+        bean.setProxyPassword(originalValueConnection.getProxyPassword());
 
         processDescription.setSalesforceSchemaBean(bean);
 
         IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(), bean
-                .getModuleName(), bean.getBatchSize(), false);
+                .getModuleName(), bean.getBatchSize(), bean.isUseProxy(), bean.getProxyHost(), bean.getProxyPort(), bean
+                .getProxyUsername(), bean.getProxyPassword(), false);
 
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
         IMetadataTable table = new MetadataTable();

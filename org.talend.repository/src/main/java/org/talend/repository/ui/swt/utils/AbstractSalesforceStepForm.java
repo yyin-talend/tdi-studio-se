@@ -114,7 +114,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     }
 
     public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName,
-            String betchSize, boolean update) {
+            String betchSize, boolean useProxy, String proxyHost, String proxyPort, String proxyUsername, String proxyPassword,
+            boolean update) {
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the wizard doesn't work with this url
         if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
             endPoint = DEFAULT_WEB_SERVICE_URL;

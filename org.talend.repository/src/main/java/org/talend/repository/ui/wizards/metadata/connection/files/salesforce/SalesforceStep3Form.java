@@ -301,12 +301,18 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         bean.setQueryCondition(originalValueConnection.getQueryCondition());
         // add for feature 7507
         bean.setBatchSize(originalValueConnection.getBatchSize());
+        bean.setUseProxy(originalValueConnection.isUseProxy());
+        bean.setProxyHost(originalValueConnection.getProxyHost());
+        bean.setProxyPort(originalValueConnection.getProxyPort());
+        bean.setProxyUsername(originalValueConnection.getProxyUsername());
+        bean.setProxyPassword(originalValueConnection.getProxyPassword());
 
         processDescription.setSalesforceSchemaBean(bean);
 
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
         IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(), bean
-                .getModuleName(), bean.getBatchSize(), false);
+                .getModuleName(), bean.getBatchSize(), bean.isUseProxy(), bean.getProxyHost(), bean.getProxyPort(), bean
+                .getProxyUsername(), bean.getProxyPassword(), false);
 
         IMetadataTable table = new org.talend.core.model.metadata.MetadataTable();
         List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
