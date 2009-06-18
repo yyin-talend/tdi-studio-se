@@ -15,6 +15,7 @@ package org.talend.designer.business.diagram.custom.edit.parts;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.emf.common.notify.Notification;
@@ -94,7 +95,10 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
 
     @Override
     protected void unregisterVisuals() {
-        ((BusinessItemShapeFigure) getFigure()).disposeColors();
+        IFigure figure2 = getFigure();
+        if (figure2 instanceof BusinessItemShapeFigure) {
+            ((BusinessItemShapeFigure) figure2).disposeColors();
+        }
         super.unregisterVisuals();
     }
 
