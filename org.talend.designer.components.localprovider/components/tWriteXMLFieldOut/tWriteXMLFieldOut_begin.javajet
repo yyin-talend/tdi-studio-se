@@ -25,6 +25,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
     		if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
+    			String removeHeader = ElementParameterParser.getValue(node, "__REMOVE_HEADER__"); // add for feature7788
         		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
         		List<Map<String, String>> rootTable = 
@@ -129,8 +130,15 @@ int preNewTabIndex_<%=cid%> = -1;
 String[] startTabs_<%=cid%> = new String[endTabStrs_<%=cid%>.size()];
 java.io.StringWriter strWriter_<%=cid%> = new java.io.StringWriter();
 java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(strWriter_<%=cid%>);
+<%
+					if(!("true").equals(removeHeader)){
+%>
 out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
 out_<%=cid%>.newLine();
+<%
+					}
+%>
+
 <%
 				}
 			}

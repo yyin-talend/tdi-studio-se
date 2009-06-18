@@ -136,6 +136,7 @@ class XSDToolByNull{
 // ------------------- *** Common code start *** ------------------- //
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String removeHeader = ElementParameterParser.getValue(node, "__REMOVE_HEADER__"); // add for feature7788
 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
 String outputAsXSD = ElementParameterParser.getValue(node, "__OUTPUT_AS_XSD__");
 String fileNameXSD = ElementParameterParser.getValue(node, "__XSD_FILE__");
@@ -172,8 +173,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(strWriter_<%=cid%>, format_<%=cid%>);
 	output_<%=cid%>.write(doc_<%=cid%>);
     output_<%=cid%>.close();
-    
+<%
+		if(("true").equals(removeHeader)){
+%>
+	String removeHeader_<%=cid %> = strWriter_<%=cid %>.toString();
+	if(removeHeader_<%=cid %>.indexOf("<?xml") >=0 ){
+		removeHeader_<%=cid %> = removeHeader_<%=cid %>.substring(removeHeader_<%=cid %>.indexOf("?>")+3);
+	}
+	listGroupby_<%=cid %>.add(removeHeader_<%=cid %>);
+<%
+		}else{
+%>
     listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+<%
+		}
+%>
 	globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
 <%
 	}else if(("Null").equals(mode)){
