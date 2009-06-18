@@ -102,7 +102,15 @@
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
-	
+    
+	<PARAMETER
+      NAME="KEEP_CELL_FORMATING"
+      FIELD="CHECK"
+      NUM_ROW="50"
+      SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')AND(APPEND_FILE == 'true')AND(APPEND_SHEET == 'true')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 	
 	<PARAMETER NAME="FONT" FIELD="CLOSED_LIST" NUM_ROW="55">
       <ITEMS DEFAULT="NONE">
