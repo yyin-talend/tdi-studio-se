@@ -41,6 +41,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	boolean extendedInsert = false;
 	
+	boolean supportDuplicateUpdate = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__ON_DUPLICATE_KEY_UPDATE__"));
+	
 	if ("INSERT".equalsIgnoreCase(dataAction)) {
 		extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
 	}else {
@@ -214,8 +216,42 @@ skeleton="../templates/db_output_bulk.skeleton"
              if (i != rowCount<%=cid%> - 1) extendInsertValueStmt.append(",");
         }
         
-        pstmt_<%=cid %> = 
-            conn_<%=cid%>.prepareStatement("INSERT INTO `"+<%=tableName%>+"` ("+insertColName<%=cid%>+") VALUES "+extendInsertValueStmt.toString());
+
+			   insert_<%=cid%> = "INSERT INTO `"+<%=tableName%>+"` ("+insertColName<%=cid%>+") VALUES "+extendInsertValueStmt.toString();
+			   <%if (supportDuplicateUpdate) {
+			    %>
+			    <%
+			    List<Map<String, String>> duplicateKeys =
+			      			(List<Map<String,String>>)ElementParameterParser.getObjectValue(
+			          			node,"__DUPLICATED_KEYS__" );
+			          			
+					if (duplicateKeys.size() > 0) {
+					%>
+					insert_<%=cid%> += " ON DUPLICATE KEY UPDATE ";
+					duplidateClause_<%=cid%> = new StringBuffer("");	
+					<%
+					for (int i=0; i< duplicateKeys.size() ; i++) {
+						if (i >0) {
+						%>
+							duplidateClause_<%=cid%>.append(",");
+						<%
+						}
+						%>						
+						duplidateClause_<%=cid%>.append ("`" +  <%=duplicateKeys.get(i).get("DUPLICATED_KEY")%> + "`");
+						duplidateClause_<%=cid%>.append ("=");
+						duplidateClause_<%=cid%>.append (<%=duplicateKeys.get(i).get("DUPLICATED_VALUE")%>);
+						<%
+					}
+					%>
+					insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();				
+				<%
+					}
+			     %>	            
+			        <%
+			       }%>
+		
+		        
+        pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
         
         int row2Count<%=cid%> = 0;
         int count<%=cid%> = 0;
@@ -236,10 +272,8 @@ skeleton="../templates/db_output_bulk.skeleton"
             %>
     
             row2Count<%=cid%>++;
-        }
-        
+        }        
         insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-
     }
 
 

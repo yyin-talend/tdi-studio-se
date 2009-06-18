@@ -310,7 +310,33 @@
   	  FIELD="CHECK"
 	  NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>    
+	</PARAMETER>  
+	
+  	<PARAMETER 
+  	  NAME="ON_DUPLICATE_KEY_UPDATE" 
+  	  FIELD="CHECK"
+	  NUM_ROW="20"
+	  SHOW_IF="(DATA_ACTION == 'INSERT') AND (EXTENDINSERT =='true')"
+	  >
+	  <DEFAULT>false</DEFAULT>
+	</PARAMETER> 
+	
+    
+	<PARAMETER
+      NAME="DUPLICATED_KEYS"
+      FIELD="TABLE"
+      REQUIRED="false" 
+      NUM_ROW="20"
+      NB_LINES="2"
+	  SHOW_IF="(DATA_ACTION == 'INSERT') AND (EXTENDINSERT =='true') AND (ON_DUPLICATE_KEY_UPDATE == 'true') "
+    >
+      <ITEMS>
+        <ITEM NAME="DUPLICATED_KEY" VALUE='"colname"'/>
+		<ITEM NAME="DUPLICATED_VALUE" VALUE='""'/>		
+      </ITEMS>
+    </PARAMETER>
+		 
+	  
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
