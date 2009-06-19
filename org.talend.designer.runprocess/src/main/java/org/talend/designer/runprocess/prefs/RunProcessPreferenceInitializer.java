@@ -35,7 +35,10 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
         prefs.putValue(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2, "4333"); //$NON-NLS-1$
         prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1, "4334"); //$NON-NLS-1$
         prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, "5333"); //$NON-NLS-1$
+        // added by wzhang for feature 7428.
         prefs.setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
+        prefs.setDefault(RunProcessPrefsConstants.ISSAVEBEFORERUN, true);
+        prefs.setDefault(RunProcessPrefsConstants.ISSTATISTICSRUN, true);
         prefs.setDefault(RunProcessPrefsConstants.STRACESTIME, 1000);
         prefs.setDefault(RunProcessPrefsConstants.VMARGUMENTS, " -Xms256M -Xmx1024M"); //$NON-NLS-1$
     }
