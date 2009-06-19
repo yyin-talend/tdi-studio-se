@@ -35,16 +35,20 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
@@ -436,7 +440,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             launcherCombo.select(0);
         }
         if (process.length > 0) {
-            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
+        	ProcessItem item = (ProcessItem) process[0].getItem();
+			try {
+				String id = item.getProperty().getId();
+				IRepositoryObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(id);
+				item = (ProcessItem) lastVersion.getProperty().getItem();
+			} catch (PersistenceException e) {
+				throw new RuntimeException(e);
+			}
+            List<String> contextNames = manager.getJobContexts(item);
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);
