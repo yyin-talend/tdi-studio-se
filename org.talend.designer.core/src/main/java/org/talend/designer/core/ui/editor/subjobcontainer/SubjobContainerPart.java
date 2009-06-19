@@ -50,7 +50,11 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
     @Override
     protected void unregisterVisuals() {
         super.unregisterVisuals();
-        ((SubjobContainerFigure) getFigure()).disposeColors();
+        IFigure figure = getFigure();
+        if (figure instanceof SubjobContainerFigure) {
+            ((SubjobContainerFigure) figure).disposeColors();
+        }
+
     }
 
     /*
