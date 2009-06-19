@@ -135,9 +135,13 @@ public class EmfComponent implements IComponent {
 
     public static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
 
+    public static final String TNS_FILE = "USE_TNS_FILE"; //$NON-NLS-1$
+
     public static final String TEXT_BUILTIN = Messages.getString("EmfComponent.builtIn"); //$NON-NLS-1$
 
     public static final String TEXT_REPOSITORY = Messages.getString("EmfComponent.repository"); //$NON-NLS-1$
+
+    public static final String TEXT_TNS_FILE = Messages.getString("EmfComponent.tnsfile"); //$NON-NLS-1$
 
     private static final String TSTATCATCHER_NAME = "tStatCatcher"; //$NON-NLS-1$
 
@@ -298,9 +302,9 @@ public class EmfComponent implements IComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.SCHEMA_TYPE.getName());
             newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
-            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
-            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TNS_FILE });
+            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
+            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
             newParam.setValue(BUILTIN);
             newParam.setNumRow(1);
             newParam.setField(EParameterFieldType.TECHNICAL);
@@ -923,9 +927,18 @@ public class EmfComponent implements IComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROPERTY_TYPE.getName());
             newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
-            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
-            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+            if (node.getComponent().getName().equals("tOracleConnection")) {
+                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TEXT_TNS_FILE });
+                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
+                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
+            } else {
+                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+            }
+            // if(xmlParam.isUSETNSFILE){
+            //                
+            // }
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);

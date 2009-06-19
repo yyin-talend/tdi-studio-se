@@ -288,6 +288,24 @@ public final class Expression {
                                 }
                             }
                         }
+                    } else if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)
+                            || param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                            || param.getField().equals(EParameterFieldType.QUERYSTORE_TYPE)
+                            || param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+                        boolean child = false;
+                        if (varNames.length > 1 && varNames[1] != null) {
+                            IElementParameter tempParam = param.getChildParameters().get(varNames[1]);
+                            if (tempParam != null) {
+                                value = tempParam.getValue();
+                                if (value.equals(variableValue)) {
+                                    found = true;
+                                }
+                                child = true;
+                            }
+                        }
+                        if (!child) {
+                            value = testedParameter.getValue();
+                        }
                     } else {
                         value = testedParameter.getValue();
                     }
