@@ -154,10 +154,29 @@ public class ExportTreeViewer {
                 expandParent(viewer, node);
                 exportItemsTreeViewer.refresh(node);
             }
+            selectItems(exportItemsTreeViewer.getViewer().getTree().getItems());
         }
         return itemComposite;
     }
 
+    /***
+     * bug fix : items are not selected in database repository mode
+     * if the repository node is refresh and a new instance of the repository node is created
+     * we need to compare ids to select this nodes
+     */
+    private void selectItems(TreeItem[] treeItems) {
+    	for (TreeItem treeItem : treeItems) {
+    		if (treeItem.getData() != null &&  treeItem.getData() instanceof RepositoryNode) {
+				RepositoryNode repositoryNode = (RepositoryNode) treeItem.getData();
+				for (RepositoryNode repositoryNode2 : repositoryNodes) {
+					if (repositoryNode.getId().equals(repositoryNode2.getId()))
+						((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setChecked(repositoryNode, true);
+				}
+			}
+			selectItems(treeItem.getItems());
+		}
+    }
+    
     private void expandParent(TreeViewer viewer, RepositoryNode node) {
         RepositoryNode parent = node.getParent();
         if (parent != null) {
