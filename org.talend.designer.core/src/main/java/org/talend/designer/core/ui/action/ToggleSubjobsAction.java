@@ -17,12 +17,14 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -32,6 +34,8 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 public class ToggleSubjobsAction extends Action {
 
     public static final String ID = "org.talend.designer.core.ui.action.ToggleSubjobsAction"; //$NON-NLS-1$
+
+    private static final String JOBLET_ID = "org.talend.designer.joblet.multieditor";//$NON-NLS-1$
 
     public static final String TEXT = Messages.getString("ToggleSubjobsAction.LABEL"); //$NON-NLS-1$
 
@@ -60,19 +64,29 @@ public class ToggleSubjobsAction extends Action {
                 .getEditorReferences();
 
         for (IEditorReference reference : editorParts) {
-            if (!reference.getId().equals(MultiPageTalendEditor.ID)) {
+            if (!(reference.getId().equals(MultiPageTalendEditor.ID) || reference.getId().equals(JOBLET_ID))) {
                 continue;
             }
 
-            MultiPageTalendEditor editor = (MultiPageTalendEditor) reference.getEditor(false);
-            IProcess2 process = editor.getTalendEditor().getProcess();
-
-            process.getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).setValue(display);
-            List<? extends ISubjobContainer> subjobs = process.getSubjobContainers();
-
-            for (ISubjobContainer subjobContainer : subjobs) {
-                subjobContainer.updateSubjobDisplay();
+            IEditorPart editorPart = reference.getEditor(false);
+            if (editorPart == null) {
+                continue;
             }
+            if (editorPart instanceof AbstractMultiPageTalendEditor) {
+                AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) editorPart;
+                IProcess2 process = editor.getTalendEditor().getProcess();
+
+                if (process == null) {
+                    continue;
+                }
+                process.getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).setValue(display);
+                List<? extends ISubjobContainer> subjobs = process.getSubjobContainers();
+
+                for (ISubjobContainer subjobContainer : subjobs) {
+                    subjobContainer.updateSubjobDisplay();
+                }
+            }
+
         }
     }
 
