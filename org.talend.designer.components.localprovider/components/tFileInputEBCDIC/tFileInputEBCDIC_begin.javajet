@@ -27,7 +27,7 @@
 			String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 			String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
 			
-	    	String header = ElementParameterParser.getValue(node, "__HEADER__");
+	    	/*String header = ElementParameterParser.getValue(node, "__HEADER__");
 	    	if(("").equals(header)){
 	    		header="0";
 	    	}
@@ -49,7 +49,7 @@
 	    	}
 				    	
 	    	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-	    	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
+	    	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");*/
 	    	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 			boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false; 
 %>
