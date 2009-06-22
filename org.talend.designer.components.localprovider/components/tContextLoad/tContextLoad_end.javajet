@@ -32,6 +32,7 @@
 %>
 	for(Object obj_<%=cid %> :newPropertyList_<%=cid%>){
 		System.<%=("Error").equals(newVariable)?"err":"out"%>.println("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
+		errorMessage_<%=cid %>.append("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
 	}
 <%
 	}
@@ -40,9 +41,11 @@
 		|| (("Info").equals(oldVariable) && disInfo==false) ){
 %>
 	for(Object obj_<%=cid %> :noAssignList_<%=cid %>){
-		System.<%=("Error").equals(oldVariable)?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>"); 
+		System.<%=("Error").equals(oldVariable)?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
+		errorMessage_<%=cid %>.append("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>"); 
 	}
 <%
 	}
 %> 
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+    globalMap.put("<%=cid %>_ERROR_MESSAGE",errorMessage_<%=cid %>.toString());

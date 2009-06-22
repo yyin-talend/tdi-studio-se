@@ -149,6 +149,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						catch(NumberFormatException e)
 						{
 							context.<%=ctxParam.getName()%>=null;
+							noAssignList_<%=cid %>.add(key_<%=cid %>);
 						}
 <%
 					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate) || ("Character").equals(typeToGenerate)){
@@ -165,6 +166,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	       					context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
 	   					}catch(NumberFormatException e){
 	       					context.<%=ctxParam.getName()%>=null;
+	       					assignList_<%=cid %>.add(key_<%=cid %>);
 	   					}
 <%
 					}
@@ -195,6 +197,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        						context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
    						}catch(NumberFormatException e){
        						context.<%=ctxParam.getName()%>=null;
+       						noAssignList_<%=cid %>.add(key_<%=cid %>);
    						}
 <%
 					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate) || ("Character").equals(typeToGenerate)){%>
