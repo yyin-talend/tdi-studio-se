@@ -75,7 +75,7 @@ public class ErrorMessageDialog extends Dialog {
     public ErrorMessageDialog(Shell parentShell, Node mergeNode) {
         this(parentShell);
         this.mergeNode = mergeNode;
-        content = mergeNode.getErrorInfo().getContent();
+        content = mergeNode.getErrorInfo();
 
     }
 
@@ -108,18 +108,26 @@ public class ErrorMessageDialog extends Dialog {
         String str[] = content.split("\n");//$NON-NLS-1$
         String simpleMess;
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
-            if (str.length >= 1) {
-                simpleMess = content.split("\n")[0];//$NON-NLS-1$
+            if (mergeNode.isCheckProperty()) {
+                simpleMess = Messages.getString("ErrorMessageDialog.property_error") + mergeNode.getUniqueName(); //$NON-NLS-1$
             } else {
-                simpleMess = Messages.getString("ErrorMessageDialog.EXCEP_IN_COM") + mergeNode.getUniqueName();//$NON-NLS-1$
+                if (str.length >= 1) {
+                    simpleMess = content.split("\n")[0];//$NON-NLS-1$
+                } else {
+                    simpleMess = Messages.getString("ErrorMessageDialog.EXCEP_IN_COM") + mergeNode.getUniqueName();//$NON-NLS-1$
+                }
             }
             titleLable.setText(simpleMess);
 
         } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            if (str.length >= 2) {
-                simpleMess = content.split("\n")[0] + "\n" + content.split("\n")[1];//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
+            if (mergeNode.isCheckProperty()) {
+                simpleMess = Messages.getString("ErrorMessageDialog.property_error") + mergeNode.getUniqueName(); //$NON-NLS-1$
             } else {
-                simpleMess = Messages.getString("ErrorMessageDialog.EXCEP_IN_COM") + mergeNode.getUniqueName();//$NON-NLS-1$
+                if (str.length >= 2) {
+                    simpleMess = content.split("\n")[0] + "\n" + content.split("\n")[1];//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                } else {
+                    simpleMess = Messages.getString("ErrorMessageDialog.EXCEP_IN_COM") + mergeNode.getUniqueName();//$NON-NLS-1$
+                }
             }
             titleLable.setText(simpleMess);
         }

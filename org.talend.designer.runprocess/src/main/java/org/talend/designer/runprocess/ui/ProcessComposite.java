@@ -1464,7 +1464,7 @@ public class ProcessComposite extends Composite {
                             IProcessMessage messPro = errorMessMap.get(nodeUniqueName);
                             Node node = (Node) inode;
                             node.setErrorFlag(true);
-                            node.setErrorInfo(messPro);
+                            node.setErrorInfo(messPro.getContent());
                             node.getNodeError().updateState("UPDATE_STATUS", true); //$NON-NLS-1$
                             if (node.isFileScaleComponent()) {
                                 refreshProgress(psMess, node, nodeUniqueName);

@@ -19,7 +19,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.designer.runprocess.IProcessMessage;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -45,7 +44,7 @@ public class NodeErrorFigure extends Figure {
 
     }
 
-    public void updateVisible(boolean flag, IProcessMessage mess) {
+    public void updateVisible(boolean flag, String mess) {
 
         if (flag && mess != null) {
             errorFig.setVisible(flag);

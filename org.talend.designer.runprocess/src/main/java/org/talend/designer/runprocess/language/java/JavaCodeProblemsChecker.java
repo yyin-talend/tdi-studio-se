@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.runprocess.language.java;
 
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -148,7 +151,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             // System.out.println(code);
 
             // create requestor for accumulating discovered problems
-            MyProblemRequestor problemRequestor = new MyProblemRequestor(code, iproblems);
+            MyProblemRequestor problemRequestor = new MyProblemRequestor(code, iproblems, selectedNodeName);
 
             // use working copy to hold source with error
             org.eclipse.jdt.core.ICompilationUnit workingCopy = null;
@@ -210,6 +213,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
 
         String code;
 
+        private String selectedNodeName;
+
         private ArrayList<DetailedProblem> iproblems;
 
         /**
@@ -218,10 +223,11 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
          * @param code
          * @param iproblems
          */
-        public MyProblemRequestor(String code, ArrayList<DetailedProblem> iproblems) {
+        public MyProblemRequestor(String code, ArrayList<DetailedProblem> iproblems, String selectedNodeName) {
             super();
             this.code = code;
             this.iproblems = iproblems;
+            this.selectedNodeName = selectedNodeName;
         }
 
         public void acceptProblem(IProblem problem) {
@@ -237,11 +243,65 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
 
                 // String key = extractKey(charArray, problem.getSourceStart());
                 String key = extractKey(charArray, problem.getSourceEnd());
+                if ("".equals(key) || key == null) {
+                    String nodeNameKey = getNodeNameKey(code, problem.getSourceLineNumber());
+                    if (nodeNameKey != null && selectedNodeName != null && nodeNameKey.equals(selectedNodeName)) {
+                        key = selectedNodeName;
+                    }
+                }
                 DetailedProblem detailedProblem = new DetailedProblem(problem, key, source);
                 iproblems.add(detailedProblem);
                 alreadyAdded.add(keyAlreadyAdded);
             }
 
+        }
+
+        private String getNodeNameKey(String codeCon, int lineNum) {
+            int returnline = 0;
+            int endline = 0;
+            String nodeName = null;
+            Pattern patternStart = null;
+            Pattern patternEnd = null;
+            Perl5Compiler compilerStart = new Perl5Compiler();
+            Perl5Compiler compilerEnd = new Perl5Compiler();
+            Perl5Matcher matcher = new Perl5Matcher();
+            try {
+                patternStart = compilerStart.compile("\\*\\s\\[\\s*(\\w+_\\d)+\\s*\\w+\\s*\\]\\s*start");//$NON-NLS-1$
+                patternEnd = compilerEnd.compile("\\*\\s\\[\\s*(\\w+_\\d)+\\s*\\w+\\s*\\]\\s*end");
+            } catch (MalformedPatternException e) {
+                ExceptionHandler.process(e);
+                return null;
+            }
+            LineNumberReader lineReader = new LineNumberReader(new StringReader(codeCon));
+            String ste = null;
+            try {
+                while ((ste = lineReader.readLine()) != null) {
+                    int cur = lineReader.getLineNumber();
+                    if (cur <= lineNum) {
+                        if (matcher.contains(ste, patternStart)) {
+                            // System.out.println(ste);
+                            MatchResult matchResult = matcher.getMatch();
+                            returnline = cur;
+                            nodeName = matchResult.group(1);
+                        } else if (matcher.contains(ste, patternEnd)) {
+                            endline = cur;
+                        }
+                    } else
+                        break;
+                }
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            } finally {
+                try {
+                    lineReader.close();
+                } catch (IOException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+            if (endline != 0 && endline > returnline && endline <= lineNum) {
+                nodeName = null;
+            }
+            return nodeName;// new String[] { String.valueOf(returnline), returnString };
         }
 
         private String extractKey(char[] contents, int start) {
@@ -313,7 +373,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
         JavaCodeProblemsChecker checker = new JavaCodeProblemsChecker();
 
         String string = "/** Start field xxx:hhhh:gggg */row1.fff /** End field xxx:hhhh:gggg */"; //$NON-NLS-1$
-        MyProblemRequestor requestor = checker.new MyProblemRequestor(string, null);
+        MyProblemRequestor requestor = checker.new MyProblemRequestor(string, null, "");
 
         requestor.extractKey(string.toCharArray(), 36);
     }

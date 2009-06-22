@@ -15,8 +15,10 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.Command;
@@ -157,6 +159,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected static final int STANDARD_BUTTON_WIDTH = 25;
 
     protected static final String DOTS_BUTTON = "icons/dots_button.gif"; //$NON-NLS-1$s
+
+    private static Map<String, Problem> proForPerlErrorMark = new HashMap<String, Problem>();
 
     protected EParameterFieldType paramFieldType;
 
@@ -548,12 +552,18 @@ public abstract class AbstractElementPropertySectionController implements Proper
             ControlProperties existingControlProperties = controlToProp.get(control);
 
             List<Problem> problems = new ArrayList<Problem>();
+            List<Problem> proForJavaErrorMark = new ArrayList<Problem>();
             if (valueFinal != null) {
+                String key = CodeGenerationUtils.buildProblemKey(elem.getElementName(), elementParameter.getName());
                 if (language == ECodeLanguage.PERL) {
                     problems = syntaxChecker.checkProblemsForExpression(valueFinal);
+                    getAllPerlProblem(key, problems);
+                    showErrorMarkForPerl(elem);
                 } else if (language == ECodeLanguage.JAVA) {
-                    String key = CodeGenerationUtils.buildProblemKey(elem.getElementName(), elementParameter.getName());
                     problems = syntaxChecker.checkProblemsFromKey(key, null);
+                    proForJavaErrorMark = syntaxChecker.checkProblemsForErrorMark(key, null);
+                    showErrorMarkForJava(proForJavaErrorMark, elem);
+
                 }
             }
 
@@ -586,6 +596,160 @@ public abstract class AbstractElementPropertySectionController implements Proper
             } else {
                 resetErrorState(control);
             }
+        }
+
+        private void getAllPerlProblem(String key, List<Problem> problems) {
+            if (proForPerlErrorMark != null && proForPerlErrorMark.size() > 0) {
+                int indexM = key.indexOf(":");//$NON-NLS-1$
+                String keyAfter = "";//$NON-NLS-1$
+                if (indexM > 0) {
+                    keyAfter = key.substring(0, key.indexOf(":"));//$NON-NLS-1$
+                } else {
+                    keyAfter = key;
+                }
+                Set<Map.Entry<String, Problem>> set = proForPerlErrorMark.entrySet();
+                for (Iterator<Map.Entry<String, Problem>> ite = set.iterator(); ite.hasNext();) {
+                    Map.Entry<String, Problem> tmp = ite.next();
+                    if (tmp == null) {
+                        continue;
+                    }
+
+                    String proKey = tmp.getKey();
+                    if (proKey == null) {
+                        proKey = "";//$NON-NLS-1$
+                    }
+                    int indMark = proKey.indexOf(":");//$NON-NLS-1$
+                    if (indMark > 0) {
+                        proKey = proKey.substring(0, proKey.indexOf(":"));//$NON-NLS-1$
+                    }
+                    if (!proKey.equals(keyAfter)) {
+                        ite.remove();
+                    }
+                }
+            }
+            if (problems != null && problems.size() > 0) {
+                for (Problem problem : problems) {
+                    if (problem != null) {
+                        proForPerlErrorMark.put(key, problem);
+                    } else {
+                        proForPerlErrorMark.put(key, new Problem());
+                    }
+                    return;
+                }
+
+            } else {
+                proForPerlErrorMark.put(key, new Problem());
+            }
+        }
+
+        private void showErrorMarkForPerl(Element elem) {
+            if (elem instanceof Node) {
+                Node errorNode = (Node) elem;
+                if (errorNode == null) {
+                    return;
+                }
+                StringBuffer errorMessage = new StringBuffer(256);
+                if (proForPerlErrorMark != null && proForPerlErrorMark.size() > 0) {
+                    Set<Map.Entry<String, Problem>> set = proForPerlErrorMark.entrySet();
+
+                    for (Iterator<Map.Entry<String, Problem>> ite = set.iterator(); ite.hasNext();) {
+                        Map.Entry<String, Problem> tmp = ite.next();
+                        if (tmp == null) {
+                            continue;
+                        }
+                        Problem pro = tmp.getValue();
+                        if (pro == null) {
+                            continue;
+                        }
+                        String description = pro.getDescription();
+                        if (!"".equals(description) && description != null) {//$NON-NLS-1$
+                            errorMessage.append(description.replaceFirst("\r\n", ""));//$NON-NLS-1$//$NON-NLS-1$
+                            errorMessage.append("\n");//$NON-NLS-1$
+                        }
+
+                    }
+
+                    if ((!"".equals(errorMessage.toString())) && errorMessage != null) {
+                        if (errorNode.isCheckProperty() == false) {
+                            errorNode.setCheckProperty(true);
+                            errorNode.setErrorFlag(true);
+                            errorNode.setErrorInfo(errorMessage.toString());
+                            errorNode.getNodeError().updateState("UPDATE_STATUS", true);//$NON-NLS-1$
+                            errorNode.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
+                        }
+                    } else {
+                        if (errorNode.isCheckProperty()) {
+                            errorNode.setCheckProperty(false);
+                            errorNode.setErrorFlag(false);
+                            errorNode.setErrorInfo(null);
+                            errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                            errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                        }
+                    }
+
+                } else {
+                    if (errorNode.isCheckProperty()) {
+
+                        errorNode.setCheckProperty(false);
+                        errorNode.setErrorFlag(false);
+                        errorNode.setErrorInfo(null);
+                        errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                        errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                    }
+
+                }
+            }
+        }
+
+        private void showErrorMarkForJava(List<Problem> problems, Element elem) {
+            Node errorNode = null;
+            if (elem instanceof Node) {
+                errorNode = (Node) elem;
+                if (errorNode == null) {
+                    return;
+                }
+                if (problems != null && problems.size() > 0) {
+                    StringBuffer errorMessage = new StringBuffer(256);
+                    for (Problem pro : problems) {
+                        if (pro == null || pro.getDescription() == null) {
+                            continue;
+                        }
+                        if (pro.getKey() != null) {
+                            int indMark = pro.getKey().indexOf(":");//$NON-NLS-1$
+                            String proKey = "";//$NON-NLS-1$
+                            if (indMark > 0) {
+                                proKey = pro.getKey().substring(0, pro.getKey().indexOf(":"));//$NON-NLS-1$
+                            } else {
+                                proKey = pro.getKey();
+                            }
+                            if (errorNode.getUniqueName().equals(proKey)) {
+                                errorMessage.append(pro.getDescription());
+                                errorMessage.append("\n");//$NON-NLS-1$
+                            }
+                        }
+                    }
+                    if (errorNode.isCheckProperty() == false) {
+                        if ((!"".equals(errorMessage)) && errorMessage != null) {//$NON-NLS-1$
+                            errorNode.setCheckProperty(true);
+                            errorNode.setErrorFlag(true);
+                            errorNode.setErrorInfo(errorMessage.toString());
+                            errorNode.getNodeError().updateState("UPDATE_STATUS", true);//$NON-NLS-1$
+                            errorNode.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
+                        }
+                    }
+                } else {
+                    if (errorNode.isCheckProperty()) {
+
+                        errorNode.setCheckProperty(false);
+                        errorNode.setErrorFlag(false);
+                        errorNode.setErrorInfo(null);
+                        errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                        errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                    }
+                }
+
+            }
+
         }
 
         /**

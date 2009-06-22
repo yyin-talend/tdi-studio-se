@@ -91,7 +91,6 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.UpgradeElementHelper;
-import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -202,7 +201,17 @@ public class Node extends Element implements INode {
 
     private boolean errorFlag;
 
-    private IProcessMessage errorInfo;
+    private String errorInfo;
+
+    private boolean checkProperty;
+
+    public boolean isCheckProperty() {
+        return this.checkProperty;
+    }
+
+    public void setCheckProperty(boolean checkProperty) {
+        this.checkProperty = checkProperty;
+    }
 
     public boolean isErrorFlag() {
         return this.errorFlag;
@@ -212,11 +221,11 @@ public class Node extends Element implements INode {
         this.errorFlag = errorFlag;
     }
 
-    public IProcessMessage getErrorInfo() {
+    public String getErrorInfo() {
         return this.errorInfo;
     }
 
-    public void setErrorInfo(IProcessMessage errorInfo) {
+    public void setErrorInfo(String errorInfo) {
         this.errorInfo = errorInfo;
     }
 
