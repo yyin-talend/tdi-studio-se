@@ -14,7 +14,7 @@
 	String cid = node.getUniqueName();
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
-		
+	String ignoreFailureAtQuit= ElementParameterParser.getValue(node,"__IGNORE_FAILURE_AT_QUIT__");
 	if(sftp){
 %>
  	}
@@ -29,13 +29,6 @@
     
 <%}else{%>
 	}
-<%
-	if(!("true").equals(useExistingConn))
-	{
-		%>
-
-	ftp<%=cid %>.quit();
-	<%}%>
 	
 	msg_<%=cid%>.add(ftp<%=cid %>.getUploadCount() + " files have been uploaded.");
 	
@@ -48,7 +41,24 @@
     }
 	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
 	
-<%}%>
+<%
+		if(!("true").equals(useExistingConn)){
+ 			if(("true").equals(ignoreFailureAtQuit)){
+%>
+				try{
+					ftp<%=cid %>.quit();
+				}catch(java.net.SocketException se_<%=cid%>){
+					//ignore failure
+				}
+<%
+			}else{
+%>
+				ftp<%=cid %>.quit();
+<%
+			}
+		}
+	}
+%>
 	
 	
 globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);

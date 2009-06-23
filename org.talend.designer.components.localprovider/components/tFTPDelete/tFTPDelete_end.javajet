@@ -13,21 +13,34 @@
 	String cid = node.getUniqueName();
 	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-	
+	String ignoreFailureAtQuit= ElementParameterParser.getValue(node,"__IGNORE_FAILURE_AT_QUIT__");
 	if(sftp){
 %>
- } 
-    session<%=cid%>.disconnect(); 
+ 		} 
+    	session<%=cid%>.disconnect(); 
     
-<%}else{%>
-	} 
+<%
+	}else{
+%>
+		} 
 	
- 	<% if(!("true").equals(useExistingConn)){%>
-		
-	ftp<%=cid %>.quit();
-	
-	<%} %>
-	
-<%}%>
+<%
+		if(!("true").equals(useExistingConn)){
+ 			if(("true").equals(ignoreFailureAtQuit)){
+%>
+				try{
+					ftp<%=cid %>.quit();
+				}catch(java.net.SocketException se_<%=cid%>){
+					//ignore failure
+				}
+<%
+			}else{
+%>
+				ftp<%=cid %>.quit();
+<%
+			}
+		}
+	}
+%>
 
 globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
