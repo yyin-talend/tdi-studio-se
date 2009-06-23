@@ -48,6 +48,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -200,6 +202,7 @@ public class ProcessComposite extends Composite {
     public ProcessComposite(Composite parent, int style) {
         super(parent, style);
         initGraphicComponents(parent);
+
     }
 
     /**
@@ -515,7 +518,29 @@ public class ProcessComposite extends Composite {
         data.minimumHeight = MINIMUM_HEIGHT;
         data.minimumWidth = MINIMUM_WIDTH;
         consoleText.setLayoutData(data);
+        // feature 6875, add searching capability, nma
+        consoleText.addKeyListener(new KeyListener() {
 
+            public void keyPressed(KeyEvent evt) {
+                // select all
+                if ((evt.stateMask == SWT.CTRL) && (evt.keyCode == 'a')) {
+                    if (consoleText.getText().length() > 0)
+                        consoleText.setSelection(0, (consoleText.getText().length() - 1));
+                }
+                // search special string value
+                else if ((evt.stateMask == SWT.CTRL) && (evt.keyCode == 'f')) {
+                    FindDialog td = new FindDialog(Display.getCurrent().getActiveShell());
+                    td.setConsoleText(consoleText);
+                    td.setBlockOnOpen(true);
+                    td.open();
+
+                }
+            }
+
+            public void keyReleased(KeyEvent arg0) {
+
+            }
+        });
         // see feature 0004895: Font size of the output console are very small
         if (!setConsoleFont()) {
             Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
@@ -1034,7 +1059,6 @@ public class ProcessComposite extends Composite {
         }
 
         consoleText.setStyleRange(style);
-
     }
 
     /**
