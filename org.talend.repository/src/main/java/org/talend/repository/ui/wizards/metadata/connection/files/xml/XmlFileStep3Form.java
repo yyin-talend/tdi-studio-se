@@ -280,9 +280,9 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(boolean defaultContext) {
         XmlFileConnection connection2 = OtherConnectionContextUtils.getOriginalValueConnection(getConnection(),
-                this.connectionItem, isContextMode());
+                this.connectionItem, isContextMode(), defaultContext);
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(connection2);
         return processDescription;
     }
@@ -311,7 +311,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         try {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_XML"); //$NON-NLS-1$
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(true), "FILE_XML"); //$NON-NLS-1$
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 

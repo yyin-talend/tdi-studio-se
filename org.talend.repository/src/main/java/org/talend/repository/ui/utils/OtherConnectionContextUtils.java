@@ -668,9 +668,10 @@ public final class OtherConnectionContextUtils {
     }
 
     public static XmlFileConnection getOriginalValueConnection(XmlFileConnection connection, ConnectionItem connectionItem,
-            boolean isContextMode) {
+            boolean isContextMode, boolean defaultContext) {
         if (isContextMode) {
-            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(),
+                    defaultContext);
             return (XmlFileConnection) OtherConnectionContextUtils.cloneOriginalValueXmlFileConnection(connection, contextType);
         }
         return connection;

@@ -253,7 +253,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     TableItem tableItem = loopTableItems[i];
                     XmlXPathLoopDescriptor xpathLoopDescriptor = xpathLoopDescriptorList.get(i);
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(xpathLoopDescriptor
-                            .getConnection());
+                            .getConnection(), true);
                     String originalValue = xpathLoopDescriptor.getAbsoluteXPathQuery();
                     if (contextType != null) {
                         originalValue = ConnectionContextHelper.getOriginalValue(contextType, xpathLoopDescriptor
