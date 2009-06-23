@@ -335,15 +335,20 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         fileFieldXml.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
+                String text = fileFieldXml.getText();
+                if (isContextMode()) {
+                    ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
+                            connectionItem.getConnection(), true);
+                    text = ConnectionContextHelper.getOriginalValue(contextType, text);
+                }
                 getConnection().setXmlFilePath(PathUtils.getPortablePath(fileFieldXml.getText()));
                 BufferedReader in = null;
 
                 try {
-                    File file = new File(getConnection().getXmlFilePath());
+                    File file = new File(text);
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
                     String str;
-                    in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
-                            guessedCharset.displayName()));
+                    in = new BufferedReader(new InputStreamReader(new FileInputStream(file), guessedCharset.displayName()));
                     while ((str = in.readLine()) != null) {
                         if (str.contains("encoding")) { //$NON-NLS-1$
                             String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$"; //$NON-NLS-1$
@@ -365,7 +370,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                         }
                     }
                 } catch (Exception ex) {
-                    String fileStr = fileFieldXml.getText();
+                    String fileStr = text;
                     String msgError = "XML" + " \"" + fileStr.replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                             + "\"\n"; //$NON-NLS-1$
                     if (ex instanceof FileNotFoundException) {
@@ -390,13 +395,15 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                         ExceptionHandler.process(ex2);
                     }
                 }
-                getConnection().setEncoding(encoding);
-                if (encoding != null && !("").equals(encoding)) { //$NON-NLS-1$
-                    encodingCombo.setText(encoding);
-                } else {
-                    encodingCombo.setText("UTF-8"); //$NON-NLS-1$
+                if (getConnection().getEncoding() == null || "".equals(getConnection().getEncoding())) {
+                    getConnection().setEncoding(encoding);
+                    if (encoding != null && !("").equals(encoding)) { //$NON-NLS-1$
+                        encodingCombo.setText(encoding);
+                    } else {
+                        encodingCombo.setText("UTF-8"); //$NON-NLS-1$
+                    }
                 }
-                valid = treePopulator.populateTree(fileFieldXml.getText(), treeNode);
+                valid = treePopulator.populateTree(text, treeNode);
                 checkFieldsValue();
             }
         });
@@ -453,6 +460,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             // Fields to the Group Delimited File Settings
             if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) { //$NON-NLS-1$
                 encodingCombo.setText(getConnection().getEncoding());
+                fileFieldXml.setText(getConnection().getXmlFilePath());
             } else {
                 encodingCombo.select(0);
             }
@@ -480,9 +488,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                             .error(Messages.getString("FileStep.moduleFailure") + " XML::LibXML " + Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
-            if (isContextMode()) {
-                adaptFormToEditable();
-            }
+
+            adaptFormToEditable();
 
         }
     }
