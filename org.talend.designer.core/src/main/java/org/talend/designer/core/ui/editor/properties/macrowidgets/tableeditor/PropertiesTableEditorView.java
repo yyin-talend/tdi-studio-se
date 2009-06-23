@@ -29,6 +29,8 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
@@ -58,6 +60,7 @@ import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.ui.event.CheckColumnSelectionListener;
 
 /**
  * MetadataTableEditorView2 must be used.
@@ -285,7 +288,17 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case CHECK:
                     column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
                             && (!currentParam.isReadOnly()));
+                    CheckColumnSelectionListener tableColumnSelectionListener = new CheckColumnSelectionListener(column,
+                            tableViewerCreator, currentParam);
+                    column.setTableColumnSelectionListener(tableColumnSelectionListener);
                     column.setTableEditorContent(new CheckboxTableEditorContent());
+                    Boolean curValue = (Boolean) currentParam.getValue();
+                    tableColumnSelectionListener.setChecked(curValue.booleanValue());
+                    if (curValue.booleanValue()) {
+                        column.setImageHeader(ImageProvider.getImage(EImage.CHECKED_ICON));
+                    } else {
+                        column.setImageHeader(ImageProvider.getImage(EImage.UNCHECKED_ICON));
+                    }
                     column.setDisplayedValue(""); //$NON-NLS-1$
                     break;
                 case SCHEMA_TYPE:
