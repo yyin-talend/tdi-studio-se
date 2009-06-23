@@ -121,7 +121,7 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="Driver-VERTICA" MODULE="vertica_2.5_jdk_5.jar"
+			<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar"
 				REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
