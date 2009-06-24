@@ -204,7 +204,7 @@ try{
     hasException_<%=cid %>=true;
    }
    if(hasException_<%=cid %>){
-   <%=rejectConnName %>.<%=outLabel %>=null;
+   //<%=rejectConnName %>.<%=outLabel %>=null;
    hasException_<%=cid %>=false;
    }else{
    <%=rejectConnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
@@ -222,7 +222,7 @@ try{
      hasException_<%=cid %>=true;
    }
    if(hasException_<%=cid %>){
-   <%=rejectConnName %>.<%=outLabel %>=null;
+   //<%=rejectConnName %>.<%=outLabel %>=null;
    hasException_<%=cid %>=false;
    }else{
    <%=rejectConnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
@@ -377,7 +377,7 @@ try{
     hasException_<%=cid %>=true;
    }
    if(hasException_<%=cid %>){
-   <%=rejectConnName %>.<%=outLabel %>=null;
+   //<%=rejectConnName %>.<%=outLabel %>=null;
    hasException_<%=cid %>=false;
    }else{
    <%=rejectConnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
@@ -395,7 +395,7 @@ try{
      hasException_<%=cid %>=true;
    }
    if(hasException_<%=cid %>){
-   <%=rejectConnName %>.<%=outLabel %>=null;
+   //<%=rejectConnName %>.<%=outLabel %>=null;
    hasException_<%=cid %>=false;
    }else{
    <%=rejectConnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
