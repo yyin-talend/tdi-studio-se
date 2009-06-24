@@ -36,6 +36,7 @@ public class FileCopy {
     public static void copyFile(String srcFileName, String desFileName, boolean delSrc) throws Exception {
 
         FileInputStream srcInputStream = new FileInputStream(srcFileName);
+        long lastModified = new File(srcFileName).lastModified();
         int available = srcInputStream.available();
         if (available > L_SIZE) {// X > 100M
             copyFileL(srcFileName, srcInputStream, desFileName, delSrc);
@@ -45,7 +46,7 @@ public class FileCopy {
             copyFileS(srcFileName, srcInputStream, desFileName, delSrc);
         }
         // keep modification_time
-        new File(desFileName).setLastModified(new File(srcFileName).lastModified());
+        new File(desFileName).setLastModified(lastModified);
     }
 
     private static void copyFileS(String srcFileName, FileInputStream srcInputStream, String desFileName, boolean delSrc)
