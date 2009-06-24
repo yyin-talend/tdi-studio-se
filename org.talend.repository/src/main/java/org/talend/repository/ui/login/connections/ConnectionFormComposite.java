@@ -579,7 +579,7 @@ public class ConnectionFormComposite extends Composite {
 
     public String getRecentWorkSpace() {
         String defaultPath = Platform.getInstanceLocation().getURL().toString();
-        String filePath = defaultPath.substring(defaultPath.indexOf("/") + 1, defaultPath.length() - 1); //$NON-NLS-1$
+        String filePath = defaultPath.substring(defaultPath.indexOf("/"), defaultPath.length() - 1); //$NON-NLS-1$
         return filePath;
     }
 

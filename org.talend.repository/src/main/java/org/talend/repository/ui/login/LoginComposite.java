@@ -756,12 +756,14 @@ public class LoginComposite extends Composite {
             return false;
         }
         String workspace = bean.getWorkSpace();
-        if (String.valueOf(workspace.charAt(0)).equals("/")) {
-            workspace = workspace.substring(1, workspace.length());
-        }
-        String defaultPath = Platform.getInstanceLocation().getURL().toString();
-        String filePath = defaultPath.substring(defaultPath.indexOf("/") + 1, defaultPath.length() - 1); //$NON-NLS-1$
-        return workspace.equals(filePath);
+        // if (String.valueOf(workspace.charAt(0)).equals("/")) {
+        // workspace = workspace.substring(1, workspace.length());
+        // }
+
+        String defaultPath = Platform.getInstanceLocation().getURL().getPath();
+        String filePath1 = defaultPath.substring(defaultPath.indexOf("/"), defaultPath.length() - 1); //$NON-NLS-1$
+        String filePath2 = defaultPath.substring(defaultPath.indexOf("/") + 1, defaultPath.length() - 1); //$NON-NLS-1$
+        return workspace.equals(filePath1) || workspace.equals(filePath2);
     }
 
     private void updateVisible() {
