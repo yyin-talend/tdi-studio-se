@@ -63,6 +63,7 @@ import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
+import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
@@ -98,6 +99,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -524,6 +526,28 @@ public abstract class AbstractElementPropertySectionController implements Proper
             resetErrorState(control);
         }
 
+        private void refreshNode() {
+            boolean flag = CorePlugin.getDefault().getPreferenceStore().getBoolean(
+                    TalendDesignerPrefConstants.PROPERTY_CODE_CHECK);
+            if (flag) {
+                return;
+            }
+            if (elem instanceof Node) {
+                Node errorNode = (Node) elem;
+                if (errorNode == null) {
+                    return;
+                }
+                if (errorNode.isCheckProperty()) {
+                    errorNode.setCheckProperty(false);
+                    errorNode.setErrorFlag(false);
+                    errorNode.setErrorInfo(null);
+                    errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                    errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
+                }
+            }
+
+        }
+
         /**
          * DOC amaumont Comment method "checkSyntax".
          * 
@@ -531,7 +555,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
          * @param modifying
          */
         public void checkErrors(final Control control) {
-
+            refreshNode();
             IElementParameter elementParameter = elem.getElementParameter(getParameterName(control));
 
             if (elementParameter.isReadOnly() || elementParameter.isNoCheck()) {
