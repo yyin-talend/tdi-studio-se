@@ -13,18 +13,25 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.components.EComponentType;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -145,13 +152,38 @@ public class PropertyChangeCommand extends Command {
         }
         if (propName.contains(EParameterName.PROCESS_TYPE_VERSION.getName())) {
             // newValue is the id of the job
-            IElementParameter processIdParam = currentParam.getParentParameter().getChildParameters().get(
-                    EParameterName.PROCESS_TYPE_PROCESS.getName());
-            ProcessItem processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(), (String) newValue);
-            if (processItem != null) {
-                processIdParam.setLinkedRepositoryItem(processItem);
-                currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
+
+            // hywang add for feature 6549
+            // 1.to see current component if is a jobletComponent by "elem"
+            boolean isJobletComponent = false;
+            // Node jobletNode = null;
+            IJobletProviderService service = null;
+            if (PluginChecker.isJobLetPluginLoaded()) {
+                service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(IJobletProviderService.class);
             }
+            if (elem instanceof Node) {
+                // jobletNode = (Node) elem;
+                if (service != null) {
+                    isJobletComponent = service.isJobletComponent((Node) elem);
+                }
+            }
+            if (isJobletComponent) {
+                // 2.if it is a jobletcomponent,reload the component by the version
+                String id = service.getJobletComponentItem((Node) elem).getId();
+                String version = (String) newValue;
+                IComponent newComponent = service.setPropertyForJobletComponent(id, version);
+                reloadNode((Node) elem, newComponent);
+            } else {
+
+                IElementParameter processIdParam = currentParam.getParentParameter().getChildParameters().get(
+                        EParameterName.PROCESS_TYPE_PROCESS.getName());
+                ProcessItem processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(), (String) newValue);
+                if (processItem != null) {
+                    processIdParam.setLinkedRepositoryItem(processItem);
+                    currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
+                }
+            }
+
         }
         if (propName.contains(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
             if (elem instanceof Node) {
@@ -488,6 +520,33 @@ public class PropertyChangeCommand extends Command {
 
     public Object getNewValue() {
         return this.newValue;
+    }
+
+    private Map<String, Object> createParameters(Node node) {
+        if (node == null) {
+            Collections.emptyMap();
+        }
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
+            if (node.getExternalData() != null) {
+                parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+            }
+            parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
+        }
+        parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
+        parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
+
+        return parameters;
+    }
+
+    private void reloadNode(Node node, IComponent newComponent) {
+        if (node == null || newComponent == null) {
+            return;
+        }
+        Map<String, Object> parameters = createParameters(node);
+        if (!parameters.isEmpty()) {
+            node.reloadComponent(newComponent, parameters);
+        }
     }
 
 }
