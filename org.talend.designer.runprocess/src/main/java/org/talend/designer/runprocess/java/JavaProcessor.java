@@ -857,11 +857,12 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             command = "java"; //$NON-NLS-1$
         }
 
+        boolean win32 = targetPlatform.equals(Platform.OS_WIN32);
         String classPathSeparator;
         if (targetPlatform == null) {
             classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
         } else {
-            if (targetPlatform.equals(Platform.OS_WIN32)) {
+            if (win32) {
                 classPathSeparator = ";"; //$NON-NLS-1$
             } else {
                 classPathSeparator = ":"; //$NON-NLS-1$
@@ -883,11 +884,16 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
         }
 
+        String unixRootPath = "$ROOT_PATH/";
+
         StringBuffer libPath = new StringBuffer();
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && neededLibraries.contains(externalLib.getName())) {
+		            if (!win32) {
+	                    libPath.append(unixRootPath);
+	                }
                     if (ProcessorUtilities.isExportConfig()) {
                         libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName()) + classPathSeparator);
                     } else {
@@ -923,14 +929,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            exportJar = classPathSeparator + process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
+            exportJar = classPathSeparator + (!win32 ? unixRootPath : "") + process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
             for (JobInfo jobInfo : jobInfos) {
                 if (jobInfo.getJobVersion() != null) {
                     version = "_" + jobInfo.getJobVersion(); //$NON-NLS-1$
                     version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                exportJar += jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
+                exportJar +=  (!win32 ? unixRootPath : "") + jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             }
         }
 
@@ -940,8 +946,18 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         } else {
             libFolder = new Path(externalLibDirectory.getAbsolutePath()).toPortableString() + classPathSeparator;
         }
-        String[] strings = new String[] { new Path(command).toPortableString(), "-cp", //$NON-NLS-1$
-                libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
+        String portableCommand = new Path(command).toPortableString();
+        String portableProjectPath = new Path(projectPath).toPortableString();
+
+        portableProjectPath = "$ROOT_PATH" + classPathSeparator + portableProjectPath;
+        
+        if(!win32) {
+            portableProjectPath = portableProjectPath.replace(ProcessorUtilities.getLibraryPath(), unixRootPath + ProcessorUtilities.getLibraryPath());
+            libFolder = libFolder.replace(ProcessorUtilities.getLibraryPath(), unixRootPath + ProcessorUtilities.getLibraryPath());
+        }
+        
+        String[] strings = new String[] { portableCommand, "-cp", //$NON-NLS-1$
+                libPath.toString() + portableProjectPath + exportJar + libFolder, className };
         String[] cmd2 = addVMArguments(strings);
         // achen modify to fix 0001268
         if (!ProcessorUtilities.isExportConfig()) {
@@ -950,6 +966,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             List<String> list = new ArrayList<String>();
             if (":".equals(classPathSeparator)) { //$NON-NLS-1$
                 list.add("cd `dirname $0`\n"); //$NON-NLS-1$
+                list.add("ROOT_PATH=`pwd`\n"); //$NON-NLS-1$
             } else {
                 list.add("cd %~dp0\r\n"); //$NON-NLS-1$
             }
