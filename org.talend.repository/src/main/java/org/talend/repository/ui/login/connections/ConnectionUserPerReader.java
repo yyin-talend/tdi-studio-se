@@ -130,19 +130,22 @@ public class ConnectionUserPerReader {
             this.readProperties();
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        for (ConnectionBean currentConnection : cons) {
-            String userName = currentConnection.getName();
+        if (cons == null || cons.size() == 0) {
+            proper.remove("connection.users");//$NON-NLS-1$
+        } else {
+            for (ConnectionBean currentConnection : cons) {
+                String userName = currentConnection.getName();
 
-            if (i != 0 && userName != null) {
-                sb.append("|");//$NON-NLS-1$
+                if (i != 0 && userName != null) {
+                    sb.append("|");//$NON-NLS-1$
+                }
+                if (userName != null)
+                    sb.append(userName);
+                proper.setProperty(userName, currentConnection.readToString());
+                i++;
             }
-            if (userName != null)
-                sb.append(userName);
-            proper.setProperty(userName, currentConnection.readToString());
-
-            i++;
+            proper.setProperty("connection.users", sb.toString());//$NON-NLS-1$
         }
-        proper.setProperty("connection.users", sb.toString());//$NON-NLS-1$
         try {
 
             FileOutputStream out = new FileOutputStream(perfile);
@@ -157,10 +160,24 @@ public class ConnectionUserPerReader {
             createPropertyFile();
         if (!isRead)
             this.readProperties();
-        String userName = bean.getName();
-        String workSpace = bean.getWorkSpace();
-        proper.setProperty("connection.lastConnection", userName);//$NON-NLS-1$
-        proper.setProperty("connection.lastWorkSpace", workSpace);//$NON-NLS-1$
+        if (bean == null) {
+            proper.remove("connection.lastConnection");
+            proper.remove("connection.lastWorkSpace");
+        } else {
+            String userName = bean.getName();
+            String workSpace = bean.getWorkSpace();
+            if (!"".equals(userName) && userName != null) {
+                proper.setProperty("connection.lastConnection", userName);//$NON-NLS-1$
+            } else {
+                proper.remove("connection.lastConnection");
+            }
+            if (!"".equals(workSpace) && workSpace != null) {
+                proper.setProperty("connection.lastWorkSpace", workSpace);//$NON-NLS-1$
+            } else {
+                proper.remove("connection.lastWorkSpace");
+            }
+
+        }
         FileOutputStream out;
         try {
             out = new FileOutputStream(perfile);
