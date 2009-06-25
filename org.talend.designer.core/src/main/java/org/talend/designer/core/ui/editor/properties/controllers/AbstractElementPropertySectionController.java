@@ -70,6 +70,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -1187,6 +1188,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String driverClass = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_CLASS.getName());
         connParameters.setDriverClass(TalendTextUtils.removeQuotes(driverClass));
+
+        if (driverClass != null && !"".equals(driverClass)) {
+            if (driverClass.startsWith("\"") && driverClass.endsWith("\"")) {
+                driverClass = TalendTextUtils.removeQuotes(driverClass);
+            }
+            String dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(driverClass);
+            connParameters.setDbType(dbTypeByClassName);
+        }
 
         String jdbcProps = getValueFromRepositoryName(element, EConnectionParameterName.PROPERTIES_STRING.getName());
         connParameters.setJdbcProperties(jdbcProps);

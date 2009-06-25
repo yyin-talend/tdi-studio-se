@@ -658,7 +658,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             if (isStatus) {
 
                 info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(), iMetadataConnection
-                        .getPassword(), iMetadataConnection.getDbVersionString(), iMetadataConnection.getUrl());
+                        .getPassword(), iMetadataConnection.getDbVersionString(), iMetadataConnection.getUrl(),
+                        iMetadataConnection.getDriverJarPath());
                 final Property property = (Property) GuessSchemaProcess.getNewmockProperty();
                 List<IContext> allcontexts = inputNode.getProcess().getContextManager().getListContext();
 
