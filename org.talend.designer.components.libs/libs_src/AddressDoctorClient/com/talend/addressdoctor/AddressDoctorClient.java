@@ -55,7 +55,7 @@ public class AddressDoctorClient {
 			if (resp.getResultCount()>0) {
 				return results;
 			} else  {
-				throw new Exception(resp.getErrorCode() + " " + resp.getErrorMessage());
+				throw new Exception(resp.getErrorCode() + ":" + resp.getErrorMessage()+":"+resp.getValidationStatus());
 			}
 		} catch (ServiceException e) {
 			throw e;
