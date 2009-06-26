@@ -859,6 +859,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         boolean win32 = false;
         String classPathSeparator;
         if (targetPlatform == null) {
+            if (Platform.getOS().equals(Platform.OS_WIN32)) {
+                targetPlatform = Platform.OS_WIN32;
+            }
             classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
         } else {
             win32 = targetPlatform.equals(Platform.OS_WIN32);
@@ -958,7 +961,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 portableProjectPath = portableProjectPath.replace(libraryPath, unixRootPath + libraryPath);
                 libFolder = libFolder.replace(libraryPath, unixRootPath + libraryPath);
             }
-
+            
         }
         String[] strings = new String[] { portableCommand, "-cp", //$NON-NLS-1$
                 libPath.toString() + portableProjectPath + exportJar + libFolder, className };
