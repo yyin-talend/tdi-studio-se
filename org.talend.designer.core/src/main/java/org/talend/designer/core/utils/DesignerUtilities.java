@@ -128,14 +128,16 @@ public class DesignerUtilities {
     }
 
     public static void setSchemaDB(IElementParameter schemaDB, Object value) {
-        if (value instanceof String) {
-            if (JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS.equals((String) value)
-                    || JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS.equals((String) value)
-                    || JobSettingsConstants.ORACLE_INOUT_SN_ALIAS.equals((String) value)
-                    || JobSettingsConstants.ORACLE_INPUT_SID_ALIAS.equals((String) value)) {
-                schemaDB.setRequired(true);
-            } else {
-                schemaDB.setRequired(false);
+        if (schemaDB != null) {
+            if (value instanceof String) {
+                if (JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS.equals((String) value)
+                        || JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS.equals((String) value)
+                        || JobSettingsConstants.ORACLE_INOUT_SN_ALIAS.equals((String) value)
+                        || JobSettingsConstants.ORACLE_INPUT_SID_ALIAS.equals((String) value)) {
+                    schemaDB.setRequired(true);
+                } else {
+                    schemaDB.setRequired(false);
+                }
             }
         }
 
