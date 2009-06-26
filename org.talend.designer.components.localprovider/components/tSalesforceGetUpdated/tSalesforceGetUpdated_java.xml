@@ -60,15 +60,15 @@
       FIELD="TEXT"
       NUM_ROW="8"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
     </PARAMETER>
 	
 	<PARAMETER
       NAME="END_DATE"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
     </PARAMETER>
   
     <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
