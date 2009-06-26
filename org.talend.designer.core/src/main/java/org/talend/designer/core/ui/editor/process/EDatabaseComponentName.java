@@ -93,7 +93,7 @@ public enum EDatabaseComponentName {
     TERADATA_TABLE(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataInput", "tELTTeradataOutput", true), // "TERADATA" //$NON-NLS-1$ //$NON-NLS-2$
     // )
     // ;
-
+    VERTICA(DatabaseConnectionItem.class, EDatabaseTypeName.VERTICA, "tVerticaInput", "tVerticaOutput", true), //"VERTICA" //$NON-NLS-1$ //$NON-NLS-2$
     MAXDB(DatabaseConnectionItem.class, EDatabaseTypeName.MAXDB, "tMaxDBInput", "tMaxDBOutput", true), // "MAXDB"); //$NON-NLS-1$ //$NON-NLS-2$
 
     // FILES
