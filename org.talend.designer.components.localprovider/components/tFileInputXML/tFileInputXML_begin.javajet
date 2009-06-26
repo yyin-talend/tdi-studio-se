@@ -481,6 +481,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				firstConnName = conn.getName();
 				for (int i=0;i<mapping.size();i++) { 
 					String query = mapping.get(i).get("QUERY");
+					String nodeCheck = mapping.get(i).get("NODECHECK");
 					if(("Xerces").equals(mode)){
 %>
 	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
@@ -491,7 +492,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
     xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
     node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+<%
+						if(("true").equals(nodeCheck)){
+%>
+	str_<%=cid %> = node_<%=cid %>.asXML();
+<%
+							
+						}else{
+%>
     str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
+<%
+						}
+%>
 <%
 					}else if(("SAX").equals(mode)){
 %>
@@ -551,7 +563,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 											<%=conn.getName() %>.<%=column.getLabel() %>=<%=isNotSetDefault?null:column.getDefault()%>;
 										}else{
 <%
-								  }else{ // column.isNullable()
+								  	}else{ // column.isNullable()
 %>
 										if(xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
 											<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
@@ -559,6 +571,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 									}
 								}
+								
+								if(("Dom4j").equals(mode) && ("true").equals(nodeCheck)){
+%>
+											<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
+										}
+<%
+									continue;
+								}
+								
 								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
@@ -575,7 +596,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(str_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%
-					} else {
+								} else {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%=cid %>);
 <%
