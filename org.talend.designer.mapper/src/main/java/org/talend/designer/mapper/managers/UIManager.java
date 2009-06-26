@@ -24,6 +24,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -771,12 +772,20 @@ public class UIManager extends AbstractUIManager {
      * DOC amaumont Comment method "createVisualMapImage".
      */
     private void createVisualMapImage() {
-        String previewFilePath = mapperManager.getPreviewFilePath();
-        if (previewFilePath != null) {
-            Image image = ImageCapture.capture(mapperUI.getDatasFlowViewSashForm());
-            image = ImageUtils.scale(image, 50);
-            ImageUtils.save(image, previewFilePath, SWT.IMAGE_BMP);
-        }
+        // String previewFilePath = mapperManager.getPreviewFilePath();
+        // if (previewFilePath != null) {
+        Image image = ImageCapture.capture(mapperUI.getDatasFlowViewSashForm());
+        image = ImageUtils.scale(image, 50);
+        // add by hshen 7410
+        ImageDescriptor imagedes = ImageDescriptor.createFromImage(image);
+        mapperManager.getAbstractMapComponent().setScreenshot(imagedes);
+        // byte[] mapdata = ImageUtils.saveImageToData(imagedes);
+        // String previewFileName = getPreviewFileName();
+        // List<? extends IElementParameter> elementParameters = null;
+        //  ((IElementParameter) elementParameters).setValue(mapdata); //$NON-NLS-1$
+
+        // ImageUtils.save(image, previewFilePath, SWT.IMAGE_BMP);
+        // }
     }
 
     /**

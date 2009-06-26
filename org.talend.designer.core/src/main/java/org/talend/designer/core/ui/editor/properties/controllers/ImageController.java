@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Image;
@@ -24,6 +25,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.model.IRepositoryService;
@@ -56,17 +58,21 @@ public class ImageController extends AbstractElementPropertySectionController {
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
 
-        String fileName = (String) param.getValue();
-        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-        String filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName).toPortableString();
+        // String fileName = (String) param.getValue();
+        // IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
+        // String filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName).toPortableString();
 
-        if (filePath != null) {
-            File fileOrFolder = new java.io.File(filePath);
-            if (!fileOrFolder.isFile() || !fileOrFolder.canRead()) {
-                return lastControl;
-            }
+        if (param.getElement() instanceof INode && ((INode) param.getElement()).getExternalNode() != null
+                && ((INode) param.getElement()).getExternalNode().getScreenshot() != null) {
+            ImageDescriptor imageDesc = ((INode) param.getElement()).getExternalNode().getScreenshot();
+
+            // File fileOrFolder = new java.io.File(filePath);
+            // if (!fileOrFolder.isFile() || !fileOrFolder.canRead()) {
+            // return lastControl;
+            // }
             final Composite compositeImage = new Composite(subComposite, SWT.BORDER);
-            final Image image = new Image(subComposite.getDisplay(), filePath);
+
+            final Image image = imageDesc.createImage();
             addResourceDisposeListener(compositeImage, image);
 
             CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName() + " :"); //$NON-NLS-1$

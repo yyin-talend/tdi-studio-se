@@ -44,6 +44,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
@@ -52,6 +53,7 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.image.ImageUtils;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
@@ -193,6 +195,8 @@ public class Process extends Element implements IProcess2 {
     private boolean duplicate = false;
 
     protected IUpdateManager updateManager;
+
+    protected ImageDescriptor screenshot = null;
 
     public Process(Property property) {
         this.property = property;
@@ -963,7 +967,8 @@ public class Process extends Element implements IProcess2 {
          * Save the contexts informations
          */
         processType.setDefaultContext(contextManager.getDefaultContext().getName());
-
+        byte[] saveImageToData = ImageUtils.saveImageToData(getScreenshot());
+        processType.setScreenshot(saveImageToData);
         contextManager.saveToEmf(processType.getContext());
         return processType;
     }
@@ -1063,6 +1068,10 @@ public class Process extends Element implements IProcess2 {
             cList.add(cType);
         }
 
+        if (node.getExternalNode() != null && node.getExternalNode().getScreenshot() != null) {
+            byte[] saveImageToData = ImageUtils.saveImageToData(node.getExternalNode().getScreenshot());
+            nType.setScreenshot(saveImageToData);
+        }
     }
 
     /**
@@ -1115,6 +1124,8 @@ public class Process extends Element implements IProcess2 {
 
         loadConnections(processType, nodesHashtable);
         loadContexts(processType);
+        // feature 7410
+        loadScreenshots();
         loadNotes(processType);
         loadSubjobs(processType);
         initExternalComponents();
@@ -1124,6 +1135,11 @@ public class Process extends Element implements IProcess2 {
         checkNodeTableParameters();
         // bug 6158
         this.updateManager.retrieveRefInformation();
+    }
+
+    protected void loadScreenshots() {
+        byte[] innerContent = getProcessType().getScreenshot();
+        setScreenshot(ImageUtils.createImageFromData(innerContent));
     }
 
     @SuppressWarnings("unchecked")
@@ -1249,6 +1265,7 @@ public class Process extends Element implements IProcess2 {
 
         // update the value of process type
         IElementParameter processParam = nc.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
+
         if (processParam != null) {
             IElementParameter processIdParam = processParam.getChildParameters().get(
                     EParameterName.PROCESS_TYPE_PROCESS.getName());
@@ -1266,14 +1283,17 @@ public class Process extends Element implements IProcess2 {
                 processIdParam.setLinkedRepositoryItem(processItem);
             }
         }
-
         nc.setData(nType.getBinaryData(), nType.getStringData());
-
         loadSchema(nc, nType);
 
         addNodeContainer(new NodeContainer(nc));
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
+
+        byte[] innerContent = nType.getScreenshot();
+        if (nc.getExternalNode() != null) {
+            nc.getExternalNode().setScreenshot(ImageUtils.createImageFromData(innerContent));
+        }
 
         return nc;
     }
@@ -3136,6 +3156,14 @@ public class Process extends Element implements IProcess2 {
         }
         return null;
 
+    }
+
+    public ImageDescriptor getScreenshot() {
+        return this.screenshot;
+    }
+
+    public void setScreenshot(ImageDescriptor imagedes) {
+        this.screenshot = imagedes;
     }
 
 }

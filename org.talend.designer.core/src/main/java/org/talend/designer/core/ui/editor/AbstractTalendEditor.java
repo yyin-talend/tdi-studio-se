@@ -98,8 +98,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -173,7 +171,6 @@ import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 
 /**
@@ -1153,7 +1150,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // get root figure
         IFigure backgroundLayer = layerManager.getLayer(LayerConstants.GRID_LAYER);
         IFigure contentLayer = layerManager.getLayer(LayerConstants.PRINTABLE_LAYERS);
-
         // create image from root figure
         Image img = new Image(null, contentLayer.getSize().width, contentLayer.getSize().height);
         GC gc = new GC(img);
@@ -1166,25 +1162,23 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         contentLayer.paint(graphics);
         graphics.dispose();
         gc.dispose();
-
-        // save image to file
-        ImageLoader il = new ImageLoader();
-        il.data = new ImageData[] { img.getImageData() };
-
-        IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-        String outlinePicturePath = getOutlinePicturePath();
-        IPath filePath = service.getPathFileName(outlinePicturePath, ""); //$NON-NLS-1$
-        String outlineFileName = process.getName();
-        String outlineFileVersion = process.getVersion();
-        filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
-
+        // add by hshen
+        ImageDescriptor imagedes = ImageDescriptor.createFromImage(img);
+        process.setScreenshot(imagedes);
+        // IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+        // String outlinePicturePath = getOutlinePicturePath();
+        // ImageLoader il = new ImageLoader();
+        // il.data = new ImageData[] { img.getImageData() };
+        //        IPath filePath = service.getPathFileName(outlinePicturePath, ""); //$NON-NLS-1$
+        // String outlineFileName = process.getName();
+        // String outlineFileVersion = process.getVersion();
+        //        filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + "_old.png"); //$NON-NLS-1$ //$NON-NLS-2$
         // filePath.toFile().deleteOnExit();
-
-        il.save(filePath.toPortableString(), SWT.IMAGE_PNG);
-
+        // il.save(filePath.toPortableString(), SWT.IMAGE_PNG);
+        // ImageUtils.save(img, "e:/aa", 5);
         img.dispose();
 
-        service.getProxyRepositoryFactory().refreshJobPictureFolder(outlinePicturePath);
+        // service.getProxyRepositoryFactory().refreshJobPictureFolder(outlinePicturePath);
         GlobalConstant.generatingScreenShoot = false;
     }
 
