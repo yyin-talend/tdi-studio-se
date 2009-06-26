@@ -856,6 +856,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         } catch (ProcessorException e1) {
             command = "java"; //$NON-NLS-1$
         }
+        // zli
         boolean win32 = false;
         String classPathSeparator;
         if (targetPlatform == null) {
@@ -863,6 +864,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 targetPlatform = Platform.OS_WIN32;
             }
             classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
+            win32 = targetPlatform.equals(Platform.OS_WIN32);
         } else {
             win32 = targetPlatform.equals(Platform.OS_WIN32);
             if (win32) {
@@ -940,7 +942,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     version = "_" + jobInfo.getJobVersion(); //$NON-NLS-1$
                     version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                exportJar +=  (!win32 ? unixRootPath : "") + jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
+                exportJar += (!win32 ? unixRootPath : "") + jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             }
         }
 
@@ -961,7 +963,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 portableProjectPath = portableProjectPath.replace(libraryPath, unixRootPath + libraryPath);
                 libFolder = libFolder.replace(libraryPath, unixRootPath + libraryPath);
             }
-            
+
         }
         String[] strings = new String[] { portableCommand, "-cp", //$NON-NLS-1$
                 libPath.toString() + portableProjectPath + exportJar + libFolder, className };
