@@ -860,11 +860,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         boolean win32 = false;
         String classPathSeparator;
         if (targetPlatform == null) {
-            if (Platform.getOS().equals(Platform.OS_WIN32)) {
-                targetPlatform = Platform.OS_WIN32;
-            }
-            classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
-            win32 = targetPlatform.equals(Platform.OS_WIN32);
+        	targetPlatform = Platform.getOS();
+        	win32 = Platform.OS_WIN32.equals(targetPlatform); 
+        	classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
         } else {
             win32 = targetPlatform.equals(Platform.OS_WIN32);
             if (win32) {
