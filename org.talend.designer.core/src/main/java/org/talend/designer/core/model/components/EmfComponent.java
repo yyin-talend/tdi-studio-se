@@ -927,7 +927,8 @@ public class EmfComponent implements IComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROPERTY_TYPE.getName());
             newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
-            if (node.getComponent().getName().equals("tOracleConnection")) {
+            if (node.getComponent().getName().equals("tOracleConnection")
+                    && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
                 newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TEXT_TNS_FILE });
                 newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
                 newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
