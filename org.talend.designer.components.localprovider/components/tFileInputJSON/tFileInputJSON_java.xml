@@ -70,7 +70,7 @@
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="json_simple" MODULE="json_simple-1.1.jar" REQUIRED="true" />
-			<IMPORT NAME="jsonpath" MODULE="Jsonpath.jar" REQUIRED="true" />
+			<IMPORT NAME="jsonpath" MODULE="jsonpath.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 	
