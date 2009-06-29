@@ -685,6 +685,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 continue;
             }
             // for system folder
+            final boolean mergeAndSqlPattern = getMergeRefProject() && type == ERepositoryObjectType.SQLPATTERNS;
             if (RepositoryConstants.SYSTEM_DIRECTORY.equals(label)) {
                 if (getMergeRefProject()) {
                     List list = parent.getChildren();
@@ -712,7 +713,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 convertDocumentation(fromModel, parent, type, recBinNode);
                 continue;
             } else {
-                if (getMergeRefProject()) {
+                if (mergeAndSqlPattern) {
                     String a = parent.getProperties(EProperties.LABEL).toString();
                     folder = getSQLPatternNode(a, label);
                     if (folder == null) {
@@ -726,7 +727,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             }
             folder.setProperties(EProperties.LABEL, label);
             folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
-            if (!getMergeRefProject()) {
+            if (!mergeAndSqlPattern) {
                 parent.getChildren().add(folder);
             }
             convert(container, folder, type, recBinNode);
