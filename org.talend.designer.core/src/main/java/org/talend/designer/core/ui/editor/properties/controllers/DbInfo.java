@@ -13,14 +13,10 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.database.EDatabase4DriverClassName;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
-import org.talend.core.model.metadata.builder.database.JDBCDriverLoader;
 
 /**
  * DOC hyWang class global comment. Detailled comment
@@ -58,7 +54,7 @@ public class DbInfo {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
-        this.dbVersion = dbType;
+        this.dbVersion = dbVersion;
         this.url = url;
         this.driverJarPath = driverJarPath;
         generateDriverName();
