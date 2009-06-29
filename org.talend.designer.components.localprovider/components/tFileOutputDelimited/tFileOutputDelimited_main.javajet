@@ -270,7 +270,15 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
 //        	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
         	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
+        	
+ 			if(escapeChar1.equals("\"\"\"")){
+ 				escapeChar1 = "\"\\\"\"";
+ 			}
+        	
         	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+ 			if(textEnclosure1.equals("\"\"\"")){
+ 				textEnclosure1 = "\"\\\"\"";
+ 			}
 //        	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
 //        	if ("".equals(textEnclosure)) textEnclosure = "\0";
 //        	if(("'").equals(textEnclosure)){
