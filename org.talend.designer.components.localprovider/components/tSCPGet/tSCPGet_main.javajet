@@ -3,6 +3,8 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
 "
 %>
 
@@ -13,7 +15,19 @@ imports="
 
         String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
         String replaceOption = ElementParameterParser.getValue(node,"__REPLACEOPTION__");
+        List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__FILELIST__");
 %>
+
+        String[] sourceFileNames_<%=cid%> = new String[]{
+         <%
+             for (Map<String, String> file : filelist) {
+         %>
+             <%=file.get("SOURCE")%>,
+         <%          
+            }
+         %>
+       };
+
 try{
 <%if(("append").equals(replaceOption)){%>
 for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {

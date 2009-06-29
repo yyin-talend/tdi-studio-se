@@ -128,12 +128,3 @@ imports="
 %>
         ch.ethz.ssh2.SCPClient scp_<%=cid%> = new  ch.ethz.ssh2.SCPClient(conn_<%=cid%>);
         
-        String[] sourceFileNames_<%=cid%> = new String[]{
-         <%
-             for (Map<String, String> file : filelist) {
-         %>
-             <%=file.get("SOURCE")%>,
-         <%          
-            }
-         %>
-       };
