@@ -32,11 +32,7 @@ String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__D
 %>
 int nb_line_<%=cid%> = 0;
 
-
 String filename_<%=cid %> = <%=filename %>;
-if(filename_<%=cid %> != null && filename_<%=cid %>.startsWith("//")){
-	filename_<%=cid %> = filename_<%=cid %>.replaceFirst("//","/");
-}
 
 javax.script.ScriptEngineManager scriptEngineMgr_<%=cid%> = new javax.script.ScriptEngineManager();
 javax.script.ScriptEngine jsEngine_<%=cid%> = scriptEngineMgr_<%=cid%>.getEngineByName("JavaScript");
@@ -46,43 +42,47 @@ if (jsEngine_<%=cid%> == null) {
 java.io.InputStream jsonis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("json.js").openStream();
 jsEngine_<%=cid%>.eval( new java.io.BufferedReader(new java.io.InputStreamReader(jsonis_<%=cid%>)));
 
+java.io.InputStream jsonpathis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("jsonpath.js").openStream();
+jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathis_<%=cid%>)));
+
 java.io.FileReader fr_<%=cid%> = new java.io.FileReader(filename_<%=cid %>);
 java.lang.Object jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
 jsEngine_<%=cid%>.eval("var obj="+jsonText_<%=cid%>.toString());
 
-java.io.InputStream jsonpathis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("jsonpath.js").openStream();
-jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathis_<%=cid%>)));
-
 java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONArray>();
 
+int recordMaxSize_<%=cid%> = -1;
+javax.script.Invocable invocableEngine_<%=cid%> = (javax.script.Invocable)jsEngine_<%=cid%>;
 <%
-	int invocableEngineNB = 0;
 	for(Map<String,String> path:mapping){
-
+		String column = path.get("SCHEMA_COLUMN");
 		String query = path.get("QUERY");
 %>
-javax.script.Invocable invocableEngine_<%=cid%>_<%=invocableEngineNB%> = (javax.script.Invocable)jsEngine_<%=cid%>;
-Object resultObj_<%=cid%>_<%=invocableEngineNB%> = invocableEngine_<%=cid%>_<%=invocableEngineNB%>.invokeFunction("jsonPath", <%=query%>);
-if(!"false".equals(resultObj_<%=cid%>_<%=invocableEngineNB%>.toString())){
-	org.json.simple.JSONArray resultArray_<%=cid%>_<%=invocableEngineNB%> = (org.json.simple.JSONArray)org.json.simple.JSONValue.parse(resultObj_<%=cid%>_<%=invocableEngineNB%>.toString());
-	JSONResultList_<%=cid%>.add(resultArray_<%=cid%>_<%=invocableEngineNB%>);
+//only 2 types: String/Boolean
+String resultObj_<%=column%>_<%=cid%> = invocableEngine_<%=cid%>.invokeFunction("jsonPath", <%=query%>).toString();
+
+if(!"false".equals(resultObj_<%=column%>_<%=cid%>)){
+	org.json.simple.JSONArray resultArray_<%=column%>_<%=cid%> = (org.json.simple.JSONArray)org.json.simple.JSONValue.parse(resultObj_<%=column%>_<%=cid%>);
+	JSONResultList_<%=cid%>.add(resultArray_<%=column%>_<%=cid%>);
+	
+	if(recordMaxSize_<%=cid%> != -1 && recordMaxSize_<%=cid%> != resultArray_<%=column%>_<%=cid%>.size()){
+		//just give an error, don't stop
+		System.err.println("The Json resource datas maybe have some problems, please make sure the data structure with the same fields.");
+	}
+	
+	recordMaxSize_<%=cid%> = Math.max(recordMaxSize_<%=cid%>, resultArray_<%=column%>_<%=cid%>.size());
 }
 else{
-	throw new RuntimeException("Query '"+<%=query%>+"' is invalid,matching data can not be found");
+	System.err.println("Can't find any data with JSONPath " + <%=query %>);
+	//add null to take a place in List(buffer)
+	JSONResultList_<%=cid%>.add(null); 
 }
 <%
-		invocableEngineNB++;
 	}
 %>
-org.json.simple.JSONArray JSONResultArray_<%=cid%> ;
-int maxResultArraySize_<%=cid%>=0;
-for(int nbResultList_<%=cid%>=0;nbResultList_<%=cid%><JSONResultList_<%=cid%>.size();nbResultList_<%=cid%>++){
 
-	JSONResultArray_<%=cid%> =  JSONResultList_<%=cid%>.get(nbResultList_<%=cid%>);
-	maxResultArraySize_<%=cid%> = maxResultArraySize_<%=cid%>>JSONResultArray_<%=cid%>.size()?maxResultArraySize_<%=cid%>:JSONResultArray_<%=cid%>.size();
-}	
 
-	for(int nbResultArray_<%=cid%> = 0; nbResultArray_<%=cid%> < maxResultArraySize_<%=cid%>; nbResultArray_<%=cid%>++){
+	for(int nbResultArray_<%=cid%> = 0; nbResultArray_<%=cid%> < recordMaxSize_<%=cid%>; nbResultArray_<%=cid%>++){
 	
 		nb_line_<%=cid%>++;
 
@@ -106,7 +106,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>
-								if( nbResultArray_<%=cid%><JSONResultList_<%=cid%>.get(<%=i%>).size() && JSONResultList_<%=cid%>.get(<%=i%>).get(nbResultArray_<%=cid%>)!=null){
+								if(JSONResultList_<%=cid%>.get(<%=i%>) != null && nbResultArray_<%=cid%><JSONResultList_<%=cid%>.get(<%=i%>).size() && JSONResultList_<%=cid%>.get(<%=i%>).get(nbResultArray_<%=cid%>)!=null){
 									<%		
 						if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>		
