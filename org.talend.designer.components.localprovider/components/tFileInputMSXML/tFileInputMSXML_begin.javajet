@@ -336,7 +336,18 @@ looper_<%=cid%>.parse(new java.io.File(<%=filename %>).toURI().toString());
 %>
 	<%=conn.getName() %> = null;
 <%				if(("Dom4j").equals(mode)){%>
-	if(temp_<%=cid %>.getPath().equals(subLoop_<%=conn.getName() %>)){
+	String[] tmpArr_<%=conn.getName() %>_<%=cid %> = temp_<%=cid %>.getPath().split("/");
+	String tmp_<%=conn.getName() %>_<%=cid %> = tmpArr_<%=conn.getName() %>_<%=cid %>[tmpArr_<%=conn.getName() %>_<%=cid %>.length-1];
+	
+	//has default namespace
+	if(tmp_<%=conn.getName() %>_<%=cid %>.indexOf("[")>=0 && 
+		tmp_<%=conn.getName() %>_<%=cid %>.indexOf("]")>tmp_<%=conn.getName() %>_<%=cid %>.indexOf("[")){
+		
+		tmp_<%=conn.getName() %>_<%=cid %> = tmp_<%=conn.getName() %>_<%=cid %>.substring(
+			tmp_<%=conn.getName() %>_<%=cid %>.indexOf("'")+1, tmp_<%=conn.getName() %>_<%=cid %>.lastIndexOf("'"));
+	}
+	
+	if(tmp_<%=conn.getName() %>_<%=cid %>.equals(query_<%=conn.getName() %>)){
 <%				}else{%>
 	if(tmp_<%=cid %>.get(<%=tmpQuery %>)!=null){
 		
