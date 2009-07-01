@@ -285,16 +285,16 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		    public boolean hashCodeDirty = true;
 	
 	        <%
-	        
-			for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_1143
-				if(inputValuesColumns.containsKey(column.getLabel())){
-	
-					%>
-					<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
-					
-				}
-			} // G_OutBegin_AggR_1143
-	        
+	        if (inputMetadataTable !=null) {
+    			for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_1143
+    				if(inputValuesColumns.containsKey(column.getLabel())){
+    	
+    					%>
+    					<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
+    					
+    				}
+    			} // G_OutBegin_AggR_1143
+	        }
 			%>        
 	        
 		    @Override
@@ -403,16 +403,16 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 	    public boolean hashCodeDirty = true;
 
         <%
-        
-		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_143
-			if(keysColumns.containsKey(column.getLabel())){
-
-				%>
-				<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
-				
-			}
-		} // G_OutBegin_AggR_143
-        
+        if (inputMetadataTable !=null) {
+    		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_143
+    			if(keysColumns.containsKey(column.getLabel())){
+    
+    				%>
+    				<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
+    				
+    			}
+    		} // G_OutBegin_AggR_143
+        }
         boolean hasAlreadyCountProperty = false;
         boolean hasAlreadyDistinctCountProperty = false;
     	for (int i = 0; i<sizeOps; i++) { // T_OutBegin_AggR_131
