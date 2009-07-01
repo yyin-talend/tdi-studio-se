@@ -44,6 +44,10 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class StatsAndLogsManager {
 
+    public static final String TPREJOB = "tPrejob"; //$NON-NLS-1$
+
+    public static final String PRE_STA_LOG_CON = "preStaLogCon"; //$NON-NLS-1$
+
     private static final String LOG_UNIQUE_NAME = "talendLogs"; //$NON-NLS-1$
 
     private static final String STAT_UNIQUE_NAME = "talendStats"; //$NON-NLS-1$
@@ -309,8 +313,8 @@ public class StatsAndLogsManager {
                         connectionNode.setProcess(process);
                         nodeList.add(connectionNode);
 
-                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get("tPrejob");//$NON-NLS-1$
-                        DataNode preNode = new DataNode(prejobComponent, "preStaLogCon");//$NON-NLS-1$
+                        IComponent prejobComponent = ComponentsFactoryProvider.getInstance().get(TPREJOB);
+                        DataNode preNode = new DataNode(prejobComponent, PRE_STA_LOG_CON);
                         preNode.setStart(true);
                         preNode.setSubProcessStart(true);
                         preNode.setActivate(true);

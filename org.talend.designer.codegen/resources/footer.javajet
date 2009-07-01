@@ -303,21 +303,23 @@
         	}
     	}
 	
-        INode prejob = null;
-        INode postjob = null;
+        List<INode> prejobNodes = new ArrayList<INode>();
+        
+        List<INode> postjobNodes = new ArrayList<INode>();
+        
         INode implicit_Context = null;
-         
+
 		for (INode rootNode : rootNodes) {
 			String componentName = rootNode.getComponent().getName();
 			String uniqueName = rootNode.getUniqueName();
 			
             if (componentName.equals("tPrejob")) {
-            	prejob = rootNode;
+            	prejobNodes.add(rootNode);
                 continue;
             }        
 
             if (componentName.equals("tPostjob")) {
-                postjob = rootNode;
+                postjobNodes.add(rootNode);
                 continue;
             }            
 
@@ -339,10 +341,12 @@
 
 <%
 //3. run pre-job
- if(prejob != null){
+ if(!prejobNodes.isEmpty()){
+ 	for(INode preNode:prejobNodes){
 %>
-<%=createCallProcess(prejob, process.getName(), false) %>
+<%=createCallProcess(preNode, process.getName(), false) %>
 <% 
+	}
  }
 %>
 
@@ -366,8 +370,8 @@
 			String uniqueName = rootNode.getUniqueName();
 			
 			//filter the special subjob
-			if(prejob!=null && prejob.getComponent().getName().equals(componentName)) continue;
-			if(postjob!=null && postjob.getComponent().getName().equals(componentName)) continue;
+			if("tPrejob".equals(componentName)) continue;
+			if("tPostjob".equals(componentName)) continue;
 			if(implicit_Context!=null && implicit_Context.getUniqueName().equals(uniqueName)) continue;
 			
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
@@ -416,8 +420,8 @@
 			String uniqueName = rootNode.getUniqueName();
 			
 			//filter the special subjob
-			if(prejob!=null && prejob.getComponent().getName().equals(componentName)) continue;
-			if(postjob!=null && postjob.getComponent().getName().equals(componentName)) continue;
+			if("tPrejob".equals(componentName)) continue;
+			if("tPostjob".equals(componentName)) continue;
 			if(implicit_Context!=null && implicit_Context.getUniqueName().equals(uniqueName)) continue;
 						
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher") && !componentName.equals("tAsyncIn")) {
@@ -430,10 +434,12 @@
 
 <%
 //6. run the post-job
- if(postjob != null){
+ if(!postjobNodes.isEmpty()){
+ 	for(INode postNode:postjobNodes){
 %>
-<%=createCallProcess(postjob, process.getName(), false) %>
+<%=createCallProcess(postNode, process.getName(), false) %>
 <% 
+	}
  }
 %>	
 		end = System.currentTimeMillis();

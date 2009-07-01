@@ -50,6 +50,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
+import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -1176,6 +1177,19 @@ public class DataProcess {
                 ((AbstractNode) node).setThereLinkWithMerge(true);
                 ((AbstractNode) node).setLinkedMergeInfo(mergeInfo);
             }
+        }
+        // set the preStaLogCon must be first
+        INode preStaLogConNode = null;
+        for (INode node : dataNodeList) {
+            if (node.getComponent().getName().equals(StatsAndLogsManager.TPREJOB)
+                    && node.getUniqueName().equals(StatsAndLogsManager.PRE_STA_LOG_CON)) {
+                preStaLogConNode = node;
+                break;
+            }
+        }
+        if (preStaLogConNode != null) {
+            dataNodeList.remove(preStaLogConNode);
+            dataNodeList.add(0, preStaLogConNode);
         }
         checkRefList = null;
         checkMultipleMap = null;
