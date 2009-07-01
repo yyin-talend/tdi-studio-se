@@ -210,7 +210,16 @@ if(columnList != null && columnList.size() > 0) {
     		if(("DATE").equals(column.getType()) && ("true").equals(useDatePattern)){//date
     			String pattn = column.getPattern();
     			if(pattn != null && pattn.length() > 2){
-    				columns += (" DATE '" + pattn.substring(1, pattn.length() - 1) + "'");
+    			
+    				String tmp_Pattn = pattn.substring(1, pattn.length() - 1);
+    				if (tmp_Pattn.indexOf("mm")!= -1) {
+    					tmp_Pattn = tmp_Pattn.replace("mm", "mi");
+    				} 
+    				if (tmp_Pattn.indexOf("HH")!= -1) {
+    					tmp_Pattn = tmp_Pattn.replace("HH", "HH24");
+    				} 
+    			
+    				columns += (" DATE '" + tmp_Pattn + "'");
     			}
     		}else if(("CHAR").equals(dataType) || ("NCHAR").equals(dataType) || ("NVARCHAR2").equals(dataType) || ("VARCHAR").equals(dataType) || ("VARCHAR2").equals(dataType)){//long text
     			if(length > 255){
