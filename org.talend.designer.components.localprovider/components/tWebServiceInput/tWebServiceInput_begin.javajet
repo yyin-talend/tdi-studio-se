@@ -42,6 +42,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String proxuUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
         String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
         
+        boolean needSSL = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL__"));
+        String sslCertificate = ElementParameterParser.getValue(node,"__SSL_CERTIFICATE__");
+        String sslPassword = ElementParameterParser.getValue(node,"__SSL_PASSWORD__");
+        
+        
         String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
 		String timeout = (timeoutStr!=null&&!("").equals(timeoutStr))?timeoutStr:"20";
 		
@@ -63,8 +68,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 %>      
         };
-        
 <% 
+		if (needSSL) {
+%>   
+        System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
+		System.setProperty("javax.net.ssl.keyStore", <%=sslCertificate%>);
+		System.setProperty("javax.net.ssl.trustStore", <%=sslCertificate%>);
+		System.setProperty("javax.net.ssl.keyStorePassword", <%=sslPassword%>);
+		System.setProperty("javax.net.ssl.trustStorePassword", <%=sslPassword%>);
+<% 
+		}
 		if (needAuth) {
 %>        	   
         org.talend.DynamicInvoker.setAuth(true, <%=username %>, <%=password %>); 		
