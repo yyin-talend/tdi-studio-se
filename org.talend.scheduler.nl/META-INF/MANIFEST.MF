@@ -4,5 +4,5 @@ Bundle-Name: Nl Fragment
 Bundle-SymbolicName: org.talend.scheduler.nl
 Bundle-Version: 2.2.0.qualifier
 Bundle-Vendor: .Talend SA.
-Fragment-Host: org.talend.scheduler;bundle-version="1.2.0"
+Fragment-Host: org.talend.scheduler
 Bundle-Localization: plugin
