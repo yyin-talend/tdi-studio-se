@@ -47,9 +47,6 @@ imports="
         );
 %>
 	int nb_file_<%=cid%> = 0;
-    String hostname_<%=cid%> = <%=host%>;
-    String username_<%=cid%> = <%=user%>;
-
 
     /* Create a connection instance */
     ch.ethz.ssh2.Connection conn_<%=cid %>=null;
@@ -62,6 +59,8 @@ imports="
 	%>
 	
 	conn_<%=cid %> = (ch.ethz.ssh2.Connection)globalMap.get("<%=conn %>");
+    String hostname_<%=cid%> = <%=host%>;
+    String username_<%=cid%> = <%=user%>;
 	
 <%}else{%>
 
