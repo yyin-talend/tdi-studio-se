@@ -278,7 +278,7 @@ public class MultiSchemasUI {
         }
 
         String filePath = getMultiSchemaManager().getParameterValue(EParameterName.FILENAME);
-        getConnection().setFilePath(TalendTextUtils.removeQuotes(filePath));
+        getConnection().setFilePath(filePath);
         getConnection().setRowSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.ROWSEPARATOR));
         getConnection().setFieldSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
         String encoding = getMultiSchemaManager().getParameterValue(EParameterName.ENCODING);
@@ -292,9 +292,7 @@ public class MultiSchemasUI {
         }
         getConnection().setTextEnclosure(getMultiSchemaManager().getParameterValue(EParameterName.TEXT_ENCLOSURE));
         getConnection().setEscapeChar(getMultiSchemaManager().getParameterValue(EParameterName.ESCAPE_CHAR));
-
-        fileField.setText(TalendTextUtils.addQuotes(getConnection().getFilePath()));
-
+        fileField.setText(getConnection().getFilePath());
         getConnection().setFieldSeparatorType(getFieldSeparatorFromString(getConnection().getFieldSeparatorValue()));
         fieldSeparatorCombo.setText(getConnection().getFieldSeparatorType().getName());
         fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
@@ -907,7 +905,7 @@ public class MultiSchemasUI {
         fileField.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                getConnection().setFilePath(TalendTextUtils.removeQuotes(fileField.getText()));
+                getConnection().setFilePath(fileField.getText());
                 previewBtn.setEnabled(checkFieldsValue());
                 clearPreview();
                 refreshPreview();
@@ -1162,6 +1160,14 @@ public class MultiSchemasUI {
         processDescription.setLimitRows(maximumRowsToPreview);
         processDescription.setSplitRecord(getConnection().isSplitRecord());
         processDescription.setCSVOption(getConnection().isCsvOption());
+        // add by wzhang to fix 8039.
+        processDescription.setFilepath(PathUtils.getPortablePath(getConnection().getFilePath()));
+        String curFilePath = processDescription.getFilepath();
+        String orignalPath;
+        if (curFilePath != null) {
+            orignalPath = multiSchemaManager.getOriginalValue(curFilePath);
+            processDescription.setFilepath(orignalPath);
+        }
 
         return processDescription;
     }

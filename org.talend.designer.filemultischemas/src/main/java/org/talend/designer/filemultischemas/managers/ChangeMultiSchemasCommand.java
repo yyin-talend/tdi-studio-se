@@ -95,7 +95,7 @@ public class ChangeMultiSchemasCommand extends Command {
             }
         }
 
-        this.newFilePath = TalendTextUtils.addQuotes(fakeConnection.getFilePath());
+        this.newFilePath = fakeConnection.getFilePath();
         this.newTextEnclosure = fakeConnection.getTextEnclosure();
         this.newEscapeChar = fakeConnection.getEscapeChar();
         this.newCsvOption = fakeConnection.isCsvOption();
