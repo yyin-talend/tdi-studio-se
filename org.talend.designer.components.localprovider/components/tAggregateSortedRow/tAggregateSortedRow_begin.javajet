@@ -156,8 +156,10 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 %>int count_<%=column_op[i].getLabel() %>_<%=cid %>=0;
 <%		}else if(("distinct").equals(functions[i])){
 %>java.util.Set set_<%=column_op[i].getLabel() %>_<%=cid %> = null;
-<%		}else{
+<%		}else if(functions[i].equals("list")){
 %>StringBuilder list_<%=column_op[i].getLabel() %>_<%=cid %>=null;
+<%		}else {
+%>java.util.List list_object_<%=column_op[i].getLabel() %>_<%=cid %>=null;
 <%		}
 	}
 	%><%

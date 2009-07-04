@@ -100,7 +100,7 @@ boolean sameGroup_<%=cid %> = true;
 			continue;
 		}
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
-		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
+		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){ 
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 <%		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
@@ -149,6 +149,9 @@ boolean sameGroup_<%=cid %> = true;
 <%		}else if(("distinct").equals(functions[i])){
 %>set_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.HashSet();
 set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%		}else if(("list_object").equals(functions[i])){
+%>list_object_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.ArrayList();
+list_object_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}else{
 %>list_<%=column_op[i][0].getLabel() %>_<%=cid %> = new StringBuilder();
 list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
@@ -301,6 +304,8 @@ count_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
 		}else if(("list").equals(functions[i])){
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(",");
 <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%		}else if(("list_object").equals(functions[i])){
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}else if(("distinct").equals(functions[i])){
 %>
 set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
@@ -537,11 +542,22 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size()).getBytes();
 <%								}
+							}else if(("list_object").equals(functions[i])){
+								if(javaType == JavaTypesManager.STRING){
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
+<%
+								}else if(javaType == JavaTypesManager.OBJECT) {
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.LIST) {
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}
 							}else{//"list"
 								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
 <%								} else if(javaType == JavaTypesManager.LIST){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>
+%>if(true){
+	throw new Exception("In column <%=column.getLabel() %>, data type \"List\" is not applicable for aggregate function \"list\" result. Please try aggregate function \"list(object)\"!");
+}
 <%
 								}else{
 %>if(true){
@@ -574,7 +590,7 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 			continue;
 		}
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
-		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
+		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){ 
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 <%		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
@@ -622,6 +638,9 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 <%		}else if(("distinct").equals(functions[i])){
 %>set_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.HashSet();
 set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%		}else if(("list_object").equals(functions[i])){
+%>list_object_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.ArrayList();
+list_object_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}else{
 %>list_<%=column_op[i][0].getLabel() %>_<%=cid %> = new StringBuilder();
 list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
@@ -691,7 +710,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 					}					
 					for(int i = 0; i < column_op.length; i++){
 						if(column.getLabel().equals(column_op[i][1].getLabel())){
-							if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
+							if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){ 
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(inJavaType == javaType){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
@@ -849,11 +868,22 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size()).getBytes();
 <%								}
+							}else if(("list_object").equals(functions[i])){
+								if(javaType == JavaTypesManager.STRING){
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
+<%
+								}else if(javaType == JavaTypesManager.OBJECT) {
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.LIST) {
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}
 							}else{//"list"
 								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
 <%								} else if(javaType == JavaTypesManager.LIST){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>
+%>if(true){
+	throw new Exception("In column <%=column.getLabel() %>, data type \"List\" is not applicable for aggregate function \"list\" result. Please try aggregate function \"list(object)\"!");
+}
 <%
 								}else{
 %>if(true){

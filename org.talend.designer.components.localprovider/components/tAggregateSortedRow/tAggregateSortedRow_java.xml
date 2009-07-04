@@ -80,6 +80,7 @@
             <ITEM NAME="FIRST"    VALUE="first"/>
             <ITEM NAME="LAST"    VALUE="last"/>
             <ITEM NAME="LIST"    VALUE="list"/>
+            <ITEM NAME="LIST_OBJECT"    VALUE="list_object"/>
             <ITEM NAME="DISTINCT"    VALUE="distinct"/>
           </ITEMS>
         </ITEM>
