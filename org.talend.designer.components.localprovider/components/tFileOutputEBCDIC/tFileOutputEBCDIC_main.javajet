@@ -1,16 +1,13 @@
 <%@ jet 
 	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.IConnectionCategory
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType
-		java.util.List
-    	java.util.Map
+        java.util.List
+        
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
 <% 
@@ -20,71 +17,27 @@
     String incomingName = (String)codeGenArgument.getIncomingName();
 %>
 
-<%
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-	IMetadataTable metadata = metadatas.get(0);
-	if (metadata!=null) {
-		String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-		String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
-		
-    	String header = ElementParameterParser.getValue(node, "__HEADER__");
-    	if(("").equals(header)){
-    		header="0";
-    	}
-    	String limit = ElementParameterParser.getValue(node, "__LIMIT__");
-		if(("").equals(limit)){
-			limit = "-1";
-		}
-    	String footer = ElementParameterParser.getValue(node, "__FOOTER__");
-    	if(("").equals(footer)){
-    		footer="0";
-    	}
-    	String random = "-1";
-    	String ran = ElementParameterParser.getValue(node, "__RANDOM__");
-    	if(("true").equals(ran)){
-    		random = ElementParameterParser.getValue(node, "__NB_RANDOM__");
-    		if(("").equals(random)){
-    			random="0";
-    		}
-    	}
-		
-    	
-    	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-    	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
-    	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-		boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false; 
-%>
-
 <%		List< ? extends IConnection> conns = node.getIncomingConnections();
     	List<IMetadataTable> preMetadatas = null;
 		
 		for (int i=0;i<conns.size();i++) {
 			IConnection conn = conns.get(i);
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-    			preMetadatas = conn.getSource().getMetadataList();
-				if( conn.getName() == incomingName ) {
-%>
-		
-			java.util.List record = new java.util.ArrayList();
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    			
+				if( conn.getName() == incomingName ) {				
+					preMetadatas = conn.getSource().getMetadataList();
+%>	
+			java.util.List record_<%=cid %> = new java.util.ArrayList();
 <%
-			
-					for (IMetadataColumn column: preMetadatas.get(0).getListColumns()) {
+			for (IMetadataColumn column: preMetadatas.get(0).getListColumns()) {
 %>
-			record.add(<%=conn.getName() %>.<%=column.getLabel() %>) ;
+			record_<%=cid %>.add(<%=conn.getName() %>.<%=column.getLabel() %>) ;
 <%
-					}
-				
+			}
 %>
-        	rwriter.writeRecord(record);	
-        	nb_line_<%=cid %> ++;		
+        	rwriter_<%=cid %>.writeRecord(record_<%=cid %>);	
+        	nb_line_<%=cid %>++;		
 <%
 				}
 			}
 		}
-%>
-			
-<%
-	}
-}
 %>
