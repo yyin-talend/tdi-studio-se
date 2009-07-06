@@ -2277,11 +2277,14 @@ public class Node extends Element implements INode {
             if (canEditSchema) {
                 for (int i = 0; i < getMetadataFromConnector(mainConnector.getName()).getListColumns().size(); i++) {
                     IMetadataColumn column = getMetadataFromConnector(mainConnector.getName()).getListColumns().get(i);
+                    if (column.isCustom()) {
+                        continue;
+                    }
                     String value = column.getPattern();
                     String typevalue = column.getTalendType();
                     if ("id_Date".equals(typevalue)) {
                         if (value == null || "".equals(value)) {
-                            String errorMessage = "The Date Pattern must set value";
+                            String errorMessage = "A value must be set for Date Pattern";
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             noSchema = true;
                         }
