@@ -1138,6 +1138,8 @@ public class Process extends Element implements IProcess2 {
     }
 
     protected void loadScreenshots() {
+        if (CommonsPlugin.isHeadless())
+            return;
         byte[] innerContent = getProcessType().getScreenshot();
         setScreenshot(ImageUtils.createImageFromData(innerContent));
     }
