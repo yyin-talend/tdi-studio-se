@@ -42,9 +42,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String proxuUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
         String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
         
-        boolean needSSL = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL__"));
-        String sslCertificate = ElementParameterParser.getValue(node,"__SSL_CERTIFICATE__");
-        String sslPassword = ElementParameterParser.getValue(node,"__SSL_PASSWORD__");
+        boolean needSSLtoTrustServer = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL_TO_TRUSTSERVER__"));
+        String trustStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_TRUSTSTORE__");
+        String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");
         
         
         String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
@@ -69,13 +69,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>      
         };
 <% 
-		if (needSSL) {
+		if (needSSLtoTrustServer) {
 %>   
         System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
-		System.setProperty("javax.net.ssl.keyStore", <%=sslCertificate%>);
-		System.setProperty("javax.net.ssl.trustStore", <%=sslCertificate%>);
-		System.setProperty("javax.net.ssl.keyStorePassword", <%=sslPassword%>);
-		System.setProperty("javax.net.ssl.trustStorePassword", <%=sslPassword%>);
+
+		System.setProperty("javax.net.ssl.trustStore", <%=trustStoreFile %>);
+		System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
 <% 
 		}
 		if (needAuth) {
