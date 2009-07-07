@@ -543,9 +543,12 @@ public class SelectorTableForm extends AbstractForm {
                     Iterator<String> iterate = list.iterator();
                     while (iterate.hasNext()) {
                         String nameTable = iterate.next();
-                        TableItem item = new TableItem(table, SWT.NONE);
-                        item.setText(0, nameTable);
-                        item.setText(1, ExtractMetaDataFromDataBase.getTableTypeByTableName(nameTable));
+                        String name = ExtractMetaDataFromDataBase.getTableTypeByTableName(nameTable);
+                        if (nameTable != null && name != null) {
+                            TableItem item = new TableItem(table, SWT.NONE);
+                            item.setText(0, nameTable);
+                            item.setText(1, name);
+                        }
                     }
                 }
                 restoreCheckItems();

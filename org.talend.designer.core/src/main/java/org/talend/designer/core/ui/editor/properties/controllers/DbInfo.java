@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.sql.Connection;
+import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
@@ -137,9 +138,15 @@ public class DbInfo {
     }
 
     private void genarateDriverJarPath() {
-        String driverName = EDatabaseVersion4Drivers.getDriversStr(dbType, dbVersion);
-        if (driverName != null) {
-            driverJarPath = ExtractMetaDataUtils.getJavaLibPath() + driverName;
+    //modified by wzhang. when driver has more than one jar.
+        List<String> drivers = EDatabaseVersion4Drivers.getDrivers(dbType, dbVersion);
+        if (drivers.size() == 1) {
+            String driverName = EDatabaseVersion4Drivers.getDriversStr(dbType, dbVersion);
+            if (driverName != null) {
+                driverJarPath = ExtractMetaDataUtils.getJavaLibPath() + driverName;
+            }
+        } else {
+            driverJarPath = null;
         }
     }
 
