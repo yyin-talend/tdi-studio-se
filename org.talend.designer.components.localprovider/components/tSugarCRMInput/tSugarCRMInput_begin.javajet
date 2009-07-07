@@ -107,6 +107,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 			List<IMetadataColumn> columns=metadata.getListColumns();
 			int columnSize = columns.size();
+%>
+			String crmReturnValue_<%=cid%>;
+<%
 			for (int i=0;i<columnSize;i++) {//4
 					IMetadataColumn column=columns.get(i);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -114,25 +117,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 			%>
 						
-			
-			if(<%=i %> < nameValue_<%=cid %>.length){				
+			crmReturnValue_<%=cid%> = util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>);
+			if(!"".equals(crmReturnValue_<%=cid%>)){				
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { //String or Object
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>);
+					<%=conn.getName() %>.<%=column.getLabel() %> = crmReturnValue_<%=cid%>;
 <%
 					} else if(javaType == JavaTypesManager.DATE) { //Date
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>), <%= patternValue %>);
+					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(crmReturnValue_<%=cid%>, <%= patternValue %>);
 <%
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { //byte[]
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>).getBytes();
+					<%=conn.getName() %>.<%=column.getLabel() %> = crmReturnValue_<%=cid%>.getBytes();
 	
 <%
 					} else  { //other
 %>						
-					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>));
+					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(crmReturnValue_<%=cid%>);
 <%
 					}
 %>
