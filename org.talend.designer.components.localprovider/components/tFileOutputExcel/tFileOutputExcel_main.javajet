@@ -16,6 +16,7 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
+String cid = node.getUniqueName();
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
@@ -31,12 +32,11 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String cid = node.getUniqueName();
+		List<IMetadataColumn> columns = metadata.getListColumns();
 
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-    			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
     			for (int i = 0; i < sizeColumns; i++) {
     				IMetadataColumn column = columns.get(i);
@@ -73,7 +73,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					};
    				%>
 
-//modif start
 					<%if(firstCellYAbsolute){%>
 						<%if(keepCellFormating){%>
 							jxl.write.WritableCell existingCell_<%=i%>_<%=cid%> = writableSheet_<%=cid %>.getWritableCell(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%>) ;

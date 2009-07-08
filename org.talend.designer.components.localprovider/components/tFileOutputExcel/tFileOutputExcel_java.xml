@@ -80,7 +80,6 @@
       NAME="FIRST_CELL_Y_ABSOLUTE"
       FIELD="CHECK"
       NUM_ROW="50"
-	  SHOW_IF="(APPEND_SHEET == 'true')AND(APPEND_FILE == 'true')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -89,7 +88,7 @@
       NAME="FIRST_CELL_X"
       FIELD="TEXT"
       NUM_ROW="50"
-	  SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')AND(APPEND_FILE == 'true')AND(APPEND_SHEET == 'true')"
+	  SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')"
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
@@ -98,7 +97,7 @@
       NAME="FIRST_CELL_Y"
       FIELD="TEXT"
       NUM_ROW="50"
-	  SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')AND(APPEND_FILE == 'true')AND(APPEND_SHEET == 'true')"
+	  SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')"
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
@@ -107,7 +106,7 @@
       NAME="KEEP_CELL_FORMATING"
       FIELD="CHECK"
       NUM_ROW="50"
-      SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')AND(APPEND_FILE == 'true')AND(APPEND_SHEET == 'true')"
+      SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -126,7 +125,7 @@
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
 
-	<PARAMETER NAME="AUTO_SZIE_SETTING" FIELD="TABLE" NUM_ROW="70" NB_LINES="3" SHOW_IF="IS_ALL_AUTO_SZIE=='false'">
+	<PARAMETER NAME="AUTO_SZIE_SETTING" FIELD="TABLE" NUM_ROW="70" NB_LINES="3" SHOW_IF="IS_ALL_AUTO_SZIE=='false'" >
 	  <ITEMS BASED_ON_SCHEMA="true">
 		<ITEM NAME="IS_AUTO_SIZE" FIELD="CHECK" />
 	  </ITEMS>
