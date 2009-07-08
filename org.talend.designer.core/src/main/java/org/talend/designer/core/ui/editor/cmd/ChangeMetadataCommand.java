@@ -22,8 +22,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
+import org.talend.core.model.metadata.Dbms;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
@@ -426,12 +428,20 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
+        String value = null;
         if (inputSchemaParam != null
                 && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue().equals(
                         EmfComponent.REPOSITORY)) {
-            schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-            schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
-                    inputSchemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue());
+            // add by wzhang to fix bug 7898.
+            IElementParameter elementParameter = node.getElementParameter(EParameterName.MAPPING.getName());
+            if (elementParameter != null) {
+                value = (String) elementParameter.getValue();
+            }
+            if (!isDBComponent(value)) {
+                schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
+                        inputSchemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue());
+            }
         }
 
         for (INodeConnector connector : node.getListConnector()) {
@@ -464,6 +474,23 @@ public class ChangeMetadataCommand extends Command {
     }
 
     private org.talend.core.model.metadata.builder.connection.Connection connection;
+
+    /**
+     * wzhang Comment method "isDBComponent".
+     */
+    private boolean isDBComponent(String dbmsId) {
+        if (dbmsId != null) {
+            try {
+                Dbms dbms = MetadataTalendType.getDbms(dbmsId);
+                if (dbms != null) {
+                    return true;
+                }
+            } catch (Exception e) {
+                // nothing to do
+            }
+        }
+        return false;
+    }
 
     /*
      * use to synchronize column list for output connections.

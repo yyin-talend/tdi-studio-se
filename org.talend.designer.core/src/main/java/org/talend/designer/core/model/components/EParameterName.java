@@ -78,6 +78,7 @@ public enum EParameterName {
     ESCAPE_CHAR(Messages.getString("EParameterName.escapeChar")), //$NON-NLS-1$
     TEXT_ENCLOSURE(Messages.getString("EParameterName.textEnclosure")), //$NON-NLS-1$
     COMPONENT_LIST(Messages.getString("EParameterName.componentList")), //$NON-NLS-1$
+    MAPPING(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
     DUMMY("DUMMY"), //$NON-NLS-1$ Hidden parameter so no translation needed
     DBTABLE(Messages.getString("EParameterName.TableName")), //$NON-NLS-1$
@@ -119,7 +120,7 @@ public enum EParameterName {
     USE_EXISTING_CONNECTION(Messages.getString("EParameterName.useExistConn")), //$NON-NLS-1$
 
     // hywang add for feature7373
-    COLUMNINDEX("Column index"),
+    COLUMNINDEX(Messages.getString("EParameterName.columnIndex")), //$NON-NLS-1$
 
     /**
      * For stats & logs parameters.
