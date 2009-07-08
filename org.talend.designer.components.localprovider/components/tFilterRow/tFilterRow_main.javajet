@@ -57,7 +57,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 
-	if (
+	if ( //--if begin
 <% 
 	if(keyColumns.size()>0 || use_advanced) { //111
 %>		
@@ -67,27 +67,30 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	for(Map<String, String> keyColumn:keyColumns){
 		ii++;	
 %>	
-		<%=ii==1? "":logical %>(
+		<%=ii==1? "":logical %>(//--condition begin
 <% 
 		if(!("").equals(keyColumn.get("FUNCTION"))) {
 %>		
-		<%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+			// func is empty			
+			<%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
 		}else {	
         	IMetadataColumn rightColumn = metadata.getColumn(keyColumn.get("INPUT_COLUMN"));
         	JavaType javaType = JavaTypesManager.getJavaTypeFromId(rightColumn.getTalendType()); 
-        	if (!javaType.isPrimitive()) {	
+        	if (!javaType.isPrimitive()) {
 %>	
-	<%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+        		// is primitive
+				<%="$source == null? false : $source.equals($target) $operator true".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
 			} else {
 %>	
-	<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+				// is not primitive
+				<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
 			}
 		}
 %>
-	)
+		)//--condition end
 <%
    	}
 %>
@@ -99,7 +102,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	} //111
 %>			
-	) 
+	)//--if end
 	
 	{
 <%
