@@ -575,7 +575,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
         int languageType = language == ECodeLanguage.JAVA ? 1 : 0;
         String[] strDisplay, strValue;
         strDisplay = StatsAndLogsConstants.DISPLAY_DBNAMES[languageType];
-        strValue = JobSettingsConstants.DB_INPUT_COMPONENTS[languageType];
+        strValue = JobSettingsConstants.DB_OUTPUT_COMPONENTS[languageType];
         return createArray(strDisplay, strValue);
     }
 

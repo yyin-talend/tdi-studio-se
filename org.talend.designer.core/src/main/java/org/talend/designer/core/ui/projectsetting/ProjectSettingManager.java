@@ -459,7 +459,7 @@ public class ProjectSettingManager extends Utils {
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.EXTRA);
         param.setListItemsDisplayName(StatsAndLogsConstants.DISPLAY_DBNAMES[languageType]);
-        param.setListItemsValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType]);
+        param.setListItemsValue(JobSettingsConstants.DB_OUTPUT_COMPONENTS[languageType]);
         param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
         param.setListItemsDisplayCodeName(StatsAndLogsConstants.CODE_LIST[languageType]);
         param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.DB_TYPE)));
