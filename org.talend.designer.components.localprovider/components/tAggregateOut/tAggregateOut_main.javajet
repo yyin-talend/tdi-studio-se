@@ -239,6 +239,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		JavaType inputJavaType = JavaTypesManager.getJavaTypeFromId(inputColumn.getTalendType());
 		boolean isBasePrimitive = JavaTypesManager.isJavaPrimitiveType(outputJavaType, false);
 		boolean isSelectedPrimitive = JavaTypesManager.isJavaPrimitiveType(outputJavaType, outputColumn.isNullable());
+		boolean isInputColumnPrimitive = JavaTypesManager.isJavaPrimitiveType(inputJavaType, inputColumn.isNullable());
 		String primitiveTypeToGenerate = JavaTypesManager.getTypeToGenerate(outputJavaType.getId(), false);
 
 		boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
@@ -283,7 +284,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		
 		if(isValidTypeForOperation) { // T_OutMain_AggR_745
 		
-			if(ignoreNull && !isSelectedPrimitive) { // T_OutMain_AggR_545
+			if(ignoreNull && !isInputColumnPrimitive) { // T_OutMain_AggR_545
 			
 				%>
 				if(<%=inputConn.getName() %>.<%=inputColumnName  %> != null) { // G_OutMain_AggR_546
@@ -479,7 +480,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				
 			}
 			
-			if(ignoreNull && !isSelectedPrimitive) { // T_OutMain_AggR_545
+			if(ignoreNull && !isInputColumnPrimitive) { // T_OutMain_AggR_545
 			
 				%>
 				} // G_OutMain_AggR_546
