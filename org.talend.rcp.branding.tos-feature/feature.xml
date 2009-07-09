@@ -23,69 +23,8 @@
    </url>
 
    <includes
-         id="org.epic_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.eclipse.datatools_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.commons_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.help_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.core_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.repository_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.designer_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.designer.business_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.rcp_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.sbi_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.spagic_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.spagic_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
-         id="org.talend.componentdesigner_feature"
-         version="0.0.0"
-         search-location="self"/>
+         id="org.talend.tos_feature"
+         version="0.0.0"/>
 
    <plugin
          id="org.talend.rcp.branding.tos"
