@@ -306,8 +306,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             processor.initPath();
             processor.setProcessorStates(IProcessor.STATES_EDIT);
 
-            FileEditorInput input = createFileEditorInput();
-            codeEditor.setInput(input);
+            // modified by wzhang to fix bug 8180 in thales branding.
+            if (useCodeView) {
+                FileEditorInput input = createFileEditorInput();
+                codeEditor.setInput(input);
+            }
 
             IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
             if (activeWorkbenchWindow != null) {
