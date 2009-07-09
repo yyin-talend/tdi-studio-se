@@ -119,8 +119,12 @@ public class ConnectionFormComposite extends Composite {
         setLayout(layout);
         form.setLayoutData(new GridData(GridData.FILL_BOTH));
 
+        final int hSpan = 10;
+        final int labelHSpan = 3;
+        final int btnHSpan = 2;
+
         GridLayout lay = new GridLayout();
-        lay.numColumns = 10;
+        lay.numColumns = hSpan;
         formBody.setLayout(lay);
 
         // Use by all widgets:
@@ -129,36 +133,36 @@ public class ConnectionFormComposite extends Composite {
         // Repository
         Label repositoryLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.repository")); //$NON-NLS-1$
         data1 = new GridData();
-        data1.horizontalSpan = 3;
+        data1.horizontalSpan = labelHSpan;
         repositoryLabel.setLayoutData(data1);
 
         repositoryCombo = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         repositoryCombo.setContentProvider(new ArrayContentProvider());
         repositoryCombo.setLabelProvider(new RepositoryFactoryLabelProvider());
         data1 = new GridData(GridData.FILL_HORIZONTAL);
-        data1.horizontalSpan = 5;
+        data1.horizontalSpan = hSpan - labelHSpan;
         repositoryCombo.getControl().setLayoutData(data1);
 
         // Name
         Label nameLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.name")); //$NON-NLS-1$
         data1 = new GridData();
-        data1.horizontalSpan = 3;
+        data1.horizontalSpan = labelHSpan;
         nameLabel.setLayoutData(data1);
 
         nameText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
         data1 = new GridData(GridData.FILL_HORIZONTAL);
-        data1.horizontalSpan = 5;
+        data1.horizontalSpan = hSpan - labelHSpan;
         nameText.setLayoutData(data1);
 
         // Comment
         Label descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
         data1 = new GridData();
-        data1.horizontalSpan = 3;
+        data1.horizontalSpan = labelHSpan;
         descriptionLabel.setLayoutData(data1);
 
         descriptionText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
         data1 = new GridData(GridData.FILL_HORIZONTAL);
-        data1.horizontalSpan = 5;
+        data1.horizontalSpan = hSpan - labelHSpan;
         descriptionText.setLayoutData(data1);
 
         // User
@@ -173,38 +177,38 @@ public class ConnectionFormComposite extends Composite {
         }
 
         data1 = new GridData(GridData.FILL_HORIZONTAL);
-        data1.horizontalSpan = 3;
+        data1.horizontalSpan = labelHSpan;
         userLabel.setLayoutData(data1);
 
         userText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
         data1 = new GridData(GridData.FILL_HORIZONTAL);
-        data1.horizontalSpan = 5;
+        data1.horizontalSpan = hSpan - labelHSpan;
         userText.setLayoutData(data1);
 
         // Password
         Label passwordLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
         data1 = new GridData();
-        data1.horizontalSpan = 3;
+        data1.horizontalSpan = labelHSpan;
         passwordLabel.setLayoutData(data1);
 
         passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
         data1 = new GridData(GridData.FILL_HORIZONTAL);
-        data1.horizontalSpan = 5;
+        data1.horizontalSpan = hSpan - labelHSpan;
         passwordText.setLayoutData(data1);
 
         Label workSpaceLabel = toolkit.createLabel(formBody, Messages.getString("ConnectionFormComposite.WORKSPACE")); //$NON-NLS-1$
         data1 = new GridData();
-        data1.horizontalSpan = 3;
+        data1.horizontalSpan = labelHSpan;
         workSpaceLabel.setLayoutData(data1);
 
         workSpaceText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
         data1 = new GridData(GridData.FILL_HORIZONTAL);
-        data1.horizontalSpan = 4;
+        data1.horizontalSpan = hSpan - labelHSpan - btnHSpan;
         workSpaceText.setLayoutData(data1);
 
         workSpaceButton = toolkit.createButton(formBody, null, SWT.PUSH);
         data1 = new GridData();
-        data1.horizontalSpan = 3;
+        data1.horizontalSpan = btnHSpan;
         workSpaceButton.setToolTipText(Messages.getString("ConnectionFormComposite.SELECT_WORKSPACE")); //$NON-NLS-1$
         workSpaceButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         workSpaceButton.setLayoutData(data1);
@@ -225,7 +229,7 @@ public class ConnectionFormComposite extends Composite {
             for (final DynamicChoiceBean currentChoiceBean : current.getChoices()) {
                 Label label = toolkit.createLabel(formBody, currentChoiceBean.getName());
                 data = new GridData();
-                data.horizontalSpan = 1;
+                data.horizontalSpan = labelHSpan;
                 label.setLayoutData(data);
 
                 Combo combo = new Combo(formBody, SWT.BORDER | SWT.READ_ONLY);
@@ -234,7 +238,7 @@ public class ConnectionFormComposite extends Composite {
                 }
 
                 data = new GridData(GridData.FILL_HORIZONTAL);
-                data.horizontalSpan = 2;
+                data.horizontalSpan = hSpan - labelHSpan;
                 combo.setLayoutData(data);
 
                 baseControl = combo;
@@ -249,13 +253,13 @@ public class ConnectionFormComposite extends Composite {
                 }
                 Label label = toolkit.createLabel(formBody, currentField.getName());
                 data = new GridData();
-                data.horizontalSpan = 1;
+                data.horizontalSpan = labelHSpan;
                 label.setLayoutData(data);
 
                 Text text = toolkit.createText(formBody, "", textStyle); //$NON-NLS-1$
 
                 data = new GridData(GridData.FILL_HORIZONTAL);
-                data.horizontalSpan = 2;
+                data.horizontalSpan = hSpan - labelHSpan;
                 text.setLayoutData(data);
 
                 baseControl = text;
@@ -271,7 +275,7 @@ public class ConnectionFormComposite extends Composite {
                 Label label = toolkit.createLabel(formBody, ""); //$NON-NLS-1$
                 label.setVisible(false);
                 data = new GridData();
-                data.horizontalSpan = 1;
+                data.horizontalSpan = labelHSpan;
                 label.setLayoutData(data);
 
                 Button button = new Button(formBody, SWT.PUSH);
@@ -279,7 +283,7 @@ public class ConnectionFormComposite extends Composite {
                 button.addSelectionListener(new DelegateSelectionListener(currentButtonBean));
 
                 data = new GridData(GridData.FILL_HORIZONTAL);
-                data.horizontalSpan = 2;
+                data.horizontalSpan = hSpan - labelHSpan;
                 button.setLayoutData(data);
 
                 baseControl = button;

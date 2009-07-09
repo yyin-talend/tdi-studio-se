@@ -14,6 +14,7 @@ package org.talend.repository.ui.actions.importproject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -184,11 +185,12 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
             }
 
             private String getLabel(String name) {
-                List<String> proItem = getProjectItem();
+                List<Project> proItem = getProjectItem();
                 for (int i = 0; i < proItem.size(); i++) {
-                    String proName = proItem.get(i).toString().toUpperCase();
+                    Project p = proItem.get(i);
+                    String proName = p.getTechnicalLabel()/* .toUpperCase() */;
                     if (proName.equals(name)) {
-                        return proItem.get(i).toString();
+                        return p.getLabel();
                     }
                 }
                 return name;
@@ -212,10 +214,9 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
     }
 
-    private List<String> getProjectItem() {
+    private List<Project> getProjectItem() {
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         Project[] projects = null;
-        List<String> projectItem = new ArrayList<String>();
         try {
             projects = repositoryFactory.readProject();
         } catch (PersistenceException e) {
@@ -223,10 +224,10 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         } catch (BusinessException e) {
             ExceptionHandler.process(e);
         }
-        for (int i = 0; i < projects.length; i++) {
-            projectItem.add(projects[i].getLabel());
+        if (projects != null) {
+            return Arrays.asList(projects);
         }
-        return projectItem;
+        return Collections.emptyList();
     }
 
     private void createButtons(Composite parent) {
