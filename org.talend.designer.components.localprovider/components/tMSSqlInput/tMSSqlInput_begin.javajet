@@ -29,6 +29,7 @@ imports="
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
+    	   dbquery = dbquery.replaceAll("key","\\\\\"key\\\\\"");
     String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__"); // no use
     boolean whetherTrimAllCol = ("true").equals(ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__"));
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
