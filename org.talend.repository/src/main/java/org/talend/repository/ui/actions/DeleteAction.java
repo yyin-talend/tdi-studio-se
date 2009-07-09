@@ -23,6 +23,7 @@ import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -371,6 +372,13 @@ public class DeleteAction extends AContextualAction {
         // Avoid to delete node which is locked.
         if (nodeObject != null && nodeObject.getProperty().getItem().getState().isLocked()
                 && RepositoryManager.isOpenedItemInEditor(nodeObject) && !(DELETE_FOREVER_TITLE.equals(getText()))) {
+
+            String title = Messages.getString("DeleteAction.error.title"); //$NON-NLS-1$
+            String message = Messages.getString("DeleteAction.error.lockedObject.message");//$NON-NLS-1$
+            MessageDialog dialog = new MessageDialog(new Shell(), title, null, message, MessageDialog.ERROR,
+                    new String[] { IDialogConstants.YES_LABEL }, 0);//$NON-NLS-1$
+            dialog.open();
+
             return true;
         }
 
