@@ -25,6 +25,10 @@ String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__"); 
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+
+String ignore_NS_Str = ElementParameterParser.getValue(node, "__IGNORE_NS__");
+String tmp_filename = ElementParameterParser.getValue(node, "__TMP_FILENAME__");
+
 String limit = ElementParameterParser.getValue(node, "__LIMIT__");
 if (("").equals(limit)) {
 	limit = "-1";
@@ -389,17 +393,71 @@ class XML_API_<%=cid%>{
     }
 }
 
+<%
+	if(("true").equals(ignore_NS_Str)){
+%>
+	class XML_NS_RMV_<%=cid %>{
+	
+        public void removeNamespace(org.dom4j.Document reader, org.dom4j.Document writer) {
+            org.dom4j.Element elemReader = reader.getRootElement();
+            org.dom4j.Element elemTo = writer.addElement(elemReader.getName());
+            elemTo.setText(elemReader.getText());
+            for (org.dom4j.Attribute attri : (List<org.dom4j.Attribute>) elemReader.attributes()) {
+                elemTo.add((org.dom4j.Attribute) attri.clone());
+            }
+            removeSubNamespace(elemReader, elemTo);
+        }
+    
+        public void removeSubNamespace(org.dom4j.Element elemFrom, org.dom4j.Element elemTo) {
+            for (org.dom4j.Element subFrom : (List<org.dom4j.Element>) elemFrom.elements()) {
+                org.dom4j.Element tmpElemTo = elemTo.addElement(subFrom.getName());
+                tmpElemTo.setText(subFrom.getText());
+                for (org.dom4j.Attribute attri : (List<org.dom4j.Attribute>) subFrom.attributes()) {
+                    tmpElemTo.add((org.dom4j.Attribute) attri.clone());
+                }
+                removeSubNamespace(subFrom, tmpElemTo);
+            }
+        }
+	}
+<%
+	}
+%>
+
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
 String filename_<%=cid %> = <%=filename %>;
 if(filename_<%=cid %> != null && filename_<%=cid %>.startsWith("//")){
 	filename_<%=cid %> = filename_<%=cid %>.replaceFirst("//","/");
 }
+
+<%
+	if(("true").equals(ignore_NS_Str)){
+%>
+org.dom4j.Document doc_reader_<%=cid %> = reader_<%=cid %>.read(new java.io.File(filename_<%=cid %>).toURI()
+            .toString());
+org.dom4j.Document doc_tmp_<%=cid %> = org.dom4j.DocumentHelper.createDocument();
+org.dom4j.io.OutputFormat format_<%=cid %> = org.dom4j.io.OutputFormat.createPrettyPrint();
+format_<%=cid %>.setEncoding(<%=encoding %>);
+
+new XML_NS_RMV_<%=cid %>().removeNamespace(doc_reader_<%=cid %>,doc_tmp_<%=cid %>);
+
+java.io.FileOutputStream stream_<%=cid %> = new java.io.FileOutputStream(<%=tmp_filename %>);
+org.dom4j.io.XMLWriter output_<%=cid %> = new org.dom4j.io.XMLWriter(stream_<%=cid %>, format_<%=cid %>);
+output_<%=cid %>.write(doc_tmp_<%=cid %>);
+output_<%=cid %>.close();
+
+filename_<%=cid %> = <%=tmp_filename %>;
 org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.File(filename_<%=cid %>).toURI().toString());
+<%
+	}else{
+%>
+org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.File(filename_<%=cid %>).toURI().toString());
+<%
+	}
+%>
 
 NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
 java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;  
-
 
 org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>,<%=loopQuery%>));  
 x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
