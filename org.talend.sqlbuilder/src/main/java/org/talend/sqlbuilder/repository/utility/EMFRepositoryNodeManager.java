@@ -379,14 +379,14 @@ public final class EMFRepositoryNodeManager {
                         }
                         if (collabel != null) {
                             for (String string : columnsNames) {
-                                if ((string.replaceAll(leftDbQuote, "").replaceAll(rightDbQuote, "")).equals(collabel //$NON-NLS-1$ //$NON-NLS-2$
-                                        .toLowerCase())) {
+                                if ((string.replaceAll("\\" + leftDbQuote, "").replaceAll("\\" + rightDbQuote, "")).equals(collabel //$NON-NLS-1$ //$NON-NLS-2$
+                                                .toLowerCase())) {
                                     nodes.add(colNode);
                                 }
 
                                 // need get dbtype quotes,if the dbtype is Access,need to delete both left bracket and
                                 // right bracket
-                                if ((string.replaceAll(leftDbQuote, "").replaceAll(rightDbQuote, "")).equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+                                if ((string.replaceAll("\\" + leftDbQuote, "").replaceAll("\\" + rightDbQuote, "")).equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
                                     if (!nodes.contains(colNode)) {
                                         nodes.add(colNode);
                                     }
@@ -476,7 +476,8 @@ public final class EMFRepositoryNodeManager {
             for (String string : columns) {
                 int dotIndex = string.indexOf("."); //$NON-NLS-1$
                 if (dotIndex != -1) {
-                    tableNames.add(string.substring(0, dotIndex).trim().replaceAll(leftDbQuote, "").replaceAll(rightDbQuote, "")); //$NON-NLS-1$ //$NON-NLS-2$ 
+                    tableNames.add(string.substring(0, dotIndex).trim()
+                            .replaceAll("\\" + leftDbQuote, "").replaceAll("\\" + rightDbQuote, "")); //$NON-NLS-1$ //$NON-NLS-2$ 
                 }
                 columnsNames.add(string.trim());
             }
@@ -484,7 +485,7 @@ public final class EMFRepositoryNodeManager {
                 String tableName = string;
                 if (string.contains(".")) { //$NON-NLS-1$
                     tableName = string
-                            .substring(string.indexOf(".") + 1).replaceAll(leftDbQuote, "").replaceAll(rightDbQuote, ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                            .substring(string.indexOf(".") + 1).replaceAll("\\" + leftDbQuote, "").replaceAll("\\" + rightDbQuote, ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
                 if (!tableNames.contains(tableName.trim())) {
                     tableNames.add(tableName);
