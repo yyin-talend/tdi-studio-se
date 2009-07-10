@@ -323,8 +323,11 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
 					if(("java.util.Date").equals(typeToTest)){
 						
-						checker.testDate(incomingConnName,metadataColumn,testColumn.getPattern(),cid);
+						if(!columnListToTest.get(columnIndex).isNullable()){
+
+            				checker.testDate(incomingConnName,metadataColumn,testColumn.getPattern(),cid);
             				
+            			}
 
             		}else{
 				
@@ -337,8 +340,11 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
 					if(("Date").equals(selectedType)){
 					
-						checker.testDate(incomingConnName, metadataColumn, checkedColumn.get("DATEPATTERN"), cid);
+						if(!columnListToTest.get(columnIndex).isNullable()){
+
+            				checker.testDate(incomingConnName, metadataColumn, checkedColumn.get("DATEPATTERN"), cid);
             			
+            			}
 
             		}else{
 
