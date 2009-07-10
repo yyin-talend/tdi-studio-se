@@ -78,11 +78,11 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
 
     protected Button modelButton;
 
-    protected Button jobButton;
+    protected Button jobItemButton;
 
     protected Button contextButton;
 
-    protected Button sourceButton;
+    protected Button sourceCodeButton;
 
     protected ExportFileResource[] process;
 
@@ -251,21 +251,21 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         gd.horizontalSpan = 3;
         modelButton.setLayoutData(gd);
 
-        jobButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        jobButton.setText(Messages.getString("SpagicDeployWizardPage.jobPerlScripts")); //$NON-NLS-1$
-        jobButton.setSelection(true);
-        jobButton.setFont(font);
+        jobItemButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        jobItemButton.setText(Messages.getString("SpagicDeployWizardPage.jobPerlScripts")); //$NON-NLS-1$
+        jobItemButton.setSelection(true);
+        jobItemButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 3;
-        jobButton.setLayoutData(gd);
+        jobItemButton.setLayoutData(gd);
 
-        sourceButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        sourceButton.setText(Messages.getString("SpagicDeployWizardPage.sourceFiles")); //$NON-NLS-1$
-        sourceButton.setSelection(true);
-        sourceButton.setFont(font);
+        sourceCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        sourceCodeButton.setText(Messages.getString("SpagicDeployWizardPage.sourceFiles")); //$NON-NLS-1$
+        sourceCodeButton.setSelection(true);
+        sourceCodeButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 3;
-        sourceButton.setLayoutData(gd);
+        sourceCodeButton.setLayoutData(gd);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         contextButton.setText(Messages.getString("SpagicDeployWizardPage.contextPerlScripts")); //$NON-NLS-1$
@@ -518,8 +518,8 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needTalendLibraries, modelButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needJob, jobButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needSourceCode, sourceCodeButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         // exportChoiceMap.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());

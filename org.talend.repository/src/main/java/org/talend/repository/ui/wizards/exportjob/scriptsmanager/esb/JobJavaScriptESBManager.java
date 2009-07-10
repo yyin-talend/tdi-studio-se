@@ -48,6 +48,7 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
@@ -55,6 +56,7 @@ import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 
 /**
@@ -82,21 +84,18 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         HashMap<String, String> jobMap = new HashMap<String, String>();
 
         boolean needJob = true;
-        boolean needSource = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource));
         boolean needContext = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
         ExportFileResource libResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         ExportFileResource contextResource = new ExportFileResource(null, ""); //$NON-NLS-1$
-        ExportFileResource srcResource = new ExportFileResource(null, ""); //$NON-NLS-1$
-        //ExportFileResource metaResoucre = new ExportFileResource(null, "/META-INF"); //$NON-NLS-1$
+
+        ExportFileResource itemsResource = new ExportFileResource(null, "");
         if (needJob) {
             list.add(libResource);
         }
         if (needContext) {
             list.add(contextResource);
         }
-        if (needSource) {
-            list.add(srcResource);
-        }
+        list.add(itemsResource);
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process);
@@ -130,9 +129,15 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
                 generateESBActionFile(processItem, contextName);
             }
 
+            addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)),
+                    itemsResource, selectedJobVersion);
+
+            addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
+                    itemsResource);
+
             // add children jobs
             boolean needChildren = true;
-            addSubJobResources(process, processItem, needChildren, exportChoice, libResource, contextResource, srcResource,
+            addSubJobResources(process, processItem, needChildren, exportChoice, libResource, contextResource, itemsResource,
                     selectedJobVersion);
 
             // generate the context file
@@ -155,8 +160,13 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         List<URL> userRoutineList = getUserRoutine(true);
         libResource.addResources(userRoutineList);
 
-        // copy jbm-queue-service.xml
-        String serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
+        // copy jbm-queue-service.xml or jbmq-queue-service.xml
+        String serverConfigFile;
+        if (JavaJobScriptsExportWSWizardPage.ESBTYPE_JBOSS_MESSAGING.equals(exportChoice.get(ExportChoice.esbExportType))) {
+            serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
+        } else {
+            serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "jbmq-queue-service.xml"; //$NON-NLS-1$
+        }
         // String ESBT
         ArrayList<URL> urlList = new ArrayList<URL>();
         try {
@@ -183,8 +193,16 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         String jobName = processItem.getProperty().getLabel();
         final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         try {
-            String file = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/ESBListenerAction.javatemplate"), null)) //$NON-NLS-1$
-                    .getFile();
+            String file;
+
+            if (PluginChecker.isPluginLoaded("org.talend.designer.components.thalesprovider")) { //$NON-NLS-1$
+                file = FileLocator.toFileURL(
+                        FileLocator.find(b, new Path("resources/ESBListenerActionWithMessages.javatemplate"), null)) //$NON-NLS-1$
+                        .getFile();
+            } else {
+                file = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/ESBListenerAction.javatemplate"), null)) //$NON-NLS-1$
+                        .getFile();
+            }
 
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
@@ -281,9 +299,17 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             targetFile = getTmpFolder() + PATH_SEPARATOR + "deployment.xml"; //$NON-NLS-1$
             readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName, exportChoice);
 
-            inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbm-queue-service-template.xml"), null)) //$NON-NLS-1$
-                    .getFile();
-            targetFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
+            if (JavaJobScriptsExportWSWizardPage.ESBTYPE_JBOSS_MESSAGING.equals(exportChoice.get(ExportChoice.esbExportType))) {
+                inputFile = FileLocator
+                        .toFileURL(FileLocator.find(b, new Path("resources/jbm-queue-service-template.xml"), null)) //$NON-NLS-1$
+                        .getFile();
+                targetFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
+            } else {
+                inputFile = FileLocator.toFileURL(
+                        FileLocator.find(b, new Path("resources/jbmq-queue-service-template.xml"), null)) //$NON-NLS-1$
+                        .getFile();
+                targetFile = getTmpFolder() + PATH_SEPARATOR + "jbmq-queue-service.xml"; //$NON-NLS-1$
+            }
             readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobAlias, jobWithPackageName, exportChoice);
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -304,7 +330,9 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             String line = br.readLine();
             while (line != null) {
                 line = line.replace("#JobName#", jobName).replace("#JobAlias#", jobAlias).replace("#JobPackage#", jobPackage) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                        .replace("#QueueName#", (String) exportChoice.get(ExportChoice.queueMessageName)); //$NON-NLS-1$
+                        .replace("#QueueName#", (String) exportChoice.get(ExportChoice.esbQueueMessageName)) //$NON-NLS-1$
+                        .replace("#ServiceName#", (String) exportChoice.get(ExportChoice.esbServiceName)) //$NON-NLS-1$
+                        .replace("#Category#", (String) exportChoice.get(ExportChoice.esbCategory)); //$NON-NLS-1$
                 bw.write(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
             }

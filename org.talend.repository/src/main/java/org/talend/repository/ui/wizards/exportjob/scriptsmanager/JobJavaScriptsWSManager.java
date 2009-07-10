@@ -94,7 +94,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
         boolean needJob = true;
-        boolean needSource = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource));
+        boolean needSource = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSourceCode));
         boolean needContext = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
         ExportFileResource libResource = new ExportFileResource(null, "WEB-INF/lib"); //$NON-NLS-1$
         ExportFileResource contextResource = new ExportFileResource(null, "WEB-INF/classes"); //$NON-NLS-1$

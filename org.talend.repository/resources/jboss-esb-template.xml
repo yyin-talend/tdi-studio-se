@@ -14,8 +14,8 @@
 		</jms-provider>
 	</providers>
 	<services>
-		<service category="GeneratedESB" name="SimpleListener"
-			description="Generated ESB Job Export">
+		<service category="#Category#" name="#ServiceName#"
+			description="#Category# Job Export">
 			<listeners>
 				<jms-listener name="JMS-Gateway" busidref="#JobAlias#GwChannel"
 					is-gateway="true" />

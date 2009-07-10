@@ -41,7 +41,6 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IProcessor;
@@ -69,7 +68,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     public static final String EXPORTTYPE_JBI = "JBI (JSR 208)"; //$NON-NLS-1$
 
+    public static final String ESBTYPE_JBOSS_MQ = "JBoss MQ"; //$NON-NLS-1$
+
+    public static final String ESBTYPE_JBOSS_MESSAGING = "JBoss Messaging"; //$NON-NLS-1$
+
     protected Combo exportTypeCombo;
+
+    protected Combo esbTypeCombo;
 
     protected Composite pageComposite;
 
@@ -91,7 +96,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     protected Button chkButton;
 
-    protected Text queueMessageName;
+    protected Text esbQueueMessageName;
+
+    protected Text esbServiceName;
+
+    protected Text esbCategory;
 
     public static final String STORE_EXPORTTYPE_ID = "JavaJobScriptsExportWizardPage.STORE_EXPORTTYPE_ID"; //$NON-NLS-1$
 
@@ -350,6 +359,48 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    protected void restoreWidgetValuesForESB() {
+        IDialogSettings settings = getDialogSettings();
+        if (settings != null) {
+            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            if (directoryNames != null) {
+                // destination
+                String filterName = ".esb"; //$NON-NLS-1$
+
+                for (int i = 0; i < directoryNames.length; i++) {
+                    if (directoryNames[i].toLowerCase().endsWith(filterName)) {
+                        addDestinationItem(directoryNames[i]);
+
+                    }
+                }
+            }
+            setDefaultDestination();
+
+            // webXMLButton.setSelection(settings.getBoolean(STORE_WEBXML_ID));
+            // configFileButton.setSelection(settings.getBoolean(STORE_CONFIGFILE_ID));
+            // axisLibButton.setSelection(settings.getBoolean(STORE_AXISLIB_ID));
+            // wsddButton.setSelection(settings.getBoolean(STORE_WSDD_ID));
+            // wsdlButton.setSelection(settings.getBoolean(STORE_WSDL_ID));
+            // sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            // contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
+            // applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
+            // chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
+            // if (chkButton.isVisible()) {
+            // zipOption = String.valueOf(chkButton.getSelection());
+            // } else {
+            // zipOption = "false";
+            // }
+        }
+
+        if (process.length > 0) {
+            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
+            contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
+            if (contextNames.size() > 0) {
+                contextCombo.select(0);
+            }
+        }
+    }
+
     protected void restoreWidgetValuesForWS() {
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
@@ -378,7 +429,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             axisLibButton.setSelection(settings.getBoolean(STORE_AXISLIB_ID));
             wsddButton.setSelection(settings.getBoolean(STORE_WSDD_ID));
             wsdlButton.setSelection(settings.getBoolean(STORE_WSDL_ID));
-            sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            sourceCodeButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
@@ -423,11 +474,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
             modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
-            jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
+            jobItemButton.setSelection(settings.getBoolean(STORE_JOB_ID));
             exportDependencies.setEnabled(settings.getBoolean(STORE_JOB_ID));
             exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
 
-            sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            sourceCodeButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
@@ -440,14 +491,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             launcherCombo.select(0);
         }
         if (process.length > 0) {
-        	ProcessItem item = (ProcessItem) process[0].getItem();
-			try {
-				String id = item.getProperty().getId();
-				IRepositoryObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(id);
-				item = (ProcessItem) lastVersion.getProperty().getItem();
-			} catch (PersistenceException e) {
-				throw new RuntimeException(e);
-			}
+            ProcessItem item = (ProcessItem) process[0].getItem();
+            try {
+                String id = item.getProperty().getId();
+                IRepositoryObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(id);
+                item = (ProcessItem) lastVersion.getProperty().getItem();
+            } catch (PersistenceException e) {
+                throw new RuntimeException(e);
+            }
             List<String> contextNames = manager.getJobContexts(item);
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
@@ -475,17 +526,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
-                settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
+                settings.put(STORE_SOURCE_ID, sourceCodeButton.getSelection());
                 settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
                 settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
                 settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
                 settings.put(STORE_MODEL_ID, modelButton.getSelection());
-                settings.put(STORE_JOB_ID, jobButton.getSelection());
+                settings.put(STORE_JOB_ID, jobItemButton.getSelection());
                 settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
                 return;
             } else if (exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
-                settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
+                settings.put(STORE_SOURCE_ID, sourceCodeButton.getSelection());
                 settings.put(STORE_WEBXML_ID, webXMLButton.getSelection());
                 settings.put(STORE_CONFIGFILE_ID, configFileButton.getSelection());
                 settings.put(STORE_AXISLIB_ID, axisLibButton.getSelection());
@@ -504,11 +555,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             return JavaJobScriptsExportWSWizardPage.super.getExportChoiceMap();
         }
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
-        exportChoiceMap.put(ExportChoice.needSource, false);
+        exportChoiceMap.put(ExportChoice.needJobItem, false);
+        exportChoiceMap.put(ExportChoice.needSourceCode, false);
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
             exportChoiceMap.put(ExportChoice.needMetaInfo, true);
-            exportChoiceMap.put(ExportChoice.queueMessageName, queueMessageName.getText());
+            exportChoiceMap.put(ExportChoice.esbQueueMessageName, esbQueueMessageName.getText());
+            exportChoiceMap.put(ExportChoice.esbServiceName, esbServiceName.getText());
+            exportChoiceMap.put(ExportChoice.esbCategory, esbCategory.getText());
+            exportChoiceMap.put(ExportChoice.esbExportType, esbTypeCombo.getText());
+            exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
+            exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
             return exportChoiceMap;
         }
 
@@ -518,14 +575,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportChoiceMap.put(ExportChoice.needMetaInfo, false);
         }
 
-        exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
-        exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
+
         exportChoiceMap.put(ExportChoice.needWEBXML, webXMLButton.getSelection());
         exportChoiceMap.put(ExportChoice.needCONFIGFILE, configFileButton.getSelection());
         exportChoiceMap.put(ExportChoice.needAXISLIB, axisLibButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWSDD, wsddButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWSDL, wsdlButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needSourceCode, sourceCodeButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
+        exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         return exportChoiceMap;
     }
 
@@ -579,39 +637,70 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             applyToChildrenButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ApplyToChildren")); //$NON-NLS-1$
             applyToChildrenButton.setSelection(true);
 
-            sourceButton = new Button(left, SWT.CHECK | SWT.LEFT);
-            sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
-            sourceButton.setSelection(true);
-            sourceButton.setFont(font);
+            jobItemButton = new Button(left, SWT.CHECK | SWT.LEFT);
+            jobItemButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
+            jobItemButton.setSelection(true);
+            jobItemButton.setFont(font);
             GridData gd = new GridData(GridData.FILL_HORIZONTAL);
             gd.horizontalSpan = 1;
-            sourceButton.setLayoutData(gd);
+            jobItemButton.setLayoutData(gd);
 
             exportDependencies = new Button(left, SWT.CHECK);
             exportDependencies.setText("Export Dependencies"); //$NON-NLS-1$
             exportDependencies.setFont(font);
             gd = new GridData(GridData.FILL_HORIZONTAL);
             gd.horizontalSpan = 2;
-            sourceButton.addSelectionListener(new SelectionAdapter() {
+            jobItemButton.addSelectionListener(new SelectionAdapter() {
 
                 public void widgetSelected(SelectionEvent e) {
 
-                    exportDependencies.setEnabled(sourceButton.getSelection());
-                    if (!sourceButton.getSelection()) {
+                    exportDependencies.setEnabled(jobItemButton.getSelection());
+                    if (!jobItemButton.getSelection()) {
                         exportDependencies.setSelection(false);
                     }
                 }
             });
             exportDependencies.setLayoutData(gd);
 
+            Label esbTypeLabel = new Label(left, SWT.None);
+            esbTypeLabel.setText("ESB Export type");
+
+            esbTypeCombo = new Combo(left, SWT.PUSH);
+            gd = new GridData();
+            gd.horizontalSpan = 2;
+            esbTypeCombo.setLayoutData(gd);
+
+            esbTypeCombo.add(ESBTYPE_JBOSS_MQ);
+            esbTypeCombo.add(ESBTYPE_JBOSS_MESSAGING);
+            esbTypeCombo.select(0);
+
+            Label esbServiceNameLabel = new Label(left, SWT.RIGHT);
+            esbServiceNameLabel.setText("Service Name");
+
+            esbServiceName = new Text(left, SWT.BORDER);
+            esbServiceName.setText("DefaultServiceName");
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 2;
+            esbServiceName.setLayoutData(gd);
+
+            Label esbCategoryLabel = new Label(left, SWT.None);
+            esbCategoryLabel.setText("Category");
+
+            esbCategory = new Text(left, SWT.BORDER);
+            esbCategory.setText("DefaultCategory");
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 2;
+            esbCategory.setLayoutData(gd);
+
             Label queueLabel = new Label(left, SWT.None);
             queueLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.queueName")); //$NON-NLS-1$
 
-            queueMessageName = new Text(left, SWT.BORDER);
-            queueMessageName.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.actionRequest", jobLabel)); //$NON-NLS-1$
+            esbQueueMessageName = new Text(left, SWT.BORDER);
+            esbQueueMessageName.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.actionRequest", jobLabel)); //$NON-NLS-1$
             gd = new GridData(GridData.FILL_HORIZONTAL);
             gd.horizontalSpan = 2;
-            queueMessageName.setLayoutData(gd);
+            esbQueueMessageName.setLayoutData(gd);
+            restoreWidgetValuesForESB();
         } else {
             createOptionsForWS(left, font);
         }
@@ -652,13 +741,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         wsdlButton.setLayoutData(gd);
         wsdlButton.setSelection(true);
 
-        sourceButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
-        sourceButton.setSelection(true);
-        sourceButton.setFont(font);
+        sourceCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        sourceCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
+        sourceCodeButton.setSelection(true);
+        sourceCodeButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 1;
-        sourceButton.setLayoutData(gd);
+        sourceCodeButton.setLayoutData(gd);
 
         axisLibButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         axisLibButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.AxisLib")); //$NON-NLS-1$
@@ -690,8 +779,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             wsddButton.setSelection(true);
             wsdlButton.setEnabled(false);
             wsdlButton.setSelection(true);
-            sourceButton.setEnabled(false);
-            sourceButton.setSelection(true);
+            sourceCodeButton.setEnabled(false);
+            sourceCodeButton.setSelection(true);
             axisLibButton.setEnabled(false);
             axisLibButton.setSelection(true);
             contextButton.setEnabled(false);

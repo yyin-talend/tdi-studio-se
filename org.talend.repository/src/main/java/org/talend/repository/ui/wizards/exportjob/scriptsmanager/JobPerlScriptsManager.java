@@ -117,17 +117,17 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 ExceptionHandler.process(e);
             }
 
-            addSource(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource)), process[i],
-                    selectedJobVersion);
+            addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)),
+                    process[i], selectedJobVersion);
             List<URL> talendLibraries = getTalendLibraries((Boolean) exportChoice.get(ExportChoice.needTalendLibraries));
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
             }
-            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJob)));
-            addDepencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
+            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needSourceCode)));
+            addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
                     process[i]);
             resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
-            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needJob)
+            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needSourceCode)
                     && (Boolean) exportChoice.get(ExportChoice.needContext);
             addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
             process[i].addResources(resources);
@@ -351,8 +351,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         }
         processedJob.add(process);
         addComponentModules(process, curResource);
-        addSource(allResources, process, (Boolean) exportChoice.get(ExportChoice.needSource), curResource, selectedJobVersion);
-        addDepencies(allResources, process, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
+        addJobItem(allResources, process, (Boolean) exportChoice.get(ExportChoice.needJobItem), curResource, selectedJobVersion);
+        addDependencies(allResources, process, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
                 curResource);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
@@ -445,7 +445,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * properties.ProcessItem, boolean)
      */
     @Override
-    protected void addSource(ExportFileResource[] allResources, ProcessItem processItem, boolean needSource,
+    protected void addJobItem(ExportFileResource[] allResources, ProcessItem processItem, boolean needSource,
             ExportFileResource curResource, String... selectedJobVersion) {
         if (!needSource) {
             return;

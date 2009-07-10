@@ -112,10 +112,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
             }
-            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJob)));
+            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needSourceCode)));
             resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
             resources.addAll(getProperties(processItem, contextName));
-            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needJob)
+            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needSourceCode)
                     && (Boolean) exportChoice.get(ExportChoice.needContext);
             addChildrenResources(process, processItem, needChildren, process[i], exportChoice);
             process[i].addResources(resources);
@@ -296,7 +296,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         }
         processedJob.add(process);
         addComponentModules(process, resource);
-        addSource(allResources, process, (Boolean) exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
+        addJobItem(allResources, process, (Boolean) exportChoice.get(ExportChoice.needJobItem), resource, JOB_SOURCE_FOLDER_NAME);
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         String rootProjectName = PerlResourcesHelper.getRootProjectName(resource.getItem());

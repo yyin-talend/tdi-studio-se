@@ -27,8 +27,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07
- * bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07 bqian
  * 
  */
 public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
@@ -96,8 +95,8 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
         exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needTalendLibraries, modelButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needJob, jobButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needSourceCode, sourceCodeButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         return exportChoiceMap;
@@ -121,8 +120,8 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
             settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
             settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
             settings.put(STORE_MODEL_ID, modelButton.getSelection());
-            settings.put(STORE_JOB_ID, jobButton.getSelection());
-            settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
+            settings.put(STORE_JOB_ID, jobItemButton.getSelection());
+            settings.put(STORE_SOURCE_ID, sourceCodeButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             // settings.put(STORE_GENERATECODE_ID, genCodeButton.getSelection());
@@ -148,8 +147,8 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
             modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
-            jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
-            sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            jobItemButton.setSelection(settings.getBoolean(STORE_JOB_ID));
+            sourceCodeButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
 

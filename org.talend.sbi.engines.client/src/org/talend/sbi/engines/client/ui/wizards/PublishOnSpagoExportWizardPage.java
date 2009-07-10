@@ -561,8 +561,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         exportChoiceMap.put(ExportChoice.needSystemRoutine, true);
         exportChoiceMap.put(ExportChoice.needUserRoutine, true);
         exportChoiceMap.put(ExportChoice.needTalendLibraries, true);
-        exportChoiceMap.put(ExportChoice.needJob, true);
-        exportChoiceMap.put(ExportChoice.needSource, false);
+        exportChoiceMap.put(ExportChoice.needJobItem, true);
+        exportChoiceMap.put(ExportChoice.needSourceCode, false);
 
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
 

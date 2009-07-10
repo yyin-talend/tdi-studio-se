@@ -115,9 +115,9 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
             settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
             settings.put(STORE_MODEL_ID, modelButton.getSelection());
-            settings.put(STORE_JOB_ID, jobButton.getSelection());
+            settings.put(STORE_JOB_ID, jobItemButton.getSelection());
             settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
-            settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
+            settings.put(STORE_SOURCE_ID, sourceCodeButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
@@ -147,10 +147,10 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
             modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
-            jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
+            jobItemButton.setSelection(settings.getBoolean(STORE_JOB_ID));
             exportDependencies.setEnabled(settings.getBoolean(STORE_JOB_ID));
             exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
-            sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            sourceCodeButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));

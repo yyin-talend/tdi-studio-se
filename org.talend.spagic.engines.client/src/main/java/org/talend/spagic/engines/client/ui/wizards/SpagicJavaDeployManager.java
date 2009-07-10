@@ -68,15 +68,17 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             resources.addAll(getLauncher(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needLauncher)), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            addSource(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSource)), process[i]);
+            addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)),
+                    process[i]);
 
-            resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJob))));
+            resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue((Boolean) exportChoice
+                    .get(ExportChoice.needSourceCode))));
             // resources.addAll(getProperties(processItem, srcList));
             resources.addAll(getProperties(processItem, contextName));
             addContextScripts(process[i], BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext)));
 
             // add children jobs
-            boolean needChildren = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJob))
+            boolean needChildren = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSourceCode))
                     && BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
             List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice);
             resources.addAll(childrenList);
@@ -130,7 +132,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
             allJobScripts.addAll(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), (Boolean) exportChoice
-                    .get(ExportChoice.needJob)));
+                    .get(ExportChoice.needSourceCode)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
                     (Boolean) exportChoice.get(ExportChoice.needContext));
         }

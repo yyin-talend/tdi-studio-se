@@ -97,8 +97,8 @@ public abstract class JobScriptsManager {
         exportChoiceMap.put(ExportChoice.needSystemRoutine, true);
         exportChoiceMap.put(ExportChoice.needUserRoutine, true);
         exportChoiceMap.put(ExportChoice.needTalendLibraries, true);
-        exportChoiceMap.put(ExportChoice.needJob, true);
-        exportChoiceMap.put(ExportChoice.needSource, true);
+        exportChoiceMap.put(ExportChoice.needJobItem, true);
+        exportChoiceMap.put(ExportChoice.needSourceCode, true);
         exportChoiceMap.put(ExportChoice.needContext, true);
         exportChoiceMap.put(ExportChoice.applyToChildren, false);
         exportChoiceMap.put(ExportChoice.doNotCompileCode, false);
@@ -111,7 +111,8 @@ public abstract class JobScriptsManager {
 
     /**
      * 
-     * DOC Represent exportchoice <br/>.
+     * DOC Represent exportchoice <br/>
+     * .
      * 
      * $Id: JobScriptsExportWizardPage.java 1 2007-1-31下�?�06:14:19 +0000 ylv $
      * 
@@ -127,13 +128,16 @@ public abstract class JobScriptsManager {
         needSystemRoutine,
         needUserRoutine,
         needTalendLibraries,
-        needJob,
-        needSource,
+        needJobItem,
+        needSourceCode,
         needContext,
         applyToChildren,
         doNotCompileCode,
         needDependencies,
-        queueMessageName
+        esbQueueMessageName,
+        esbServiceName,
+        esbCategory,
+        esbExportType
     }
 
     /**
@@ -393,7 +397,7 @@ public abstract class JobScriptsManager {
         }
     }
 
-    protected void addSource(ExportFileResource[] resources, ProcessItem processItem, boolean needChoice,
+    protected void addJobItem(ExportFileResource[] resources, ProcessItem processItem, boolean needChoice,
             ExportFileResource curResource, String... selectedJobVersion) {
         List<URL> list = new ArrayList<URL>();
         if (needChoice) {
@@ -524,7 +528,7 @@ public abstract class JobScriptsManager {
     /**
      * DOC qwei Comment method "addDepencies".
      */
-    protected void addDepencies(ExportFileResource[] allResources, ProcessItem processItem, Boolean needDependencies,
+    protected void addDependencies(ExportFileResource[] allResources, ProcessItem processItem, Boolean needDependencies,
             ExportFileResource resource) {
         if (!needDependencies) {
             return;
