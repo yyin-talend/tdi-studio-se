@@ -68,19 +68,30 @@ List<IMetadataColumn> columnListToTest = columnList;
 
 List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 
+List<IMetadataColumn> basicColumnList = null;
 
 if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
-    for(IConnection conn : outgoingConns) {
+    for(IConnection outgoingConn : outgoingConns) {
 
-    	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    	if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+
+            IMetadataTable basicSchemaTable = outgoingConn.getMetadataTable();
+
+            if(basicSchemaTable != null) {
+                basicColumnList = basicSchemaTable.getListColumns();
+            }
+        }
+
+    	if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
-    	    <%=conn.getName() %> = null;			
+    	    <%=outgoingConn.getName() %> = null;			
 <%
     	}
 
 	}
-%>    
+%>
+
     boolean ifPassed_<%=cid%> = true;
 
     int errorCode_<%=cid%> = 0;
@@ -311,8 +322,9 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 					typeToTest = JavaTypesManager.getTypeToGenerate(typeToTest, true);
 
 					if(("java.util.Date").equals(typeToTest)){
-
-            			checker.testDate(incomingConnName,metadataColumn,testColumn.getPattern(),cid);
+						
+						checker.testDate(incomingConnName,metadataColumn,testColumn.getPattern(),cid);
+            				
 
             		}else{
 				
@@ -324,8 +336,9 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 					String selectedType = checkedColumn.get("SELECTED_TYPE");
 
 					if(("Date").equals(selectedType)){
-
-            			checker.testDate(incomingConnName, metadataColumn, checkedColumn.get("DATEPATTERN"), cid);
+					
+						checker.testDate(incomingConnName, metadataColumn, checkedColumn.get("DATEPATTERN"), cid);
+            			
 
             		}else{
 
@@ -340,7 +353,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 		continue;
                 	}
 
-                	//if input field is nullable and output field can't nullable, it must check.                	
+                	//if input field is nullable and output field can't nullable, it must check.
                 	if(!columnListToTest.get(columnIndex).isNullable()){
                 		checker.testNull(incomingConnName,metadataColumn,cid);
                     }
@@ -357,6 +370,27 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                     checker.testDataLength(incomingConnName, metadataColumn, Integer.valueOf(maxLength.toString()), cid);
 
 
+                } else if(("true").equals(checkAll)){
+
+                	if (basicColumnList.size() <= columnIndex) {
+                		continue;
+                	}
+
+                	//if input field is nullable and output field can't nullable, it must check.                	
+                	if(!basicColumnList.get(columnIndex).isNullable()){
+                		checker.testNull(incomingConnName,metadataColumn,cid);
+                    }
+					
+					Object maxLength = basicColumnList.get(columnIndex).getLength();
+					
+					maxLength = (maxLength == null) ? "0" : maxLength;
+					
+					//if not an integer.
+					if (!java.util.regex.Pattern.compile("[0-9]*").matcher(maxLength.toString()).matches() ){
+						maxLength = "0";
+					}
+					
+                    checker.testDataLength(incomingConnName, metadataColumn, Integer.valueOf(maxLength.toString()), cid);
                 } else {
 
                     String checkNullable = checkedColumn.get("NULLABLE");
