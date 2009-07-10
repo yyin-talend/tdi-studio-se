@@ -156,6 +156,8 @@ public enum EParameterName {
     DB_VERSION(Messages.getString("EParameterName.dbVersion")), //$NON-NLS-1$
     DATASOURCE(Messages.getString("EParameterName.dataSource")), //$NON-NLS-1$
     STATS_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.StatDefaultProjectsetting")), //$NON-NLS-1$
+    USE_SHARED_CONNECTION(Messages.getString("EParameterName.useSharedConnection")), //$NON-NLS-1$
+    SHARED_CONNECTION_NAME(Messages.getString("EParameterName.sharedConnectionName")), //$NON-NLS-1$
     /**
      * For Job Settings extra parameters.
      */

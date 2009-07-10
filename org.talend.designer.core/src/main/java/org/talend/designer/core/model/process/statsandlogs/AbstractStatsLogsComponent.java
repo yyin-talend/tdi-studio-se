@@ -295,6 +295,16 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         newParam.setValue("1"); //$NON-NLS-1$
         elemParamList.add(newParam);
 
+        newParam = new ElementParameter(node);
+        newParam.setName("USE_SHARED_CONNECTION"); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.CHECK);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName("SHARED_CONNECTION_NAME"); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
     }
 
     protected void addFileOutputParameters(List<IElementParameter> elemParamList, INode node) {
