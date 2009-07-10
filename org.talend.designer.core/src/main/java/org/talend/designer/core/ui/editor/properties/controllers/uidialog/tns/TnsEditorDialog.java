@@ -84,29 +84,8 @@ public class TnsEditorDialog extends Dialog {
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
             public void doubleClick(DoubleClickEvent event) {
-                TnsNodeModel rootNode = (TnsNodeModel) ((TreeSelection) event.getSelection()).getFirstElement();
-                if (rootNode.getLevel() == 1) {
-                    tnsInfo = new TnsInfo();
-                    if (rootNode.findChildByName("HOST") != null) { //$NON-NLS-1$
-                        tnsInfo.setHost(rootNode.findChildByName("HOST").getValue()); //$NON-NLS-1$
-                    }
 
-                    if (rootNode.findChildByName("PORT") != null) { //$NON-NLS-1$
-                        tnsInfo.setPort(rootNode.findChildByName("PORT").getValue()); //$NON-NLS-1$
-                    }
-
-                    if (rootNode.findChildByName("SID") != null) { //$NON-NLS-1$
-                        tnsInfo.setConnectionType("ORACLE_SID"); //$NON-NLS-1$
-                        tnsInfo.setDbName(rootNode.findChildByName("SID").getValue()); //$NON-NLS-1$
-                    }
-
-                    if (rootNode.findChildByName("SERVICE_NAME") != null) { //$NON-NLS-1$
-                        tnsInfo.setConnectionType("ORACLE_SERVICE_NAME"); //$NON-NLS-1$
-                        tnsInfo.setDbName(rootNode.findChildByName("SERVICE_NAME").getValue()); //$NON-NLS-1$
-                    }
-
-                    okPressed();
-                }
+                okPressed();
             }
 
         });
@@ -123,34 +102,45 @@ public class TnsEditorDialog extends Dialog {
         if (treeViewer.getSelection().isEmpty()) {
             MessageBox box = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
             box.setText("WARNING"); //$NON-NLS-1$
-            box.setMessage("Please a Item."); //$NON-NLS-1$
+            box.setMessage("Please select a Item."); //$NON-NLS-1$
             box.open();
             return;
         } else {
-            TnsNodeModel rootNode = (TnsNodeModel) ((TreeSelection) treeViewer.getSelection()).getFirstElement();
-            if (rootNode.getLevel() == 1) {
-                tnsInfo = new TnsInfo();
-                if (rootNode.findChildByName("HOST") != null) { //$NON-NLS-1$
-                    tnsInfo.setHost(rootNode.findChildByName("HOST").getValue()); //$NON-NLS-1$
-                }
-
-                if (rootNode.findChildByName("PORT") != null) { //$NON-NLS-1$
-                    tnsInfo.setPort(rootNode.findChildByName("PORT").getValue()); //$NON-NLS-1$
-                }
-
-                if (rootNode.findChildByName("SID") != null) { //$NON-NLS-1$
-                    tnsInfo.setConnectionType("ORACLE_SID"); //$NON-NLS-1$
-                    tnsInfo.setDbName(rootNode.findChildByName("SID").getValue()); //$NON-NLS-1$
-                }
-
-                if (rootNode.findChildByName("SERVICE_NAME") != null) { //$NON-NLS-1$
-                    tnsInfo.setConnectionType("ORACLE_SERVICE_NAME"); //$NON-NLS-1$
-                    tnsInfo.setDbName(rootNode.findChildByName("SERVICE_NAME").getValue()); //$NON-NLS-1$
-                }
-
-            }
+            setDBConnectionUseTnsFile();
         }
-        super.okPressed();
+
+    }
+
+    private void setDBConnectionUseTnsFile() {
+
+        TnsNodeModel rootNode = (TnsNodeModel) ((TreeSelection) treeViewer.getSelection()).getFirstElement();
+        if (rootNode.getLevel() == 1) {
+            tnsInfo = new TnsInfo();
+            if (rootNode.findChildByName("HOST") != null) { //$NON-NLS-1$
+                tnsInfo.setHost(rootNode.findChildByName("HOST").getValue()); //$NON-NLS-1$
+            }
+
+            if (rootNode.findChildByName("PORT") != null) { //$NON-NLS-1$
+                tnsInfo.setPort(rootNode.findChildByName("PORT").getValue()); //$NON-NLS-1$
+            }
+
+            if (rootNode.findChildByName("SID") != null) { //$NON-NLS-1$
+                tnsInfo.setConnectionType("ORACLE_SID"); //$NON-NLS-1$
+                tnsInfo.setDbName(rootNode.findChildByName("SID").getValue()); //$NON-NLS-1$
+            }
+
+            if (rootNode.findChildByName("SERVICE_NAME") != null) { //$NON-NLS-1$
+                tnsInfo.setConnectionType("ORACLE_SERVICE_NAME"); //$NON-NLS-1$
+                tnsInfo.setDbName(rootNode.findChildByName("SERVICE_NAME").getValue()); //$NON-NLS-1$
+            }
+            super.okPressed();
+        } else if (rootNode.getLevel() != 1) {
+            MessageBox box = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
+            box.setText("WARNING"); //$NON-NLS-1$
+            box.setMessage("Please select a root Item."); //$NON-NLS-1$
+            box.open();
+            return;
+        }
 
     }
 
