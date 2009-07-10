@@ -577,14 +577,15 @@ public class DatabaseTableForm extends AbstractForm {
         // tableCombo.setEnabled(false);
         // checkConnectionButton.setVisible(true);
 
-        retreiveSchemaButton.setEnabled(true);
         tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
         tableCombo.setReadOnly(true);
         checkConnectionButton.setVisible(false);
-        addTableButton.setEnabled(true);
+
+        retreiveSchemaButton.setEnabled(!isReadOnly());
+        addTableButton.setEnabled(!isReadOnly());
+        guessSchemaButton.setEnabled(!isReadOnly());
         if (isReadOnly()) {
-            retreiveSchemaButton.setEnabled(false);
-            addTableButton.setEnabled(false);
+
         } else if (!managerConnection.getIsValide()) {
             // Connection failure
             tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$

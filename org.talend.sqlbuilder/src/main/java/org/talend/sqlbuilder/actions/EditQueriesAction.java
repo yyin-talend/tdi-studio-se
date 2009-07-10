@@ -99,7 +99,8 @@ public class EditQueriesAction extends AContextualAction {
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
-                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED
+                        || factory.getStatus(node.getObject()) == ERepositoryStatus.LOCK_BY_OTHER) {
                     canWork = false;
                 }
                 if (!isUnderDBConnection(node)) {

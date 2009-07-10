@@ -180,7 +180,8 @@ public class CreateTableAction extends AbstractCreateTableAction {
             setEnabled(false);
         } else {
             if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
-                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED
+                        || factory.getStatus(node.getObject()) == ERepositoryStatus.LOCK_BY_OTHER) {
                     setEnabled(false);
                     return;
                 }

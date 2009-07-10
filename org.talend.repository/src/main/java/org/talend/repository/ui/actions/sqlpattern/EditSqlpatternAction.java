@@ -23,6 +23,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -76,9 +77,10 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
     protected void doRun() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
         SQLPatternItem sqlPatternItem = (SQLPatternItem) node.getObject().getProperty().getItem();
-
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        boolean readonly = factory.getStatus(sqlPatternItem) == ERepositoryStatus.LOCK_BY_OTHER;
         try {
-            openSQLPatternEditor(sqlPatternItem, false);
+            openSQLPatternEditor(sqlPatternItem, readonly);
             RepositoryManager.getRepositoryView().refresh(node);
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);

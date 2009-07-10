@@ -1534,8 +1534,8 @@ public class DatabaseForm extends AbstractForm {
         boolean isOracle = visible && oracleVersionEnable();
         boolean isAS400 = visible && as400VersionEnable();
 
-        dbVersionCombo.setEnabled(isOracle || isAS400
-                || EDatabaseConnTemplate.ACCESS.getDBTypeName().equals(dbTypeCombo.getText()));
+        dbVersionCombo.setEnabled(!isReadOnly()
+                && (isOracle || isAS400 || EDatabaseConnTemplate.ACCESS.getDBTypeName().equals(dbTypeCombo.getText())));
         usernameText.setEditable(visible);
         passwordText.setEditable(visible);
         serverText.setEditable(false);
@@ -1589,7 +1589,7 @@ public class DatabaseForm extends AbstractForm {
             }
             if (s.contains(EDatabaseConnVar.FILENAME.getVariable())) {
                 fileField.show();
-                fileField.setEditable(visible);
+                fileField.setEditable(!isReadOnly() && visible);
                 addContextParams(EDBParamName.File, visible);
                 boolean isSqlLite = false;
                 if (template.getDbType() == EDatabaseTypeName.SQLITE) {

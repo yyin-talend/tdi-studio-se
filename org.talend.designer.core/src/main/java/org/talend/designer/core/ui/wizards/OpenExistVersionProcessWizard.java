@@ -99,7 +99,8 @@ public class OpenExistVersionProcessWizard extends Wizard {
     private void lockObject() {
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
-            if (repositoryFactory.getStatus(processObject).equals(ERepositoryStatus.LOCK_BY_USER)
+            ERepositoryStatus status = repositoryFactory.getStatus(processObject);
+            if (status == ERepositoryStatus.LOCK_BY_OTHER || status.equals(ERepositoryStatus.LOCK_BY_USER)
                     && RepositoryManager.isOpenedItemInEditor(processObject)) {
                 alreadyEditedByUser = true;
             } else {

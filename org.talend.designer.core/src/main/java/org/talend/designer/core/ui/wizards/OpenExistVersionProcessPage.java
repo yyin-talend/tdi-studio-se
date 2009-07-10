@@ -114,11 +114,11 @@ public class OpenExistVersionProcessPage extends WizardPage {
 
         versionMajorBtn = new Button(versionModifComposite, SWT.PUSH);
         versionMajorBtn.setText(Messages.getString("PropertiesWizardPage.Version.Major")); //$NON-NLS-1$
-        versionMajorBtn.setEnabled(true);
+        versionMajorBtn.setEnabled(!alreadyEditedByUser);
 
         versionMinorBtn = new Button(versionModifComposite, SWT.PUSH);
         versionMinorBtn.setText(Messages.getString("PropertiesWizardPage.Version.Minor")); //$NON-NLS-1$
-        versionMinorBtn.setEnabled(true);
+        versionMinorBtn.setEnabled(!alreadyEditedByUser);
 
         versionText.setText(getProperty().getVersion());
 
