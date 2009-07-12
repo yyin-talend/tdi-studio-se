@@ -36,6 +36,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
 		IMetadataColumn[] column_op = new IMetadataColumn[operations.size()];
 		String[] functions = new String[operations.size()];
+		boolean[] needTestForNull = new boolean[operations.size()];
 		List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
 		IMetadataColumn[] column_gr = new IMetadataColumn[groupbys.size()];
 		for(int i = 0; i < column_op.length; i++){
@@ -45,6 +46,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			for (IMetadataColumn column: inColumns) {
 				if(column.getLabel().equals(in)){
 					column_op[i] = column;
+					JavaType inputJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					needTestForNull[i] = !(JavaTypesManager.isJavaPrimitiveType(inputJavaType, column.isNullable())) && (operation.get("IGNORE_NULL").equals("true"));
 					break;
 				}
 			}
@@ -89,7 +92,7 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i].getTalendType());
 		boolean duplicate = false;
 		for(int j = 0; j < i; j++){
-			if(functions[j].equals(functions[i]) && column_op[j].getLabel().equals(column_op[i].getLabel())){
+			if(functions[j].equals(functions[i]) && column_op[j].getLabel().equals(column_op[i].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 				duplicate = true;
 				break;
 			}
@@ -98,26 +101,42 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 			continue;
 		}
 		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
-%><%= JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %> <%=functions[i] %>_<%=column_op[i].getLabel() %>_<%=cid %><%
-if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || 
+			if((javaType == JavaTypesManager.LIST || javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.BYTE_ARRAY) && (("min").equals(functions[i]) || ("max").equals(functions[i]))){
+%>
+if(true){
+	throw new RuntimeException("Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
+}
+<%
+			}else{
+%>
+<%= JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %> <%=functions[i] %>_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%
+if(column_op[i].isNullable()){%>null<%
+}else{
+	if(javaType == JavaTypesManager.BOOLEAN){%>false<%
+	}else if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || 
 	javaType == JavaTypesManager.CHARACTER || javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || 
 	javaType == JavaTypesManager.FLOAT || javaType == JavaTypesManager.DOUBLE){
-	%>=(<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), false) %>)0<%}else{%>=null<%}%>;
-<%		}else if(("count").equals(functions[i])){
+	%>(<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), false) %>)0<%
+	}else{%>null<%
+	}
+}%>;
+<%
+			}
+		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(("avg").equals(functions[j]) && column_op[j].getLabel().equals(column_op[i].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j].getLabel().equals(column_op[i].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 					countHasAvg = true;
 					break;
 				}
 			}
 			if(!countHasAvg){
-%>int count_<%=column_op[i].getLabel() %>_<%=cid %>=0;
+%>int count_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>=0;
 <%			}
 		}else if(("sum").equals(functions[i])){
 			boolean sumHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(("avg").equals(functions[j]) && column_op[j].getLabel().equals(column_op[i].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j].getLabel().equals(column_op[i].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 					sumHasAvg = true;
 					break;
 				}
@@ -126,14 +145,15 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER || 
 					javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT || 
 					javaType == JavaTypesManager.DOUBLE){
-%>double sum_<%=column_op[i].getLabel() %>_<%=cid %> = 0d;
+%>double sum_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 0d;
 <%
 				}else if(javaType == JavaTypesManager.BIGDECIMAL){
-%>BigDecimal sum_<%=column_op[i].getLabel() %>_<%=cid %> = new BigDecimal("0.0");
+%>BigDecimal sum_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new BigDecimal("0.0");
 <%
 				}else{
-%>if(true){
-	throw new Exception("Can't sum for column <%=column_op[i].getLabel() %>, because the type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
+%>
+if(true){
+	throw new RuntimeException("Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
 }
 <%
 				}
@@ -142,24 +162,25 @@ if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else if(javaType == JavaType
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER || 
 				javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT || 
 				javaType == JavaTypesManager.DOUBLE){
-%>double sum_<%=column_op[i].getLabel() %>_<%=cid %> = 0d;
+%>double sum_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 0d;
 <%
 			}else if(javaType == JavaTypesManager.BIGDECIMAL){
-%>BigDecimal sum_<%=column_op[i].getLabel() %>_<%=cid %> = new BigDecimal("0.0");
+%>BigDecimal sum_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new BigDecimal("0.0");
 <%
 			}else{
-%>if(true){
-	throw new Exception("Can't avg for column <%=column_op[i].getLabel() %>, because the type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
+%>
+if(true){
+	throw new RuntimeException("Job Error: can't use function \"<%=functions[i] %>\" on column \"<%=column_op[i].getLabel() %>\", the data type is \"<%=JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>\"");
 }
 <%
 			}
-%>int count_<%=column_op[i].getLabel() %>_<%=cid %>=0;
+%>int count_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>=0;
 <%		}else if(("distinct").equals(functions[i])){
-%>java.util.Set set_<%=column_op[i].getLabel() %>_<%=cid %> = null;
+%>java.util.Set set_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = null;
 <%		}else if(functions[i].equals("list")){
-%>StringBuilder list_<%=column_op[i].getLabel() %>_<%=cid %>=null;
+%>StringBuilder list_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>=null;
 <%		}else {
-%>java.util.List list_object_<%=column_op[i].getLabel() %>_<%=cid %>=null;
+%>java.util.List list_object_<%=column_op[i].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>=null;
 <%		}
 	}
 	%><%

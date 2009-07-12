@@ -37,6 +37,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
 		IMetadataColumn[][] column_op = new IMetadataColumn[operations.size()][2];
 		String[] functions = new String[operations.size()];
+		boolean[] needTestForNull = new boolean[operations.size()];
 		List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
 		String rowCount = ElementParameterParser.getValue(node,"__ROW_COUNT__");
 		IMetadataColumn[][] column_gr = new IMetadataColumn[groupbys.size()][2];
@@ -65,6 +66,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			for (IMetadataColumn column: inColumns) {
 				if(column.getLabel().equals(in)){
 					column_op[i][0] = column;
+					JavaType inputJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					needTestForNull[i] = !(JavaTypesManager.isJavaPrimitiveType(inputJavaType, column.isNullable())) && (operation.get("IGNORE_NULL").equals("true"));
 					break;
 				}
 			}
@@ -88,10 +91,10 @@ boolean sameGroup_<%=cid %> = true;
 	for(int i = 0; i < column_gr.length; i++){
 %>group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>;
 <%	}
-	for(int i = 0; i < column_op.length; i++){
+	for(int i = 0; i < column_op.length; i++){//__HSS_tAR_001
 		boolean duplicate = false;
 		for(int j = 0; j < i; j++){
-			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 				duplicate = true;
 				break;
 			}
@@ -99,24 +102,38 @@ boolean sameGroup_<%=cid %> = true;
 		if(duplicate){
 			continue;
 		}
+		
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){ 
-%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%		}else if(("count").equals(functions[i])){
+%>
+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%
+		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 					countHasAvg = true;
 					break;
 				}
 			}
 			if(!countHasAvg){
-%>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
-<%			}
+				if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+				}
+%>count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+<%			
+				if(needTestForNull[i]){
+%>	}else{
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 0;
+}
+<%
+				}
+			}
 		}else if(("sum").equals(functions[i])){
 			boolean sumHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 					sumHasAvg = true;
 					break;
 				}
@@ -126,37 +143,137 @@ boolean sameGroup_<%=cid %> = true;
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 					|| javaType == JavaTypesManager.DOUBLE ){
-%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%				}else if(javaType == JavaTypesManager.BIGDECIMAL){
+					if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+					}
 %>
-<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%		}else{
-%>//sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
-<%				}
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%					
+					if(needTestForNull[i]){
+%>	}else{
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)0;
+	}
+<%
+					}
+				}else if(javaType == JavaTypesManager.BIGDECIMAL){
+					if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+					}
+%>
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%				
+					if(needTestForNull[i]){
+%>	}else{
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new BigDecimal("0.0");
+	}
+<%
+					}
+				}else{
+//generate nothing.
+				}
 			}
 		}else if(("avg").equals(functions[i])){
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 					|| javaType == JavaTypesManager.DOUBLE ){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%				}else if(javaType == JavaTypesManager.BIGDECIMAL){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%		}else{
-%>//sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
-<%			}
-%>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
-<%		}else if(("distinct").equals(functions[i])){
-%>set_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.HashSet();
-set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}else if(("list_object").equals(functions[i])){
-%>list_object_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.ArrayList();
-list_object_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}else{
-%>list_<%=column_op[i][0].getLabel() %>_<%=cid %> = new StringBuilder();
-list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}
-	}
+				if(needTestForNull[i]){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
+	count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+}else{
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)0;
+	count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 0;
+}
+<%
+				}else{
+					if(column_op[i][0].isNullable()){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
+}else{
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)0;
+}
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+<%
+					}else{
+%>
+sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+<%
+					}
+				}
+			}else if(javaType == JavaTypesManager.BIGDECIMAL){
+				if(needTestForNull[i]){
+%>	
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+}else{
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new BigDecimal("0.0");
+	count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 0;
+}
+<%
+				}else{
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+}else{
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new BigDecimal("0.0");
+}
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+<%
+				}
+			}else{
+//generate nothing.
+			}
+		}else if(("distinct").equals(functions[i])){
+%>set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new java.util.HashSet();
+<%
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%>
+set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}else if(("list_object").equals(functions[i])){
+%>list_object_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new java.util.ArrayList();
+<%
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%>
+		list_object_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}else  if(("list").equals(functions[i])){
+%>list_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new StringBuilder();
+<%
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%>
+		list_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}
+	}//__HSS_tAR_001
 %>
 }else{
 <%
@@ -192,13 +309,14 @@ if(group_<%=column_gr[i][0].getLabel() %>_<%=cid %> != <%=connName %>.<%=column_
 	}
 %>}
 if(sameGroup_<%=cid %>){
+
 <%
 }//while loop end
 	%><%
-	for(int i = 0; i < column_op.length; i++){
+	for(int i = 0; i < column_op.length; i++){//__HSS_tAR_002
 		boolean duplicate = false;
 		for(int j = 0; j < i; j++){
-			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 				duplicate = true;
 				break;
 			}
@@ -208,60 +326,136 @@ if(sameGroup_<%=cid %>){
 		}
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 		if(("first").equals(functions[i])){
-			//do nothing here
+			if(needTestForNull[i]){
+%>
+if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+}
+<%
+			}
 		}else if(("last").equals(functions[i])){
-%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%		}else if(("min").equals(functions[i])){
+			if(needTestForNull[i]){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%>
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%
+			if(needTestForNull[i]){
+%>
+}
+<%
+			}
+		}else if(("min").equals(functions[i])){
 			if(javaType == JavaTypesManager.LIST || javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.BYTE_ARRAY){
 			//do nothing
 			}else if(javaType == JavaTypesManager.BIGDECIMAL || javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
-%>if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
-	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) > 0){
-		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+%>
+	if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
+		if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) > 0){
+			<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+		}
+	}
+<%			}else if(javaType == JavaTypesManager.BOOLEAN){
+				if(needTestForNull[i] || column_op[i][0].isNullable()){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
+	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) > 0){
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 	}
 }
-<%			}else if(javaType == JavaTypesManager.BOOLEAN){
-%>if(!<%=connName %>.<%=column_op[i][0].getLabel() %> && <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>){
-	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = true;
+<%
+				}else{
+%>
+if(!<%=connName %>.<%=column_op[i][0].getLabel() %> && <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = false;
 }
-<%			}else{
-%>if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> > <%=connName %>.<%=column_op[i][0].getLabel() %>){
-	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%
+				}
+			}else{
+				if(needTestForNull[i] || column_op[i][0].isNullable()){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
+	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) > 0){
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	}
 }
-<%			}
+<%
+				}else{
+%>
+if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > <%=connName %>.<%=column_op[i][0].getLabel() %>){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+}
+<%
+				}
+			}
 		}else if(("max").equals(functions[i])){
 			if(javaType == JavaTypesManager.LIST || javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.BYTE_ARRAY){
 			//do nothing
 			}else if(javaType == JavaTypesManager.BIGDECIMAL || javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
 %>if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
-	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) < 0){
-		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) < 0){
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 	}
 }
 <%			}else if(javaType == JavaTypesManager.BOOLEAN){
-%>if(<%=connName %>.<%=column_op[i][0].getLabel() %> && !<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>){
-	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = true;
+				if(needTestForNull[i] || column_op[i][0].isNullable()){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
+	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) < 0){
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	}
 }
-<%			}else{
-%>if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> < <%=connName %>.<%=column_op[i][0].getLabel() %>){
-	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%
+				}else{
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> && !<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = true;
 }
-<%			}
+<%
+				}
+			}else{
+				if(needTestForNull[i] || column_op[i][0].isNullable()){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
+	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) < 0){
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	}
+}
+<%
+				}else{
+%>
+if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> < <%=connName %>.<%=column_op[i][0].getLabel() %>){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+}
+<%
+				}
+			}
 		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 					countHasAvg = true;
 					break;
 				}
 			}
 			if(!countHasAvg){
-%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
-<%			}
+				if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+				}
+%>count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> ++;
+<%			
+				if(needTestForNull[i]){
+%>	}
+<%
+				}
+			}
 		}else if(("sum").equals(functions[i])){
 			boolean sumHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 					sumHasAvg = true;
 					break;
 				}
@@ -271,49 +465,113 @@ if(sameGroup_<%=cid %>){
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 					|| javaType == JavaTypesManager.DOUBLE){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%				}else if(javaType == JavaTypesManager.BIGDECIMAL){
+					if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+					}
+%>sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%
+					if(needTestForNull[i]){
+%>	}
+<%
+					}
+				}else if(javaType == JavaTypesManager.BIGDECIMAL){
 %>if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
-	if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> == null){
-		sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	if(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null){
+		sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 	}else{
-		sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+		sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 	}
 }
 <%
 				}
 			}
 		}else if(("avg").equals(functions[i])){
-				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 					|| javaType == JavaTypesManager.DOUBLE){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%>;
-count_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
-<%				}else if(javaType == JavaTypesManager.BIGDECIMAL){
-%>if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
-	if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> == null){
-		sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-	}else{
-		sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-	}
-	count_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
-}
+				if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
 <%
 				}
-		}else if(("list").equals(functions[i])){
-%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(",");
-<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}else if(("list_object").equals(functions[i])){
-%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}else if(("distinct").equals(functions[i])){
+				if(!needTestForNull[i] && column_op[i][0].isNullable()){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+				}
+%>sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%				if(!needTestForNull[i] && column_op[i][0].isNullable()){
+%>	}
+<%
+				}
 %>
-set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>++;
+<%
+				if(needTestForNull[i]){
+%>	}
+<%
+				}
+			}else if(javaType == JavaTypesManager.BIGDECIMAL){
+%>if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	if(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> == null){
+		sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	}else{
+		sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 	}
+<%
+				if(needTestForNull[i]){
+%>count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>++;
+<%
+				}
+%>
+}
+<%
+				if(!needTestForNull[i]){
+%>count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>++;
+<%
+				}
+			}
+		}else if(("list").equals(functions[i])){
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.append(",");
+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}else if(("list_object").equals(functions[i])){
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}else if(("distinct").equals(functions[i])){
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%>
+set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}
+	}//__HSS_tAR_002
 
 if(column_gr.length > 0){
-%>}
+%>}//if_same_group
+
 <%
 }
 %>
@@ -387,7 +645,7 @@ if( !sameGroup_<%=cid %> ){
 							if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(inJavaType == javaType){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}else{//for different data type
 									if((javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 										|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
@@ -396,16 +654,16 @@ if( !sameGroup_<%=cid %> ){
 										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE)){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%									}else{
 										if(flag){
 											flag = false;
 %>String temp_<%=cid %> = "";
 <%										}
 										if(inJavaType == JavaTypesManager.BYTE_ARRAY){
-%>temp_<%=cid %> = new String(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>);
+%>temp_<%=cid %> = new String(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>);
 <%										}else{
-%>temp_<%=cid %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>temp_<%=cid %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%										}
 %>if(temp_<%=cid %>.length() > 0) {
 <%										if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -432,11 +690,11 @@ if( !sameGroup_<%=cid %> ){
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 									|| javaType == JavaTypesManager.DOUBLE){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>).getBytes();
 <%								}
 							}else if(("sum").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
@@ -448,12 +706,12 @@ if( !sameGroup_<%=cid %> ){
 										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%
 									}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ((<%=javaType.getPrimitiveClass() %>))0;
-if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
-	emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ((<%=javaType.getPrimitiveClass() %>))sum_<%=column_op[i][0].getLabel() %>_<%=cid %>.doubleValue();
+if(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> != null){
+	emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ((<%=javaType.getPrimitiveClass() %>))sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.doubleValue();
 }
 <%
 									}
@@ -462,15 +720,26 @@ if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
 										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = BigDecimal.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=cid %>);
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = BigDecimal.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>);
 <%
 									}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
+<%
+									}
+								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+									if(inJavaType == JavaTypesManager.BYTE || inJavaType == JavaTypesManager.CHARACTER 
+										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
+										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
+										|| inJavaType == JavaTypesManager.DOUBLE){
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>);
+<%
+									}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>);
 <%
 									}
 								}else{
-%>//emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
-<%								}
+//generate nothing
+								}
 							}else if(("avg").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
@@ -482,8 +751,8 @@ if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE){
 %>double avg_<%=i %>_<%=cid %> = 0d;
-if(count_<%=column_op[i][0].getLabel() %>_<%=cid %> > 0){
-	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>/count_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>/count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 }
 emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)avg_<%=i %>_<%=cid %>;
 <%
@@ -494,8 +763,8 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType
                            		 			pre = precision;
                            		 		}
 %>double avg_<%=i %>_<%=cid %> = 0d;
-if(count_<%=column_op[i][0].getLabel() %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
-	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP).doubleValue();
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> != null){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP).doubleValue();
 }
 emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)avg_<%=i %>_<%=cid %>;
 <%
@@ -511,21 +780,46 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE){
 %>BigDecimal avg_<%=i %>_<%=cid %> = new BigDecimal("0.0");
-if(count_<%=column_op[i][0].getLabel() %>_<%=cid %> > 0){
-	avg_<%=i %>_<%=cid %> = BigDecimal.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=cid %>).divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP);
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0){
+	avg_<%=i %>_<%=cid %> = BigDecimal.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>).divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP);
 }
 emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_<%=cid %>;
 <%
                            		 	}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
 %>BigDecimal avg_<%=i %>_<%=cid %> = new BigDecimal("0.0");
-if(count_<%=column_op[i][0].getLabel() %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
-	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP);
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> != null){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP);
 }
 emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_<%=cid %>;
 <%
                            		 	}
+								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+									if(inJavaType == JavaTypesManager.BYTE || inJavaType == JavaTypesManager.CHARACTER 
+										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
+										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
+										|| inJavaType == JavaTypesManager.DOUBLE){
+%>double avg_<%=i %>_<%=cid %> = 0d;
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>/count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
+}
+emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.valueOf(avg_<%=i %>_<%=cid %>);
+<%
+									}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
+										int pre = 10;
+                       		 			Integer precision = column.getPrecision();
+                           		 		if(precision!=null && precision!=0) { 
+                           		 			pre = precision;
+                           		 		}
+%>double avg_<%=i %>_<%=cid %> = 0d;
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> != null){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP).doubleValue();
+}
+emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.valueOf(avg_<%=i %>_<%=cid %>);
+<%
+									}
 								}else{
-%>if(true){
+%>
+if(true){
 	throw new Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"avg\" result.");
 }
 <%								}
@@ -534,26 +828,26 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 									|| javaType == JavaTypesManager.DOUBLE){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.size();
 <%								}else if(javaType == JavaTypesManager.BIGDECIMAL) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = BigDecimal.valueOf(set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size());
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = BigDecimal.valueOf(set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.size());
 <%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.size();
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size()).getBytes();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.size()).getBytes();
 <%								}
 							}else if(("list_object").equals(functions[i])){
 								if(javaType == JavaTypesManager.STRING){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.toString();
 <%
 								}else if(javaType == JavaTypesManager.OBJECT) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.LIST) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}
-							}else{//"list"
+							}else if(("list").equals(functions[i])){
 								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.toString();
 <%								} else if(javaType == JavaTypesManager.LIST){
 %>if(true){
 	throw new Exception("In column <%=column.getLabel() %>, data type \"List\" is not applicable for aggregate function \"list\" result. Please try aggregate function \"list(object)\"!");
@@ -581,7 +875,7 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 	for(int i = 0; i < column_op.length && column_gr.length > 0; i++){
 		boolean duplicate = false;
 		for(int j = 0; j < i; j++){
-			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 				duplicate = true;
 				break;
 			}
@@ -591,60 +885,172 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 		}
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 		if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){ 
-%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 <%		}else if(("count").equals(functions[i])){
 			boolean countHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 					countHasAvg = true;
 					break;
 				}
 			}
 			if(!countHasAvg){
-%>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
-<%			}
+				if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+				}
+%>count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+<%			
+				if(needTestForNull[i]){
+%>	}else{
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 0;
+}
+<%
+				}
+			}
 		}else if(("sum").equals(functions[i])){
 			boolean sumHasAvg = false;
 			for(int j = 0; j < functions.length; j++){
-				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				if(("avg").equals(functions[j]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel()) && needTestForNull[i] == needTestForNull[j]){
 					sumHasAvg = true;
 					break;
 				}
 			}
 			if(!sumHasAvg){
-			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
-					|| javaType == JavaTypesManager.DOUBLE){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%			}else if(javaType == JavaTypesManager.BIGDECIMAL) {
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%								}else{
-%>//sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
-<%			}
-}
+					|| javaType == JavaTypesManager.DOUBLE ){
+					if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+					}
+%>
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%					
+					if(needTestForNull[i]){
+%>	}else{
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)0;
+	}
+<%
+					}
+				}else if(javaType == JavaTypesManager.BIGDECIMAL){
+					if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+					}
+%>
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%				
+					if(needTestForNull[i]){
+%>	}else{
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new BigDecimal("0.0");
+	}
+<%
+					}
+				}else{
+//generate nothing.
+				}
+			}
 		}else if(("avg").equals(functions[i])){
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
-					|| javaType == JavaTypesManager.DOUBLE){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%			}else if(javaType == JavaTypesManager.BIGDECIMAL) {
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%								}else{
-%>//sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
-<%			}
-%>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
-<%		}else if(("distinct").equals(functions[i])){
-%>set_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.HashSet();
-set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}else if(("list_object").equals(functions[i])){
-%>list_object_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.ArrayList();
-list_object_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}else{
-%>list_<%=column_op[i][0].getLabel() %>_<%=cid %> = new StringBuilder();
-list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
-<%		}
+					|| javaType == JavaTypesManager.DOUBLE ){
+				if(needTestForNull[i]){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
+	count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+}else{
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)0;
+	count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 0;
+}
+<%
+				}else{
+					if(column_op[i][0].isNullable()){
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
+}else{
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)0;
+}
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+<%
+					}else{
+%>
+sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = (double)<%=connName %>.<%=column_op[i][0].getLabel() %>;
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+<%
+					}
+				}
+			}else if(javaType == JavaTypesManager.BIGDECIMAL){
+				if(needTestForNull[i]){
+%>	
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+}else{
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new BigDecimal("0.0");
+	count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 0;
+}
+<%
+				}else{
+%>
+if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+}else{
+	sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new BigDecimal("0.0");
+}
+count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = 1;
+<%
+				}
+			}else{
+//generate nothing.
+			}
+		}else if(("distinct").equals(functions[i])){
+%>set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new java.util.HashSet();
+<%
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%>
+set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}else if(("list_object").equals(functions[i])){
+%>list_object_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new java.util.ArrayList();
+<%
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%>
+		list_object_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}else  if(("list").equals(functions[i])){
+%>list_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> = new StringBuilder();
+<%
+			if(needTestForNull[i]){
+%>	if(<%=connName %>.<%=column_op[i][0].getLabel() %> != null){
+<%
+			}
+%>
+		list_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%
+			if(needTestForNull[i]){
+%>	}
+<%
+			}
+		}
 	}
 %>
 }
@@ -713,7 +1119,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 							if(("min").equals(functions[i]) || ("max").equals(functions[i]) || ("first").equals(functions[i]) || ("last").equals(functions[i])){ 
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(inJavaType == javaType){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}else{//for different data type
 									if((javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 										|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
@@ -722,16 +1128,16 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE)){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%									}else{
 										if(flag){
 											flag = false;
 %>String temp_<%=cid %> = "";
 <%										}
 										if(inJavaType == JavaTypesManager.BYTE_ARRAY){
-%>temp_<%=cid %> = new String(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>);
+%>temp_<%=cid %> = new String(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>);
 <%										}else{
-%>temp_<%=cid %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>temp_<%=cid %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%										}
 %>if(temp_<%=cid %>.length() > 0) {
 <%										if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -758,11 +1164,11 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 									|| javaType == JavaTypesManager.DOUBLE){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>).getBytes();
 <%								}
 							}else if(("sum").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
@@ -774,12 +1180,12 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%
 									}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ((<%=javaType.getPrimitiveClass() %>))0;
-if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
-	emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ((<%=javaType.getPrimitiveClass() %>))sum_<%=column_op[i][0].getLabel() %>_<%=cid %>.doubleValue();
+if(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> != null){
+	emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ((<%=javaType.getPrimitiveClass() %>))sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.doubleValue();
 }
 <%
 									}
@@ -788,15 +1194,26 @@ if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
 										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = BigDecimal.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=cid %>);
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = BigDecimal.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>);
 <%
 									}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
+<%
+									}
+								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+									if(inJavaType == JavaTypesManager.BYTE || inJavaType == JavaTypesManager.CHARACTER 
+										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
+										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
+										|| inJavaType == JavaTypesManager.DOUBLE){
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>);
+<%
+									}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>);
 <%
 									}
 								}else{
-%>//emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
-<%								}
+//generate nothing...
+								}
 							}else if(("avg").equals(functions[i])){
 								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
@@ -808,8 +1225,8 @@ if(sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE){
 %>double avg_<%=i %>_<%=cid %> = 0d;
-if(count_<%=column_op[i][0].getLabel() %>_<%=cid %> > 0){
-	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>/count_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>/count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 }
 emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)avg_<%=i %>_<%=cid %>;
 <%
@@ -820,8 +1237,8 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType
                            		 			pre = precision;
                            		 		}
 %>double avg_<%=i %>_<%=cid %> = 0d;
-if(count_<%=column_op[i][0].getLabel() %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
-	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP).doubleValue();
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> != null){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP).doubleValue();
 }
 emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)avg_<%=i %>_<%=cid %>;
 <%
@@ -837,19 +1254,43 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType
 										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
 										|| inJavaType == JavaTypesManager.DOUBLE){
 %>BigDecimal avg_<%=i %>_<%=cid %> = new BigDecimal("0.0");
-if(count_<%=column_op[i][0].getLabel() %>_<%=cid %> > 0){
-	avg_<%=i %>_<%=cid %> = BigDecimal.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=cid %>).divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP);
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0){
+	avg_<%=i %>_<%=cid %> = BigDecimal.valueOf(sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>).divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP);
 }
 emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_<%=cid %>;
 <%
                            		 	}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
 %>BigDecimal avg_<%=i %>_<%=cid %> = new BigDecimal("0.0");
-if(count_<%=column_op[i][0].getLabel() %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=cid %> != null){
-	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP);
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> != null){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP);
 }
 emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_<%=cid %>;
 <%
                            		 	}
+								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+									if(inJavaType == JavaTypesManager.BYTE || inJavaType == JavaTypesManager.CHARACTER 
+										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
+										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
+										|| inJavaType == JavaTypesManager.DOUBLE){
+%>double avg_<%=i %>_<%=cid %> = 0d;
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>/count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
+}
+emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.valueOf(avg_<%=i %>_<%=cid %>);
+<%
+									}else if(inJavaType == JavaTypesManager.BIGDECIMAL){
+										int pre = 10;
+                       		 			Integer precision = column.getPrecision();
+                           		 		if(precision!=null && precision!=0) { 
+                           		 			pre = precision;
+                           		 		}
+%>double avg_<%=i %>_<%=cid %> = 0d;
+if(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> > 0 && sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %> != null){
+	avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.divide(BigDecimal.valueOf(count_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>), <%=pre %>, BigDecimal.ROUND_HALF_UP).doubleValue();
+}
+emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.valueOf(avg_<%=i %>_<%=cid %>);
+<%
+									}
 								}else{
 %>if(true){
 	throw new Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"avg\" result.");
@@ -860,26 +1301,26 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = avg_<%=i %>_
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 									|| javaType == JavaTypesManager.DOUBLE){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.size();
 <%								}else if(javaType == JavaTypesManager.BIGDECIMAL) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = BigDecimal.valueOf(set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size());
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = BigDecimal.valueOf(set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.size());
 <%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.size();
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size()).getBytes();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (""+set_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.size()).getBytes();
 <%								}
 							}else if(("list_object").equals(functions[i])){
 								if(javaType == JavaTypesManager.STRING){
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.toString();
 <%
 								}else if(javaType == JavaTypesManager.OBJECT) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.LIST) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>;
 <%								}
 							}else{//"list"
 								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.toString();
 <%								} else if(javaType == JavaTypesManager.LIST){
 %>if(true){
 	throw new Exception("In column <%=column.getLabel() %>, data type \"List\" is not applicable for aggregate function \"list\" result. Please try aggregate function \"list(object)\"!");
