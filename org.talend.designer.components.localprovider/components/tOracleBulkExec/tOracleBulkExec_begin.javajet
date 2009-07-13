@@ -215,7 +215,7 @@ if(columnList != null && columnList.size() > 0) {
     				if (tmp_Pattn.indexOf("mm")!= -1) {
     					tmp_Pattn = tmp_Pattn.replace("mm", "mi");
     				} 
-    				if (tmp_Pattn.indexOf("HH")!= -1) {
+    				if (tmp_Pattn.indexOf("HH")!= -1 && tmp_Pattn.indexOf("HH24") == -1) {
     					tmp_Pattn = tmp_Pattn.replace("HH", "HH24");
     				} 
     			
