@@ -76,8 +76,9 @@ public class AddressDoctorClient {
      * @param args
      * @throws Exception
      */
-    public static Result[] formatAndValidate(Long userId, String password, Address address, CountryOfOriginType originCountry,
-            CountryType countryType, LineSeparatorType lineSeparator, CapitalizationType capitalize) throws Exception {
+    public static AddInteractiveResponse formatAndValidate(Long userId, String password, Address address,
+            CountryOfOriginType originCountry, CountryType countryType, LineSeparatorType lineSeparator,
+            CapitalizationType capitalize) throws Exception {
         try {
             // Parameter to set in component
             // String webServiceURI (should always be
@@ -102,12 +103,7 @@ public class AddressDoctorClient {
             addInteractiveRequest.setAuthentication(new Authentication(userId, 0, password));
             AddInteractiveResponse resp = interactiveSoap.validate(addInteractiveRequest);
 
-            Result[] results = resp.getResults();
-            if (resp.getResultCount() > 0) {
-                return results;
-            } else {
-                throw new Exception(resp.getErrorCode() + ":" + resp.getErrorMessage() + ":" + resp.getValidationStatus());
-            }
+            return resp;
 
         } catch (ServiceException e) {
             throw e;
