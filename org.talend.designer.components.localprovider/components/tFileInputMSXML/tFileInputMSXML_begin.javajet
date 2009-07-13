@@ -336,7 +336,12 @@ looper_<%=cid%>.parse(new java.io.File(<%=filename %>).toURI().toString());
 %>
 	<%=conn.getName() %> = null;
 <%				if(("Dom4j").equals(mode)){%>
-	if(temp_<%=cid %>.getName().equals(query_<%=conn.getName() %>)){
+	String tmp_<%=conn.getName() %> = temp_<%=cid %>.getName();
+	if(temp_<%=cid %>.getNamespacePrefix() !=null &&
+			!temp_<%=cid %>.getNamespacePrefix().equals("")){
+		tmp_<%=conn.getName() %> = temp_<%=cid %>.getNamespacePrefix() + ":" + tmp_<%=conn.getName() %>;
+	}
+	if(tmp_<%=conn.getName() %>.equals(query_<%=conn.getName() %>)){
 <%				}else{%>
 	if(tmp_<%=cid %>.get(<%=tmpQuery %>)!=null){
 		
