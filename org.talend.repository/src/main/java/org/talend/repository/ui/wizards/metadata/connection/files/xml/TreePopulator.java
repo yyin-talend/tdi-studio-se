@@ -110,7 +110,14 @@ public class TreePopulator {
             int type = treeNode.getType();
             if (type == ATreeNode.ATTRIBUTE_TYPE) {
                 treeItem.setText("@" + treeNode.getValue().toString()); //$NON-NLS-1$
-            } else {
+            }
+            // else if (type == ATreeNode.NAMESPACE_TYPE) {
+            // treeItem.setText(treeNode.getValue().toString());
+            // } else {
+            // treeItem.setText(treeNode.getValue().toString() + " <" + treeNode.getDataType() + ">");
+            // }
+
+            else {
                 treeItem.setText(treeNode.getValue().toString());
             }
 
