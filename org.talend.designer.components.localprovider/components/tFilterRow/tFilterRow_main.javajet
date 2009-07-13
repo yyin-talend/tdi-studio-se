@@ -80,7 +80,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	if (!javaType.isPrimitive()) {
 %>	
         		// is primitive
-				<%="$source == null? false : $source.equals($target) $operator true".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+				<%="($source == null || $target == null)? ($source == $target) : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
 			} else {
 %>	
