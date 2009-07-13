@@ -30,6 +30,7 @@
     String condition = ElementParameterParser.getValue(node, "__FILTER_RELATION__");
     	
 	String cid = node.getUniqueName();
+	boolean useSSL = "true".equals(ElementParameterParser.getValue(node, "__USE_SSL__"));
 %>	
 	String server_<%=cid %> = <%=host %>;
 	
@@ -58,8 +59,12 @@
 	} catch (SecurityException sex) {
 		props_<%=cid %> = new java.util.Properties();
     }
-
 <%
+	if(useSSL){
+%>
+		props_<%=cid %>.setProperty("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+<%
+	}
 	if ("pop3".equals(protocol)){
 %>
 		session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);

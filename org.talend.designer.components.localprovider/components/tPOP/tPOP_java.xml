@@ -121,6 +121,15 @@
       </ITEMS>
     </PARAMETER> 
     
+    <PARAMETER
+      NAME="USE_SSL"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="9"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
