@@ -58,6 +58,9 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         Process process = (Process) elem;
         ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
         pType = pItem.getProcess().getParameters();
+        // wzhang modified to fixed bug 8218
+        boolean readOnly = element.isReadOnly();
+        parentComposite.setEnabled(!readOnly);
     }
 
     /*

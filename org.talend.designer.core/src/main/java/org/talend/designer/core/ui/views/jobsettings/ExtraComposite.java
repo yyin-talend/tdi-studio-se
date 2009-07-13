@@ -54,6 +54,9 @@ public class ExtraComposite extends AbstractPreferenceComposite {
         pType = pItem.getProcess().getParameters();
         // achen modify to fix 0005993
         isUsingProjectSetting = true;
+        // wzhang modified to fixed bug 8218
+        boolean readOnly = element.isReadOnly();
+        parentComposite.setEnabled(!readOnly);
     }
 
     /*
