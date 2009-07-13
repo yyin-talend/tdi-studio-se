@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -461,8 +462,8 @@ public class ConnectionFormComposite extends Composite {
                 if (path == null || "".equals(path)) {
                     workSpaceText.setText(getRecentWorkSpace());
                 } else {
-                    String cPath = path.replaceAll("\\\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$                   
-                    workSpaceText.setText(cPath);
+                    //                    String cPath = path.replaceAll("\\\\", File.separator); //$NON-NLS-1$ //$NON-NLS-2$                   
+                    workSpaceText.setText(path);
 
                 }
             }
@@ -582,8 +583,9 @@ public class ConnectionFormComposite extends Composite {
     }
 
     public String getRecentWorkSpace() {
-        String defaultPath = Platform.getInstanceLocation().getURL().toString();
-        String filePath = defaultPath.substring(defaultPath.indexOf("/"), defaultPath.length() - 1); //$NON-NLS-1$
+        String filePath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath();
+        // String defaultPath = Platform.getInstanceLocation().getURL().toString();
+        //        String filePath = defaultPath.substring(defaultPath.indexOf("/"), defaultPath.length() - 1); //$NON-NLS-1$
         return filePath;
     }
 

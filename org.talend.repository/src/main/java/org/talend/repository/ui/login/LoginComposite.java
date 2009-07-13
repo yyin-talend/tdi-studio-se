@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -760,10 +761,10 @@ public class LoginComposite extends Composite {
         // workspace = workspace.substring(1, workspace.length());
         // }
 
-        String defaultPath = Platform.getInstanceLocation().getURL().getPath();
-        String filePath1 = defaultPath.substring(defaultPath.indexOf("/"), defaultPath.length() - 1); //$NON-NLS-1$
-        String filePath2 = defaultPath.substring(defaultPath.indexOf("/") + 1, defaultPath.length() - 1); //$NON-NLS-1$
-        return workspace.equals(filePath1) || workspace.equals(filePath2);
+        String defaultPath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath();
+        //        String filePath1 = defaultPath.substring(defaultPath.indexOf("/"), defaultPath.length() - 1); //$NON-NLS-1$
+        //        String filePath2 = defaultPath.substring(defaultPath.indexOf("/") + 1, defaultPath.length() - 1); //$NON-NLS-1$
+        return workspace.equals(defaultPath);// workspace.equals(filePath1) || workspace.equals(filePath2);
     }
 
     private void updateVisible() {
