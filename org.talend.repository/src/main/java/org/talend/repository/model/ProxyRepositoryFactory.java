@@ -1513,7 +1513,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public void logOffProject() {
-        getRepositoryContext().setProject(null);
+        // getRepositoryContext().setProject(null);
         repositoryFactoryFromProvider.logOffProject();
     }
 
