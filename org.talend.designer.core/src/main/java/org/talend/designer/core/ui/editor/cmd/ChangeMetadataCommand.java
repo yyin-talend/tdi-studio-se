@@ -428,19 +428,22 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        String value = null;
         if (inputSchemaParam != null
                 && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue().equals(
                         EmfComponent.REPOSITORY)) {
             // add by wzhang to fix bug 7898.
             IElementParameter elementParameter = node.getElementParameter(EParameterName.MAPPING.getName());
             if (elementParameter != null) {
-                value = (String) elementParameter.getValue();
-            }
-            if (!isDBComponent(value)) {
-                schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-                schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
-                        inputSchemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue());
+                if (elementParameter.getValue() instanceof String) {
+                    String value = (String) elementParameter.getValue();
+                    if (!isDBComponent(value)) {
+                        schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
+                                EmfComponent.REPOSITORY);
+                        schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
+                                inputSchemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
+                                        .getValue());
+                    }
+                }
             }
         }
 

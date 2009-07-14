@@ -30,6 +30,8 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -86,11 +88,38 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     // for jobtemplate plugin(true, bug 5198)
     private boolean ignoreContextMode = false;
 
+    public static boolean dragAndDropAction = false;
+
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
         this.value = value;
         this.propertyName = propertyName;
+        oldValues = new HashMap<String, Object>();
+
+        setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
+        // for job settings extra (feature 2710)
+        // if (JobSettingsConstants.isExtraParameter(propertyName)) {
+        // propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+        // repositoryPropertyTypeName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
+        // .getName());
+        // updataComponentParamName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+        // } else {
+        propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
+        EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+        updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+        // }
+    }
+
+    public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value,
+            boolean dragAndDropAction) {
+        this.elem = elem;
+        this.connection = connection;
+        this.value = value;
+        this.propertyName = propertyName;
+        this.dragAndDropAction = dragAndDropAction;
         oldValues = new HashMap<String, Object>();
 
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
@@ -190,7 +219,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     if (!relatedPropertyParam.getCategory().equals(currentCategory) && !repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
                         continue;
                     }
-                    Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
+                    Object objectValue;
+                    if (connection instanceof XmlFileConnection && this.dragAndDropAction == true
+                            && repositoryValue.equals("FILE_PATH")) {
+                        objectValue = RepositoryToComponentProperty.getXmlAndXSDFileValue((XmlFileConnection) connection,
+                                repositoryValue);
+                        this.dragAndDropAction = false;
+                    } else {
+                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
+                    }
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
                         if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
@@ -541,6 +578,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)) {
                     Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
+                    if (dragAndDropAction == true && connection instanceof XmlFileConnectionImpl) {
+                        objectValue = RepositoryToComponentProperty.getXmlAndXSDFileValue((XmlFileConnection) connection,
+                                repositoryValue);
+                        dragAndDropAction = false;
+                    }
                     if (objectValue != null) {
                         elem.setPropertyValue(param.getName(), oldValues.get(param.getName()));
                         param.setRepositoryValueUsed(false);

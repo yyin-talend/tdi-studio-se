@@ -67,7 +67,9 @@ public class FileController extends AbstractElementPropertySectionController {
     /*
      * This method will never be called.
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createCommand
+     * ()
      */
     public Command createCommand() {
         return null;
@@ -76,7 +78,8 @@ public class FileController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(Button button) {
         FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
@@ -91,7 +94,6 @@ public class FileController extends AbstractElementPropertySectionController {
                     String portableValue = Path.fromOSString(file).toPortableString();
                     filePathText.setText(TalendTextUtils.addQuotes(portableValue));
                     return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
-
                 }
             }
         }
@@ -101,7 +103,8 @@ public class FileController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -120,7 +123,9 @@ public class FileController extends AbstractElementPropertySectionController {
         btnEdit.setLayoutData(data);
         btnEdit.setData(NAME, FILE);
         btnEdit.setData(PARAMETER_NAME, param.getName());
-        btnEdit.setEnabled(!param.isReadOnly());
+        // btnEdit.setEnabled(!param.isReadOnly());
+        btnEdit.setEnabled(param.getValue().toString().endsWith("xsd") || param.getValue().toString().endsWith("xsd\"") ? true
+                : !param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
@@ -204,8 +209,9 @@ public class FileController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {

@@ -127,7 +127,9 @@ public class PropertyChangeCommand extends Command {
                 currentParam.setRepositoryValueUsed(false);
             } else {
                 toUpdate = true;
-                elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
+                String oldValueString = elem.getPropertyValue(propName).toString();
+                if (!oldValueString.endsWith("xsd") && !oldValueString.endsWith("xsd\""))
+                    elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
                 for (IElementParameter param : elem.getElementParameters()) {
                     if (param.getCategory().equals(currentParam.getCategory())) {
                         param.setRepositoryValueUsed(false);
