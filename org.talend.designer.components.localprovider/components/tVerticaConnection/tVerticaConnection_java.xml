@@ -109,7 +109,23 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-
+	<PARAMETER
+      NAME="USE_SHARED_CONNECTION"
+	  FIELD="CHECK"
+      NUM_ROW="9"
+      REQUIRED="true"
+    >      
+    </PARAMETER>
+	
+	<PARAMETER
+      NAME="SHARED_CONNECTION_NAME"
+	  FIELD="TEXT"
+      NUM_ROW="9"
+      REQUIRED="true"
+	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
+    >      
+	<DEFAULT></DEFAULT>
+    </PARAMETER>
    </PARAMETERS>
 
 	<CODEGENERATION>
