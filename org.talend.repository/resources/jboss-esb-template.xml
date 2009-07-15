@@ -5,11 +5,10 @@
 	<providers>
 		<jms-provider name="JBossMQ" connection-factory="ConnectionFactory">
 			<jms-bus busid="#JobAlias#GwChannel">
-				<jms-message-filter dest-type="QUEUE"
-					dest-name="queue/#QueueName#" />
+				<jms-message-filter dest-type="QUEUE" dest-name="queue/#QueueName#" />
 			</jms-bus>
 			<jms-bus busid="#JobAlias#EsbChannel">
-				<jms-message-filter dest-type="QUEUE" dest-name="queue/B" />
+				<jms-message-filter dest-type="QUEUE" dest-name="queue/#QueueName#_ESB" />
 			</jms-bus>
 		</jms-provider>
 	</providers>
@@ -21,7 +20,7 @@
 					is-gateway="true" />
 				<jms-listener name="JMS-ESBListener" busidref="#JobAlias#EsbChannel" />
 			</listeners>
-			<actions mep="OneWay">
+			<actions mep="RequestResponse">
 				<action name="#JobAlias#"
 					class="#JobPackage#.#JobName#ListenerAction"
 					process="#JobName#">
