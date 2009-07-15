@@ -121,8 +121,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
                     process[i]);
-            resources.addAll(getJobScripts(processItem, selectedJobVersion, BooleanUtils.isTrue((Boolean) exportChoice
-                    .get(ExportChoice.needSourceCode))));
+            resources.addAll(getJobScripts(processItem, selectedJobVersion, (Boolean) exportChoice
+                    .get(ExportChoice.needJobScript))); // always need job generation
 
             addContextScripts(process[i], selectedJobVersion, BooleanUtils.isTrue((Boolean) exportChoice
                     .get(ExportChoice.needContext)));
@@ -409,7 +409,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     childProjectName = project.getLabel().toLowerCase();
                 }
                 allJobScripts.addAll(getJobScripts(childProjectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
-                        (Boolean) exportChoice.get(ExportChoice.needSourceCode)));
+                        (Boolean) exportChoice.get(ExportChoice.needJobScript)));
                 addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
                         (Boolean) exportChoice.get(ExportChoice.needContext));
                 addDependencies(allResources, jobInfo.getProcessItem(), BooleanUtils.isTrue((Boolean) exportChoice

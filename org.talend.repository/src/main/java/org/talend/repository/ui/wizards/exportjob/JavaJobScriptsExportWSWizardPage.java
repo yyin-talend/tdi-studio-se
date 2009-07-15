@@ -328,16 +328,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             selectedFileName += this.getOutputSuffix();
         // when user change the name of job,will add the version auto
         if (selectedFileName != null && !selectedFileName.endsWith(this.getSelectedJobVersion() + this.getOutputSuffix())) {
-            // String b = selectedFileName.substring(0, (selectedFileName.length() - 4));
-            // if (this.getSelectedJobVersion() != null) O{
-            // selectedFileName = b + this.getSelectedJobVersion() + this.getOutputSuffix();
-            // } else {
-            //
-            // // String version = processItem.getProperty().getVersion();
-            // selectedFileName = b + this.getOutputSuffix();
-            //
-            // }
-
             String b = selectedFileName.substring(0, (selectedFileName.length() - 4));
             File file = new File(b);
 
@@ -429,7 +419,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             axisLibButton.setSelection(settings.getBoolean(STORE_AXISLIB_ID));
             wsddButton.setSelection(settings.getBoolean(STORE_WSDD_ID));
             wsdlButton.setSelection(settings.getBoolean(STORE_WSDL_ID));
-            sourceCodeButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
@@ -478,7 +468,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportDependencies.setEnabled(settings.getBoolean(STORE_JOB_ID));
             exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
 
-            sourceCodeButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
@@ -526,7 +516,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
-                settings.put(STORE_SOURCE_ID, sourceCodeButton.getSelection());
+                settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
                 settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
                 settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
                 settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
@@ -536,7 +526,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
                 return;
             } else if (exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
-                settings.put(STORE_SOURCE_ID, sourceCodeButton.getSelection());
+                settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
                 settings.put(STORE_WEBXML_ID, webXMLButton.getSelection());
                 settings.put(STORE_CONFIGFILE_ID, configFileButton.getSelection());
                 settings.put(STORE_AXISLIB_ID, axisLibButton.getSelection());
@@ -566,6 +556,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportChoiceMap.put(ExportChoice.esbExportType, esbTypeCombo.getText());
             exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
             exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
+            exportChoiceMap.put(ExportChoice.needSourceCode, jobItemButton.getSelection()); // take source code also
+            // when take item
             return exportChoiceMap;
         }
 
@@ -581,7 +573,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportChoiceMap.put(ExportChoice.needAXISLIB, axisLibButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWSDD, wsddButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWSDL, wsdlButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needSourceCode, sourceCodeButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJobScript, jobScriptButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         return exportChoiceMap;
@@ -741,13 +733,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         wsdlButton.setLayoutData(gd);
         wsdlButton.setSelection(true);
 
-        sourceCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        sourceCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
-        sourceCodeButton.setSelection(true);
-        sourceCodeButton.setFont(font);
+        jobScriptButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        jobScriptButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
+        jobScriptButton.setSelection(true);
+        jobScriptButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 1;
-        sourceCodeButton.setLayoutData(gd);
+        jobScriptButton.setLayoutData(gd);
 
         axisLibButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         axisLibButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.AxisLib")); //$NON-NLS-1$
@@ -779,8 +771,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             wsddButton.setSelection(true);
             wsdlButton.setEnabled(false);
             wsdlButton.setSelection(true);
-            sourceCodeButton.setEnabled(false);
-            sourceCodeButton.setSelection(true);
+            jobScriptButton.setEnabled(false);
+            jobScriptButton.setSelection(true);
             axisLibButton.setEnabled(false);
             axisLibButton.setSelection(true);
             contextButton.setEnabled(false);

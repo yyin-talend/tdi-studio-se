@@ -117,7 +117,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             settings.put(STORE_MODEL_ID, modelButton.getSelection());
             settings.put(STORE_JOB_ID, jobItemButton.getSelection());
             settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
-            settings.put(STORE_SOURCE_ID, sourceCodeButton.getSelection());
+            settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
@@ -150,7 +150,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             jobItemButton.setSelection(settings.getBoolean(STORE_JOB_ID));
             exportDependencies.setEnabled(settings.getBoolean(STORE_JOB_ID));
             exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
-            sourceCodeButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));

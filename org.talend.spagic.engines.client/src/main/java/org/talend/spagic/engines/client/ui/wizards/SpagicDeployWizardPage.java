@@ -82,7 +82,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
 
     protected Button contextButton;
 
-    protected Button sourceCodeButton;
+    protected Button jobScriptButton;
 
     protected ExportFileResource[] process;
 
@@ -259,13 +259,13 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         gd.horizontalSpan = 3;
         jobItemButton.setLayoutData(gd);
 
-        sourceCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        sourceCodeButton.setText(Messages.getString("SpagicDeployWizardPage.sourceFiles")); //$NON-NLS-1$
-        sourceCodeButton.setSelection(true);
-        sourceCodeButton.setFont(font);
+        jobScriptButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        jobScriptButton.setText(Messages.getString("SpagicDeployWizardPage.sourceFiles")); //$NON-NLS-1$
+        jobScriptButton.setSelection(true);
+        jobScriptButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 3;
-        sourceCodeButton.setLayoutData(gd);
+        jobScriptButton.setLayoutData(gd);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         contextButton.setText(Messages.getString("SpagicDeployWizardPage.contextPerlScripts")); //$NON-NLS-1$
@@ -519,7 +519,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needTalendLibraries, modelButton.getSelection());
         exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needSourceCode, sourceCodeButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJobScript, jobScriptButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         // exportChoiceMap.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());

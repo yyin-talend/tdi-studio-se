@@ -112,11 +112,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
             }
-            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needSourceCode)));
+            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJobScript)));
             resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
             resources.addAll(getProperties(processItem, contextName));
-            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needSourceCode)
-                    && (Boolean) exportChoice.get(ExportChoice.needContext);
+            boolean needChildren = true;
             addChildrenResources(process, processItem, needChildren, process[i], exportChoice);
             process[i].addResources(resources);
         }

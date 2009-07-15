@@ -101,7 +101,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Button contextButton;
 
-    protected Button sourceCodeButton;
+    protected Button jobScriptButton;
 
     protected ExportFileResource[] process;
 
@@ -486,13 +486,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         gd.horizontalSpan = 3;
         modelButton.setLayoutData(gd);
 
-        sourceCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        sourceCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.jobPerlScripts")); //$NON-NLS-1$
-        sourceCodeButton.setSelection(true);
-        sourceCodeButton.setFont(font);
+        jobScriptButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        jobScriptButton.setText(Messages.getString("JobScriptsExportWizardPage.jobPerlScripts")); //$NON-NLS-1$
+        jobScriptButton.setSelection(true);
+        jobScriptButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 3;
-        sourceCodeButton.setLayoutData(gd);
+        jobScriptButton.setLayoutData(gd);
 
         jobItemButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         jobItemButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
@@ -939,8 +939,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needTalendLibraries, modelButton.getSelection());
         exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needSourceCode, jobItemButton.getSelection());
         exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
-        exportChoiceMap.put(ExportChoice.needSourceCode, sourceCodeButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJobScript, jobScriptButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
@@ -1006,9 +1007,29 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             dialog.setFilterPath(currentSourceString.substring(0, lastSeparatorIndex));
         }
         String selectedFileName = dialog.open();
+        if (!selectedFileName.endsWith(this.getOutputSuffix()))
+            selectedFileName += this.getOutputSuffix();
+
+        // when user change the name of job,will add the version auto
+        if (selectedFileName != null && !selectedFileName.endsWith(this.getSelectedJobVersion() + this.getOutputSuffix())) {
+            String b = selectedFileName.substring(0, (selectedFileName.length() - 4));
+            File file = new File(b);
+
+            String str = file.getName();
+
+            String s = (String) this.getDefaultFileName().get(0);
+
+            if (str.equals(s)) {
+                selectedFileName = b + "_" + this.getDefaultFileName().get(1) + this.getOutputSuffix(); //$NON-NLS-1$
+            } else {
+                selectedFileName = b + this.getOutputSuffix();
+            }
+
+        }
         if (selectedFileName != null) {
             setErrorMessage(null);
             setDestinationValue(selectedFileName);
+
         }
     }
 

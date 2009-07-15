@@ -123,11 +123,11 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
             }
-            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needSourceCode)));
+            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJobScript)));
             addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
                     process[i]);
             resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
-            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needSourceCode)
+            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needJobScript)
                     && (Boolean) exportChoice.get(ExportChoice.needContext);
             addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
             process[i].addResources(resources);

@@ -96,7 +96,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needTalendLibraries, modelButton.getSelection());
         exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needSourceCode, sourceCodeButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJobScript, jobScriptButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         return exportChoiceMap;
@@ -121,7 +121,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
             settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
             settings.put(STORE_MODEL_ID, modelButton.getSelection());
             settings.put(STORE_JOB_ID, jobItemButton.getSelection());
-            settings.put(STORE_SOURCE_ID, sourceCodeButton.getSelection());
+            settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             // settings.put(STORE_GENERATECODE_ID, genCodeButton.getSelection());
@@ -148,7 +148,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
             modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
             jobItemButton.setSelection(settings.getBoolean(STORE_JOB_ID));
-            sourceCodeButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
 

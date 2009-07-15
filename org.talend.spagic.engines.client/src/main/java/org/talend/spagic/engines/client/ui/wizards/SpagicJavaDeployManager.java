@@ -72,14 +72,13 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
                     process[i]);
 
             resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue((Boolean) exportChoice
-                    .get(ExportChoice.needSourceCode))));
+                    .get(ExportChoice.needJobScript))));
             // resources.addAll(getProperties(processItem, srcList));
             resources.addAll(getProperties(processItem, contextName));
             addContextScripts(process[i], BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext)));
 
             // add children jobs
-            boolean needChildren = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSourceCode))
-                    && BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
+            boolean needChildren = true;
             List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice);
             resources.addAll(childrenList);
             process[i].addResources(resources);
@@ -132,7 +131,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
             allJobScripts.addAll(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), (Boolean) exportChoice
-                    .get(ExportChoice.needSourceCode)));
+                    .get(ExportChoice.needJobScript)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
                     (Boolean) exportChoice.get(ExportChoice.needContext));
         }

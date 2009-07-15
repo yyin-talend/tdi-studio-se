@@ -98,7 +98,7 @@ public abstract class JobScriptsManager {
         exportChoiceMap.put(ExportChoice.needUserRoutine, true);
         exportChoiceMap.put(ExportChoice.needTalendLibraries, true);
         exportChoiceMap.put(ExportChoice.needJobItem, true);
-        exportChoiceMap.put(ExportChoice.needSourceCode, true);
+        exportChoiceMap.put(ExportChoice.needJobScript, true);
         exportChoiceMap.put(ExportChoice.needContext, true);
         exportChoiceMap.put(ExportChoice.applyToChildren, false);
         exportChoiceMap.put(ExportChoice.doNotCompileCode, false);
@@ -129,7 +129,9 @@ public abstract class JobScriptsManager {
         needUserRoutine,
         needTalendLibraries,
         needJobItem,
-        needSourceCode,
+        needJobScript,
+        needSourceCode, // only usefull for Java, as source code is job script in Perl. Activated when needJobItem is
+                        // selected
         needContext,
         applyToChildren,
         doNotCompileCode,
