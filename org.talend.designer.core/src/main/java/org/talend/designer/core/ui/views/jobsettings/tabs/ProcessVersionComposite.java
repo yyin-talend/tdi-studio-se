@@ -53,6 +53,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.i18n.Messages;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.ui.action.OpenExistVersionProcessAction;
@@ -95,7 +96,11 @@ public class ProcessVersionComposite extends AbstractTabComposite {
         super(parent, style, factory, obj);
         FormLayout layout = new FormLayout();
         setLayout(layout);
-
+        // add by wzhang for bug 8218
+        if (obj instanceof IProcess2) {
+            boolean readOnly = ((IProcess2) obj).getProcessor().getProcess().isReadOnly();
+            parent.setEnabled(!readOnly);
+        }
         FormData thisFormData = new FormData();
         thisFormData.left = new FormAttachment(0, 0);
         thisFormData.right = new FormAttachment(100, 0);
