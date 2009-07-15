@@ -34,7 +34,7 @@ java.sql.Connection conn_<%=cid%>=null;
 
 <%if (isUseSharedConnection) {
 %>
-	String sharedConnectionName_<%=cid%> = <%=(sharedConnectionName.indexOf("\"")!=-1)? sharedConnectionName:"\""+sharedConnectionName+"\""%>;
+	String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
 	conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,userName_<%=cid%> , password_<%=cid%> ,sharedConnectionName_<%=cid%>);
 <%
 }else {
