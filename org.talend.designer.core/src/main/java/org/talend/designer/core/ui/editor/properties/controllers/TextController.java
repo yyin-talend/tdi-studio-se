@@ -54,6 +54,8 @@ public class TextController extends AbstractElementPropertySectionController {
 
     private static int rowSize = 0;
 
+    public static boolean dragAndDropAction = false;
+
     /**
      * DOC yzhang TextController constructor comment.
      * 
@@ -96,7 +98,6 @@ public class TextController extends AbstractElementPropertySectionController {
         editionControlHelper.register(param.getName(), labelText);
 
         cLayout.setBackground(subComposite.getBackground());
-        // labelText.setEditable(!param.isRepositoryValueUsed());
         if (elem instanceof Node) {
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
@@ -116,7 +117,6 @@ public class TextController extends AbstractElementPropertySectionController {
         } else {
             labelText.setEditable(false);
         }
-
         addDragAndDropTarget(labelText);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
@@ -218,7 +218,6 @@ public class TextController extends AbstractElementPropertySectionController {
                 valueChanged = true;
             }
         }
-
         checkTextError(param, labelText, value);
 
         if (checkErrorsWhenViewRefreshed || valueChanged) {
@@ -227,6 +226,8 @@ public class TextController extends AbstractElementPropertySectionController {
         fixedCursorPosition(param, labelText, value, valueChanged);
 
     }
+
+    boolean a = false;
 
     /**
      * ggu Comment method "checkTextError".

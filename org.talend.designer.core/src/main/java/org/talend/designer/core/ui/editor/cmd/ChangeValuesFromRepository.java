@@ -88,7 +88,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     // for jobtemplate plugin(true, bug 5198)
     private boolean ignoreContextMode = false;
 
-    public static boolean dragAndDropAction = false;
+    private boolean dragAndDropAction = false;
+
+    private boolean reOpenXSDBool = false;
 
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
@@ -96,7 +98,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         this.value = value;
         this.propertyName = propertyName;
         oldValues = new HashMap<String, Object>();
-
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
         // for job settings extra (feature 2710)
         // if (JobSettingsConstants.isExtraParameter(propertyName)) {
@@ -114,28 +115,22 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     }
 
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value,
-            boolean dragAndDropAction) {
+            boolean reOpenXSDBool) {
+        this.reOpenXSDBool = reOpenXSDBool;
         this.elem = elem;
         this.connection = connection;
         this.value = value;
         this.propertyName = propertyName;
-        this.dragAndDropAction = dragAndDropAction;
         oldValues = new HashMap<String, Object>();
-
+        if (connection instanceof XmlFileConnectionImpl) {
+            if (((XmlFileConnectionImpl) connection).getXmlFilePath().endsWith(".xsd")
+                    || ((XmlFileConnectionImpl) connection).getXmlFilePath().endsWith(".xsd\""))
+                dragAndDropAction = true;
+        }
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
-        // for job settings extra (feature 2710)
-        // if (JobSettingsConstants.isExtraParameter(propertyName)) {
-        // propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
-        // repositoryPropertyTypeName =
-        // JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
-        // .getName());
-        // updataComponentParamName =
-        // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
-        // } else {
         propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
         EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
         updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
-        // }
     }
 
     @SuppressWarnings("unchecked")
@@ -221,10 +216,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     }
                     Object objectValue;
                     if (connection instanceof XmlFileConnection && this.dragAndDropAction == true
-                            && repositoryValue.equals("FILE_PATH")) {
+                            && repositoryValue.equals("FILE_PATH") && reOpenXSDBool == true) {
+
                         objectValue = RepositoryToComponentProperty.getXmlAndXSDFileValue((XmlFileConnection) connection,
                                 repositoryValue);
-                        this.dragAndDropAction = false;
                     } else {
                         objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
                     }

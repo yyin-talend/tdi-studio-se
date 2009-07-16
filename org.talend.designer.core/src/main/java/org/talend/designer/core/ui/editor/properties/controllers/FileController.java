@@ -34,12 +34,20 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.XmlFileConnectionItem;
+import org.talend.core.model.properties.impl.PropertyImpl;
+import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.utils.PathExtractor;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -54,6 +62,8 @@ import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectA
 public class FileController extends AbstractElementPropertySectionController {
 
     private static final String FILE = "FILE"; //$NON-NLS-1$
+
+    private boolean dragAndDropActionBool = false;
 
     /**
      * yzhang FileController constructor comment.
@@ -82,6 +92,7 @@ public class FileController extends AbstractElementPropertySectionController {
      * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(Button button) {
+
         FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
         String propertyName = (String) button.getData(PARAMETER_NAME);
         Text filePathText = (Text) hashCurControls.get(propertyName);
@@ -100,6 +111,27 @@ public class FileController extends AbstractElementPropertySectionController {
         return null;
     }
 
+    private void setDragAndDropActionBool() {
+        IElementParameter propertyParam = elem.getElementParameter("PROPERTY:REPOSITORY_PROPERTY_TYPE");
+        try {
+            IRepositoryObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
+                    propertyParam.getValue().toString());
+            PropertyImpl property = (PropertyImpl) repository.getProperty();
+            ConnectionItem ci = (ConnectionItem) property.getItem();
+            if (ci instanceof XmlFileConnectionItem) {
+                XmlFileConnectionItem xci = (XmlFileConnectionItem) ci;
+                XmlFileConnectionItemImpl xciImpl = (XmlFileConnectionItemImpl) xci;
+                org.talend.core.model.metadata.builder.connection.Connection cc = xciImpl.getConnection();
+                if (((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd")
+                        || ((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd\""))
+                    dragAndDropActionBool = true;
+            }
+
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -109,6 +141,7 @@ public class FileController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
+        this.setDragAndDropActionBool();
         this.curParameter = param;
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
@@ -123,9 +156,7 @@ public class FileController extends AbstractElementPropertySectionController {
         btnEdit.setLayoutData(data);
         btnEdit.setData(NAME, FILE);
         btnEdit.setData(PARAMETER_NAME, param.getName());
-        // btnEdit.setEnabled(!param.isReadOnly());
-        btnEdit.setEnabled(param.getValue().toString().endsWith("xsd") || param.getValue().toString().endsWith("xsd\"") ? true
-                : !param.isReadOnly());
+        btnEdit.setEnabled(dragAndDropActionBool == true || !param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
@@ -145,17 +176,17 @@ public class FileController extends AbstractElementPropertySectionController {
         Text filePathText = (Text) dField.getControl();
         filePathText.setData(PARAMETER_NAME, param.getName());
         cLayout.setBackground(subComposite.getBackground());
-        // filePathText.setEditable(!param.isRepositoryValueUsed());
 
         editionControlHelper.register(param.getName(), filePathText);
         if (!elem.isReadOnly()) {
-            if (param.isRepositoryValueUsed()) {
+            if (param.isRepositoryValueUsed() && dragAndDropActionBool == false) {
                 addRepositoryPropertyListener(filePathText);
             }
-            filePathText.setEditable(!param.isRepositoryValueUsed());
+            filePathText.setEditable(dragAndDropActionBool == true || !param.isRepositoryValueUsed());
         } else {
-            filePathText.setEditable(false);
+            filePathText.setEditable(dragAndDropActionBool == true || false);
         }
+
         addDragAndDropTarget(filePathText);
         if (elem instanceof Node) {
             filePathText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
