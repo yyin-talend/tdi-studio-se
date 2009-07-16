@@ -57,7 +57,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 
-	if ( //--if begin
+	if (
 <% 
 	if(keyColumns.size()>0 || use_advanced) { //111
 %>		
@@ -67,11 +67,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	for(Map<String, String> keyColumn:keyColumns){
 		ii++;	
 %>	
-		<%=ii==1? "":logical %>(//--condition begin
+		<%=ii==1? "":logical %>(
 <% 
 		if(!("").equals(keyColumn.get("FUNCTION"))) {
 %>		
-			// func is empty			
 			<%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
 		}else {	
@@ -79,18 +78,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	JavaType javaType = JavaTypesManager.getJavaTypeFromId(rightColumn.getTalendType()); 
         	if (!javaType.isPrimitive()) {
 %>	
-        		// is primitive
-				<%="($source == null || $target == null)? ($source == $target) : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+        		<%="($source == null || $target == null)? ($source $operator $target) : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
 			} else {
 %>	
-				// is not primitive
 				<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
 			}
 		}
 %>
-		)//--condition end
+		)
 <%
    	}
 %>
@@ -102,7 +99,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	} //111
 %>			
-	)//--if end
+	)
 	
 	{
 <%
