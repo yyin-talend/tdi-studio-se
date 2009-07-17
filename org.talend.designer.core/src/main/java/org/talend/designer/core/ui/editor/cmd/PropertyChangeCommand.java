@@ -122,6 +122,28 @@ public class PropertyChangeCommand extends Command {
 
     @Override
     public void execute() {
+        // hywang add for feature 8221
+        if (elem instanceof Node) {
+            Node node = (Node) elem;
+            if (node.getElementParameter(EParameterName.COMPONENT_NAME.getName()).getValue().toString().equals(
+                    "tFileInputMSFieldDelimited")) { //$NON-NLS-N$
+                List<Connection> cons = (List<Connection>) ((Node) elem).getOutgoingConnections();
+
+                if (cons != null && cons.size() > 0
+                        && Boolean.parseBoolean(node.getElementParameter("USE_MUL_SCHEMAS").getValue().toString())
+                        && (node.getMetadataList().size() > 1)) {
+                    ConnectionDeleteCommand deleteConnectionCommand = new ConnectionDeleteCommand(cons);
+                    deleteConnectionCommand.execute();
+                }
+
+                if (cons != null && cons.size() > 0
+                        && !Boolean.parseBoolean(node.getElementParameter("USE_MUL_SCHEMAS").getValue().toString())) {
+                    ConnectionDeleteCommand deleteConnectionCommand = new ConnectionDeleteCommand(cons);
+                    deleteConnectionCommand.execute();
+                }
+            }
+        }
+
         IElementParameter currentParam = elem.getElementParameter(propName);
         oldElementValues.clear();
         IElementParameter propertyParam = elem.getElementParameter("PROPERTY:REPOSITORY_PROPERTY_TYPE");
