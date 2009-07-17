@@ -53,6 +53,7 @@ import org.talend.core.model.process.ILookupMode;
 import org.talend.core.model.process.IMatchingMode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
@@ -578,9 +579,12 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 }
 
                 IElementParameter tempFolderElem = getElementParameter("TEMPORARY_DATA_DIRECTORY"); //$NON-NLS-1$
-                String tempFolder = null;
-                if (tempFolderElem != null) {
-                    tempFolder = (String) tempFolderElem.getValue();
+                // modified by wzhang to fix 7824
+                String tempFolder = (String) tempFolderElem.getValue();
+                if (("").equals(tempFolder)) {
+                    tempFolder = (String) this.getProcess().getElementParameter("COMP_DEFAULT_FILE_DIR").getValue() + "/temp"; //$NON-NLS-1$ //$NON-NLS-2$
+                    tempFolder = tempFolder.replace("\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
+                    tempFolder = TalendTextUtils.addQuotes(tempFolder);
                 }
 
                 IElementParameter rowsBufferSizeElem = getElementParameter("ROWS_BUFFER_SIZE"); //$NON-NLS-1$
