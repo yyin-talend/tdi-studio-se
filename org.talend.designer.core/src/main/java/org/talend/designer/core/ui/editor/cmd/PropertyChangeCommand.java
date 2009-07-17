@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -125,21 +126,23 @@ public class PropertyChangeCommand extends Command {
         oldElementValues.clear();
         IElementParameter propertyParam = elem.getElementParameter("PROPERTY:REPOSITORY_PROPERTY_TYPE");
         try {
-            IRepositoryObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
-                    propertyParam.getValue().toString());
-            PropertyImpl property = (PropertyImpl) repository.getProperty();
-            ConnectionItem ci = (ConnectionItem) property.getItem();
-            if (ci instanceof XmlFileConnectionItem) {
-                XmlFileConnectionItem xci = (XmlFileConnectionItem) ci;
-                XmlFileConnectionItemImpl xciImpl = (XmlFileConnectionItemImpl) xci;
-                org.talend.core.model.metadata.builder.connection.Connection cc = xciImpl.getConnection();
-                if (((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd")
-                        || ((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd\""))
-                    dragAndDropActionBool = true;
+            if (propertyParam != null && propertyParam.getValue() != null) {
+                IRepositoryObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
+                        propertyParam.getValue().toString());
+                PropertyImpl property = (PropertyImpl) repository.getProperty();
+                ConnectionItem ci = (ConnectionItem) property.getItem();
+                if (ci instanceof XmlFileConnectionItem) {
+                    XmlFileConnectionItem xci = (XmlFileConnectionItem) ci;
+                    XmlFileConnectionItemImpl xciImpl = (XmlFileConnectionItemImpl) xci;
+                    org.talend.core.model.metadata.builder.connection.Connection cc = xciImpl.getConnection();
+                    if (((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd")
+                            || ((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd\""))
+                        dragAndDropActionBool = true;
+                }
             }
 
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         if (currentParam == null) {

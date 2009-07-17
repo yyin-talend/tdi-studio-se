@@ -577,9 +577,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 // command used to set property type
                 ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connection, propertyParam.getName()
                         + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId, true); //$NON-NLS-1$
-                // FileController.dragAndDropAction = true;
-                // PropertyChangeCommand.dragAndDropAction = true;
-                // TextController.dragAndDropAction = true;
                 command1.setMaps(repositoryTableMap);
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.METADATA_CON_QUERY) {
                     command1.setGuessQuery(true);
