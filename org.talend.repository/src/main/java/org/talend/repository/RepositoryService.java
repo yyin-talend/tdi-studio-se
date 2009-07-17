@@ -15,6 +15,7 @@ package org.talend.repository;
 import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
@@ -34,6 +35,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -42,13 +44,18 @@ import org.talend.core.context.Context;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.SAPConnection;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.designerproperties.ComponentToRepositoryProperty;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -536,5 +543,54 @@ public class RepositoryService implements IRepositoryService {
             return repositoryView.getDoubleClickAction();
         }
         return null;
+    }
+
+    public void setInternalNodeHTMLMap(INode node, Map<String, Object> internalNodeHTMLMap) {
+        IElementParameter propertyParam = null;
+        IElementParameter functionParam = null;
+        for (IElementParameter param : node.getElementParameters()) {
+
+            if ("PROPERTY".equals(param.getName())) {
+                propertyParam = param.getChildParameters().get("REPOSITORY_PROPERTY_TYPE");
+            }
+            if ("SAP_FUNCTION".equals(param.getName())) {
+                functionParam = param;
+            }
+        }
+        if (propertyParam != null && functionParam != null) {
+            try {
+                IRepositoryObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(
+                        (String) propertyParam.getValue());
+                if (lastVersion != null) {
+
+                    Item item = lastVersion.getProperty().getItem();
+                    if (item instanceof SAPConnectionItem) {
+                        SAPConnectionItem sapItem = (SAPConnectionItem) item;
+                        SAPConnection connection = (SAPConnection) sapItem.getConnection();
+                        connection.getFuntions();
+                        for (Object obj : connection.getFuntions()) {
+                            if (obj instanceof SAPFunctionUnit) {
+                                SAPFunctionUnit function = (SAPFunctionUnit) obj;
+                                String functionName = (String) functionParam.getValue();
+                                if (function.getName().equals(functionName.substring(1, functionName.length() - 1))) {
+                                    String document = function.getDocument();
+                                    if (document != null && !"".equals(document)) {
+
+                                        internalNodeHTMLMap.put(node.getUniqueName(), document.substring(document
+                                                .indexOf("<font"), document.indexOf("</body>")));
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
     }
 }

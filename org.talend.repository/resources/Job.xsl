@@ -707,6 +707,9 @@
 						</table>
 					</xsl:for-each>
 					<br />
+					<b class="FONTSTYLE">Original Function Parameters:</b>
+					<br/>
+					<xsl:comment><xsl:value-of select="@uniqueName" />ended</xsl:comment>
 				</xsl:for-each>
 				<xsl:for-each
 					select="$job/externalNodeComponents/component">
