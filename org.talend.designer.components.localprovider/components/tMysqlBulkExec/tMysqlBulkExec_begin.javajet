@@ -53,6 +53,8 @@ List<IMetadataColumn> columnList = getColumnList(node);
 %>
 String charset_<%=cid %> = <%=charset %>;
 String tableName_<%=cid%> = <%=table%>;
+
+int deletedCount_<%=cid%>=0;
 Class.forName("com.mysql.jdbc.Driver").newInstance();
 <%
 if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {

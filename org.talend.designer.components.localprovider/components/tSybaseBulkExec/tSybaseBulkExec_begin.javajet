@@ -42,7 +42,7 @@ String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 boolean convertToUppercase = false; // not active this function
 %>
-
+int deletedCount_<%=cid%>=0;
 <%
 if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {

@@ -28,6 +28,7 @@ boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = false;// not active this function
 %>
 String tableName_<%=cid%> = null;
+int deletedCount_<%=cid%>=0;
 <%
 if(dbSchema == null || ("").equals(dbSchema) || ("\"\"").equals(dbSchema)) {
     tableName.append("\\\"\" + " + table + " + \"\\\"");

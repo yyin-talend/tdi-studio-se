@@ -37,6 +37,7 @@ String table = ElementParameterParser.getValue(node, "__TABLE__");
 String codePage = ElementParameterParser.getValue(node, "__CODE_PAGE__");
 String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
 boolean convertToUppercase = false; // not active this function
+%>int deletedCount_<%=cid%>=0;<%
 if(("EXPORT").equals(action)) {
     String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
     String server = ElementParameterParser.getValue(node, "__SERVER__");
@@ -80,6 +81,7 @@ if(("EXPORT").equals(action)) {
     command.append(row_terminated_export.replaceAll("\"",""));
 
     %>
+    
     Runtime runtime_<%=cid%> = Runtime.getRuntime();
     final Process ps<%=cid %> = runtime_<%=cid%>.exec("<%=command.toString()%>");
     Thread normal_<%=cid%> = new Thread() {
