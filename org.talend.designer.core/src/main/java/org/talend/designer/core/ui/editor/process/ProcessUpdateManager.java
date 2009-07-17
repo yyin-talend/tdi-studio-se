@@ -40,6 +40,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -853,7 +854,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
-
                             if (objectValue != null) {
                                 if ((param.getField().equals(EParameterFieldType.CLOSED_LIST) && UpdatesConstants.TYPE
                                         .equals(param.getRepositoryValue()))) {
@@ -871,7 +871,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 } else {
                                     // check the value
                                     if (!param.getValue().equals(objectValue)) {
-                                        sameValues = false;
+                                        if ((((XmlFileConnectionImpl) repositoryConnection).getXmlFilePath().endsWith("xsd") || ((XmlFileConnectionImpl) repositoryConnection)
+                                                .getXmlFilePath().endsWith("xsd\""))
+                                                && repositoryValue.equals("FILE_PATH")) {
+                                        } else {
+                                            sameValues = false;
+                                        }
                                     }
                                 }
                             } else if (param.getField().equals(EParameterFieldType.TABLE)
