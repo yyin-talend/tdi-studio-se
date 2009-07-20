@@ -4181,6 +4181,10 @@
 				REQUIRED="true" />
 			<IMPORT NAME="XmlSchema" MODULE="XmlSchema-1.4.3.jar"
 				REQUIRED="true" />
+			<IMPORT NAME="geronimo-stax" MODULE="geronimo-stax-api_1.0_spec-1.0.1.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="wstx-asl" MODULE="wstx-asl-3.2.4.jar"
+				REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 
