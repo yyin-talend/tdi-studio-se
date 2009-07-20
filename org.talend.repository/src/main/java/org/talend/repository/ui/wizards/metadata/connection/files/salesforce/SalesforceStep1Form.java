@@ -13,6 +13,7 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -71,6 +73,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private LabelledCombo moduleNameCombo = null;
 
+    private List relationShipObjectList = null;
+
     private UtilsButton cancelButton = null;
 
     private String defaultBatchSize = "250";
@@ -105,6 +109,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     // private Button clearButton;
 
     private Button useCostomModuleButton;
+
+    private SalesforceModuleParseAPI salesforceAPI = new SalesforceModuleParseAPI();
 
     /**
      * DOC YeXiaowei SalesforceStep1Form constructor comment.
@@ -169,12 +175,21 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         proxyPasswordText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyPassword")); //$NON-NLS-1$
         enableProxyParameters(false);
 
+        Group objectsGroup = Form.createGroup(group, 4, "standar objects"); //$NON-NLS-1$
+        GridData objectsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+        objectsLayoutData.horizontalSpan = 3;
+        objectsGroup.setLayoutData(objectsLayoutData);
         moduleNameCombo = new LabelledCombo(
-                group,
+                objectsGroup,
                 Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
-                null, 2, false);
+                null, 1, false);
 
         initModuleNames();
+
+        Label relationShipObjectsLabel = new Label(objectsGroup, SWT.NONE | SWT.RIGHT);
+        relationShipObjectsLabel.setText("              relationShip Objects List");//$NON-NLS-1$
+        relationShipObjectList = new List(objectsGroup, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
+        relationShipObjectList.setItems(new String[] { "the relationShip object list", "", "", "" });//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
 
         new Label(group, SWT.NONE); // Pachlaer
         useCostomModuleButton = new Button(group, SWT.CHECK);
@@ -331,7 +346,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
             public void modifyText(ModifyEvent e) {
                 checkFieldsValue();
-                getConnection().setModuleName(moduleNameCombo.getText());
+                String moduleName = moduleNameCombo.getText();
+                getConnection().setModuleName(moduleName);
             }
         });
 
@@ -348,11 +364,17 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     checkFieldsValue();
                 }
                 testSalesforceLogin();
+                ArrayList checkSalesfoceLogin = null;
                 if (useProxyBtn.getSelection()) {
-                    loginOk = checkSalesfoceLogin(endPoint, username, pwd, proxyHostText.getText(), proxyPortText.getText(),
-                            proxyUsernameText.getText(), proxyPasswordText.getText());
+                    // loginOk =
+                    checkSalesfoceLogin = checkSalesfoceLogin(endPoint, username, pwd, proxyHostText.getText(), proxyPortText
+                            .getText(), proxyUsernameText.getText(), proxyPasswordText.getText(), moduleNameCombo.getText());
+                    getRelationShipObjects(checkSalesfoceLogin);
                 } else {
-                    loginOk = checkSalesfoceLogin(endPoint, username, pwd, null, null, null, null);
+                    // loginOk =
+                    checkSalesfoceLogin = checkSalesfoceLogin(endPoint, username, pwd, null, null, null, null, moduleNameCombo
+                            .getText());
+                    getRelationShipObjects(checkSalesfoceLogin);
                 }
 
                 if (useCostomModuleButton.getSelection()) {
@@ -360,8 +382,28 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     // appendCustomModule(customModuleCombo.getText().trim());
                     // qli modified to fix the bug 6627.
                     // setCustomModuleCombo(getConnection().getModuleName());
+
                 }
                 checkFieldsValue();
+            }
+
+            /**
+             * DOC zli Comment method "getRelationShipObjectS".
+             * 
+             * @param checkSalesfoceLogin
+             */
+            private void getRelationShipObjects(ArrayList checkSalesfoceLogin) {
+                for (int i = 0; i < checkSalesfoceLogin.size(); i++) {
+                    if (checkSalesfoceLogin.get(i) instanceof Boolean) {
+                        loginOk = (Boolean) checkSalesfoceLogin.get(i);
+                    } else if (checkSalesfoceLogin.get(i) instanceof ArrayList) {
+                        ArrayList withRelationShipObject = (ArrayList) checkSalesfoceLogin.get(i);
+                        relationShipObjectList.removeAll();
+                        String[] withRelationShipItems = (String[]) withRelationShipObject.toArray(new String[0]);
+                        relationShipObjectList.setItems(withRelationShipItems);
+                    }
+
+                }
             }
         });
 
@@ -399,6 +441,10 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     Object[] modulename = null;
 
+    private void initRelationShipList() {
+
+    }
+
     private void initModuleNames() {
 
         INode node = getSalesforceNode();
@@ -418,6 +464,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 moduleNameCombo.add(module.toString());
             }
             moduleNameCombo.select(0);
+
         }
     }
 
