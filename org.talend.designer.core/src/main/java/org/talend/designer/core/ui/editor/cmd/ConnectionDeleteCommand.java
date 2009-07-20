@@ -42,15 +42,7 @@ public class ConnectionDeleteCommand extends Command {
 
     public void execute() {
         Process process = (Process) connectionList.get(0).getSource().getProcess();
-
-        Object[] objArray = connectionList.toArray();
-        Connection[] connectionArray = new Connection[objArray.length];
-
-        convertConnectionList2Array(objArray, connectionArray); // hywang add method for handle multi connections
-
-        // for (Connection connection : connectionList) {
-        for (int i = 0; i < connectionArray.length; i++) {
-            Connection connection = connectionArray[i];
+        for (Connection connection : connectionList) {
             connection.disconnect();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
             nodeConnectorSource = connection.getSourceNodeConnector();
@@ -60,25 +52,8 @@ public class ConnectionDeleteCommand extends Command {
             nodeConnectorTarget = connection.getTargetNodeConnector();
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
         }
-        // }
-
         process.checkStartNodes();
         process.checkProcess();
-    }
-
-    /**
-     * DOC hywang Comment method "convertConnectionList2Array".
-     * 
-     * @param objArray
-     * @param connectionArray
-     */
-    private void convertConnectionList2Array(Object[] objArray, Connection[] connectionArray) {
-        for (int i = 0; i < objArray.length; i++) {
-            if (objArray[i] instanceof Connection) {
-                Connection conneciton = (Connection) objArray[i];
-                connectionArray[i] = conneciton;
-            }
-        }
     }
 
     public void undo() {

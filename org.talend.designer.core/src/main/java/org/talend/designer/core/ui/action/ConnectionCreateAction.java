@@ -63,15 +63,6 @@ public class ConnectionCreateAction extends SelectionAction {
 
     private INodeConnector curNodeConnector;
 
-    // hywang add four boolean varriable for feature 8221
-    private boolean isCheckMultiSchema = false;
-
-    private boolean needClearAllList = false;
-
-    private boolean needLeaveOnlyMainConnector = false;
-
-    private boolean isMSFieldInput = false;
-
     private static final String NEW_OUTPUT = "*New Output*"; //$NON-NLS-1$
 
     /**
@@ -119,27 +110,6 @@ public class ConnectionCreateAction extends SelectionAction {
                 return false;
             }
             Node node = (Node) nodePart.getModel();
-
-            // hywang add for feature 8221
-            if (node.getElementParameter(EParameterName.COMPONENT_NAME.getName()).getValue().toString().equals(
-                    "tFileInputMSFieldDelimited")) {
-                isMSFieldInput = true;
-            }
-
-            if (isMSFieldInput) {
-                if (node.getElementParameter("USE_MUL_SCHEMAS") != null) { //$NON-NLS-N$
-                    if (Boolean.parseBoolean(node.getElementParameter("USE_MUL_SCHEMAS").getValue().toString())) {
-                        isCheckMultiSchema = true;
-                    }
-                }
-                if (node.getElementParameter("SCHEMAS") != null && isCheckMultiSchema) {
-                    needClearAllList = true;
-                }
-                if (node.getElementParameter("SCHEMAS") != null && !isCheckMultiSchema) {
-                    needLeaveOnlyMainConnector = true;
-                }
-            }
-
             if (!node.isActivate()) {
                 return false;
             }
@@ -179,77 +149,31 @@ public class ConnectionCreateAction extends SelectionAction {
             }
 
             if (curNodeConnector.isMultiSchema()) {
-                // hywang modified this if for feature 8221
-                if (menuList.size() == 0 && node.getElementParameter("SCHEMAS") != null && isCheckMultiSchema && isMSFieldInput) { //$NON-NLS-N$
-                    for (int i = 1; i < node.getMetadataList().size(); i++) {
-                        IMetadataTable table = (node.getMetadataList().get(i));
-                        if (table.getAttachedConnector() == null
-                                || table.getAttachedConnector().equals(curNodeConnector.getName())) {
-                            String name = table.getTableName();
-                            boolean nameUsed = false;
-                            for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                                    if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
-                                        nameUsed = true;
-                                    }
+                for (int i = 0; i < node.getMetadataList().size(); i++) {
+                    IMetadataTable table = (node.getMetadataList().get(i));
+                    if (table.getAttachedConnector() == null || table.getAttachedConnector().equals(curNodeConnector.getName())) {
+                        String name = table.getTableName();
+                        if (connecType.equals(EConnectionType.TABLE)) {
+                            name = table.getLabel() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                        boolean nameUsed = false;
+                        for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
+                            if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                                if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
+                                    nameUsed = true;
                                 }
                             }
-                            // if the name is not already in the process adds to the list
-                            if (!nameUsed) {
-                                menuList.add(name);
-                            }
-
+                        }
+                        // if the name is not already in the process adds to the list
+                        if (!nameUsed) {
+                            menuList.add(name);
                         }
                     }
-                    if ((curNodeConnector.getMaxLinkOutput() == -1 || node.getMetadataList().size() < curNodeConnector
-                            .getMaxLinkOutput())
-                            && curNodeConnector.isBuiltIn()) {
-                        menuList.add(getNewOutputMenuName());
-                    }
-                } else {
-                    for (int i = 0; i < node.getMetadataList().size(); i++) {
-                        IMetadataTable table = (node.getMetadataList().get(i));
-                        if (table.getAttachedConnector() == null
-                                || table.getAttachedConnector().equals(curNodeConnector.getName())) {
-                            String name = table.getTableName();
-                            if (connecType.equals(EConnectionType.TABLE)) {
-                                name = table.getLabel() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-                            }
-                            boolean nameUsed = false;
-                            for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                                    if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
-                                        nameUsed = true;
-                                    }
-                                }
-                            }
-                            // if the name is not already in the process adds to the list
-                            if (!nameUsed) {
-                                menuList.add(name);
-                            }
-
-                        }
-                    }
-                    if (isCheckMultiSchema && menuList.size() > 1) {
-                        menuList.remove(0);
-                    }
-                    if (needClearAllList) {
-                        menuList = new ArrayList<String>();
-                    }
-                    if (needLeaveOnlyMainConnector) {
-                        if (menuList != null) {
-                            menuList = new ArrayList<String>();
-                            // IMetadataTable table = (node.getMetadataList().get(0));
-                            // menuList.add(table.getTableName());
-                            String menuName = curNodeConnector.getMenuName();
-                            menuList.add(menuName);
-                        }
-                    }
-                    if ((curNodeConnector.getMaxLinkOutput() == -1 || node.getMetadataList().size() < curNodeConnector
-                            .getMaxLinkOutput())
-                            && curNodeConnector.isBuiltIn()) {
-                        menuList.add(getNewOutputMenuName());
-                    }
+                }
+                if ((curNodeConnector.getMaxLinkOutput() == -1 || node.getMetadataList().size() < curNodeConnector
+                        .getMaxLinkOutput())
+                        && curNodeConnector.isBuiltIn()) {
+                    menuList.add(getNewOutputMenuName());
                 }
             } else {
                 String menuName;
@@ -506,7 +430,6 @@ public class ConnectionCreateAction extends SelectionAction {
 
         Node node = (Node) nodePart.getModel();
         if (curNodeConnector.isMultiSchema()) {
-
             if (getText().equals(getNewOutputMenuName())) {
                 // boolean nameOk = false;
                 // while (!nameOk) {
@@ -561,9 +484,6 @@ public class ConnectionCreateAction extends SelectionAction {
                     meta = node.getMetadataTable(tableName);
                     // meta = (IMetadataTable) node.getMetadataList().get(tableId);
                     connectionName = meta.getLabel();
-                } else if (isMSFieldInput && needLeaveOnlyMainConnector) {
-                    connectionName = curNodeConnector.getLinkName();
-                    meta = node.getMetadataFromConnector(curNodeConnector.getName());
                 } else {
                     tableName = getText();
                     // tableId = -1;
