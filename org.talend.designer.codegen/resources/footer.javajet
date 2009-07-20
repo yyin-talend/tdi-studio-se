@@ -113,7 +113,7 @@
     }
     
     
-    private int runJobInTOS(String[] args) {
+    public int runJobInTOS(String[] args) {
     
         String lastStr = "";
         for (String arg : args) {
