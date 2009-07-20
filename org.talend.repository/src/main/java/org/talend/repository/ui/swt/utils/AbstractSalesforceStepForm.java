@@ -72,6 +72,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     // DEFAULT_WEB_SERVICE_URL, if the web service is called by tSalesforceInput we should use TSALESFORCE_INPUT_URL
     public static final String DEFAULT_WEB_SERVICE_URL = "https://www.salesforce.com/services/Soap/u/8.0"; //$NON-NLS-1$
 
+    public static final String DEFAULT_WEB_SERVICE_FOR_SOQL_URL = "https://www.salesforce.com/services/Soap/c/8.0"; //$NON-NLS-1$
+
     public static final String TSALESFORCE_CUSTOM_MODULE = "org.talend.salesforce.custom.module"; //$NON-NLS-1$
 
     public static final String TSALESFORCE_CUSTOM_MODULE_SPILT = ","; //$NON-NLS-1$
@@ -162,7 +164,13 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                             IProgressMonitor.UNKNOWN);
 
                     try {
-                        binding = salesforceAPI.login(endPoint, user, pass);
+
+                        ArrayList loginList = salesforceAPI.login(endPoint, user, pass);
+                        for (int i = 0; i < loginList.size(); i++) {
+                            if (loginList.get(i) instanceof SoapBindingStub) {
+                                binding = (SoapBindingStub) loginList.get(i);
+                            }
+                        }
                     } catch (Throwable e) {
                         ExceptionHandler.process(e);
                     }
@@ -187,7 +195,13 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     protected boolean toCheckSalesfoceLogin(final String endPoint, final String username, final String password) {
         salesforceAPI.setLogin(false);
         try {
-            binding = salesforceAPI.login(endPoint, username, password);
+
+            ArrayList loginList = salesforceAPI.login(endPoint, username, password);
+            for (int i = 0; i < loginList.size(); i++) {
+                if (loginList.get(i) instanceof SoapBindingStub) {
+                    binding = (SoapBindingStub) loginList.get(i);
+                }
+            }
             salesforceAPI.setLogin(true);
         } catch (Throwable e) {
             ExceptionHandler.process(e);
@@ -195,9 +209,11 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return salesforceAPI.isLogin();
     }
 
-    protected boolean checkSalesfoceLogin(final String endPoint, final String username, final String password,
-            final String proxyHost, final String proxyPort, final String proxyUsername, final String proxyPassword) {
+    protected ArrayList checkSalesfoceLogin(final String endPoint, final String username, final String password,
+            final String proxyHost, final String proxyPort, final String proxyUsername, final String proxyPassword,
+            final String mouleName) {
         final List<String> errors = new ArrayList<String>();
+        final ArrayList arraylist = new ArrayList<String>();
 
         salesforceAPI.setLogin(false);
 
@@ -218,8 +234,22 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     }
 
                     try {
-                        binding = salesforceAPI.login(endPoint, username, password, proxyHost, proxyPort, proxyUsername,
-                                proxyPassword);
+                        // binding ;
+                        ArrayList loginList = salesforceAPI.login(endPoint, username, password, proxyHost, proxyPort,
+                                proxyUsername, proxyPassword, mouleName);
+                        for (int i = 0; i < loginList.size(); i++) {
+                            if (loginList.get(i) instanceof SoapBindingStub) {
+                                binding = (SoapBindingStub) loginList.get(i);
+                            }
+                            if (loginList.get(i) instanceof ArrayList) {
+                                ArrayList realtionShipObjects = (ArrayList) loginList.get(i);
+                                if (realtionShipObjects != null && realtionShipObjects.get(0) != null) {
+                                    arraylist.add(realtionShipObjects);
+                                }
+
+                            }
+                        }
+
                         salesforceAPI.setLogin(true);
                     } catch (Throwable e) {
                         errors.add(e.getMessage());
@@ -243,7 +273,9 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             String error = errors.size() > 0 ? errors.get(0) : ""; //$NON-NLS-1$
             new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, error);
         }
-        return salesforceAPI.isLogin();
+        arraylist.add(salesforceAPI.isLogin());
+
+        return arraylist;
     }
 
     protected DescribeGlobalResult describeGlobal() throws UnexpectedErrorFault, RemoteException {
