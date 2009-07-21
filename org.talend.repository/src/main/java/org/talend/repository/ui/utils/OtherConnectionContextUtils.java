@@ -211,6 +211,7 @@ public final class OtherConnectionContextUtils {
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         conn.setXmlFilePath(filePath);
+        encoding = TalendTextUtils.removeQuotes(encoding);
         conn.setEncoding(encoding);
 
         EList schema = conn.getSchema();
@@ -237,6 +238,7 @@ public final class OtherConnectionContextUtils {
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         cloneConn.setXmlFilePath(filePath);
+        encoding = TalendTextUtils.removeQuotes(encoding);
         cloneConn.setEncoding(encoding);
         //
         cloneConn.setMaskXPattern(fileConn.getMaskXPattern());
