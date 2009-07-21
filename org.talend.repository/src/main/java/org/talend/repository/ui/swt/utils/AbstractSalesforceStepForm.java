@@ -237,17 +237,19 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         // binding ;
                         ArrayList loginList = salesforceAPI.login(endPoint, username, password, proxyHost, proxyPort,
                                 proxyUsername, proxyPassword, mouleName);
-                        for (int i = 0; i < loginList.size(); i++) {
-                            if (loginList.get(i) instanceof SoapBindingStub) {
-                                binding = (SoapBindingStub) loginList.get(i);
-                            }
-                            if (loginList.get(i) instanceof ArrayList) {
-                                ArrayList realtionShipObjects = (ArrayList) loginList.get(i);
-                                if (realtionShipObjects != null && realtionShipObjects.get(0) != null) {
-                                    arraylist.add(realtionShipObjects);
+                        if (loginList != null) {
+                            for (int i = 0; i < loginList.size(); i++) {
+                                if (loginList.get(i) instanceof SoapBindingStub) {
+                                    binding = (SoapBindingStub) loginList.get(i);
                                 }
-
+                                if (loginList.get(i) instanceof ArrayList) {
+                                    ArrayList realtionShipObjects = (ArrayList) loginList.get(i);
+                                    if (realtionShipObjects != null && realtionShipObjects.get(0) != null) {
+                                        arraylist.add(realtionShipObjects);
+                                    }
+                                }
                             }
+
                         }
 
                         salesforceAPI.setLogin(true);
