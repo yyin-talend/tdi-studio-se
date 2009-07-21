@@ -871,9 +871,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 } else {
                                     // check the value
                                     if (!param.getValue().equals(objectValue)) {
-                                        if ((((XmlFileConnectionImpl) repositoryConnection).getXmlFilePath().endsWith("xsd") || ((XmlFileConnectionImpl) repositoryConnection)
-                                                .getXmlFilePath().endsWith("xsd\""))
-                                                && repositoryValue.equals("FILE_PATH")) {
+                                        if (repositoryConnection instanceof XmlFileConnectionImpl) {
+                                            if ((((XmlFileConnectionImpl) repositoryConnection).getXmlFilePath().endsWith("xsd") || ((XmlFileConnectionImpl) repositoryConnection)
+                                                    .getXmlFilePath().endsWith("xsd\""))
+                                                    && repositoryValue.equals("FILE_PATH")) {
+                                            } else {
+                                                sameValues = false;
+                                            }
                                         } else {
                                             sameValues = false;
                                         }
