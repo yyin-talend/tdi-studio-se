@@ -24,6 +24,7 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
@@ -556,7 +557,7 @@ public class DataProcess {
             }
 
             AbstractNode curNode;
-            if (graphicalNode.getExternalNode() == null) {
+            if (component.getPluginFullName().equals(IComponentsFactory.COMPONENTS_LOCATION)) {
                 curNode = new DataNode(component, uniqueName);
             } else {
                 // mapper
