@@ -222,6 +222,13 @@ public class CLASS {
     }
 
     public abstract class Manager {
+        
+        protected INode node;// add the Node, it will be more convenient
+
+        public void setNode(INode node) {
+           this.node = node;
+        }
+        
         protected String cid;        
         protected abstract String getDBMSId();
         protected abstract String getLProtectedChar();
@@ -643,7 +650,9 @@ public class CLASS {
                     separate = " AND ";
                 }
                 deleteWhereStmt.append(separate);
-                deleteWhereStmt.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
+                
+                //feature:2880
+                whereStmtSupportNull(deleteWhereStmt, column);                 
             }
             if(column.isUpdateKey()) {
                 if(firstUpdateKeyColumn.toString().equals("true")) {
@@ -653,7 +662,10 @@ public class CLASS {
                     separate = " AND ";
                 }
                 updateWhereStmt.append(separate);
-                updateWhereStmt.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());                            
+                
+                //feature:2880
+                whereStmtSupportNull(updateWhereStmt, column);                
+                                            
             }
             actionSQLMap.put(INSERT_COLUMN_NAME, insertColName);
             actionSQLMap.put(INSERT_VALUE_STMT, insertValueStmt);
@@ -879,6 +891,72 @@ public class CLASS {
             
                 
         }
+        
+        
+        //extract a method for feature:2880, it is a default implement, need every tDBOutput to implement it, if it really want to support the "whereNULL" issue
+        //@see: the implement of MSSQLManager
+        //feature:2880
+        private void whereStmtSupportNull(StringBuilder updateWhereStmt, Column column) {
+            boolean whereSupportNull = false;
+
+            //if node = null, it means some components have not support the "whereNULL" issue yet.
+            if (node != null) {
+                whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
+            }
+            if (whereSupportNull && column.getColumn().isNullable()) {
+                updateWhereStmt.append("((" + getLProtectedChar() + column.getColumnName() + getRProtectedChar()
+                        + " IS NULL AND 0x1 " + column.getOperator() + " " + column.getSqlStmt() + ") ");
+                updateWhereStmt.append("OR " + getLProtectedChar() + column.getColumnName() + getRProtectedChar()
+                        + column.getOperator() + column.getSqlStmt() + ")");
+            } else {
+                //if node = null, go this branch as the old behave
+                updateWhereStmt.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " "
+                        + column.getOperator() + " " + column.getSqlStmt());
+            }
+        }
+        
+        // for feature:2880, it will consider the "whereNULL" issue in the generated code.
+        // @Deprecated: because the "index" with a small problem when increase it.
+        private String generateSetStmt_4_whereSupportNull(String typeToGenerate, Column column, int index,
+                String incomingConnName, String cid, int actionType) {
+
+            boolean whereSupportNull = false;
+
+            // if node = null, it means some components have not support the "whereNULL" issue yet.
+            if (node != null) {
+                whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
+            }
+
+            StringBuilder setStmt = new StringBuilder();
+
+            System.out.println(column.isUpdateKey() && whereSupportNull && column.getColumn().isNullable());
+            // the 3 conditions are important
+            if (column.isUpdateKey() && whereSupportNull && column.getColumn().isNullable()) {
+                setStmt.append(generateSetBooleanForNullableKeyStmt(column, index, incomingConnName, cid, NORMAL_TYPE));
+            }
+
+            // the old behave
+            setStmt.append(generateSetStmt(typeToGenerate, column, index, incomingConnName, cid, NORMAL_TYPE));
+
+            return setStmt.toString();
+        }
+
+        // for feature:2880, generate the "set boolean" java code. 
+        private String generateSetBooleanForNullableKeyStmt(Column column, int index, String incomingConnName, String cid,
+                int actionType) {
+            String prefix = null;
+            if (actionType == NORMAL_TYPE) {
+                prefix = "pstmt_";
+            } else if (actionType == INSERT_TYPE) {
+                prefix = "pstmtInsert_";
+            } else if (actionType == UPDATE_TYPE) {
+                prefix = "pstmtUpdate_";
+            }
+            StringBuilder setStmt = new StringBuilder();
+            setStmt.append(prefix + cid + ".setBoolean(" + index + ", (" + incomingConnName + "." + column.getName()
+                    + "==null));\r\n");
+            return setStmt.toString();
+        }        
     }
     
     public class AS400Manager extends Manager {
@@ -1139,7 +1217,8 @@ public class CLASS {
                 }
             }
             return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();            
-        }
+        } 
+       
     }
     
     public class MysqlManager extends Manager {
@@ -1716,6 +1795,13 @@ public class CLASS {
         return manager;
     }
     
+    
+    public Manager getManager(String dbmsId, String cid, INode node) {
+        Manager manager = getManager(dbmsId, cid);
+        manager.setNode(node);
+        return manager;
+    }    
+    
     public List<IMetadataColumn> getColumnList(INode node) {
         List<IMetadataColumn> columnList = null;
         List<IMetadataTable> metadatas = node.getMetadataList();
@@ -1729,7 +1815,7 @@ public class CLASS {
     }
 
     public String generate(Object argument) {
-
+        
     }
     
     
