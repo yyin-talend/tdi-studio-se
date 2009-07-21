@@ -198,6 +198,8 @@ public class Process extends Element implements IProcess2 {
 
     protected ImageDescriptor screenshot = null;
 
+    byte[] innerContent = null;
+
     public Process(Property property) {
         this.property = property;
         contextManager = new JobContextManager();
@@ -1140,7 +1142,7 @@ public class Process extends Element implements IProcess2 {
     protected void loadScreenshots() {
         if (CommonsPlugin.isHeadless())
             return;
-        byte[] innerContent = getProcessType().getScreenshot();
+        innerContent = getProcessType().getScreenshot();
         setScreenshot(ImageUtils.createImageFromData(innerContent));
     }
 
@@ -2807,6 +2809,7 @@ public class Process extends Element implements IProcess2 {
         generatingProcess = null;
         editor = null;
         viewer = null;
+        ImageUtils.disposeImages(innerContent);
     }
 
     // public void dispose() {

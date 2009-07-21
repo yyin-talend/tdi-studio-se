@@ -247,10 +247,10 @@ public class WidgetFactory extends FormToolkit {
         return label;
     }
 
+    @Override
     public void dispose() {
         if (getColors() != null) {
             super.dispose();
         }
     }
-
 }

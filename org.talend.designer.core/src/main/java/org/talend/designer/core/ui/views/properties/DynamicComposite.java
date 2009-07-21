@@ -133,6 +133,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
     private boolean isCompactView;
 
+    WidgetFactory widgetFactory = new WidgetFactory();
+
     // private final String extraPropertyTypeName;
     //
     // private final String extraRepositoryPropertyTypeName;
@@ -1149,7 +1151,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         setExpandHorizontal(true);
         // setExpandVertical(true);
 
-        composite = new WidgetFactory().createComposite(this, SWT.NO_FOCUS);
+        composite = widgetFactory.createComposite(this, SWT.NO_FOCUS);
         setContent(composite);
 
         generator = new DynamicPropertyGenerator();
@@ -1220,6 +1222,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         if (cmdStack != null) {
             cmdStack.removeCommandStackEventListener(commandStackEventListener);
         }
+        if (widgetFactory != null)
+            widgetFactory.dispose();
         super.dispose();
         process = null;
         elem = null;

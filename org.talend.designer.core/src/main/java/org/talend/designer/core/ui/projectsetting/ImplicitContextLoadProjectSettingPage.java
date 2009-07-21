@@ -36,6 +36,8 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
 
     private Element elem;
 
+    WidgetFactory widgetFactory = new WidgetFactory();
+
     /*
      * (non-Javadoc)
      * 
@@ -43,7 +45,7 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
      */
     @Override
     protected Control createContents(Composite parent) {
-        Composite composite = new WidgetFactory().createComposite(parent, SWT.NONE);
+        Composite composite = widgetFactory.createComposite(parent, SWT.NONE);
         composite.setLayout(new FormLayout());
         FormData data = createFormData();
         composite.setLayoutData(data);
@@ -68,6 +70,13 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
         data.top = new FormAttachment(0, 0);
         data.bottom = new FormAttachment(100, 0);
         return data;
+    }
+
+    @Override
+    public void dispose() {
+        if (widgetFactory != null)
+            widgetFactory.dispose();
+        super.dispose();
     }
 
     /*

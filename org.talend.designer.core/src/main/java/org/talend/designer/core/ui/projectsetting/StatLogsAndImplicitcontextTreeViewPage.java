@@ -131,6 +131,13 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         return composite;
     }
 
+    @Override
+    public void dispose() {
+        if (widgetFactory != null)
+            widgetFactory.dispose();
+        super.dispose();
+    }
+
     private void createImplicitcontextTree(Composite composite) {
         Group g = widgetFactory.createGroup(composite, Messages.getString("ExtraComposite.ImplicitContextSettings")); //$NON-NLS-1$
         GridData gd = new GridData(GridData.FILL_BOTH);

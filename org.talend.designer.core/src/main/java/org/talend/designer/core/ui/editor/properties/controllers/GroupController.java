@@ -27,11 +27,14 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.designer.core.ui.views.properties.WidgetFactory;
 
 /**
  * yzhang class global comment. Detailled comment
  */
 public class GroupController extends AbstractElementPropertySectionController {
+
+    WidgetFactory widgetFactory = null;
 
     /**
      * yzhang GroupController constructor comment.
@@ -40,6 +43,14 @@ public class GroupController extends AbstractElementPropertySectionController {
      */
     public GroupController(IDynamicProperty dp) {
         super(dp);
+    }
+
+    @Override
+    public void dispose() {
+        if (widgetFactory != null) {
+            widgetFactory.dispose();
+        }
+        super.dispose();
     }
 
     /*
@@ -57,8 +68,8 @@ public class GroupController extends AbstractElementPropertySectionController {
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
-                return getWidgetFactory().createGroup(parent,
-                        param.getGroupDisplayName() == null ? "" : param.getGroupDisplayName()); //$NON-NLS-1$
+                widgetFactory = getWidgetFactory();
+                return widgetFactory.createGroup(parent, param.getGroupDisplayName() == null ? "" : param.getGroupDisplayName()); //$NON-NLS-1$
             }
 
         });

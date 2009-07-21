@@ -132,6 +132,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
     private boolean isCompactView;
 
+    WidgetFactory widgetFactory = new WidgetFactory();
+
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
         String aliasName = repositoryObjectType.getAlias();
@@ -323,6 +325,14 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             // Empty the composite before use (kinda refresh) :
             Control[] ct = composite.getChildren();
             for (int i = 0; i < ct.length; i++) {
+                if (ct[i] != null) {
+                    if (ct[i].getForeground() != null && !ct[i].getForeground().isDisposed()) {
+                        ct[i].getForeground().dispose();
+                    }
+                    if (ct[i].getBackground() != null && !ct[i].getBackground().isDisposed()) {
+                        ct[i].getBackground().dispose();
+                    }
+                }
                 ct[i].dispose();
             }
         }
@@ -850,8 +860,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         setExpandHorizontal(true);
         // setExpandVertical(true);
-
-        composite = new WidgetFactory().createComposite(this, SWT.NO_FOCUS);
+        composite = widgetFactory.createComposite(this, SWT.NO_FOCUS);
         setContent(composite);
 
         generator = new DynamicPropertyGenerator();
@@ -931,6 +940,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             cmdStack.removeCommandStackEventListener(commandStackEventListener);
         }
         disposeChildren();
+        if (widgetFactory != null)
+            widgetFactory.dispose();
         super.dispose();
         process = null;
         elem = null;
@@ -1137,5 +1148,4 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     public Composite getComposite() {
         return composite;
     }
-
 }
