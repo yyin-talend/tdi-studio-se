@@ -9,7 +9,6 @@
     AUTHOR="Talend"
     RELEASE_DATE="20070210A"
     STARTABLE="true"
-    DATA_AUTO_PROPAGATE="false"    
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
@@ -39,14 +38,7 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="1"
-    />
-    
-    <PARAMETER NAME="DATA_AUTO_PROPAGATE" FIELD="CLOSED_LIST" NUM_ROW="2">
-      <ITEMS DEFAULT="true">
-     	<ITEM NAME="TRUE"  VALUE="true" />
-        <ITEM NAME="FALSE"  VALUE="false" />        
-      </ITEMS>
-    </PARAMETER>
+    />   
 
     <PARAMETER
       NAME="CODE_START"
