@@ -102,7 +102,7 @@ class HelloInput implements javax.jms.MessageListener {
 		HelloInput input<%=cid%>=null;
 		try {
 		//begin part
-			input<%=cid%>=new HelloInput("<%if(("Topic").equals(msgType)){%>TopicConnectionFactory<%}else{%>ConnectionFactory<%}%>",<%=from%>);			
+			input<%=cid%>=new HelloInput("ConnectionFactory",<%=from%>);			
 		} catch (java.lang.Exception e) {
 			System.err.println("An exception occurred while testing HelloSubscriber:" + e);
 			e.printStackTrace();
