@@ -580,7 +580,10 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
 
                 IElementParameter tempFolderElem = getElementParameter("TEMPORARY_DATA_DIRECTORY"); //$NON-NLS-1$
                 // modified by wzhang to fix 7824
-                String tempFolder = (String) tempFolderElem.getValue();
+                String tempFolder = null;
+                if (tempFolderElem != null) {
+                    tempFolder = (String) tempFolderElem.getValue();
+                }
                 if (("").equals(tempFolder)) {
                     tempFolder = (String) this.getProcess().getElementParameter("COMP_DEFAULT_FILE_DIR").getValue() + "/temp"; //$NON-NLS-1$ //$NON-NLS-2$
                     tempFolder = TalendTextUtils.addQuotes(tempFolder);
