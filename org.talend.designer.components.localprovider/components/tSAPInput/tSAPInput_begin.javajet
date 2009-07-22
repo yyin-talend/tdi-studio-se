@@ -398,10 +398,12 @@ for(Map<String, String> schemaMap : schemas) {
 	
 	<%if(paramType.equals("output_table")){%>
 		com.sap.mw.jco.JCO.Table table_<%=schemaName %>_<%=cid %> = exportParameterList_<%=cid %>.getTable(<%=tableName %>);
+		go_<%=schemaName %> = !table_<%=schemaName %>_<%=cid %>.isEmpty();
 	<%}%>
 	
 	<%if(paramType.equals("table_output")){%>
 		com.sap.mw.jco.JCO.Table table_<%=schemaName %>_<%=cid %> = tableParameterList_<%=cid %>.getTable(<%=tableName %>);
+		go_<%=schemaName %> = !table_<%=schemaName %>_<%=cid %>.isEmpty();
 	<%}%>		
 <%	
 }
