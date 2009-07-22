@@ -206,6 +206,7 @@
        <IMPORT NAME="JBOSS MQ LIB" MODULE="jbossall-client.jar" REQUIRED="false" />
        <IMPORT NAME="WEBSPHERE MQ LIB" MODULE="com.ibm.mq.jar" REQUIRED="false" />
        <IMPORT NAME="WEBSPHERE JMS LIB" MODULE="com.ibm.mqjms.jar" REQUIRED="false" />
+       <IMPORT NAME="WEBSPHERE CONNECTOR" MODULE="websphere-connector-1_5.jar" REQUIRED="false" /> 
        <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.1.0.jar" REQUIRED="false" />
        <IMPORT NAME="JBOSS MESSAGING CLIENT" MODULE="jboss-messaging-client.jar" REQUIRED="true" />
        <IMPORT NAME="JBOSS AOP" MODULE="jboss-aop.jar" REQUIRED="true" />
