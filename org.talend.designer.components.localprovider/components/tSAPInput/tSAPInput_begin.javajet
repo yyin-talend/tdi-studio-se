@@ -159,6 +159,23 @@
             
             
 List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+
+List<Map<String, String>> tempSchemaBufferBaseOnLink = new ArrayList<Map<String, String>>();
+//filter some values for schemas, because it should be base on Connection, because some Connection maybe deactivate.
+if(conns != null && conns.size() > 0){
+	for(IConnection conn : conns){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            for(Map<String, String> schemaMap : schemas) {
+            	String schemaName = schemaMap.get("SCHEMA");		
+    			if(schemaName.equals(conn.getName())){
+					tempSchemaBufferBaseOnLink.add(schemaMap);
+    			}
+    		}	
+		}
+	}
+}
+schemas =  tempSchemaBufferBaseOnLink;
+
 /*            
             //intial the schema in buffer
             SchemaUtil schemaUtil = new SchemaUtil();
