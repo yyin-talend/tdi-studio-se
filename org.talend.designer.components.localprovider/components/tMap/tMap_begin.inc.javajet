@@ -52,7 +52,6 @@
 		if (("").equals(tempFolder)) {
 			tempFolder=ElementParameterParser.getValue(node.getProcess(), "__COMP_DEFAULT_FILE_DIR__") + "/temp";
 			tempFolder=TalendTextUtils.addQuotes(tempFolder);
-			tempFolder=tempFolder.replace("\\", "/");
 		}
 		String rowsBufferSize = ElementParameterParser.getValue(node, "__ROWS_BUFFER_SIZE__");
 		

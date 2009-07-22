@@ -12,11 +12,16 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import java.io.File;
+
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.model.components.ComponentUtilities;
@@ -111,15 +116,41 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         //                .getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
 
         BooleanFieldEditor antialiasing;
-        antialiasing = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_ANTIALIASING,
-                Messages.getString("DesignerPreferencePage.actionInJobDesigner"), getFieldEditorParent()); //$NON-NLS-1$
+        antialiasing = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_ANTIALIASING, Messages
+                .getString("DesignerPreferencePage.actionInJobDesigner"), getFieldEditorParent()); //$NON-NLS-1$
         addField(antialiasing);
 
         DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
-                Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
+                Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()) {
+
+            @Override
+            // wzhang added to set the separator as "/" of default component filePath in preference.
+            protected String changePressed() {
+                File f = new File(getTextControl().getText());
+                if (!f.exists()) {
+                    f = null;
+                }
+                DirectoryDialog fileDialog = new DirectoryDialog(getShell(), SWT.OPEN);
+                if (f != null) {
+                    fileDialog.setFilterPath(f.getPath());
+                }
+                String openDir = fileDialog.open();
+                if (openDir != null) {
+                    openDir.trim();
+                    if (openDir.length() > 0) {
+                        File filePath = new File(openDir);
+                        if (filePath == null) {
+                            return null;
+                        }
+                    }
+                }
+                return Path.fromOSString(openDir).toPortableString();
+            }
+        };
         addField(compDefaultFileDir);
 
-        RadioGroupFieldEditor largeIconsSizeField = new RadioGroupFieldEditor(TalendDesignerPrefConstants.LARGE_ICONS_SIZE,
+        RadioGroupFieldEditor largeIconsSizeField = new RadioGroupFieldEditor(
+                TalendDesignerPrefConstants.LARGE_ICONS_SIZE,
                 Messages.getString("DesignerPreferencePage.largeIconsSize"), 2, new String[][] { { Messages.getString("DesignerPreferencePage.iconSize24"), "" + 24 }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
                         { Messages.getString("DesignerPreferencePage.iconSize32"), "" + 32 } }, getFieldEditorParent()); //$NON-NLS-1$ //$NON-NLS-2$
         addField(largeIconsSizeField);
@@ -134,9 +165,10 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         // //$NON-NLS-2$
         // addField(schemaOptions);
 
-         RadioGroupFieldEditor viewOptions = new RadioGroupFieldEditor(TalendDesignerPrefConstants.VIEW_OPTIONS, Messages
-                .getString("DesignerPreferencePage.viewOptions"), 2, new String[][] { { Messages.getString("DesignerPreferencePage.compactView"), "default" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                { Messages.getString("DesignerPreferencePage.tableView"), "table view" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
+        RadioGroupFieldEditor viewOptions = new RadioGroupFieldEditor(
+                TalendDesignerPrefConstants.VIEW_OPTIONS,
+                Messages.getString("DesignerPreferencePage.viewOptions"), 2, new String[][] { { Messages.getString("DesignerPreferencePage.compactView"), "default" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        { Messages.getString("DesignerPreferencePage.tableView"), "table view" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
         addField(viewOptions);
 
         // BooleanFieldEditor viewSubjobs = new BooleanFieldEditor(TalendDesignerPrefConstants.DISPLAY_SUBJOBS,

@@ -583,7 +583,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 String tempFolder = (String) tempFolderElem.getValue();
                 if (("").equals(tempFolder)) {
                     tempFolder = (String) this.getProcess().getElementParameter("COMP_DEFAULT_FILE_DIR").getValue() + "/temp"; //$NON-NLS-1$ //$NON-NLS-2$
-                    tempFolder = tempFolder.replace("\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
                     tempFolder = TalendTextUtils.addQuotes(tempFolder);
                 }
 

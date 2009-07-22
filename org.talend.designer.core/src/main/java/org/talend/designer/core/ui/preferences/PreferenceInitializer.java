@@ -65,7 +65,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.USE_REPOSITORY_NAME, true);
 
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
-        store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
+        store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toPortableString());
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
         store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "none"); //$NON-NLS-1$
