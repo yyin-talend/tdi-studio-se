@@ -59,6 +59,7 @@ imports="
     			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	
 %>
 					javax.naming.directory.Attributes entry_<%=cid%> = new javax.naming.directory.BasicAttributes(true);
+					whetherReject_<%=cid%> = false;
 					String dn_<%=cid%> = <%=conn.getName() %>.<%=dnColumnName%>.trim();
 <%
 					for(IMetadataColumn column:columnList){		
