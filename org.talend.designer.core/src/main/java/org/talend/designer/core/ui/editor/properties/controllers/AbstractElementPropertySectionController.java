@@ -351,7 +351,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return this.dynamicProperty;
     }
 
-    static WidgetFactory widgetFactory = new WidgetFactory();
+    static WidgetFactory widgetFactory = null;
 
     /**
      * DOC yzhang Comment method "getWidgetFactory".
