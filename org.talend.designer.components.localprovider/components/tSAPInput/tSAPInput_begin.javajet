@@ -449,10 +449,38 @@ for(Map<String, String> schemaMap : schemas) {
 			}
 		}
 	}
+%>
+
+<%
+//do check1, make sure the field "component setting viewer->View->Connection format" is "row"
+if(justConn == null){
+%>
+    	if (true) {
+    		throw new Exception("The connection for schema <%=schemaName %> is with problem, they must be the same name.");
+    
+    	}
+<%
+	return stringBuffer.toString();
+}
+%>
 	
+<%
 	IMetadataTable justMetadata = justConn.getMetadataTable();
 	List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
 %>
+	
+<%
+//do check2, make sure the field "Schema XpathQuerys" are not empty 
+if(paramNames == null || paramNames.length != justColumnList.size()){
+%>
+    	if (true) {
+    		throw new Exception("Please make sure to configure the \"Outputs->Mapping->Schema XpathQuerys\" for schema <%=schemaName %>");    
+    	}
+<%
+	return stringBuffer.toString();
+}
+%>	
+	
 	if(go_<%=schemaName %>){
 		<%if(paramType.equals("output_single")){%>
 			go_<%=schemaName %> = false;	
