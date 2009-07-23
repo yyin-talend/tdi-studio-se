@@ -144,18 +144,27 @@ public final class OtherConnectionContextUtils {
     }
 
     /*
-     * XmlFile
+     * get variables for context .So need to add Quotes.
      */
     static List<IContextParameter> getXmlFileVariables(String prefixName, XmlFileConnection conn) {
+
         if (conn == null || prefixName == null) {
             return Collections.emptyList();
         }
         List<IContextParameter> varList = new ArrayList<IContextParameter>();
         prefixName = prefixName + ConnectionContextHelper.LINE;
         String paramName = null;
-
+        String xmlFilePath = conn.getXmlFilePath();
+        String encoding = conn.getEncoding();
+        if (LANGUAGE.equals(ECodeLanguage.PERL)) {
+            xmlFilePath = TalendTextUtils.addQuotes(xmlFilePath);
+            encoding = TalendTextUtils.addQuotes(encoding);
+        }
         paramName = prefixName + EParamName.XmlFilePath;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getXmlFilePath(), JavaTypesManager.FILE);
+        ConnectionContextHelper.createParameters(varList, paramName, xmlFilePath, JavaTypesManager.FILE);
+
+        paramName = prefixName + EParamName.Encoding;
+        ConnectionContextHelper.createParameters(varList, paramName, encoding);
 
         EList schema = conn.getSchema();
         if (schema != null) {
@@ -163,17 +172,14 @@ public final class OtherConnectionContextUtils {
             if (object instanceof XmlXPathLoopDescriptor) {
                 XmlXPathLoopDescriptor loopDesc = (XmlXPathLoopDescriptor) object;
                 paramName = prefixName + EParamName.XPathQuery;
-                ConnectionContextHelper.createParameters(varList, paramName, loopDesc.getAbsoluteXPathQuery());
+                String absoluteXPathQuery = loopDesc.getAbsoluteXPathQuery();
+                if (LANGUAGE.equals(ECodeLanguage.PERL)) {
+                    absoluteXPathQuery = TalendTextUtils.addQuotes(absoluteXPathQuery);
+                }
+                ConnectionContextHelper.createParameters(varList, paramName, absoluteXPathQuery);
 
             }
         }
-
-        paramName = prefixName + EParamName.Encoding;
-        String encoding = conn.getEncoding();
-        if (LANGUAGE.equals(ECodeLanguage.PERL)) {
-            encoding = TalendTextUtils.addQuotes(encoding);
-        }
-        ConnectionContextHelper.createParameters(varList, paramName, encoding);
 
         return varList;
     }
@@ -219,6 +225,7 @@ public final class OtherConnectionContextUtils {
             if (schema.get(0) instanceof XmlXPathLoopDescriptor) {
                 XmlXPathLoopDescriptor descriptor = (XmlXPathLoopDescriptor) schema.get(0);
                 String xPahtQuery = ConnectionContextHelper.getOriginalValue(contextType, descriptor.getAbsoluteXPathQuery());
+                xPahtQuery = TalendTextUtils.removeQuotes(xPahtQuery);
                 descriptor.setAbsoluteXPathQuery(xPahtQuery);
             }
         }
@@ -254,6 +261,7 @@ public final class OtherConnectionContextUtils {
             XmlXPathLoopDescriptor cloneDesc = ConnectionFactory.eINSTANCE.createXmlXPathLoopDescriptor();
             cloneDesc.setLimitBoucle(desc.getLimitBoucle().intValue());
             String xPathQuery = ConnectionContextHelper.getOriginalValue(contextType, desc.getAbsoluteXPathQuery());
+            xPathQuery = TalendTextUtils.removeQuotes(xPathQuery);
             cloneDesc.setAbsoluteXPathQuery(xPathQuery);
 
             cloneDesc.getSchemaTargets().clear();

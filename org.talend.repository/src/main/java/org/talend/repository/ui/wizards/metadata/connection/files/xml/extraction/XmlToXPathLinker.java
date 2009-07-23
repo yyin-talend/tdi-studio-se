@@ -71,6 +71,7 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -258,6 +259,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     if (contextType != null) {
                         originalValue = ConnectionContextHelper.getOriginalValue(contextType, xpathLoopDescriptor
                                 .getAbsoluteXPathQuery());
+                        originalValue = TalendTextUtils.removeQuotes(originalValue);
                     }
                     if (originalValue != null) {
                         createLoopLinks(originalValue, tableItem, monitorWrap);

@@ -70,6 +70,7 @@ import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -748,6 +749,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
                             connectionItem.getConnection(), true);
                     pathStr = ConnectionContextHelper.getOriginalValue(contextType, pathStr);
+                    pathStr = TalendTextUtils.removeQuotes(pathStr);
                 }
 
                 File file = new File(pathStr);
@@ -812,6 +814,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(),
                         true);
                 pathStr = ConnectionContextHelper.getOriginalValue(contextType, pathStr);
+                pathStr = TalendTextUtils.removeQuotes(pathStr);
             }
             this.treePopulator.populateTree(pathStr, treeNode);
 
@@ -858,6 +861,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(),
                         true);
                 oraginalPath = ConnectionContextHelper.getOriginalValue(contextType, curXmlPath);
+                oraginalPath = TalendTextUtils.removeQuotes(oraginalPath);
             }
             if (!xmlFilePath.equals(curXmlPath) && !xmlFilePath.equals(oraginalPath)) {
                 // clear command stack

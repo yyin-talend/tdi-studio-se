@@ -61,6 +61,7 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
@@ -340,6 +341,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
                             connectionItem.getConnection(), true);
                     text = ConnectionContextHelper.getOriginalValue(contextType, text);
+                    text = TalendTextUtils.removeQuotes(text);
                 }
                 getConnection().setXmlFilePath(PathUtils.getPortablePath(fileFieldXml.getText()));
                 BufferedReader in = null;
@@ -436,6 +438,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             if (isContextMode()) {
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
                 xmlFilePath = ConnectionContextHelper.getOriginalValue(contextType, fileFieldXml.getText());
+                xmlFilePath = TalendTextUtils.removeQuotes(xmlFilePath);
             }
             updateStatus(IStatus.ERROR, Messages.getString("XmlFileStep1Form.notFound", xmlFilePath)); //$NON-NLS-1$
 
