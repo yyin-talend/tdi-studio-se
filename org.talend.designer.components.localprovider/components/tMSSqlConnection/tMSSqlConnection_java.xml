@@ -59,7 +59,7 @@
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>MySQL</DEFAULT>
+      <DEFAULT>MSSQL</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -68,7 +68,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="PORT"
     >
-      <DEFAULT>"3306"</DEFAULT>
+      <DEFAULT>"1433"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
