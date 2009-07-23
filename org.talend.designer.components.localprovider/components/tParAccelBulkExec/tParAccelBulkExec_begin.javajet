@@ -32,7 +32,7 @@ String fieldLayout = ElementParameterParser.getValue(node, "__FIELD_LAYOUT__");
 String fixedWidth = ElementParameterParser.getValue(node, "__FIXED_WIDTH__");
 String methodFixedWidth = ElementParameterParser.getValue(node, "__METHOD_FIXED_WIDTH__");
 boolean convertToUppercase = false; // not active this function
-boolean useExistingConnection = false; // not active this function
+boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 boolean removeQuotes = ("true").equals(ElementParameterParser.getValue(node, "__REMOVE_QUOTES__"));
 boolean explicitIDs = ("true").equals(ElementParameterParser.getValue(node, "__EXPLICIT_IDS__"));
 
@@ -194,8 +194,20 @@ if (<%= logLevel %> > 0) {
 }	
 com.paraccel.Driver.setLogLevel(<%= logLevel %>);
 
-java.lang.Class.forName("com.paraccel.Driver").newInstance();
-java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>+"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3", <%=userName%>, <%=password%>);
+java.sql.Connection conn_<%=cid%> = null;
+	<%
+	if(useExistingConnection) {
+    		String conn = "conn_" + ElementParameterParser.getValue(node,"__CONNECTION__");
+	%>
+	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	 <%
+	 } else {
+	 %>
+		java.lang.Class.forName("com.paraccel.Driver").newInstance();
+		conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>+"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3", <%=userName%>, <%=password%>);
+	<%
+	}
+	%>
 
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");

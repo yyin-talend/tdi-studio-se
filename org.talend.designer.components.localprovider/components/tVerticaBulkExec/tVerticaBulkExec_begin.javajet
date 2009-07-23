@@ -32,13 +32,26 @@ boolean ros = ("true").equals(ElementParameterParser.getValue(node, "__ROS__"));
 boolean exitOnNoRows = ("true").equals(ElementParameterParser.getValue(node, "__EXIT_ON_NO_ROWS__"));
 boolean hasNullString = !null_string.matches("\"\"");
 boolean convertToUppercase = false; // not active this function
-boolean useExistingConnection=false;//not active this function
+boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = getColumnList(node);    
 %>
 String tableName_<%=cid%> = <%=table%>;
-java.lang.Class.forName("com.vertica.Driver").newInstance();
-String url_<%=cid %> = "jdbc:vertica://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;
-java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+
+java.sql.Connection conn_<%=cid%> = null;
+	<%
+	if(useExistingConnection) {
+    		String conn = "conn_" + ElementParameterParser.getValue(node,"__CONNECTION__");
+	%>
+	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	 <%
+	 } else {
+	 %>
+		java.lang.Class.forName("com.vertica.Driver").newInstance();
+		String url_<%=cid %> = "jdbc:vertica://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;
+		conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+	<%
+	}
+	%>
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");

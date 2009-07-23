@@ -48,26 +48,38 @@ String table = ElementParameterParser.getValue(node, "__TABLE__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 boolean convertToUppercase = false; // not active this function
-boolean useExistingConnection = false;// not active this function
+boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = getColumnList(node);
 %>
 String charset_<%=cid %> = <%=charset %>;
 String tableName_<%=cid%> = <%=table%>;
 
 int deletedCount_<%=cid%>=0;
-Class.forName("com.mysql.jdbc.Driver").newInstance();
-<%
-if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
-    %>
-    String url_<%=cid%> = "jdbc:mysql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>;
-    <%
-} else {
-    %>
-    String url_<%=cid%> = "jdbc:mysql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%> + "?" + <%=dbproperties%>;
-    <%
-}
-%>
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, <%=userName%>, <%=password%>);
+java.sql.Connection conn_<%=cid%> = null;
+	<%
+	if(useExistingConnection) {
+    		String conn = "conn_" + ElementParameterParser.getValue(node,"__CONNECTION__");
+	%>
+	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	 <%
+	 } else {
+	 %>
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		<%
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+		    %>
+		    String url_<%=cid%> = "jdbc:mysql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>;
+		    <%
+		} else {
+		    %>
+		    String url_<%=cid%> = "jdbc:mysql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%> + "?" + <%=dbproperties%>;
+		    <%
+		}
+		%>
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, <%=userName%>, <%=password%>);
+	<%
+	}
+	%>
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");

@@ -25,7 +25,7 @@ StringBuilder tableName = new StringBuilder();
 StringBuilder tmpTableName = new StringBuilder();
 boolean standardConformingString= ("true").equals(ElementParameterParser.getValue(node,"__USE_L2_VERSION__"));
 boolean convertToUppercase = false; // not active this function
-boolean useExistingConnection= false; // not active this function
+boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 %>
 String tableName_<%=cid%> = null;
 int deletedCount_<%=cid%>=0;
@@ -122,9 +122,21 @@ String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 %> 
+java.sql.Connection conn_<%=cid%> = null;
+	<%
+	if(useExistingConnection) {
+    		String conn = "conn_" + ElementParameterParser.getValue(node,"__CONNECTION__");
+	%>
+	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	 <%
+	 } else {
+	 %>
+		java.lang.Class.forName("org.postgresql.Driver").newInstance();
+		conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
+	<%
+	}
+	%>
 
-java.lang.Class.forName("org.postgresql.Driver").newInstance();
-java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
