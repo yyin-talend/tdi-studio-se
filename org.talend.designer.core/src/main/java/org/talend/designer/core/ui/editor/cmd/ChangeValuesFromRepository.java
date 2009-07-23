@@ -92,6 +92,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private boolean reOpenXSDBool = false;
 
+    private int index;
+
+    private boolean isNotSim = false;
+
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
@@ -112,6 +116,21 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
         updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
         // }
+    }
+
+    public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value, int index,
+            boolean isNotSim) {
+        this.elem = elem;
+        this.connection = connection;
+        this.value = value;
+        this.propertyName = propertyName;
+        this.index = index;
+        this.isNotSim = isNotSim;
+        oldValues = new HashMap<String, Object>();
+        setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
+        propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
+        EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+        updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
     }
 
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value,
@@ -350,10 +369,19 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     }
 
     private String getFirstRepositoryTable(Item item) {
-        if (item != null) {
-            final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
-            if (tables != null && !tables.isEmpty()) {
-                return tables.get(0).getLabel();
+        if (isNotSim) {
+            if (item != null) {
+                final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
+                if (tables != null && !tables.isEmpty()) {
+                    return tables.get(index).getLabel();
+                }
+            }
+        } else {
+            if (item != null) {
+                final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
+                if (tables != null && !tables.isEmpty()) {
+                    return tables.get(0).getLabel();
+                }
             }
         }
         return ""; //$NON-NLS-1$
@@ -400,24 +428,48 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
-                                if (UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
-                                        && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 1) {
-                                    if (!"".equals(repositoryTable)) { //$NON-NLS-1$
-                                        param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
-                                                EmfComponent.REPOSITORY);
-                                        IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
-                                        // repositoryTableMap.get(repositoryTable);
-                                        if (table != null) {
-                                            table = table.clone();
-                                            setDBTableFieldValue(node, table.getTableName(), null);
-                                            setSAPFunctionName(node, table.getLabel());
-                                            table.setTableName(node.getMetadataList().get(0).getTableName());
-                                            if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table,
-                                                        param);
-                                                cmd.setConnection(connection);
-                                                cmd.setRepositoryMode(true);
-                                                cmd.execute(true);
+                                if (isNotSim) {
+                                    if (UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null) {
+                                        if (!"".equals(repositoryTable)) { //$NON-NLS-1$
+                                            param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
+                                                    EmfComponent.REPOSITORY);
+                                            IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
+                                            // repositoryTableMap.get(repositoryTable);
+                                            if (table != null) {
+                                                table = table.clone();
+                                                setDBTableFieldValue(node, table.getTableName(), null);
+                                                setSAPFunctionName(node, table.getLabel());
+                                                table.setTableName(node.getMetadataList().get(0).getTableName());
+                                                if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null,
+                                                            table, param);
+                                                    cmd.setConnection(connection);
+                                                    cmd.setRepositoryMode(true);
+                                                    cmd.execute(true);
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
+                                            && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 1) {
+                                        if (!"".equals(repositoryTable)) { //$NON-NLS-1$
+                                            param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
+                                                    EmfComponent.REPOSITORY);
+                                            IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
+                                            // repositoryTableMap.get(repositoryTable);
+                                            if (table != null) {
+                                                table = table.clone();
+                                                setDBTableFieldValue(node, table.getTableName(), null);
+                                                setSAPFunctionName(node, table.getLabel());
+                                                table.setTableName(node.getMetadataList().get(0).getTableName());
+                                                if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null,
+                                                            table, param);
+                                                    cmd.setConnection(connection);
+                                                    cmd.setRepositoryMode(true);
+                                                    cmd.execute(true);
+                                                }
                                             }
                                         }
                                     }

@@ -994,6 +994,13 @@ public class SelectorTableForm extends AbstractForm {
         }
     }
 
+    public void initControlData(boolean flag) {
+        checkConnection(flag);
+        if (itemTableName != null && itemTableName.size() > 0) {
+            threadExecutor = new CustomThreadPoolExecutor(itemTableName.size());
+        }
+    }
+
     protected DatabaseConnection getConnection() {
         return (DatabaseConnection) connectionItem.getConnection();
     }
