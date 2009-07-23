@@ -83,23 +83,34 @@ if(hasDataLink){//HSS_____0
     if (incomingName == null && incomingConns.size() > 0) {
     	   incomingName = incomingConns.get(0).getName(); 
     }
-    
+
     int i = 0;
     for(; i<connections.size(); i++){
     	if(connections.get(i).equals(incomingName)){
     		break;
     	}
     }
-    
+%>
+<%=incomingName %>Struct <%=incomingName %>_<%=cid %> = new <%=incomingName %>Struct(); 
+<%
+    List<IMetadataColumn> listColumns = connectionMapColumnList.get(incomingName);
+    if(!listColumns.isEmpty()){
+		for(IMetadataColumn column : listColumns){
+%>
+<%=incomingName %>_<%=cid %>.<%=column.getLabel() %> = <%=incomingName %>.<%=column.getLabel() %>;
+<%
+		}
+	}
+	
     if(i==0){
 %>
-<%=incomingName %>List_<%=cid %>.add(<%=incomingName %>);
+<%=incomingName %>List_<%=cid %>.add(<%=incomingName %>_<%=cid %>);
 nb_line_<%=cid %> ++;
 <%
 	}else{
 		
 %>
-<%=incomingName %>Map_<%=cid %>.put(String.valueOf(<%=incomingName %>.<%=schemas.get(i).get("KEY_COLUMN") %>), <%=incomingName %>);
+<%=incomingName %>Map_<%=cid %>.put(String.valueOf(<%=incomingName %>.<%=schemas.get(i).get("KEY_COLUMN") %>), <%=incomingName %>_<%=cid %>);
 nb_line_<%=cid %> ++;
 <%
 	}
