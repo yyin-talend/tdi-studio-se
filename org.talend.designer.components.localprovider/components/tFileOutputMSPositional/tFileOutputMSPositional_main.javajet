@@ -108,13 +108,13 @@ if(hasDataLink){//HSS_____0
 	
     if(i==0){
 %>
-<%=incomingName %>List_<%=cid %>.add(<%=incomingName %>);
+<%=incomingName %>List_<%=cid %>.add(<%=incomingName %>_<%=cid %>);
 
 <%
 	}else{
 		
 %>
-<%=incomingName %>Map_<%=cid %>.put(String.valueOf(<%=incomingName %>.<%=schemas.get(i).get("KEY_COLUMN") %>), <%=incomingName %>);
+<%=incomingName %>Map_<%=cid %>.put(String.valueOf(<%=incomingName %>.<%=schemas.get(i).get("KEY_COLUMN") %>), <%=incomingName %>_<%=cid %>);
 <%
 	}
 }//HSS_____0
