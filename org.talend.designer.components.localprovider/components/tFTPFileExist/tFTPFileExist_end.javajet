@@ -19,15 +19,11 @@
 	
 	if(sftp){
 %>
- 		} 
+
     	session<%=cid%>.disconnect(); 
     
 <%
 	}else{
-%>
-		} 
-	
-<%
 		if(!("true").equals(useExistingConn)){
  			if(("true").equals(ignoreFailureAtQuit)){
 %>
@@ -45,5 +41,3 @@
 		}
 	}
 %>
-
-globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);

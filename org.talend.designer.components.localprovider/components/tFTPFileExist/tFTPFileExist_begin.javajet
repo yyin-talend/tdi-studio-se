@@ -20,7 +20,7 @@
 	String remoteDir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 	
-	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node, "__REMOTEFILE__"));
+	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 	String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
 	String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
 	String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
