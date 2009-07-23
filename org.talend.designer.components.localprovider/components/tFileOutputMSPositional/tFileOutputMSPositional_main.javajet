@@ -94,7 +94,18 @@ if(hasDataLink){//HSS_____0
     		break;
     	}
     }
-    
+%>
+<%=incomingName %>Struct <%=incomingName %>_<%=cid %> = new <%=incomingName %>Struct(); 
+<%
+    List<IMetadataColumn> listColumns = connectionMapColumnList.get(incomingName);
+    if(!listColumns.isEmpty()){
+		for(IMetadataColumn column : listColumns){
+%>
+<%=incomingName %>_<%=cid %>.<%=column.getLabel() %> = <%=incomingName %>.<%=column.getLabel() %>;
+<%
+		}
+	}
+	
     if(i==0){
 %>
 <%=incomingName %>List_<%=cid %>.add(<%=incomingName %>);
