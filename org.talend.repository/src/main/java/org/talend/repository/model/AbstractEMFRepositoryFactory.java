@@ -142,6 +142,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(project, ERepositoryObjectType.BUSINESS_PROCESS, true);
     }
 
+    public RootContainer<String, IRepositoryObject> getSVGBusinessProcess(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.SVG_BUSINESS_PROCESS, true);
+    }
+
     public RootContainer<String, IRepositoryObject> getMetadataFileRegexp(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_REGEXP, true);
     }
@@ -223,13 +227,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
         ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
-                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_SAPCONNECTIONS, ERepositoryObjectType.SQLPATTERNS,
-                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
-                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_EXCEL, ERepositoryObjectType.METADATA_FILE_LDIF,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT,
-                ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
+                ERepositoryObjectType.SVG_BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
+                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_SAPCONNECTIONS,
+                ERepositoryObjectType.SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
+                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_EXCEL,
+                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
+                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
                 ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
                 ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.JOBLET,
                 ERepositoryObjectType.METADATA_FILE_EBCDIC, ERepositoryObjectType.METADATA_FILE_RULES };// feature6484

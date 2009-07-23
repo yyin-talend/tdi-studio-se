@@ -212,6 +212,8 @@ public interface IRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getBusinessProcess(Project project) throws PersistenceException;
 
+    public RootContainer<String, IRepositoryObject> getSVGBusinessProcess(Project project) throws PersistenceException;
+
     public RootContainer<String, IRepositoryObject> getDocumentation(Project project) throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getProcess(Project project) throws PersistenceException;

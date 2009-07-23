@@ -29,6 +29,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
@@ -95,6 +96,20 @@ public class RestoreAction extends AContextualAction {
                         IPath path = restoreFolder.resotreFolderIfNotExists(nodeType, node);
                         RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
                         restoreObjectAction.execute(node, null, path);
+
+                        if (PluginChecker.isTIS()) {
+                            if (node.getObject() != null) {
+                                if (ERepositoryObjectType.BUSINESS_PROCESS.equals(node.getObject().getType())) {
+                                    IRepositoryObject svgObjectToMove = ProxyRepositoryFactory.getInstance().getLastVersion(
+                                            "svg_" + node.getObject().getId());
+                                    if (svgObjectToMove != null) {
+                                        ProxyRepositoryFactory.getInstance().restoreObject(svgObjectToMove, path);
+                                        ;
+                                    }
+                                }
+                            }
+                        }
+
                     }
                     if (nodeType == ERepositoryObjectType.JOBLET) {
                         needToUpdatePalette = true;

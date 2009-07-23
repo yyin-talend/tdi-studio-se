@@ -536,6 +536,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName(), null, objToDelete);
         }
+
+        if (objToDelete.getType() == ERepositoryObjectType.BUSINESS_PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.BUSINESS_DELETE_TO_RECYCLE_BIN.getName(), null, objToDelete);
+        }
     }
 
     /*
@@ -572,6 +576,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET
                 || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
+        }
+        if (objToDelete.getType() == ERepositoryObjectType.BUSINESS_PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.BUSINESS_DELETE_FOREVER.getName(), null, objToDelete);
         }
     }
 
@@ -1810,6 +1817,27 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public RootContainer<String, IRepositoryObject> getMetadataRules(Project project) throws PersistenceException {
         return repositoryFactoryFromProvider.getMetadataRules(project);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.model.IProxyRepositoryFactory#getSVGBusinessProcess(org.talend.core.model.general.Project)
+     */
+    public RootContainer<String, IRepositoryObject> getSVGBusinessProcess(Project project) throws PersistenceException {
+        // TODO Auto-generated method stub
+        return this.repositoryFactoryFromProvider.getSVGBusinessProcess(project);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getSVGBusinessProcess()
+     */
+    public RootContainer<String, IRepositoryObject> getSVGBusinessProcess() throws PersistenceException {
+        // TODO Auto-generated method stub
+        return getSVGBusinessProcess(projectManager.getCurrentProject());
     }
 
 }

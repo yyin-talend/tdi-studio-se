@@ -18,7 +18,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.core.CorePlugin;
+import org.talend.designer.business.diagram.custom.listeners.BusinessDeleteListener;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * @generated
@@ -59,6 +62,10 @@ public class BusinessDiagramEditorPlugin extends AbstractUIPlugin {
         instance = this;
         PreferencesHint.registerPreferenceStore(DIAGRAM_PREFERENCES_HINT, getPreferenceStore());
         adapterFactory = createAdapterFactory();
+
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        factory.addPropertyChangeListener(new BusinessDeleteListener());
+
     }
 
     /**
@@ -136,8 +143,7 @@ public class BusinessDiagramEditorPlugin extends AbstractUIPlugin {
     public static ImageDescriptor findImageDescriptor(String path) {
         final IPath p = new Path(path);
         if (p.isAbsolute() && p.segmentCount() > 1) {
-            return AbstractUIPlugin.imageDescriptorFromPlugin(p.segment(0), p.removeFirstSegments(1).makeAbsolute()
-                    .toString());
+            return AbstractUIPlugin.imageDescriptorFromPlugin(p.segment(0), p.removeFirstSegments(1).makeAbsolute().toString());
         } else {
             return getBundledImageDescriptor(p.makeAbsolute().toString());
         }

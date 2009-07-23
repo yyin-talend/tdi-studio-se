@@ -42,5 +42,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.repository,
  org.talend.model.edit,
  org.talend.commons.ui,
- org.talend.designer.core
+ org.talend.designer.core,
+ org.eclipse.gmf.runtime.draw2d.ui.render.awt,
+ org.apache.batik.svggen,
+ org.apache.batik.ext.awt
 Eclipse-LazyStart: true
