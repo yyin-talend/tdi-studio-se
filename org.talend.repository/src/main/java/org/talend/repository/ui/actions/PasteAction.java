@@ -28,6 +28,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ICDCProviderService;
@@ -117,6 +118,8 @@ public class PasteAction extends AContextualAction {
             if (target != null && proxyFactory.getStatus(object) == ERepositoryStatus.READ_ONLY) {
                 enabled = false;
                 visible = false;
+            } else if (target != null && object instanceof Folder && enabled == true) {
+                visible = true;
             }
         } else if (isReferencedProject(target)) {
             visible = false;
