@@ -19,6 +19,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.ProjectManager;
@@ -92,6 +93,12 @@ public class CopyToGenericSchemaAction extends AContextualAction {
         case METADATA_FILE_LDIF:
             break;
         default:
+            return;
+        }
+        
+        RepositoryNode genericNode = CorePlugin.getDefault().getRepositoryService().getRootRepositoryNode(
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
+        if (genericNode == null) {
             return;
         }
 

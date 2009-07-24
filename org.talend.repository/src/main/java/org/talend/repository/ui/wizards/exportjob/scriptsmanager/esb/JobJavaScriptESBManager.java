@@ -48,9 +48,11 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -275,16 +277,6 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
     }
 
     private void prepareESBFiles(HashMap<String, String> jobMap, Map<ExportChoice, Object> exportChoice) {
-        //        String targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
-        // ESBGenerateJBossESB esbFile = new ESBGenerateJBossESB(targetFileName);
-        // esbFile.saveProjectSettings(jobMap);
-        //        targetFileName = getTmpFolder() + PATH_SEPARATOR + "deployment.xml"; //$NON-NLS-1$
-        // ESBGenerateDeployment deployment = new ESBGenerateDeployment(targetFileName);
-        // deployment.saveProjectSettings(jobMap);
-        //        targetFileName = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
-        // ESBGenerateJbmQueue jbmQueue = new ESBGenerateJbmQueue(targetFileName);
-        // jbmQueue.saveProjectSettings(jobMap);
-
         String jobName = jobMap.keySet().iterator().next();
         String jobWithPackageName = jobMap.get(jobName);
         String jobAlias = jobWithPackageName.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -420,7 +412,8 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
-        a.put(Attributes.Name.IMPLEMENTATION_VENDOR, "Talend Open Studio"); //$NON-NLS-1$        
+        IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+        a.put(Attributes.Name.IMPLEMENTATION_VENDOR, service.getFullProductName());
         return manifest;
     }
 }
