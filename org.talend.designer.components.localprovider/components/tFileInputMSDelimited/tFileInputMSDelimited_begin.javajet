@@ -39,6 +39,7 @@ for(Map<String, String> schema_o : schemas_o){
 	schema.put("PARENT_RECORD", schema_o.get("PARENT_RECORD"));
 	schema.put("KEY_COLUMN_INDEX", TalendTextUtils.removeQuotes(schema_o.get("KEY_COLUMN_INDEX")));
 	schema.put("CARDINALITY", TalendTextUtils.removeQuotes(schema_o.get("CARDINALITY")));
+	schema.put("FIELDDELIMITED",schema_o.get("FIELDDELIMITED"));
 }
 
 String filename_o = ElementParameterParser.getValue(node,"__FILENAME__");
@@ -48,9 +49,11 @@ String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
 String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
 String columnIndex = ElementParameterParser.getValue(node,"__COLUMNINDEX__");
 
+boolean useMulSeprators = "true".equals(ElementParameterParser.getValue(node,"__USE_MULTISEPARATORS__"));
+
 if (hasDataLink) {//FIM_000
 ////////////////////////
-if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {//FIM_0000
+if(useMulSeprators==false && ("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {//FIM_0000
 	List<String> connections = new java.util.ArrayList<String>();
     Map<String, List<IMetadataColumn>> connectionMapColumnList = new java.util.HashMap<String, List<IMetadataColumn>>();
     Map<String, String> schemaConnectionMap = new java.util.HashMap<String, String>();
@@ -279,6 +282,8 @@ while (fid_<%=cid %>.nextRecord()) {
     if(("'").equals(textEnclosure)){
     	textEnclosure = "\\'";
     }
+    
+    String strIndex = ElementParameterParser.getValue(node, "__COLUMNINDEX__");
     	
 	List<String> connections = new java.util.ArrayList<String>();
     Map<String, List<IMetadataColumn>> connectionMapColumnList = new java.util.HashMap<String, List<IMetadataColumn>>();
@@ -385,15 +390,47 @@ csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
 //?????doesn't work for other escapeChar
 <%
 	}
-        %>       
+        %> 
+
+<%
+	if(useMulSeprators==true){
+%>
+String[] delim_<%=cid %> = new String[]{
+<%
+		for(int i=0; i<schemas.size(); i++){
+			Map<String, String> schema = schemas.get(i);
+%>
+<%=(i==0? "":",")%><%=schema.get("FIELDDELIMITED") %>
+<%
+		}
+%>
+};
+<%
+	}
+%>      
+
+int index_<%=cid %> = Integer.parseInt(<%=strIndex %>);
 
 String[] row<%=cid %>=null;
   
 String temp_<%=cid %> = null;
         
-while ( csvReader<%=cid %>.readRecord() ) { 
-        
+while ( csvReader<%=cid %>.readRecord() ) {
+
+<%if(useMulSeprators==true){%>
+	String tmp<%=cid %> = csvReader<%=cid %>.getRawRecord();
+	
+	for(int i_<%=cid %>=0; i_<%=cid %><delim_<%=cid %>.length; i_<%=cid %>++){ //NS000
+		
+		row<%=cid %> = tmp<%=cid %>.split(delim_<%=cid %>[i_<%=cid %>]);
+		
+		if(row<%=cid %>==null || row<%=cid %>.length <= index_<%=cid %>){
+			continue;
+		}
+<%}else{%>     
 	row<%=cid %>=csvReader<%=cid %>.getValues();
+<%}%>
+
 <%
 	for(String conName : connections){
 %>
@@ -404,7 +441,8 @@ while ( csvReader<%=cid %>.readRecord() ) {
 		Map<String, String> schema = schemas.get(i);
 		String record = schema.get("RECORD");
 %>
-	<%=(i==0) ? "" : "else " %>if((row<%=cid %>.length == 0) ? ("".equals(<%=record %>)) : (row<%=cid %>[0].equals(<%=record %>))){
+	<%=(i==0) ? "" : "else " %>if((row<%=cid %>.length == 0) ? ("".equals(<%=record %>)) : 
+	(row<%=cid %>[index_<%=cid %>].equals(<%=record %>)<%=useMulSeprators? " && delim_"+cid+"[i_"+cid+"].equals("+ schema.get("FIELDDELIMITED") +")":"" %>)){
 <%
 		String schemaName = schema.get("SCHEMA");
 		boolean keyUpdated = false;
@@ -525,12 +563,19 @@ while ( csvReader<%=cid %>.readRecord() ) {
 <%
 				} //FIM_006
 			}//FIM_005
-			//
+			if(useMulSeprators==true){
+%>
+		break;
+<%
+			}
 		}//FIM_004
 %>
 	}
 <%
 	}//FIN_002
+%>
+<%=useMulSeprators==true? "}":""%>
+<%
 }
 }//FIM_000
 ////////////////////////
