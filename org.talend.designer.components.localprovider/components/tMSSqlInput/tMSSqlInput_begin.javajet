@@ -33,8 +33,7 @@ imports="
     String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__"); // no use
     boolean whetherTrimAllCol = ("true").equals(ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__"));
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
-    boolean useFetch = "true".equals(ElementParameterParser.getValue(node, "__USE_FETCH__"));
-    String fetchSize = ElementParameterParser.getValue(node, "__FETCH_SIZE__");
+
     	   
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas != null) && (metadatas.size() > 0)) {
@@ -45,13 +44,7 @@ imports="
 		    String dbschema_<%=cid%> = "";
 			<%@ include file="../templates/tMSSql/_tMSSqlConnection.javajet"%>		 							
         	java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
-        	<%
-            if(useFetch ) {
-            %>
-                stmt_<%=cid %>.setFetchSize(<%=fetchSize %>);
-            <%
-            }
-            %>
+
         	java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
         	java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
         	int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
