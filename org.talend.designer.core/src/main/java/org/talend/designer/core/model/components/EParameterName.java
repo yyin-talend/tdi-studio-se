@@ -121,7 +121,7 @@ public enum EParameterName {
 
     // hywang add for feature7373
     COLUMNINDEX(Messages.getString("EParameterName.columnIndex")), //$NON-NLS-1$
-
+    CDC_TYPE_MODE("CDC Type Mode"),
     /**
      * For stats & logs parameters.
      */
