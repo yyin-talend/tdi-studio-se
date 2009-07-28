@@ -369,11 +369,13 @@ if ( ((String)<%=rowSeparator1%>).length() > 0 ){
 }
 		
 		
-com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader( new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader( new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=useMulSeprators?"';'" : "fieldSeparator_"+cid+"[0]" %>);
                 
 if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
 	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
-        	
+
+<%if(("true").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))){%>
+
 csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 
 <%
@@ -390,9 +392,11 @@ csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
 //?????doesn't work for other escapeChar
 <%
 	}
-        %> 
-
+}else{        %> 
+csvReader<%=cid %>.setTextQualifier('"');
+csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
 <%
+}
 	if(useMulSeprators==true){
 %>
 String[] delim_<%=cid %> = new String[]{
