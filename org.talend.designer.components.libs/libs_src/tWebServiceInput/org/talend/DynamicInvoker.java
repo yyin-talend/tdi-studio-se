@@ -12,6 +12,7 @@
  */
 package org.talend;
 
+import java.net.Authenticator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.apache.axis.encoding.ser.ElementDeserializer;
 import org.apache.axis.encoding.ser.ElementDeserializerFactory;
 import org.apache.axis.encoding.ser.ElementSerializerFactory;
 import org.apache.axis.encoding.ser.SimpleDeserializer;
+import org.apache.axis.utils.DefaultAuthenticator;
 import org.apache.axis.wsdl.gen.Parser;
 import org.apache.axis.wsdl.symbolTable.BindingEntry;
 import org.apache.axis.wsdl.symbolTable.Parameter;
@@ -124,6 +126,11 @@ public class DynamicInvoker {
         DynamicInvoker.needAuth = needAuth;
         DynamicInvoker.username = username;
         DynamicInvoker.password = password;
+
+        // for bug:8403, in order to access the wsdl file on "basic HTTP authentication"
+        if (needAuth) {
+            Authenticator.setDefault(new DefaultAuthenticator(username, password));
+        }
     }
 
     public static void setHttpProxy(boolean useProxy, String proxyHost, String proxyPort, String proxyUser, String proxyPassword)
@@ -210,8 +217,16 @@ public class DynamicInvoker {
         ((org.apache.axis.client.Call) call).setTimeout(new Integer(timeout * 1000));
         ((org.apache.axis.client.Call) call).setProperty(ElementDeserializer.DESERIALIZE_CURRENT_ELEMENT, Boolean.TRUE);
         if (needAuth) {
+            // authentication way1:
+            // for calling webservice in deploy.wsdd:
+            // <handler type="java:org.apache.axis.handlers.SimpleAuthorizationHandler"/>
             ((org.apache.axis.client.Call) call).setUsername(username);
-            ((org.apache.axis.client.Call) call).setPassword(password);           
+            ((org.apache.axis.client.Call) call).setPassword(password);
+
+            // authentication way2:
+            // for bug:8403, in order to call webservice on "basic HTTP authentication"
+            ((org.apache.axis.client.Call) call).setProperty(Stub.USERNAME_PROPERTY, username);
+            ((org.apache.axis.client.Call) call).setProperty(Stub.PASSWORD_PROPERTY, password);
         }
 
         if (useProxy) {
