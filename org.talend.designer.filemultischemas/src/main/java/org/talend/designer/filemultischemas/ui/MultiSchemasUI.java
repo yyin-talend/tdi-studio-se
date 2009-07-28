@@ -299,7 +299,7 @@ public class MultiSchemasUI {
         encodingCombo.setText(getConnection().getEncoding());
 
         getConnection().setCsvOption((Boolean) getMultiSchemaManager().getParameterObjectValue(EParameterName.CSV_OPTION));
-        if (getConnection().isCsvOption()) {
+        if (isUseMuliSaparator || getConnection().isCsvOption()) {
             getConnection().setEscapeType(Escape.CSV_LITERAL);
         } else {
             getConnection().setEscapeType(Escape.DELIMITED_LITERAL);
@@ -323,6 +323,11 @@ public class MultiSchemasUI {
         multiSeparatorsText.setEditable(isUseMuliSaparator);
         keyIndexText.setEditable(isUseMuliSaparator);
         keyValuesText.setEditable(isUseMuliSaparator);
+        csvRadio.setSelection(isUseMuliSaparator || getConnection().isCsvOption());
+        delimitedRadio.setSelection(!isUseMuliSaparator && !getConnection().isCsvOption());
+        delimitedRadio.setEnabled(!isUseMuliSaparator && !getConnection().isCsvOption());
+        escapeCharCombo.setEnabled(isUseMuliSaparator || getConnection().isCsvOption());
+        textEnclosureCombo.setEnabled(isUseMuliSaparator || getConnection().isCsvOption());
         fieldSeparatorManager();
         if (!isUseMuliSaparator) {
             getConnection().setFieldSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
@@ -769,6 +774,7 @@ public class MultiSchemasUI {
                 }
             }
         });
+
         csvRadio.setText(Messages.getString("FileStep2.csv")); //$NON-NLS-1$
         delimitedRadio = new Button(group, SWT.RADIO);
         delimitedRadio.setText(Messages.getString("FileStep2.delimited")); //$NON-NLS-1$
@@ -1040,6 +1046,11 @@ public class MultiSchemasUI {
                 multiSeparatorsText.setEditable(selected);
                 keyValuesText.setEditable(selected);
                 keyIndexText.setEditable(selected);
+                escapeCharCombo.setEnabled(selected);
+                textEnclosureCombo.setEnabled(selected);
+                csvRadio.setSelection(selected);
+                delimitedRadio.setSelection(!selected);
+                delimitedRadio.setEnabled(!selected);
                 if (selected) {
                     getConnection().setFieldSeparatorValue(multiSeparatorsText.getText());
                 } else {
