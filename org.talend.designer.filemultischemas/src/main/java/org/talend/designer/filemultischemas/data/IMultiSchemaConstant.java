@@ -28,4 +28,6 @@ public interface IMultiSchemaConstant {
     public static final String KEY_COLUMN_INDEX = "KEY_COLUMN_INDEX"; //$NON-NLS-1$
 
     public static final String CARDINALITY = "CARDINALITY"; //$NON-NLS-1$
+
+    public static final String FIELDDELIMITED = "FIELDDELIMITED"; //$NON-NLS-1$
 }

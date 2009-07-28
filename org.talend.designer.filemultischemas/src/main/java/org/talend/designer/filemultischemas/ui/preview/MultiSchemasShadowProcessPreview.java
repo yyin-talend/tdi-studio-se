@@ -15,8 +15,6 @@ package org.talend.designer.filemultischemas.ui.preview;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -24,12 +22,15 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.designer.filemultischemas.ui.MultiSchemasUI;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 
 /**
  * cLi class global comment. Detailled comment
  */
 public class MultiSchemasShadowProcessPreview extends ShadowProcessPreview {
+
+    MultiSchemasUI multiSchemaUI;
 
     // hywang add varriable "key" for feature 7373
     private int selectColumnIndex = dftSelectedColumn;
@@ -38,15 +39,12 @@ public class MultiSchemasShadowProcessPreview extends ShadowProcessPreview {
     private static int dftSelectedColumn = -1;
 
     public int getSelectColumnIndex() {
-        return this.selectColumnIndex;
+        return multiSchemaUI.getSelectedColumnIndex();
     }
 
-    public void setSelectColumnIndex(int selectColumnIndex) {
-        this.selectColumnIndex = selectColumnIndex;
-    }
-
-    public MultiSchemasShadowProcessPreview(Composite composite) {
+    public MultiSchemasShadowProcessPreview(MultiSchemasUI multiSchemaUI, Composite composite) {
         super(composite, null, -1, -1);
+        this.multiSchemaUI = multiSchemaUI;
     }
 
     @Override
@@ -63,9 +61,43 @@ public class MultiSchemasShadowProcessPreview extends ShadowProcessPreview {
      * @param selectedColumnIndex
      */
     private void showCheckImageOnColumn(int... selectedColumnIndex) {
-        table.setRedraw(false);
+        if (table == null || table.isDisposed()) {
+            return;
+        }
 
-        // hywang add for feature 7373
+        checkSelectedIndex(selectedColumnIndex);
+        // hywang add for feature 7373, removed it by 6759
+        // for (int i = 0; i < table.getColumnCount(); i++) {
+        // final TableColumn tc = table.getColumn(i);
+        // tc.addSelectionListener(new SelectionListener() {
+        //
+        // public void widgetDefaultSelected(SelectionEvent e) {
+        // }
+        //
+        // public void widgetSelected(SelectionEvent e) {
+        // if (tc.getImage().equals(ImageProvider.getImage(EImage.UNCHECKED_ICON))) {
+        // tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON));
+        // for (int j = 0; j < table.getColumnCount(); j++) {
+        // if (table.getColumn(j).getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON))
+        // && table.getColumn(j) != tc) {
+        // table.getColumn(j).setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
+        // }
+        // if (tc.equals(table.getColumn(j))) {
+        // selectColumnIndex = j;
+        // }
+        // }
+        // }
+        // multiSchemaUI.getKeyIndexText().setText(String.valueOf(selectColumnIndex));
+        // }
+        // });
+        // }
+    }
+
+    private void checkSelectedIndex(int... selectedColumnIndex) {
+        if (selectedColumnIndex == null) {
+            selectedColumnIndex = new int[] { 0 };
+        }
+        table.setRedraw(false);
         for (int i = 0; i < table.getColumnCount(); i++) {
             final TableColumn tc = table.getColumn(i);
             if (i == selectedColumnIndex[0]) {
@@ -73,26 +105,6 @@ public class MultiSchemasShadowProcessPreview extends ShadowProcessPreview {
             } else {
                 tc.setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
             }
-            tc.addSelectionListener(new SelectionListener() {
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
-
-                public void widgetSelected(SelectionEvent e) {
-                    if (tc.getImage().equals(ImageProvider.getImage(EImage.UNCHECKED_ICON))) {
-                        tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON));
-                        for (int j = 0; j < table.getColumnCount(); j++) {
-                            if (table.getColumn(j).getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON))
-                                    && table.getColumn(j) != tc) {
-                                table.getColumn(j).setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
-                            }
-                            if (tc.equals(table.getColumn(j))) {
-                                selectColumnIndex = j;
-                            }
-                        }
-                    }
-                }
-            });
         }
         table.setHeaderVisible(true);
     }

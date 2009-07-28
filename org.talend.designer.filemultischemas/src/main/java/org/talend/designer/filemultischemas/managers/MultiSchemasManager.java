@@ -13,9 +13,14 @@
 package org.talend.designer.filemultischemas.managers;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,6 +53,7 @@ import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.filemultischemas.MultiSchemasComponent;
+import org.talend.designer.filemultischemas.data.CSVArrayAndSeparator;
 import org.talend.designer.filemultischemas.data.ExternalMultiSchemasUIProperties;
 import org.talend.designer.filemultischemas.data.IMultiSchemaConstant;
 import org.talend.designer.filemultischemas.data.MultiMetadataColumn;
@@ -72,8 +78,14 @@ public class MultiSchemasManager {
 
     private DelimitedFileConnection recordConnection;
 
+    private static final String ENCODING = "ISO-8859-15"; //$NON-NLS-1$
+
+    private String keyValues;
+
+    private static int DEFAULT_INDEX = 0;
+
     // hywang add for featture7373
-    private int selectedColumnIndex;
+    private int selectedColumnIndex = DEFAULT_INDEX;
 
     public int getSelectedColumnIndex() {
         return this.selectedColumnIndex;
@@ -161,27 +173,29 @@ public class MultiSchemasManager {
      * @param csvArray
      * @return tree of data.
      */
-    public SchemasKeyData createSchemasTree(CsvArray csvArray, int selectColumnIndex) {
-        if (csvArray == null) {
+    public SchemasKeyData createSchemasTree(CSVArrayAndSeparator csvArrayBean, int selectColumnIndex) {
+        if (csvArrayBean == null) {
             return null;
         }
         // final int columnIndex = 2;
         final SchemasKeyData rootSchemasKeyData = new SchemasKeyData(""); //$NON-NLS-1$
-
-        for (String[] line : csvArray.getRows()) {
+        List<String[]> rows = csvArrayBean.getCsvArray().getRows();
+        for (int i = 0; i < rows.size(); i++) {
             // if (line.length < columnIndex) { // must contain 2 columns
             // continue;
             // }
+            String[] line = rows.get(i);
             final String key = precessString(line[selectColumnIndex]);
             if (key == null) {
                 continue;
             }
-
+            String newKey = key + csvArrayBean.getSeparators().get(i);
             //
 
-            SchemasKeyData schemaData = findSchemasKeyData(rootSchemasKeyData, key);
+            SchemasKeyData schemaData = findSchemasKeyData(rootSchemasKeyData, newKey);
             if (schemaData == null) {
                 schemaData = new SchemasKeyData(key);
+                schemaData.setSeparator(csvArrayBean.getSeparators().get(i));
                 schemaData.setUniqueRecord(generateUniqueRecordName(null, rootSchemasKeyData));
 
                 rootSchemasKeyData.addChild(schemaData);
@@ -249,7 +263,8 @@ public class MultiSchemasManager {
                 return schemaKeyData;
             }
             for (SchemasKeyData child : schemaKeyData.getChildren()) {
-                if (child.getRecordType().equals(key)) {
+                String dataKey = child.getRecordType() + child.getSeparator();
+                if (dataKey.equals(key)) {
                     return child;
                 }
                 SchemasKeyData foundData = findSchemasKeyData(child, key);
@@ -440,13 +455,24 @@ public class MultiSchemasManager {
 
     /**
      * 
+     * wchen Comment method "saveProperties".
+     * 
+     */
+    public void savePropertiesToComponent(SchemasKeyData data, Map<EParameterName, String> params, int selectedIndex) {
+        if (data != null) {
+            ChangeMultiSchemasCommand cmd = new ChangeMultiSchemasCommand(getMultiSchemasComponent(), data, params, selectedIndex);
+            executeCommand(cmd);
+        }
+    }
+
+    /**
+     * 
      * cLi Comment method "retrievePropertiesFromNode".
      * 
      */
     @SuppressWarnings("unchecked")
     public SchemasKeyData retrievePropertiesFromNode() {
         SchemasKeyData rootData = new SchemasKeyData(""); //$NON-NLS-1$
-
         IElementParameter elementParameter = getMultiSchemasComponent().getElementParameter(EParameterName.SCHEMAS.getName());
         final Object value = elementParameter.getValue();
         if (value == null) {
@@ -547,6 +573,13 @@ public class MultiSchemasManager {
                     card = TalendTextUtils.addQuotes(""); //$NON-NLS-1$
                 }
                 data.setCard(card);
+                String keyIndex = line.get(IMultiSchemaConstant.FIELDDELIMITED);
+                if (keyIndex == null) {
+                    keyIndex = ""; //$NON-NLS-1$
+                } else {
+                    keyIndex = TalendTextUtils.removeQuotes(keyIndex);
+                }
+                data.setSeparator(keyIndex);
             }
         }
     }
@@ -611,7 +644,8 @@ public class MultiSchemasManager {
         return value;
     }
 
-    public CsvArray retrieveCsvArrayInUniqueModel(ProcessDescription processDesc, boolean checked, int selectColumnIndex) {
+    public CSVArrayAndSeparator retrieveCsvArrayInUniqueModel(ProcessDescription processDesc, boolean checked,
+            int selectColumnIndex, boolean useMultiSeparators) {
         if (processDesc == null || !checked) {
             return null;
         }
@@ -624,6 +658,16 @@ public class MultiSchemasManager {
 
         final boolean needSkpipEmptyRecord = true;
         final boolean splitRecord = processDesc.isSplitRecord();
+        if (useMultiSeparators) {
+            try {
+                return getCsvArrayForMs(filePath, fieldSeparator, encoding, selectColumnIndex);
+            } catch (UnsupportedEncodingException e) {
+                ExceptionHandler.process(e);
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
         if (processDesc.isCSVOption()) {
             return retrieveCsvArrayByCSVOption(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord,
                     splitRecord, selectColumnIndex);
@@ -633,9 +677,59 @@ public class MultiSchemasManager {
         }
     }
 
-    public CsvArray retrieveCsvArrayByCSVOption(final String filePath, final String encoding, final String fieldSeparator,
-            final String rowSeparator, final boolean needSkpipEmptyRecord, final boolean splitRecord, int selectColumnIndex) {
-        CsvArray csvArray = new CsvArray();
+    private CSVArrayAndSeparator getCsvArrayForMs(String filePath, String separators, String encoding, int selectColumnIndex)
+            throws UnsupportedEncodingException, IOException {
+        File file = new File(TalendTextUtils.removeQuotes(filePath));
+        separators = TalendTextUtils.removeQuotes(separators);
+        CSVArrayAndSeparator csvArrayBean = new CSVArrayAndSeparator();
+        Set<String> uniqueKey = new HashSet<String>();
+        if (file.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String readLine = "";
+            String[] row = null;
+            while ((readLine = reader.readLine()) != null) {
+                int count = 0;
+                boolean added = false;
+                while (count < separators.length()) {
+                    CsvReader csvReader = getCsvReader(new ByteArrayInputStream(readLine.getBytes()), separators.charAt(count),
+                            encoding);
+                    csvReader.readRecord();
+                    row = csvReader.getValues();
+                    if (row.length > selectColumnIndex && isInKeyValues(getKeyValues(), row[selectColumnIndex])) {
+                        if (selectColumnIndex < row.length
+                                && !uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count)))) {
+                            uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(count)));
+                            csvArrayBean.getCsvArray().add(row);
+                            csvArrayBean.getSeparators().add(String.valueOf(separators.charAt(count)));
+                            csvReader.close();
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    csvReader.close();
+                    count++;
+                }
+                // if (!added) {
+                // if (selectColumnIndex < row.length
+                // && !uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count)))) {
+                //
+                // uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(count - 1)));
+                // csvArrayBean.getCsvArray().add(row);
+                // csvArrayBean.getSeparators().add(String.valueOf(separators.charAt(count - 1)));
+                //
+                // }
+                // }
+            }
+
+        }
+        return csvArrayBean;
+    }
+
+    public CSVArrayAndSeparator retrieveCsvArrayByCSVOption(final String filePath, final String encoding,
+            final String fieldSeparator, final String rowSeparator, final boolean needSkpipEmptyRecord,
+            final boolean splitRecord, int selectColumnIndex) {
+        CSVArrayAndSeparator csvArrayBean = new CSVArrayAndSeparator();
         CsvReader multiSchameCsvReader = null;
         try {
             // read max columns
@@ -670,7 +764,8 @@ public class MultiSchemasManager {
                     continue;
                 }
                 uniqueKey.add(currentRowKey);
-                csvArray.add(values);
+                csvArrayBean.getCsvArray().add(values);
+                csvArrayBean.getSeparators().add(fieldSeparator);
             }
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -681,7 +776,7 @@ public class MultiSchemasManager {
             }
         }
         // return handlerCSVArray(csvArray, selectColumnIndex, multiSchameCsvReader);
-        return csvArray;
+        return csvArrayBean;
     }
 
     private CsvReader getCSVReader(final String filePath, final String encoding, final String fieldSeparator,
@@ -701,9 +796,10 @@ public class MultiSchemasManager {
     /**
      * cli Comment method "retrieveCsvArrayByDelimited".
      */
-    private CsvArray retrieveCsvArrayByDelimited(final String filePath, final String encoding, final String fieldSeparator,
-            final String rowSeparator, final boolean needSkpipEmptyRecord, final boolean splitRecord, int selectColumnIndex) {
-        CsvArray csvArray = new CsvArray();
+    private CSVArrayAndSeparator retrieveCsvArrayByDelimited(final String filePath, final String encoding,
+            final String fieldSeparator, final String rowSeparator, final boolean needSkpipEmptyRecord,
+            final boolean splitRecord, int selectColumnIndex) {
+        CSVArrayAndSeparator csvArrayBean = new CSVArrayAndSeparator();
         FileInputDelimited fileInputDelimited = null;
         try {
             fileInputDelimited = new FileInputDelimited(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord,
@@ -726,7 +822,7 @@ public class MultiSchemasManager {
                     continue;
                 }
                 uniqueKey.add(currentRowKey);
-                handlerDelimitedArray(csvArray, maxColumnCount, first, fileInputDelimited);
+                handlerDelimitedArray(csvArrayBean, maxColumnCount, first, fileInputDelimited, fieldSeparator);
             }
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -737,14 +833,87 @@ public class MultiSchemasManager {
             }
         }
 
+        return csvArrayBean;
+    }
+
+    public CsvArray getCsvArrayForMultiSchemaDelimited(String filePath, String separators, String encoding, String keyValues,
+            int keyIndex) throws UnsupportedEncodingException, IOException {
+
+        File file = new File(TalendTextUtils.removeQuotes(filePath));
+        separators = TalendTextUtils.removeQuotes(separators);
+        CsvArray csvArray = new CsvArray();
+        if (file.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String readLine = "";
+            String[] row = null;
+            boolean added = false;
+            int i = 0;
+            // only preview i00 lines
+            while ((readLine = reader.readLine()) != null && i < 100) {
+                int count = 0;
+                while (count < separators.length()) {
+                    CsvReader csvReader = getCsvReader(new ByteArrayInputStream(readLine.getBytes()), separators.charAt(count),
+                            encoding);
+                    csvReader.readRecord();
+                    row = csvReader.getValues();
+                    if (row.length > 1 && row.length > keyIndex) {
+                        if (isInKeyValues(keyValues, row[keyIndex])) {
+                            added = true;
+                            csvArray.add(row);
+                            csvReader.close();
+                            break;
+                        }
+                    }
+                    csvReader.close();
+                    count++;
+                }
+                if (!added && row != null && row.length > keyIndex) {
+                    if (isInKeyValues(keyValues, row[keyIndex])) {
+                        csvArray.add(row);
+                    }
+                }
+                i++;
+            }
+
+        }
+
         return csvArray;
+    }
+
+    private boolean isInKeyValues(String keyValues, String str) {
+        if (keyValues == null || "".equals(keyValues)) {
+            return false;
+        }
+        keyValues = TalendTextUtils.removeQuotes(keyValues);
+
+        for (String value : keyValues.split(",")) {
+            if (value.trim().equals(str)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private CsvReader getCsvReader(ByteArrayInputStream inputStream, char separator, String encoding)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        encoding = TalendTextUtils.removeQuotes(encoding);
+        CsvReader csvReader = new CsvReader(new BufferedReader(new InputStreamReader(inputStream, encoding == null ? ENCODING
+                : encoding)), separator);
+        csvReader.setRecordDelimiter('\n');
+        csvReader.setSkipEmptyRecords(true);
+        csvReader.setTextQualifier('"');
+        csvReader.setUseTextQualifier(true);
+
+        csvReader.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
+        return csvReader;
     }
 
     /**
      * hywang Comment method "handlerDelimitedArray" for feature 7373.
      */
-    private void handlerDelimitedArray(CsvArray csvArray, int maxColumnCount, String first, FileInputDelimited fileInputDelimited)
-            throws IOException {
+    private void handlerDelimitedArray(CSVArrayAndSeparator csvArrayBean, int maxColumnCount, String first,
+            FileInputDelimited fileInputDelimited, final String fieldSeparator) throws IOException {
 
         String[] lineDatas = new String[maxColumnCount];
         lineDatas[0] = first;
@@ -753,7 +922,16 @@ public class MultiSchemasManager {
             String value = fileInputDelimited.get(i);
             lineDatas[i] = value;
         }
-        csvArray.add(lineDatas);
+        csvArrayBean.getCsvArray().add(lineDatas);
+        csvArrayBean.getSeparators().add(fieldSeparator);
+    }
+
+    public String getKeyValues() {
+        return this.keyValues;
+    }
+
+    public void setKeyValues(String keyValues) {
+        this.keyValues = keyValues;
     }
 
     // /**
@@ -780,4 +958,5 @@ public class MultiSchemasManager {
     // multiSchameCsvReader.close();
     // return newArray;
     // }
+
 }

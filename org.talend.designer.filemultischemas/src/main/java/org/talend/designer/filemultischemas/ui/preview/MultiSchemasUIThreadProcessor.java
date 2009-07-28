@@ -38,19 +38,13 @@ public class MultiSchemasUIThreadProcessor extends SWTUIThreadProcessor {
 
     boolean firstRowIsCatption = false;
 
-    private int selectedColumnIndex = 0;
-
     public MultiSchemasUIThreadProcessor(MultiSchemasUI multiSchemaUI) {
         super();
         this.multiSchemaUI = multiSchemaUI;
     }
 
     public int getSelectedColumnIndex() {
-        return this.selectedColumnIndex;
-    }
-
-    public void setSelectedColumnIndex(int selectedColumnIndex) {
-        this.selectedColumnIndex = selectedColumnIndex;
+        return multiSchemaUI.getSelectedColumnIndex();
     }
 
     public MultiSchemasUI getMultiSchemaUI() {
@@ -100,6 +94,14 @@ public class MultiSchemasUIThreadProcessor extends SWTUIThreadProcessor {
         if (getMultiSchemaUI().getPreviewInformationLabel().isDisposed()) {
             return;
         }
+
+        if (csvArray == null) {
+            previewInformationLabelMsg = Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
+        } else {
+            previewInformationLabelMsg = Messages.getString("FileStep2.previewIsDone"); //$NON-NLS-1$ //$NON-NLS-2$
+            // refresh TablePreview on this step
+            previewInformationLabelMsg = ""; //$NON-NLS-1$
+        }
         getMultiSchemaUI().getPreviewInformationLabel().setText(previewInformationLabelMsg);
         if (getException() != null) {
             getMultiSchemaUI().getPreviewInformationLabel().setText(Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -119,7 +121,8 @@ public class MultiSchemasUIThreadProcessor extends SWTUIThreadProcessor {
             getMultiSchemaUI().getMultiSchemasFilePreview().removePreviewContent();
             return;
         }
-        getMultiSchemaUI().getMultiSchemasFilePreview().refreshTablePreview(csvArray, firstRowIsCatption, selectedColumnIndex);
+        getMultiSchemaUI().getMultiSchemasFilePreview().refreshTablePreview(csvArray, firstRowIsCatption,
+                getSelectedColumnIndex());
     }
 
     public void updateUIInThreadIfThreadFinally() {
@@ -132,6 +135,10 @@ public class MultiSchemasUIThreadProcessor extends SWTUIThreadProcessor {
 
     public CsvArray getCsvArray() {
         return this.csvArray;
+    }
+
+    public void setCsvArray(CsvArray csvArray) {
+        this.csvArray = csvArray;
     }
 
     public void clearCsvArray() {

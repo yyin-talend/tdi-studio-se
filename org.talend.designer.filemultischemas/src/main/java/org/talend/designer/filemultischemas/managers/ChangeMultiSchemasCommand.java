@@ -61,11 +61,19 @@ public class ChangeMultiSchemasCommand extends Command {
 
     private boolean oldCsvOption, newCsvOption;
 
+    private boolean oldUseMultiSaparator, newUseMultiSaparator;
+
+    private String oldSaparators, newSaparators;
+
+    private String oldKeyValues, newKeyValues;
+
     private List<Map<String, String>> oldSchemasListMap, newSchemasListMap;
 
     private List<IMetadataTable> oldMetadataTable, newMetadataTable;
 
     private DelimitedFileConnection fakeConnection;
+
+    private Map<EParameterName, String> params;
 
     public ChangeMultiSchemasCommand(INode node, SchemasKeyData rootSchemaData, DelimitedFileConnection fakeConnection,
             Object index) {
@@ -77,36 +85,60 @@ public class ChangeMultiSchemasCommand extends Command {
         initOld();
     }
 
-    private void initNew(Object index) {
-        this.newFieldSeperator = fakeConnection.getFieldSeparatorValue();
-        this.newRowSeperator = fakeConnection.getRowSeparatorValue();
-        this.newEncoding = TalendTextUtils.addQuotes(fakeConnection.getEncoding());
+    public ChangeMultiSchemasCommand(INode node, SchemasKeyData rootSchemaData, Map<EParameterName, String> params, Object index) {
+        super();
+        this.node = node;
+        this.rootSchemaData = rootSchemaData;
+        this.params = params;
+        initNew(params);
+        initOld();
+    }
 
-        IElementParameter encodingType = node.getElementParameter(EParameterName.ENCODING_TYPE.getName());
-        if (encodingType != null) {
-            String[] codes = encodingType.getListItemsDisplayCodeName();
-            if (codes != null) {
-                List<String> list = Arrays.asList(codes);
-                if (list.indexOf(fakeConnection.getEncoding()) > -1) {
-                    this.newEncodingType = fakeConnection.getEncoding();
-                } else {
-                    this.newEncodingType = list.get(list.size() - 1); // custom
+    private void initNew(Object object) {
+        if (fakeConnection != null) {
+            this.newFieldSeperator = fakeConnection.getFieldSeparatorValue();
+            this.newRowSeperator = fakeConnection.getRowSeparatorValue();
+            this.newEncoding = TalendTextUtils.addQuotes(fakeConnection.getEncoding());
+
+            IElementParameter encodingType = node.getElementParameter(EParameterName.ENCODING_TYPE.getName());
+            if (encodingType != null) {
+                String[] codes = encodingType.getListItemsDisplayCodeName();
+                if (codes != null) {
+                    List<String> list = Arrays.asList(codes);
+                    if (list.indexOf(fakeConnection.getEncoding()) > -1) {
+                        this.newEncodingType = fakeConnection.getEncoding();
+                    } else {
+                        this.newEncodingType = list.get(list.size() - 1); // custom
+                    }
                 }
             }
-        }
 
-        this.newFilePath = fakeConnection.getFilePath();
-        this.newTextEnclosure = fakeConnection.getTextEnclosure();
-        this.newEscapeChar = fakeConnection.getEscapeChar();
-        this.newCsvOption = fakeConnection.isCsvOption();
+            this.newFilePath = fakeConnection.getFilePath();
+            this.newTextEnclosure = fakeConnection.getTextEnclosure();
+            this.newEscapeChar = fakeConnection.getEscapeChar();
+            this.newCsvOption = fakeConnection.isCsvOption();
+            this.newSelectedColumnIndex = TalendTextUtils.QUOTATION_MARK + String.valueOf(object)
+                    + TalendTextUtils.QUOTATION_MARK;
+        } else if (params != null) {
+            this.newFieldSeperator = params.get(EParameterName.FIELDSEPARATOR);
+            this.newRowSeperator = params.get(EParameterName.ROWSEPARATOR);
+            this.newEncoding = params.get(EParameterName.ENCODING);
+            this.newEncodingType = params.get(EParameterName.ENCODING_TYPE);
+            this.newFilePath = params.get(EParameterName.FILENAME);
+            this.newTextEnclosure = params.get(EParameterName.TEXT_ENCLOSURE);
+            this.newEscapeChar = params.get(EParameterName.ESCAPE_CHAR);
+            this.newCsvOption = Boolean.valueOf(params.get(EParameterName.CSV_OPTION));
+            this.newUseMultiSaparator = Boolean.valueOf(params.get(EParameterName.USE_MULTISEPARATORS));
+            this.newSaparators = params.get(EParameterName.MULTI_SEPARATORS);
+            this.newSelectedColumnIndex = params.get(EParameterName.COLUMNINDEX);
+            this.newKeyValues = params.get(EParameterName.MULTI_KEYVALUES);
+        }
         // map
         this.newSchemasListMap = new ArrayList<Map<String, String>>();
         // metadata table
         this.newMetadataTable = new ArrayList<IMetadataTable>();
 
         // hywang add for feature7373
-
-        this.newSelectedColumnIndex = TalendTextUtils.QUOTATION_MARK + String.valueOf(index) + TalendTextUtils.QUOTATION_MARK;
 
         addSchemasMap(newSchemasListMap, newMetadataTable, this.rootSchemaData);
 
@@ -126,6 +158,7 @@ public class ChangeMultiSchemasCommand extends Command {
             map.put(IMultiSchemaConstant.RECORD, TalendTextUtils.addQuotes(recordType));
             map.put(IMultiSchemaConstant.PARENT_RECORD, TalendTextUtils.addQuotes(keyData.getParent().getRecordType()));
             map.put(IMultiSchemaConstant.CARDINALITY, keyData.getCard());
+            map.put(IMultiSchemaConstant.FIELDDELIMITED, TalendTextUtils.addQuotes(keyData.getSeparator()));
             newValueList.add(map);
             //
             String connectionBaseName = MetadataTool.validateColumnName(MultiSchemasUtil.getConnectionBaseName(uniqueRecord), 0);
@@ -202,6 +235,21 @@ public class ChangeMultiSchemasCommand extends Command {
             this.oldSelectedColumnIndex = String.valueOf(elementParameter.getValue());
         }
 
+        elementParameter = this.node.getElementParameter(EParameterName.MULTI_SEPARATORS.getName());
+        if (elementParameter != null) {
+            this.oldSaparators = String.valueOf(elementParameter.getValue());
+        }
+
+        elementParameter = this.node.getElementParameter(EParameterName.USE_MULTISEPARATORS.getName());
+        if (elementParameter != null) {
+            this.oldUseMultiSaparator = (Boolean) elementParameter.getValue();
+        }
+
+        elementParameter = this.node.getElementParameter(EParameterName.MULTI_KEYVALUES.getName());
+        if (elementParameter != null) {
+            this.oldKeyValues = String.valueOf(elementParameter.getValue());
+        }
+
         // schema table
         elementParameter = this.node.getElementParameter(EParameterName.SCHEMAS.getName());
         if (elementParameter != null) {
@@ -270,6 +318,9 @@ public class ChangeMultiSchemasCommand extends Command {
         setParameterValues(EParameterName.ESCAPE_CHAR, this.oldEscapeChar, this.newEscapeChar, undo);
         setParameterValues(EParameterName.CSV_OPTION, this.oldCsvOption, this.newCsvOption, undo);
         setParameterValues(EParameterName.COLUMNINDEX, this.oldSelectedColumnIndex, this.newSelectedColumnIndex, undo);
+        setParameterValues(EParameterName.USE_MULTISEPARATORS, this.oldUseMultiSaparator, this.newUseMultiSaparator, undo);
+        setParameterValues(EParameterName.MULTI_SEPARATORS, this.oldSaparators, this.newSaparators, undo);
+        setParameterValues(EParameterName.MULTI_KEYVALUES, this.oldKeyValues, this.newKeyValues, undo);
         // PTODO need check again.
         elementParameter = this.node.getElementParameter(EParameterName.SCHEMAS.getName());
 

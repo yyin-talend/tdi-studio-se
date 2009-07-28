@@ -44,6 +44,8 @@ public class SchemasKeyData {
 
     private String card = defaultCard;
 
+    private String separator;
+
     public SchemasKeyData(String recordType) {
         super();
         this.recordType = recordType;
@@ -59,6 +61,14 @@ public class SchemasKeyData {
 
     public void setUniqueRecord(String uniqueRecord) {
         this.uniqueRecord = uniqueRecord;
+    }
+
+    public String getSeparator() {
+        return this.separator;
+    }
+
+    public void setSeparator(String separator) {
+        this.separator = separator;
     }
 
     public void setParent(SchemasKeyData parent) {

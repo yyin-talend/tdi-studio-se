@@ -81,6 +81,8 @@ public class SchemasTreeLabelProvider implements ITableLabelProvider {
                 return data.getUniqueRecord();
             case 1:
                 return data.getRecordType();
+            case 2:
+                return data.getSeparator();
             }
         }
         return null;

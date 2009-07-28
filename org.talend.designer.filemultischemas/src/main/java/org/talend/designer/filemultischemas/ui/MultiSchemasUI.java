@@ -13,9 +13,13 @@
 package org.talend.designer.filemultischemas.ui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -87,6 +91,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.filemultischemas.MultiSchemasComponent;
+import org.talend.designer.filemultischemas.data.CSVArrayAndSeparator;
 import org.talend.designer.filemultischemas.data.ExternalMultiSchemasUIProperties;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.designer.filemultischemas.managers.MultiSchemasManager;
@@ -174,6 +179,14 @@ public class MultiSchemasUI {
 
     private SashForm headerSashForm;
 
+    private Button useMultiSaparators;
+
+    private LabelledText multiSeparatorsText;
+
+    private LabelledText keyValuesText;
+
+    private LabelledText keyIndexText;
+
     /**
      * 
      */
@@ -183,12 +196,8 @@ public class MultiSchemasUI {
 
     private MultiSchemaEventListener listener;
 
-    private static int DEFAULT_INDEX = 0;
-
-    private int selectedColumnIndex = DEFAULT_INDEX;
-
     public int getSelectedColumnIndex() {
-        return this.selectedColumnIndex;
+        return multiSchemaManager.getSelectedColumnIndex();
     }
 
     public MultiSchemasUI(Composite uiParent, MultiSchemasManager multiSchemaManager) {
@@ -273,16 +282,21 @@ public class MultiSchemasUI {
         String selectedColumn = getMultiSchemaManager().getParameterValue(EParameterName.COLUMNINDEX);
         selectedColumn = TalendTextUtils.removeQuotes(selectedColumn);
         if (selectedColumn != null && !selectedColumn.equals("")) {
-            selectedColumnIndex = Integer.parseInt(selectedColumn);
-            processor.setSelectedColumnIndex(selectedColumnIndex);
+            multiSchemaManager.setSelectedColumnIndex(Integer.parseInt(selectedColumn));
         }
 
         String filePath = getMultiSchemaManager().getParameterValue(EParameterName.FILENAME);
         getConnection().setFilePath(filePath);
-        getConnection().setRowSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.ROWSEPARATOR));
-        getConnection().setFieldSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
+        fileField.setText(getConnection().getFilePath());
+        getConnection().setFieldSeparatorType(getFieldSeparatorFromString(getConnection().getFieldSeparatorValue()));
+
+        boolean isUseMuliSaparator = (Boolean) getMultiSchemaManager()
+                .getParameterObjectValue(EParameterName.USE_MULTISEPARATORS);
+        useMultiSaparators.setSelection(isUseMuliSaparator);
+
         String encoding = getMultiSchemaManager().getParameterValue(EParameterName.ENCODING);
         getConnection().setEncoding(TalendTextUtils.removeQuotes(encoding));
+        encodingCombo.setText(getConnection().getEncoding());
 
         getConnection().setCsvOption((Boolean) getMultiSchemaManager().getParameterObjectValue(EParameterName.CSV_OPTION));
         if (getConnection().isCsvOption()) {
@@ -292,20 +306,30 @@ public class MultiSchemasUI {
         }
         getConnection().setTextEnclosure(getMultiSchemaManager().getParameterValue(EParameterName.TEXT_ENCLOSURE));
         getConnection().setEscapeChar(getMultiSchemaManager().getParameterValue(EParameterName.ESCAPE_CHAR));
-        fileField.setText(getConnection().getFilePath());
-        getConnection().setFieldSeparatorType(getFieldSeparatorFromString(getConnection().getFieldSeparatorValue()));
-        fieldSeparatorCombo.setText(getConnection().getFieldSeparatorType().getName());
-        fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
-        fieldSeparatorText.setEditable(false);
 
+        getConnection().setRowSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.ROWSEPARATOR));
         getConnection().setRowSeparatorType(getRowSeparatorFromString(getConnection().getRowSeparatorValue()));
         rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());
         rowSeparatorText.setText(getConnection().getRowSeparatorValue());
-        rowSeparatorText.setEditable(false);
 
-        fieldSeparatorManager();
         rowSeparatorManager();
-        encodingCombo.setText(getConnection().getEncoding());
+        fieldSeparatorCombo.setText(getConnection().getFieldSeparatorType().getName());
+        fieldSeparatorText.setText(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
+        multiSeparatorsText.setText(getMultiSchemaManager().getParameterValue(EParameterName.MULTI_SEPARATORS));
+        keyIndexText.setText(TalendTextUtils.removeQuotes(getMultiSchemaManager().getParameterValue(EParameterName.COLUMNINDEX)));
+        keyValuesText.setText(getMultiSchemaManager().getParameterValue(EParameterName.MULTI_KEYVALUES));
+        fieldSeparatorCombo.setEnabled(!isUseMuliSaparator);
+        fieldSeparatorText.setEditable(!isUseMuliSaparator);
+        multiSeparatorsText.setEditable(isUseMuliSaparator);
+        keyIndexText.setEditable(isUseMuliSaparator);
+        keyValuesText.setEditable(isUseMuliSaparator);
+        fieldSeparatorManager();
+        if (!isUseMuliSaparator) {
+            getConnection().setFieldSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
+        } else {
+            getConnection().setFieldSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.MULTI_SEPARATORS));
+
+        }
 
         // Fields to the Group Escape Char Settings
         textEnclosureCombo.select(0);
@@ -380,7 +404,14 @@ public class MultiSchemasUI {
     }
 
     private void addGroupMultiSchemaSettings(final Composite mainComposite) {
-        Group group = Form.createGroup(mainComposite, 4, Messages.getString("FileStep2.groupDelimitedFileSettings"), 100); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 180); //$NON-NLS-1$
+
+        Composite composite = new Composite(group, SWT.NONE);
+        GridLayout gridLayout = new GridLayout(4, false);
+        gridLayout.marginHeight = 1;
+        composite.setLayout(gridLayout);
+        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        composite.setLayoutData(gd);
 
         EMetadataEncoding[] values = EMetadataEncoding.values();
         String[] encodingData = new String[values.length];
@@ -388,16 +419,16 @@ public class MultiSchemasUI {
             encodingData[j] = values[j].getName();
         }
 
-        encodingCombo = new LabelledCombo(group, Messages.getString("FileStep2.encoding"), Messages //$NON-NLS-1$
+        encodingCombo = new LabelledCombo(composite, Messages.getString("FileStep2.encoding"), Messages //$NON-NLS-1$
                 .getString("FileStep2.encodingTip"), encodingData, 3, true, SWT.NONE); //$NON-NLS-1$
 
         // Field Separator Combo & Text
         String[] fieldSeparatorData = getFieldSeparatorStyleSupportByLanguage();
 
-        fieldSeparatorCombo = new LabelledCombo(group, Messages.getString("FileStep2.fieldSeparator"), Messages //$NON-NLS-1$
+        fieldSeparatorCombo = new LabelledCombo(composite, Messages.getString("FileStep2.fieldSeparator"), Messages //$NON-NLS-1$
                 .getString("FileStep2.fieldSeparatorDelimitedTip"), fieldSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
 
-        fieldSeparatorText = new LabelledText(group, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
+        fieldSeparatorText = new LabelledText(composite, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
 
         // Dimension of columb of Separator Text
         GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
@@ -407,9 +438,26 @@ public class MultiSchemasUI {
         // Row Separator Combo & Text
         String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
                 RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
-        rowSeparatorCombo = new LabelledCombo(group, Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
+        rowSeparatorCombo = new LabelledCombo(composite, Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
                 .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
-        rowSeparatorText = new LabelledText(group, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
+        rowSeparatorText = new LabelledText(composite, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
+
+        useMultiSaparators = new Button(group, SWT.CHECK);
+        Composite multiComp = new Composite(group, SWT.NONE);
+        gridLayout = new GridLayout(2, false);
+        gridLayout.marginHeight = 1;
+        multiComp.setLayout(gridLayout);
+        gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        multiComp.setLayoutData(gd);
+
+        useMultiSaparators.setText(Messages.getString("MultiSchemasUI.useMultiSchemabtn"));
+        multiSeparatorsText = new LabelledText(multiComp, "Multiple Separators", 1, true); //$NON-NLS-1$
+        multiSeparatorsText.setEditable(false);
+        keyValuesText = new LabelledText(multiComp, Messages.getString("MultiSchemasUI.keyValues"), 1, true); //$NON-NLS-1$
+        keyValuesText.setEditable(false);
+        keyIndexText = new LabelledText(multiComp, Messages.getString("MultiSchemasUI.keyIndex"), 1, true); //$NON-NLS-1$
+        keyIndexText.setEditable(false);
+
     }
 
     private String[] getFieldSeparatorStyleSupportByLanguage() {
@@ -438,7 +486,6 @@ public class MultiSchemasUI {
         if (rowSeparatorCombo.getSelectionIndex() == 1) {
             // Adapt Custom Label
             rowSeparatorText.setLabelText(rowSeparatorCombo.getText());
-            rowSeparatorText.setEditable(true);
             // rowSeparatorText.forceFocus();
         } else {
             // set the Flag width the char value of the Combo
@@ -453,7 +500,6 @@ public class MultiSchemasUI {
             // Init Custom Label
             rowSeparatorText.setLabelText(Messages.getString("FileStep2.correspondingCharacter")); //$NON-NLS-1$
             getConnection().setRowSeparatorValue(rowSeparatorText.getText());
-            rowSeparatorText.setEditable(true);
         }
     }
 
@@ -474,9 +520,9 @@ public class MultiSchemasUI {
         if (fieldSeparatorCombo.getSelectionIndex() >= 5) {
             // Adapt Custom Label
             fieldSeparatorText.setLabelText(fieldSeparatorCombo.getText());
-            fieldSeparatorText.setEditable(true);
             fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
             fieldSeparatorText.forceFocus();
+
         } else {
             // set the Flag width the char value of the Combo
             // { "Tabulation", "Semicolon", "Comma", "Space", "''(Alt 65, #A4)", "Custom ANSI", "Custom UTF8",
@@ -503,7 +549,7 @@ public class MultiSchemasUI {
             // Init Custom Label
             getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
             fieldSeparatorText.setLabelText(Messages.getString("FileStep2.correspondingCharacter")); //$NON-NLS-1$
-            fieldSeparatorText.setEditable(true);
+
         }
     }
 
@@ -560,6 +606,56 @@ public class MultiSchemasUI {
             }
         });
 
+        multiSeparatorsText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                getConnection().setFieldSeparatorValue(multiSeparatorsText.getText());
+                previewBtn.setEnabled(checkFieldsValue());
+            }
+        });
+
+        keyIndexText.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.character > '9' || e.character < '0') {
+                    if (e.character != '\b') {
+                        e.doit = false;
+                    }
+                }
+            }
+
+        });
+        keyIndexText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                boolean modify = false;
+                if (keyIndexText.getText() == null || "".equals(keyIndexText.getText())) {
+                    multiSchemaManager.setSelectedColumnIndex(0);
+                    modify = true;
+                } else {
+                    multiSchemaManager.setSelectedColumnIndex(Integer.parseInt(keyIndexText.getText()));
+                    modify = true;
+                }
+                if (modify) {
+                    // refreshPreview();
+
+                }
+                previewBtn.setEnabled(checkFieldsValue());
+                if (previewBtn.isEnabled()) {
+                    refreshPreview();
+                }
+
+            }
+        });
+
+        keyValuesText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                previewBtn.setEnabled(checkFieldsValue());
+            }
+
+        });
         rowSeparatorText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
@@ -835,7 +931,7 @@ public class MultiSchemasUI {
         headerSashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
         headerSashForm.setSashWidth(ExternalMultiSchemasUIProperties.SASHFORM_WIDTH);
         //
-        multiSchemasFilePreview = new MultiSchemasShadowProcessPreview(headerSashForm);
+        multiSchemasFilePreview = new MultiSchemasShadowProcessPreview(this, headerSashForm);
         multiSchemasFilePreview.newTablePreview();
 
         Composite struComp = new Composite(headerSashForm, SWT.NONE);
@@ -881,9 +977,13 @@ public class MultiSchemasUI {
 
         column = new TreeColumn(tree, SWT.LEFT);
         column.setWidth(100);
-        column.setText("Record");
+        column.setText("Record");//$NON-NLS-1$
         column.setResizable(true);
 
+        column = new TreeColumn(tree, SWT.LEFT);
+        column.setWidth(20);
+        column.setText("Separator");//$NON-NLS-1$
+        column.setResizable(true);
         schemaTreeViewer.setColumnProperties(ExternalMultiSchemasUIProperties.SCHEMAS_TREE_COLUMN_PROPERTY);
 
         Composite operation = new Composite(struComp, SWT.NONE);
@@ -928,6 +1028,30 @@ public class MultiSchemasUI {
                 clearPreview();
 
             }
+        });
+
+        useMultiSaparators.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                boolean selected = useMultiSaparators.getSelection();
+                fieldSeparatorCombo.setEnabled(!selected);
+                fieldSeparatorText.setEditable(!selected);
+                multiSeparatorsText.setEditable(selected);
+                keyValuesText.setEditable(selected);
+                keyIndexText.setEditable(selected);
+                if (selected) {
+                    getConnection().setFieldSeparatorValue(multiSeparatorsText.getText());
+                } else {
+                    getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
+                }
+                clearPreview();
+                previewBtn.setEnabled(checkFieldsValue());
+                if (previewBtn.isEnabled()) {
+                    refreshPreview();
+                }
+            }
+
         });
 
         schemaTreeViewer.getTree().addSelectionListener(new SelectionAdapter() {
@@ -1032,18 +1156,25 @@ public class MultiSchemasUI {
                         public void run() {
                             SchemasKeyData schemasModel = null;
                             boolean checked = (csvArray != null && csvArray.getRows().size() > 0);
-                            CsvArray uniqueCsvArray = null;
+                            CSVArrayAndSeparator uniqueCsvArray = null;
 
-                            if (multiSchemasFilePreview.getSelectColumnIndex() < 0 && selectedColumnIndex != 0) {
+                            if (useMultiSaparators.getSelection()) {
+                                getMultiSchemaManager().setKeyValues(keyValuesText.getText());
+                            }
+
+                            if (multiSchemasFilePreview.getSelectColumnIndex() < 0
+                                    && multiSchemaManager.getSelectedColumnIndex() != 0) {
                                 uniqueCsvArray = getMultiSchemaManager().retrieveCsvArrayInUniqueModel(getProcessDescription(),
-                                        checked, selectedColumnIndex);
+                                        checked, multiSchemaManager.getSelectedColumnIndex(), useMultiSaparators.getSelection());
 
-                                schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray, selectedColumnIndex);
+                                schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray,
+                                        multiSchemaManager.getSelectedColumnIndex());
 
                             } else {
 
                                 uniqueCsvArray = getMultiSchemaManager().retrieveCsvArrayInUniqueModel(getProcessDescription(),
-                                        checked, multiSchemasFilePreview.getSelectColumnIndex());
+                                        checked, multiSchemasFilePreview.getSelectColumnIndex(),
+                                        useMultiSaparators.getSelection());
 
                                 schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray,
                                         multiSchemasFilePreview.getSelectColumnIndex());
@@ -1098,11 +1229,38 @@ public class MultiSchemasUI {
 
             public void run() {
                 if (checkFieldsValue()) {
-                    processor.execute();
+                    if (useMultiSaparators.getSelection()) {
+                        launch();
+                    } else {
+                        processor.execute();
+                    }
                     setFetchButtonStatus(true);
                 }
             }
         });
+    }
+
+    private void launch() {
+        try {
+            CsvArray csvArray = getMultiSchemaManager().getCsvArrayForMultiSchemaDelimited(fileField.getText(),
+                    multiSeparatorsText.getText(), encodingCombo.getText(), keyValuesText.getText(),
+                    multiSchemaManager.getSelectedColumnIndex());
+            processor.setCsvArray(csvArray);
+
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    processor.execute2();
+
+                }
+            });
+
+        } catch (FileNotFoundException e) {
+            ExceptionHandler.process(e);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+
     }
 
     private String getFile() {
@@ -1113,8 +1271,13 @@ public class MultiSchemasUI {
         return this.multiSchemaManager.getOriginalValue(this.getConnection().getRowSeparatorValue());
     }
 
-    private String getFieldSeperator() {
-        return this.multiSchemaManager.getOriginalValue(this.getConnection().getFieldSeparatorValue());
+    private String getFieldSeperator(boolean useMultiSeparator) {
+        if (useMultiSeparator) {
+            return multiSeparatorsText.getText();
+        } else {
+            return this.multiSchemaManager.getOriginalValue(this.getConnection().getFieldSeparatorValue());
+        }
+
     }
 
     private boolean checkString(String value) {
@@ -1135,7 +1298,9 @@ public class MultiSchemasUI {
                 return false;
             }
         }
-        if (!checkString(getRowSeperator()) || !checkString(getFieldSeperator())) {
+        boolean checkFieldSeparator = false;
+
+        if (!checkString(getRowSeperator()) || !checkString(getFieldSeperator(useMultiSaparators.getSelection()))) {
             previewInformationLabel.setText(Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
@@ -1273,8 +1438,26 @@ public class MultiSchemasUI {
 
         final Object input = schemaTreeViewer.getInput();
         if (input != null) {
-            getMultiSchemaManager().savePropertiesToComponent((SchemasKeyData) input, getConnection(), currentIndexIntable);
+            getMultiSchemaManager().savePropertiesToComponent((SchemasKeyData) input, fetchNewParamters(currentIndexIntable),
+                    currentIndexIntable);
         }
+    }
+
+    private Map<EParameterName, String> fetchNewParamters(int index) {
+        Map<EParameterName, String> paramsMap = new HashMap<EParameterName, String>();
+        paramsMap.put(EParameterName.FILENAME, fileField.getText());
+        paramsMap.put(EParameterName.ENCODING_TYPE, encodingCombo.getText());
+        paramsMap.put(EParameterName.ENCODING, TalendTextUtils.addQuotes(encodingCombo.getText()));
+        paramsMap.put(EParameterName.FIELDSEPARATOR, fieldSeparatorText.getText());
+        paramsMap.put(EParameterName.ROWSEPARATOR, rowSeparatorText.getText());
+        paramsMap.put(EParameterName.TEXT_ENCLOSURE, textEnclosureCombo.getText());
+        paramsMap.put(EParameterName.ESCAPE_CHAR, escapeCharCombo.getText());
+        paramsMap.put(EParameterName.CSV_OPTION, String.valueOf(csvRadio.getSelection()));
+        paramsMap.put(EParameterName.COLUMNINDEX, TalendTextUtils.addQuotes(String.valueOf(index)));
+        paramsMap.put(EParameterName.USE_MULTISEPARATORS, String.valueOf(useMultiSaparators.getSelection()));
+        paramsMap.put(EParameterName.MULTI_SEPARATORS, multiSeparatorsText.getText());
+        paramsMap.put(EParameterName.MULTI_KEYVALUES, keyValuesText.getText());
+        return paramsMap;
     }
 
     public void prepareClosing(int dialogResponse) {
@@ -1341,4 +1524,13 @@ public class MultiSchemasUI {
         getUIManager().changeSchemasDetailView(schemaDetailsViewer, getSchemaDetailModel());
         getUIManager().refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer, getSchemaDetailModel());
     }
+
+    public LabelledText getKeyIndexText() {
+        return this.keyIndexText;
+    }
+
+    public void setKeyIndexText(LabelledText keyIndexText) {
+        this.keyIndexText = keyIndexText;
+    }
+
 }

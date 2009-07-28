@@ -1942,6 +1942,7 @@ public class Node extends Element implements INode {
             if (param.isRequired() && param.isShow(getElementParameters())) {
                 EParameterFieldType fieldType = param.getField();
                 String value;
+                List multiSchemaDelimetedSeparaor = new ArrayList();
                 switch (fieldType) {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
@@ -2010,8 +2011,16 @@ public class Node extends Element implements INode {
                     }
                     value = (String) param.getValue();
                     if (value.equals("")) { //$NON-NLS-1$
-                        String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        if (this.getComponent() != null && "tFileInputMSDelimited".equals(this.getComponent().getName())) {
+                            multiSchemaDelimetedSeparaor.add(param);
+                            if (multiSchemaDelimetedSeparaor.size() == 2) {
+                                String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            }
+                        } else {
+                            String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
                     }
                 }
             }

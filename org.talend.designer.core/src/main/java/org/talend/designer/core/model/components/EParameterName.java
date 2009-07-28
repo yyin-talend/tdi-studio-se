@@ -176,6 +176,11 @@ public enum EParameterName {
     DISABLE_INFO(Messages.getString("EParameterName.DisableInfos")), //$NON-NLS-1$
     DISABLE_WARNINGS(Messages.getString("EParameterName.DisableWarnings")), //$NON-NLS-1$
     IMPLICT_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.ImplictDefaultProjectsetting")), //$NON-NLS-1$
+
+    // added by wchen for feature 6759
+    USE_MULTISEPARATORS(Messages.getString("EParameterName.useMultiSaparators")),
+    MULTI_SEPARATORS(Messages.getString("EParameterName.multiSaparators")),
+    MULTI_KEYVALUES(Messages.getString("EParameterName.multiKeyValues")),
     /*
      * PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
      * PERL_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
