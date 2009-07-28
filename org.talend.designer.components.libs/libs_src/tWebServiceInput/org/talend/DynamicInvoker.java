@@ -211,9 +211,7 @@ public class DynamicInvoker {
         ((org.apache.axis.client.Call) call).setProperty(ElementDeserializer.DESERIALIZE_CURRENT_ELEMENT, Boolean.TRUE);
         if (needAuth) {
             ((org.apache.axis.client.Call) call).setUsername(username);
-            ((org.apache.axis.client.Call) call).setPassword(password);
-            ((org.apache.axis.client.Call) call).setProperty(Stub.USERNAME_PROPERTY, username);
-            ((org.apache.axis.client.Call) call).setProperty(Stub.PASSWORD_PROPERTY, password);            
+            ((org.apache.axis.client.Call) call).setPassword(password);           
         }
 
         if (useProxy) {
