@@ -128,13 +128,17 @@ public class PasteAction extends AContextualAction {
             for (Object obj : ((StructuredSelection) selectionInClipboard).toArray()) {
                 if (enabled) {
                     RepositoryNode sourceNode = (RepositoryNode) obj;
-
                     if (!CopyObjectAction.getInstance().validateAction(sourceNode, target)) {
                         visible = true;
                         enabled = false;
                     } else {
-                        visible = true;
-                        enabled = true;
+                        if (sourceNode.getObjectType().getKey().equals("repository.routines")) {
+                            visible = true;
+                            enabled = false;
+                        } else {
+                            visible = true;
+                            enabled = true;
+                        }
                     }
 
                 }
