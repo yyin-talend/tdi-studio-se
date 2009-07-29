@@ -33,10 +33,16 @@ if(hasDataLink){
 fid_<%=cid %>.close();
 <%
 	}else{//the following is the tFileInputCSV component
+		if(useMulSeprators==false){
 %>
 }
 csvReader<%=cid %>.close();
 <%
+		}else{
+%>
+}
+reader_<%=cid %>.close();
+<%		}
 	}
 }
 %>			  
