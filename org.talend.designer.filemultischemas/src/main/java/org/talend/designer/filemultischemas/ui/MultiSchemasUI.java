@@ -1455,14 +1455,23 @@ public class MultiSchemasUI {
     }
 
     private Map<EParameterName, String> fetchNewParamters(int index) {
+        String empty = "\"\"\"";//$NON-NLS-1$
         Map<EParameterName, String> paramsMap = new HashMap<EParameterName, String>();
         paramsMap.put(EParameterName.FILENAME, fileField.getText());
         paramsMap.put(EParameterName.ENCODING_TYPE, encodingCombo.getText());
         paramsMap.put(EParameterName.ENCODING, TalendTextUtils.addQuotes(encodingCombo.getText()));
         paramsMap.put(EParameterName.FIELDSEPARATOR, fieldSeparatorText.getText());
         paramsMap.put(EParameterName.ROWSEPARATOR, rowSeparatorText.getText());
-        paramsMap.put(EParameterName.TEXT_ENCLOSURE, textEnclosureCombo.getText());
-        paramsMap.put(EParameterName.ESCAPE_CHAR, escapeCharCombo.getText());
+        String textEnclosure = textEnclosureCombo.getText();
+        if ("Empty".equals(textEnclosure)) {//$NON-NLS-1$
+            textEnclosure = empty;
+        }
+        paramsMap.put(EParameterName.TEXT_ENCLOSURE, textEnclosure);
+        String escapeChar = escapeCharCombo.getText();
+        if ("Empty".equals(escapeChar)) {//$NON-NLS-1$
+            escapeChar = empty;
+        }
+        paramsMap.put(EParameterName.ESCAPE_CHAR, escapeChar);
         paramsMap.put(EParameterName.CSV_OPTION, String.valueOf(csvRadio.getSelection()));
         paramsMap.put(EParameterName.COLUMNINDEX, TalendTextUtils.addQuotes(String.valueOf(index)));
         paramsMap.put(EParameterName.USE_MULTISEPARATORS, String.valueOf(useMultiSaparators.getSelection()));
