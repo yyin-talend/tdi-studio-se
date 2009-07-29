@@ -624,7 +624,7 @@ public class MultiSchemasUI {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.character > '9' || e.character < '0') {
-                    if (e.character != '\b') {
+                    if (e.character != '\b' || e.keyCode == '\u0016') {
                         e.doit = false;
                     }
                 }
@@ -639,7 +639,14 @@ public class MultiSchemasUI {
                     multiSchemaManager.setSelectedColumnIndex(0);
                     modify = true;
                 } else {
-                    multiSchemaManager.setSelectedColumnIndex(Integer.parseInt(keyIndexText.getText()));
+                    int index = 0;
+                    try {
+                        index = Integer.parseInt(keyIndexText.getText());
+                    } catch (Exception ex) {
+                        index = 0;
+                        keyIndexText.setText(String.valueOf(index));
+                    }
+                    multiSchemaManager.setSelectedColumnIndex(index);
                     modify = true;
                 }
                 if (modify) {

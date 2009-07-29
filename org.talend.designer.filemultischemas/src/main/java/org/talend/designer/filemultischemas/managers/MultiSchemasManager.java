@@ -695,7 +695,7 @@ public class MultiSchemasManager {
                             encoding);
                     csvReader.readRecord();
                     row = csvReader.getValues();
-                    if (row.length > selectColumnIndex && isInKeyValues(getKeyValues(), row[selectColumnIndex])) {
+                    if (row.length > 1 && row.length > selectColumnIndex && isInKeyValues(getKeyValues(), row[selectColumnIndex])) {
                         if (selectColumnIndex < row.length
                                 && !uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count)))) {
                             uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(count)));
@@ -710,16 +710,15 @@ public class MultiSchemasManager {
                     csvReader.close();
                     count++;
                 }
-                // if (!added) {
-                // if (selectColumnIndex < row.length
-                // && !uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count)))) {
-                //
-                // uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(count - 1)));
-                // csvArrayBean.getCsvArray().add(row);
-                // csvArrayBean.getSeparators().add(String.valueOf(separators.charAt(count - 1)));
-                //
-                // }
-                // }
+                // for rows that only have one column
+                if (!added && selectColumnIndex < row.length && isInKeyValues(getKeyValues(), row[selectColumnIndex])
+                        && !uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count - 1)))) {
+
+                    uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(count - 1)));
+                    csvArrayBean.getCsvArray().add(row);
+                    csvArrayBean.getSeparators().add(String.valueOf(separators.charAt(count - 1)));
+
+                }
             }
 
         }
@@ -848,7 +847,7 @@ public class MultiSchemasManager {
             String[] row = null;
             boolean added = false;
             int i = 0;
-            // only preview i00 lines
+            // only preview 100 lines
             while ((readLine = reader.readLine()) != null && i < 100) {
                 int count = 0;
                 while (count < separators.length()) {
@@ -903,7 +902,6 @@ public class MultiSchemasManager {
         csvReader.setRecordDelimiter('\n');
         csvReader.setSkipEmptyRecords(true);
         csvReader.setTextQualifier('"');
-        csvReader.setUseTextQualifier(true);
 
         csvReader.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
         return csvReader;
