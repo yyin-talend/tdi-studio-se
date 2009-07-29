@@ -113,6 +113,7 @@ while (fid_<%=cid %>.nextRecord()) {
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
 				boolean noStringTypeExist = false;
+				
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
 					IMetadataColumn column = listColumns.get(valueN);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -122,17 +123,38 @@ while (fid_<%=cid %>.nextRecord()) {
 						break;
 					}
 				}
-				if(noStringTypeExist){%>String temp_<%=cid %> = "";
-				<%
+				boolean hasStringDefault = false;
+				for (int valueM=0; valueM<sizeListColumns; valueM++) {
+					IMetadataColumn column = listColumns.get(valueM);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+						if(hasStringDefault==false && column.getDefault()!=null && column.getDefault().length() > 0 ){
+							hasStringDefault = true;
+							break;
+						}
+					}
 				}
+				if(noStringTypeExist || hasStringDefault){%>String temp_<%=cid %> = ""; 
+				<%}
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
 					IMetadataColumn column = listColumns.get(valueN);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
-if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
+if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+	String defaultValue = column.getDefault();
+	if(defaultValue!=null && defaultValue.length()>0){
+%>
+temp_<%=cid %>  = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+if(temp_<%=cid %>.length() > 0){
+	<%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>;
+}else{
+	<%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+}
+<%	}else{%>
 <%=firstConnName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 <%
+	}
 }else{ 
 %>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 if(temp_<%=cid %>.length() > 0) {
