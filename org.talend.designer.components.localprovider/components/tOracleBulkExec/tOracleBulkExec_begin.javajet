@@ -206,7 +206,7 @@ if(columnList != null && columnList.size() > 0) {
     		}
     		
     		
-    		columns += "\\\"" + column.getOriginalDbColumnName() + "\\\"";
+    		columns += "\\\"" + ((convertToUppercase)? column.getOriginalDbColumnName().toUpperCase():column.getOriginalDbColumnName()) + "\\\"";
     		
     		
     		if(("DATE").equals(column.getType()) && ("true").equals(useDatePattern)){//date
