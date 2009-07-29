@@ -41,10 +41,10 @@ List<IMetadataColumn> columnList = getColumnList(node);
 
 boolean flagHasLob=false;
 
-String advancedSeparatorStr = ElementParameterParser.getValue(node, "__NUMBER_FIELD_SEPARATOR_CTL__");
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
-String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR_CTL__");
-String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR_CTL__"); 
+String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__"); 
 decimalSeparator = decimalSeparator.trim();
 if(decimalSeparator.length() > 2){
 	decimalSeparator = String.valueOf(decimalSeparator.charAt(1));
