@@ -17,6 +17,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -46,6 +47,46 @@ public class ZipToFile {
             }
         }
         dir.delete();
+    }
+
+    /**
+     * 
+     * DOC wzhang Comment method "copyFile".
+     * 
+     * @param src
+     * @param dest
+     */
+    public static void copyFile(String src, String dest) {
+        File srcFile = new File(src);
+        if (srcFile.exists()) {
+            FileInputStream in = null;
+            FileOutputStream out = null;
+            try {
+                in = new FileInputStream(src);
+                out = new FileOutputStream(dest);
+                byte[] buffer = new byte[1024];
+                int i = 0;
+                while ((i = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, i);
+                }
+                out.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (in != null)
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                if (out != null)
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+        }
     }
 
     /**
