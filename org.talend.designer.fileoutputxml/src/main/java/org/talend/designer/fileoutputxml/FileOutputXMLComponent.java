@@ -366,7 +366,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      * @return
      */
     public boolean istFileOutputMSXML() {
-        return getComponent().getName().equals("tFileOutputMSXML"); //$NON-NLS-1$
+        return getComponent().getName().equals("tFileOutputMSXML") || getComponent().getName().equals("tInGESTCoreXMLOutput"); //$NON-NLS-1$
     }
 
     /**
