@@ -690,14 +690,18 @@ public class MultiSchemasManager {
             while ((readLine = reader.readLine()) != null) {
                 int count = 0;
                 boolean added = false;
+                int sepIndex = 0;
                 while (count < separators.length()) {
                     CsvReader csvReader = getCsvReader(new ByteArrayInputStream(readLine.getBytes()), separators.charAt(count),
                             encoding);
                     csvReader.readRecord();
                     row = csvReader.getValues();
                     if (row.length > 1 && row.length > selectColumnIndex && isInKeyValues(getKeyValues(), row[selectColumnIndex])) {
-                        if (selectColumnIndex < row.length
-                                && !uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count)))) {
+                        // this kind of record will not added in the if that deal with rows that only have one column
+                        if (uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count)))) {
+                            sepIndex = count;
+                        }
+                        if (!uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count)))) {
                             uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(count)));
                             csvArrayBean.getCsvArray().add(row);
                             csvArrayBean.getSeparators().add(String.valueOf(separators.charAt(count)));
@@ -710,13 +714,14 @@ public class MultiSchemasManager {
                     csvReader.close();
                     count++;
                 }
-                // for rows that only have one column
+                // for rows that only have one column , if this column don't have any separator use the first as it's
+                // separator
                 if (!added && selectColumnIndex < row.length && isInKeyValues(getKeyValues(), row[selectColumnIndex])
-                        && !uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count - 1)))) {
+                        && !uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(sepIndex)))) {
 
-                    uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(count - 1)));
+                    uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(sepIndex)));
                     csvArrayBean.getCsvArray().add(row);
-                    csvArrayBean.getSeparators().add(String.valueOf(separators.charAt(count - 1)));
+                    csvArrayBean.getSeparators().add(String.valueOf(separators.charAt(sepIndex)));
 
                 }
             }
