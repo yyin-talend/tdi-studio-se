@@ -15,6 +15,8 @@ package org.talend.designer.filemultischemas.ui.preview;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -33,13 +35,18 @@ public class MultiSchemasShadowProcessPreview extends ShadowProcessPreview {
     MultiSchemasUI multiSchemaUI;
 
     // hywang add varriable "key" for feature 7373
-    private int selectColumnIndex = dftSelectedColumn;
 
     // hywang add varrible "dftSelectedColumn" for feature 7373
     private static int dftSelectedColumn = -1;
 
+    private SelectionListener listener;
+
     public int getSelectColumnIndex() {
         return multiSchemaUI.getSelectedColumnIndex();
+    }
+
+    public void setSelectColumnIndex(int selectedColumn) {
+        multiSchemaUI.setSelectedColumnIndex(selectedColumn);
     }
 
     public MultiSchemasShadowProcessPreview(MultiSchemasUI multiSchemaUI, Composite composite) {
@@ -67,30 +74,41 @@ public class MultiSchemasShadowProcessPreview extends ShadowProcessPreview {
 
         checkSelectedIndex(selectedColumnIndex);
         // hywang add for feature 7373, removed it by 6759
-        // for (int i = 0; i < table.getColumnCount(); i++) {
-        // final TableColumn tc = table.getColumn(i);
-        // tc.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e) {
-        // if (tc.getImage().equals(ImageProvider.getImage(EImage.UNCHECKED_ICON))) {
-        // tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON));
-        // for (int j = 0; j < table.getColumnCount(); j++) {
-        // if (table.getColumn(j).getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON))
-        // && table.getColumn(j) != tc) {
-        // table.getColumn(j).setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
-        // }
-        // if (tc.equals(table.getColumn(j))) {
-        // selectColumnIndex = j;
-        // }
-        // }
-        // }
-        // multiSchemaUI.getKeyIndexText().setText(String.valueOf(selectColumnIndex));
-        // }
-        // });
-        // }
+        addListenerOncolumn();
+    }
+
+    public void addListenerOncolumn() {
+        if (table == null || table.isDisposed()) {
+            return;
+        }
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            final TableColumn tc = table.getColumn(i);
+            SelectionListener listener = new SelectionListener() {
+
+                public void widgetDefaultSelected(SelectionEvent e) {
+                }
+
+                public void widgetSelected(SelectionEvent e) {
+                    if (!multiSchemaUI.getUseMultiSaparators().getSelection()) {
+                        if (tc.getImage().equals(ImageProvider.getImage(EImage.UNCHECKED_ICON))) {
+                            tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON));
+                            for (int j = 0; j < table.getColumnCount(); j++) {
+                                if (table.getColumn(j).getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON))
+                                        && table.getColumn(j) != tc) {
+                                    table.getColumn(j).setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
+                                }
+                                if (tc.equals(table.getColumn(j))) {
+                                    setSelectColumnIndex(j);
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            this.listener = listener;
+
+            tc.addSelectionListener(listener);
+        }
     }
 
     private void checkSelectedIndex(int... selectedColumnIndex) {
@@ -98,20 +116,23 @@ public class MultiSchemasShadowProcessPreview extends ShadowProcessPreview {
             selectedColumnIndex = new int[] { 0 };
         }
         table.setRedraw(false);
+
         for (int i = 0; i < table.getColumnCount(); i++) {
             final TableColumn tc = table.getColumn(i);
             if (i == selectedColumnIndex[0]) {
-                tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON)); // default selected column is from component
+                tc.setImage(ImageProvider.getImage(EImage.CHECKED_ICON)); // default selected column is from
+                // component
             } else {
                 tc.setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
             }
         }
         table.setHeaderVisible(true);
+
     }
 
     @Override
     protected void refreshPreviewItem(List<String[]> csvRows, boolean firstRowIsLabel, int... selectedColumnIndex) {
-        this.selectColumnIndex = selectedColumnIndex[0];
+        setSelectColumnIndex(selectedColumnIndex[0]);
         int existingItemCount = table.getItemCount();
 
         int end = csvRows.size();
@@ -141,6 +162,14 @@ public class MultiSchemasShadowProcessPreview extends ShadowProcessPreview {
         }
 
         table.setRedraw(true);
+    }
+
+    public SelectionListener getListener() {
+        return this.listener;
+    }
+
+    public void setListener(SelectionListener listener) {
+        this.listener = listener;
     }
 
 }

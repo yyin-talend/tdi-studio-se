@@ -200,6 +200,10 @@ public class MultiSchemasUI {
         return multiSchemaManager.getSelectedColumnIndex();
     }
 
+    public void setSelectedColumnIndex(int selectedColumn) {
+        multiSchemaManager.setSelectedColumnIndex(selectedColumn);
+    }
+
     public MultiSchemasUI(Composite uiParent, MultiSchemasManager multiSchemaManager) {
         super();
         this.uiParent = uiParent;
@@ -1060,6 +1064,7 @@ public class MultiSchemasUI {
                 delimitedRadio.setEnabled(!selected);
                 if (selected) {
                     getConnection().setFieldSeparatorValue(multiSeparatorsText.getText());
+                    multiSchemaManager.setSelectedColumnIndex(Integer.parseInt(keyIndexText.getText()));
                 } else {
                     getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
                 }
@@ -1558,6 +1563,14 @@ public class MultiSchemasUI {
 
     public void setKeyIndexText(LabelledText keyIndexText) {
         this.keyIndexText = keyIndexText;
+    }
+
+    public Button getUseMultiSaparators() {
+        return this.useMultiSaparators;
+    }
+
+    public void setUseMultiSaparators(Button useMultiSaparators) {
+        this.useMultiSaparators = useMultiSaparators;
     }
 
 }
