@@ -1470,12 +1470,12 @@ public class MultiSchemasUI {
         paramsMap.put(EParameterName.FIELDSEPARATOR, fieldSeparatorText.getText());
         paramsMap.put(EParameterName.ROWSEPARATOR, rowSeparatorText.getText());
         String textEnclosure = textEnclosureCombo.getText();
-        if ("Empty".equals(textEnclosure)) {//$NON-NLS-1$
+        if (EMPTY_VALUE.equals(textEnclosure)) {//$NON-NLS-1$
             textEnclosure = empty;
         }
         paramsMap.put(EParameterName.TEXT_ENCLOSURE, textEnclosure);
         String escapeChar = escapeCharCombo.getText();
-        if ("Empty".equals(escapeChar)) {//$NON-NLS-1$
+        if (EMPTY_VALUE.equals(escapeChar)) {//$NON-NLS-1$
             escapeChar = empty;
         }
         paramsMap.put(EParameterName.ESCAPE_CHAR, escapeChar);

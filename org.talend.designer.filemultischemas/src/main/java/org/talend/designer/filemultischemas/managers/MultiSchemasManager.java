@@ -49,6 +49,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.model.components.EParameterName;
@@ -83,6 +84,9 @@ public class MultiSchemasManager {
     private String keyValues;
 
     private static int DEFAULT_INDEX = 0;
+
+    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
+            ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     // hywang add for featture7373
     private int selectedColumnIndex = DEFAULT_INDEX;
@@ -850,10 +854,9 @@ public class MultiSchemasManager {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String readLine = "";
             String[] row = null;
-            boolean added = false;
             int i = 0;
-            // only preview 100 lines
-            while ((readLine = reader.readLine()) != null && i < 100) {
+            while ((readLine = reader.readLine()) != null && i < maximumRowsToPreview) {
+                boolean added = false;
                 int count = 0;
                 while (count < separators.length()) {
                     CsvReader csvReader = getCsvReader(new ByteArrayInputStream(readLine.getBytes()), separators.charAt(count),
@@ -865,6 +868,7 @@ public class MultiSchemasManager {
                             added = true;
                             csvArray.add(row);
                             csvReader.close();
+                            i++;
                             break;
                         }
                     }
@@ -874,9 +878,9 @@ public class MultiSchemasManager {
                 if (!added && row != null && row.length > keyIndex) {
                     if (isInKeyValues(keyValues, row[keyIndex])) {
                         csvArray.add(row);
+                        i++;
                     }
                 }
-                i++;
             }
 
         }
