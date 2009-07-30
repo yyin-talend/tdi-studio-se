@@ -302,6 +302,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         // add for feature 7507
         bean.setBatchSize(originalValueConnection.getBatchSize());
         bean.setUseProxy(originalValueConnection.isUseProxy());
+        bean.setUesHttp(originalValueConnection.isUseHttpProxy());
         bean.setProxyHost(originalValueConnection.getProxyHost());
         bean.setProxyPort(originalValueConnection.getProxyPort());
         bean.setProxyUsername(originalValueConnection.getProxyUsername());
@@ -311,8 +312,8 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
 
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
         IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(), bean
-                .getModuleName(), bean.getBatchSize(), bean.isUseProxy(), bean.getProxyHost(), bean.getProxyPort(), bean
-                .getProxyUsername(), bean.getProxyPassword(), false);
+                .getModuleName(), bean.getBatchSize(), bean.isUseProxy(), bean.isUesHttp(), bean.getProxyHost(), bean
+                .getProxyPort(), bean.getProxyUsername(), bean.getProxyPassword(), false);
 
         IMetadataTable table = new org.talend.core.model.metadata.MetadataTable();
         List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
@@ -398,7 +399,8 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             for (int i = 0; i < numberOfCol; i++) {
                 label[i] = DEFAULT_LABEL + i;
                 if (firstRowToExtractMetadata == 0) {
-                    label[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i); //$NON-NLS-1$
+                    IMetadataTable metadataTable2 = processDescription.getSchema().get(0);
+                    label[i] = "" + metadataTable2.getListColumns().get(i); //$NON-NLS-1$
                 }
             }
 

@@ -53,6 +53,18 @@ public class SalesforceModuleParseAPI {
 
     public static final String SOCKS_PROXY_PASSWORD = "java.net.socks.password"; //$NON-NLS-1$
 
+    public static final String HTTP_PROXY_HOST = "http.proxyHost"; //$NON-NLS-1$
+
+    public static final String HTTP_PROXY_PORT = "http.proxyPort"; //$NON-NLS-1$
+
+    public static final String HTTP_PROXY_USER = "http.proxyUser";
+
+    public static final String HTTP_PROXY_PASSWORD = "http.proxyPassword";
+
+    public static final String HTTP_PROXY_SET = "http.proxySet";
+
+    final String useProxy = "useProxyBtn";
+
     private String url = null;
 
     private String name = null;
@@ -60,6 +72,8 @@ public class SalesforceModuleParseAPI {
     private String pwd = null;
 
     private String mdname = null;
+
+    private String proxy = null;
 
     private boolean loginOk = false;
 
@@ -89,8 +103,8 @@ public class SalesforceModuleParseAPI {
     /**
      * DOC YeXiaowei Comment method "login".
      */
-    public ArrayList login(String endPoint, String username, String password, String proxyHost, String proxyPort,
-            String proxyUsername, String proxyPassword, String mouleName) throws Exception {
+    public ArrayList login(String theProxy, String endPoint, String username, String password, String proxyHost,
+            String proxyPort, String proxyUsername, String proxyPassword, String mouleName) throws Exception {
         if (endPoint == null) {
             throw new RemoteException(Messages.getString("SalesforceModuleParseAPI.URLInvalid")); //$NON-NLS-1$
         }
@@ -99,11 +113,18 @@ public class SalesforceModuleParseAPI {
         }
         ArrayList doLoginList = null;
         if (name != null && pwd != null && url != null && mdname != null) {
-            if (!url.equals(endPoint) || !name.equals(username) || !pwd.equals(password)
-                    || !checkString(proxyHost, this.proxyHost) || !checkString(proxyPort, this.proxyPort)
-                    || !checkString(proxyUsername, this.proxyUsername) || !checkString(proxyPassword, this.proxyPassword)
-                    || !mdname.equals(mouleName)) {
-                doLoginList = doLogin(endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword, mouleName);
+            if (!url.equals(endPoint)
+                    || !name.equals(username)
+                    || !pwd.equals(password)
+                    || !checkString(proxyHost, this.proxyHost)
+                    || !checkString(proxyPort, this.proxyPort)
+                    || !checkString(proxyUsername, this.proxyUsername)
+                    || !checkString(proxyPassword, this.proxyPassword)
+                    || !mdname.equals(mouleName)
+                    || (proxy != null && theProxy != null && !proxy.equals(theProxy) || (proxy != null && theProxy == null) || (proxy == null && theProxy != null))) {
+
+                doLoginList = doLogin(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword,
+                        mouleName);
 
             } else {
                 if (isLogin()) {
@@ -111,7 +132,8 @@ public class SalesforceModuleParseAPI {
                 }
             }
         } else {
-            doLoginList = doLogin(endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword, mouleName);
+            doLoginList = doLogin(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword,
+                    mouleName);
         }
 
         this.name = username;
@@ -122,6 +144,7 @@ public class SalesforceModuleParseAPI {
         this.proxyUsername = proxyUsername;
         this.proxyPassword = proxyPassword;
         this.mdname = mouleName;
+        this.proxy = theProxy;
         return doLoginList;
     }
 
@@ -136,54 +159,70 @@ public class SalesforceModuleParseAPI {
     }
 
     public ArrayList login(String endPoint, String username, String password) throws Exception {
-        return login(endPoint, username, password, null, null, null, null, null);
+        return login(null, endPoint, username, password, null, null, null, null, null);
     }
 
-    protected ArrayList doLogin(String endPoint, String userName, String pwd, String proxyHost, String proxyPort,
-            String proxyUsername, String proxyPassword, String mouleName) throws RemoteException, ServiceException,
-            MalformedURLException {
-        // set proxy
-        boolean enableProxy = false;
+    protected ArrayList doLogin(String theProxy, String endPoint, String userName, String pwd, String proxyHost,
+            String proxyPort, String proxyUsername, String proxyPassword, String mouleName) throws RemoteException,
+            ServiceException, MalformedURLException {
 
         String oldProxyHost = null;
         String oldProxyPort = null;
         String oldProxyUser = null;
         String oldProxyPwd = null;
 
-        if (proxyHost != null || proxyPort != null) { //$NON-NLS-1$ //$NON-NLS-2$
-            enableProxy = true;
+        String oldHttpProxySet = null;
+
+        if (theProxy != null) {
+            // set proxy
             Properties properties = System.getProperties();
-            oldProxyHost = (String) properties.get(SOCKS_PROXY_HOST);
-            properties.put(SOCKS_PROXY_HOST, proxyHost);
-            oldProxyPort = (String) properties.get(SOCKS_PROXY_PORT);
-            properties.put(SOCKS_PROXY_PORT, proxyPort);
-            oldProxyUser = (String) properties.get(SOCKS_PROXY_USERNAME);
-            properties.put(SOCKS_PROXY_USERNAME, proxyUsername == null ? "" : proxyUsername); //$NON-NLS-1$
-            oldProxyPwd = (String) properties.get(SOCKS_PROXY_PASSWORD);
-            properties.put(SOCKS_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
+            if (theProxy.equals(useProxy) && (proxyHost != null || proxyPort != null)) { //$NON-NLS-1$ 
+            // Properties properties = System.getProperties();
+                oldProxyHost = (String) properties.get(SOCKS_PROXY_HOST);
+                properties.put(SOCKS_PROXY_HOST, proxyHost);
+                oldProxyPort = (String) properties.get(SOCKS_PROXY_PORT);
+                properties.put(SOCKS_PROXY_PORT, proxyPort);
+                oldProxyUser = (String) properties.get(SOCKS_PROXY_USERNAME);
+                properties.put(SOCKS_PROXY_USERNAME, proxyUsername == null ? "" : proxyUsername); //$NON-NLS-1$
+                oldProxyPwd = (String) properties.get(SOCKS_PROXY_PASSWORD);
+                properties.put(SOCKS_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
+
+            } else if (proxyHost != null || proxyPort != null) { //$NON-NLS-1$ 
+                oldHttpProxySet = (String) properties.get(HTTP_PROXY_SET);
+                oldProxyHost = (String) properties.get(HTTP_PROXY_HOST);
+                oldProxyPort = (String) properties.get(HTTP_PROXY_PORT);
+                oldProxyUser = (String) properties.get(HTTP_PROXY_USER);
+                oldProxyPwd = (String) properties.get(HTTP_PROXY_PASSWORD);
+
+                properties.put(HTTP_PROXY_SET, "true");
+                properties.put(HTTP_PROXY_HOST, proxyHost);
+                properties.put(HTTP_PROXY_PORT, proxyPort);
+                properties.put(HTTP_PROXY_USER, proxyUsername == null ? "" : proxyUsername);
+                properties.put(HTTP_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword);
+            }
 
         }
 
-        if (!enableProxy) {
-            Properties properties = System.getProperties();
-            properties.put(SOCKS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
-            properties.put(SOCKS_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
-            properties.put(SOCKS_PROXY_USERNAME, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
-            properties.put(SOCKS_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
+        try {
+            URL soapAddress = new java.net.URL(endPoint);
+            binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
+
+            loginResult = binding.login(userName, pwd);
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            if (theProxy != null) {
+                if (theProxy.equals(useProxy)) {//$NON-NLS-2$
+                    resetSocksParameters(oldProxyHost, oldProxyPort, oldProxyUser, oldProxyPwd);
+                } else {
+                    resetHTTPParameters(oldProxyHost, oldProxyPort, oldHttpProxySet, oldProxyUser, oldProxyPwd);
+                }
+            }
+
         }
-        URL soapAddress = new java.net.URL(endPoint);
-        binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
-
-        loginResult = binding.login(userName, pwd);
-
         setLogin(true);
-        if (enableProxy) {
-            Properties properties = System.getProperties();
-            properties.put(SOCKS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
-            properties.put(SOCKS_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
-            properties.put(SOCKS_PROXY_USERNAME, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
-            properties.put(SOCKS_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
-        }
         // on a successful login, you should always set up your session id
         // and the url for subsequent calls
 
@@ -207,6 +246,33 @@ public class SalesforceModuleParseAPI {
         arrayList.add(binding);
 
         return arrayList;
+    }
+
+    /**
+     * DOC zli Comment method "resetSocksParameters".
+     * 
+     * @param oldProxyHost
+     * @param oldProxyPort
+     * @param oldProxyUser
+     * @param oldProxyPwd
+     */
+    private void resetSocksParameters(String oldProxyHost, String oldProxyPort, String oldProxyUser, String oldProxyPwd) {
+        Properties properties = System.getProperties();
+        properties.put(SOCKS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
+        properties.put(SOCKS_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
+        properties.put(SOCKS_PROXY_USERNAME, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
+        properties.put(SOCKS_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
+    }
+
+    private void resetHTTPParameters(String oldProxyHost, String oldProxyPort, String oldHttpProxySet, String oldProxyUser,
+            String oldProxyPwd) {
+        Properties properties = System.getProperties();
+        properties.put(HTTP_PROXY_SET, oldHttpProxySet == null ? "" : oldHttpProxySet);
+        properties.put(HTTP_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost);
+        properties.put(HTTP_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort);
+        properties.put(HTTP_PROXY_USER, oldProxyUser == null ? "" : oldProxyUser);
+        properties.put(HTTP_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd);
+
     }
 
     public ArrayList describeSObjectsSample(String moduleName) {

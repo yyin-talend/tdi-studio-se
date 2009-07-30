@@ -216,6 +216,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         // add for feature 7507
         String betchSize = getConnection().getBatchSize();
         boolean useProxy = getConnection().isUseProxy();
+        boolean useHttp = getConnection().isUseHttpProxy();
         String proxyHost = getConnection().getProxyHost();
         String proxyPort = getConnection().getProxyPort();
         String proxyUsername = getConnection().getProxyHost();
@@ -227,6 +228,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             password = getContextModeManager().getOriginalValue(password);
             betchSize = getContextModeManager().getOriginalValue(betchSize);
             useProxy = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useProxy)));
+            useHttp = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useHttp)));
             proxyHost = getContextModeManager().getOriginalValue(proxyHost);
             proxyPort = getContextModeManager().getOriginalValue(proxyPort);
             proxyUsername = getContextModeManager().getOriginalValue(proxyUsername);
@@ -234,7 +236,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         }
 
         IMetadataTable metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize,
-                useProxy, proxyHost, proxyPort, proxyUsername, proxyPassword, true);
+                useProxy, useHttp, proxyHost, proxyPort, proxyUsername, proxyPassword, true);
 
         List<IMetadataColumn> columns = metadataTable.getListColumns();
 
@@ -505,6 +507,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         bean.setUseCustomModule(originalValueConnection.isUseCustomModuleName());
         bean.setBatchSize(originalValueConnection.getBatchSize());
         bean.setUseProxy(originalValueConnection.isUseProxy());
+        bean.setUesHttp(originalValueConnection.isUseHttpProxy());
         bean.setProxyHost(originalValueConnection.getProxyHost());
         bean.setProxyPort(originalValueConnection.getProxyPort());
         bean.setProxyUsername(originalValueConnection.getProxyUsername());
@@ -513,8 +516,8 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         processDescription.setSalesforceSchemaBean(bean);
 
         IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(), bean
-                .getModuleName(), bean.getBatchSize(), bean.isUseProxy(), bean.getProxyHost(), bean.getProxyPort(), bean
-                .getProxyUsername(), bean.getProxyPassword(), false);
+                .getModuleName(), bean.getBatchSize(), bean.isUseProxy(), bean.isUesHttp(), bean.getProxyHost(), bean
+                .getProxyPort(), bean.getProxyUsername(), bean.getProxyPassword(), false);
 
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
         IMetadataTable table = new MetadataTable();

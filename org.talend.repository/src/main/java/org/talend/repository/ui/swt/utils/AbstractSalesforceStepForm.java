@@ -116,8 +116,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     }
 
     public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName,
-            String betchSize, boolean useProxy, String proxyHost, String proxyPort, String proxyUsername, String proxyPassword,
-            boolean update) {
+            String betchSize, boolean useProxy, boolean useHttp, String proxyHost, String proxyPort, String proxyUsername,
+            String proxyPassword, boolean update) {
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the wizard doesn't work with this url
         if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
             endPoint = DEFAULT_WEB_SERVICE_URL;
@@ -209,9 +209,9 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return salesforceAPI.isLogin();
     }
 
-    protected ArrayList checkSalesfoceLogin(final String endPoint, final String username, final String password,
-            final String proxyHost, final String proxyPort, final String proxyUsername, final String proxyPassword,
-            final String mouleName) {
+    protected ArrayList checkSalesfoceLogin(final String theProxy, final String endPoint, final String username,
+            final String password, final String proxyHost, final String proxyPort, final String proxyUsername,
+            final String proxyPassword, final String mouleName) {
         final List<String> errors = new ArrayList<String>();
         final ArrayList arraylist = new ArrayList<String>();
 
@@ -235,7 +235,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
                     try {
                         // binding ;
-                        ArrayList loginList = salesforceAPI.login(endPoint, username, password, proxyHost, proxyPort,
+                        ArrayList loginList = salesforceAPI.login(theProxy, endPoint, username, password, proxyHost, proxyPort,
                                 proxyUsername, proxyPassword, mouleName);
                         if (loginList != null) {
                             for (int i = 0; i < loginList.size(); i++) {

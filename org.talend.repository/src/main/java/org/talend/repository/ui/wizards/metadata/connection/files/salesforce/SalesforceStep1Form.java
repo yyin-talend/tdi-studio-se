@@ -79,10 +79,16 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private String defaultBatchSize = "250";
 
+    final String useProxy = "useProxyBtn";
+
+    final String useHttp = "useHttpBtn";
+
     /*
      * 
      */
     private Button useProxyBtn = null;
+
+    private Button useHttpBtn = null;
 
     private LabelledText proxyHostText = null;
 
@@ -91,6 +97,10 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     private LabelledText proxyUsernameText = null;
 
     private LabelledText proxyPasswordText = null;
+
+    /*
+     * 
+     */
 
     private Button checkButton = null;
 
@@ -162,13 +172,18 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
         Group proxyGroup = Form.createGroup(group, 4, Messages.getString("SalesforceStep1Form.SocksProxyParam")); //$NON-NLS-1$
         GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        layoutData.horizontalSpan = 3;
-        proxyGroup.setLayoutData(layoutData);
-        useProxyBtn = new Button(proxyGroup, SWT.CHECK);
-        layoutData = new GridData(GridData.FILL_HORIZONTAL);
         layoutData.horizontalSpan = 4;
-        useProxyBtn.setLayoutData(layoutData);
+        proxyGroup.setLayoutData(layoutData);
+
+        useProxyBtn = new Button(proxyGroup, SWT.CHECK);
         useProxyBtn.setText(Messages.getString("SalesforceStep1Form.EnabledProxy")); //$NON-NLS-1$
+
+        useHttpBtn = new Button(proxyGroup, SWT.CHECK);
+        layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 3;
+        useHttpBtn.setLayoutData(layoutData);
+        useHttpBtn.setText(Messages.getString("SalesforceStep1Form.EnabledHttpProxy")); //$NON-NLS-1$
+
         proxyHostText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyHost")); //$NON-NLS-1$
         proxyPortText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyPort")); //$NON-NLS-1$
         proxyUsernameText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyUsername")); //$NON-NLS-1$
@@ -300,6 +315,16 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             }
 
         });
+        useHttpBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+
+                checkFieldsValue();
+                enableProxyParameters(useHttpBtn.getSelection());
+                getConnection().setUseHttpProxy(useHttpBtn.getSelection());
+            }
+        });
         proxyHostText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -367,13 +392,19 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 ArrayList checkSalesfoceLogin = null;
                 if (useProxyBtn.getSelection()) {
                     // loginOk =
-                    checkSalesfoceLogin = checkSalesfoceLogin(endPoint, username, pwd, proxyHostText.getText(), proxyPortText
-                            .getText(), proxyUsernameText.getText(), proxyPasswordText.getText(), moduleNameCombo.getText());
+                    checkSalesfoceLogin = checkSalesfoceLogin(useProxy, endPoint, username, pwd, proxyHostText.getText(),
+                            proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText(), moduleNameCombo
+                                    .getText());
+                    getRelationShipObjects(checkSalesfoceLogin);
+                } else if (useHttpBtn.getSelection()) {
+                    checkSalesfoceLogin = checkSalesfoceLogin(useHttp, endPoint, username, pwd, proxyHostText.getText(),
+                            proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText(), moduleNameCombo
+                                    .getText());
                     getRelationShipObjects(checkSalesfoceLogin);
                 } else {
                     // loginOk =
-                    checkSalesfoceLogin = checkSalesfoceLogin(endPoint, username, pwd, null, null, null, null, moduleNameCombo
-                            .getText());
+                    checkSalesfoceLogin = checkSalesfoceLogin(null, endPoint, username, pwd, null, null, null, null,
+                            moduleNameCombo.getText());
                     getRelationShipObjects(checkSalesfoceLogin);
                 }
 
@@ -440,10 +471,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     }
 
     Object[] modulename = null;
-
-    private void initRelationShipList() {
-
-    }
 
     private void initModuleNames() {
 
@@ -663,6 +690,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         String batchSize2 = getConnection().getBatchSize();
         setTextValue((batchSize2 != null && !"".equals(batchSize2)) ? batchSize2 : defaultBatchSize, batchSizeText);
         useProxyBtn.setSelection(getConnection().isUseProxy());
+        useHttpBtn.setSelection(getConnection().isUseHttpProxy());
         setTextValue(getConnection().getProxyHost(), proxyHostText);
         setTextValue(getConnection().getProxyPort(), proxyPortText);
         setTextValue(getConnection().getProxyUsername(), proxyUsernameText);
