@@ -311,13 +311,18 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				%>operation_result_<%=cid %>.distinctValues.add(countDistinctValues_<%=cid %>);
 				<%
 			}
+			
+			if(function.equals(COUNT)) {
+%>
+				operation_result_<%=cid %>.<%=outputColumnName %>_count++;
+<%
+			}
 
 			if(!hasAlreadyCountProperty && function.equals(COUNT)) {
 				hasAlreadyCountProperty = true;
 				%>
 				operation_result_<%=cid %>.count++;
 				<%
-				
 			}
 			
 			if(outputIsNumber && function.equals(AVG)){
