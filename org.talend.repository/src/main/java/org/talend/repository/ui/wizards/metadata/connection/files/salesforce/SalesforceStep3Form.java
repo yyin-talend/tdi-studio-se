@@ -37,7 +37,6 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
-import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -55,7 +54,6 @@ import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -386,21 +384,21 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         } else {
 
             List<String[]> csvRows = csvArray.getRows();
-            String[] fields = csvRows.get(0);
+            // String[] fields = csvRows.get(0);
             // int numberOfCol = fields.size();
 
             Integer numberOfCol = getRightFirstRow(csvRows);
 
             // define the label to the metadata width the content of the first row
             int firstRowToExtractMetadata = 0;
-
+            List<IMetadataColumn> listColumns = processDescription.getSchema().get(0).getListColumns();
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol.intValue()];
             for (int i = 0; i < numberOfCol; i++) {
                 label[i] = DEFAULT_LABEL + i;
                 if (firstRowToExtractMetadata == 0) {
-                    IMetadataTable metadataTable2 = processDescription.getSchema().get(0);
-                    label[i] = "" + metadataTable2.getListColumns().get(i); //$NON-NLS-1$
+
+                    label[i] = "" + listColumns.get(i); //$NON-NLS-1$
                 }
             }
 
@@ -435,71 +433,74 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                     }
                 }
 
+                lengthValue = listColumns.get(i).getLength();
+                precisionValue = listColumns.get(i).getPrecision();
                 // for another lines
-                for (int f = firstRowToExtractMetadata; f < csvRows.size(); f++) {
-                    fields = csvRows.get(f);
-                    if (fields.length > i) {
-                        String value = fields[i];
-                        if (!value.equals("")) { //$NON-NLS-1$
-                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                                if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
-                                            .getTalendTypeOfValue(value));
-                                }
-                            } else {
-                                if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
-                                            .getTalendTypeOfValue(value));
-                                }
-                            }
-                            if (lengthValue < value.length()) {
-                                lengthValue = value.length();
-                            }
-                            int positionDecimal = 0;
-                            if (value.indexOf(',') > -1) {
-                                positionDecimal = value.lastIndexOf(',');
-                                precisionValue = lengthValue - positionDecimal;
-                            } else if (value.indexOf('.') > -1) {
-                                positionDecimal = value.lastIndexOf('.');
-                                precisionValue = lengthValue - positionDecimal;
-                            }
-                        } else {
-                            if (globalType == null) {
-                                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                                    if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
-                                            && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
-                                        globalType = CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
-                                        if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
-                                                && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                        MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
-                                            lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore()
-                                                    .getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
-                                        }
-                                    }
-                                } else {
-                                    if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
-                                            && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
-                                        globalType = CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
-                                        if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
-                                                && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                        MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
-                                            lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore()
-                                                    .getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                // for (int f = firstRowToExtractMetadata; f < csvRows.size(); f++) {// begin
+                // lengthValue = metadataTable2.getListColumns().get(f).getLength();
+                // fields = csvRows.get(f);
+                // if (fields.length > i) {
+                // String value = fields[i];
+                //                        if (!value.equals("")) { //$NON-NLS-1$
+                // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                // if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
+                // globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
+                // .getTalendTypeOfValue(value));
+                // }
+                // } else {
+                // if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
+                // globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
+                // .getTalendTypeOfValue(value));
+                // }
+                // }
+                // if (lengthValue < value.length()) {
+                // lengthValue = value.length();
+                // }
+                // int positionDecimal = 0;
+                // if (value.indexOf(',') > -1) {
+                // positionDecimal = value.lastIndexOf(',');
+                // precisionValue = lengthValue - positionDecimal;
+                // } else if (value.indexOf('.') > -1) {
+                // positionDecimal = value.lastIndexOf('.');
+                // precisionValue = lengthValue - positionDecimal;
+                // }
+                // } else {
+                // if (globalType == null) {
+                // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                // if (CorePlugin.getDefault().getPreferenceStore().getString(
+                // MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
+                // && !CorePlugin.getDefault().getPreferenceStore().getString(
+                //                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
+                // globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                // MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                // if (CorePlugin.getDefault().getPreferenceStore().getString(
+                // MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                // && !CorePlugin.getDefault().getPreferenceStore().getString(
+                //                                                        MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
+                // lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore()
+                // .getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                // }
+                // }
+                // } else {
+                // if (CorePlugin.getDefault().getPreferenceStore().getString(
+                // MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
+                // && !CorePlugin.getDefault().getPreferenceStore().getString(
+                //                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
+                // globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                // MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
+                // if (CorePlugin.getDefault().getPreferenceStore().getString(
+                // MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
+                // && !CorePlugin.getDefault().getPreferenceStore().getString(
+                //                                                        MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
+                // lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore()
+                // .getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
+                // }
+                // }
+                // }
+                // }
+                // }
+                // }
+                // }// end
 
                 // define the metadataColumn to field i
                 MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
