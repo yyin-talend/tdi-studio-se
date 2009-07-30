@@ -243,7 +243,7 @@ if(temp_<%=cid %>.length() > 0) {
 <%
 			}
 		}
-		if (conns.size()>0) {	
+		if (conns.size()>0) {
 			boolean isFirstEnter = true;
 			for (int i=0;i<conns.size();i++) {
 				IConnection conn = conns.get(i);
@@ -567,6 +567,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}else{
 			
 <%
+			boolean hasStringDefault = false;
+			for (int valueM=0; valueM<columnSize; valueM++) {
+				IMetadataColumn column = columns.get(valueM);
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+					if(hasStringDefault==false && column.getDefault()!=null && column.getDefault().length() > 0 ){
+						hasStringDefault = true;
+						break;
+					}
+				}
+			}
+			if(hasStringDefault==true){
+%>
+				String temp_<%=cid %> = "";
+<%
+			}
 			for (int i=0;i<columnSize;i++) {
 					IMetadataColumn column=columns.get(i);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -578,9 +594,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if(<%=i %> < row<%=cid %>.length){				
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+						String defaultValue = column.getDefault();
+						if(defaultValue!=null && defaultValue.length()>0){
+%>
+					temp_<%=cid %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
+					if(temp_<%=cid %>.length() > 0){
+						<%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>;
+					}else{
+						<%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+					}
+<%
+						}else{
 %>
 					<%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
 <%
+						}
 					} else {
 %>
 						if(row<%=cid %>[<%=i %>].length() > 0) {
@@ -610,15 +638,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							}
 	%>					
 						}else{
-							<%=firstConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+							<%=firstConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault())%>;
 						}
 	<%					
 					}%>	
 								
-				}else{										
-
-				<%=firstConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-
+				}else{
+					<%=firstConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault()) %>;
 				}
 
 <%			}%>
@@ -682,7 +708,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		<% if(isFirstEnter) {%>if(!whetherReject_<%=cid%>) { <% isFirstEnter = false; } %>      
              if(<%=conn.getName() %> == null){ 
             	 <%=conn.getName() %> = new <%=conn.getName() %>Struct();
-             }				
+             }
 <%
 			    	 for (IMetadataColumn column: metadata.getListColumns()) {
 %>
