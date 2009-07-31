@@ -1,0 +1,9 @@
+History:
+1. when feature:2033, update from API9.0->API10.0
+
+some resources:
+1). new in salesforce API Version 10.0, link:http://wiki.apexdevnet.com/index.php/What%27s_New_in_Apex_Web_Services_API_Summer_%2707
+
+2). guide for salesforce API Version 10.0, link:http://www.salesforce.com/us/developer/docs/api/index.htm
+
+3). guide for salesforce API Version 9.0, link:http://www.salesforce.com/us/developer/docs/api90/index.htm
