@@ -767,7 +767,7 @@ public class MultiSchemasManager {
                 if ("".equals(first.trim())) { // must be contain first //$NON-NLS-1$
                     continue;
                 }
-                currentRowKey = first.toLowerCase();
+                currentRowKey = first;
                 if (uniqueKey.contains(currentRowKey)) { // existed.
                     continue;
                 }
@@ -821,11 +821,11 @@ public class MultiSchemasManager {
             String currentRowKey = ""; //$NON-NLS-1$
 
             while (fileInputDelimited.nextRecord()) {
-                final String first = fileInputDelimited.get(0);
+                final String first = fileInputDelimited.get(selectColumnIndex);
                 if ("".equals(first.trim())) { // must be contain first //$NON-NLS-1$
                     continue;
                 }
-                currentRowKey = first.toLowerCase();
+                currentRowKey = first;
                 if (uniqueKey.contains(currentRowKey)) { // existed.
                     continue;
                 }
