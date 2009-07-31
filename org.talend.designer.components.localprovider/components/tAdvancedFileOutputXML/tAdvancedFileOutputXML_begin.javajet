@@ -166,7 +166,9 @@ if(needRoot_<%=cid %> ==false){
 %>
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 format_<%=cid %>.setEncoding(<%=encoding%>);
-
+					<%if(("true").equals(ElementParameterParser.getValue(node, "__NOT_TRIM_TEXT__"))){%>
+format_<%=cid %>.setTrimText(false);
+					<%}%>
 <%
 				}else if(("Null").equals(mode)){
 %>
