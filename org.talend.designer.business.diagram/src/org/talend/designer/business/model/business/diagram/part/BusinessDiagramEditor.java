@@ -171,7 +171,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             DiagramResourceManager diagramResourceManager = new DiagramResourceManager();
             BusinessProcessItem businessProcessItem = (BusinessProcessItem) repositoryEditorInput.getItem();
             diagramResourceManager.updateFromResource(businessProcessItem, repositoryEditorInput.getFile());
-            saveSVG(businessProcessItem);
+            // remove the function of sve SVG file because the imported business model can't save SVG file.
+            // saveSVG(businessProcessItem);
             try {
                 ProxyRepositoryFactory.getInstance().save(businessProcessItem);
             } catch (PersistenceException e) {
@@ -200,6 +201,9 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             if (svgBusinessProcessItem == null) {
                 serialized = false;
                 svgBusinessProcessItem = PropertiesFactory.eINSTANCE.createSVGBusinessProcessItem();
+            }
+            svgBusinessProcessItem.eResource();
+            if (svgBusinessProcessItem.getProperty() == null) {
                 Property property = PropertiesFactory.eINSTANCE.createProperty();
                 property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                         .getUser());
@@ -208,16 +212,15 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
                 property.setLabel(businessProcessItem.getProperty().getLabel() + "_svg");
                 property.setId("svg_" + businessProcessItem.getProperty().getId());
                 svgBusinessProcessItem.setProperty(property);
-                svgBusinessProcessItem.setBusinessProcessItem(businessProcessItem);
-                svgBusinessProcessItem.setName(businessProcessItem.getProperty().getLabel() + "_svg");
             }
-
+            svgBusinessProcessItem.setBusinessProcessItem(businessProcessItem);
+            svgBusinessProcessItem.setName(businessProcessItem.getProperty().getLabel() + "_svg");
             svgBusinessProcessItem.setContent(byteArray);
 
             businessProcessItem.setSvgBusinessProcessItem(svgBusinessProcessItem);
 
             try {
-                if (!serialized) {
+                if (!serialized || svgBusinessProcessItem.eResource() == null) {
                     ProxyRepositoryFactory.getInstance().create(svgBusinessProcessItem,
                             new Path(businessProcessItem.getState().getPath()));
                 } else {
