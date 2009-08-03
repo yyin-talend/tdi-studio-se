@@ -971,7 +971,22 @@
              id="org.talend.repository.model.migration.MigrationTaskForIssue7547"
              name="Modify tAlfrescoOutput Server field value">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.RenametPivotOutputDelimitedTotPivotToColumnsDelimited"
+             description="Rename tPivotOutputDelimited to tPivotToColumnsDelimited "
+             id="org.talend.repository.model.migration.RenametPivotOutputDelimitedTotPivotToColumnsDelimited"
+             name="Rename tPivotOutputDelimited to tPivotToColumnsDelimited ">
+       </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.RenametUnpivotRowTotPivotToRows"
+             description="Rename tUnpivotRow to tPivotToRows "
+             id="org.talend.repository.model.migration.RenametUnpivotRowTotPivotToRows"
+             name="Rename tUnpivotRow to tPivotToRows ">
+       </projecttask>              
    </extension>
+   
    <extension
          point="org.talend.core.librariesNeeded">
       <libraryNeeded
