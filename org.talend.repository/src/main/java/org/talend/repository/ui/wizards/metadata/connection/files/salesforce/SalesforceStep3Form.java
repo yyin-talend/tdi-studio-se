@@ -350,7 +350,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             ProcessDescription processDescription = getProcessDescription(originalValueConnection);
             // the web service url is used by tSalesforceInput, see 0004027: Studio crashes when clicking Next on
             // Step 3 of SF wizard
-            processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
+            // processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
             CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
 
             if (csvArray == null) {

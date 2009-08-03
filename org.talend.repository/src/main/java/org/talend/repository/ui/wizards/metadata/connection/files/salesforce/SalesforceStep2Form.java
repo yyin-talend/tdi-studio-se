@@ -99,6 +99,8 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
     private Composite outputComposite;
 
+    private SalesforceModuleParseAPI salesforceAPI = null;
+
     /**
      * DOC YeXiaowei SalesforceStep2Form constructor comment.
      * 
@@ -111,6 +113,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm(true);
+        this.salesforceAPI = salesforceAPI;
     }
 
     /*
@@ -421,7 +424,12 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             try {
                 // the web service url is used by tSalesforceInput, see 0004027: Studio crashes when clicking Next on
                 // Step 3 of SF wizard
-                processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
+                // if (salesforceAPI.getCurrentAPI() instanceof SalesforceModuleParserPartner) {
+                // processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_PARTNER_INPUT_URL);
+                // } else {
+                // processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
+                // }
+
                 csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
                 if (csvArray == null) {
                     previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
