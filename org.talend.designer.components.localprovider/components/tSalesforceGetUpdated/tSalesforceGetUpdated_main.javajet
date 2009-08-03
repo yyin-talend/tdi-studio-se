@@ -57,9 +57,42 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 					com.sforce.soap.partner.GetUpdatedResult mr_<%=cid%> = binding_<%=cid%>.getUpdated("<%=module%>", startDate_<%=cid%>, endDate_<%=cid%>);
             		com.sforce.soap.partner.sobject.SObject[] so_<%=cid%> = null;
-            		if (mr_<%=cid%>.getIds() != null && mr_<%=cid%>.getIds().length > 0) {
-                		so_<%=cid%> = binding_<%=cid%>.retrieve("<%=fieldlist%>", "<%=module%>", mr_<%=cid%>.getIds());
+            		String[] ids_<%=cid %> = mr_<%=cid%>.getIds();
+            		
+            		if(ids_<%=cid %> !=null && ids_<%=cid %>.length > 0){
+            			if(ids_<%=cid %>.length > 2000){//retrive() doesn't support the number of records over 2000
+            			
+							so_<%=cid %> = new com.sforce.soap.partner.sobject.SObject[ids_<%=cid %>.length];
+							
+							int newMax = 0;
+							int newBase = 0;
+							while (newMax < ids_<%=cid %>.length){
+								newBase = newMax;
+								newMax += 2000;
+								if (newMax > ids_<%=cid %>.length)
+									newMax = ids_<%=cid %>.length;
+								String[] localIds = new String[newMax];
+								int idCounter = 0;
+								for (int i=newBase;i<newMax;i++)
+								{
+									localIds[idCounter] = ids_<%=cid %>[i];
+									idCounter++;
+								}
+								com.sforce.soap.partner.sobject.SObject[] tmpResult = binding_<%=cid %>.retrieve("<%=fieldlist %>","<%=module %>",localIds);
+								idCounter = 0;
+								for (int i=newBase;i<newMax;i++){
+									so_<%=cid %>[i] = tmpResult[idCounter];
+									idCounter++;
+								}
+							}
+            			}else{
+            				so_<%=cid%> = binding_<%=cid %>.retrieve("<%=fieldlist %>", "<%=module %>", mr_<%=cid%>.getIds());
+            			}
             		}
+            		
+//            		if (mr_<%=cid%>.getIds() != null && mr_<%=cid%>.getIds().length > 0) {
+//                		so_<%=cid%> = binding_<%=cid%>.retrieve("<%=fieldlist%>", "<%=module%>", mr_<%=cid%>.getIds());
+//            		}
             		if(so_<%=cid%> != null){
 					for (int i=0;i<so_<%=cid%>.length;i++){
 						nb_line_<%=cid%> ++;
