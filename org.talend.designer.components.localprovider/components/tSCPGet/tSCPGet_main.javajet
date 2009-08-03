@@ -102,6 +102,6 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 <%}%>
 
 }catch(Exception e){
-		e.printStackTrace();
 		globalMap.put("<%=cid %>_STATUS", "File get fail.");
+		throw e;
 }
