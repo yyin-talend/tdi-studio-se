@@ -1295,7 +1295,7 @@ public class Process extends Element implements IProcess2 {
         updateAllMappingTypes();
 
         byte[] innerContent = nType.getScreenshot();
-        if (nc.getExternalNode() != null) {
+        if (nc.getExternalNode() != null && !CommonsPlugin.isHeadless()) {
             nc.getExternalNode().setScreenshot(ImageUtils.createImageFromData(innerContent));
         }
 
