@@ -64,7 +64,36 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 			idlist_<%=cid%>.add(dr_<%=cid%>.getId());
                 		}
                 		qr_<%=cid%> = binding_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE isDeleted = true");
-                		so_<%=cid%> = qr_<%=cid%>.getRecords();
+                		
+                		
+                		
+                		if(qr_<%=cid %> !=null && qr_<%=cid %>.getSize() > 0 ){
+                			if(qr_<%=cid %>.getSize() > 1000){
+                				boolean done = false;
+                				so_<%=cid %> = new com.sforce.soap.partner.sobject.SObject[qr_<%=cid %>.getSize()];
+                				int count = 0;
+                				while(!done){
+                					for(int i=0;i<qr_<%=cid %>.getRecords().length; i++){
+                						so_<%=cid%>[count++] = qr_<%=cid %>.getRecords(i);
+                					}
+                					
+		                			if(qr_<%=cid %>.isDone()){
+		                				done = true;
+		                			}else{
+		                				qr_<%=cid %> = binding_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator());
+		                			}	
+		                			                			
+	                			}
+	                			
+
+	                			
+                			}else{                			
+	                			so_<%=cid%> = qr_<%=cid%>.getRecords();	                			
+                			}
+                			
+                		}
+                		
+                		
             		}
             		if(so_<%=cid%> != null){
 					for (int i=0;i<so_<%=cid%>.length;i++){
