@@ -66,29 +66,21 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 		qr_<%=cid%> = binding_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE isDeleted = true");
                 		
                 		
-                		
+                		boolean done = false;
                 		if(qr_<%=cid %> !=null && qr_<%=cid %>.getSize() > 0 ){
-                			if(qr_<%=cid %>.getSize() > 1000){
-                				boolean done = false;
-                				so_<%=cid %> = new com.sforce.soap.partner.sobject.SObject[qr_<%=cid %>.getSize()];
-                				int count = 0;
-                				while(!done){
-                					for(int i=0;i<qr_<%=cid %>.getRecords().length; i++){
-                						so_<%=cid%>[count++] = qr_<%=cid %>.getRecords(i);
-                					}
-                					
-		                			if(qr_<%=cid %>.isDone()){
-		                				done = true;
-		                			}else{
-		                				qr_<%=cid %> = binding_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator());
-		                			}	
-		                			                			
-	                			}
-	                			
 
-	                			
-                			}else{                			
-	                			so_<%=cid%> = qr_<%=cid%>.getRecords();	                			
+            				so_<%=cid %> = new com.sforce.soap.partner.sobject.SObject[qr_<%=cid %>.getSize()];
+            				int count = 0;
+            				while(!done && qr_<%=cid %> !=null && qr_<%=cid %>.getRecords()!=null){
+            					for(int i=0;i<qr_<%=cid %>.getRecords().length; i++){
+            						so_<%=cid%>[count++] = qr_<%=cid %>.getRecords(i);
+            					}
+            					
+	                			if(qr_<%=cid %>.isDone()){
+	                				done = true;
+	                			}else{
+	                				qr_<%=cid %> = binding_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator());
+	                			}	                			                			
                 			}
                 			
                 		}
