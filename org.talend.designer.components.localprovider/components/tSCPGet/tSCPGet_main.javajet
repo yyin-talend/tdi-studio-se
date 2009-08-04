@@ -27,7 +27,9 @@ imports="
             }
          %>
        };
-
+java.io.File dir_<%=cid %> = null;
+java.io.File file_<%=cid %> = null;
+java.io.FileOutputStream out_<%=cid %> = null;
 try{
 <%if(("append").equals(replaceOption)){%>
 for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
@@ -36,15 +38,13 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 					sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
 				    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
 				    if(index_<%=cid %> >0){
-					java.io.File dir_<%=cid %> = new java.io.File(
-							<%=localdir %>);
+					dir_<%=cid %> = new java.io.File(<%=localdir %>);
 					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);	
-					java.io.File file_<%=cid %> = new java.io.File(
-							dir_<%=cid %>, extension_<%=cid %>);
+					file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
 					if(!file_<%=cid %>.exists()){
 					  file_<%=cid %>.getParentFile().mkdirs();
 					}
-					java.io.FileOutputStream out_<%=cid %> = new java.io.FileOutputStream(
+					out_<%=cid %> = new java.io.FileOutputStream(
 							file_<%=cid %>, true);
 					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
 					nb_file_<%=cid%> ++ ;
@@ -77,15 +77,15 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 					sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
 				    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
 				    if(index_<%=cid %> >0){
-					java.io.File dir_<%=cid %> = new java.io.File(
+					dir_<%=cid %> = new java.io.File(
 							<%=localdir %>);
 					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);	
-					java.io.File file_<%=cid %> = new java.io.File(
+					file_<%=cid %> = new java.io.File(
 							dir_<%=cid %>, extension_<%=cid %>);
 					if(!file_<%=cid %>.exists()){
 					  file_<%=cid %>.getParentFile().mkdirs();
 					}
-					java.io.FileOutputStream out_<%=cid %> = new java.io.FileOutputStream(
+					out_<%=cid %> = new java.io.FileOutputStream(
 							file_<%=cid %>, false);
 					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
 					nb_file_<%=cid%> ++ ;
@@ -102,6 +102,12 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 <%}%>
 
 }catch(Exception e){
+		if(out_<%=cid %> != null){
+			out_<%=cid %>.close();
+		}
+		if(file_<%=cid%>.length() == 0){
+			file_<%=cid%>.delete();
+		}
 		globalMap.put("<%=cid %>_STATUS", "File get fail.");
 		throw e;
 }

@@ -17,4 +17,7 @@ imports="
             /* Close the connection */
             conn_<%=cid%>.close();
 	<%}%>
+			if(out_<%=cid %> != null){
+				out_<%=cid %>.close();
+			}
 			globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
