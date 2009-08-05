@@ -124,7 +124,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String[] localIds_<%=cid %> = new String[newMax_<%=cid %>-newBase_<%=cid %>];
 
 			for (int i_<%=cid %>=newBase_<%=cid %>;i_<%=cid %> < newMax_<%=cid %>;i_<%=cid %>++){
-				localIds_<%=cid %>[i_<%=cid %>] = ids_<%=cid %>[i_<%=cid %>];
+				localIds_<%=cid %>[i_<%=cid %>-newBase_<%=cid %>] = ids_<%=cid %>[i_<%=cid %>];
 			}
 			
 			so_<%=cid %> = binding_<%=cid %>.retrieve("<%=fieldlist %>","<%=module %>",localIds_<%=cid %>);
