@@ -6,6 +6,9 @@ imports="
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.process.IConnectionCategory
 		java.util.List
 		"
 %>
@@ -44,12 +47,19 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	IMetadataTable metadata = metadatas.get(0);
 	
 	if (metadata != null) {
+		List<IMetadataColumn> columnList = metadata.getListColumns(); 
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 
 		if (outgoingConns != null && outgoingConns.size() > 0){
 			
 			String sd = ElementParameterParser.getValue(node, "__START_DATE__");
 			String ed = ElementParameterParser.getValue(node, "__END_DATE__");
+			String username = ElementParameterParser.getValue(node, "__USER__");
+			String password = ElementParameterParser.getValue(node, "__PASS__");
+			String module = ElementParameterParser.getValue(node, "__MODULENAME__");
+			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__").trim();
+			module = (("CustomModule").equals(module)) ? customModulename.replaceAll("\"","") : module;
+			String endPoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 %>
 			java.text.SimpleDateFormat startdf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             java.text.SimpleDateFormat enddf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -65,7 +75,89 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        
 			com.sforce.soap.partner.SoapBindingStub binding_<%=cid%> = null;
         	com.sforce.soap.partner.LoginResult loginResult_<%=cid%> = null;
+
+			binding_<%=cid%> = (com.sforce.soap.partner.SoapBindingStub) new com.sforce.soap.partner.SforceServiceLocator().getSoap(new java.net.URL(<%=endPoint%>));
+			loginResult_<%=cid%> = binding_<%=cid%>.login(<%=username%>, <%=password%>);
+			binding_<%=cid%>._setProperty(com.sforce.soap.partner.SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult_<%=cid%>.getServerUrl());
+			
+			com.sforce.soap.partner.SessionHeader sh_<%=cid%> = new com.sforce.soap.partner.SessionHeader();
+			sh_<%=cid%>.setSessionId(loginResult_<%=cid%>.getSessionId());
+			binding_<%=cid%>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh_<%=cid%>);
 <%
+			java.lang.StringBuilder sb = new java.lang.StringBuilder();
+			for (IMetadataColumn column: columnList){
+				if(sb.length() == 0){
+					sb.append(column.getLabel());
+				}else{
+					sb.append(","+column.getLabel());
+				}
+			}
+			String fieldlist = sb.toString();
+		
+			for(IConnection outgoingConn : outgoingConns) {
+				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
+%>				
+			com.sforce.soap.partner.GetDeletedResult gdr_<%=cid%> = binding_<%=cid%>.getDeleted("<%=module%>", startDate_<%=cid%>, endDate_<%=cid%>);
+    		com.sforce.soap.partner.QueryResult qr_<%=cid%> = null;
+    		com.sforce.soap.partner.DeletedRecord[] drs_<%=cid%> = gdr_<%=cid%>.getDeletedRecords();
+        	java.util.List<String> idlist_<%=cid%> = new java.util.ArrayList<String>();
+    		if (drs_<%=cid%> != null && drs_<%=cid%>.length > 0) {
+        		for(com.sforce.soap.partner.DeletedRecord dr_<%=cid%> : drs_<%=cid%>){
+        			idlist_<%=cid%>.add(dr_<%=cid%>.getId());
+        		}
+        		qr_<%=cid%> = binding_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE isDeleted = true");
+        		
+        		
+        		boolean done = false;
+
+
+				while(!done && qr_<%=cid %> !=null && qr_<%=cid %>.getRecords()!=null){
+        						                			
+
+					for (int i_<%=cid %>=0;i_<%=cid %> < qr_<%=cid %>.getRecords().length;i_<%=cid %>++){
+						if(idlist_<%=cid%>.contains(qr_<%=cid %>.getRecords(i_<%=cid %>).getId())){
+							nb_line_<%=cid%> ++;
+							org.apache.axis.message.MessageElement[] fields_<%=cid %> = qr_<%=cid %>.getRecords(i_<%=cid %>).get_any();
+							int len_<%=cid%> = fields_<%=cid %>.length;
+<%
+						for( int i = 0; i < columnList.size(); i++) {
+						
+							IMetadataColumn column = columnList.get(i);
+							
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							
+							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+							
+							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+%>						
+							if (<%=i %> < len_<%=cid%> && fields_<%=cid %>[<%=i%>].getValue() != null){
+<%
+									if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
+%>
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getValue();
+<%
+									} else if(javaType == JavaTypesManager.DATE) { // Date
+%>
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_Date(fields_<%=cid %>[<%=i%>].getValue(), <%= patternValue %>);
+<%
+									} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
+%>
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getValue().getBytes();
+<%
+									} else  { // other
+%>						
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields_<%=cid %>[<%=i%>].getValue());
+<%
+									}
+%>			
+							} else {
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+							}
+<%
+						}
+				}
+			}
+		
 		}
 	}
 }
