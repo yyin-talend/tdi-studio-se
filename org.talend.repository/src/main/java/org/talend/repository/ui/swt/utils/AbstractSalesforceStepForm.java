@@ -255,6 +255,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         }
 
                         salesforceAPI.setLogin(true);
+                    } catch (com.sforce.soap.partner.fault.ApiFault ex) {
+                        errors.add(ex.getExceptionMessage());
                     } catch (Throwable e) {
                         errors.add(e.getMessage());
                         ExceptionHandler.process(e);
