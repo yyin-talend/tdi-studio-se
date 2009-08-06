@@ -153,6 +153,7 @@ cid = cid_original.replace("tAdvancedFileOutputXML","tAFOX");
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
+boolean isCompact = ("true").equals(ElementParameterParser.getValue(node, "__PRETTY_COMPACT__"));
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -205,12 +206,12 @@ if(currentRowCount_<%=cid %> > 0){
 
         if (preUnNullMaxIndex_<%=cid%> < preNewTabIndex_<%=cid%> ) {
 			for (int i_<%=cid%> = preNewTabIndex_<%=cid%> - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
-                out_<%=cid%>.newLine();
+                <%if(isCompact==false){%>out_<%=cid%>.newLine(); <%}%>
                 out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
             }
         } else {
             for (int i_<%=cid%> = preUnNullMaxIndex_<%=cid%>; i_<%=cid%> >= 0; i_<%=cid%>--) {
-                out_<%=cid%>.newLine();
+                <%if(isCompact==false){%>out_<%=cid%>.newLine(); <%}%>
                 out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
             }
         }
@@ -221,7 +222,7 @@ if(currentRowCount_<%=cid %> > 0){
 %>
 	if(nb_line_<%=cid %> > 0){
 		for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
-	        out_<%=cid%>.newLine();
+	        <%if(isCompact==false){%>out_<%=cid%>.newLine(); <%}%>
 	        out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
 	    }
     }

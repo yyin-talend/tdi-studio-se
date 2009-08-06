@@ -32,6 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
         		boolean isMerge= ("true").equals(ElementParameterParser.getValue(node, "__MERGE__"));
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
+        		boolean isCompact = ("true").equals(ElementParameterParser.getValue(node, "__PRETTY_COMPACT__"));
         		List<Map<String, String>> rootTable = 
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
                 List<Map<String, String>> groupTable = 
@@ -163,8 +164,12 @@ if(needRoot_<%=cid %> ==false){
 	doc_<%=cid %>=org.dom4j.DocumentHelper.createDocument();
 <%
 					}
+					if(isCompact==true){//generate compact file
 %>
+org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createCompactFormat();
+					<%}else{%>
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
+					<%}%>
 format_<%=cid %>.setTrimText(false);
 format_<%=cid %>.setEncoding(<%=encoding%>);
 
@@ -181,9 +186,11 @@ java.util.List<String> startTabStrs_<%=cid%> = new java.util.ArrayList<String>()
         				for(int len = 1; len<endTabs.length-1;len++){
 %>
 endTabStrs_<%=cid%>.add("<%=emptyspace%></<%=endTabs[len]%>>");
-startTabStrs_<%=cid%>.add("\n<%=emptyspace%><<%=endTabs[len]%>>");
+startTabStrs_<%=cid%>.add("<%=isCompact?"":"\n"%><%=emptyspace%><<%=endTabs[len]%>>");
 <%
-	         				emptyspace += "  ";
+							if(isCompact==false){//generate pretty file
+	         					emptyspace += "  ";
+	         				}
             			}
         			}
 %>

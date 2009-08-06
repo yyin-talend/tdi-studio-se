@@ -317,6 +317,8 @@ class GenerateToolByNull{
 	boolean outputAsXSD = false;
 	XMLTool tool = null;
 	
+	boolean isCompact = false;
+	
 	public void generateCode(XMLNode node, String emptySpace){	
 		if(("ELEMENT").equals(node.type)){
 			startElement(node,emptySpace);
@@ -337,12 +339,18 @@ class GenerateToolByNull{
                     	<%}%>
 		){
 <%
-						generateCode(child,emptySpace+"  ");
+						if(isCompact==false)
+							generateCode(child,emptySpace+"  ");
+						else
+							generateCode(child,emptySpace);
 %>
 		}
 <%
             		}else{
-            			generateCode(child,emptySpace+"  ");
+            			if(isCompact==false)
+            				generateCode(child,emptySpace+"  ");
+            			else
+            				generateCode(child,emptySpace);
             		}
 				}
 			}
@@ -354,7 +362,7 @@ class GenerateToolByNull{
 	}
 	private void startElement(XMLNode node, String emptySpace){
 %>
-		buf_<%=cid%>.append("\n");
+		buf_<%=cid%>.append("<%=isCompact?"":"\n"%>");
 		buf_<%=cid%>.append("<%=emptySpace%><<%=node.name%>");
 <%
 		if(outputAsXSD && node.parent==null){
@@ -384,7 +392,7 @@ class GenerateToolByNull{
 	public void endElement(XMLNode node, String emptySpace){
 		if(node.elements.size()>0){
 %>
-		buf_<%=cid%>.append("\n");
+		buf_<%=cid%>.append("<%=isCompact?"":"\n"%>");
 		buf_<%=cid%>.append("<%=emptySpace%></<%=node.name%>>");
 <%
 		}else{
@@ -498,6 +506,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 				
         		boolean isMerge= ("true").equals(ElementParameterParser.getValue(node, "__MERGE__"));        		
+        		boolean isCompact = ("true").equals(ElementParameterParser.getValue(node, "__PRETTY_COMPACT__"));
         		
         		// init tool
                 XMLTool tool = new XMLTool();
@@ -727,6 +736,7 @@ else if(("Null").equals(mode)){
     }
     generateToolByNull.cid = cid;
     generateToolByNull.tool = tool;
+    generateToolByNull.isCompact = isCompact;
 %>
 	StringBuffer buf_<%=cid%> = new StringBuffer();
 	//init value is 0 not -1, because it will output the root tab when all the row value is null.
@@ -739,7 +749,9 @@ else if(("Null").equals(mode)){
 	String rootEmptySpace = "";
 	for(int i=0;i < mainList.size();i++){
 		generateToolByNull.generateCode(mainList.get(i),rootEmptySpace);
-		rootEmptySpace+="  ";
+		if(isCompact==false){//generate pretty file
+			rootEmptySpace+="  ";
+		}
 		
 		if(!generateToolByNull.outputAsXSD && !generateToolByNull.allowEmpty){
 			if(mainList.get(i).relatedColumn != null || mainList.get(i).childrenColumnList.size()>0){
@@ -824,9 +836,13 @@ else if(("Null").equals(mode)){
 	// subtree XML string generate
 <%
 		String emptySpace = "";
-		for(int len = groupList.get(i).path.split("/").length-1;len>1;len--){
-			emptySpace +="  ";
+		
+		if(isCompact==false){//generate pretty file
+			for(int len = groupList.get(i).path.split("/").length-1;len>1;len--){
+				emptySpace +="  ";
+			}
 		}
+		
 		generateToolByNull.generateCode(groupList.get(i),emptySpace);
 		
 		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
@@ -888,7 +904,7 @@ else if(("Null").equals(mode)){
         if (preUnNullMaxIndex_<%=cid%> >= preNewTabIndex_<%=cid%>
             && preUnNullMaxIndex_<%=cid%> >= <%=mainList.size()%> + newTabIndex_<%=cid%>) {
             for (int i_<%=cid%> = preUnNullMaxIndex_<%=cid%>; i_<%=cid%> >= <%=mainList.size()%> + newTabIndex_<%=cid%>; i_<%=cid%>--) {
-                out_<%=cid%>.newLine();
+            <%if(isCompact==false){%>out_<%=cid%>.newLine(); <%}%>
                 out_<%=cid%>.write(endTabStrs_<%=cid%>
                         .get(i_<%=cid%>));
             }
@@ -897,7 +913,7 @@ else if(("Null").equals(mode)){
 		}
 %>
             for (int i_<%=cid%> = preNewTabIndex_<%=cid%> - 1; i_<%=cid%> >= <%=mainList.size()%> + newTabIndex_<%=cid%>; i_<%=cid%>--) {
-                out_<%=cid%>.newLine();
+                <%if(isCompact==false){%>out_<%=cid%>.newLine(); <%}%>
                 out_<%=cid%>.write(endTabStrs_<%=cid%>
                         .get(i_<%=cid%>));
             }
@@ -936,8 +952,10 @@ else if(("Null").equals(mode)){
 	// build loop xml tree
 <%
 	String emptySpace = "";
-	for(int len =loop.path.split("/").length-1;len>1;len--){
-		emptySpace +="  ";
+	if(isCompact==false){//generate pretty file
+		for(int len =loop.path.split("/").length-1;len>1;len--){
+			emptySpace +="  ";
+		}
 	}
 	if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
@@ -994,12 +1012,12 @@ else if(("Null").equals(mode)){
 
         if (preUnNullMaxIndex_<%=cid%> < preNewTabIndex_<%=cid%> ) {
 			for (int i_<%=cid%> = preNewTabIndex_<%=cid%> - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
-                out_<%=cid%>.newLine();
+                <%if(isCompact==false){%>out_<%=cid%>.newLine(); <%}%>
                 out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
             }
         } else {
             for (int i_<%=cid%> = preUnNullMaxIndex_<%=cid%>; i_<%=cid%> >= 0; i_<%=cid%>--) {
-                out_<%=cid%>.newLine();
+                <%if(isCompact==false){%>out_<%=cid%>.newLine(); <%}%>
                 out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
             }
         }
@@ -1009,7 +1027,7 @@ else if(("Null").equals(mode)){
 			if(loopTable.size()>0){
 %>
 	for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
-        out_<%=cid%>.newLine();
+        <%if(isCompact==false){%>out_<%=cid%>.newLine(); <%}%>
         out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
     }
 <%
