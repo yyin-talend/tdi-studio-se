@@ -309,9 +309,15 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             @Override
             public void widgetSelected(SelectionEvent e) {
 
+                boolean selection = useProxyBtn.getSelection();
                 checkFieldsValue();
-                enableProxyParameters(useProxyBtn.getSelection());
-                getConnection().setUseProxy(useProxyBtn.getSelection());
+                enableProxyParameters(selection);
+                getConnection().setUseProxy(selection);
+                if (selection && useHttpBtn.getSelection()) {
+                    getConnection().setUseHttpProxy(false);
+                    useHttpBtn.setSelection(false);
+                }
+
             }
 
         });
@@ -320,9 +326,14 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             @Override
             public void widgetSelected(SelectionEvent e) {
 
+                boolean selection = useHttpBtn.getSelection();
                 checkFieldsValue();
-                enableProxyParameters(useHttpBtn.getSelection());
-                getConnection().setUseHttpProxy(useHttpBtn.getSelection());
+                enableProxyParameters(selection);
+                getConnection().setUseHttpProxy(selection);
+                if (selection && useProxyBtn.getSelection()) {
+                    getConnection().setUseHttpProxy(false);
+                    useProxyBtn.setSelection(false);
+                }
             }
         });
         proxyHostText.addModifyListener(new ModifyListener() {
