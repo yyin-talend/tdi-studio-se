@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
@@ -288,6 +289,8 @@ public class StatsAndLogsManager {
                         connectionComponentName = "tOracleConnection"; //$NON-NLS-1$
                     }
                     component = ComponentsFactoryProvider.getInstance().get(connectionComponentName);
+
+                    String url = getUrl(process);
                     if (component != null) {
                         connectionNode = new DataNode(component, connectionUID);
                         connectionNode.setSubProcessStart(true);
@@ -305,9 +308,9 @@ public class StatsAndLogsManager {
                                 connectionNode.getElementParameter(EParameterName.SHARED_CONNECTION_NAME.getName()).setValue(
                                         "\"StatsAndLog_Shared_Connection\"");//$NON-NLS-1$
                             } else {
+
                                 connectionNode.getElementParameter(EParameterName.SHARED_CONNECTION_NAME.getName()).setValue(
-                                        "\"" + process.getLabel() + "_" + process.getVersion() + "_"//$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-2$
-                                                + "StatsAndLog_Shared_Connection\"");//$NON-NLS-2$
+                                        "\"" + url + "_" + "StatsAndLog_Shared_Connection\"");//$NON-NLS-2$
                             }
                         }
                         setConnectionParameter(connectionNode, process, connectionUID, dataNode, nodeList);
@@ -339,6 +342,64 @@ public class StatsAndLogsManager {
         ((List<IConnection>) dataNode.getOutgoingConnections()).add(dataConnec);
         ((List<IConnection>) commitNode.getIncomingConnections()).add(dataConnec);
         return connectionNode;
+    }
+
+    /**
+     * DOC zli Comment method "getUrl".
+     * 
+     * @param process
+     */
+    private static String getUrl(Process process) {
+        String processDBType = (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue();
+        int indexOfItemFromList = process.getElementParameter(EParameterName.DB_TYPE.getName()).getIndexOfItemFromList(
+                processDBType);
+        String[] listItemsDisplayName = process.getElementParameter(EParameterName.DB_TYPE.getName()).getListItemsDisplayName();
+        processDBType = listItemsDisplayName[indexOfItemFromList];
+        IElementParameter elementParameterFilename = process.getElementParameter(EParameterName.FILENAME.getName());
+        String processDBFileName = null;
+        if (elementParameterFilename != null) {
+            processDBFileName = (String) elementParameterFilename.getValue();
+        }
+        IElementParameter elementParameterDatasource = process.getElementParameter(EParameterName.DATASOURCE.getName());
+        String processDBDatasouce = null;
+        if (elementParameterDatasource != null) {
+            processDBDatasouce = (String) elementParameterDatasource.getValue();
+        }
+
+        String processDBName = (String) process.getElementParameter(EParameterName.DBNAME.getName()).getValue();
+        if (processDBName != null && processDBName.startsWith("\"")) {//$NON-NLS-1$
+            processDBName = processDBName.substring(1, processDBName.length() - 1);
+        }
+        String processHost = (String) process.getElementParameter(EParameterName.HOST.getName()).getValue();
+        if (processHost != null && processHost.startsWith("\"")) {//$NON-NLS-1$
+            processHost = processHost.substring(1, processHost.length() - 1);
+        }
+        String processDBPort = (String) process.getElementParameter(EParameterName.PORT.getName()).getValue();
+        if (processDBPort != null && processDBPort.startsWith("\"")) {//$NON-NLS-1$
+            processDBPort = processDBPort.substring(1, processDBPort.length() - 1);
+        }
+        String processDBPass = (String) process.getElementParameter(EParameterName.PASS.getName()).getValue();
+        if (processDBPass != null && processDBPass.startsWith("\"")) {//$NON-NLS-1$
+            processDBPass = processDBPass.substring(1, processDBPass.length() - 1);
+        }
+        String processDBSID = (String) process.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue();
+        if (processDBSID != null && processDBSID.startsWith("\"")) {//$NON-NLS-1$
+            processDBSID = processDBSID.substring(1, processDBSID.length() - 1);
+        }
+
+        String processDBUser = (String) process.getElementParameter(EParameterName.USER.getName()).getValue();
+        if (processDBUser != null && processDBUser.startsWith("\"")) {//$NON-NLS-1$
+            processDBUser = processDBUser.substring(1, processDBUser.length() - 1);
+        }
+        String processDBAdditionParameters = (String) process.getElementParameter(EParameterName.PROPERTIES.getName()).getValue();
+        if (processDBAdditionParameters != null && processDBAdditionParameters.startsWith("\"")) {//$NON-NLS-1$
+            processDBAdditionParameters = processDBAdditionParameters.substring(1, processDBAdditionParameters.length() - 1);
+        }
+
+        String dbURL = DatabaseConnStrUtil.getURLString(processDBType, "", processHost, processDBUser, processDBPass,//$NON-NLS-1$
+                processDBPort, processDBName, processDBFileName, processDBDatasouce, "", processDBAdditionParameters);//$NON-NLS-1$
+        dbURL.toString();
+        return dbURL;
     }
 
     private static DataConnection createDataConnectionForComponentOK(DataNode dataNode, DataNode commitNode) {
