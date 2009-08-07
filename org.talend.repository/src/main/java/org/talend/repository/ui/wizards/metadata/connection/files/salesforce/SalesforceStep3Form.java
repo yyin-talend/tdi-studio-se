@@ -384,9 +384,6 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         } else {
 
             List<String[]> csvRows = csvArray.getRows();
-            // String[] fields = csvRows.get(0);
-            // int numberOfCol = fields.size();
-
             Integer numberOfCol = getRightFirstRow(csvRows);
 
             // define the label to the metadata width the content of the first row
@@ -407,6 +404,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                 String globalType = null;
                 int lengthValue = 0;
                 int precisionValue = 0;
+                boolean nullAble = true;
 
                 int current = firstRowToExtractMetadata;
                 while (globalType == null) {
@@ -416,9 +414,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                         } else {
                             globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                             current++;
-                            // if (current == csvRows.size()) {
-                            // globalType = "id_String"; //$NON-NLS-1$
-                            // }
+
                         }
                     } else {
                         if (i >= csvRows.get(current).length) {
@@ -426,81 +422,12 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                         } else {
                             globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                             current++;
-                            // if (current == csvRows.size()) {
-                            // globalType = "String"; //$NON-NLS-1$
-                            // }
                         }
                     }
                 }
-
+                nullAble = listColumns.get(i).isNullable();
                 lengthValue = listColumns.get(i).getLength();
                 precisionValue = listColumns.get(i).getPrecision();
-                // for another lines
-                // for (int f = firstRowToExtractMetadata; f < csvRows.size(); f++) {// begin
-                // lengthValue = metadataTable2.getListColumns().get(f).getLength();
-                // fields = csvRows.get(f);
-                // if (fields.length > i) {
-                // String value = fields[i];
-                //                        if (!value.equals("")) { //$NON-NLS-1$
-                // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                // if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                // globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
-                // .getTalendTypeOfValue(value));
-                // }
-                // } else {
-                // if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                // globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
-                // .getTalendTypeOfValue(value));
-                // }
-                // }
-                // if (lengthValue < value.length()) {
-                // lengthValue = value.length();
-                // }
-                // int positionDecimal = 0;
-                // if (value.indexOf(',') > -1) {
-                // positionDecimal = value.lastIndexOf(',');
-                // precisionValue = lengthValue - positionDecimal;
-                // } else if (value.indexOf('.') > -1) {
-                // positionDecimal = value.lastIndexOf('.');
-                // precisionValue = lengthValue - positionDecimal;
-                // }
-                // } else {
-                // if (globalType == null) {
-                // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                // if (CorePlugin.getDefault().getPreferenceStore().getString(
-                // MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
-                // && !CorePlugin.getDefault().getPreferenceStore().getString(
-                //                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
-                // globalType = CorePlugin.getDefault().getPreferenceStore().getString(
-                // MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
-                // if (CorePlugin.getDefault().getPreferenceStore().getString(
-                // MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
-                // && !CorePlugin.getDefault().getPreferenceStore().getString(
-                //                                                        MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
-                // lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore()
-                // .getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
-                // }
-                // }
-                // } else {
-                // if (CorePlugin.getDefault().getPreferenceStore().getString(
-                // MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
-                // && !CorePlugin.getDefault().getPreferenceStore().getString(
-                //                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
-                // globalType = CorePlugin.getDefault().getPreferenceStore().getString(
-                // MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
-                // if (CorePlugin.getDefault().getPreferenceStore().getString(
-                // MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
-                // && !CorePlugin.getDefault().getPreferenceStore().getString(
-                //                                                        MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
-                // lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore()
-                // .getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
-                // }
-                // }
-                // }
-                // }
-                // }
-                // }
-                // }// end
 
                 // define the metadataColumn to field i
                 MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
@@ -522,6 +449,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                         metadataColumn.setPrecision(0);
                     }
                 }
+                metadataColumn.setNullable(nullAble);
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
                 if (talendType.equals("id_Date")) { //$NON-NLS-1$
