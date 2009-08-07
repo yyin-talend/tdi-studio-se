@@ -205,10 +205,10 @@
 			    %>
 			    context.<%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
 			    <%
-			    }else if(typeToGenerate.equals("Character"))
+			    }else if(typeToGenerate.equals("Character")&&ctxParam.getName()!=null)
 			    {
 			 %>
-			 context.<%=ctxParam.getName()%>= context.getProperty("<%=ctxParam.getName()%>");
+			 context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>").charAt(0));
 			 <%
 			    } else if(typeToGenerate.equals("BigDecimal"))
             {
