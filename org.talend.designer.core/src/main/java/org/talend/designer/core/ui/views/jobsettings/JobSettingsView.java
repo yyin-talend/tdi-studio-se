@@ -114,7 +114,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 }
 
                 if (currentSelectedTab != null) {
-                    if ((!currentSelectedTab.getData().equals(descriptor.getData()) || currentSelectedTab.getCategory() != descriptor
+                    if ((!currentSelectedTab.getData().equals(descriptor.getData())
+                            || currentSelectedTab.getData() != descriptor.getData() || currentSelectedTab.getCategory() != descriptor
                             .getCategory())) {
                         for (Control curControl : tabFactory.getTabComposite().getChildren()) {
                             curControl.dispose();
