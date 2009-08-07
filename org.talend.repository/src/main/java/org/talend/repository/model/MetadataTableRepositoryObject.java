@@ -14,6 +14,7 @@ package org.talend.repository.model;
 
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 
@@ -78,6 +79,13 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
     }
 
     public void removeFromParent() {
+
+        if (table.eContainer() instanceof SAPFunctionUnit) {
+            SAPFunctionUnit funUnit = (SAPFunctionUnit) table.eContainer();
+            funUnit.getTables().remove(table);
+            return;
+        }
         table.getConnection().getTables().remove(table);
+        return;
     }
 }
