@@ -537,21 +537,34 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
                 monitorWrap.beginTask(Messages.getString("SalesforceStep1Form.connection"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 testSalesforceLogin();
-                loginOk = toCheckSalesfoceLogin(endPoint, username, pwd);
+                SalesforceModuleParseAPI checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
                 preparModuleInit();
                 String[] types = null;
                 DescribeGlobalResult describeGlobalResult = null;
+                com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
                 monitorWrap.worked(50);
 
                 try {
-                    describeGlobalResult = describeGlobal();
-                    types = describeGlobalResult.getTypes();
-                    customModuleCombo.removeAll();
-                    for (int i = 0; i < types.length; i++) {
-                        if (!ArrayUtils.contains(modulename, types[i])) {
-                            customModuleCombo.add(types[i]);
+                    if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
+                        describeGlobalResult = describeGlobal();
+                        if (describeGlobalResult != null) {
+                            types = describeGlobalResult.getTypes();
+                        }
+                    } else {
+                        describeGlobalPartner = describeGlobalPartner();
+                        if (describeGlobalPartner != null) {
+                            types = describeGlobalPartner.getTypes();
                         }
                     }
+                    customModuleCombo.removeAll();
+                    if (types != null) {
+                        for (int i = 0; i < types.length; i++) {
+                            if (!ArrayUtils.contains(modulename, types[i])) {
+                                customModuleCombo.add(types[i]);
+                            }
+                        }
+                    }
+
                     monitorWrap.done();
                 } catch (Exception ex) {
                     ExceptionHandler.process(ex);

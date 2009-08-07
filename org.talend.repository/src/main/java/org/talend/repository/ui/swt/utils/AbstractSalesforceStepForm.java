@@ -66,6 +66,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     private SoapBindingStub binding = null;
 
+    private com.sforce.soap.partner.SoapBindingStub bindingPartner = null;
+
     public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/10.0"; //$NON-NLS-1$
 
     public static final String TSALESFORCE_PARTNER_INPUT_URL = "https://test.salesforce.com/services/Soap/u/10.0"; //$NON-NLS-1$
@@ -171,6 +173,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         for (int i = 0; i < loginList.size(); i++) {
                             if (loginList.get(i) instanceof SoapBindingStub) {
                                 binding = (SoapBindingStub) loginList.get(i);
+                            } else if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
+                                bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
                             }
                         }
                     } catch (Throwable e) {
@@ -194,7 +198,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return metadataTable;
     }
 
-    protected boolean toCheckSalesfoceLogin(final String endPoint, final String username, final String password) {
+    protected SalesforceModuleParseAPI toCheckSalesfoceLogin(final String endPoint, final String username, final String password) {
+
         salesforceAPI.setLogin(false);
         try {
 
@@ -202,13 +207,16 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             for (int i = 0; i < loginList.size(); i++) {
                 if (loginList.get(i) instanceof SoapBindingStub) {
                     binding = (SoapBindingStub) loginList.get(i);
+                } else if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
+                    bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
                 }
             }
             salesforceAPI.setLogin(true);
         } catch (Throwable e) {
             ExceptionHandler.process(e);
         }
-        return salesforceAPI.isLogin();
+
+        return salesforceAPI;
     }
 
     protected ArrayList checkSalesfoceLogin(final String theProxy, final String endPoint, final String username,
@@ -243,6 +251,9 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                             for (int i = 0; i < loginList.size(); i++) {
                                 if (loginList.get(i) instanceof SoapBindingStub) {
                                     binding = (SoapBindingStub) loginList.get(i);
+                                }
+                                if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
+                                    bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
                                 }
                                 if (loginList.get(i) instanceof ArrayList) {
                                     ArrayList realtionShipObjects = (ArrayList) loginList.get(i);
@@ -286,7 +297,19 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     protected DescribeGlobalResult describeGlobal() throws UnexpectedErrorFault, RemoteException {
         if (salesforceAPI.isLogin()) {
-            return binding.describeGlobal();
+            if (binding != null) {
+                return binding.describeGlobal();
+            }
+        }
+        return null;
+    }
+
+    protected com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner()
+            throws com.sforce.soap.partner.fault.UnexpectedErrorFault, RemoteException {
+        if (salesforceAPI.isLogin()) {
+            if (bindingPartner != null) {
+                return bindingPartner.describeGlobal();
+            }
         }
         return null;
     }

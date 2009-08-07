@@ -38,11 +38,11 @@ public class SalesforceModuleParseAPI {
 
     public static final String HTTP_PROXY_PORT = "http.proxyPort"; //$NON-NLS-1$
 
-    public static final String HTTP_PROXY_USER = "http.proxyUser";
+    public static final String HTTP_PROXY_USER = "http.proxyUser";//$NON-NLS-1$
 
-    public static final String HTTP_PROXY_PASSWORD = "http.proxyPassword";
+    public static final String HTTP_PROXY_PASSWORD = "http.proxyPassword";//$NON-NLS-1$
 
-    public static final String HTTP_PROXY_SET = "http.proxySet";
+    public static final String HTTP_PROXY_SET = "http.proxySet";//$NON-NLS-1$
 
     private boolean login;
 
