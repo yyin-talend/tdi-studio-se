@@ -1429,4 +1429,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.metadataRulesNode;
     }
 
+    public RepositoryNode getDocNode() {
+        return this.docNode;
+    }
+
 }
