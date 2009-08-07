@@ -362,7 +362,7 @@ class GenerateToolByNull{
 	}
 	private void startElement(XMLNode node, String emptySpace){
 %>
-		buf_<%=cid%>.append("<%=isCompact?"":"\n"%>");
+		buf_<%=cid%>.append("<%=isCompact?"":"\\n"%>");
 		buf_<%=cid%>.append("<%=emptySpace%><<%=node.name%>");
 <%
 		if(outputAsXSD && node.parent==null){
@@ -392,7 +392,7 @@ class GenerateToolByNull{
 	public void endElement(XMLNode node, String emptySpace){
 		if(node.elements.size()>0){
 %>
-		buf_<%=cid%>.append("<%=isCompact?"":"\n"%>");
+		buf_<%=cid%>.append("<%=isCompact?"":"\\n"%>");
 		buf_<%=cid%>.append("<%=emptySpace%></<%=node.name%>>");
 <%
 		}else{

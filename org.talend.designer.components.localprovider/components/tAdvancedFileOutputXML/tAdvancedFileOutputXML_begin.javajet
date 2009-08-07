@@ -186,7 +186,7 @@ java.util.List<String> startTabStrs_<%=cid%> = new java.util.ArrayList<String>()
         				for(int len = 1; len<endTabs.length-1;len++){
 %>
 endTabStrs_<%=cid%>.add("<%=emptyspace%></<%=endTabs[len]%>>");
-startTabStrs_<%=cid%>.add("<%=isCompact?"":"\n"%><%=emptyspace%><<%=endTabs[len]%>>");
+startTabStrs_<%=cid%>.add("<%=isCompact?"":"\\n"%><%=emptyspace%><<%=endTabs[len]%>>");
 <%
 							if(isCompact==false){//generate pretty file
 	         					emptyspace += "  ";
