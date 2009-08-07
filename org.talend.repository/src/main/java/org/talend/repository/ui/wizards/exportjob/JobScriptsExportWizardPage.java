@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -87,6 +88,8 @@ import org.talend.repository.utils.JobVersionUtils;
  * 
  */
 public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
+
+    protected static final String DESTINATION_FILE = "destinationFile";//$NON-NLS-1$
 
     // widgets
     protected Button shellLauncherButton;
@@ -220,14 +223,26 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
         IPath path = new Path(userDir);
         int length = nodes.length;
-        if (length == 1) {
-            // TODOthis is changed by shenhaize first open ,it show contains in the combo
-
-            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
-        } else if (length > 1) {
-            // i changed here ..
-            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
+        String destinationFile = "";
+        if (getDialogSettings() != null) {
+            IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
+            if (section != null) {
+                destinationFile = section.get(DESTINATION_FILE);
+            }
         }
+        if (destinationFile == null || "".equals(destinationFile)) {
+            if (length == 1) {
+                // TODOthis is changed by shenhaize first open ,it show contains in the combo
+                path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
+            } else if (length > 1) {
+                // i changed here ..
+                path = path.append(this.getDefaultFileName().get(0)
+                        + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
+            }
+        } else {
+            path = new Path(destinationFile);
+        }
+
         setDestinationValue(path.toOSString());
     }
 

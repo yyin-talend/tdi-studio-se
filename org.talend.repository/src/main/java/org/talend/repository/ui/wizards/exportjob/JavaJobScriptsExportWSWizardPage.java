@@ -324,6 +324,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
 
         String selectedFileName = dialog.open();
+        if (selectedFileName == null) {
+            return;
+        }
         if (!selectedFileName.endsWith(this.getOutputSuffix()))
             selectedFileName += this.getOutputSuffix();
         // when user change the name of job,will add the version auto
@@ -345,6 +348,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (selectedFileName != null) {
             setErrorMessage(null);
             setDestinationValue(selectedFileName);
+            if (getDialogSettings() != null) {
+                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
+                if (section == null) {
+                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
+                }
+                section.put(DESTINATION_FILE, selectedFileName);//$NON-NLS-1$//$NON-NLS-1$
+            }
 
         }
     }
@@ -566,7 +576,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         } else {
             exportChoiceMap.put(ExportChoice.needMetaInfo, false);
         }
-
 
         exportChoiceMap.put(ExportChoice.needWEBXML, webXMLButton.getSelection());
         exportChoiceMap.put(ExportChoice.needCONFIGFILE, configFileButton.getSelection());

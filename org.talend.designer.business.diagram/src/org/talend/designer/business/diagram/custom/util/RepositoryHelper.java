@@ -62,18 +62,21 @@ public class RepositoryHelper {
                 IRepositoryObject repositoryObject = repositoryNode.getObject();
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
 
-                result = (TalendItem) BusinessFactory.eINSTANCE.create(getEClass(nodeType));
-                result.setRepository(repository);
-                if ("METADATA_CON_TABLE".equals(repositoryObject.getType().name())) { //$NON-NLS-1$
-                    Property property = ((MetadataTableRepositoryObject) repositoryObject).getProperty();
-                    result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
-                } else if ("METADATA_CON_QUERY".equals(repositoryObject.getType().name())) { //$NON-NLS-1$
-                    Property property = ((QueryRepositoryObject) repositoryObject).getProperty();
-                    result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
-                } else {
-                    result.setId(repositoryObject.getId());
+                EClass class1 = getEClass(nodeType);
+                if (class1 != null) {
+                    result = (TalendItem) BusinessFactory.eINSTANCE.create(class1);
+                    result.setRepository(repository);
+                    if ("METADATA_CON_TABLE".equals(repositoryObject.getType().name())) { //$NON-NLS-1$
+                        Property property = ((MetadataTableRepositoryObject) repositoryObject).getProperty();
+                        result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
+                    } else if ("METADATA_CON_QUERY".equals(repositoryObject.getType().name())) { //$NON-NLS-1$
+                        Property property = ((QueryRepositoryObject) repositoryObject).getProperty();
+                        result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
+                    } else {
+                        result.setId(repositoryObject.getId());
+                    }
+                    result.setLabel(repositoryObject.getLabel());
                 }
-                result.setLabel(repositoryObject.getLabel());
             }
         }
 

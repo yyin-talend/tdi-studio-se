@@ -61,6 +61,8 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
     // dialog store id constants
     private static final String STORE_DESTINATION_NAMES_ID = "GenerateDocAsHTMLWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
+    private static final String DESTINATION_FILE = "destinationFile";//$NON-NLS-1$
+
     /**
      * Create an instance of this class.
      * 
@@ -370,6 +372,13 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         if (selectedFileName != null) {
             setErrorMessage(null);
             setDestinationValue(selectedFileName);
+            if (getDialogSettings() != null) {
+                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
+                if (section == null) {
+                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
+                }
+                section.put(DESTINATION_FILE, selectedFileName);//$NON-NLS-1$//$NON-NLS-1$
+            }
         }
     }
 
@@ -447,9 +456,23 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      */
     protected void setDefaultDestination() {
 
-        if (nodes.length >= 1) {
-            String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
-            IPath path = new Path(userDir).append(getDefaultFileName() + getOutputSuffix());
+        String destinationFile = "";
+        IPath path = null;
+        if (getDialogSettings() != null) {
+            IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
+            if (section != null) {
+                destinationFile = section.get(DESTINATION_FILE);
+            }
+        }
+        if (destinationFile == null || "".equals(destinationFile)) {
+            if (nodes.length >= 1) {
+                String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+                path = new Path(userDir).append(getDefaultFileName() + getOutputSuffix());
+            }
+        } else {
+            path = new Path(destinationFile);
+        }
+        if (path != null) {
             setDestinationValue(path.toOSString());
         }
     }
