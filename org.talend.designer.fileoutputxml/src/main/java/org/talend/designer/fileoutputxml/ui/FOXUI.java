@@ -209,7 +209,16 @@ public class FOXUI {
     private void initLinker(TreeItem node, TableItem[] tableItems) {
         FOXTreeNode treeNode = (FOXTreeNode) node.getData();
         IMetadataColumn column = treeNode.getColumn();
-        if (column != null && treeNode.getChildren().size() <= 0) {
+        if (column != null) {
+            if (this.getFoxManager().getFoxComponent().istFileOutputMSXML() && treeNode.getChildren().size() <= 0) {
+                for (int i = 0; i < tableItems.length; i++) {
+                    IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
+                    if (mColumn.getLabel().equals(column.getLabel())) {
+                        linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode);
+                        break;
+                    }
+                }
+            }
             for (int i = 0; i < tableItems.length; i++) {
                 IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
                 if (mColumn.getLabel().equals(column.getLabel())) {
