@@ -47,7 +47,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
 
     protected static final int WIZARD_WIDTH = 800;
 
-    protected static final int WIZARD_HEIGHT = 530;
+    protected static final int WIZARD_HEIGHT = 600;
 
     private boolean creation = false;
 
