@@ -57,14 +57,17 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
@@ -341,6 +344,11 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         for (SchemaTarget schema : schemaTarget) {
             String relativeXpath = schema.getRelativeXPathQuery();
             String fullPath = schema.getSchema().getAbsoluteXPathQuery();
+            if (isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(),
+                        true);
+                fullPath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, fullPath));
+            }
             // adapt relative path
             String[] relatedSplitedPaths = relativeXpath.split("\\.\\./"); //$NON-NLS-1$
             if (relatedSplitedPaths.length > 1) {
@@ -385,6 +393,10 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
 
         String file = ((XmlFileConnection) this.connectionItem.getConnection()).getXmlFilePath();
+        if (isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
+            file = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, file));
+        }
 
         if (file != null && file.endsWith(".xsd")) { //$NON-NLS-1$
             prepareColumnsFromXSD(file, columns, schemaTarget);

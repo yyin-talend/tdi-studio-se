@@ -185,7 +185,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
                             connectionItem.getConnection(), true);
-                    xmlFilePath = ConnectionContextHelper.getOriginalValue(contextType, xmlFilePath);
+                    xmlFilePath = TalendTextUtils
+                            .removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, xmlFilePath));
                 }
             } else {
                 xmlXPathLoopDescriptor = ConnectionFactory.eINSTANCE.createXmlXPathLoopDescriptor();
@@ -628,7 +629,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         String pathStr = getConnection().getXmlFilePath();
         if (isContextMode()) {
             ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
-            pathStr = ConnectionContextHelper.getOriginalValue(contextType, pathStr);
+            pathStr = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
         }
         if (pathStr != null && pathStr.toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$
 
@@ -748,8 +749,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
                             connectionItem.getConnection(), true);
-                    pathStr = ConnectionContextHelper.getOriginalValue(contextType, pathStr);
-                    pathStr = TalendTextUtils.removeQuotes(pathStr);
+                    pathStr = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
                 }
 
                 File file = new File(pathStr);
@@ -813,8 +813,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             if (isContextMode()) {
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(),
                         true);
-                pathStr = ConnectionContextHelper.getOriginalValue(contextType, pathStr);
-                pathStr = TalendTextUtils.removeQuotes(pathStr);
+                pathStr = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
             }
             this.treePopulator.populateTree(pathStr, treeNode);
 
@@ -860,8 +859,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             if (isContextMode()) {
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(),
                         true);
-                oraginalPath = ConnectionContextHelper.getOriginalValue(contextType, curXmlPath);
-                oraginalPath = TalendTextUtils.removeQuotes(oraginalPath);
+                oraginalPath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, curXmlPath));
             }
             if (!xmlFilePath.equals(curXmlPath) && !xmlFilePath.equals(oraginalPath)) {
                 // clear command stack

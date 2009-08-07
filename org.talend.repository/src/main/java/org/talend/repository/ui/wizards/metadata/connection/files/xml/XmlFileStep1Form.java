@@ -149,7 +149,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             String xmlFilePath = fileFieldXml.getText();
             if (isContextMode()) {
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
-                xmlFilePath = ConnectionContextHelper.getOriginalValue(contextType, fileFieldXml.getText());
+                xmlFilePath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, fileFieldXml
+                        .getText()));
             }
             valid = this.treePopulator.populateTree(xmlFilePath, treeNode);
 
@@ -340,8 +341,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
                             connectionItem.getConnection(), true);
-                    text = ConnectionContextHelper.getOriginalValue(contextType, text);
-                    text = TalendTextUtils.removeQuotes(text);
+                    text = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, text));
                 }
                 getConnection().setXmlFilePath(PathUtils.getPortablePath(fileFieldXml.getText()));
                 BufferedReader in = null;
@@ -437,8 +437,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             String xmlFilePath = fileFieldXml.getText();
             if (isContextMode()) {
                 ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
-                xmlFilePath = ConnectionContextHelper.getOriginalValue(contextType, fileFieldXml.getText());
-                xmlFilePath = TalendTextUtils.removeQuotes(xmlFilePath);
+                xmlFilePath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, fileFieldXml
+                        .getText()));
             }
             updateStatus(IStatus.ERROR, Messages.getString("XmlFileStep1Form.notFound", xmlFilePath)); //$NON-NLS-1$
 
