@@ -25,7 +25,7 @@ imports="
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-    
+    String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
         String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
@@ -75,7 +75,7 @@ imports="
     <%
     } else {
         %>
-          <%if ((rejectConnName==null && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+          <%if ((rejectConnName==null &&("true").equals(useBatchSize)) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
                 %>                
                 try {
 						pstmt_<%=cid %>.executeBatch();                	

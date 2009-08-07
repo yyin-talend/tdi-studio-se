@@ -233,7 +233,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }            
             %>
             
-            <%if(rejectConnName == null && !useExistingConnection &&("true").equals(useBatchSize) ) {
+            <%if(rejectConnName == null &&("true").equals(useBatchSize) ) {
     		%>
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;
@@ -641,7 +641,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
             %>
-         	<%if(rejectConnName == null && !useExistingConnection &&("true").equals(useBatchSize)) {
+         	<%if(rejectConnName == null &&("true").equals(useBatchSize)) {
     		%>
     		pstmt_<%=cid %>.addBatch();
     		<%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
