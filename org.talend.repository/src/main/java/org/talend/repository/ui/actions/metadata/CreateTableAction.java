@@ -24,6 +24,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
@@ -205,6 +206,11 @@ public class CreateTableAction extends AbstractCreateTableAction {
                                     return;
                                 }
                             }
+                        }
+
+                        if (item2 instanceof SAPConnectionItem) {
+                            setEnabled(false);
+                            return;
                         }
 
                         if (item2 instanceof EbcdicConnectionItem) {

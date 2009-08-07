@@ -55,6 +55,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.ISAPConstant;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
@@ -62,6 +63,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
@@ -70,12 +72,14 @@ import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
+import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForSAPCommand;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -96,8 +100,10 @@ import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
@@ -538,6 +544,19 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
 
             }
+
+            // for SAP
+            if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_SAP_FUNCTION
+                    && PluginChecker.isSAPWizardPluginLoaded()) {
+                SAPFunctionUnit functionUnit = (SAPFunctionUnit) ((SAPFunctionRepositoryObject) selectedNode.getObject())
+                        .getAbstractMetadataObject();
+                for (MetadataTable table : (List<MetadataTable>) functionUnit.getTables()) {
+                    Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
+                            table.getLabel(), ConvertionHelper.convert(table));
+                    list.add(sapCmd);
+                }
+            }
+
             // fore EBCDIC, by cli
             if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_EBCDIC
                     && PluginChecker.isEBCDICPluginLoaded()) {
@@ -660,6 +679,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     queryParam.setValue(EmfComponent.BUILTIN);
                 }
             }
+            // for SAP
+            if (PluginChecker.isSAPWizardPluginLoaded() && connectionItem instanceof SAPConnectionItem
+                    && object instanceof MetadataTableRepositoryObject) {
+                Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS, table.getLabel(),
+                        ConvertionHelper.convert(table));
+                return sapCmd;
+            }
+
             // for EBCDIC (bug 5860)
             if (PluginChecker.isEBCDICPluginLoaded() && connectionItem instanceof EbcdicConnectionItem) {
                 Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS, table

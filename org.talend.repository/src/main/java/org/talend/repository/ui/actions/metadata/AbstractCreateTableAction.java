@@ -123,6 +123,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
         wizardDialog.open();
         getViewPart().expand(node, true);
         refresh(node);
+
     }
 
     protected String getStringIndexed(String string) {

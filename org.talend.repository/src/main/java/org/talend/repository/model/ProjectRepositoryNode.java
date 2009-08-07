@@ -73,8 +73,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, sqlPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
-            metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataEbcdicConnectionNode,
-            metadataRulesNode;
+            metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode,// metadataSAPFunctionNode,
+            metadataEbcdicConnectionNode, metadataRulesNode;
 
     private RepositoryNode jobletNode;
 
@@ -162,6 +162,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             case METADATA_SAPCONNECTIONS:
                 this.metadataSAPConnectionNode = null;
                 break;
+            // case METADATA_SAP_FUNCTION:
+            // this.metadataSAPFunctionNode = null;
+            // break;
             case SQLPATTERNS:
                 this.sqlPatternNode = null;
                 break;
@@ -373,6 +376,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataSAPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
             metadataNode.getChildren().add(metadataSAPConnectionNode);
         }
+        // if (PluginChecker.isTIS() && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+        // metadataSAPFunctionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+        // metadataSAPFunctionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SAP_FUNCTION);
+        // metadataSAPFunctionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAP_FUNCTION);
+        // metadataNode.getChildren().add(metadataSAPFunctionNode);
+        // }
         // 7.13 EBCDIC
         if (PluginChecker.isEBCDICPluginLoaded()) {
             metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -448,7 +457,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataSAPConnectionNode) {
                 convert(factory.getMetadataSAPConnection(newProject), metadataSAPConnectionNode,
                         ERepositoryObjectType.METADATA_SAPCONNECTIONS, recBinNode);
-            } else if (parent == metadataEbcdicConnectionNode) {
+            }
+            // else if (parent == metadataSAPFunctionNode) {
+            // convert(factory.getMetadataSAPConnection(newProject), metadataSAPFunctionNode,
+            // ERepositoryObjectType.METADATA_SAP_FUNCTION, recBinNode);
+            // }
+            else if (parent == metadataEbcdicConnectionNode) {
                 convert(factory.getMetadataEBCDIC(newProject), metadataEbcdicConnectionNode,
                         ERepositoryObjectType.METADATA_FILE_EBCDIC, recBinNode);
             } else if (parent == sqlPatternNode) {
@@ -494,11 +508,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 List<IRepositoryObject> objects = factory.getRecycleBinItems(newProject);
                 for (IRepositoryObject object : objects) {
                     if (!isGeneratedJobItem(object.getProperty().getItem())) {
-                        RepositoryNode node = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
-                        node.setProperties(EProperties.CONTENT_TYPE, object.getType());
-                        node.setProperties(EProperties.LABEL, object.getLabel());
-                        recBinNode.getChildren().add(node);
-                        node.setParent(recBinNode);
+                        RepositoryNode repNode = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
+                        repNode.setProperties(EProperties.CONTENT_TYPE, object.getType());
+                        repNode.setProperties(EProperties.LABEL, object.getLabel());
+                        recBinNode.getChildren().add(repNode);
+                        repNode.setParent(recBinNode);
                     }
                 }
             }
@@ -990,6 +1004,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             RepositoryNode functionNode = new StableRepositoryNode(node, Messages
                     .getString("RepositoryContentProvider.repositoryLabel.sapFunction"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(functionNode);
+
             // add functions
             createSAPFunctionNodes(recBinNode, repObj, metadataConnection, functionNode);
 
@@ -1013,6 +1028,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         for (int i = 0; i < functions.size(); i++) {
             SAPFunctionUnit unit = (SAPFunctionUnit) functions.get(i);
             RepositoryNode tableNode = createSAPNode(rebObj, functionNode, unit);
+
+            createTables(recBin, tableNode, rebObj, unit.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
             if (SubItemHelper.isDeleted(unit)) {
                 recBin.getChildren().add(tableNode);
             } else {
@@ -1360,6 +1377,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         case METADATA_CONNECTIONS:
             return this.metadataConNode;
         case METADATA_SAPCONNECTIONS:
+            return this.metadataSAPConnectionNode;
+        case METADATA_SAP_FUNCTION:
             return this.metadataSAPConnectionNode;
         case SQLPATTERNS:
             return this.sqlPatternNode;

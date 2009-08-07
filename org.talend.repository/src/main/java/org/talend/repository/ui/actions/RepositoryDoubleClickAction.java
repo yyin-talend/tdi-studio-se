@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
+import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -142,6 +143,24 @@ public class RepositoryDoubleClickAction extends Action {
         return false;
     }
 
+    /**
+     * 
+     * hwang Comment method "isSAPTable".
+     * 
+     * for sap
+     */
+    private boolean isSAPTable(RepositoryNode node) {
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
+            node = node.getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private ITreeContextualAction getAction(RepositoryNode obj) {
         final boolean isCDC = isLinkCDCNode(obj);
         final ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
@@ -155,11 +174,16 @@ public class RepositoryDoubleClickAction extends Action {
                 continue;
             }
             if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_TABLE)) {
+                System.out.println(current.getClassForDoubleClick());
                 if (current.getClassForDoubleClick().equals(IMetadataTable.class)) {
                     return current;
                 }
                 // for ebcdic
                 if (isEBCDICTable(obj) && current.getClassForDoubleClick().equals(EbcdicConnection.class)) {
+                    return current;
+                }
+
+                if (isSAPTable(obj) && current.getClassForDoubleClick().equals(SAPConnection.class)) {
                     return current;
                 }
 
