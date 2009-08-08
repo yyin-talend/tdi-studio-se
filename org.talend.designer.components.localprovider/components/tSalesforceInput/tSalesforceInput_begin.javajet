@@ -63,6 +63,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			String username = ElementParameterParser.getValue(node, "__USER__");
 			String password = ElementParameterParser.getValue(node, "__PASS__");
+			
+			String normalize_delimiter = ElementParameterParser.getValue(node, "__NORMALIZE_DELIMITER__");
+			String columnname_delimiter = ElementParameterParser.getValue(node, "__COLUMNNAME_DELIMITER__");
 %>
 			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
@@ -111,7 +114,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				
 				qr_<%=cid %> = binding_<%=cid %>.query(<%=sql %>);
 				
-    			org.talend.TopQueryResult topqr_<%=cid %> = null;
+				org.talend.TopConfig.VALUE_DELIMITER = <%=normalize_delimiter %>;
+				org.talend.TopConfig.COLUMNNAME_DELIMTER = <%=columnname_delimiter %>;
+				
+    			org.talend.TopQueryResult topqr_<%=cid %> = null;    			
     			topqr_<%=cid %> = new org.talend.TopQueryResult();
     			topqr_<%=cid %>.processTopQueryResult(qr_<%=cid %>);				
 				
