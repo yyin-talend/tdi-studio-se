@@ -111,16 +111,22 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				
 				qr_<%=cid %> = binding_<%=cid %>.query(<%=sql %>);
 				
+    			org.talend.TopQueryResult topqr_<%=cid %> = null;
+    			topqr_<%=cid %> = new org.talend.TopQueryResult();
+    			topqr_<%=cid %>.processTopQueryResult(qr_<%=cid %>);				
+				
 				boolean bContinue_<%=cid %> = true;
 				
 				while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
-
+					
+					java.util.List<org.talend.TopRecord> allTopRecords_<%=cid %> = topqr_<%=cid %>.getAllTopRecords();
 				    // process the query results
-				    for (int i_<%=cid %> = 0; i_<%=cid %> < qr_<%=cid %>.getRecords().length; i_<%=cid %>++) {					
+				    for (int i_<%=cid %> = 0; i_<%=cid %> < allTopRecords_<%=cid %>.size(); i_<%=cid %>++) {					
 								
 						nb_line_<%=cid%> ++;
-						org.apache.axis.message.MessageElement[] fields_<%=cid%> = qr_<%=cid %>.getRecords()[i_<%=cid %>].get_any();
-						int len_<%=cid%> = fields_<%=cid%>.length;
+						
+						org.talend.TopRecord topRecord_<%=cid%> = allTopRecords_<%=cid%>.get(i_<%=cid%>);
+						Object value_<%=cid%> = null;
 <%
 						for( int i = 0; i < columnList.size(); i++) {
 						
@@ -132,23 +138,27 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							
 							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>						
-							if (<%=i %> < len_<%=cid%> && fields_<%=cid%>[<%=i%>].getValue() != null){
+							//get the real value according the columnName
+							value_<%=cid%> = topRecord_<%=cid%>.getValue("<%=columnList.get(i).getLabel()%>");
+							
+							if (value_<%=cid%> != null){
+							 	String valueStr_<%=cid%> = (String) value_<%=cid%>;
 <%
 								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
 %>
-									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid%>[<%=i%>].getValue();
+									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = valueStr_<%=cid%>;
 <%
 								} else if(javaType == JavaTypesManager.DATE) { // Date
 %>
-									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_Date(fields_<%=cid%>[<%=i%>].getValue(), <%= patternValue %>);
+									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_Date(valueStr_<%=cid%>, <%= patternValue %>);
 <%
 								} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
 %>
-									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid%>[<%=i%>].getValue().getBytes();
+									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = valueStr_<%=cid%>.getBytes();
 <%
 								} else  { // other
 %>						
-									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields_<%=cid%>[<%=i%>].getValue());
+									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(valueStr_<%=cid%>);
 <%
 								}
 %>			

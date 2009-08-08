@@ -46,6 +46,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                 bContinue_<%=cid %> = false;
             } else {
                 qr_<%=cid %> = binding_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator());
+            	topqr_<%=cid %> = new org.talend.TopQueryResult();
+				topqr_<%=cid %>.processTopQueryResult(qr_<%=cid %>);
             }
         }
 <%
