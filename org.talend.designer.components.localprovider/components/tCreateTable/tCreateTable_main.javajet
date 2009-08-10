@@ -550,18 +550,24 @@ class MSSQLManager extends Manager {
     private String port;
     private boolean useExistingConnection;
     private String connection;
-    public MSSQLManager(String host, String port, String dbName, String tableName, String userName, String password, boolean useExistingConnection, String connection, String cid) {
+    private String dbproperty;
+    public MSSQLManager(String host, String port, String dbName, String tableName, String userName, String password, boolean useExistingConnection, String connection, String cid, String dbproperty) {
         super(dbName, tableName, userName, password, cid);
         this.host = host;
         this.port = port;
         this.useExistingConnection = useExistingConnection;
         this.connection = connection;
+        this.dbproperty = dbproperty;
     }
     protected String getDriver() {
         return "net.sourceforge.jtds.jdbc.Driver";
     }
     public String getConnectionURL() {
-        return "\"jdbc:jtds:sqlserver://\" + " + host + " + \":\" + " + port + " + \"//\" + " + dbName;
+        if(dbproperty == null || dbproperty.equals("\"\"") || dbproperty.equals("")){
+            return "\"jdbc:jtds:sqlserver://\" + " + host + " + \":\" + " + port + " + \"//\" + " + dbName;
+        }
+        
+        return "\"jdbc:jtds:sqlserver://\" + " + host + " + \":\" + " + port + " + \"//\" + " + dbName + "+\";\"+"+ dbproperty;
     }
     public String getConnection() {
         StringBuilder javaCode = new StringBuilder();
@@ -1083,7 +1089,8 @@ class ManagerFactory {
             String password = ElementParameterParser.getValue(node, "__PASS__");            
             boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_MSSQL__"));
-            manager = new MSSQLManager(host, port, dbName, tableName, userName, password, useExistingConnection, connection, cid);
+            String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+            manager = new MSSQLManager(host, port, dbName, tableName, userName, password, useExistingConnection, connection, cid, dbproperties);
         } else if(("MYSQL").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
