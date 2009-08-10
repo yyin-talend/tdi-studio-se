@@ -42,9 +42,7 @@ public final class ComponentsProviderManager {
     }
 
     public Collection<AbstractComponentsProvider> getProviders() {
-        if (providers == null) {
-            loadComponentsProvidersFromExtension();
-        }
+        loadComponentsProvidersFromExtension();
         return providers;
     }
 
