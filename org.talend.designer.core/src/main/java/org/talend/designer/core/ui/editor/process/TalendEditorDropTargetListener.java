@@ -55,7 +55,6 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.ISAPConstant;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
@@ -64,6 +63,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
@@ -79,7 +79,6 @@ import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
-import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForSAPCommand;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -538,6 +537,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                 }
                             } catch (PersistenceException e) {
                                 ExceptionHandler.process(e);
+                            }
+                            // set cdc type mode.
+                            IElementParameter logModeParam = node.getElementParameter(EParameterName.CDC_TYPE_MODE.getName());
+                            if (logModeParam != null) {
+                                String cdcTypeMode = ((DatabaseConnection) originalConnection).getCdcTypeMode();
+                                Command logModeCmd = new PropertyChangeCommand(node, EParameterName.CDC_TYPE_MODE.getName(),
+                                        CDCTypeMode.LOG_MODE.getName().equals(cdcTypeMode));
+                                list.add(logModeCmd);
                             }
                         }
                     }
