@@ -31,17 +31,20 @@ if (("").equals(limit)) {
 
 //get XML field content
 String inputConnName = "";
+List<IMetadataColumn> inColumns = null;
 if (node.getIncomingConnections()!=null) {
 	for (IConnection incomingConn : node.getIncomingConnections()) {
-		if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+		if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 			inputConnName = incomingConn.getName();
 			IMetadataTable inputMetadataTable = incomingConn.getMetadataTable();
+			inColumns = inputMetadataTable.getListColumns();
 			for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
 				if(inputCol.getLabel().equals(xmlField))
 				{
 %>
 	String xmlStr_<%=cid%> = <%=inputConnName%>.<%=xmlField%>;
 <%
+					break;
 				}
 			}
 		}
@@ -49,6 +52,32 @@ if (node.getIncomingConnections()!=null) {
 }
 
 List< ? extends IConnection> outputConns = node.getOutgoingSortedConnections();
+
+    	if (outputConns!=null) {
+    		if (outputConns.size()>0) {
+    			for (int i=0;i<outputConns.size();i++) {
+    				IConnection connTemp = outputConns.get(i);
+    				if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+    		<%=connTemp.getName() %> = null;			
+<%
+    				}
+    			}
+    		}
+    	}
+
+    String rejectConnName = "";
+    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+    if(rejectConns != null && rejectConns.size() > 0) {
+        IConnection rejectConn = rejectConns.get(0);
+        rejectConnName = rejectConn.getName();
+    }
+    List<IMetadataColumn> rejectColumnList = null;
+    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+    if(metadataTable != null) {
+        rejectColumnList = metadataTable.getListColumns();      
+    }
+
 String outputConnName = "";
 if (outputConns!=null && outputConns.size()>0) {
 	IConnection outputConn = outputConns.get(0);
@@ -169,20 +198,53 @@ class NameSpaceTool_<%=cid%> {
 	
 
 }
-
+	boolean whetherReject_<%=cid %> = false;
 	NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
     org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
-    org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.StringReader(xmlStr_<%=cid%>));
-    nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
-    java.util.HashMap xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;
+    org.dom4j.Document doc_<%=cid%> = null;
+    java.util.HashMap xmlNameSpaceMap_<%=cid%> = null;
+    org.dom4j.XPath x_<%=cid%> = null;
+    java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = null;
+    try{
+<%if(rejectConnName.equals(outputConnName)){%> <%=rejectConnName %> = null; <%}%>
+	    doc_<%=cid%>= reader_<%=cid%>.read(new java.io.StringReader(xmlStr_<%=cid%>));
+	    nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
+	    xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;
+
+    	x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>,<%=loopQuery%>));
+      
+    	x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
     
-    org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>,<%=loopQuery%>));  
-    x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
+    	nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);
+    }catch(Exception e){
+    	whetherReject_<%=cid%> = true;
+<%if(!("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+		<%=rejectConnName %> = new <%=rejectConnName %>Struct();
+<% 	for(IMetadataColumn column : columns) {
+  		if(!xmlField.equals(column.getLabel())){
+  			for(IMetadataColumn inColumn : inColumns){
+  				if(inColumn.getLabel().equals(column.getLabel())){%>
+        <%=rejectConnName%>.<%=column.getLabel()%> = <%=inputConnName %>.<%=column.getLabel()%>;
+<%
+					break;
+				}
+			}
+		}
+    }%>
+		<%=rejectConnName %>.errorXMLField = <%=inputConnName %>.<%=xmlField%>;
+		<%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+		<%=outputConnName %> = null;
+<%} else if(("").equals(rejectConnName)){%>
+    	System.err.println(e.getMessage());
+    	<%=outputConnName %> = null;
+<%}%>
+    }
     
-    java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
-    
+if(whetherReject_<%=cid%> == false){
+
     String str_<%=cid %> = "";
     for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
+    	<%=outputConnName%> = new <%=outputConnName%>Struct();
     	nb_line_<%=cid%>++;	
 <%
 		if (limit.compareTo("-1")!=0) {
@@ -238,6 +300,10 @@ class NameSpaceTool_<%=cid%> {
 				}
 			}
 		}
+%>
+	}//for
+}
+<%
 	}
 }
 %>
