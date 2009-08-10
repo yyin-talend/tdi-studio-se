@@ -498,6 +498,9 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 					%>BigDecimal <%=funin[OUTPUT_COLUMN] %>_<%=function %>;
            			<%
 
+           		}else if(function.equals(COUNT)){
+           			%>int <%=funin[OUTPUT_COLUMN] %>_clmCount = 0;
+           			<%
            		} else if(function.equals(AVG)) {
 					
 					%>int <%=funin[OUTPUT_COLUMN] %>_count = 0;

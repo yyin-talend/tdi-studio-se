@@ -314,7 +314,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 			
 			if(function.equals(COUNT)) {
 %>
-				operation_result_<%=cid %>.<%=outputColumnName %>_count++;
+				operation_result_<%=cid %>.<%=outputColumnName %>_clmCount++;
 <%
 			}
 
