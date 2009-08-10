@@ -77,11 +77,11 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private UtilsButton cancelButton = null;
 
-    private String defaultBatchSize = "250";
+    private String defaultBatchSize = "250";//$NON-NLS-1$
 
-    final String useProxy = "useProxyBtn";
+    final String useProxy = "useProxyBtn";//$NON-NLS-1$
 
-    final String useHttp = "useHttpBtn";
+    final String useHttp = "useHttpBtn";//$NON-NLS-1$
 
     /*
      * 
@@ -331,7 +331,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 enableProxyParameters(selection);
                 getConnection().setUseHttpProxy(selection);
                 if (selection && useProxyBtn.getSelection()) {
-                    getConnection().setUseHttpProxy(false);
+                    getConnection().setUseProxy(false);
                     useProxyBtn.setSelection(false);
                 }
             }
