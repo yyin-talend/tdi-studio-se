@@ -346,9 +346,14 @@ public class FOXUI {
         xmlViewer.setCellModifier(new ICellModifier() {
 
             public boolean canModify(Object element, String property) {
+                FOXTreeNode node = (FOXTreeNode) element;
                 if (property.equals("C1")) { //$NON-NLS-1$
-                    FOXTreeNode node = (FOXTreeNode) element;
                     if (node.getLabel() != null && node.getLabel().length() > 0) {
+                        return true;
+                    }
+                }
+                if (property.equals("C4")) { //$NON-NLS-1$
+                    if (node.getDefaultValue() != null && node.getDefaultValue().length() > 0) {
                         return true;
                     }
                 }
@@ -360,6 +365,10 @@ public class FOXUI {
                 if (property.equals("C1")) { //$NON-NLS-1$
                     return node.getLabel();
                 }
+                if (property.equals("C4")) { //$NON-NLS-1$
+                    return node.getDefaultValue();
+                }
+
                 return null;
             }
 
@@ -369,15 +378,22 @@ public class FOXUI {
                 if (property.equals("C1")) { //$NON-NLS-1$
                     node.setLabel((String) value);
                 }
+                if (property.equals("C4")) { //$NON-NLS-1$
+                    node.setDefaultValue((String) value);
+                }
                 xmlViewer.refresh(node);
             }
         });
-        xmlViewer.setColumnProperties(new String[] { "C1", "C2", "C3" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        xmlViewer.setColumnProperties(new String[] { "C1", "C2", "C3", "C4" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         CellEditor editor = new TextCellEditor(xmlViewer.getTree());
 
-        editor.addListener(new DialogErrorXMLLabelCellEditor(editor));
+        editor.addListener(new DialogErrorXMLLabelCellEditor(editor, "C1")); //$NON-NLS-1$
 
-        xmlViewer.setCellEditors(new CellEditor[] { editor, null, null });
+        // add by wzhang for bug 8572. set Default value column to be edit.
+        CellEditor editorDefault = new TextCellEditor(xmlViewer.getTree());
+        editorDefault.addListener(new DialogErrorXMLLabelCellEditor(editorDefault, "C4")); //$NON-NLS-1$
+
+        xmlViewer.setCellEditors(new CellEditor[] { editor, null, null, editorDefault });
 
         xmlViewer.setContentProvider(provider);
         xmlViewer.setInput(this.foxManager.getTreeData());
@@ -504,24 +520,34 @@ public class FOXUI {
 
         CellEditor editor;
 
+        String property;
+
+        Boolean validateLabel;
+
         public void applyEditorValue() {
             String text = getControl().getText();
-            onValueChanged(text, true);
+            onValueChanged(text, true, property);
         }
 
         public void cancelEditor() {
         }
 
         public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-            onValueChanged(getControl().getText(), false);
+            onValueChanged(getControl().getText(), false, property);
         }
 
-        private void onValueChanged(final String newValue, boolean showAlertIfError) {
+        private void onValueChanged(final String newValue, boolean showAlertIfError, String property) {
             final Text text = getControl();
 
             String errorMessage = null;
 
-            if (!StringUtil.validateLabelForXML(text.getText())) {
+            // modified for wzhang. fix value can contains space.
+            if ("C4".equals(property)) { //$NON-NLS-1$
+                validateLabel = StringUtil.validateLabelForFixedValue(text.getText());
+            } else {
+                validateLabel = StringUtil.validateLabelForXML(text.getText());
+            }
+            if (!validateLabel) {
                 errorMessage = Messages.getString("FOXUI.21"); //$NON-NLS-1$
             }
 
@@ -536,8 +562,9 @@ public class FOXUI {
             }
         }
 
-        public DialogErrorXMLLabelCellEditor(CellEditor editor) {
+        public DialogErrorXMLLabelCellEditor(CellEditor editor, String property) {
             super();
+            this.property = property;
             this.editor = editor;
         }
 

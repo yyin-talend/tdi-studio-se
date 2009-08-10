@@ -51,12 +51,12 @@ public class StringUtil {
         if (label.toLowerCase().startsWith("xml")) { //$NON-NLS-1$
             return false;
         }
-        char[] array = label.toCharArray();
-        for (int i = 0; i < array.length; i++) {
-            if (Character.isSpaceChar(array[i]) || Character.isWhitespace(array[i])) {
-                return false;
-            }
-        }
+        // char[] array = label.toCharArray();
+        // for (int i = 0; i < array.length; i++) {
+        // if (Character.isSpaceChar(array[i]) || Character.isWhitespace(array[i])) {
+        // return false;
+        // }
+        // }
         return true;
     }
 

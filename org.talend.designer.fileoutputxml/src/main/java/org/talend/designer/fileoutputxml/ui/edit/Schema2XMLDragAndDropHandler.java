@@ -347,8 +347,14 @@ public class Schema2XMLDragAndDropHandler {
                     }
                     IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
                     targetNode.setColumn(metaColumn);
+                    setDefaultFixValue(targetNode);
                 } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_SUBELEMENT)) {
-
+                    if (!(targetNode instanceof Element)) {
+                        MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+                                "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
+                                        + Messages.getString("Schema2XMLDragAndDropHandler.IsNotElementWarning")); //$NON-NLS-1$
+                        return;
+                    }
                     if (targetNode.getColumn() != null) {
                         if (!MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
                                 Messages.getString("CreateElementAction.1") //$NON-NLS-1$
@@ -376,6 +382,7 @@ public class Schema2XMLDragAndDropHandler {
                             targetNode.addChild(child);
                         }
                     }
+                    setDefaultFixValue(targetNode);
                 } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_ATTRIBUTE)) {
                     if (!(targetNode instanceof Element)) {
                         MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
@@ -402,6 +409,7 @@ public class Schema2XMLDragAndDropHandler {
                             targetNode.addChild(child);
                         }
                     }
+                    setDefaultFixValue(targetNode);
                 }
 
                 if (row != null) {
@@ -433,6 +441,19 @@ public class Schema2XMLDragAndDropHandler {
             linker.getXMLViewer().expandAll();
 
             linker.updateLinksStyleAndControlsSelection(control);
+        }
+
+        /**
+         * DOC wzhang Comment method "setDefaultFixValue".
+         * 
+         * @param treeNode
+         */
+        private void setDefaultFixValue(FOXTreeNode treeNode) {
+            String fixValue = treeNode.getDefaultValue();
+            if (fixValue == null) {
+                return;
+            }
+            treeNode.setDefaultValue(null);
         }
 
         // reset all the treenode add row to relative column
