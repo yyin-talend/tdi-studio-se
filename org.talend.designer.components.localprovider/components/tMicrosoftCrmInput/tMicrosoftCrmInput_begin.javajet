@@ -41,6 +41,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String domain = ElementParameterParser.getValue(node, "__DOMAIN__");
 			String host = ElementParameterParser.getValue(node, "__HOST__");
 			int port = Integer.parseInt(ElementParameterParser.getValue(node, "__PORT__"));
+			String timeoutSecTemp = ElementParameterParser.getValue(node, "__TIMEOUT__");
+			String timeoutSec = (timeoutSecTemp!=null&&!("").equals(timeoutSecTemp))?timeoutSecTemp:"2";
+			int timeout = (int)(Double.valueOf(timeoutSec) * 1000);
 %>
 		
 			System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
@@ -64,6 +67,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
             
             options_<%=cid%> .setUserName(<%=username%>);
             options_<%=cid%> .setPassword(<%=password%>);
+            options_<%=cid%> .setTimeOutInMilliSeconds(Long.valueOf(<%=timeout%>));
+            
+            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.SO_TIMEOUT,new Integer(<%=timeout%>));
+            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.CONNECTION_TIMEOUT, new Integer(<%=timeout%>));
             
             com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.Factory.newInstance();
             com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.Factory.newInstance();
