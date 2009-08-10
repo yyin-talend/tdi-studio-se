@@ -1,35 +1,31 @@
 /**
  * SObject.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ * 
+ * This file was auto-generated from WSDL by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
 package com.sforce.soap.partner.sobject;
 
-public class SObject  implements java.io.Serializable, org.apache.axis.encoding.AnyContentType {
+public class SObject implements java.io.Serializable, org.apache.axis.encoding.AnyContentType {
+
     private java.lang.String type;
 
     private java.lang.String[] fieldsToNull;
 
     private java.lang.String id;
 
-    private org.apache.axis.message.MessageElement [] _any;
+    private org.apache.axis.message.MessageElement[] _any;
 
     public SObject() {
     }
 
-    public SObject(
-           java.lang.String type,
-           java.lang.String[] fieldsToNull,
-           java.lang.String id,
-           org.apache.axis.message.MessageElement [] _any) {
-           this.type = type;
-           this.fieldsToNull = fieldsToNull;
-           this.id = id;
-           this._any = _any;
+    public SObject(java.lang.String type, java.lang.String[] fieldsToNull, java.lang.String id,
+            org.apache.axis.message.MessageElement[] _any) {
+        this.type = type;
+        this.fieldsToNull = fieldsToNull;
+        this.id = id;
+        this._any = _any;
     }
-
 
     /**
      * Gets the type value for this SObject.
@@ -40,7 +36,6 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
         return type;
     }
 
-
     /**
      * Sets the type value for this SObject.
      * 
@@ -50,7 +45,6 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
         this.type = type;
     }
 
-
     /**
      * Gets the fieldsToNull value for this SObject.
      * 
@@ -59,7 +53,6 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
     public java.lang.String[] getFieldsToNull() {
         return fieldsToNull;
     }
-
 
     /**
      * Sets the fieldsToNull value for this SObject.
@@ -78,7 +71,6 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
         this.fieldsToNull[i] = _value;
     }
 
-
     /**
      * Gets the id value for this SObject.
      * 
@@ -87,7 +79,6 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
     public java.lang.String getId() {
         return id;
     }
-
 
     /**
      * Sets the id value for this SObject.
@@ -98,55 +89,52 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
         this.id = id;
     }
 
-
     /**
      * Gets the _any value for this SObject.
      * 
      * @return _any
      */
-    public org.apache.axis.message.MessageElement [] get_any() {
+    public org.apache.axis.message.MessageElement[] get_any() {
         return _any;
     }
-
 
     /**
      * Sets the _any value for this SObject.
      * 
      * @param _any
      */
-    public void set_any(org.apache.axis.message.MessageElement [] _any) {
+    public void set_any(org.apache.axis.message.MessageElement[] _any) {
         this._any = _any;
     }
 
     private java.lang.Object __equalsCalc = null;
+
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof SObject)) return false;
+        if (!(obj instanceof SObject))
+            return false;
         SObject other = (SObject) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
         if (__equalsCalc != null) {
             return (__equalsCalc == obj);
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true && 
-            ((this.type==null && other.getType()==null) || 
-             (this.type!=null &&
-              this.type.equals(other.getType()))) &&
-            ((this.fieldsToNull==null && other.getFieldsToNull()==null) || 
-             (this.fieldsToNull!=null &&
-              java.util.Arrays.equals(this.fieldsToNull, other.getFieldsToNull()))) &&
-            ((this.id==null && other.getId()==null) || 
-             (this.id!=null &&
-              this.id.equals(other.getId()))) &&
-            ((this._any==null && other.get_any()==null) || 
-             (this._any!=null &&
-              java.util.Arrays.equals(this._any, other.get_any())));
+        _equals = true
+                && ((this.type == null && other.getType() == null) || (this.type != null && this.type.equals(other.getType())))
+                && ((this.fieldsToNull == null && other.getFieldsToNull() == null) || (this.fieldsToNull != null && java.util.Arrays
+                        .equals(this.fieldsToNull, other.getFieldsToNull())))
+                && ((this.id == null && other.getId() == null) || (this.id != null && this.id.equals(other.getId())))
+                && ((this._any == null && other.get_any() == null) || (this._any != null && java.util.Arrays.equals(this._any,
+                        other.get_any())));
         __equalsCalc = null;
         return _equals;
     }
 
     private boolean __hashCodeCalc = false;
+
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -157,12 +145,9 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
             _hashCode += getType().hashCode();
         }
         if (getFieldsToNull() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getFieldsToNull());
-                 i++) {
+            for (int i = 0; i < java.lang.reflect.Array.getLength(getFieldsToNull()); i++) {
                 java.lang.Object obj = java.lang.reflect.Array.get(getFieldsToNull(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
+                if (obj != null && !obj.getClass().isArray()) {
                     _hashCode += obj.hashCode();
                 }
             }
@@ -171,12 +156,9 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
             _hashCode += getId().hashCode();
         }
         if (get_any() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(get_any());
-                 i++) {
+            for (int i = 0; i < java.lang.reflect.Array.getLength(get_any()); i++) {
                 java.lang.Object obj = java.lang.reflect.Array.get(get_any(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
+                if (obj != null && !obj.getClass().isArray()) {
                     _hashCode += obj.hashCode();
                 }
             }
@@ -186,8 +168,7 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
     }
 
     // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(SObject.class, true);
+    private static org.apache.axis.description.TypeDesc typeDesc = new org.apache.axis.description.TypeDesc(SObject.class, true);
 
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("urn:sobject.partner.soap.sforce.com", "sObject"));
@@ -223,25 +204,20 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
     /**
      * Get Custom Serializer
      */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public static org.apache.axis.encoding.Serializer getSerializer(java.lang.String mechType, java.lang.Class _javaType,
+            javax.xml.namespace.QName _xmlType) {
+        return new org.apache.axis.encoding.ser.BeanSerializer(_javaType, _xmlType, typeDesc);
     }
 
     /**
      * Get Custom Deserializer
      */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public static org.apache.axis.encoding.Deserializer getDeserializer(java.lang.String mechType, java.lang.Class _javaType,
+            javax.xml.namespace.QName _xmlType) {
+        // modified by wyang: for bug:8530
+        // return new org.apache.axis.encoding.ser.BeanDeserializer(_javaType, _xmlType, typeDesc);
+        return new org.talend.FSQueryResultBeanDeserializer(_javaType, _xmlType, typeDesc);
+
     }
 
 }
