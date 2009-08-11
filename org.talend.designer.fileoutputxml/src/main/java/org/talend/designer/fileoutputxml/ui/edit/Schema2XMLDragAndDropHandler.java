@@ -377,7 +377,6 @@ public class Schema2XMLDragAndDropHandler {
                         }
                         if (!isContain) {
                             FOXTreeNode child = new Element(metaColumn.getLabel());
-                            targetNode.getChildren();
                             child.setColumn(metaColumn);
                             child.setTable(table);
                             child.setRow(row);
