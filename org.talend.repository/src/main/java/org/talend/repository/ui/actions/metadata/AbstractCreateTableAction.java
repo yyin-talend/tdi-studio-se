@@ -120,10 +120,10 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         }
         wizardDialog.create();
-        wizardDialog.open();
-        getViewPart().expand(node, true);
-        refresh(node);
-
+        if (wizardDialog.open() == wizardDialog.OK) {
+            getViewPart().expand(node, true);
+            refresh(node);
+        }
     }
 
     protected String getStringIndexed(String string) {
