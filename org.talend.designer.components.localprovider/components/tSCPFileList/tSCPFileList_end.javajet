@@ -42,3 +42,4 @@ imports="
             }else{
             	globalMap.put("<%=cid %>_STATUS",stringStderr_<%=cid%>.toString());
             }
+			globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
