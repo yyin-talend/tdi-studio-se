@@ -13,6 +13,8 @@
 package org.talend.repository.ui.wizards.ConfigExternalLib;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +34,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -78,6 +81,8 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
      * 
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
+    EList routines = null;
+
     public void createControl(Composite parent) {
         initializeDialogUnits(parent);
 
@@ -90,9 +95,37 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 composite);
 
         RoutineItem routine = getSelectedRoutine();
-        EList routines = routine.getImports();
+        routines = routine.getImports();
         libField.setInput(routines);
+        Button button = new Button(composite, getMessageType());
+        button.setText("reload the library");
+        button.addSelectionListener(new SelectionListener() {
 
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                for (int i = 0; i < routines.size(); i++) {
+                    String value = ((IMPORTType) routines.get(i)).getUrlPath();
+                    File file = new File(value);
+                    if (file.exists()) {
+                        try {
+                            CorePlugin.getDefault().getLibrariesService().deployLibrary(file.toURL());
+                        } catch (MalformedURLException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+                    }
+
+                }
+
+            }
+
+        });
         setErrorMessage(null); // should not initially have error message
 
         setControl(composite);
@@ -253,6 +286,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
 
             type.setMODULE(modelName);
             type.setREQUIRED(requiredButton.getSelection());
+            type.setUrlPath(fileField.getStringValue());
             this.importType = type;
 
             super.okPressed();
