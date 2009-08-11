@@ -13,7 +13,6 @@
 package org.talend.designer.fileoutputxml.managers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +79,8 @@ public class MultiFOXManager extends FOXManager {
                 for (Map<String, String> rootMap : rootTable) {
                     String newPath = rootMap.get(FileOutputXMLComponent.PATH);
                     String columnName = rootMap.get(FileOutputXMLComponent.COLUMN);
-                    if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
+                    String flag = columnName + ":"; //$NON-NLS-1$
+                    if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
                     }
                     if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
@@ -121,7 +121,8 @@ public class MultiFOXManager extends FOXManager {
                 for (Map<String, String> groupMap : groupTable) {
                     String newPath = groupMap.get(FileOutputXMLComponent.PATH);
                     String columnName = groupMap.get(FileOutputXMLComponent.COLUMN);
-                    if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
+                    String flag = columnName + ":"; //$NON-NLS-1$
+                    if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
                     }
                     if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
@@ -163,7 +164,8 @@ public class MultiFOXManager extends FOXManager {
                 for (Map<String, String> loopMap : loopTable) {
                     String newPath = loopMap.get(FileOutputXMLComponent.PATH);
                     String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
-                    if (columnName != null && columnName.length() > 0 && !columnName.startsWith(metadataTable.getLabel())) {
+                    String flag = columnName + ":"; //$NON-NLS-1$
+                    if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
                     }
                     if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
@@ -201,47 +203,6 @@ public class MultiFOXManager extends FOXManager {
                 rootNode.setRow(metadataTable.getLabel());
                 contents.put(metadataTable.getLabel(), treeData);
                 i++;
-            }
-        }
-    }
-
-    protected void tableLoaderX(Element element, String parentPath, List<Map<String, String>> table, String defaultValue) {
-        if (element.getTable() != null) {
-            String schemaId = ""; //$NON-NLS-1$
-            // set parent node
-            if (foxComponent.istFileOutputMSXML()) {
-                schemaId = element.getTable().getLabel() + ":"; //$NON-NLS-1$
-            }
-
-            Map<String, String> newMap = new HashMap<String, String>();
-            String currentPath = parentPath + "/" + element.getLabel(); //$NON-NLS-1$
-            newMap.put(FileOutputXMLComponent.PATH, currentPath);
-            newMap.put(FileOutputXMLComponent.COLUMN, element.getColumnLabel());
-            newMap.put(FileOutputXMLComponent.ATTRIBUTE, element.isMain() ? "main" : "branch"); //$NON-NLS-1$ //$NON-NLS-2$
-            newMap.put(FileOutputXMLComponent.VALUE, defaultValue); //$NON-NLS-1$
-            table.add(newMap);
-            for (FOXTreeNode att : element.getAttributeChildren()) {
-                newMap = new HashMap<String, String>();
-                newMap.put(FileOutputXMLComponent.PATH, att.getLabel());
-                newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
-                newMap.put(FileOutputXMLComponent.ATTRIBUTE, "attri"); //$NON-NLS-1$
-                newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
-                table.add(newMap);
-            }
-            for (FOXTreeNode att : element.getNameSpaceChildren()) {
-                newMap = new HashMap<String, String>();
-                newMap.put(FileOutputXMLComponent.PATH, att.getLabel());
-                newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
-                newMap.put(FileOutputXMLComponent.ATTRIBUTE, "ns"); //$NON-NLS-1$
-                newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
-                table.add(newMap);
-            }
-        }
-        List<FOXTreeNode> children = element.getElementChildren();
-        String currentPath = parentPath + "/" + element.getLabel(); //$NON-NLS-1$
-        for (FOXTreeNode child : children) {
-            if (!child.isGroup() && !child.isLoop()) {
-                tableLoader((Element) child, currentPath, table, child.getDefaultValue());
             }
         }
     }

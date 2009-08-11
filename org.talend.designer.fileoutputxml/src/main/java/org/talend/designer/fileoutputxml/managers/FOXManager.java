@@ -281,6 +281,7 @@ public class FOXManager {
             tableLoader(loopNode, path.substring(0, path.lastIndexOf("/")), result, loopNode.getDefaultValue()); //$NON-NLS-1$
         }
         return result;
+
     }
 
     public List<Map<String, String>> getGroupTable() {
@@ -309,6 +310,17 @@ public class FOXManager {
     }
 
     protected void tableLoader(Element element, String parentPath, List<Map<String, String>> table, String defaultValue) {
+        if ("a8".equals(element.getLabel())) {
+            System.out.println("*********************");
+            System.out.println("&&&&&&&&&&&&&&&&&&&7&&");
+            System.out.println("1111111111111111111111");
+        }
+        if ("a9".equals(element.getLabel())) {
+            System.out.println("*********************");
+            System.out.println("&&&&&&&&&&&&&&&&&&&7&&");
+            System.out.println("1111111111111111111111");
+        }
+
         Map<String, String> newMap = new HashMap<String, String>();
         String currentPath = parentPath + "/" + element.getLabel(); //$NON-NLS-1$
         newMap.put(FileOutputXMLComponent.PATH, currentPath);
