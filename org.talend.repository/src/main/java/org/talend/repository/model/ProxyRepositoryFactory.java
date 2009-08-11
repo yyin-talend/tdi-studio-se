@@ -251,8 +251,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (!this.repositoryFactoryFromProvider.isPathValid(proejct, type, path, label)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " is already in use");
-            throw new IllegalArgumentException(Messages.getString(
-                    "ProxyRepositoryFactory.illegalArgumentException.labeAlreadyInUse", new String[] { fileName })); //$NON-NLS-1$
+            if (!type.isResourceItem()) {
+                throw new IllegalArgumentException(Messages.getString(
+                        "ProxyRepositoryFactory.illegalArgumentException.labeAlreadyInUse", new String[] { fileName })); //$NON-NLS-1$
+            }
+
         }
     }
 

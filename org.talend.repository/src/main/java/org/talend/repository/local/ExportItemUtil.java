@@ -41,6 +41,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.ExternalCrossReferencer;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -96,8 +97,10 @@ public class ExportItemUtil {
         this.project = project;
     }
 
+    private IFileExporterFullPath exporter = null;
+
     public void exportItems(File destination, Collection<Item> items, IProgressMonitor progressMonitor) throws Exception {
-        IFileExporterFullPath exporter = null;
+
         File tmpDirectory = null;
         Map<File, IPath> toExport;
 
@@ -144,7 +147,7 @@ public class ExportItemUtil {
         } finally {
             if (exporter != null) {
                 try {
-                    exporter.finished();
+                    // exporter.finished();
                 } catch (Exception e) {
                     // ignore me
                 }
@@ -198,7 +201,6 @@ public class ExportItemUtil {
             }
             list.add(item);
         }
-
         // merge items from different projects
         items = new ArrayList<Item>(items.size());
         for (List<Item> list : projectItems.values()) {
@@ -246,6 +248,7 @@ public class ExportItemUtil {
             dereferenceNotContainedObjects();
             saveResources();
             progressMonitor.worked(1);
+
         } catch (Exception e) {
             throw e;
         } finally {
@@ -293,7 +296,6 @@ public class ExportItemUtil {
 
     private void computeItemFilesAndPaths(File destinationFile, Item item, boolean projectFolderStructure) {
         IPath fileNamePath = getProjectPath();
-
         if (projectFolderStructure) {
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
             IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
@@ -307,6 +309,7 @@ public class ExportItemUtil {
 
         itemPath = fileNamePath.addFileExtension(FileConstants.ITEM_EXTENSION);
         itemFile = new File(destinationFile, itemPath.toOSString());
+
     }
 
     private void init() {
@@ -454,4 +457,28 @@ public class ExportItemUtil {
             throw new IOException(Messages.getString("ExportItemUtil.cannotCreateDir", folder)); //$NON-NLS-1$
         }
     }
+
+    private void copyJarToDestination(String sourcePath, String destinationPath) {
+        // String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
+        File sourceFile = new File(sourcePath);
+        File destinationFile = new File(destinationPath);
+        if (sourceFile.exists()) {
+            try {
+                FilesUtils.copyFile(sourceFile, destinationFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public String getNeedProjectPath() {
+        IPath needPath = getProjectPath();
+        return needPath.toString();
+    }
+
+    public IFileExporterFullPath getExporter() {
+        return exporter;
+    }
+
 }
