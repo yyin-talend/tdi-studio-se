@@ -884,27 +884,9 @@ public class CLASS {
             
             if (generatedType.equals("int") || generatedType.equals("float") || generatedType.equals("double") ||generatedType.equals("long") 
                     || generatedType.equals("short") || generatedType.equals("boolean") || generatedType.equals("byte") || generatedType.equals("char")) {
-            	//bug0008551 when user replaceFirst method  $ ($g) will be replaced by the result of evaluating group(g).
-            	if ( generatedType.equals("char")) {
-            		 return incomingConnName + "." + column.getName()+"=='$'?"+
-            		 stmt + cid + ".replaceFirst(\"\\\\?\", "+"\"'\" + \"\\\\\"+String.valueOf(" + incomingConnName + "." + column.getName() + ") + \"'\"" + ") :"+
-            		 stmt + cid + ".replaceFirst(\"\\\\?\", " + replaceStr + ") ";
-            	}
-            	//bug0008551 end
                 return stmt + cid + ".replaceFirst(\"\\\\?\", " +  replaceStr + ")";
             }else {
-            	//bug0008551 when user replaceFirst method  $ ($g) will be replaced by the result of evaluating group(g).
-            	 if(generatedType.equals("String")) {
-            		return incomingConnName + "." + column.getName() +"!= null&&"+incomingConnName + "." + column.getName()+".indexOf(\"$\")!=-1?"+
-            		stmt + cid +".substring(0, "+stmt + cid+".indexOf(\"?\"))+\"'\"+"+ incomingConnName + "." + column.getName()+"+\"'\"+"+stmt + cid+".substring("+stmt + cid+".indexOf(\"?\")+1) :"+
-            		stmt + cid + ".replaceFirst(\"\\\\?\", " + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ")";
-            	 } else if ( generatedType.equals("Character")) {
-            		 return incomingConnName + "." + column.getName() +"!= null&&"+incomingConnName + "." + column.getName()+"=='$'?"+
-            		 stmt + cid + ".replaceFirst(\"\\\\?\", " + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" +"\"'\" + \"\\\\\"+String.valueOf(" + incomingConnName + "." + column.getName() + ") + \"'\"" + ") :"+
-            		 stmt + cid + ".replaceFirst(\"\\\\?\", " + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ") ";
-            	 }
-            	//bug0008551 end
-            	 return stmt + cid + ".replaceFirst(\"\\\\?\", " + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ")";
+                return stmt + cid + ".replaceFirst(\"\\\\?\", " + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ")";
             }
             
                 
