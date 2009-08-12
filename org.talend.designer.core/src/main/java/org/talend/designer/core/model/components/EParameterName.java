@@ -119,6 +119,10 @@ public enum EParameterName {
     VARIABLES("VARIABLES"), //$NON-NLS-1$
     USE_EXISTING_CONNECTION(Messages.getString("EParameterName.useExistConn")), //$NON-NLS-1$
 
+    RESUMING_CHECKPOINT("Resuming Checkpoint"), //$NON-NLS-1$
+    RESUMLABEL("Label"), //$NON-NLS-1$
+    FAILURE_INSTRUCTIONS("Failure instructions"), //$NON-NLS-1$
+
     // hywang add for feature7373
     COLUMNINDEX(Messages.getString("EParameterName.columnIndex")), //$NON-NLS-1$
     CDC_TYPE_MODE("CDC Type Mode"),

@@ -111,6 +111,8 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
             super.addComponents(forceRedraw, false, curRowSize);
         } else if (conIf()) {
             super.addComponents(forceRedraw);
+        } else if (resumingIf()) {
+            super.addComponents(forceRedraw);
         } else {
             disposeChildren();
         }
@@ -119,6 +121,14 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
     private boolean conIf() {
         Connection connection = (Connection) elem;
         return (connection.getLineStyle() == EConnectionType.RUN_IF) || (connection.getLineStyle() == EConnectionType.ITERATE);
+    }
+
+    private boolean resumingIf() {
+        Connection connection = (Connection) elem;
+        return (connection.getLineStyle() == EConnectionType.ON_COMPONENT_OK)
+                || (connection.getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)
+                || (connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK)
+                || (connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR);
     }
 
     private boolean conSchema() {

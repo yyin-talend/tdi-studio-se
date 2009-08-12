@@ -40,7 +40,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.HorizontalTabFactory;
@@ -525,7 +527,28 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
      */
     private EComponentCategory[] getCategories(Element elem) {
         if (elem instanceof Connection) {
-            return EElementType.CONNECTION.getCategories();
+
+            EComponentCategory[] categories = EElementType.CONNECTION.getCategories();
+            if (PluginChecker.isTIS()) {
+
+                Object propertyValue = elem.getPropertyValue(Connection.LINESTYLE_PROP);
+                if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)
+                        || propertyValue.equals(EConnectionType.ON_COMPONENT_ERROR)
+                        || propertyValue.equals(EConnectionType.RUN_IF) || propertyValue.equals(EConnectionType.ON_SUBJOB_OK)
+                        || propertyValue.equals(EConnectionType.ON_SUBJOB_ERROR)) {
+
+                    int length = categories.length;
+                    EComponentCategory[] newCategories = new EComponentCategory[length + 1];
+                    for (int i = 0; i < length; i++) {
+                        newCategories[i] = categories[i];
+                    }
+                    EComponentCategory resuming = EComponentCategory.RESUMING;
+                    newCategories[length] = resuming;
+                    return newCategories;
+                }
+
+            }
+            return categories;
         } else if (elem instanceof Node) {
             // if (isAdvancedType(elem)) {
             if (((Node) elem).isELTComponent()) {

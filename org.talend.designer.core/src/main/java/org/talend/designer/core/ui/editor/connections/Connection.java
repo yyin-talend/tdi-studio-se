@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -59,6 +60,8 @@ public class Connection extends Element implements IConnection, IPerformance {
     public static final String ENABLE_PARALLEL = "ENABLE_PARALLEL"; //$NON-NLS-1$
 
     public static final String NUMBER_PARALLEL = "NUMBER_PARALLEL"; //$NON-NLS-1$
+
+    private static final String RESUMING_CHECKPOINT = "RESUMING_CHECKPOINT_GROUP"; //$NON-NLS-1$
 
     private EConnectionType lineStyle = EConnectionType.FLOW_MAIN;
 
@@ -264,6 +267,44 @@ public class Connection extends Element implements IConnection, IPerformance {
         // addElementParameter(param);
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             initTraceParamters();
+        }
+
+        if (PluginChecker.isTIS()) {
+
+            param = new ElementParameter(this);
+            param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
+            param.setValue(Boolean.FALSE);
+            param.setGroupDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
+            param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
+            param.setField(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.RESUMING);
+            param.setGroup(RESUMING_CHECKPOINT);
+            param.setNumRow(2);
+            param.setShow(true);
+            addElementParameter(param);
+
+            param = new ElementParameter(this);
+            param.setName(EParameterName.RESUMLABEL.getName());
+            param.setDisplayName(EParameterName.RESUMLABEL.getDisplayName());
+            param.setField(EParameterFieldType.TEXT);
+            param.setCategory(EComponentCategory.RESUMING);
+            param.setGroup(RESUMING_CHECKPOINT);
+            param.setValue("");
+            param.setNumRow(3);
+            param.setShow(true);
+            addElementParameter(param);
+
+            param = new ElementParameter(this);
+            param.setName(EParameterName.FAILURE_INSTRUCTIONS.getName());
+            param.setDisplayName(EParameterName.FAILURE_INSTRUCTIONS.getDisplayName());
+            param.setField(EParameterFieldType.MEMO);
+            param.setCategory(EComponentCategory.RESUMING);
+            param.setGroup(RESUMING_CHECKPOINT);
+            param.setNbLines(5);
+            param.setNumRow(4);
+            param.setShow(true);
+            addElementParameter(param);
+
         }
     }
 
