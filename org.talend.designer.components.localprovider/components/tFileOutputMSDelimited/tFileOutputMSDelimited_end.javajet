@@ -173,10 +173,12 @@ class Gen{//HSS_____inner class
 				sb.append("sb_").append(cid).append(".append(");
 				sb.append("tempStringM").append(cid);
 				sb.append(");\n");
-				if(isUseMultiSeparator){
-					sb.append("sb_").append(cid).append(".append(").append(schema.get("FIELD_SEPARATOR")).append(");\n");
-				}else{
-					sb.append("sb_").append(cid).append(".append(").append(fieldSeparator).append(");\n");
+				if(i < sizeColumns -1 ){
+					if(isUseMultiSeparator){
+						sb.append("sb_").append(cid).append(".append(").append(schema.get("FIELD_SEPARATOR")).append(");\n");
+					}else {
+						sb.append("sb_").append(cid).append(".append(").append(fieldSeparator).append(");\n");
+					}
 				}
 			}
 		}
