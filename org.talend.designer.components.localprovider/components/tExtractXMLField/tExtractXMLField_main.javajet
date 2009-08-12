@@ -198,7 +198,7 @@ class NameSpaceTool_<%=cid%> {
 	
 
 }
-	boolean whetherReject_<%=cid %> = false;
+
 	NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
     org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
     org.dom4j.Document doc_<%=cid%> = null;
@@ -216,31 +216,8 @@ class NameSpaceTool_<%=cid%> {
     	x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
     
     	nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);
-    }catch(Exception e){
-    	whetherReject_<%=cid%> = true;
-<%if(!("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.size() > 0) {%>
-		<%=rejectConnName %> = new <%=rejectConnName %>Struct();
-<% 	for(IMetadataColumn column : columns) {
-  		if(!xmlField.equals(column.getLabel())){
-  			for(IMetadataColumn inColumn : inColumns){
-  				if(inColumn.getLabel().equals(column.getLabel())){%>
-        <%=rejectConnName%>.<%=column.getLabel()%> = <%=inputConnName %>.<%=column.getLabel()%>;
-<%
-					break;
-				}
-			}
-		}
-    }%>
-		<%=rejectConnName %>.errorXMLField = <%=inputConnName %>.<%=xmlField%>;
-		<%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
-		<%=outputConnName %> = null;
-<%} else if(("").equals(rejectConnName)){%>
-    	System.err.println(e.getMessage());
-    	<%=outputConnName %> = null;
-<%}%>
-    }
     
-if(whetherReject_<%=cid%> == false){
+if(nodeList_<%=cid%> !=null){
 
     String str_<%=cid %> = "";
     for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
@@ -303,6 +280,30 @@ if(whetherReject_<%=cid%> == false){
 %>
 	}//for
 }
+
+    }catch(Exception e){
+<%if(!("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+		<%=rejectConnName %> = new <%=rejectConnName %>Struct();
+<% 	for(IMetadataColumn column : columns) {
+  		if(!xmlField.equals(column.getLabel())){
+  			for(IMetadataColumn inColumn : inColumns){
+  				if(inColumn.getLabel().equals(column.getLabel())){%>
+        <%=rejectConnName%>.<%=column.getLabel()%> = <%=inputConnName %>.<%=column.getLabel()%>;
+<%
+					break;
+				}
+			}
+		}
+    }%>
+		<%=rejectConnName %>.errorXMLField = <%=inputConnName %>.<%=xmlField%>;
+		<%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+		<%=outputConnName %> = null;
+<%} else if(("").equals(rejectConnName)){%>
+    	System.err.println(e.getMessage());
+    	<%=outputConnName %> = null;
+<%}%>
+    }
+
 <%
 	}
 }
