@@ -39,10 +39,11 @@ public class SalesforceSchemaInputNode extends FileInputNode {
      */
     private void addParameters(SalesforceSchemaBean schemaBean) {
         // modify for feature 7507
-        String[] parameters = new String[] { "ENDPOINT", "USER", "PASS", "MODULENAME", "CONDITION", "CUSTOM_MODULE", "BATCH_SIZE" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        String[] parameters = new String[] {
+                "ENDPOINT", "USER", "PASS", "MODULENAME", "CONDITION", "CUSTOM_MODULE", "BATCH_SIZE", "NORMALIZE_DELIMITER", "COLUMNNAME_DELIMITER" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         String[] values = new String[] { schemaBean.getWebServerUrl(), schemaBean.getUserName(), schemaBean.getPassword(),
                 schemaBean.isUseCustomModule() ? "CustomModule" : schemaBean.getModuleName(), schemaBean.getQueryCondition(), //$NON-NLS-1$
-                schemaBean.getModuleName(), schemaBean.getBatchSize().toString() };
+                schemaBean.getModuleName(), schemaBean.getBatchSize().toString(), ";", "_" };
         for (int i = 0, n = values.length; i < n; i++) {
             if (values[i] == null || values[i].equals("")) { //$NON-NLS-1$
                 continue;
