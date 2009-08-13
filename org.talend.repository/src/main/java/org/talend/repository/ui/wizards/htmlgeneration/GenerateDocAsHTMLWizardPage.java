@@ -28,8 +28,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.model.properties.ProcessItem;
@@ -378,6 +381,22 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
                     section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
                 }
                 section.put(DESTINATION_FILE, selectedFileName);//$NON-NLS-1$//$NON-NLS-1$
+            }
+        }
+    }
+
+    @Override
+    public void handleEvent(Event e) {
+        super.handleEvent(e);
+        Widget source = e.widget;
+        if (source instanceof Combo) {
+            String destination = ((Combo) source).getText();
+            if (getDialogSettings() != null) {
+                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
+                if (section == null) {
+                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
+                }
+                section.put(DESTINATION_FILE, destination);//$NON-NLS-1$
             }
         }
     }
