@@ -36,6 +36,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.genhtml.IJobSettingConstants;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
@@ -72,6 +73,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
@@ -678,6 +680,11 @@ public class DesignerCoreService implements IDesignerCoreService {
     public void setTraceFilterParameters(INode node, IMetadataTable table, Set<String> preColumnSet,
             Map<String, String> changedNameColumns) {
         TracesConnectionUtils.setTraceFilterParameters(node, table, preColumnSet, changedNameColumns);
+    }
+
+    public void createStatsLogAndImplicitParamter(Project project) {
+        ProjectSettingManager.createStatsAndLogsElement(project);
+        ProjectSettingManager.createImplicitContextLoadElement(project);
     }
 
 }

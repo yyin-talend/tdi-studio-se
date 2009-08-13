@@ -25,6 +25,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.ResourceModelUtils;
@@ -51,6 +52,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
         if (load) {
             loadProcess();
         } else {
+            // use project setting true
+            ProjectSettingManager.defaultUseProjectSetting(getLoadedProcess());
             saveProcess(null, null);
         }
         if (readonly == null) {

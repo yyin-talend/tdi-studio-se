@@ -159,7 +159,6 @@ public enum EParameterName {
     DBFILE(Messages.getString("EParameterName.database")), //$NON-NLS-1$
     DB_VERSION(Messages.getString("EParameterName.dbVersion")), //$NON-NLS-1$
     DATASOURCE(Messages.getString("EParameterName.dataSource")), //$NON-NLS-1$
-    STATS_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.StatDefaultProjectsetting")), //$NON-NLS-1$
     USE_SHARED_CONNECTION(Messages.getString("EParameterName.useSharedConnection")), //$NON-NLS-1$
     SHARED_CONNECTION_NAME(Messages.getString("EParameterName.sharedConnectionName")), //$NON-NLS-1$
     /**
@@ -179,7 +178,6 @@ public enum EParameterName {
     DISABLE_ERROR(Messages.getString("EParameterName.DisableErrors")), //$NON-NLS-1$
     DISABLE_INFO(Messages.getString("EParameterName.DisableInfos")), //$NON-NLS-1$
     DISABLE_WARNINGS(Messages.getString("EParameterName.DisableWarnings")), //$NON-NLS-1$
-    IMPLICT_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.ImplictDefaultProjectsetting")), //$NON-NLS-1$
 
     // added by wchen for feature 6759
     USE_MULTISEPARATORS(Messages.getString("EParameterName.useMultiSaparators")),
@@ -246,9 +244,12 @@ public enum EParameterName {
     PARALLELIZE_NUMBER(Messages.getString("EParameterName.parallelizeNumber")), //$NON-NLS-1$
     PARALLELIZE_UNIT_SIZE(Messages.getString("EParameterName.parallelizeUnitSize")), //$NON-NLS-1$
 
-    // use project setting
+    // use project setting for process
     IMPLICITCONTEXT_USE_PROJECT_SETTINGS(Messages.getString("Extra.UseProjectSettings")), //$NON-NLS-1$
     STATANDLOG_USE_PROJECT_SETTINGS(Messages.getString("StatsAndLogs.UseProjectSettings")), //$NON-NLS-1$
+    // use project setting for project
+    STATS_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.StatDefaultProjectsetting")), //$NON-NLS-1$
+    IMPLICT_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.ImplictDefaultProjectsetting")), //$NON-NLS-1$
 
     // BASED_ON_INPUT_SCHEMAS
     BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS"); //$NON-NLS-1$

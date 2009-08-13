@@ -245,34 +245,36 @@ public class ProjectSettingManager extends Utils {
             return;
         ImplicitContextSettings implicit = ProjectManager.getInstance().getCurrentProject().getEmfProject()
                 .getImplicitContextSettings();
-        Boolean bImplicit = true;
+        Boolean bImplicit = false;
         if (implicit != null) {
             String v = ElementParameter2ParameterType.getParameterValue(implicit.getParameters(),
                     EParameterName.IMPLICT_DEFAULT_PROJECTSETTING.getName());
-            if (v != null) {
+            if (v != null && Boolean.valueOf(v)) {
                 bImplicit = Boolean.valueOf(v);
             }
         }
-        ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
-        ElementParameter2ParameterType.setParameterValue(process, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(),
-                bImplicit);
-        ElementParameter2ParameterType.setParameterValue(pItem.getProcess().getParameters(),
-                EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), bImplicit);
+        if (bImplicit) {
+            ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
+            ElementParameter2ParameterType.setParameterValue(process, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS
+                    .getName(), bImplicit);
+            reloadImplicitValuesFromProjectSettings(process, ProjectManager.getInstance().getCurrentProject(), null);
 
+        }
         // stat and log
         StatAndLogsSettings stat = ProjectManager.getInstance().getCurrentProject().getEmfProject().getStatAndLogsSettings();
-        Boolean bStat = true;
+        Boolean bStat = false;
         if (stat != null) {
             String v = ElementParameter2ParameterType.getParameterValue(stat.getParameters(),
                     EParameterName.STATS_DEFAULT_PROJECTSETTING.getName());
-            if (v != null) {
+            if (v != null || Boolean.valueOf(v)) {
                 bStat = Boolean.valueOf(v);
             }
         }
-        ElementParameter2ParameterType
-                .setParameterValue(process, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), bStat);
-        ElementParameter2ParameterType.setParameterValue(pItem.getProcess().getParameters(),
-                EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), bStat);
+        if (bStat) {
+            ElementParameter2ParameterType.setParameterValue(process, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
+                    bStat);
+            reloadStatsAndLogFromProjectSettings(process, ProjectManager.getInstance().getCurrentProject(), null);
+        }
     }
 
     /**

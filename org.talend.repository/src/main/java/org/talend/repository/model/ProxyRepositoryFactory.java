@@ -84,6 +84,7 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.joblet.ui.IJobCheckService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
@@ -327,6 +328,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
         service.initNewProjectTasks(toReturn);
+        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+        if (designerCoreService != null) {
+            designerCoreService.createStatsLogAndImplicitParamter(toReturn);
+        }
 
         return toReturn;
     }

@@ -37,7 +37,6 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
-import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.designer.core.ui.wizards.NewProcessWizard;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
@@ -141,9 +140,8 @@ public class CreateProcess extends AContextualAction {
 
                 IWorkbenchPage page = getActivePage();
                 page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
-                // use project setting true
-
-                ProjectSettingManager.defaultUseProjectSetting(fileEditorInput.getLoadedProcess());
+                // // use project setting true
+                // ProjectSettingManager.defaultUseProjectSetting(fileEditorInput.getLoadedProcess());
             } catch (PartInitException e) {
                 // TODO Auto-generated catch block
                 // e.printStackTrace();
