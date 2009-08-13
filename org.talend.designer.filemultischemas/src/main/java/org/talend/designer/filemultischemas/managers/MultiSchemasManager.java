@@ -760,7 +760,7 @@ public class MultiSchemasManager {
             multiSchameCsvReader = getCSVReader(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord);
             while (multiSchameCsvReader.readRecord()) {
                 String[] values = multiSchameCsvReader.getValues();
-                if (values == null || values.length < 1) {
+                if (values == null || values.length < 1 || values.length <= selectColumnIndex) {
                     continue;
                 }
                 final String first = values[selectColumnIndex];

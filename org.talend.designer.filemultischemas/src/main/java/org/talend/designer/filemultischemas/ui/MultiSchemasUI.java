@@ -329,7 +329,7 @@ public class MultiSchemasUI {
         keyValuesText.setEditable(isUseMuliSaparator);
         csvRadio.setSelection(isUseMuliSaparator || getConnection().isCsvOption());
         delimitedRadio.setSelection(!isUseMuliSaparator && !getConnection().isCsvOption());
-        delimitedRadio.setEnabled(!isUseMuliSaparator && !getConnection().isCsvOption());
+        delimitedRadio.setEnabled(!(isUseMuliSaparator && getConnection().isCsvOption()));
         escapeCharCombo.setEnabled(isUseMuliSaparator || getConnection().isCsvOption());
         textEnclosureCombo.setEnabled(isUseMuliSaparator || getConnection().isCsvOption());
         fieldSeparatorManager();
