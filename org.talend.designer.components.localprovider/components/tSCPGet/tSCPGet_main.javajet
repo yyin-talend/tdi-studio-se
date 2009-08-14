@@ -16,6 +16,7 @@ imports="
         String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
         String replaceOption = ElementParameterParser.getValue(node,"__REPLACEOPTION__");
         List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__FILELIST__");
+        String containBlank = ElementParameterParser.getValue(node, "__CONTAIN_BLANK__");
 %>
 
         String[] sourceFileNames_<%=cid%> = new String[]{
@@ -31,32 +32,33 @@ java.io.File dir_<%=cid %> = null;
 java.io.File file_<%=cid %> = null;
 java.io.FileOutputStream out_<%=cid %> = null;
 try{
-<%if(("append").equals(replaceOption)){%>
-for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
-				if (sourceFile_<%=cid %> != null
-						&& sourceFile_<%=cid %>.length() != 0) {
-					sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
-				    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
-				    if(index_<%=cid %> >0){
-					dir_<%=cid %> = new java.io.File(<%=localdir %>);
-					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);	
-					file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
-					if(!file_<%=cid %>.exists()){
-					  file_<%=cid %>.getParentFile().mkdirs();
-					}
-					out_<%=cid %> = new java.io.FileOutputStream(
-							file_<%=cid %>, true);
-					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
-					nb_file_<%=cid%> ++ ;
+<%
+if(("append").equals(replaceOption)){%>
+	for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
+		if (sourceFile_<%=cid %> != null&& sourceFile_<%=cid %>.length() != 0) {
+			sourceFile_<%=cid%> = "true".equals("<%=containBlank%>")?"\"" + sourceFile_<%=cid%> + "\"":sourceFile_<%=cid%>;
+			sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
+			int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
+			if(index_<%=cid %> >0){
+				dir_<%=cid %> = new java.io.File(<%=localdir %>);
+				String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);	
+				file_<%=cid %> = new java.io.File(dir_<%=cid %>, "true".equals("<%=containBlank%>")?extension_<%=cid %>.substring(0,extension_<%=cid%>.length()-1):extension_<%=cid%>);
+				if(!file_<%=cid %>.exists()){
+				  file_<%=cid %>.getParentFile().mkdirs();
 				}
-				}
+				out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, true);
+				scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
+				nb_file_<%=cid%> ++ ;
 			}
-			if(nb_file_<%=cid%>>0){
-			globalMap.put("<%=cid %>_STATUS", "File get OK.");
-			}else{
-			globalMap.put("<%=cid %>_STATUS", "No file transfered.");
-			}
-<%}else{
+		}
+	}
+	if(nb_file_<%=cid%>>0){
+		globalMap.put("<%=cid %>_STATUS", "File get OK.");
+	}else{
+		globalMap.put("<%=cid %>_STATUS", "No file transfered.");
+	}
+<%
+}else{
 	if(!("overwrite").equals(replaceOption)) {%>        
         String parentPath_<%=cid%> = new java.io.File(<%=localdir %>).getPath();
         java.util.List<String> list_<%=cid%> = new java.util.ArrayList<String>();
@@ -67,39 +69,38 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
             }
         }
         sourceFileNames_<%=cid%> = (String[]) list_<%=cid%>.toArray(new String[0]);
-<% }%>
-
-        if(sourceFileNames_<%=cid%>!=null && sourceFileNames_<%=cid%>.length!=0){
-            for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
-				if (sourceFile_<%=cid %> != null
-						&& sourceFile_<%=cid %>.length() != 0) {
-					
-					sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
-				    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
-				    if(index_<%=cid %> >0){
-					dir_<%=cid %> = new java.io.File(
-							<%=localdir %>);
-					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);	
-					file_<%=cid %> = new java.io.File(
-							dir_<%=cid %>, extension_<%=cid %>);
+<%
+	}
+%>
+	if(sourceFileNames_<%=cid%>!=null && sourceFileNames_<%=cid%>.length!=0){
+		for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
+			if (sourceFile_<%=cid %> != null&& sourceFile_<%=cid %>.length() != 0) {
+				sourceFile_<%=cid%> = "true".equals("<%=containBlank%>")?"\"" + sourceFile_<%=cid%> + "\"":sourceFile_<%=cid%>;
+				sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
+			    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
+			    if(index_<%=cid %> >0){
+					dir_<%=cid %> = new java.io.File(<%=localdir %>);
+					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);
+					file_<%=cid %> = new java.io.File(dir_<%=cid %>, "true".equals("<%=containBlank%>")?extension_<%=cid %>.substring(0,extension_<%=cid%>.length()-1):extension_<%=cid%>);
 					if(!file_<%=cid %>.exists()){
-					  file_<%=cid %>.getParentFile().mkdirs();
+				  		file_<%=cid %>.getParentFile().mkdirs();
 					}
-					out_<%=cid %> = new java.io.FileOutputStream(
-							file_<%=cid %>, false);
+					out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>, false);
 					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
 					nb_file_<%=cid%> ++ ;
 				}
-				}
 			}
-			if(nb_file_<%=cid%>>0){
+		}
+		if(nb_file_<%=cid%>>0){
 			globalMap.put("<%=cid %>_STATUS", "File get OK.");
-			}else{
+		}else{
 			globalMap.put("<%=cid %>_STATUS", "No file transfered.");
-			}
-			}
+		}
+	}
         
-<%}%>
+<%
+}
+%>
 
 }catch(Exception e){
 		if(out_<%=cid %> != null){
