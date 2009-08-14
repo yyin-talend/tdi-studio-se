@@ -30,7 +30,6 @@ imports="
             System.setProperty("http.proxyPort", <%=proxyPort %>);            
             System.setProperty("http.nonProxyHosts", <%=nonProxyHosts %>);
             
-            //for axis.jar when working with webservice
             System.setProperty("http.proxyUser", <%=proxyUser %>);
             System.setProperty("http.proxyPassword", <%=proxyPassword %>);
 <%
@@ -39,7 +38,7 @@ imports="
 			System.setProperty("socksProxySet","true");   
 			
 			System.setProperty("socksProxyHost", <%=proxyHost %>);
-            System.setProperty("socksProxyHost", <%=proxyPort %>);            
+            System.setProperty("socksProxyPort", <%=proxyPort %>);            
             System.setProperty("java.net.socks.username", <%=proxyUser %>);
         	System.setProperty("java.net.socks.password", <%=proxyPassword %>);    
 <%
