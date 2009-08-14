@@ -368,30 +368,28 @@ if ( ((String)<%=rowSeparator1%>).length() > 0 ){
 	throw new IllegalArgumentException("Row Separator must be assigned a char."); 
 }
 		
-<%if(useMulSeprators==false){%>	
-com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader( new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=useMulSeprators?"';'" : "fieldSeparator_"+cid+"[0]" %>);
+com.csvreader.CsvReader <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader( new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=useMulSeprators?"';'" : "fieldSeparator_"+cid+"[0]" %>);
                 
 if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
-	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
+	<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
 
-csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
+<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 
 <%
 	if(("\\\\").equals(escapeChar)){
         %>
-csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
+<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
 <%
 	}else if(escapeChar.equals(textEnclosure)){
         %>
-csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
+<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
 <%
 	}else{
         %>
 //?????doesn't work for other escapeChar
 <%
 	}
-}else{
-%>
+if(useMulSeprators==true){%>	
 String[] delim_<%=cid %> = new String[]{
 <%
 		for(int i=0; i<schemas.size(); i++){
@@ -403,7 +401,7 @@ String[] delim_<%=cid %> = new String[]{
 %>
 };
 
-java.io.BufferedReader reader_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=filename %>));
+//java.io.BufferedReader reader_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=filename %>));
 
 String tmp<%=cid %> = "";
 <%}%>      
@@ -414,12 +412,11 @@ String[] row<%=cid %>=null;
   
 String temp_<%=cid %> = null;
 
+while ( <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.readRecord() ) {
 <%if(useMulSeprators==false){%>
-while ( csvReader<%=cid %>.readRecord() ) {
 	row<%=cid %>=csvReader<%=cid %>.getValues();
 <%}else{%>
-while ((tmp<%=cid %> = reader_<%=cid %>.readLine())!=null) {
-	
+	tmp<%=cid %> = <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.getRawRecord();
 	for(int i_<%=cid %>=0; i_<%=cid %><delim_<%=cid %>.length; i_<%=cid %>++){ //NS000
 		com.csvreader.CsvReader csvReader<%=cid %> = new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
 			new java.io.ByteArrayInputStream(tmp<%=cid %>.getBytes()), <%=encoding %>)), delim_<%=cid %>[i_<%=cid %>].charAt(0));
