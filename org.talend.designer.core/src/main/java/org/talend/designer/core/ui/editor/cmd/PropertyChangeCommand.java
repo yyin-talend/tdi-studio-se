@@ -383,11 +383,21 @@ public class PropertyChangeCommand extends Command {
      */
     private void setDefaultValues(IElementParameter currentParam, IElementParameter testedParam) {
         boolean contains = false;
+
+        // zli
         for (IElementParameterDefaultValue value : testedParam.getDefaultValues()) {
             if (value.getIfCondition() != null) {
-                if (value.getIfCondition().contains(currentParam.getName())) {
-                    contains = true;
-                    break;
+                String moduleName = (String) elem.getElementParameter("MODULENAME").getValue();//$NON-NLS-N$
+                if (!moduleName.equals("CustomModule")) {//$NON-NLS-N$
+                    if (value.getIfCondition().contains(currentParam.getName())) {
+                        contains = true;
+                        break;
+                    }
+                } else {
+                    if (currentParam.getName().equals("MODULENAME")) {//$NON-NLS-N$
+                        contains = true;
+                        break;
+                    }
                 }
             }
             if (value.getNotIfCondition() != null) {
