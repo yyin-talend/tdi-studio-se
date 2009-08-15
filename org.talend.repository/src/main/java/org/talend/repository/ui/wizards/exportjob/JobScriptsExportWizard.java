@@ -40,7 +40,7 @@ import org.talend.repository.i18n.Messages;
  */
 public class JobScriptsExportWizard extends Wizard implements IExportWizard {
 
-    private IStructuredSelection selection;
+	protected IStructuredSelection selection;
 
     private WizardFileSystemResourceExportPage1 mainPage;
 
