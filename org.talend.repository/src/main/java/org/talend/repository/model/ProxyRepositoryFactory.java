@@ -221,11 +221,15 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
-    private void checkFileNameAndPath(Project project, Item item, String pattern, IPath path, boolean folder)
-            throws PersistenceException {
+    private void checkFileNameAndPath(Project project, Item item, String pattern, IPath path, boolean folder,
+            boolean... isImportItem) throws PersistenceException {
         String fileName = item.getProperty().getLabel();
         checkFileName(fileName, pattern);
-        if (!this.repositoryFactoryFromProvider.isNameAvailable(project, item, null)) {
+
+        // if the check comes from create item when import item, then no need to check the name availability
+        // since we already checked before.
+        if ((isImportItem == null || isImportItem.length == 0)
+                && !this.repositoryFactoryFromProvider.isNameAvailable(project, item, null)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " is already in use");
             // throw new IllegalArgumentException(Messages.getString(
@@ -763,6 +767,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return allVersion;
     }
 
+    public List<IRepositoryObject> getAllVersion(String id, String folderPath, ERepositoryObjectType type)
+            throws PersistenceException {
+        List<IRepositoryObject> allVersion = getAllRefVersion(projectManager.getCurrentProject(), id, folderPath, type);
+        return allVersion;
+    }
+
     public List<IRepositoryObject> getAllRefVersion(Project project, String id) throws PersistenceException {
         List<IRepositoryObject> allVersion = getAllVersion(project, id);
         if (allVersion.isEmpty()) {
@@ -776,7 +786,26 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return allVersion;
     }
 
+    public List<IRepositoryObject> getAllRefVersion(Project project, String id, String folderPath, ERepositoryObjectType type)
+            throws PersistenceException {
+        List<IRepositoryObject> allVersion = getAllVersion(project, id, folderPath, type);
+        if (allVersion.isEmpty()) {
+            for (Project p : projectManager.getReferencedProjects(project)) {
+                allVersion = getAllRefVersion(p, id, folderPath, type);
+                if (!allVersion.isEmpty()) {
+                    break;
+                }
+            }
+        }
+        return allVersion;
+    }
+
     public List<IRepositoryObject> getAllVersion(Project project, String id) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getAllVersion(project, id);
+    }
+
+    public List<IRepositoryObject> getAllVersion(Project project, String id, String folderPath, ERepositoryObjectType type)
+            throws PersistenceException {
         return this.repositoryFactoryFromProvider.getAllVersion(project, id);
     }
 
@@ -792,6 +821,15 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException {
         return this.repositoryFactoryFromProvider.getLastVersion(project, id);
+    }
+
+    public IRepositoryObject getLastVersion(Project project, String id, String folderPath, ERepositoryObjectType type)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getLastVersion(project, id, folderPath, type);
+    }
+
+    public IRepositoryObject getLastVersion(String id, String folderPath, ERepositoryObjectType type) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getLastVersion(projectManager.getCurrentProject(), id, folderPath, type);
     }
 
     public IRepositoryObject getLastVersion(String id) throws PersistenceException {
@@ -1017,11 +1055,15 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 // don't do anything
             }
         }
-        checkFileNameAndPath(project, item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false);
+        checkFileNameAndPath(project, item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false,
+                isImportItem);
         this.repositoryFactoryFromProvider.create(project, item, path);
         if ((item instanceof ProcessItem || item instanceof JobletProcessItem)
                 && (isImportItem == null || isImportItem.length == 0)) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
+        }
+        if (isImportItem != null || isImportItem.length == 1) {
+            this.repositoryFactoryFromProvider.unloadResources(item.getProperty());
         }
     }
 
@@ -1862,4 +1904,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return getSVGBusinessProcess(projectManager.getCurrentProject());
     }
 
+    public void unloadResources(Property property) throws PersistenceException {
+        repositoryFactoryFromProvider.unloadResources(property);
+    }
+
+    public void unloadResources() throws PersistenceException {
+        repositoryFactoryFromProvider.unloadResources();
+    }
 }

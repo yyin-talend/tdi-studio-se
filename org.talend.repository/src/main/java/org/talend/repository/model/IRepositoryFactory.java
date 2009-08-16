@@ -124,6 +124,19 @@ public interface IRepositoryFactory {
     public IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException;
 
     /**
+     * Returns last version of an object given its id. If folder and repository type is given it can be faster (mostly
+     * usefull for imports)
+     * 
+     * @param project - the current project
+     * @param id - the id to look for
+     * @return the most recent version of object with this id or <code>null</code> if no object with this id has been
+     * found
+     * @throws PersistenceException
+     */
+    public IRepositoryObject getLastVersion(Project project, String id, String folderPath, ERepositoryObjectType type)
+            throws PersistenceException;
+
+    /**
      * Returns all object of a given type.<br/>
      * 
      * @param project - the current project
@@ -305,4 +318,8 @@ public interface IRepositoryFactory {
     public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit);
 
     public void logOffProject();
+
+    public void unloadResources();
+
+    public void unloadResources(Property property);
 }

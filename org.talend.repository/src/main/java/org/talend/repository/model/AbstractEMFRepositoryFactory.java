@@ -241,7 +241,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             if (folder != null) {
-                toReturn.addAll(getSerializableFromFolder(project, folder, id, repositoryObjectType, allVersion, true, true));
+                List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, folder, id, repositoryObjectType,
+                        allVersion, true, true);
+                if (!itemsFound.isEmpty()) {
+                    toReturn.addAll(itemsFound);
+                    // all items from the same id are always in the same folder
+                    // as we shouldn't find any other item with the same id in another folder.
+                    return toReturn;
+                }
             }
         }
         return toReturn;
@@ -250,7 +257,17 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
 
     public List<IRepositoryObject> getAllVersion(Project project, String id) throws PersistenceException {
-        List<IRepositoryObject> serializableAllVersion = getSerializable(project, id, true);
+        List<IRepositoryObject> serializableAllVersion = null;
+        serializableAllVersion = getSerializable(project, id, true);
+        return convert(serializableAllVersion);
+    }
+
+    public List<IRepositoryObject> getAllVersion(Project project, String id, String relativeFolder, ERepositoryObjectType type)
+            throws PersistenceException {
+        List<IRepositoryObject> serializableAllVersion = null;
+        IFolder fullFolder = (IFolder) getFolder(project, type);
+        fullFolder = fullFolder.getFolder(new Path(relativeFolder));
+        serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, true, false, true);
         return convert(serializableAllVersion);
     }
 
@@ -553,8 +570,24 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     }
 
     public synchronized IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException {
-        List<IRepositoryObject> serializableAllVersion = getSerializable(project, id, false);
+        List<IRepositoryObject> serializableAllVersion = null;
+        serializableAllVersion = getSerializable(project, id, false);
+        if (serializableAllVersion.size() > 1) {
+            throw new PersistenceException(Messages
+                    .getString("AbstractEMFRepositoryFactory.presistenceException.onlyOneOccurenceAllowed")); //$NON-NLS-1$
+        } else if (serializableAllVersion.size() == 1) {
+            return serializableAllVersion.get(0);
+        } else {
+            return null;
+        }
+    }
 
+    public synchronized IRepositoryObject getLastVersion(Project project, String id, String relativeFolder,
+            ERepositoryObjectType type) throws PersistenceException {
+        List<IRepositoryObject> serializableAllVersion = null;
+        IFolder fullFolder = (IFolder) getFolder(project, type);
+        fullFolder = fullFolder.getFolder(new Path(relativeFolder));
+        serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, false, false, true);
         if (serializableAllVersion.size() > 1) {
             throw new PersistenceException(Messages
                     .getString("AbstractEMFRepositoryFactory.presistenceException.onlyOneOccurenceAllowed")); //$NON-NLS-1$
@@ -578,7 +611,20 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     }
 
     public Property getUptodateProperty(Project project, Property property) throws PersistenceException {
-        List<IRepositoryObject> allVersion = getAllVersion(project, property.getId());
+        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(property.getItem());
+
+        Object folder = getFolder(project, itemType);
+        Object fullFolder;
+        if (folder instanceof IFolder) {
+            fullFolder = (IFolder) getFolder(project, itemType);
+            fullFolder = ((IFolder) fullFolder).getFolder(new Path(property.getItem().getState().getPath()));
+        } else {
+            // FolderItem
+            fullFolder = this.getFolderHelper(project.getEmfProject()).getFolder(
+                    ((FolderItem) folder).getProperty().getLabel() + "/" + property.getItem().getState().getPath());
+        }
+        List<IRepositoryObject> allVersion = getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true,
+                false, true);
         for (IRepositoryObject repositoryObject : allVersion) {
             Property uptodateProperty = repositoryObject.getProperty();
             if (uptodateProperty.getVersion().equals(property.getVersion())) {
