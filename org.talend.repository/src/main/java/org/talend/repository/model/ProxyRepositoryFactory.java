@@ -228,8 +228,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
         // if the check comes from create item when import item, then no need to check the name availability
         // since we already checked before.
-        if ((isImportItem == null || isImportItem.length == 0)
-                && !this.repositoryFactoryFromProvider.isNameAvailable(project, item, null)) {
+        if ((isImportItem.length == 0) && !this.repositoryFactoryFromProvider.isNameAvailable(project, item, null)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " is already in use");
             // throw new IllegalArgumentException(Messages.getString(
@@ -1058,11 +1057,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         checkFileNameAndPath(project, item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false,
                 isImportItem);
         this.repositoryFactoryFromProvider.create(project, item, path);
-        if ((item instanceof ProcessItem || item instanceof JobletProcessItem)
-                && (isImportItem == null || isImportItem.length == 0)) {
+        if ((item instanceof ProcessItem || item instanceof JobletProcessItem) && (isImportItem.length == 0)) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
         }
-        if (isImportItem != null || isImportItem.length == 1) {
+        if (isImportItem.length == 1) {
             this.repositoryFactoryFromProvider.unloadResources(item.getProperty());
         }
     }
