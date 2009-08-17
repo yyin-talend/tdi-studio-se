@@ -25,6 +25,7 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -103,6 +104,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                 .addQuotes(DEFAULT_STATS_FILE_NAME));
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils //$NON-NLS-1$
                 .addQuotes(DEFAULT_METER_FILE_NAME));
+
+        // db connection time out
+        store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, true);
+        store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT, 15);
 
         if (!CommonsPlugin.isHeadless()) {
             Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE); //$NON-NLS-1$

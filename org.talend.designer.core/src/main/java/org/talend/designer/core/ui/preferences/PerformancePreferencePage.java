@@ -137,6 +137,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
         Text textControl = dbConnTimeout.getTextControl(getFieldEditorParent());
         textControl.setToolTipText(Messages.getString("PerformancePreferencePage.ConnectionTimeoutTip")); //$NON-NLS-1$
         dbConnTimeout.setValidRange(0, Short.MAX_VALUE);
+        textControl.setEnabled(getPreferenceStore().getBoolean(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED));
 
         addField(dbConnTimeoutActive);
         addField(dbConnTimeout);

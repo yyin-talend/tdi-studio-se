@@ -24,6 +24,7 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -352,6 +353,10 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     public String getPreferenceStore(String key) {
         return DesignerPlugin.getDefault().getPreferenceStore().getString(key);
+    }
+
+    public IPreferenceStore getDesignerCorePreferenceStore() {
+        return DesignerPlugin.getDefault().getPreferenceStore();
     }
 
     /*
