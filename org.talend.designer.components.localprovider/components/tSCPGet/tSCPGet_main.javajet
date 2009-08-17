@@ -30,23 +30,18 @@ imports="
 java.io.File dir_<%=cid %> = null;
 java.io.File file_<%=cid %> = null;
 java.io.FileOutputStream out_<%=cid %> = null;
-boolean containBlank_<%=cid%> = false;
 try{
 <%
 if(("append").equals(replaceOption)){%>
 	for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 		if (sourceFile_<%=cid %> != null&& sourceFile_<%=cid %>.length() != 0) {
-			containBlank_<%=cid%> = false;
-			if(sourceFile_<%=cid%>.contains(" ")){
-				containBlank_<%=cid%> = true;
-			}
-			sourceFile_<%=cid%> = containBlank_<%=cid%>?"\"" + sourceFile_<%=cid%> + "\"":sourceFile_<%=cid%>;
+			sourceFile_<%=cid%> = "\"" + sourceFile_<%=cid%> + "\"";
 			sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
 			int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
 			if(index_<%=cid %> >0){
 				dir_<%=cid %> = new java.io.File(<%=localdir %>);
-				String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);	
-				file_<%=cid %> = new java.io.File(dir_<%=cid %>, containBlank_<%=cid%>?extension_<%=cid %>.substring(0,extension_<%=cid%>.length()-1):extension_<%=cid%>);
+				String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);	
+				file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
 				if(!file_<%=cid %>.exists()){
 				  file_<%=cid %>.getParentFile().mkdirs();
 				}
@@ -79,17 +74,13 @@ if(("append").equals(replaceOption)){%>
 	if(sourceFileNames_<%=cid%>!=null && sourceFileNames_<%=cid%>.length!=0){
 		for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 			if (sourceFile_<%=cid %> != null&& sourceFile_<%=cid %>.length() != 0) {
-				containBlank_<%=cid%> = false;
-				if(sourceFile_<%=cid%>.contains(" ")){
-					containBlank_<%=cid%> = true;
-				}
-				sourceFile_<%=cid%> = containBlank_<%=cid%>?"\"" + sourceFile_<%=cid%> + "\"":sourceFile_<%=cid%>;
+				sourceFile_<%=cid%> = "\"" + sourceFile_<%=cid%> + "\"";
 				sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
 			    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
 			    if(index_<%=cid %> >0){
 					dir_<%=cid %> = new java.io.File(<%=localdir %>);
-					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);
-					file_<%=cid %> = new java.io.File(dir_<%=cid %>, containBlank_<%=cid%>?extension_<%=cid %>.substring(0,extension_<%=cid%>.length()-1):extension_<%=cid%>);
+					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>,sourceFile_<%=cid %>.length()-1);
+					file_<%=cid %> = new java.io.File(dir_<%=cid %>, extension_<%=cid %>);
 					if(!file_<%=cid %>.exists()){
 				  		file_<%=cid %>.getParentFile().mkdirs();
 					}
