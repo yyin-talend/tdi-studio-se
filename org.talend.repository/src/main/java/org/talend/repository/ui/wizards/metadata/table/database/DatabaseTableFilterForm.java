@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase.ETableTypes;
 import org.talend.repository.RepositoryPlugin;
@@ -57,6 +58,8 @@ public class DatabaseTableFilterForm extends AbstractForm {
     private Button viewCheck;
 
     private Button synonymCheck;
+
+    private Button publicSynonymCheck;
 
     private Button usedName;
 
@@ -93,6 +96,9 @@ public class DatabaseTableFilterForm extends AbstractForm {
         getTableInfoParameters().changeType(ETableTypes.TABLETYPE_TABLE, tableCheck.getSelection());
         getTableInfoParameters().changeType(ETableTypes.TABLETYPE_VIEW, viewCheck.getSelection());
         getTableInfoParameters().changeType(ETableTypes.TABLETYPE_SYNONYM, synonymCheck.getSelection());
+        if (ExtractMetaDataUtils.conn != null && ExtractMetaDataUtils.conn.toString().contains("oracle.jdbc.driver")) {
+            getTableInfoParameters().changeType(ETableTypes.TABLETYPE_ALL_SYNONYM, publicSynonymCheck.getSelection());
+        }
 
         switchFilter();
     }
@@ -110,6 +116,10 @@ public class DatabaseTableFilterForm extends AbstractForm {
         tableCheck.setEnabled(getTableInfoParameters().isUsedName());
         viewCheck.setEnabled(getTableInfoParameters().isUsedName());
         synonymCheck.setEnabled(getTableInfoParameters().isUsedName());
+        if (ExtractMetaDataUtils.conn != null && ExtractMetaDataUtils.conn.toString().contains("oracle.jdbc.driver")) {
+            publicSynonymCheck.setEnabled(getTableInfoParameters().isUsedName());
+            ExtractMetaDataUtils.setVale(publicSynonymCheck.getSelection());
+        }
 
         removeButton.setEnabled(getTableInfoParameters().isUsedName());
         editButton.setEnabled(getTableInfoParameters().isUsedName());
@@ -247,6 +257,12 @@ public class DatabaseTableFilterForm extends AbstractForm {
         synonymCheck = new Button(typesFilter, SWT.CHECK);
         synonymCheck.setText(Messages.getString("DatabaseTableFilterForm.synonym")); //$NON-NLS-1$
         synonymCheck.setSelection(true);
+        if (ExtractMetaDataUtils.conn != null && ExtractMetaDataUtils.conn.toString().contains("oracle.jdbc.driver")) {
+            publicSynonymCheck = new Button(typesFilter, SWT.CHECK);
+            publicSynonymCheck.setText("ALL_SYNONYM");
+            publicSynonymCheck.setSelection(false);
+            // ExtractMetaDataUtils.setVale(publicSynonymCheck.getSelection());
+        }
 
         Composite namecomposite = new Composite(composite2, SWT.NONE);
         gridLayout = new GridLayout();
@@ -362,6 +378,30 @@ public class DatabaseTableFilterForm extends AbstractForm {
 
         });
 
+        if (ExtractMetaDataUtils.conn != null && ExtractMetaDataUtils.conn.toString().contains("oracle.jdbc.driver")) {
+            publicSynonymCheck.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    getTableInfoParameters().changeType(ETableTypes.TABLETYPE_ALL_SYNONYM, publicSynonymCheck.getSelection());
+                    ExtractMetaDataUtils.setVale(publicSynonymCheck.getSelection());
+                    if (publicSynonymCheck.getSelection()) {
+                        tableCheck.setEnabled(false);
+
+                        viewCheck.setEnabled(false);
+
+                        synonymCheck.setEnabled(false);
+                    } else {
+                        tableCheck.setEnabled(true);
+
+                        viewCheck.setEnabled(true);
+
+                        synonymCheck.setEnabled(true);
+                    }
+                }
+
+            });
+        }
         SelectionAdapter selectionAdapter = new SelectionAdapter() {
 
             @Override
