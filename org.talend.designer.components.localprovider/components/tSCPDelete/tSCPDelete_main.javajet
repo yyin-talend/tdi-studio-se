@@ -15,19 +15,21 @@ imports="
         String cid = node.getUniqueName();
         
         List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILELIST__");
-        String containBlank = ElementParameterParser.getValue(node, "__CONTAIN_BLANK__");        
 %>
 		
 		//initial the command
 		StringBuilder command_<%=cid %> = new StringBuilder();
 		String dir_<%=cid%> = null;
-		
+		boolean containBlank_<%=cid%> = false;
 <%
 			for (int i = 0;i<filelist.size();i++) {
 %>
 				dir_<%=cid%> = <%=filelist.get(i).get("SOURCE")%>;
-
-				dir_<%=cid%> = "true".equals("<%=containBlank%>")?"\""+dir_<%=cid%>+"\"":dir_<%=cid%>;
+				containBlank_<%=cid%> = false;
+				if(dir_<%=cid%>.contains(" ")){
+					containBlank_<%=cid%> = true;
+				}
+				dir_<%=cid%> = containBlank_<%=cid%>?"\""+dir_<%=cid%>+"\"":dir_<%=cid%>;
 <%
 			  if(i==0){
 %>

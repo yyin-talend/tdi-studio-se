@@ -127,15 +127,7 @@
       <ITEMS>
      	<ITEM NAME="SOURCE" />
       </ITEMS>
-    </PARAMETER>    
-
-    <PARAMETER
-      NAME="CONTAIN_BLANK"
-      FIELD="CHECK"
-      NUM_ROW="101"
-      >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>  
 
   </PARAMETERS>
 
