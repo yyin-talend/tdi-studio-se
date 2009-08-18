@@ -85,7 +85,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     @Override
-    protected void doRun() {
+    public void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
         RepositoryNode dbConnectionNode = getCurrentRepositoryNode();

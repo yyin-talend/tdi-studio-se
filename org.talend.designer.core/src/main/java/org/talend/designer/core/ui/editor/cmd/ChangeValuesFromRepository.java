@@ -373,7 +373,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             if (item != null) {
                 final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
                 if (tables != null && !tables.isEmpty()) {
-                    return tables.get(index).getLabel();
+                    if (tables.size() > index) {
+                        return tables.get(index).getLabel();
+                    } else {
+                        return tables.get(0).getLabel();
+                    }
+
                 }
             }
         } else {

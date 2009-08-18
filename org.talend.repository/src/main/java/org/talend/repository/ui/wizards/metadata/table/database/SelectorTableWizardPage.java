@@ -79,7 +79,7 @@ public class SelectorTableWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
 
-        tableForm = new SelectorTableForm(parent, connectionItem, this);
+        tableForm = new SelectorTableForm(parent, connectionItem, this, true);
         tableForm.setIMetadataConnection(metadataConnection);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 
