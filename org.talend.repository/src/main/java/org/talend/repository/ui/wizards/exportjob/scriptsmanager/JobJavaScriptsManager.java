@@ -104,28 +104,26 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue((Boolean) exportChoice
-                                .get(ExportChoice.applyToChildren)), progressMonitor);
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                        progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needLauncher)), processItem,
+            resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            addSourceCode(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needSourceCode)),
-                    process[i], selectedJobVersion);
+            addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
+                    selectedJobVersion);
 
-            addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)),
-                    process[i], selectedJobVersion);
+            addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i],
+                    selectedJobVersion);
 
-            addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
-                    process[i]);
+            addDependencies(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needDependencies), process[i]);
             resources.addAll(getJobScripts(processItem, selectedJobVersion, (Boolean) exportChoice
                     .get(ExportChoice.needJobScript))); // always need job generation
 
-            addContextScripts(process[i], selectedJobVersion, BooleanUtils.isTrue((Boolean) exportChoice
-                    .get(ExportChoice.needContext)));
+            addContextScripts(process[i], selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needContext));
 
             // add children jobs
             boolean needChildren = true;
@@ -145,19 +143,25 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         list.add(rootResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue((Boolean) exportChoice
-                .get(ExportChoice.needSystemRoutine)));
+        List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needUserRoutine)));
+        List<URL> userRoutineList = getUserRoutine(isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(BooleanUtils.isTrue((Boolean) exportChoice
-                .get(ExportChoice.needTalendLibraries)), process);
+        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries), process);
         rootResource.addResources(talendLibraries);
 
         return list;
+    }
+
+    // bug 8720
+    public boolean isOptionChoosed(Map<ExportChoice, Object> exportChoice, Object key) {
+        if (key != null) {
+            return BooleanUtils.isTrue((Boolean) exportChoice.get(key));
+        }
+        return false;
     }
 
     /**
@@ -409,11 +413,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     childProjectName = project.getLabel().toLowerCase();
                 }
                 allJobScripts.addAll(getJobScripts(childProjectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
-                        (Boolean) exportChoice.get(ExportChoice.needJobScript)));
+                        isOptionChoosed(exportChoice, ExportChoice.needJobScript)));
                 addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
-                        (Boolean) exportChoice.get(ExportChoice.needContext));
-                addDependencies(allResources, jobInfo.getProcessItem(), BooleanUtils.isTrue((Boolean) exportChoice
-                        .get(ExportChoice.needDependencies)), resource);
+                        isOptionChoosed(exportChoice, ExportChoice.needContext));
+                addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(exportChoice,
+                        ExportChoice.needDependencies), resource);
             }
         }
 
@@ -428,10 +432,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return;
         }
         processedJob.add(process);
-        addJobItem(allResources, process, (Boolean) exportChoice.get(ExportChoice.needJobItem), resource);
-        addDependencies(allResources, process, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
-                resource);
-        addSourceCode(allResources, process, (Boolean) exportChoice.get(ExportChoice.needSourceCode), resource);
+        addJobItem(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needJobItem), resource);
+        addDependencies(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needDependencies), resource);
+        addSourceCode(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), resource);
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
