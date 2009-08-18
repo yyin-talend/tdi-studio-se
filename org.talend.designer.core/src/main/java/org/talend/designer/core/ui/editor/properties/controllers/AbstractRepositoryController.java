@@ -47,7 +47,10 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkRulesItem;
+import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
@@ -256,7 +259,8 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
      * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
@@ -269,6 +273,10 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     }
 
     private ConnectionItem lastItemUsed;
+
+    private FileItem lastFileItemUsed; // hywang add for 6484
+
+    private LinkRulesItem lastLinkItem;
 
     private void fastRepositoryUpdateProperty() {
         IElementParameter param = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, dynamicProperty
@@ -285,19 +293,36 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
             String linkedRepository = (String) param.getValue();
             // value stored is the id, so we can get this item directly
             Item item;
+            String displayName = "";
             try {
                 IRepositoryObject object = factory.getLastVersion(linkedRepository);
                 if (object == null) {
                     return;
                 }
                 item = object.getProperty().getItem();
-                Assert.isTrue(item instanceof ConnectionItem);
-                lastItemUsed = (ConnectionItem) item;
+                // Assert.isTrue(item instanceof ConnectionItem);
+                if (item instanceof ConnectionItem) {
+                    lastItemUsed = (ConnectionItem) item;
+                    displayName = dynamicProperty.getRepositoryAliasName(lastItemUsed) + ":" //$NON-NLS-1$
+                            + lastItemUsed.getProperty().getLabel();
+                }
+                if (item instanceof FileItem) { // hywang add for 6484
+                    lastFileItemUsed = (FileItem) item;
+                    if (lastFileItemUsed instanceof RulesItem) {
+                        displayName = "Rules:" //$NON-NLS-1$
+                                + lastFileItemUsed.getProperty().getLabel();
+                    }
+
+                }
+                if (item instanceof LinkRulesItem) {
+                    lastLinkItem = (LinkRulesItem) item;
+                    displayName = "Rules:" //$NON-NLS-1$
+                            + lastLinkItem.getProperty().getLabel();
+
+                }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
-            String displayName = dynamicProperty.getRepositoryAliasName(lastItemUsed) + ":" //$NON-NLS-1$
-                    + lastItemUsed.getProperty().getLabel();
 
             param.setListItemsDisplayName(new String[] { displayName });
             param.setListItemsValue(new String[] { (String) param.getValue() });

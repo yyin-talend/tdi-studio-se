@@ -64,7 +64,9 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -111,6 +113,12 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     private final Map<String, IMetadataTable> repositoryTableMap;
 
     private final Map<String, ConnectionItem> repositoryConnectionItemMap;
+
+    private Map<String, FileItem> repositoryFileItemMap = new HashMap<String, FileItem>(); // hywang add for 6484
+
+    private Map<String, LinkRulesItem> repositoryLinkRulesItemMap = new HashMap<String, LinkRulesItem>(); // hywang add
+
+    // for 6484
 
     private final Map<String, Query> repositoryQueryStoreMap;
 
@@ -271,6 +279,27 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 }
                             }
 
+                            monitorWrap.worked(1);
+                        }
+
+                        // hywang add for feature 6484
+                        if (item instanceof FileItem) {
+                            FileItem FileItem = (FileItem) item;
+                            if (repositoryValue != null) {
+                                if (repositoryValue.equals("RULE")) { //$NON-NLS-1$
+                                    repositoryFileItemMap.put(FileItem.getProperty().getId(), FileItem);
+                                }
+                            }
+                            monitorWrap.worked(1);
+                        }
+
+                        if (item instanceof LinkRulesItem) {
+                            LinkRulesItem linkItem = (LinkRulesItem) item;
+                            if (repositoryValue != null) {
+                                if (repositoryValue.equals("RULE")) { //$NON-NLS-1$
+                                    repositoryLinkRulesItemMap.put(linkItem.getProperty().getId(), linkItem);
+                                }
+                            }
                             monitorWrap.worked(1);
                         }
 
@@ -444,8 +473,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                         // System.out.println("test:" + curParam.getName() + "
                         // field:"+curParam.getField());
                         if (curParam.isShow(listParam)) {
-                            // System.out.println("show:" + curParam.getName()+
-                            // " field:"+curParam.getField());
+                            // System.out.println("show:" + curParam.getName() + " field:" + curParam.getField());
                             numInRow++;
                             AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
                                     this);
@@ -705,7 +733,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         if (elem == null) {
             return;
         }
-        List<? extends IElementParameter> listParam = elem.getElementParameters();
+        List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens(); // hywang modified for
+        // 6484
 
         // IElementParameter jobParam = elem.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
         // if (jobParam != null) {
@@ -1129,6 +1158,26 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             updateRepositoryList();
         }
         return this.repositoryConnectionItemMap;
+    }
+
+    /**
+     * hywang Comment method "getRepositoryFileItemMap".
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryFileItemMap()
+     */
+    public Map<String, FileItem> getRepositoryFileItemMap() {
+        if (this.repositoryFileItemMap.isEmpty()) {
+            updateRepositoryList();
+        }
+        return this.repositoryFileItemMap;
+    }
+
+    public Map<String, LinkRulesItem> getRepositoryLinkRulesItemMap() {
+        return this.repositoryLinkRulesItemMap;
+    }
+
+    public void setRepositoryFileItemMap(Map<String, FileItem> repositoryFileItemMap) {
+        this.repositoryFileItemMap = repositoryFileItemMap;
     }
 
     /**

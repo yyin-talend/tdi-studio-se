@@ -2330,7 +2330,7 @@ public class Node extends Element implements INode {
             if (mainConnector.isMultiSchema()) {
                 if (getMetadataList() != null) {
                     for (IMetadataTable meta : getMetadataList()) {
-                        if (meta.getListColumns().size() == 0) {
+                        if (meta.getListColumns().size() == 0 && !isCheckMultiSchemaForMSField()) { // hywang add
                             String tableLabel = meta.getTableName();
                             if (meta.getLabel() != null) {
                                 tableLabel = meta.getLabel();
@@ -2909,5 +2909,17 @@ public class Node extends Element implements INode {
     public boolean isGeneratedAsVirtualComponent() {
         List<IMultipleComponentManager> multipleComponentManagers = getComponent().getMultipleComponentManagers();
         return multipleComponentManagers.size() > 0;
+    }
+
+    // hywang add this method for feature 8221
+    private boolean isCheckMultiSchemaForMSField() {
+        boolean needMultiSchema = false;
+        if (this.getElementParameter(EParameterName.COMPONENT_NAME.getName()).getValue().toString().equals(
+                "tFileInputMSFieldDelimited") && this.getElementParameter("USE_MUL_SCHEMAS") != null) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (Boolean.parseBoolean(this.getElementParameter("USE_MUL_SCHEMAS").getValue().toString())) { //$NON-NLS-1$
+                needMultiSchema = true;
+            }
+        }
+        return needMultiSchema;
     }
 }

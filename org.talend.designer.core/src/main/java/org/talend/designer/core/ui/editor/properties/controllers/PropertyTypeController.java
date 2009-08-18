@@ -38,7 +38,9 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -73,7 +75,6 @@ public class PropertyTypeController extends AbstractRepositoryController {
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
-
         Control lastControlUsed = lastControl;
         lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
         // add a button if the value is Built-In
@@ -84,6 +85,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 }
             }
         }
+
         return lastControlUsed;
     }
 
@@ -134,7 +136,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
         Control lastControlUsed = lastControl;
         Point buttonSize;
         FormData data;
-
+        // if (!createFile) {
         button = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         buttonSize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         button.setImage(ImageProvider.getImage(EImage.SAVE_ICON));
@@ -173,6 +175,59 @@ public class PropertyTypeController extends AbstractRepositoryController {
         button.setLayoutData(data);
 
         dynamicProperty.setCurRowSize(buttonSize.y + ITabbedPropertyConstants.VSPACE);
+        // } else {
+        //            button = getWidgetFactory().createButton(subComposite, "", SWT.NONE); //$NON-NLS-1$
+        //            button.setText("select file"); //$NON-NLS-N$
+        // buttonSize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        //            button.setToolTipText("select a drl file"); //$NON-NLS-1$
+        // button.setData(PARAMETER_NAME, param.getName());
+        //
+        // lastControlUsed = button;
+        //
+        // button.addSelectionListener(new SelectionListener() {
+        //
+        // public void widgetDefaultSelected(SelectionEvent e) {
+        // // TODO Auto-generated method stub
+        //
+        // }
+        //
+        // public void widgetSelected(SelectionEvent e) {
+        // // TODO Auto-generated method stub
+        // FileDialog fd = new FileDialog(new Shell());
+        // String fileName = fd.open();
+        // }
+        //
+        // });
+        //
+        //            CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, ""); //$NON-NLS-1$
+        // data = new FormData();
+        // data.left = new FormAttachment(lastControl, 0);
+        // data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
+        // + (ITabbedPropertyConstants.HSPACE * 2), SWT.RIGHT);
+        // if (resetBtn != null) {
+        // data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
+        // } else {
+        // data.top = new FormAttachment(0, top);
+        // }
+        // labelLabel.setLayoutData(data);
+        // if (numInRow != 1) {
+        // labelLabel.setAlignment(SWT.RIGHT);
+        // }
+        //
+        // data = new FormData();
+        // data.left = new FormAttachment(labelLabel, -1);
+        // data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
+        //
+        // if (resetBtn != null) {
+        // data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
+        // } else {
+        // data.top = new FormAttachment(0, top);
+        // }
+        // data.height = STANDARD_HEIGHT - 2;
+        // button.setLayoutData(data);
+        //
+        // dynamicProperty.setCurRowSize(buttonSize.y + ITabbedPropertyConstants.VSPACE);
+        // }
         return lastControlUsed;
     }
 
@@ -186,6 +241,10 @@ public class PropertyTypeController extends AbstractRepositoryController {
      */
     @Override
     protected Command createButtonCommand(Button button) {
+        FileItem repositoryFileItem = null; // hwang add for feature 6484
+        LinkRulesItem linkItem = null;
+        Map<String, FileItem> repositoryFileItemMap = null;
+        Map<String, LinkRulesItem> repositoryLinkRulesItemMap = null;
         String paramName = (String) button.getData(PARAMETER_NAME);
         IElementParameter param = elem.getElementParameter(paramName);
         Object data = button.getData(NAME);
@@ -197,6 +256,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
                 IElementParameter repositoryParam = param.getChildParameters().get(
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+
                 if (repositoryParam != null) {
                     repositoryParam.setLinkedRepositoryItem(dialog.getResult().getObject().getProperty().getItem());
                 }
@@ -227,6 +287,40 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     compoundCommand.add(changeValuesFromRepository);
 
                     updateDBType(compoundCommand, repositoryConnection);
+                    return compoundCommand;
+                }
+
+                // for ruleItem,hywang add
+                if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
+                    repositoryFileItemMap = ((MultipleThreadDynamicComposite) dynamicProperty).getRepositoryFileItemMap();
+                    repositoryLinkRulesItemMap = ((MultipleThreadDynamicComposite) dynamicProperty)
+                            .getRepositoryLinkRulesItemMap();
+
+                }
+
+                if (repositoryFileItemMap.containsKey(id)) {
+                    repositoryFileItem = repositoryFileItemMap.get(id);
+                } else if (repositoryLinkRulesItemMap.containsKey(id)) {
+                    linkItem = repositoryLinkRulesItemMap.get(id);
+                } else {
+                    if (!repositoryFileItemMap.isEmpty()) {
+                        repositoryFileItem = repositoryFileItemMap.values().iterator().next();
+                    } else {
+                        repositoryFileItem = null;
+                    }
+                }
+                if (repositoryFileItem != null) {
+                    CompoundCommand compoundCommand = new CompoundCommand();
+                    final String showId = repositoryFileItem.getProperty().getId();
+                    Command command = new PropertyChangeCommand(elem, EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), showId);
+                    compoundCommand.add(command);
+                    return compoundCommand;
+                }
+                if (linkItem != null) {
+                    CompoundCommand compoundCommand = new CompoundCommand();
+                    final String showId = linkItem.getProperty().getId();
+                    Command command = new PropertyChangeCommand(elem, EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), showId);
+                    compoundCommand.add(command);
                     return compoundCommand;
                 }
 
@@ -357,6 +451,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
         Connection repositoryConnection = null;
         ConnectionItem repositoryConnectionItem = null;
 
+        FileItem repositoryFileItem = null; // hwang add
+
         String paramName = (String) combo.getData(PARAMETER_NAME);
 
         IElementParameter param = elem.getElementParameter(paramName);
@@ -371,11 +467,17 @@ public class PropertyTypeController extends AbstractRepositoryController {
         if (value.equals(param.getValue())) {
             return null;
         }
+
         Map<String, ConnectionItem> repositoryConnectionItemMap = null;
         IElementParameter repositoryParam = null;
+        Map<String, FileItem> repositoryFileItemMap = null; // hywang add for feature 6484
 
         if (value.equals(EmfComponent.REPOSITORY)) {
             repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
+
+            if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
+                repositoryFileItemMap = ((MultipleThreadDynamicComposite) dynamicProperty).getRepositoryFileItemMap();
+            }
 
             repositoryParam = param.getParentParameter().getChildParameters().get(
                     EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
@@ -392,6 +494,17 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     repositoryConnection = null;
                 }
             }
+            //
+            // for ruleItem,hywang add
+            if (repositoryFileItemMap.containsKey(connectionSelected)) {
+                repositoryFileItem = repositoryFileItemMap.get(connectionSelected);
+            } else {
+                if (!repositoryFileItemMap.isEmpty()) {
+                    repositoryFileItem = repositoryFileItemMap.values().iterator().next();
+                } else {
+                    repositoryFileItem = null;
+                }
+            }
 
         }
         CompoundCommand cc = new CompoundCommand();
@@ -405,6 +518,25 @@ public class PropertyTypeController extends AbstractRepositoryController {
                             .getProperty().getId());
             changeValuesFromRepository2.setMaps(dynamicProperty.getRepositoryTableMap());
             cc.add(changeValuesFromRepository2);
+        }
+        // hywang add for feature 6484
+        if (repositoryFileItem != null) {
+            final String id = repositoryFileItem.getProperty().getId();
+            cc.add(new Command() {
+
+                @Override
+                public void execute() {
+                    IElementParameter elementParameter = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+                    if (elementParameter != null) {
+                        elementParameter = elementParameter.getChildParameters().get(
+                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                        if (elementParameter != null) {
+                            elementParameter.setValue(id);
+                        }
+                    }
+                }
+
+            });
         }
         if (value.equals(EmfComponent.REPOSITORY)) {
             updateDBType(cc, repositoryConnection);

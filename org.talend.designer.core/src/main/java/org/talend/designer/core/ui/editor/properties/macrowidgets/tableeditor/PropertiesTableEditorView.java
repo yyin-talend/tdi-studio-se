@@ -47,6 +47,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.IRuleConstant;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
@@ -54,6 +55,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.core.ui.metadata.celleditor.RuleCellEditor;
 import org.talend.core.ui.metadata.celleditor.SchemaCellEditor;
 import org.talend.core.ui.metadata.celleditor.SchemaXPathQuerysCellEditor;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
@@ -340,6 +342,35 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     SchemaCellEditor schemaEditor = new SchemaCellEditor(table, node);
                     schemaEditor.setTableEditorView(this);
                     column.setCellEditor(schemaEditor);
+                    break;
+
+                // hywang add for feature 6484
+                case RULE_TYPE:
+                    column.setTitle("Rules"); //$NON-NLS-1$
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!currentParam.isReadOnly()));
+                    final INode node1 = (INode) element;
+                    column.setLabelProvider(new IColumnLabelProvider() {
+
+                        public String getLabel(Object bean) {
+                            if (bean instanceof Map) {
+                                Map<String, Object> valueMap = (Map<String, Object>) bean;
+                                String value = (String) valueMap.get(IRuleConstant.FIELD_RULE);
+                                if (value != null && !"".equals(value)) { //$NON-NLS-1$
+                                    IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNodeTableName(node1, value);
+                                    if (metadataTable != null) {
+                                        return metadataTable.getTableName();
+                                    } else {
+                                        return value;
+                                    }
+                                }
+                            }
+                            return ""; //$NON-NLS-1$
+                        }
+                    });
+                    RuleCellEditor ruleEditor = new RuleCellEditor(table, node1);
+                    ruleEditor.setTableEditorView(this);
+                    column.setCellEditor(ruleEditor);
                     break;
 
                 case SCHEMA_XPATH_QUERYS:

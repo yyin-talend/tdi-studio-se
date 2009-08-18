@@ -753,7 +753,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                 }
             }
             // added by hyWang
-            if (repositoryType.equals("RULES")) { //$NON-NLS-1$
+            if (repositoryType.equals("RULE")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider)
                             .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES);

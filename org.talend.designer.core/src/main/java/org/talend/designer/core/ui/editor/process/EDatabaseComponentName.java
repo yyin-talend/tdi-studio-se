@@ -23,9 +23,11 @@ import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LDAPSchemaConnectionItem;
 import org.talend.core.model.properties.LdifFileConnectionItem;
+import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
+import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
@@ -40,6 +42,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
  * 
  */
 public enum EDatabaseComponentName {
+
     // DATABASES
     DBIBMDB2ZOS(DatabaseConnectionItem.class, EDatabaseTypeName.IBMDB2ZOS, "tDB2Input", "tDB2Output", true), //$NON-NLS-1$ //$NON-NLS-2$
     DBJAVADBEMBEDED(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB_EMBEDED, "tJavaDBInput", "tJavaDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
@@ -114,6 +117,9 @@ public enum EDatabaseComponentName {
     WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null, "WSDL"), //$NON-NLS-1$ //$NON-NLS-2$
     SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", "tSalesforceOutput", "SALESFORCE"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
+    // hywang add for Rule
+    Rules(RulesItem.class, "tFileInputMSXML", "tFileOutputMSXML", "RULE"), //$NON-NLS-1$ //$NON-NLS-2$
+    LinkRules(LinkRulesItem.class, "tFileInputMSXML", "tFileOutputMSXML", "RULE"),
     // RunJob
     RunJob(ProcessItem.class, "tRunJob", "tRunJob"); //$NON-NLS-1$ //$NON-NLS-2$
 

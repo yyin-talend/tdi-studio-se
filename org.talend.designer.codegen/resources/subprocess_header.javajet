@@ -99,7 +99,7 @@
 						
 %>
 
-static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
+public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
     final static byte[] commonByteArrayLock = new byte[0];
     static byte[] commonByteArray = new byte[0];
 <%
@@ -120,14 +120,18 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 			for (IMetadataColumn column: metadata.getListColumns()) {
    				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			    %>
-			    	<%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %><%
+			    public <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %><%
 			    	
 			    	if(javaType == JavaTypesManager.CHARACTER) {
 			    		%> = ' '<%
 			    	}
 			    	
-			    	%>;<%
-			    	
+			    	%>;
+
+				public <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> get<%=column.getLabel().substring(0, 1).toUpperCase()%><%=column.getLabel().substring(1)%> () {
+					return this.<%=column.getLabel()%>;
+				}
+				<%			    	
 			}
 		}
     %>

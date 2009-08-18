@@ -392,10 +392,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // 7.14 RULES
         if (PluginChecker.isRulesPluginLoaded() && codeLanguage != ECodeLanguage.PERL) {
             // hidden for current version until 3.1.2m
-            // metadataRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            // metadataRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_RULES);
-            // metadataRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_RULES);
-            // metadataNode.getChildren().add(metadataRulesNode);
+            metadataRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_RULES);
+            metadataRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_RULES);
+            metadataNode.getChildren().add(metadataRulesNode);
         }
 
         // Reference Projects

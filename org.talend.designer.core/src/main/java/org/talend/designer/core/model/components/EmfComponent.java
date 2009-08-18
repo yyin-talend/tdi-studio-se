@@ -1671,6 +1671,9 @@ public class EmfComponent implements IComponent {
                 case SCHEMA_XPATH_QUERYS:
                     newParam.setValue(""); //$NON-NLS-1$
                     break;
+                case RULE_TYPE: // hywang add for feature 6484
+                    newParam.setField(EParameterFieldType.RULE_TYPE);
+                    break;
                 default: // TEXT by default
                     newParam.setField(EParameterFieldType.TEXT);
                     if (item.getVALUE() == null || item.getVALUE().equals("")) { //$NON-NLS-1$

@@ -70,9 +70,12 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
+import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -406,7 +409,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
                 Item item = sourceNode.getObject().getProperty().getItem();
                 ERepositoryObjectType type = sourceNode.getObjectType();
-                if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem) && !(item instanceof JobletProcessItem)) {
+                if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem) && !(item instanceof JobletProcessItem)
+                        && !(item instanceof RulesItem) && !(item instanceof LinkRulesItem)) { // hywang modified for
+                    // feature 6484,for
+                    // RulesItem
                     return;
                 }
                 TempStore store = new TempStore();
@@ -661,8 +667,35 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             PropertyChangeCommand command5 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_CONTEXT.getName(), node
                     .getProcess().getContextManager().getDefaultContext().getName());
             list.add(command5);
+        } else if (selectedNode.getObject().getProperty().getItem() instanceof FileItem) { // hywang add for 6484
+            if (selectedNode.getObject().getProperty().getItem() instanceof RulesItem) {
+                RulesItem rulesItem = (RulesItem) selectedNode.getObject().getProperty().getItem();
+                //                String displayName = "Rules:" + rulesItem.getProperty().getLabel(); //$NON-NLS-N$
+                IElementParameter propertyParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+                if (propertyParam != null) {
+                    propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(
+                            EmfComponent.REPOSITORY);
+                    // propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
+                    // .setListItemsDisplayName(new String[] { displayName });
+                    final String showId = rulesItem.getProperty().getId();
+                    PropertyChangeCommand command6 = new PropertyChangeCommand(node, EParameterName.REPOSITORY_PROPERTY_TYPE
+                            .getName(), showId);
+                    list.add(command6);
+                }
+            }
+        } else if (selectedNode.getObject().getProperty().getItem() instanceof LinkRulesItem) {
+            LinkRulesItem linkItem = (LinkRulesItem) selectedNode.getObject().getProperty().getItem();
+            IElementParameter propertyParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (propertyParam != null) {
+                propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                // propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
+                // .setListItemsDisplayName(new String[] { displayName });
+                final String showId = linkItem.getProperty().getId();
+                PropertyChangeCommand command7 = new PropertyChangeCommand(node, EParameterName.REPOSITORY_PROPERTY_TYPE
+                        .getName(), showId);
+                list.add(command7);
+            }
         }
-
         return list;
     }
 

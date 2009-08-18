@@ -34,6 +34,8 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.FileItem;
+import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.properties.impl.PropertyImpl;
@@ -131,7 +133,8 @@ public class PropertyChangeCommand extends Command {
                         propertyParam.getValue().toString());
                 if (repository != null && repository.getProperty() != null) {
                     PropertyImpl property = (PropertyImpl) repository.getProperty();
-                    if (property != null && property.getItem() != null) {
+                    if (property != null && property.getItem() != null && !(property.getItem() instanceof FileItem)
+                            && !(property.getItem() instanceof LinkRulesItem)) {// hywang add for 6484
                         ConnectionItem ci = (ConnectionItem) property.getItem();
                         if (ci instanceof XmlFileConnectionItem) {
                             XmlFileConnectionItem xci = (XmlFileConnectionItem) ci;

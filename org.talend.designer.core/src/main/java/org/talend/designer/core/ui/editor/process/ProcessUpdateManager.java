@@ -54,8 +54,11 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
+import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.AbstractUpdateManager;
 import org.talend.core.model.update.EUpdateItemType;
@@ -838,12 +841,22 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 UpdateCheckResult result = null;
 
                 Connection repositoryConnection = null;
+                RulesItem repositoryRulesItem = null; // hywang add for 6484
+                LinkRulesItem repositoryLinkRulesItem = null;
                 String source = null;
                 if (lastVersion != null) {
                     final Item item = lastVersion.getProperty().getItem();
                     if (item != null && item instanceof ConnectionItem) {
                         source = UpdateRepositoryUtils.getRepositorySourceName(item);
                         repositoryConnection = ((ConnectionItem) item).getConnection();
+                    }
+                    if (item != null && item instanceof FileItem) {
+                        if (item instanceof RulesItem) {
+                            repositoryRulesItem = (RulesItem) item;
+                        }
+                    }
+                    if (item != null && item instanceof LinkRulesItem) {
+                        repositoryLinkRulesItem = (LinkRulesItem) item;
                     }
                 }
 
@@ -960,7 +973,28 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     if (contextResults != null) {
                         propertiesResults.addAll(contextResults);
                     }
+                } else if (repositoryRulesItem != null) { // hywang add for 6484
+                    boolean isFindRules = false;
+                    IElementParameter param = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    if (param != null) {
+                        isFindRules = true;
+                    }
+                    if (!isFindRules) {
+                        result = new UpdateCheckResult(node);
+                        result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
+                    }
+                } else if (repositoryLinkRulesItem != null) {
+                    boolean isFindLinkRules = false;
+                    IElementParameter param = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    if (param != null) {
+                        isFindLinkRules = true;
+                    }
+                    if (!isFindLinkRules) {
+                        result = new UpdateCheckResult(node);
+                        result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
+                    }
                 } else {
+
                     result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
                 }

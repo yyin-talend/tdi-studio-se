@@ -87,6 +87,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -98,6 +99,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -297,12 +299,15 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
         try {
+            String currentJavaProject = null; // hywang modified for 6484
+            IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
+                    IRulesProviderService.class);
             ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
                 String javaLib = ""; //$NON-NLS-1$
-                String currentJavaProject = ProjectManager.getInstance().getProject(getProcess().getProperty().getItem())
+                currentJavaProject = ProjectManager.getInstance().getProject(getProcess().getProperty().getItem())
                         .getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
@@ -314,12 +319,34 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             String processCode = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
+                // hywang add for 6484
+                boolean useGenerateRuleFiles = false;
+                List<? extends INode> allNodes = this.process.getGeneratingNodes();
+                for (int i = 0; i < allNodes.size(); i++) {
+                    if (allNodes.get(i) instanceof INode) {
+                        INode node = (INode) allNodes.get(i);
+                        if (node.getComponent().getName().equals("tRules")) {
+                            useGenerateRuleFiles = true;
+                            break;
+                        }
+                    }
+                }
+                if (useGenerateRuleFiles) {
+                    rulesService.generateFinalRuleFiles(currentJavaProject, this.process);
+                }
+
+                // replace drl template tages
+                if (PluginChecker.isSnippetsPluginLoaded()) {
+                    processCode = replaceSnippet(processCode);
+                }
                 if (PluginChecker.isSnippetsPluginLoaded()) {
                     processCode = replaceSnippet(processCode);
                 }
 
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
             }
             // Generating files
             IFile codeFile = this.project.getFile(this.codePath);

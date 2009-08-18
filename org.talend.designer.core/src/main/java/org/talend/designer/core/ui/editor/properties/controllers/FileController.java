@@ -121,16 +121,18 @@ public class FileController extends AbstractElementPropertySectionController {
                 if (repository != null && repository.getProperty() != null) {
                     PropertyImpl property = (PropertyImpl) repository.getProperty();
                     if (property != null && property.getItem() != null) {
-                        ConnectionItem ci = (ConnectionItem) property.getItem();
-                        if (ci instanceof XmlFileConnectionItem) {
-                            XmlFileConnectionItem xci = (XmlFileConnectionItem) ci;
-                            XmlFileConnectionItemImpl xciImpl = (XmlFileConnectionItemImpl) xci;
-                            if (xciImpl != null && xciImpl.getConnection() != null) {
-                                org.talend.core.model.metadata.builder.connection.Connection cc = xciImpl.getConnection();
-                                if (((XmlFileConnectionImpl) cc).getXmlFilePath() != null) {
-                                    if (((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd")
-                                            || ((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd\""))
-                                        dragAndDropActionBool = true;
+                        if (property.getItem() instanceof ConnectionItem) { // hywang add for 6484
+                            ConnectionItem ci = (ConnectionItem) property.getItem();
+                            if (ci instanceof XmlFileConnectionItem) {
+                                XmlFileConnectionItem xci = (XmlFileConnectionItem) ci;
+                                XmlFileConnectionItemImpl xciImpl = (XmlFileConnectionItemImpl) xci;
+                                if (xciImpl != null && xciImpl.getConnection() != null) {
+                                    org.talend.core.model.metadata.builder.connection.Connection cc = xciImpl.getConnection();
+                                    if (((XmlFileConnectionImpl) cc).getXmlFilePath() != null) {
+                                        if (((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd")
+                                                || ((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd\""))
+                                            dragAndDropActionBool = true;
+                                    }
                                 }
                             }
                         }
