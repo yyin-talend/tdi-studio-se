@@ -35,6 +35,7 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.repository.preview.ExcelSchemaBean;
 import org.talend.repository.preview.IProcessDescription;
+import org.talend.repository.preview.SalesforceSchemaBean;
 
 /**
  * Launch a Process in shadow mode. <br/>
@@ -96,6 +97,8 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     private Process process;
 
+    private String[] proxyParameters;
+
     /**
      * Constructs a new ShadowProcess.
      */
@@ -121,8 +124,24 @@ public class ShadowProcess<T extends IProcessDescription> {
                     ITalendCorePrefConstants.FILE_PATH_TEMP));
             this.outPath = tempPath.append(TEMP_SALEFORCE_SCHEMA_FILE_NAME + "." + CSV_EXT); //$NON-NLS-1$
         }
-
         this.type = type;
+
+        SalesforceSchemaBean salesforceSchemaBean = description.getSalesforceSchemaBean();
+        boolean uesHttp = salesforceSchemaBean.isUesHttp();
+        if (uesHttp) {
+            String proxyHost = salesforceSchemaBean.getProxyHost();
+            String proxyPort = salesforceSchemaBean.getProxyPort();
+            String userName = salesforceSchemaBean.getProxyUsername();
+            String password = salesforceSchemaBean.getProxyPassword();
+            if (proxyHost != null && userName == null && password == null) {
+                this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort };
+            }
+            if (proxyHost != null && userName != null && password != null) {
+                this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort,
+                        "-Dhttp.proxyUsername=" + userName, "-Dhttp.proxyPassword=" + password };
+            }
+        }
+
     }
 
     private IProcess buildProcess() {
@@ -253,6 +272,7 @@ public class ShadowProcess<T extends IProcessDescription> {
     public CsvArray run() throws ProcessorException {
         IProcess talendProcess = buildProcess();
         IProcessor processor = ProcessorUtilities.getProcessor(talendProcess);
+        processor.setProxyParameters(getProxyParameters());
         // try {
         // Delete previous Perl generated file
         File previousFile = outPath.toFile();
@@ -294,6 +314,7 @@ public class ShadowProcess<T extends IProcessDescription> {
         IProcess talendProcess = buildProcess();
 
         IProcessor processor = ProcessorUtilities.getProcessor(talendProcess);
+        processor.setProxyParameters(getProxyParameters());
 
         File previousFile = outPath.toFile();
         if (previousFile.exists()) {
@@ -346,6 +367,17 @@ public class ShadowProcess<T extends IProcessDescription> {
             process = null;
         }
         return exitCode;
+    }
+
+    public String[] getProxyParameters() {
+        return this.proxyParameters;
+    }
+
+    public void setProxyParameters(String[] proxyParameters) {
+        if (proxyParameters != null) {
+            this.proxyParameters = proxyParameters;
+        }
+
     }
 
 }

@@ -860,9 +860,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         boolean win32 = false;
         String classPathSeparator;
         if (targetPlatform == null) {
-        	targetPlatform = Platform.getOS();
-        	win32 = Platform.OS_WIN32.equals(targetPlatform); 
-        	classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
+            targetPlatform = Platform.getOS();
+            win32 = Platform.OS_WIN32.equals(targetPlatform);
+            classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
         } else {
             win32 = targetPlatform.equals(Platform.OS_WIN32);
             if (win32) {
@@ -933,7 +933,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 version = "_" + process.getVersion(); //$NON-NLS-1$
                 version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            
+
             exportJar = classPathSeparator
                     + (!win32 && exportingJob ? unixRootPath : "") + process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
@@ -955,7 +955,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         String portableCommand = new Path(command).toPortableString();
         String portableProjectPath = new Path(projectPath).toPortableString();
 
-        if(exportingJob) {
+        if (exportingJob) {
             portableProjectPath = unixRootPathVar + classPathSeparator + portableProjectPath;
         }
 
@@ -967,8 +967,22 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
 
         }
-        String[] strings = new String[] { portableCommand, "-cp", //$NON-NLS-1$
-                libPath.toString() + portableProjectPath + exportJar + libFolder, className };
+        String[] strings;
+
+        List<String> tmpParams = new ArrayList<String>();
+        tmpParams.add(portableCommand);
+
+        String[] proxyParameters = getProxyParameters();
+        if (proxyParameters != null && proxyParameters.length > 0) {
+            for (String str : proxyParameters) {
+                tmpParams.add(str);
+            }
+        }
+        tmpParams.add("-cp"); //$NON-NLS-1$
+        tmpParams.add(libPath.toString() + portableProjectPath + exportJar + libFolder);
+        tmpParams.add(className);
+        strings = tmpParams.toArray(new String[0]);
+
         String[] cmd2 = addVMArguments(strings);
         // achen modify to fix 0001268
         if (!exportingJob) {
