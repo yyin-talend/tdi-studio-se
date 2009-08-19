@@ -300,8 +300,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         super.generateCode(statistics, trace, javaProperties);
         try {
             String currentJavaProject = null; // hywang modified for 6484
-            IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
-                    IRulesProviderService.class);
+
             ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             if (javaProperties) {
@@ -319,22 +318,27 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             String processCode = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
-                // hywang add for 6484
-                boolean useGenerateRuleFiles = false;
-                List<? extends INode> allNodes = this.process.getGeneratingNodes();
-                for (int i = 0; i < allNodes.size(); i++) {
-                    if (allNodes.get(i) instanceof INode) {
-                        INode node = (INode) allNodes.get(i);
-                        if (node.getComponent().getName().equals("tRules")) {
-                            useGenerateRuleFiles = true;
-                            break;
+
+                if (PluginChecker.isRulesPluginLoaded()) {
+                    IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
+                            IRulesProviderService.class);
+                    if (rulesService != null) {
+                        boolean useGenerateRuleFiles = false;
+                        List<? extends INode> allNodes = this.process.getGeneratingNodes();
+                        for (int i = 0; i < allNodes.size(); i++) {
+                            if (allNodes.get(i) instanceof INode) {
+                                INode node = (INode) allNodes.get(i);
+                                if (rulesService.isRuleComponent(node)) {
+                                    useGenerateRuleFiles = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (useGenerateRuleFiles && rulesService != null) {
+                            rulesService.generateFinalRuleFiles(currentJavaProject, this.process);
                         }
                     }
                 }
-                if (useGenerateRuleFiles) {
-                    rulesService.generateFinalRuleFiles(currentJavaProject, this.process);
-                }
-
                 // replace drl template tages
                 if (PluginChecker.isSnippetsPluginLoaded()) {
                     processCode = replaceSnippet(processCode);

@@ -41,6 +41,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
@@ -160,21 +161,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries), process);
         rootResource.addResources(talendLibraries);
 
-        // hywang add for 6484,add final drl files to exported job script
-        List<URL> talendDrlFiles = new ArrayList<URL>();
-        try {
-            initUrlForDrlFiles(process, talendDrlFiles);
-            ExportFileResource drlResource = new ExportFileResource(null, "drl");
-            list.add(drlResource);
-            drlResource.addResources(talendDrlFiles);
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
-        } catch (MalformedURLException e) {
-            ExceptionHandler.process(e);
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
+        if (PluginChecker.isRulesPluginLoaded()) {
+            // hywang add for 6484,add final drl files to exported job script
+            List<URL> talendDrlFiles = new ArrayList<URL>();
+            try {
+                initUrlForDrlFiles(process, talendDrlFiles);
+                ExportFileResource drlResource = new ExportFileResource(null, "drl");
+                list.add(drlResource);
+                drlResource.addResources(talendDrlFiles);
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            } catch (MalformedURLException e) {
+                ExceptionHandler.process(e);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
         }
-
         return list;
     }
 
@@ -817,39 +819,42 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     private void initUrlForDrlFiles(ExportFileResource[] process, List<URL> talendDrlFiles) throws PersistenceException,
             CoreException, MalformedURLException {
         IFile file;
-        IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
-                IRulesProviderService.class);
-        List<String> ids = new ArrayList<String>();
-        List<Item> items = new ArrayList<Item>();
-        Item item = ((ExportFileResource) process[0]).getItem();
-        ProcessItem pi = null;
-        if (item instanceof ProcessItem) {
-            pi = (ProcessItem) item;
-        }
-        for (int i = 0; i < pi.getProcess().getNode().size(); i++) {
-            if (pi.getProcess().getNode().get(i) instanceof NodeType) {
-                NodeType node = (NodeType) pi.getProcess().getNode().get(i);
-                if (node.getComponentName().equals("tRules")) {
-                    for (Object obj : node.getElementParameter()) {
-                        if (obj instanceof ElementParameterType) {
-                            ElementParameterType elementParameter = (ElementParameterType) obj;
-                            if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$
-                                String id = elementParameter.getValue();
-                                ids.add(id);
+        if (PluginChecker.isRulesPluginLoaded()) {
+            IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
+                    IRulesProviderService.class);
+
+            List<String> ids = new ArrayList<String>();
+            List<Item> items = new ArrayList<Item>();
+            Item item = ((ExportFileResource) process[0]).getItem();
+            ProcessItem pi = null;
+            if (item instanceof ProcessItem) {
+                pi = (ProcessItem) item;
+            }
+            for (int i = 0; i < pi.getProcess().getNode().size(); i++) {
+                if (pi.getProcess().getNode().get(i) instanceof NodeType) {
+                    NodeType node = (NodeType) pi.getProcess().getNode().get(i);
+                    if (rulesService.isRuleComponent(node)) {
+                        for (Object obj : node.getElementParameter()) {
+                            if (obj instanceof ElementParameterType) {
+                                ElementParameterType elementParameter = (ElementParameterType) obj;
+                                if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$
+                                    String id = elementParameter.getValue();
+                                    ids.add(id);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-        for (String id : ids) {
-            items.add(factory.getLastVersion(id).getProperty().getItem());
-        }
-        for (Item rulesItem : items) {
-            file = rulesService.getFinalRuleFile(rulesItem);
-            URL url = file.getLocationURI().toURL();
-            talendDrlFiles.add(url);
+            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+            for (String id : ids) {
+                items.add(factory.getLastVersion(id).getProperty().getItem());
+            }
+            for (Item rulesItem : items) {
+                file = rulesService.getFinalRuleFile(rulesItem);
+                URL url = file.getLocationURI().toURL();
+                talendDrlFiles.add(url);
+            }
         }
     }
 
