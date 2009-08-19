@@ -110,4 +110,8 @@ if(("append").equals(replaceOption)){%>
 		}
 		globalMap.put("<%=cid %>_STATUS", "File get fail.");
 		throw e;
+}finally{
+	if(out_<%=cid %> != null){
+		out_<%=cid %>.close();
+	}
 }
