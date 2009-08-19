@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
@@ -39,6 +40,16 @@ import org.talend.designer.core.ui.editor.TalendEditor;
 public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
 
     public static final String ID = "org.talend.designer.core.ui.MultiPageTalendEditor"; //$NON-NLS-1$
+
+    private String revisionNumStr;
+
+    private String getRevisionNumStr() {
+        return this.revisionNumStr;
+    }
+
+    private void setRevisionNumStr(String revisionNumStr) {
+        this.revisionNumStr = revisionNumStr;
+    }
 
     public MultiPageTalendEditor() {
         super();
@@ -109,7 +120,23 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         String label = getEditorInput().getName();
         String jobVersion = this.getProcess().getVersion();
         // if (getActivePage() == 1) {
-        setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion)); //$NON-NLS-1$
+        if (revisionBool == true && revisionNumStr != null) {
+            setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + " (Revision:" + revisionNumStr + ")"); //$NON-NLS-1$
+        } else
+
+            setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion)); //$NON-NLS-1$
+        // } else {
+        // setPartName(Messages.getString("other Label??", label));
+        // //$NON-NLS-1$
+        // }
+    }
+
+    public void setName(String RevisionNumStr) {
+        super.setName();
+        String label = getEditorInput().getName();
+        String jobVersion = this.getProcess().getVersion();
+        // if (getActivePage() == 1) {
+        setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + RevisionNumStr); //$NON-NLS-1$
         // } else {
         // setPartName(Messages.getString("other Label??", label));
         // //$NON-NLS-1$
@@ -124,6 +151,13 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     @Override
     public String getEditorId() {
         return ID;
+    }
+
+    @Override
+    public void doSave(IProgressMonitor monitor) {
+        // TODO Auto-generated method stub
+        super.doSave(monitor);
+        this.setName();
     }
 
     /*

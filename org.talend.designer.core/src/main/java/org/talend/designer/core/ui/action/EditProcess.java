@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -209,7 +208,7 @@ public class EditProcess extends AContextualAction {
             if (allVersion == null || allVersion.isEmpty()) {
                 return false;
             }
-            Collections.sort(allVersion, new IRepositoryObjectComparator());
+            // Collections.sort(allVersion, new IRepositoryObjectComparator());
             IRepositoryObject lastVersion = allVersion.get(allVersion.size() - 1);
             return lastVersion.getVersion().equals(repositoryObject.getObject().getVersion());
         } catch (PersistenceException e) {

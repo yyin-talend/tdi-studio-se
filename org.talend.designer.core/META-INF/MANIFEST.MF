@@ -190,6 +190,7 @@ Export-Package: org.talend.designer.core;
  org.talend.designer.core.ui.views,
  org.talend.designer.core.ui.views.contexts,
  org.talend.designer.core.ui.views.jobsettings,
+ org.talend.designer.core.ui.views.jobsettings.tabs,
  org.talend.designer.core.ui.views.problems;
   uses:="org.eclipse.jface.preference,
    org.talend.core.model.process,

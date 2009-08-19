@@ -174,6 +174,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected boolean useCodeView = true;
 
+    public boolean revisionBool = false;
+
+    private void setRevisionBool(boolean revisionBool) {
+        this.revisionBool = revisionBool;
+    }
+
     private IPartListener partListener = new IPartListener() {
 
         public void partOpened(IWorkbenchPart part) {
@@ -520,6 +526,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (!isDirty()) {
             return;
         }
+        revisionBool = false;
         updateRunJobContext();
         designerEditor.getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);

@@ -33,16 +33,20 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.business.BusinessType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.i18n.Messages;
@@ -192,6 +196,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS;
         IDynamicProperty dynamicComposite = null;
 
+        ISVNProviderService service = null;
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+        }
+
         if (EComponentCategory.EXTRA.equals(category)) {
             // achen modify to fix bug 0006241
             Process process = getElement();
@@ -213,6 +222,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             dynamicComposite = new MainComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
         } else if (EComponentCategory.VERSIONS.equals(category)) {
             dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
+                    (IRepositoryObject) data);
+        } else if (EComponentCategory.SVNHISTORY.equals(category) && service != null) {
+            dynamicComposite = service.createProcessSVNHistoryComposite(parent, tabFactory.getWidgetFactory(),
                     (IRepositoryObject) data);
         } else if (EComponentCategory.APPEARANCE.equals(category)) {
             dynamicComposite = new BusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
@@ -380,6 +392,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      */
     private EComponentCategory[] getCategories(Object obj) {
         List<EComponentCategory> category = new ArrayList<EComponentCategory>();
+
+        ISVNProviderService service = null;
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+        }
+
         if (obj instanceof Process) {
             Process process = (Process) obj;
             category.add(EComponentCategory.MAIN);
@@ -389,11 +407,21 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 category.add(EComponentCategory.STATSANDLOGS);
             }
             category.add(EComponentCategory.VERSIONS);
+
+            // if svn remote connection, added by nma
+            if (service != null && service.isProjectInSvnMode()) {
+                category.add(EComponentCategory.SVNHISTORY);
+            }
             // category.add(EComponentCategory.CONTEXT);
 
         } else if (obj instanceof IRepositoryObject) {
             category.add(EComponentCategory.MAIN);
             category.add(EComponentCategory.VERSIONS);
+
+            if (service != null && service.isProjectInSvnMode() && ((IRepositoryObject) obj).getProperty() != null
+                    && ((IRepositoryObject) obj).getProperty().getItem() instanceof ProcessItem)
+                category.add(EComponentCategory.SVNHISTORY);
+
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
                 category.add(EComponentCategory.MAIN);
@@ -579,9 +607,17 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      * @see org.talend.designer.core.ui.views.properties.IJobSettingsView#getSelection()
      */
     public ISelection getSelection() {
+        ISVNProviderService service = null;
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+        }
+
         IDynamicProperty dc = currentSelectedTab.getPropertyComposite();
         if (dc instanceof ProcessVersionComposite) {
             return ((ProcessVersionComposite) dc).getSelection();
+
+        } else if (service != null && service.isSVNHistoryComposite(dc)) {
+            return service.getSVNHistorySelection(dc);
         } else if (dc instanceof BusinessAssignmentComposite) {
             return CorePlugin.getDefault().getRepositoryService().getRepositoryTreeView().getSelection();
         }
