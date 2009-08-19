@@ -63,6 +63,16 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.core.model.repository.RepositoryObject#setLabel(java.lang.String)
+     */
+    @Override
+    public void setLabel(String value) {
+        functionUnit.setLabel(value);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.repository.RepositoryObject#getLabel()
      */
     @Override
