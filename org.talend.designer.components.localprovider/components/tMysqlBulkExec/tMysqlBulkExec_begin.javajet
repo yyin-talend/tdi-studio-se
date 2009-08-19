@@ -93,15 +93,22 @@ if(columnList != null && columnList.size() > 0) {
 }
 
 StringBuilder loadingCols = new StringBuilder();
+List<String> bitCols = new ArrayList();
 if(columnList != null && columnList.size() > 0) {
     loadingCols.append("(");
     int sizeColumns = columnList.size();
     for (int i = 0; i < sizeColumns; i++) {
         IMetadataColumn column = columnList.get(i);
-        loadingCols.append("`" + column.getOriginalDbColumnName() + "`");
+        if ("BIT".equalsIgnoreCase(column.getType())) {//bit type
+        	bitCols.add(column.getOriginalDbColumnName());
+        	loadingCols.append("@" + cid +"_"+ column.getOriginalDbColumnName());
+        }else {//others type
+        	loadingCols.append("`" + column.getOriginalDbColumnName() + "`");
+        }
         if(i != sizeColumns - 1) {
             loadingCols.append(",");
         }
+
     }
     loadingCols.append(")");
 }
@@ -140,7 +147,25 @@ if(("UPDATE").equals(dataAction)) {
             + " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
             + " ENCLOSED BY '" + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
             + " ESCAPED BY '" + escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
-            + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "' <%=loadingCols.toString()%>"            
+            + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "' <%=loadingCols.toString()%>"    
+<%
+	int bitColsSize = bitCols.size();
+	if (bitColsSize!=0) {
+%>
+			+ " SET"
+<%
+		for(int i = 0; i < bitColsSize; i++) {
+%>
+			+ " <%=bitCols.get(i)%>=CAST(@<%=cid %>_<%=bitCols.get(i)%> AS UNSIGNED)"
+<%
+			if(i != bitColsSize - 1) {
+%>
+			+ ","	
+<%
+			}
+		}
+	}
+%>          
         );
         tableName_<%=cid%> = <%=table%>;
         String tmpTableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
@@ -171,9 +196,31 @@ if(("UPDATE").equals(dataAction)) {
         + " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
         + " ENCLOSED BY '" + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
         + " ESCAPED BY '" + escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
-        + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "' <%=loadingCols.toString()%>"            
+        + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "' <%=loadingCols.toString()%>"  
+<%
+	int bitColsSize = bitCols.size();
+	if (bitColsSize!=0) {
+%>
+		+ " SET"
+<%
+		for(int i = 0; i < bitColsSize; i++) {
+%>
+		+ " <%=bitCols.get(i)%>=CAST(@<%=cid %>_<%=bitCols.get(i)%> AS UNSIGNED)"
+<%
+			if(i != bitColsSize - 1) {
+%>
+		+ ","	
+<%
+			}
+		}
+	}
+%>         
     );
-    <%
+<%
 }
+	if(!useExistingConnection) {
 %>
 conn_<%=cid %>.close();
+<%
+	}
+%>
