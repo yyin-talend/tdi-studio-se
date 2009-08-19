@@ -331,10 +331,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
         service.initNewProjectTasks(toReturn);
-        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
-        if (designerCoreService != null) {
-            designerCoreService.createStatsLogAndImplicitParamter(toReturn);
-        }
 
         return toReturn;
     }
@@ -1569,6 +1565,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             } catch (CoreException e) {
                 // do nothing
             }
+            IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+            if (designerCoreService != null) {
+                designerCoreService.createStatsLogAndImplicitParamter(project);
+            }
+
         } catch (LoginException e) {
             logOffProject();
             throw e;
