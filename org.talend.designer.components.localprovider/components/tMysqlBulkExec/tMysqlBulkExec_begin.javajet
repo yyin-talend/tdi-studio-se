@@ -50,6 +50,8 @@ String password = ElementParameterParser.getValue(node, "__PASS__");
 boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = getColumnList(node);
+
+boolean containNULL = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__RECORDS_CONTAIN_NULL_VALUE__"));
 %>
 String charset_<%=cid %> = <%=charset %>;
 String tableName_<%=cid%> = <%=table%>;
@@ -115,7 +117,7 @@ if(columnList != null && columnList.size() > 0) {
 %> 
 String lines_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__LINES_TERMINATED_BY__") %>;
 String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>;
-String escaped_str_<%=cid %> = <%=ElementParameterParser.getValue(node, "__ESCAPED_BY__") %>;
+String escaped_str_<%=cid %> = <%=containNULL?"\"\\\\\"":ElementParameterParser.getValue(node, "__ESCAPED_BY__") %>;
 String enclosed_str_<%=cid %> = <%=ElementParameterParser.getValue(node, "__ENCLOSED_BY__") %>;
 String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
 file_<%=cid %> = file_<%=cid %>.replaceAll("\\\\", "/");

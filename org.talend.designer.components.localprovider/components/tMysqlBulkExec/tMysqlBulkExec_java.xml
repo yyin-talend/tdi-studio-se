@@ -193,6 +193,7 @@
       FIELD="TEXT"
       NUM_ROW="7"
       REQUIRED="true"
+      SHOW_IF="RECORDS_CONTAIN_NULL_VALUE == 'false'"
     >
       <DEFAULT>"\\"</DEFAULT>
     </PARAMETER>
@@ -217,6 +218,15 @@
         <ITEM NAME="REPLACE" VALUE="REPLACE" />
         <ITEM NAME="UPDATE" VALUE="UPDATE" />
       </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="RECORDS_CONTAIN_NULL_VALUE"
+      FIELD="CHECK"
+      SHOW="true"
+      NUM_ROW="9"
+    >
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

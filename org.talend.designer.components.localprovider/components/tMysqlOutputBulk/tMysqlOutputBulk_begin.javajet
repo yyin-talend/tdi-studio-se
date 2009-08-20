@@ -31,6 +31,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         
         boolean isCreateDir = ("true").equals(ElementParameterParser.getValue(node,"__CREATE__"));
+        
+        boolean containNULL = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__RECORDS_CONTAIN_NULL_VALUE__"));
 %>
 		int nb_line_<%=cid%> = 0;
 		char rowSeparator_<%=cid %> = <%=rowSeparator.length()==0||("").equals(rowSeparator)?"'\\n'" : rowSeparator + ".charAt(0)"%>;
@@ -38,6 +40,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		char escapeChar_<%=cid %> = <%=escapeChar.length()==0||("").equals(escapeChar)?"'\\\\'" : escapeChar + ".charAt(0)"%>;
 		char textEnclosure_<%=cid %> = <%=textEnclosure.length()==0||("").equals(textEnclosure)?"'\"'" : textEnclosure + ".charAt(0)"%>;
 		
+<%
+		if (containNULL) {//bug 7978 if input have a empty value,tMysqloutputbulk output "\N" instance of "" 
+%>
+			escapeChar_<%=cid %> = textEnclosure_<%=cid %>;
+<%
+		}
+%>
 		int escape_mode_<%=cid %> = com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED;
 		if(escapeChar_<%=cid %>=='\\'){
 			escape_mode_<%=cid %> = com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH;
