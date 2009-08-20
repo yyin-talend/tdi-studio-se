@@ -13,7 +13,6 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,7 +29,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -72,8 +70,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     private LabelledText batchSizeText = null;
 
     private LabelledCombo moduleNameCombo = null;
-
-    private List relationShipObjectList = null;
 
     private UtilsButton cancelButton = null;
 
@@ -197,14 +193,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         moduleNameCombo = new LabelledCombo(
                 objectsGroup,
                 Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
-                null, 1, false);
+                null, 2, false);
 
         initModuleNames();
-
-        Label relationShipObjectsLabel = new Label(objectsGroup, SWT.NONE | SWT.RIGHT);
-        relationShipObjectsLabel.setText("              relationShip Objects List");//$NON-NLS-1$
-        relationShipObjectList = new List(objectsGroup, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
-        relationShipObjectList.setItems(new String[] { "the relationShip object list", "", "", "" });//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
 
         new Label(group, SWT.NONE); // Pachlaer
         useCostomModuleButton = new Button(group, SWT.CHECK);
@@ -400,23 +391,14 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     checkFieldsValue();
                 }
                 testSalesforceLogin();
-                ArrayList checkSalesfoceLogin = null;
                 if (useProxyBtn.getSelection()) {
-                    // loginOk =
-                    checkSalesfoceLogin = checkSalesfoceLogin(useProxy, endPoint, username, pwd, proxyHostText.getText(),
-                            proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText(), moduleNameCombo
-                                    .getText());
-                    getRelationShipObjects(checkSalesfoceLogin);
+                    loginOk = checkSalesfoceLogin(useProxy, endPoint, username, pwd, proxyHostText.getText(), proxyPortText
+                            .getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
                 } else if (useHttpBtn.getSelection()) {
-                    checkSalesfoceLogin = checkSalesfoceLogin(useHttp, endPoint, username, pwd, proxyHostText.getText(),
-                            proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText(), moduleNameCombo
-                                    .getText());
-                    getRelationShipObjects(checkSalesfoceLogin);
+                    loginOk = checkSalesfoceLogin(useHttp, endPoint, username, pwd, proxyHostText.getText(), proxyPortText
+                            .getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
                 } else {
-                    // loginOk =
-                    checkSalesfoceLogin = checkSalesfoceLogin(null, endPoint, username, pwd, null, null, null, null,
-                            moduleNameCombo.getText());
-                    getRelationShipObjects(checkSalesfoceLogin);
+                    loginOk = checkSalesfoceLogin(null, endPoint, username, pwd, null, null, null, null);
                 }
 
                 if (useCostomModuleButton.getSelection()) {
@@ -427,25 +409,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
                 }
                 checkFieldsValue();
-            }
-
-            /**
-             * DOC zli Comment method "getRelationShipObjectS".
-             * 
-             * @param checkSalesfoceLogin
-             */
-            private void getRelationShipObjects(ArrayList checkSalesfoceLogin) {
-                for (int i = 0; i < checkSalesfoceLogin.size(); i++) {
-                    if (checkSalesfoceLogin.get(i) instanceof Boolean) {
-                        loginOk = (Boolean) checkSalesfoceLogin.get(i);
-                    } else if (checkSalesfoceLogin.get(i) instanceof ArrayList) {
-                        ArrayList withRelationShipObject = (ArrayList) checkSalesfoceLogin.get(i);
-                        relationShipObjectList.removeAll();
-                        String[] withRelationShipItems = (String[]) withRelationShipObject.toArray(new String[0]);
-                        relationShipObjectList.setItems(withRelationShipItems);
-                    }
-
-                }
             }
         });
 

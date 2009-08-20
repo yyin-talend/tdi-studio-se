@@ -52,28 +52,24 @@ public class SalesforceModuleParseAPI {
      * DOC YeXiaowei Comment method "login".
      */
     public ArrayList login(String theProxy, String endPoint, String username, String password, String proxyHost,
-            String proxyPort, String proxyUsername, String proxyPassword, String mouleName) throws Exception {
+            String proxyPort, String proxyUsername, String proxyPassword) throws Exception {
         ArrayList returnValues;
         currentAPI = new SalesforceModuleParseEnterprise();
         currentAPI.setLogin(login);
         try {
             returnValues = currentAPI.login(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername,
-                    proxyPassword, mouleName);
+                    proxyPassword);
         } catch (IOException e) {
             currentAPI = new SalesforceModuleParserPartner();
             currentAPI.setLogin(login);
             returnValues = currentAPI.login(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername,
-                    proxyPassword, mouleName);
+                    proxyPassword);
         }
         return returnValues;
     }
 
     public ArrayList login(String endPoint, String username, String password) throws Exception {
-        return login(null, endPoint, username, password, null, null, null, null, null);
-    }
-
-    public ArrayList describeSObjectsSample(String moduleName) {
-        return currentAPI.describeSObjectsSample(moduleName);
+        return login(null, endPoint, username, password, null, null, null, null);
     }
 
     /**

@@ -26,11 +26,9 @@ public interface ISalesforceModuleParser {
      * DOC YeXiaowei Comment method "login".
      */
     ArrayList login(String theProxy, String endPoint, String username, String password, String proxyHost, String proxyPort,
-            String proxyUsername, String proxyPassword, String mouleName) throws Exception;
+            String proxyUsername, String proxyPassword) throws Exception;
 
     ArrayList login(String endPoint, String username, String password) throws Exception;
-
-    ArrayList describeSObjectsSample(String moduleName);
 
     void describeGlobalSample();
 

@@ -219,11 +219,10 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return salesforceAPI;
     }
 
-    protected ArrayList checkSalesfoceLogin(final String theProxy, final String endPoint, final String username,
+    protected boolean checkSalesfoceLogin(final String theProxy, final String endPoint, final String username,
             final String password, final String proxyHost, final String proxyPort, final String proxyUsername,
-            final String proxyPassword, final String mouleName) {
+            final String proxyPassword) {
         final List<String> errors = new ArrayList<String>();
-        final ArrayList arraylist = new ArrayList<String>();
 
         salesforceAPI.setLogin(false);
 
@@ -246,7 +245,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     try {
                         // binding ;
                         ArrayList loginList = salesforceAPI.login(theProxy, endPoint, username, password, proxyHost, proxyPort,
-                                proxyUsername, proxyPassword, mouleName);
+                                proxyUsername, proxyPassword);
                         if (loginList != null) {
                             for (int i = 0; i < loginList.size(); i++) {
                                 if (loginList.get(i) instanceof SoapBindingStub) {
@@ -255,12 +254,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                                 if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
                                     bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
                                 }
-                                if (loginList.get(i) instanceof ArrayList) {
-                                    ArrayList realtionShipObjects = (ArrayList) loginList.get(i);
-                                    if (realtionShipObjects != null && realtionShipObjects.get(0) != null) {
-                                        arraylist.add(realtionShipObjects);
-                                    }
-                                }
+
                             }
 
                         }
@@ -290,9 +284,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             String error = errors.size() > 0 ? errors.get(0) : ""; //$NON-NLS-1$
             new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, error);
         }
-        arraylist.add(salesforceAPI.isLogin());
 
-        return arraylist;
+        return salesforceAPI.isLogin();
     }
 
     protected DescribeGlobalResult describeGlobal() throws UnexpectedErrorFault, RemoteException {

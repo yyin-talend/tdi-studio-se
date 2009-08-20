@@ -48,8 +48,6 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
 
     private String pwd = null;
 
-    private String mdname = null;
-
     private String proxy = null;
 
     private boolean loginOk = false;
@@ -79,7 +77,7 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
      * DOC YeXiaowei Comment method "login".
      */
     public ArrayList login(String theProxy, String endPoint, String username, String password, String proxyHost,
-            String proxyPort, String proxyUsername, String proxyPassword, String mouleName) throws Exception {
+            String proxyPort, String proxyUsername, String proxyPassword) throws Exception {
         if (endPoint == null) {
             throw new RemoteException(Messages.getString("SalesforceModuleParseAPI.URLInvalid")); //$NON-NLS-1$
         }
@@ -87,7 +85,7 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
             throw new Exception(Messages.getString("SalesforceModuleParseAPI.lostUsernameOrPass")); //$NON-NLS-1$
         }
         ArrayList doLoginList = null;
-        if (name != null && pwd != null && url != null && mdname != null) {
+        if (name != null && pwd != null && url != null) {
             if (!url.equals(endPoint)
                     || !name.equals(username)
                     || !pwd.equals(password)
@@ -95,11 +93,9 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
                     || !checkString(proxyPort, this.proxyPort)
                     || !checkString(proxyUsername, this.proxyUsername)
                     || !checkString(proxyPassword, this.proxyPassword)
-                    || !mdname.equals(mouleName)
                     || (proxy != null && theProxy != null && !proxy.equals(theProxy) || (proxy != null && theProxy == null) || (proxy == null && theProxy != null))) {
 
-                doLoginList = doLogin(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword,
-                        mouleName);
+                doLoginList = doLogin(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword);
 
             } else {
                 if (isLogin()) {
@@ -107,8 +103,7 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
                 }
             }
         } else {
-            doLoginList = doLogin(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword,
-                    mouleName);
+            doLoginList = doLogin(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername, proxyPassword);
         }
 
         this.name = username;
@@ -118,7 +113,6 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
         this.proxyPort = proxyPort;
         this.proxyUsername = proxyUsername;
         this.proxyPassword = proxyPassword;
-        this.mdname = mouleName;
         this.proxy = theProxy;
         return doLoginList;
     }
@@ -134,12 +128,12 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
     }
 
     public ArrayList login(String endPoint, String username, String password) throws Exception {
-        return login(null, endPoint, username, password, null, null, null, null, null);
+        return login(null, endPoint, username, password, null, null, null, null);
     }
 
     protected ArrayList doLogin(String theProxy, String endPoint, String userName, String pwd, String proxyHost,
-            String proxyPort, String proxyUsername, String proxyPassword, String mouleName) throws RemoteException,
-            ServiceException, MalformedURLException {
+            String proxyPort, String proxyUsername, String proxyPassword) throws RemoteException, ServiceException,
+            MalformedURLException {
 
         String oldProxyHost = null;
         String oldProxyPort = null;
@@ -214,10 +208,7 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
         String sforceURI = new SforceServiceLocator().getServiceName().getNamespaceURI();
         binding.setHeader(sforceURI, "SessionHeader", sh); //$NON-NLS-1$
 
-        ArrayList realtionShipObjects = describeSObjectsSample(mouleName);
-
         ArrayList arrayList = new ArrayList();
-        arrayList.add(realtionShipObjects);
         arrayList.add(binding);
 
         return arrayList;
@@ -248,51 +239,6 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
         properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, oldProxyUser == null ? "" : oldProxyUser);
         properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd);
 
-    }
-
-    public ArrayList describeSObjectsSample(String moduleName) {
-        try {
-            String[] sModuleName = new String[] { moduleName };
-            DescribeSObjectResult[] describeSObjectResults;
-
-            describeSObjectResults = binding.describeSObjects(sModuleName);
-
-            ArrayList list = new ArrayList();
-            for (int x = 0; x < describeSObjectResults.length; x++) {
-                DescribeSObjectResult describeSObjectResult = describeSObjectResults[x];
-                // Retrieve fields from the results
-                Field[] fields = describeSObjectResult.getFields();
-                // Get the name of the object
-                String objectName = describeSObjectResult.getName();
-                // Get some flags
-                boolean isActivateable = describeSObjectResult.isActivateable();
-                // Many other values are accessible
-                if (fields != null) {
-                    // Iterate through the fields to get properties for each field
-                    for (int i = 0; i < fields.length; i++) {
-                        Field field = fields[i];
-
-                        String[] referenceTos = field.getReferenceTo();
-                        if (referenceTos != null && referenceTos[0] != null) {
-                            for (int j = 0; j < referenceTos.length; j++) {
-                                if (!list.contains(referenceTos[j])) {
-                                    list.add(referenceTos[j]);
-                                }
-                            }
-
-                        }
-
-                    }
-                }
-            }
-            return list;
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            ArrayList<String> list = new ArrayList<String>();
-            list.add("the relationShip object list");//$NON-NLS-1$
-            return list;
-
-        }
     }
 
     public void describeGlobalSample() {
