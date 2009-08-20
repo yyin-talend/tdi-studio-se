@@ -1545,12 +1545,16 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 //
             }
             // rules
-            if (PluginChecker.isRulesPluginLoaded()) {
-                IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
-                        IRulesProviderService.class);
-                if (rulesService != null) {
-                    rulesService.syncAllRules();
+            try {
+                if (PluginChecker.isRulesPluginLoaded()) {
+                    IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
+                            IRulesProviderService.class);
+                    if (rulesService != null) {
+                        rulesService.syncAllRules();
+                    }
                 }
+            } catch (RuntimeException e) {
+                //
             }
             if (!CommonsPlugin.isHeadless()) {
                 CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
