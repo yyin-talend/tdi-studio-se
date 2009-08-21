@@ -42,6 +42,8 @@ public class JavaJobExportReArchieveCreator {
 
     private File libFolder;
 
+    private File drlFolder; // hywang add for 6484
+
     private File batFile;
 
     private File shFile;
@@ -49,6 +51,8 @@ public class JavaJobExportReArchieveCreator {
     private static final String CLASSPATH_JAR = "classpath.jar"; // the output new jar filename //$NON-NLS-1$
 
     private static final String LIB = "lib"; // lib folder //$NON-NLS-1$
+
+    private static final String DRL = "drl"; //drl folder hywang add //$NON-NLS-N$
 
     public JavaJobExportReArchieveCreator(String zipFile, String jobFolderName) {
         this.zipFile = zipFile;
@@ -138,7 +142,7 @@ public class JavaJobExportReArchieveCreator {
             for (String s : strs) {
                 changedContent.append(s).append(" "); //$NON-NLS-1$
             }
-            //see bug 7181. add addition lines
+            // see bug 7181. add addition lines
             String line2 = br.readLine();
             while (line2 != null) {
                 changedContent.append(('\n')).append(line2); //$NON-NLS-1$
@@ -186,6 +190,26 @@ public class JavaJobExportReArchieveCreator {
         return filenames;
     }
 
+    // hywang add for 6484
+    private String[] getDrlFilenames() {
+        String[] filenames = null;
+        if (drlFolder != null) {
+            File[] files = drlFolder.listFiles(new FilenameFilter() {
+
+                public boolean accept(File dir, String name) {
+                    return name.toLowerCase().endsWith(".drl") //$NON-NLS-1$ 
+                    ? true
+                            : false; //$NON-NLS-1$
+                }
+            });
+            filenames = new String[files.length];
+            for (int i = 0; i < files.length; i++) {
+                filenames[i] = files[i].getName();
+            }
+        }
+        return filenames;
+    }
+
     private String[] getJobFolderJarFilenames() {
         File[] files = jobFolder.listFiles(new FilenameFilter() {
 
@@ -226,6 +250,10 @@ public class JavaJobExportReArchieveCreator {
             if (fs[i].getName().equals(LIB)) {
                 libFolder = fs[i];
             }
+            // hywang add for 6484
+            if (fs[i].getName().equals(DRL)) {
+                drlFolder = fs[i];
+            }
         }
     }
 
@@ -238,6 +266,12 @@ public class JavaJobExportReArchieveCreator {
         String[] fn = getLibJarFilenames();
         for (int i = 0; i < fn.length; i++) {
             sb.append("../" + LIB + "/" + fn[i] + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+
+        // hywang add for set drl path in classpass.jar
+        String[] drls = getDrlFilenames();
+        if (drls != null) {
+            sb.append("../" + DRL + "/"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         // sb.append("\n");
         return sb.toString();

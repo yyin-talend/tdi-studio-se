@@ -166,7 +166,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<URL> talendDrlFiles = new ArrayList<URL>();
             try {
                 initUrlForDrlFiles(process, talendDrlFiles);
-                ExportFileResource drlResource = new ExportFileResource(null, "drl");
+                ExportFileResource drlResource = new ExportFileResource(null, "drl/rules/final"); //$NON-NLS-N$
                 list.add(drlResource);
                 drlResource.addResources(talendDrlFiles);
             } catch (CoreException e) {
@@ -808,7 +808,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * DOC Administrator Comment method "initUrlForDrlFiles".
+     * DOC hywang Comment method "initUrlForDrlFiles".
      * 
      * @param process
      * @param talendDrlFiles
@@ -847,13 +847,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
             }
             IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-            for (String id : ids) {
-                items.add(factory.getLastVersion(id).getProperty().getItem());
-            }
-            for (Item rulesItem : items) {
-                file = rulesService.getFinalRuleFile(rulesItem);
-                URL url = file.getLocationURI().toURL();
-                talendDrlFiles.add(url);
+            try {
+                for (String id : ids) {
+                    if (factory.getLastVersion(id).getProperty().getItem() != null) {
+                        items.add(factory.getLastVersion(id).getProperty().getItem());
+                    }
+                }
+                for (Item rulesItem : items) {
+                    if (rulesItem != null) {
+                        file = rulesService.getFinalRuleFile(rulesItem);
+                        URL url = file.getLocationURI().toURL();
+                        talendDrlFiles.add(url);
+                    }
+                }
+            } catch (Exception e) { // catch exception,return new list
+                talendDrlFiles = new ArrayList<URL>();
             }
         }
     }
