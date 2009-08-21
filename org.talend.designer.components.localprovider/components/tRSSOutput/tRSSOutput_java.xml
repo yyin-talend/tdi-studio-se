@@ -95,10 +95,23 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="ELEMENTS"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="7"
+      NB_LINES="8"
+    >
+      <ITEMS>
+        <ITEM NAME="ELEMENT_NAME" FIELD="String" />
+        <ITEM NAME="ELEMENT_VALUE" FIELD="String"/>
+      </ITEMS>
+    </PARAMETER>    
+    
+    <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="7">
+      NUM_ROW="8">
      </PARAMETER>
   </PARAMETERS>
  <CODEGENERATION>
