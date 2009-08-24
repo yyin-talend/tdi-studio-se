@@ -134,6 +134,7 @@ public class SAXLooper {
                 hd = newHandler2();
             }
             saxParser.parse(fileURL, hd);
+
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -143,6 +144,31 @@ public class SAXLooper {
         }
     }
 
+    /**
+     * Parse the XML file. Buffer the result in LoopEntry.
+     * 
+     * @param is InputStream
+     */
+    public void parse(java.io.InputStream is) {
+        try {
+            DefaultHandler hd = null;
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            if (rootPath == null || rootPath.equals("")) {
+                hd = newHandler();
+            } else {
+                hd = newHandler2();
+            }
+            saxParser.parse(is, hd);
+
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * Get result iterator. This must be call after the parse method.
      * 
