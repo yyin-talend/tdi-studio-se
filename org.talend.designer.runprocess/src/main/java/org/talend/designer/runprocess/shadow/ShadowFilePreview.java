@@ -63,7 +63,9 @@ public class ShadowFilePreview implements IPreview {
      * Stop loading preview.
      */
     public void stopLoading() {
-        shadowProcess.destroy();
+        if (shadowProcess != null) {
+            shadowProcess.destroy();
+        }
     }
 
     /*

@@ -127,21 +127,22 @@ public class ShadowProcess<T extends IProcessDescription> {
         this.type = type;
 
         SalesforceSchemaBean salesforceSchemaBean = description.getSalesforceSchemaBean();
-        boolean uesHttp = salesforceSchemaBean.isUesHttp();
-        if (uesHttp) {
-            String proxyHost = salesforceSchemaBean.getProxyHost();
-            String proxyPort = salesforceSchemaBean.getProxyPort();
-            String userName = salesforceSchemaBean.getProxyUsername();
-            String password = salesforceSchemaBean.getProxyPassword();
-            if (proxyHost != null && userName == null && password == null) {
-                this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort };
-            }
-            if (proxyHost != null && userName != null && password != null) {
-                this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort,
-                        "-Dhttp.proxyUsername=" + userName, "-Dhttp.proxyPassword=" + password };
+        if (salesforceSchemaBean != null) {
+            boolean uesHttp = salesforceSchemaBean.isUesHttp();
+            if (uesHttp) {
+                String proxyHost = salesforceSchemaBean.getProxyHost();
+                String proxyPort = salesforceSchemaBean.getProxyPort();
+                String userName = salesforceSchemaBean.getProxyUsername();
+                String password = salesforceSchemaBean.getProxyPassword();
+                if (proxyHost != null && userName == null && password == null) {
+                    this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort };
+                }
+                if (proxyHost != null && userName != null && password != null) {
+                    this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort,
+                            "-Dhttp.proxyUsername=" + userName, "-Dhttp.proxyPassword=" + password };
+                }
             }
         }
-
     }
 
     private IProcess buildProcess() {
