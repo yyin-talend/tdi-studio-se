@@ -70,7 +70,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String splitRecordStr = ElementParameterParser.getValue(node, "__SPLITRECORD__");
 		boolean splitRecord = (splitRecordStr!=null&&!("").equals(splitRecordStr))?("true").equals(splitRecordStr):false;
 %>
-org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+Object filename_<%=cid %> = <%=filename %>;
+org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
+if(filename_<%=cid %> instanceof java.io.InputStream){
+	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited((java.io.InputStream)filename_<%=cid %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+}else{
+	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(filename_<%=cid %>.toString(),<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+}
 while (fid_<%=cid %>.nextRecord()) {
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -378,10 +384,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		}
 %>
+		Object filename_<%=cid %> = <%=filename %>;		
+		com.csvreader.CsvReader csvReader<%=cid %> = null;
 		
-		
-		com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-                new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+		if(filename_<%=cid %> instanceof java.io.InputStream){
+			csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+		}else{
+			csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+                	new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+        }
                 
 		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
         	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
@@ -442,9 +453,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             }
          
           	csvReader<%=cid %>.close();
-          
-	 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-	          new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+          	
+        if(filename_<%=cid %> instanceof java.io.InputStream){
+		 	csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+        }else{
+		 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+		          new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+		}
 	          
 		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
         	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);

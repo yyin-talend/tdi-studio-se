@@ -138,12 +138,19 @@ ends_<%=cid %>[<%=i %>] = ends_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i %>];
 			}
 		}//end if(advanced)
 %>
-java.io.BufferedReader in_<%=cid %> = 
-	new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>), <%=encoding %>));
+Object filename_<%=cid %> = <%=filename %>;
+java.io.BufferedReader in_<%=cid %> = null;
+if(filename_<%=cid %> instanceof java.io.InputStream){
+	in_<%=cid %> = 
+			new java.io.BufferedReader(new java.io.InputStreamReader((java.io.InputStream)filename_<%=cid %>, <%=encoding %>));
+}else{
+	in_<%=cid %> = 
+		new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()), <%=encoding %>));
+}
 <%
 			if(("").equals(rowSeparator) || ("\"\"").equals(rowSeparator) ){
 %>
-int rowLength_<%=cid %> = 0;			
+int rowLength_<%=cid %> = 0;
 <%
 				if(advanced){ 
 					for(int i = 0; i < formats.size(); i++){ 
@@ -156,8 +163,8 @@ rowLength_<%=cid %> += sizes_<%=cid %>[<%=i %>];
 %>
 rowLength_<%=cid %> += <%=positions[i] %>;
 <%
-        		}
-			}
+        			}
+				}
 %>
 org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
 <%
@@ -172,7 +179,11 @@ reader_<%=cid %>.skipHeaders(<%=header %>);
 if(footer_<%=cid %> > 0){
 	int available_<%=cid %> = (int)reader_<%=cid %>.getAvailableRowCount(footer_<%=cid %>);
 	reader_<%=cid %>.close();
-	in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>), <%=encoding %>));
+	if(filename_<%=cid %> instanceof java.io.InputStream){
+		in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader((java.io.InputStream)filename_<%=cid %>, <%=encoding %>));
+	}else{
+		in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()), <%=encoding %>));
+	}
 <%
 			if(("").equals(rowSeparator) || ("\"\"").equals(rowSeparator) ){
 %>
