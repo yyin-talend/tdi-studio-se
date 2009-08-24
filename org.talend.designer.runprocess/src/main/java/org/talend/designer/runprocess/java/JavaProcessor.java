@@ -1024,6 +1024,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 list.add("cd `dirname $0`\n"); //$NON-NLS-1$
                 list.add("ROOT_PATH=`pwd`\n"); //$NON-NLS-1$
             } else {
+                list.add("%~d0\r\n"); //$NON-NLS-1$
                 list.add("cd %~dp0\r\n"); //$NON-NLS-1$
             }
             list.addAll(Arrays.asList(cmd2));
