@@ -27,6 +27,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import org.talend.fileprocess.TOSDelimitedReader;
+
 /**
  * FileInputDelimited is dedicated to Talend's tFileInputDelimited component. It wraps all parameters in
  * tFileInputDelimted, so it makes the generated code much easier and cleaner. This class is not recommended to use in
@@ -55,6 +57,86 @@ public class FileInputDelimited {
     public FileInputDelimited(String file, String encoding, String fieldSeparator, String rowSeparator, boolean skipEmptyRow,
             int header, int footer, int limit, int random) throws IOException {
         this(file, encoding, fieldSeparator, rowSeparator, skipEmptyRow, header, footer, limit, random, false);
+    }
+    
+    /**
+     * This constructor is only for compatibility with the old usecase.(Before add the function support split Record.)
+     * 
+     */
+    public FileInputDelimited(java.io.InputStream is, String encoding, String fieldSeparator, String rowSeparator, boolean skipEmptyRow,
+            int header, int footer, int limit, int random) throws IOException {
+        this(is, encoding, fieldSeparator, rowSeparator, skipEmptyRow, header, footer, limit, random, false);
+    }
+    
+
+    /**
+     * The constructor's parameter wraps all parameters' value, and a pretreatment was made according the value of
+     * header, footer, limit and random.
+     * 
+     * @param is
+     * @param encoding
+     * @param fieldSeparator
+     * @param rowSeparator
+     * @param skipEmptyRow
+     * @param header
+     * @param footer
+     * @param limit
+     * @param random
+     * @throws IOException
+     */
+    public FileInputDelimited(java.io.InputStream is, String encoding, String fieldSeparator, String rowSeparator,
+            boolean skipEmptyRow, int header, int footer, int limit, int random, boolean splitRecord) throws IOException {
+        if (header < 0) {
+            header = 0;
+        }
+        if (footer < 0) {
+            footer = 0;
+        }
+        if (random != 0 && limit != 0) {
+            this.delimitedDataReader = new TOSDelimitedReader(is, encoding, fieldSeparator, rowSeparator, skipEmptyRow);
+            this.delimitedDataReader.setSplitRecord(splitRecord);
+
+            this.delimitedDataReader.skipHeaders(header);
+            if (random < 0 && footer == 0) {
+                if (limit > 0) {
+                    this.loopCount = limit;
+                } else {
+                    this.loopCount = Integer.MAX_VALUE;
+                }
+                this.countNeedAdjust = true;
+            } else {
+                int count = (int) this.delimitedDataReader.getAvailableRowCount(footer);
+                this.delimitedDataReader.close();
+                this.delimitedDataReader = new TOSDelimitedReader(is, encoding, fieldSeparator, rowSeparator, skipEmptyRow);
+                this.delimitedDataReader.setSplitRecord(splitRecord);
+
+                this.delimitedDataReader.skipHeaders(header);
+                if (limit > 0 && random < 0) {
+                    this.loopCount = limit < count ? limit : count;
+                } else if (limit < 0 && random > 0) {
+                    if (random >= count) {
+                        this.loopCount = count;
+                    } else {
+                        setRandoms(random, count);
+                        this.loopCount = random;
+                    }
+                } else if (limit > 0 && random > 0) {
+                    if (random >= limit) {
+                        random = limit;
+                    }
+                    if (random >= count) {
+                        this.loopCount = count;
+                    } else {
+                        setRandoms(random, count);
+                        this.loopCount = random;
+                    }
+                } else {
+                    this.loopCount = count;
+                }
+            }
+        } else {
+            loopCount = 0;
+        }
     }
 
     /**

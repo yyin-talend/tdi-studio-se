@@ -67,6 +67,15 @@ public class TOSDelimitedReader {
     public boolean splitRecord = false;
 
     /* --------------5------------------- */
+    
+    public TOSDelimitedReader(java.io.InputStream is, String encoding, String fieldDelimiter, String recordDelimiter,
+            boolean needSkipEmptyRecord) throws IOException {
+
+        InputStreamReader inputStreamReader = new InputStreamReader(is, encoding);
+
+        init(inputStreamReader, fieldDelimiter, recordDelimiter, needSkipEmptyRecord);
+    }    
+
 
     public TOSDelimitedReader(String fileName, String encoding, String fieldDelimiter, String recordDelimiter,
             boolean needSkipEmptyRecord) throws IOException {
