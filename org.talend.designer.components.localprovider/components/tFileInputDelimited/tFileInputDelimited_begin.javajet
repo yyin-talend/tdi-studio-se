@@ -70,13 +70,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String splitRecordStr = ElementParameterParser.getValue(node, "__SPLITRECORD__");
 		boolean splitRecord = (splitRecordStr!=null&&!("").equals(splitRecordStr))?("true").equals(splitRecordStr):false;
 %>
-Object filename_<%=cid %> = <%=filename %>;
-org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
-if(filename_<%=cid %> instanceof java.io.InputStream){
-	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited((java.io.InputStream)filename_<%=cid %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
-}else{
-	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(filename_<%=cid %>.toString(),<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
-}
+org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = 
+	new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
 while (fid_<%=cid %>.nextRecord()) {
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
