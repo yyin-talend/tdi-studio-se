@@ -19,36 +19,41 @@ imports="
     boolean batchMode = ("true").equals(ElementParameterParser.getValue(node, "__BATCH_MODE__"));
     
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+    
+     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 %>
 <%
 	//batch mode
-    if(("INSERT").equals(dataAction) && batchMode){
-%>
-try {
-	int batchInsertCount_<%=cid %> = 0;
-	int[] returns_<%=cid %> = pstmt_<%=cid %>.executeBatch();
-	for(int i_<%=cid %> = 0; i_<%=cid %> < returns_<%=cid %>.length; i_<%=cid %>++){
-		if(returns_<%=cid %>[i_<%=cid %>] == 1){
-			batchInsertCount_<%=cid %>++;
-		}
-	}
-	insertedCount_<%=cid%> = insertedCount_<%=cid%> + batchInsertCount_<%=cid %>;
-} catch(Exception e) {
-<%
-		if (("true").equals(dieOnError)) {
-                    %>
-	throw(e);
-<%
-    	} else {
-%>
-	System.err.print(e.getMessage());
-<%
-    	} 
-%>
-}
-<%
-    }
-    %>    
+	if (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) {
+%>                
+                try {
+						pstmt_<%=cid %>.executeBatch();                	
+            	    	<%if (("INSERT").equals(dataAction)) {
+            	    	%>
+            	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
+            	    	<%
+            	    	}else if (("UPDATE").equals(dataAction)) {
+            	    	%>
+            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	<%
+            	    	}else if (("DELETE").equals(dataAction)) {
+            	    	%>
+            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	<%
+            	    	}%>            	    
+                }catch (java.sql.BatchUpdateException e){
+                	<%if(("true").equals(dieOnError)) {
+                	%>
+                		throw(e);
+                	<%
+                	}else {
+                	%>
+                	System.out.println(e.getMessage());
+                	<%
+                	}%>                	
+            	}                                  
+                <%
+                }%>    
     <%if(("INSERT_OR_UPDATE").equals(dataAction)){%>
         pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");              
         pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   
@@ -62,16 +67,15 @@ try {
         pstmtInsert_<%=cid %>.executeUpdate();
         pstmtUpdate_<%=cid%>.executeUpdate();      
     <%}else{%>   
+    	<%   
+    	 if(!useExistingConnection)	{
+    	 %>
         pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");    
         pstmt_<%=cid%>.executeUpdate();
     <%
+    	}
     }
-     
-    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
-        %>
-        conn_<%=cid%>.commit();
-        <%
-    }
+
     
     if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
@@ -113,8 +117,19 @@ try {
         }        
         <%
     }   
-    %>
-    conn_<%=cid%> .close();
+
+    if(!useExistingConnection)
+    {
+	    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
+	        %>
+	        conn_<%=cid%>.commit();
+	        <%
+	    }
+	   %>
+	     conn_<%=cid%> .close();
+	<%
+    }
+   %>
 
     nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
     nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;

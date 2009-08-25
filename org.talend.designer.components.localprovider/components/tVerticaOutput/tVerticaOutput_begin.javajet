@@ -55,6 +55,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	
 	boolean batchMode = ("true").equals(ElementParameterParser.getValue(node, "__BATCH_MODE__"));
+	
+	String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -140,7 +142,16 @@ int commitEvery_<%=cid%> = <%=commitEvery%>;
 int commitCounter_<%=cid%> = 0;        
 <%
 }
+if (batchMode) {
+    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
 %>
+   int batchSize_<%=cid%> = <%=batchSize%>;
+   int batchSizeCounter_<%=cid%>=0;
+<%   
+   }
+}
+%> 
+
 <%
 if(columnList != null && columnList.size() > 0) {
     if(!("NONE").equals(tableAction)) {
