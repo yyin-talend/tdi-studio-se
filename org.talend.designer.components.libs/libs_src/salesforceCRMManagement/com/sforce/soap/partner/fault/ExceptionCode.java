@@ -20,9 +20,11 @@ public class ExceptionCode implements java.io.Serializable {
     public static final java.lang.String _API_CURRENTLY_DISABLED = "API_CURRENTLY_DISABLED";
     public static final java.lang.String _API_DISABLED_FOR_ORG = "API_DISABLED_FOR_ORG";
     public static final java.lang.String _CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY = "CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY";
+    public static final java.lang.String _CANT_ADD_STANDARD_PORTAL_USER_TO_TERRITORY = "CANT_ADD_STANDARD_PORTAL_USER_TO_TERRITORY";
     public static final java.lang.String _CIRCULAR_OBJECT_GRAPH = "CIRCULAR_OBJECT_GRAPH";
     public static final java.lang.String _CLIENT_NOT_ACCESSIBLE_FOR_USER = "CLIENT_NOT_ACCESSIBLE_FOR_USER";
     public static final java.lang.String _CLIENT_REQUIRE_UPDATE_FOR_USER = "CLIENT_REQUIRE_UPDATE_FOR_USER";
+    public static final java.lang.String _CUSTOM_METADATA_LIMIT_EXCEEDED = "CUSTOM_METADATA_LIMIT_EXCEEDED";
     public static final java.lang.String _DUPLICATE_VALUE = "DUPLICATE_VALUE";
     public static final java.lang.String _EMAIL_BATCH_SIZE_LIMIT_EXCEEDED = "EMAIL_BATCH_SIZE_LIMIT_EXCEEDED";
     public static final java.lang.String _EMAIL_TO_CASE_INVALID_ROUTING = "EMAIL_TO_CASE_INVALID_ROUTING";
@@ -43,7 +45,9 @@ public class ExceptionCode implements java.io.Serializable {
     public static final java.lang.String _INVALID_CROSS_REFERENCE_KEY = "INVALID_CROSS_REFERENCE_KEY";
     public static final java.lang.String _INVALID_FIELD = "INVALID_FIELD";
     public static final java.lang.String _INVALID_FILTER_LANGUAGE = "INVALID_FILTER_LANGUAGE";
+    public static final java.lang.String _INVALID_FILTER_VALUE = "INVALID_FILTER_VALUE";
     public static final java.lang.String _INVALID_ID_FIELD = "INVALID_ID_FIELD";
+    public static final java.lang.String _INVALID_LOCALE_LANGUAGE = "INVALID_LOCALE_LANGUAGE";
     public static final java.lang.String _INVALID_LOCATOR = "INVALID_LOCATOR";
     public static final java.lang.String _INVALID_LOGIN = "INVALID_LOGIN";
     public static final java.lang.String _INVALID_NEW_PASSWORD = "INVALID_NEW_PASSWORD";
@@ -61,8 +65,11 @@ public class ExceptionCode implements java.io.Serializable {
     public static final java.lang.String _INVALID_TYPE = "INVALID_TYPE";
     public static final java.lang.String _INVALID_TYPE_FOR_OPERATION = "INVALID_TYPE_FOR_OPERATION";
     public static final java.lang.String _LIMIT_EXCEEDED = "LIMIT_EXCEEDED";
+    public static final java.lang.String _LOGIN_CHALLENGE_ISSUED = "LOGIN_CHALLENGE_ISSUED";
+    public static final java.lang.String _LOGIN_CHALLENGE_PENDING = "LOGIN_CHALLENGE_PENDING";
     public static final java.lang.String _LOGIN_DURING_RESTRICTED_DOMAIN = "LOGIN_DURING_RESTRICTED_DOMAIN";
     public static final java.lang.String _LOGIN_DURING_RESTRICTED_TIME = "LOGIN_DURING_RESTRICTED_TIME";
+    public static final java.lang.String _LOGIN_MUST_USE_SECURITY_TOKEN = "LOGIN_MUST_USE_SECURITY_TOKEN";
     public static final java.lang.String _MALFORMED_ID = "MALFORMED_ID";
     public static final java.lang.String _MALFORMED_QUERY = "MALFORMED_QUERY";
     public static final java.lang.String _MALFORMED_SEARCH = "MALFORMED_SEARCH";
@@ -89,9 +96,11 @@ public class ExceptionCode implements java.io.Serializable {
     public static final ExceptionCode API_CURRENTLY_DISABLED = new ExceptionCode(_API_CURRENTLY_DISABLED);
     public static final ExceptionCode API_DISABLED_FOR_ORG = new ExceptionCode(_API_DISABLED_FOR_ORG);
     public static final ExceptionCode CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY = new ExceptionCode(_CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY);
+    public static final ExceptionCode CANT_ADD_STANDARD_PORTAL_USER_TO_TERRITORY = new ExceptionCode(_CANT_ADD_STANDARD_PORTAL_USER_TO_TERRITORY);
     public static final ExceptionCode CIRCULAR_OBJECT_GRAPH = new ExceptionCode(_CIRCULAR_OBJECT_GRAPH);
     public static final ExceptionCode CLIENT_NOT_ACCESSIBLE_FOR_USER = new ExceptionCode(_CLIENT_NOT_ACCESSIBLE_FOR_USER);
     public static final ExceptionCode CLIENT_REQUIRE_UPDATE_FOR_USER = new ExceptionCode(_CLIENT_REQUIRE_UPDATE_FOR_USER);
+    public static final ExceptionCode CUSTOM_METADATA_LIMIT_EXCEEDED = new ExceptionCode(_CUSTOM_METADATA_LIMIT_EXCEEDED);
     public static final ExceptionCode DUPLICATE_VALUE = new ExceptionCode(_DUPLICATE_VALUE);
     public static final ExceptionCode EMAIL_BATCH_SIZE_LIMIT_EXCEEDED = new ExceptionCode(_EMAIL_BATCH_SIZE_LIMIT_EXCEEDED);
     public static final ExceptionCode EMAIL_TO_CASE_INVALID_ROUTING = new ExceptionCode(_EMAIL_TO_CASE_INVALID_ROUTING);
@@ -112,7 +121,9 @@ public class ExceptionCode implements java.io.Serializable {
     public static final ExceptionCode INVALID_CROSS_REFERENCE_KEY = new ExceptionCode(_INVALID_CROSS_REFERENCE_KEY);
     public static final ExceptionCode INVALID_FIELD = new ExceptionCode(_INVALID_FIELD);
     public static final ExceptionCode INVALID_FILTER_LANGUAGE = new ExceptionCode(_INVALID_FILTER_LANGUAGE);
+    public static final ExceptionCode INVALID_FILTER_VALUE = new ExceptionCode(_INVALID_FILTER_VALUE);
     public static final ExceptionCode INVALID_ID_FIELD = new ExceptionCode(_INVALID_ID_FIELD);
+    public static final ExceptionCode INVALID_LOCALE_LANGUAGE = new ExceptionCode(_INVALID_LOCALE_LANGUAGE);
     public static final ExceptionCode INVALID_LOCATOR = new ExceptionCode(_INVALID_LOCATOR);
     public static final ExceptionCode INVALID_LOGIN = new ExceptionCode(_INVALID_LOGIN);
     public static final ExceptionCode INVALID_NEW_PASSWORD = new ExceptionCode(_INVALID_NEW_PASSWORD);
@@ -130,8 +141,11 @@ public class ExceptionCode implements java.io.Serializable {
     public static final ExceptionCode INVALID_TYPE = new ExceptionCode(_INVALID_TYPE);
     public static final ExceptionCode INVALID_TYPE_FOR_OPERATION = new ExceptionCode(_INVALID_TYPE_FOR_OPERATION);
     public static final ExceptionCode LIMIT_EXCEEDED = new ExceptionCode(_LIMIT_EXCEEDED);
+    public static final ExceptionCode LOGIN_CHALLENGE_ISSUED = new ExceptionCode(_LOGIN_CHALLENGE_ISSUED);
+    public static final ExceptionCode LOGIN_CHALLENGE_PENDING = new ExceptionCode(_LOGIN_CHALLENGE_PENDING);
     public static final ExceptionCode LOGIN_DURING_RESTRICTED_DOMAIN = new ExceptionCode(_LOGIN_DURING_RESTRICTED_DOMAIN);
     public static final ExceptionCode LOGIN_DURING_RESTRICTED_TIME = new ExceptionCode(_LOGIN_DURING_RESTRICTED_TIME);
+    public static final ExceptionCode LOGIN_MUST_USE_SECURITY_TOKEN = new ExceptionCode(_LOGIN_MUST_USE_SECURITY_TOKEN);
     public static final ExceptionCode MALFORMED_ID = new ExceptionCode(_MALFORMED_ID);
     public static final ExceptionCode MALFORMED_QUERY = new ExceptionCode(_MALFORMED_QUERY);
     public static final ExceptionCode MALFORMED_SEARCH = new ExceptionCode(_MALFORMED_SEARCH);

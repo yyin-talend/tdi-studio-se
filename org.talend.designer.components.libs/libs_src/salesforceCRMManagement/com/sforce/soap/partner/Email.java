@@ -16,6 +16,8 @@ public class Email  implements java.io.Serializable {
 
     private java.lang.Boolean saveAsActivity;
 
+    private java.lang.String senderDisplayName;
+
     private java.lang.String subject;
 
     private java.lang.Boolean useSignature;
@@ -28,12 +30,14 @@ public class Email  implements java.io.Serializable {
            com.sforce.soap.partner.EmailPriority emailPriority,
            java.lang.String replyTo,
            java.lang.Boolean saveAsActivity,
+           java.lang.String senderDisplayName,
            java.lang.String subject,
            java.lang.Boolean useSignature) {
            this.bccSender = bccSender;
            this.emailPriority = emailPriority;
            this.replyTo = replyTo;
            this.saveAsActivity = saveAsActivity;
+           this.senderDisplayName = senderDisplayName;
            this.subject = subject;
            this.useSignature = useSignature;
     }
@@ -120,6 +124,26 @@ public class Email  implements java.io.Serializable {
 
 
     /**
+     * Gets the senderDisplayName value for this Email.
+     * 
+     * @return senderDisplayName
+     */
+    public java.lang.String getSenderDisplayName() {
+        return senderDisplayName;
+    }
+
+
+    /**
+     * Sets the senderDisplayName value for this Email.
+     * 
+     * @param senderDisplayName
+     */
+    public void setSenderDisplayName(java.lang.String senderDisplayName) {
+        this.senderDisplayName = senderDisplayName;
+    }
+
+
+    /**
      * Gets the subject value for this Email.
      * 
      * @return subject
@@ -182,6 +206,9 @@ public class Email  implements java.io.Serializable {
             ((this.saveAsActivity==null && other.getSaveAsActivity()==null) || 
              (this.saveAsActivity!=null &&
               this.saveAsActivity.equals(other.getSaveAsActivity()))) &&
+            ((this.senderDisplayName==null && other.getSenderDisplayName()==null) || 
+             (this.senderDisplayName!=null &&
+              this.senderDisplayName.equals(other.getSenderDisplayName()))) &&
             ((this.subject==null && other.getSubject()==null) || 
              (this.subject!=null &&
               this.subject.equals(other.getSubject()))) &&
@@ -210,6 +237,9 @@ public class Email  implements java.io.Serializable {
         }
         if (getSaveAsActivity() != null) {
             _hashCode += getSaveAsActivity().hashCode();
+        }
+        if (getSenderDisplayName() != null) {
+            _hashCode += getSenderDisplayName().hashCode();
         }
         if (getSubject() != null) {
             _hashCode += getSubject().hashCode();
@@ -249,6 +279,12 @@ public class Email  implements java.io.Serializable {
         elemField.setFieldName("saveAsActivity");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "saveAsActivity"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("senderDisplayName");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "senderDisplayName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

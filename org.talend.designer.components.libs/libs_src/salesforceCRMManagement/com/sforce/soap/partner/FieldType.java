@@ -33,9 +33,11 @@ public class FieldType implements java.io.Serializable {
     public static final java.lang.String _value14 = "id";
     public static final java.lang.String _value15 = "date";
     public static final java.lang.String _value16 = "datetime";
-    public static final java.lang.String _value17 = "url";
-    public static final java.lang.String _value18 = "email";
-    public static final java.lang.String _value19 = "anyType";
+    public static final java.lang.String _value17 = "time";
+    public static final java.lang.String _value18 = "url";
+    public static final java.lang.String _value19 = "email";
+    public static final java.lang.String _value20 = "encryptedstring";
+    public static final java.lang.String _value21 = "anyType";
     public static final FieldType value1 = new FieldType(_value1);
     public static final FieldType value2 = new FieldType(_value2);
     public static final FieldType value3 = new FieldType(_value3);
@@ -55,6 +57,8 @@ public class FieldType implements java.io.Serializable {
     public static final FieldType value17 = new FieldType(_value17);
     public static final FieldType value18 = new FieldType(_value18);
     public static final FieldType value19 = new FieldType(_value19);
+    public static final FieldType value20 = new FieldType(_value20);
+    public static final FieldType value21 = new FieldType(_value21);
     public java.lang.String getValue() { return _value_;}
     public static FieldType fromValue(java.lang.String value)
           throws java.lang.IllegalArgumentException {

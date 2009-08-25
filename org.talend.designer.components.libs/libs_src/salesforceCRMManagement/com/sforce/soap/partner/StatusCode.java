@@ -34,7 +34,6 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _CANNOT_RENAME_APEX_REFERENCED_FIELD = "CANNOT_RENAME_APEX_REFERENCED_FIELD";
     public static final java.lang.String _CANNOT_RENAME_APEX_REFERENCED_OBJECT = "CANNOT_RENAME_APEX_REFERENCED_OBJECT";
     public static final java.lang.String _CANNOT_REPARENT_RECORD = "CANNOT_REPARENT_RECORD";
-    public static final java.lang.String _CANNOT_RESOLVE_NAME = "CANNOT_RESOLVE_NAME";
     public static final java.lang.String _CANNOT_UPDATE_CONVERTED_LEAD = "CANNOT_UPDATE_CONVERTED_LEAD";
     public static final java.lang.String _CANT_DISABLE_CORP_CURRENCY = "CANT_DISABLE_CORP_CURRENCY";
     public static final java.lang.String _CANT_UNSET_CORP_CURRENCY = "CANT_UNSET_CORP_CURRENCY";
@@ -50,11 +49,13 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _DELETE_REQUIRED_ON_CASCADE = "DELETE_REQUIRED_ON_CASCADE";
     public static final java.lang.String _DEPENDENCY_EXISTS = "DEPENDENCY_EXISTS";
     public static final java.lang.String _DUPLICATE_CASE_SOLUTION = "DUPLICATE_CASE_SOLUTION";
+    public static final java.lang.String _DUPLICATE_COMM_NICKNAME = "DUPLICATE_COMM_NICKNAME";
     public static final java.lang.String _DUPLICATE_CUSTOM_ENTITY_DEFINITION = "DUPLICATE_CUSTOM_ENTITY_DEFINITION";
     public static final java.lang.String _DUPLICATE_CUSTOM_TAB_MOTIF = "DUPLICATE_CUSTOM_TAB_MOTIF";
     public static final java.lang.String _DUPLICATE_DEVELOPER_NAME = "DUPLICATE_DEVELOPER_NAME";
     public static final java.lang.String _DUPLICATE_EXTERNAL_ID = "DUPLICATE_EXTERNAL_ID";
     public static final java.lang.String _DUPLICATE_MASTER_LABEL = "DUPLICATE_MASTER_LABEL";
+    public static final java.lang.String _DUPLICATE_SENDER_DISPLAY_NAME = "DUPLICATE_SENDER_DISPLAY_NAME";
     public static final java.lang.String _DUPLICATE_USERNAME = "DUPLICATE_USERNAME";
     public static final java.lang.String _DUPLICATE_VALUE = "DUPLICATE_VALUE";
     public static final java.lang.String _EMAIL_NOT_PROCESSED_DUE_TO_PRIOR_ERROR = "EMAIL_NOT_PROCESSED_DUE_TO_PRIOR_ERROR";
@@ -87,7 +88,9 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _INVALID_EMPTY_KEY_OWNER = "INVALID_EMPTY_KEY_OWNER";
     public static final java.lang.String _INVALID_FIELD = "INVALID_FIELD";
     public static final java.lang.String _INVALID_FIELD_FOR_INSERT_UPDATE = "INVALID_FIELD_FOR_INSERT_UPDATE";
+    public static final java.lang.String _INVALID_FIELD_WHEN_USING_TEMPLATE = "INVALID_FIELD_WHEN_USING_TEMPLATE";
     public static final java.lang.String _INVALID_FILTER_ACTION = "INVALID_FILTER_ACTION";
+    public static final java.lang.String _INVALID_GOOGLE_DOCS_URL = "INVALID_GOOGLE_DOCS_URL";
     public static final java.lang.String _INVALID_ID_FIELD = "INVALID_ID_FIELD";
     public static final java.lang.String _INVALID_INET_ADDRESS = "INVALID_INET_ADDRESS";
     public static final java.lang.String _INVALID_LINEITEM_CLONE_STATE = "INVALID_LINEITEM_CLONE_STATE";
@@ -98,12 +101,13 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _INVALID_PARTNER_NETWORK_STATUS = "INVALID_PARTNER_NETWORK_STATUS";
     public static final java.lang.String _INVALID_PERSON_ACCOUNT_OPERATION = "INVALID_PERSON_ACCOUNT_OPERATION";
     public static final java.lang.String _INVALID_SAVE_AS_ACTIVITY_FLAG = "INVALID_SAVE_AS_ACTIVITY_FLAG";
+    public static final java.lang.String _INVALID_SESSION_ID = "INVALID_SESSION_ID";
+    public static final java.lang.String _INVALID_SETUP_OWNER = "INVALID_SETUP_OWNER";
     public static final java.lang.String _INVALID_STATUS = "INVALID_STATUS";
     public static final java.lang.String _INVALID_TYPE = "INVALID_TYPE";
     public static final java.lang.String _INVALID_TYPE_FOR_OPERATION = "INVALID_TYPE_FOR_OPERATION";
     public static final java.lang.String _INVALID_TYPE_ON_FIELD_IN_RECORD = "INVALID_TYPE_ON_FIELD_IN_RECORD";
     public static final java.lang.String _IP_RANGE_LIMIT_EXCEEDED = "IP_RANGE_LIMIT_EXCEEDED";
-    public static final java.lang.String _LAST_MODIFIED_SINCE_TOO_OLD = "LAST_MODIFIED_SINCE_TOO_OLD";
     public static final java.lang.String _LICENSE_LIMIT_EXCEEDED = "LICENSE_LIMIT_EXCEEDED";
     public static final java.lang.String _LIMIT_EXCEEDED = "LIMIT_EXCEEDED";
     public static final java.lang.String _MALFORMED_ID = "MALFORMED_ID";
@@ -112,6 +116,7 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _MASS_MAIL_LIMIT_EXCEEDED = "MASS_MAIL_LIMIT_EXCEEDED";
     public static final java.lang.String _MAXIMUM_CCEMAILS_EXCEEDED = "MAXIMUM_CCEMAILS_EXCEEDED";
     public static final java.lang.String _MAXIMUM_DASHBOARD_COMPONENTS_EXCEEDED = "MAXIMUM_DASHBOARD_COMPONENTS_EXCEEDED";
+    public static final java.lang.String _MAXIMUM_HIERARCHY_LEVELS_REACHED = "MAXIMUM_HIERARCHY_LEVELS_REACHED";
     public static final java.lang.String _MAXIMUM_SIZE_OF_ATTACHMENT = "MAXIMUM_SIZE_OF_ATTACHMENT";
     public static final java.lang.String _MAXIMUM_SIZE_OF_DOCUMENT = "MAXIMUM_SIZE_OF_DOCUMENT";
     public static final java.lang.String _MAX_ACTIONS_PER_RULE_EXCEEDED = "MAX_ACTIONS_PER_RULE_EXCEEDED";
@@ -123,9 +128,13 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _MAX_TASK_DESCRIPTION_EXCEEEDED = "MAX_TASK_DESCRIPTION_EXCEEEDED";
     public static final java.lang.String _MAX_TM_RULES_EXCEEDED = "MAX_TM_RULES_EXCEEDED";
     public static final java.lang.String _MAX_TM_RULE_ITEMS_EXCEEDED = "MAX_TM_RULE_ITEMS_EXCEEDED";
+    public static final java.lang.String _MERGE_FAILED = "MERGE_FAILED";
     public static final java.lang.String _MISSING_ARGUMENT = "MISSING_ARGUMENT";
+    public static final java.lang.String _MIXED_DML_OPERATION = "MIXED_DML_OPERATION";
     public static final java.lang.String _NONUNIQUE_SHIPPING_ADDRESS = "NONUNIQUE_SHIPPING_ADDRESS";
     public static final java.lang.String _NO_APPLICABLE_PROCESS = "NO_APPLICABLE_PROCESS";
+    public static final java.lang.String _NO_ATTACHMENT_PERMISSION = "NO_ATTACHMENT_PERMISSION";
+    public static final java.lang.String _NO_INACTIVE_DIVISION_MEMBERS = "NO_INACTIVE_DIVISION_MEMBERS";
     public static final java.lang.String _NO_MASS_MAIL_PERMISSION = "NO_MASS_MAIL_PERMISSION";
     public static final java.lang.String _NUMBER_OUTSIDE_VALID_RANGE = "NUMBER_OUTSIDE_VALID_RANGE";
     public static final java.lang.String _NUM_HISTORY_FIELDS_BY_SOBJECT_EXCEEDED = "NUM_HISTORY_FIELDS_BY_SOBJECT_EXCEEDED";
@@ -136,9 +145,11 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _RECORD_IN_USE_BY_WORKFLOW = "RECORD_IN_USE_BY_WORKFLOW";
     public static final java.lang.String _REQUEST_RUNNING_TOO_LONG = "REQUEST_RUNNING_TOO_LONG";
     public static final java.lang.String _REQUIRED_FIELD_MISSING = "REQUIRED_FIELD_MISSING";
+    public static final java.lang.String _SELF_REFERENCE_FROM_TRIGGER = "SELF_REFERENCE_FROM_TRIGGER";
     public static final java.lang.String _SHARE_NEEDED_FOR_CHILD_OWNER = "SHARE_NEEDED_FOR_CHILD_OWNER";
     public static final java.lang.String _STANDARD_PRICE_NOT_DEFINED = "STANDARD_PRICE_NOT_DEFINED";
     public static final java.lang.String _STORAGE_LIMIT_EXCEEDED = "STORAGE_LIMIT_EXCEEDED";
+    public static final java.lang.String _STRING_TOO_LONG = "STRING_TOO_LONG";
     public static final java.lang.String _TABSET_LIMIT_EXCEEDED = "TABSET_LIMIT_EXCEEDED";
     public static final java.lang.String _TEMPLATE_NOT_ACTIVE = "TEMPLATE_NOT_ACTIVE";
     public static final java.lang.String _TERRITORY_REALIGN_IN_PROGRESS = "TERRITORY_REALIGN_IN_PROGRESS";
@@ -152,7 +163,9 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _UNKNOWN_EXCEPTION = "UNKNOWN_EXCEPTION";
     public static final java.lang.String _UNSPECIFIED_EMAIL_ADDRESS = "UNSPECIFIED_EMAIL_ADDRESS";
     public static final java.lang.String _UNSUPPORTED_APEX_TRIGGER_OPERATON = "UNSUPPORTED_APEX_TRIGGER_OPERATON";
+    public static final java.lang.String _UNVERIFIED_SENDER_ADDRESS = "UNVERIFIED_SENDER_ADDRESS";
     public static final java.lang.String _WEBLINK_SIZE_LIMIT_EXCEEDED = "WEBLINK_SIZE_LIMIT_EXCEEDED";
+    public static final java.lang.String _WRONG_CONTROLLER_TYPE = "WRONG_CONTROLLER_TYPE";
     public static final StatusCode ALREADY_IN_PROCESS = new StatusCode(_ALREADY_IN_PROCESS);
     public static final StatusCode ASSIGNEE_TYPE_REQUIRED = new StatusCode(_ASSIGNEE_TYPE_REQUIRED);
     public static final StatusCode BAD_CUSTOM_ENTITY_PARENT_DOMAIN = new StatusCode(_BAD_CUSTOM_ENTITY_PARENT_DOMAIN);
@@ -170,7 +183,6 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode CANNOT_RENAME_APEX_REFERENCED_FIELD = new StatusCode(_CANNOT_RENAME_APEX_REFERENCED_FIELD);
     public static final StatusCode CANNOT_RENAME_APEX_REFERENCED_OBJECT = new StatusCode(_CANNOT_RENAME_APEX_REFERENCED_OBJECT);
     public static final StatusCode CANNOT_REPARENT_RECORD = new StatusCode(_CANNOT_REPARENT_RECORD);
-    public static final StatusCode CANNOT_RESOLVE_NAME = new StatusCode(_CANNOT_RESOLVE_NAME);
     public static final StatusCode CANNOT_UPDATE_CONVERTED_LEAD = new StatusCode(_CANNOT_UPDATE_CONVERTED_LEAD);
     public static final StatusCode CANT_DISABLE_CORP_CURRENCY = new StatusCode(_CANT_DISABLE_CORP_CURRENCY);
     public static final StatusCode CANT_UNSET_CORP_CURRENCY = new StatusCode(_CANT_UNSET_CORP_CURRENCY);
@@ -186,11 +198,13 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode DELETE_REQUIRED_ON_CASCADE = new StatusCode(_DELETE_REQUIRED_ON_CASCADE);
     public static final StatusCode DEPENDENCY_EXISTS = new StatusCode(_DEPENDENCY_EXISTS);
     public static final StatusCode DUPLICATE_CASE_SOLUTION = new StatusCode(_DUPLICATE_CASE_SOLUTION);
+    public static final StatusCode DUPLICATE_COMM_NICKNAME = new StatusCode(_DUPLICATE_COMM_NICKNAME);
     public static final StatusCode DUPLICATE_CUSTOM_ENTITY_DEFINITION = new StatusCode(_DUPLICATE_CUSTOM_ENTITY_DEFINITION);
     public static final StatusCode DUPLICATE_CUSTOM_TAB_MOTIF = new StatusCode(_DUPLICATE_CUSTOM_TAB_MOTIF);
     public static final StatusCode DUPLICATE_DEVELOPER_NAME = new StatusCode(_DUPLICATE_DEVELOPER_NAME);
     public static final StatusCode DUPLICATE_EXTERNAL_ID = new StatusCode(_DUPLICATE_EXTERNAL_ID);
     public static final StatusCode DUPLICATE_MASTER_LABEL = new StatusCode(_DUPLICATE_MASTER_LABEL);
+    public static final StatusCode DUPLICATE_SENDER_DISPLAY_NAME = new StatusCode(_DUPLICATE_SENDER_DISPLAY_NAME);
     public static final StatusCode DUPLICATE_USERNAME = new StatusCode(_DUPLICATE_USERNAME);
     public static final StatusCode DUPLICATE_VALUE = new StatusCode(_DUPLICATE_VALUE);
     public static final StatusCode EMAIL_NOT_PROCESSED_DUE_TO_PRIOR_ERROR = new StatusCode(_EMAIL_NOT_PROCESSED_DUE_TO_PRIOR_ERROR);
@@ -223,7 +237,9 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode INVALID_EMPTY_KEY_OWNER = new StatusCode(_INVALID_EMPTY_KEY_OWNER);
     public static final StatusCode INVALID_FIELD = new StatusCode(_INVALID_FIELD);
     public static final StatusCode INVALID_FIELD_FOR_INSERT_UPDATE = new StatusCode(_INVALID_FIELD_FOR_INSERT_UPDATE);
+    public static final StatusCode INVALID_FIELD_WHEN_USING_TEMPLATE = new StatusCode(_INVALID_FIELD_WHEN_USING_TEMPLATE);
     public static final StatusCode INVALID_FILTER_ACTION = new StatusCode(_INVALID_FILTER_ACTION);
+    public static final StatusCode INVALID_GOOGLE_DOCS_URL = new StatusCode(_INVALID_GOOGLE_DOCS_URL);
     public static final StatusCode INVALID_ID_FIELD = new StatusCode(_INVALID_ID_FIELD);
     public static final StatusCode INVALID_INET_ADDRESS = new StatusCode(_INVALID_INET_ADDRESS);
     public static final StatusCode INVALID_LINEITEM_CLONE_STATE = new StatusCode(_INVALID_LINEITEM_CLONE_STATE);
@@ -234,12 +250,13 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode INVALID_PARTNER_NETWORK_STATUS = new StatusCode(_INVALID_PARTNER_NETWORK_STATUS);
     public static final StatusCode INVALID_PERSON_ACCOUNT_OPERATION = new StatusCode(_INVALID_PERSON_ACCOUNT_OPERATION);
     public static final StatusCode INVALID_SAVE_AS_ACTIVITY_FLAG = new StatusCode(_INVALID_SAVE_AS_ACTIVITY_FLAG);
+    public static final StatusCode INVALID_SESSION_ID = new StatusCode(_INVALID_SESSION_ID);
+    public static final StatusCode INVALID_SETUP_OWNER = new StatusCode(_INVALID_SETUP_OWNER);
     public static final StatusCode INVALID_STATUS = new StatusCode(_INVALID_STATUS);
     public static final StatusCode INVALID_TYPE = new StatusCode(_INVALID_TYPE);
     public static final StatusCode INVALID_TYPE_FOR_OPERATION = new StatusCode(_INVALID_TYPE_FOR_OPERATION);
     public static final StatusCode INVALID_TYPE_ON_FIELD_IN_RECORD = new StatusCode(_INVALID_TYPE_ON_FIELD_IN_RECORD);
     public static final StatusCode IP_RANGE_LIMIT_EXCEEDED = new StatusCode(_IP_RANGE_LIMIT_EXCEEDED);
-    public static final StatusCode LAST_MODIFIED_SINCE_TOO_OLD = new StatusCode(_LAST_MODIFIED_SINCE_TOO_OLD);
     public static final StatusCode LICENSE_LIMIT_EXCEEDED = new StatusCode(_LICENSE_LIMIT_EXCEEDED);
     public static final StatusCode LIMIT_EXCEEDED = new StatusCode(_LIMIT_EXCEEDED);
     public static final StatusCode MALFORMED_ID = new StatusCode(_MALFORMED_ID);
@@ -248,6 +265,7 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode MASS_MAIL_LIMIT_EXCEEDED = new StatusCode(_MASS_MAIL_LIMIT_EXCEEDED);
     public static final StatusCode MAXIMUM_CCEMAILS_EXCEEDED = new StatusCode(_MAXIMUM_CCEMAILS_EXCEEDED);
     public static final StatusCode MAXIMUM_DASHBOARD_COMPONENTS_EXCEEDED = new StatusCode(_MAXIMUM_DASHBOARD_COMPONENTS_EXCEEDED);
+    public static final StatusCode MAXIMUM_HIERARCHY_LEVELS_REACHED = new StatusCode(_MAXIMUM_HIERARCHY_LEVELS_REACHED);
     public static final StatusCode MAXIMUM_SIZE_OF_ATTACHMENT = new StatusCode(_MAXIMUM_SIZE_OF_ATTACHMENT);
     public static final StatusCode MAXIMUM_SIZE_OF_DOCUMENT = new StatusCode(_MAXIMUM_SIZE_OF_DOCUMENT);
     public static final StatusCode MAX_ACTIONS_PER_RULE_EXCEEDED = new StatusCode(_MAX_ACTIONS_PER_RULE_EXCEEDED);
@@ -259,9 +277,13 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode MAX_TASK_DESCRIPTION_EXCEEEDED = new StatusCode(_MAX_TASK_DESCRIPTION_EXCEEEDED);
     public static final StatusCode MAX_TM_RULES_EXCEEDED = new StatusCode(_MAX_TM_RULES_EXCEEDED);
     public static final StatusCode MAX_TM_RULE_ITEMS_EXCEEDED = new StatusCode(_MAX_TM_RULE_ITEMS_EXCEEDED);
+    public static final StatusCode MERGE_FAILED = new StatusCode(_MERGE_FAILED);
     public static final StatusCode MISSING_ARGUMENT = new StatusCode(_MISSING_ARGUMENT);
+    public static final StatusCode MIXED_DML_OPERATION = new StatusCode(_MIXED_DML_OPERATION);
     public static final StatusCode NONUNIQUE_SHIPPING_ADDRESS = new StatusCode(_NONUNIQUE_SHIPPING_ADDRESS);
     public static final StatusCode NO_APPLICABLE_PROCESS = new StatusCode(_NO_APPLICABLE_PROCESS);
+    public static final StatusCode NO_ATTACHMENT_PERMISSION = new StatusCode(_NO_ATTACHMENT_PERMISSION);
+    public static final StatusCode NO_INACTIVE_DIVISION_MEMBERS = new StatusCode(_NO_INACTIVE_DIVISION_MEMBERS);
     public static final StatusCode NO_MASS_MAIL_PERMISSION = new StatusCode(_NO_MASS_MAIL_PERMISSION);
     public static final StatusCode NUMBER_OUTSIDE_VALID_RANGE = new StatusCode(_NUMBER_OUTSIDE_VALID_RANGE);
     public static final StatusCode NUM_HISTORY_FIELDS_BY_SOBJECT_EXCEEDED = new StatusCode(_NUM_HISTORY_FIELDS_BY_SOBJECT_EXCEEDED);
@@ -272,9 +294,11 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode RECORD_IN_USE_BY_WORKFLOW = new StatusCode(_RECORD_IN_USE_BY_WORKFLOW);
     public static final StatusCode REQUEST_RUNNING_TOO_LONG = new StatusCode(_REQUEST_RUNNING_TOO_LONG);
     public static final StatusCode REQUIRED_FIELD_MISSING = new StatusCode(_REQUIRED_FIELD_MISSING);
+    public static final StatusCode SELF_REFERENCE_FROM_TRIGGER = new StatusCode(_SELF_REFERENCE_FROM_TRIGGER);
     public static final StatusCode SHARE_NEEDED_FOR_CHILD_OWNER = new StatusCode(_SHARE_NEEDED_FOR_CHILD_OWNER);
     public static final StatusCode STANDARD_PRICE_NOT_DEFINED = new StatusCode(_STANDARD_PRICE_NOT_DEFINED);
     public static final StatusCode STORAGE_LIMIT_EXCEEDED = new StatusCode(_STORAGE_LIMIT_EXCEEDED);
+    public static final StatusCode STRING_TOO_LONG = new StatusCode(_STRING_TOO_LONG);
     public static final StatusCode TABSET_LIMIT_EXCEEDED = new StatusCode(_TABSET_LIMIT_EXCEEDED);
     public static final StatusCode TEMPLATE_NOT_ACTIVE = new StatusCode(_TEMPLATE_NOT_ACTIVE);
     public static final StatusCode TERRITORY_REALIGN_IN_PROGRESS = new StatusCode(_TERRITORY_REALIGN_IN_PROGRESS);
@@ -288,7 +312,9 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode UNKNOWN_EXCEPTION = new StatusCode(_UNKNOWN_EXCEPTION);
     public static final StatusCode UNSPECIFIED_EMAIL_ADDRESS = new StatusCode(_UNSPECIFIED_EMAIL_ADDRESS);
     public static final StatusCode UNSUPPORTED_APEX_TRIGGER_OPERATON = new StatusCode(_UNSUPPORTED_APEX_TRIGGER_OPERATON);
+    public static final StatusCode UNVERIFIED_SENDER_ADDRESS = new StatusCode(_UNVERIFIED_SENDER_ADDRESS);
     public static final StatusCode WEBLINK_SIZE_LIMIT_EXCEEDED = new StatusCode(_WEBLINK_SIZE_LIMIT_EXCEEDED);
+    public static final StatusCode WRONG_CONTROLLER_TYPE = new StatusCode(_WRONG_CONTROLLER_TYPE);
     public java.lang.String getValue() { return _value_;}
     public static StatusCode fromValue(java.lang.String value)
           throws java.lang.IllegalArgumentException {

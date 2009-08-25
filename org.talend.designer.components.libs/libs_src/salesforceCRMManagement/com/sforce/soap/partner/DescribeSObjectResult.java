@@ -18,6 +18,10 @@ public class DescribeSObjectResult  implements java.io.Serializable {
 
     private boolean deletable;
 
+    private java.lang.Boolean deprecated;
+
+    private java.lang.Boolean deprecatedAndHidden;
+
     private com.sforce.soap.partner.Field[] fields;
 
     private java.lang.String keyPrefix;
@@ -42,6 +46,8 @@ public class DescribeSObjectResult  implements java.io.Serializable {
 
     private boolean searchable;
 
+    private java.lang.Boolean triggerable;
+
     private boolean undeletable;
 
     private boolean updateable;
@@ -61,6 +67,8 @@ public class DescribeSObjectResult  implements java.io.Serializable {
            boolean createable,
            boolean custom,
            boolean deletable,
+           java.lang.Boolean deprecated,
+           java.lang.Boolean deprecatedAndHidden,
            com.sforce.soap.partner.Field[] fields,
            java.lang.String keyPrefix,
            java.lang.String label,
@@ -73,6 +81,7 @@ public class DescribeSObjectResult  implements java.io.Serializable {
            boolean replicateable,
            boolean retrieveable,
            boolean searchable,
+           java.lang.Boolean triggerable,
            boolean undeletable,
            boolean updateable,
            java.lang.String urlDetail,
@@ -83,6 +92,8 @@ public class DescribeSObjectResult  implements java.io.Serializable {
            this.createable = createable;
            this.custom = custom;
            this.deletable = deletable;
+           this.deprecated = deprecated;
+           this.deprecatedAndHidden = deprecatedAndHidden;
            this.fields = fields;
            this.keyPrefix = keyPrefix;
            this.label = label;
@@ -95,6 +106,7 @@ public class DescribeSObjectResult  implements java.io.Serializable {
            this.replicateable = replicateable;
            this.retrieveable = retrieveable;
            this.searchable = searchable;
+           this.triggerable = triggerable;
            this.undeletable = undeletable;
            this.updateable = updateable;
            this.urlDetail = urlDetail;
@@ -208,6 +220,46 @@ public class DescribeSObjectResult  implements java.io.Serializable {
      */
     public void setDeletable(boolean deletable) {
         this.deletable = deletable;
+    }
+
+
+    /**
+     * Gets the deprecated value for this DescribeSObjectResult.
+     * 
+     * @return deprecated
+     */
+    public java.lang.Boolean getDeprecated() {
+        return deprecated;
+    }
+
+
+    /**
+     * Sets the deprecated value for this DescribeSObjectResult.
+     * 
+     * @param deprecated
+     */
+    public void setDeprecated(java.lang.Boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
+
+    /**
+     * Gets the deprecatedAndHidden value for this DescribeSObjectResult.
+     * 
+     * @return deprecatedAndHidden
+     */
+    public java.lang.Boolean getDeprecatedAndHidden() {
+        return deprecatedAndHidden;
+    }
+
+
+    /**
+     * Sets the deprecatedAndHidden value for this DescribeSObjectResult.
+     * 
+     * @param deprecatedAndHidden
+     */
+    public void setDeprecatedAndHidden(java.lang.Boolean deprecatedAndHidden) {
+        this.deprecatedAndHidden = deprecatedAndHidden;
     }
 
 
@@ -468,6 +520,26 @@ public class DescribeSObjectResult  implements java.io.Serializable {
 
 
     /**
+     * Gets the triggerable value for this DescribeSObjectResult.
+     * 
+     * @return triggerable
+     */
+    public java.lang.Boolean getTriggerable() {
+        return triggerable;
+    }
+
+
+    /**
+     * Sets the triggerable value for this DescribeSObjectResult.
+     * 
+     * @param triggerable
+     */
+    public void setTriggerable(java.lang.Boolean triggerable) {
+        this.triggerable = triggerable;
+    }
+
+
+    /**
      * Gets the undeletable value for this DescribeSObjectResult.
      * 
      * @return undeletable
@@ -585,6 +657,12 @@ public class DescribeSObjectResult  implements java.io.Serializable {
             this.createable == other.isCreateable() &&
             this.custom == other.isCustom() &&
             this.deletable == other.isDeletable() &&
+            ((this.deprecated==null && other.getDeprecated()==null) || 
+             (this.deprecated!=null &&
+              this.deprecated.equals(other.getDeprecated()))) &&
+            ((this.deprecatedAndHidden==null && other.getDeprecatedAndHidden()==null) || 
+             (this.deprecatedAndHidden!=null &&
+              this.deprecatedAndHidden.equals(other.getDeprecatedAndHidden()))) &&
             ((this.fields==null && other.getFields()==null) || 
              (this.fields!=null &&
               java.util.Arrays.equals(this.fields, other.getFields()))) &&
@@ -609,6 +687,9 @@ public class DescribeSObjectResult  implements java.io.Serializable {
             this.replicateable == other.isReplicateable() &&
             this.retrieveable == other.isRetrieveable() &&
             this.searchable == other.isSearchable() &&
+            ((this.triggerable==null && other.getTriggerable()==null) || 
+             (this.triggerable!=null &&
+              this.triggerable.equals(other.getTriggerable()))) &&
             this.undeletable == other.isUndeletable() &&
             this.updateable == other.isUpdateable() &&
             ((this.urlDetail==null && other.getUrlDetail()==null) || 
@@ -646,6 +727,12 @@ public class DescribeSObjectResult  implements java.io.Serializable {
         _hashCode += (isCreateable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isCustom() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isDeletable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getDeprecated() != null) {
+            _hashCode += getDeprecated().hashCode();
+        }
+        if (getDeprecatedAndHidden() != null) {
+            _hashCode += getDeprecatedAndHidden().hashCode();
+        }
         if (getFields() != null) {
             for (int i=0;
                  i<java.lang.reflect.Array.getLength(getFields());
@@ -686,6 +773,9 @@ public class DescribeSObjectResult  implements java.io.Serializable {
         _hashCode += (isReplicateable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isRetrieveable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isSearchable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getTriggerable() != null) {
+            _hashCode += getTriggerable().hashCode();
+        }
         _hashCode += (isUndeletable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isUpdateable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         if (getUrlDetail() != null) {
@@ -737,6 +827,20 @@ public class DescribeSObjectResult  implements java.io.Serializable {
         elemField.setFieldName("deletable");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deletable"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("deprecated");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecated"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("deprecatedAndHidden");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecatedAndHidden"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
@@ -813,6 +917,13 @@ public class DescribeSObjectResult  implements java.io.Serializable {
         elemField.setFieldName("searchable");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "searchable"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("triggerable");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "triggerable"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

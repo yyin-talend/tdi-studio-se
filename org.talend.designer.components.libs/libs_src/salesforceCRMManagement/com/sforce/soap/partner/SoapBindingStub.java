@@ -16,7 +16,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[28];
+        _operations = new org.apache.axis.description.OperationDesc[30];
         _initOperationDesc1();
         _initOperationDesc2();
         _initOperationDesc3();
@@ -445,6 +445,12 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "UnexpectedErrorFault"), 
                       true
                      ));
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidIdFault"),
+                      "com.sforce.soap.partner.fault.InvalidIdFault",
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidIdFault"), 
+                      true
+                     ));
         _operations[15] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
@@ -464,6 +470,37 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       true
                      ));
         _operations[16] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("logout");
+        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "UnexpectedErrorFault"),
+                      "com.sforce.soap.partner.fault.UnexpectedErrorFault",
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "UnexpectedErrorFault"), 
+                      true
+                     ));
+        _operations[17] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("invalidateSessions");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sessionIds"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String[].class, false, false);
+        param.setOmittable(true);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "InvalidateSessionsResult"));
+        oper.setReturnClass(com.sforce.soap.partner.InvalidateSessionsResult[].class);
+        oper.setReturnQName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "result"));
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "UnexpectedErrorFault"),
+                      "com.sforce.soap.partner.fault.UnexpectedErrorFault",
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "UnexpectedErrorFault"), 
+                      true
+                     ));
+        _operations[18] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getDeleted");
@@ -490,8 +527,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidSObjectFault"), 
                       true
                      ));
-        _operations[17] = oper;
+        _operations[19] = oper;
 
+    }
+
+    private static void _initOperationDesc3(){
+        org.apache.axis.description.OperationDesc oper;
+        org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getUpdated");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sObjectType"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
@@ -517,7 +559,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidSObjectFault"), 
                       true
                      ));
-        _operations[18] = oper;
+        _operations[20] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("query");
@@ -547,6 +589,12 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidQueryLocatorFault"),
+                      "com.sforce.soap.partner.fault.InvalidQueryLocatorFault",
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidQueryLocatorFault"), 
+                      true
+                     ));
+        oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "MalformedQueryFault"),
                       "com.sforce.soap.partner.fault.MalformedQueryFault",
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "MalformedQueryFault"), 
@@ -558,13 +606,8 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidFieldFault"), 
                       true
                      ));
-        _operations[19] = oper;
+        _operations[21] = oper;
 
-    }
-
-    private static void _initOperationDesc3(){
-        org.apache.axis.description.OperationDesc oper;
-        org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("queryAll");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "queryString"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
@@ -593,6 +636,12 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidQueryLocatorFault"),
+                      "com.sforce.soap.partner.fault.InvalidQueryLocatorFault",
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidQueryLocatorFault"), 
+                      true
+                     ));
+        oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "MalformedQueryFault"),
                       "com.sforce.soap.partner.fault.MalformedQueryFault",
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "MalformedQueryFault"), 
@@ -604,7 +653,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidFieldFault"), 
                       true
                      ));
-        _operations[20] = oper;
+        _operations[22] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("queryMore");
@@ -627,7 +676,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidQueryLocatorFault"), 
                       true
                      ));
-        _operations[21] = oper;
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidFieldFault"),
+                      "com.sforce.soap.partner.fault.InvalidFieldFault",
+                      new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidFieldFault"), 
+                      true
+                     ));
+        _operations[23] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("search");
@@ -662,7 +717,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidFieldFault"), 
                       true
                      ));
-        _operations[22] = oper;
+        _operations[24] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getServerTimestamp");
@@ -677,7 +732,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "UnexpectedErrorFault"), 
                       true
                      ));
-        _operations[23] = oper;
+        _operations[25] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("setPassword");
@@ -708,7 +763,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidNewPasswordFault"), 
                       true
                      ));
-        _operations[24] = oper;
+        _operations[26] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("resetPassword");
@@ -731,7 +786,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "InvalidIdFault"), 
                       true
                      ));
-        _operations[25] = oper;
+        _operations[27] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getUserInfo");
@@ -746,7 +801,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "UnexpectedErrorFault"), 
                       true
                      ));
-        _operations[26] = oper;
+        _operations[28] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("sendEmail");
@@ -764,7 +819,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
                       new javax.xml.namespace.QName("urn:fault.partner.soap.sforce.com", "UnexpectedErrorFault"), 
                       true
                      ));
-        _operations[27] = oper;
+        _operations[29] = oper;
 
     }
 
@@ -906,6 +961,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">AllowFieldTruncationHeader");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.AllowFieldTruncationHeader.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">AssignmentRuleHeader");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.AssignmentRuleHeader.class;
@@ -955,6 +1017,20 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             qName2 = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "result");
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">DebuggingHeader");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.DebuggingHeader.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">DebuggingInfo");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.DebuggingInfo.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">delete");
             cachedSerQNames.add(qName);
@@ -1145,6 +1221,31 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">invalidateSessions");
+            cachedSerQNames.add(qName);
+            cls = java.lang.String[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string");
+            qName2 = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sessionIds");
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">invalidateSessionsResponse");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.InvalidateSessionsResult[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "InvalidateSessionsResult");
+            qName2 = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "result");
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">LocaleOptions");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.LocaleOptions.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">login");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.Login.class;
@@ -1162,6 +1263,20 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">LoginScopeHeader");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.LoginScopeHeader.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">logout");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.Logout.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">logoutResponse");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.LogoutResponse.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -1190,6 +1305,15 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">PackageVersionHeader");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.PackageVersion[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "PackageVersion");
+            qName2 = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "packageVersions");
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">process");
             cachedSerQNames.add(qName);
@@ -1407,6 +1531,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DebugLevel");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.DebugLevel.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
+
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DeletedRecord");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.DeletedRecord.class;
@@ -1434,6 +1565,22 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeLayoutButton");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.DescribeLayoutButton.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeLayoutButtonSection");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.DescribeLayoutButton[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeLayoutButton");
+            qName2 = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "detailButtons");
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeLayoutComponent");
             cachedSerQNames.add(qName);
@@ -1477,6 +1624,21 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+    }
+    private void addBindings1() {
+            java.lang.Class cls;
+            javax.xml.namespace.QName qName;
+            javax.xml.namespace.QName qName2;
+            java.lang.Class beansf = org.apache.axis.encoding.ser.BeanSerializerFactory.class;
+            java.lang.Class beandf = org.apache.axis.encoding.ser.BeanDeserializerFactory.class;
+            java.lang.Class enumsf = org.apache.axis.encoding.ser.EnumSerializerFactory.class;
+            java.lang.Class enumdf = org.apache.axis.encoding.ser.EnumDeserializerFactory.class;
+            java.lang.Class arraysf = org.apache.axis.encoding.ser.ArraySerializerFactory.class;
+            java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
+            java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
+            java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
+            java.lang.Class simplelistsf = org.apache.axis.encoding.ser.SimpleListSerializerFactory.class;
+            java.lang.Class simplelistdf = org.apache.axis.encoding.ser.SimpleListDeserializerFactory.class;
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeSoftphoneLayoutCallType");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.DescribeSoftphoneLayoutCallType.class;
@@ -1533,6 +1695,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "EmailFileAttachment");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.EmailFileAttachment.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "EmailPriority");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.EmailPriority.class;
@@ -1561,21 +1730,6 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-    }
-    private void addBindings1() {
-            java.lang.Class cls;
-            javax.xml.namespace.QName qName;
-            javax.xml.namespace.QName qName2;
-            java.lang.Class beansf = org.apache.axis.encoding.ser.BeanSerializerFactory.class;
-            java.lang.Class beandf = org.apache.axis.encoding.ser.BeanDeserializerFactory.class;
-            java.lang.Class enumsf = org.apache.axis.encoding.ser.EnumSerializerFactory.class;
-            java.lang.Class enumdf = org.apache.axis.encoding.ser.EnumDeserializerFactory.class;
-            java.lang.Class arraysf = org.apache.axis.encoding.ser.ArraySerializerFactory.class;
-            java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
-            java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
-            java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            java.lang.Class simplelistsf = org.apache.axis.encoding.ser.SimpleListSerializerFactory.class;
-            java.lang.Class simplelistdf = org.apache.axis.encoding.ser.SimpleListDeserializerFactory.class;
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "fieldType");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.FieldType.class;
@@ -1617,6 +1771,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerClasses.add(cls);
             cachedSerFactories.add(org.apache.axis.encoding.ser.BaseSerializerFactory.createFactory(org.apache.axis.encoding.ser.SimpleSerializerFactory.class, cls, qName));
             cachedDeserFactories.add(org.apache.axis.encoding.ser.BaseDeserializerFactory.createFactory(org.apache.axis.encoding.ser.SimpleDeserializerFactory.class, cls, qName));
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "InvalidateSessionsResult");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.InvalidateSessionsResult.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "layoutComponentType");
             cachedSerQNames.add(qName);
@@ -1663,6 +1824,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "MergeResult");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.MergeResult.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "PackageVersion");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.PackageVersion.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -2611,7 +2779,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
 }
     }
 
-    public com.sforce.soap.partner.ProcessResult[] process(com.sforce.soap.partner.ProcessRequest[] actions) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault {
+    public com.sforce.soap.partner.ProcessResult[] process(com.sforce.soap.partner.ProcessRequest[] actions) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidIdFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -2647,6 +2815,9 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
          }
         if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.UnexpectedErrorFault) {
               throw (com.sforce.soap.partner.fault.UnexpectedErrorFault) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.InvalidIdFault) {
+              throw (com.sforce.soap.partner.fault.InvalidIdFault) axisFaultException.detail;
          }
    }
   throw axisFaultException;
@@ -2695,12 +2866,89 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
 }
     }
 
-    public com.sforce.soap.partner.GetDeletedResult getDeleted(java.lang.String sObjectType, java.util.Calendar startDate, java.util.Calendar endDate) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidSObjectFault {
+    public void logout() throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[17]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "logout"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        extractAttachments(_call);
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+    if (axisFaultException.detail != null) {
+        if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+              throw (java.rmi.RemoteException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.UnexpectedErrorFault) {
+              throw (com.sforce.soap.partner.fault.UnexpectedErrorFault) axisFaultException.detail;
+         }
+   }
+  throw axisFaultException;
+}
+    }
+
+    public com.sforce.soap.partner.InvalidateSessionsResult[] invalidateSessions(java.lang.String[] sessionIds) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[18]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "invalidateSessions"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {sessionIds});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (com.sforce.soap.partner.InvalidateSessionsResult[]) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (com.sforce.soap.partner.InvalidateSessionsResult[]) org.apache.axis.utils.JavaUtils.convert(_resp, com.sforce.soap.partner.InvalidateSessionsResult[].class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+    if (axisFaultException.detail != null) {
+        if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+              throw (java.rmi.RemoteException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.UnexpectedErrorFault) {
+              throw (com.sforce.soap.partner.fault.UnexpectedErrorFault) axisFaultException.detail;
+         }
+   }
+  throw axisFaultException;
+}
+    }
+
+    public com.sforce.soap.partner.GetDeletedResult getDeleted(java.lang.String sObjectType, java.util.Calendar startDate, java.util.Calendar endDate) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidSObjectFault {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[19]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -2745,7 +2993,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[18]);
+        _call.setOperation(_operations[20]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -2785,12 +3033,12 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
 }
     }
 
-    public com.sforce.soap.partner.QueryResult query(java.lang.String queryString) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidSObjectFault, com.sforce.soap.partner.fault.InvalidIdFault, com.sforce.soap.partner.fault.MalformedQueryFault, com.sforce.soap.partner.fault.InvalidFieldFault {
+    public com.sforce.soap.partner.QueryResult query(java.lang.String queryString) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidSObjectFault, com.sforce.soap.partner.fault.InvalidIdFault, com.sforce.soap.partner.fault.InvalidQueryLocatorFault, com.sforce.soap.partner.fault.MalformedQueryFault, com.sforce.soap.partner.fault.InvalidFieldFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[19]);
+        _call.setOperation(_operations[21]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -2828,6 +3076,9 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
         if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.InvalidIdFault) {
               throw (com.sforce.soap.partner.fault.InvalidIdFault) axisFaultException.detail;
          }
+        if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.InvalidQueryLocatorFault) {
+              throw (com.sforce.soap.partner.fault.InvalidQueryLocatorFault) axisFaultException.detail;
+         }
         if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.MalformedQueryFault) {
               throw (com.sforce.soap.partner.fault.MalformedQueryFault) axisFaultException.detail;
          }
@@ -2839,12 +3090,12 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
 }
     }
 
-    public com.sforce.soap.partner.QueryResult queryAll(java.lang.String queryString) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidSObjectFault, com.sforce.soap.partner.fault.InvalidIdFault, com.sforce.soap.partner.fault.MalformedQueryFault, com.sforce.soap.partner.fault.InvalidFieldFault {
+    public com.sforce.soap.partner.QueryResult queryAll(java.lang.String queryString) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidSObjectFault, com.sforce.soap.partner.fault.InvalidIdFault, com.sforce.soap.partner.fault.InvalidQueryLocatorFault, com.sforce.soap.partner.fault.MalformedQueryFault, com.sforce.soap.partner.fault.InvalidFieldFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[20]);
+        _call.setOperation(_operations[22]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -2882,6 +3133,9 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
         if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.InvalidIdFault) {
               throw (com.sforce.soap.partner.fault.InvalidIdFault) axisFaultException.detail;
          }
+        if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.InvalidQueryLocatorFault) {
+              throw (com.sforce.soap.partner.fault.InvalidQueryLocatorFault) axisFaultException.detail;
+         }
         if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.MalformedQueryFault) {
               throw (com.sforce.soap.partner.fault.MalformedQueryFault) axisFaultException.detail;
          }
@@ -2893,12 +3147,12 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
 }
     }
 
-    public com.sforce.soap.partner.QueryResult queryMore(java.lang.String queryLocator) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidQueryLocatorFault {
+    public com.sforce.soap.partner.QueryResult queryMore(java.lang.String queryLocator) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.UnexpectedErrorFault, com.sforce.soap.partner.fault.InvalidQueryLocatorFault, com.sforce.soap.partner.fault.InvalidFieldFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[21]);
+        _call.setOperation(_operations[23]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -2933,6 +3187,9 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
         if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.InvalidQueryLocatorFault) {
               throw (com.sforce.soap.partner.fault.InvalidQueryLocatorFault) axisFaultException.detail;
          }
+        if (axisFaultException.detail instanceof com.sforce.soap.partner.fault.InvalidFieldFault) {
+              throw (com.sforce.soap.partner.fault.InvalidFieldFault) axisFaultException.detail;
+         }
    }
   throw axisFaultException;
 }
@@ -2943,7 +3200,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[22]);
+        _call.setOperation(_operations[24]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -2994,7 +3251,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[23]);
+        _call.setOperation(_operations[25]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -3036,7 +3293,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[24]);
+        _call.setOperation(_operations[26]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -3084,7 +3341,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[25]);
+        _call.setOperation(_operations[27]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -3129,7 +3386,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[26]);
+        _call.setOperation(_operations[28]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -3171,7 +3428,7 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[27]);
+        _call.setOperation(_operations[29]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);

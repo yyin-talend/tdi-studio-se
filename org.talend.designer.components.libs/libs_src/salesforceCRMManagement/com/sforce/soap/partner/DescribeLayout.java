@@ -8,6 +8,8 @@
 package com.sforce.soap.partner;
 
 public class DescribeLayout  implements java.io.Serializable {
+    private com.sforce.soap.partner.DescribeLayoutButton[] buttonLayoutSection;
+
     private com.sforce.soap.partner.DescribeLayoutSection[] detailLayoutSections;
 
     private com.sforce.soap.partner.DescribeLayoutSection[] editLayoutSections;
@@ -20,14 +22,36 @@ public class DescribeLayout  implements java.io.Serializable {
     }
 
     public DescribeLayout(
+           com.sforce.soap.partner.DescribeLayoutButton[] buttonLayoutSection,
            com.sforce.soap.partner.DescribeLayoutSection[] detailLayoutSections,
            com.sforce.soap.partner.DescribeLayoutSection[] editLayoutSections,
            java.lang.String id,
            com.sforce.soap.partner.RelatedList[] relatedLists) {
+           this.buttonLayoutSection = buttonLayoutSection;
            this.detailLayoutSections = detailLayoutSections;
            this.editLayoutSections = editLayoutSections;
            this.id = id;
            this.relatedLists = relatedLists;
+    }
+
+
+    /**
+     * Gets the buttonLayoutSection value for this DescribeLayout.
+     * 
+     * @return buttonLayoutSection
+     */
+    public com.sforce.soap.partner.DescribeLayoutButton[] getButtonLayoutSection() {
+        return buttonLayoutSection;
+    }
+
+
+    /**
+     * Sets the buttonLayoutSection value for this DescribeLayout.
+     * 
+     * @param buttonLayoutSection
+     */
+    public void setButtonLayoutSection(com.sforce.soap.partner.DescribeLayoutButton[] buttonLayoutSection) {
+        this.buttonLayoutSection = buttonLayoutSection;
     }
 
 
@@ -146,6 +170,9 @@ public class DescribeLayout  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.buttonLayoutSection==null && other.getButtonLayoutSection()==null) || 
+             (this.buttonLayoutSection!=null &&
+              java.util.Arrays.equals(this.buttonLayoutSection, other.getButtonLayoutSection()))) &&
             ((this.detailLayoutSections==null && other.getDetailLayoutSections()==null) || 
              (this.detailLayoutSections!=null &&
               java.util.Arrays.equals(this.detailLayoutSections, other.getDetailLayoutSections()))) &&
@@ -169,6 +196,17 @@ public class DescribeLayout  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getButtonLayoutSection() != null) {
+            for (int i=0;
+                 i<java.lang.reflect.Array.getLength(getButtonLayoutSection());
+                 i++) {
+                java.lang.Object obj = java.lang.reflect.Array.get(getButtonLayoutSection(), i);
+                if (obj != null &&
+                    !obj.getClass().isArray()) {
+                    _hashCode += obj.hashCode();
+                }
+            }
+        }
         if (getDetailLayoutSections() != null) {
             for (int i=0;
                  i<java.lang.reflect.Array.getLength(getDetailLayoutSections());
@@ -216,6 +254,14 @@ public class DescribeLayout  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeLayout"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("buttonLayoutSection");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "buttonLayoutSection"));
+        elemField.setXmlType(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeLayoutButton"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        elemField.setItemQName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "detailButtons"));
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("detailLayoutSections");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "detailLayoutSections"));
         elemField.setXmlType(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeLayoutSection"));

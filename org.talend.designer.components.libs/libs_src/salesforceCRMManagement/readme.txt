@@ -7,3 +7,5 @@ some resources:
 2). guide for salesforce API Version 10.0, link:http://www.salesforce.com/us/developer/docs/api/index.htm
 
 3). guide for salesforce API Version 9.0, link:http://www.salesforce.com/us/developer/docs/api90/index.htm
+
+2. feature 6982: API10.0 --> API16.0

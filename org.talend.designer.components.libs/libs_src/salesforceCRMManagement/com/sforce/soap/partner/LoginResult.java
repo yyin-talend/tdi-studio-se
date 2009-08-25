@@ -12,6 +12,8 @@ public class LoginResult  implements java.io.Serializable {
 
     private boolean passwordExpired;
 
+    private boolean sandbox;
+
     private java.lang.String serverUrl;
 
     private java.lang.String sessionId;
@@ -26,12 +28,14 @@ public class LoginResult  implements java.io.Serializable {
     public LoginResult(
            java.lang.String metadataServerUrl,
            boolean passwordExpired,
+           boolean sandbox,
            java.lang.String serverUrl,
            java.lang.String sessionId,
            java.lang.String userId,
            com.sforce.soap.partner.GetUserInfoResult userInfo) {
            this.metadataServerUrl = metadataServerUrl;
            this.passwordExpired = passwordExpired;
+           this.sandbox = sandbox;
            this.serverUrl = serverUrl;
            this.sessionId = sessionId;
            this.userId = userId;
@@ -76,6 +80,26 @@ public class LoginResult  implements java.io.Serializable {
      */
     public void setPasswordExpired(boolean passwordExpired) {
         this.passwordExpired = passwordExpired;
+    }
+
+
+    /**
+     * Gets the sandbox value for this LoginResult.
+     * 
+     * @return sandbox
+     */
+    public boolean isSandbox() {
+        return sandbox;
+    }
+
+
+    /**
+     * Sets the sandbox value for this LoginResult.
+     * 
+     * @param sandbox
+     */
+    public void setSandbox(boolean sandbox) {
+        this.sandbox = sandbox;
     }
 
 
@@ -174,6 +198,7 @@ public class LoginResult  implements java.io.Serializable {
              (this.metadataServerUrl!=null &&
               this.metadataServerUrl.equals(other.getMetadataServerUrl()))) &&
             this.passwordExpired == other.isPasswordExpired() &&
+            this.sandbox == other.isSandbox() &&
             ((this.serverUrl==null && other.getServerUrl()==null) || 
              (this.serverUrl!=null &&
               this.serverUrl.equals(other.getServerUrl()))) &&
@@ -201,6 +226,7 @@ public class LoginResult  implements java.io.Serializable {
             _hashCode += getMetadataServerUrl().hashCode();
         }
         _hashCode += (isPasswordExpired() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isSandbox() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         if (getServerUrl() != null) {
             _hashCode += getServerUrl().hashCode();
         }
@@ -232,6 +258,12 @@ public class LoginResult  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("passwordExpired");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "passwordExpired"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("sandbox");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sandbox"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

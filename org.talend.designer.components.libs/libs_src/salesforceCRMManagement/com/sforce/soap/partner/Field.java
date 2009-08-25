@@ -30,6 +30,10 @@ public class Field  implements java.io.Serializable {
 
     private java.lang.Boolean dependentPicklist;
 
+    private java.lang.Boolean deprecated;
+
+    private java.lang.Boolean deprecatedAndHidden;
+
     private int digits;
 
     private java.lang.Boolean externalId;
@@ -39,6 +43,8 @@ public class Field  implements java.io.Serializable {
     private java.lang.Boolean htmlFormatted;
 
     private boolean idLookup;
+
+    private java.lang.String inlineHelpText;
 
     private java.lang.String label;
 
@@ -60,6 +66,8 @@ public class Field  implements java.io.Serializable {
 
     private java.lang.String relationshipName;
 
+    private java.lang.Integer relationshipOrder;
+
     private boolean restrictedPicklist;
 
     private int scale;
@@ -73,6 +81,8 @@ public class Field  implements java.io.Serializable {
     private boolean unique;
 
     private boolean updateable;
+
+    private java.lang.Boolean writeRequiresMasterRead;
 
     public Field() {
     }
@@ -89,11 +99,14 @@ public class Field  implements java.io.Serializable {
            java.lang.String defaultValueFormula,
            boolean defaultedOnCreate,
            java.lang.Boolean dependentPicklist,
+           java.lang.Boolean deprecated,
+           java.lang.Boolean deprecatedAndHidden,
            int digits,
            java.lang.Boolean externalId,
            boolean filterable,
            java.lang.Boolean htmlFormatted,
            boolean idLookup,
+           java.lang.String inlineHelpText,
            java.lang.String label,
            int length,
            java.lang.String name,
@@ -104,13 +117,15 @@ public class Field  implements java.io.Serializable {
            int precision,
            java.lang.String[] referenceTo,
            java.lang.String relationshipName,
+           java.lang.Integer relationshipOrder,
            boolean restrictedPicklist,
            int scale,
            com.sforce.soap.partner.SoapType soapType,
            java.lang.Boolean sortable,
            com.sforce.soap.partner.FieldType type,
            boolean unique,
-           boolean updateable) {
+           boolean updateable,
+           java.lang.Boolean writeRequiresMasterRead) {
            this.autoNumber = autoNumber;
            this.byteLength = byteLength;
            this.calculated = calculated;
@@ -122,11 +137,14 @@ public class Field  implements java.io.Serializable {
            this.defaultValueFormula = defaultValueFormula;
            this.defaultedOnCreate = defaultedOnCreate;
            this.dependentPicklist = dependentPicklist;
+           this.deprecated = deprecated;
+           this.deprecatedAndHidden = deprecatedAndHidden;
            this.digits = digits;
            this.externalId = externalId;
            this.filterable = filterable;
            this.htmlFormatted = htmlFormatted;
            this.idLookup = idLookup;
+           this.inlineHelpText = inlineHelpText;
            this.label = label;
            this.length = length;
            this.name = name;
@@ -137,6 +155,7 @@ public class Field  implements java.io.Serializable {
            this.precision = precision;
            this.referenceTo = referenceTo;
            this.relationshipName = relationshipName;
+           this.relationshipOrder = relationshipOrder;
            this.restrictedPicklist = restrictedPicklist;
            this.scale = scale;
            this.soapType = soapType;
@@ -144,6 +163,7 @@ public class Field  implements java.io.Serializable {
            this.type = type;
            this.unique = unique;
            this.updateable = updateable;
+           this.writeRequiresMasterRead = writeRequiresMasterRead;
     }
 
 
@@ -368,6 +388,46 @@ public class Field  implements java.io.Serializable {
 
 
     /**
+     * Gets the deprecated value for this Field.
+     * 
+     * @return deprecated
+     */
+    public java.lang.Boolean getDeprecated() {
+        return deprecated;
+    }
+
+
+    /**
+     * Sets the deprecated value for this Field.
+     * 
+     * @param deprecated
+     */
+    public void setDeprecated(java.lang.Boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
+
+    /**
+     * Gets the deprecatedAndHidden value for this Field.
+     * 
+     * @return deprecatedAndHidden
+     */
+    public java.lang.Boolean getDeprecatedAndHidden() {
+        return deprecatedAndHidden;
+    }
+
+
+    /**
+     * Sets the deprecatedAndHidden value for this Field.
+     * 
+     * @param deprecatedAndHidden
+     */
+    public void setDeprecatedAndHidden(java.lang.Boolean deprecatedAndHidden) {
+        this.deprecatedAndHidden = deprecatedAndHidden;
+    }
+
+
+    /**
      * Gets the digits value for this Field.
      * 
      * @return digits
@@ -464,6 +524,26 @@ public class Field  implements java.io.Serializable {
      */
     public void setIdLookup(boolean idLookup) {
         this.idLookup = idLookup;
+    }
+
+
+    /**
+     * Gets the inlineHelpText value for this Field.
+     * 
+     * @return inlineHelpText
+     */
+    public java.lang.String getInlineHelpText() {
+        return inlineHelpText;
+    }
+
+
+    /**
+     * Sets the inlineHelpText value for this Field.
+     * 
+     * @param inlineHelpText
+     */
+    public void setInlineHelpText(java.lang.String inlineHelpText) {
+        this.inlineHelpText = inlineHelpText;
     }
 
 
@@ -684,6 +764,26 @@ public class Field  implements java.io.Serializable {
 
 
     /**
+     * Gets the relationshipOrder value for this Field.
+     * 
+     * @return relationshipOrder
+     */
+    public java.lang.Integer getRelationshipOrder() {
+        return relationshipOrder;
+    }
+
+
+    /**
+     * Sets the relationshipOrder value for this Field.
+     * 
+     * @param relationshipOrder
+     */
+    public void setRelationshipOrder(java.lang.Integer relationshipOrder) {
+        this.relationshipOrder = relationshipOrder;
+    }
+
+
+    /**
      * Gets the restrictedPicklist value for this Field.
      * 
      * @return restrictedPicklist
@@ -822,6 +922,26 @@ public class Field  implements java.io.Serializable {
         this.updateable = updateable;
     }
 
+
+    /**
+     * Gets the writeRequiresMasterRead value for this Field.
+     * 
+     * @return writeRequiresMasterRead
+     */
+    public java.lang.Boolean getWriteRequiresMasterRead() {
+        return writeRequiresMasterRead;
+    }
+
+
+    /**
+     * Sets the writeRequiresMasterRead value for this Field.
+     * 
+     * @param writeRequiresMasterRead
+     */
+    public void setWriteRequiresMasterRead(java.lang.Boolean writeRequiresMasterRead) {
+        this.writeRequiresMasterRead = writeRequiresMasterRead;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Field)) return false;
@@ -853,6 +973,12 @@ public class Field  implements java.io.Serializable {
             ((this.dependentPicklist==null && other.getDependentPicklist()==null) || 
              (this.dependentPicklist!=null &&
               this.dependentPicklist.equals(other.getDependentPicklist()))) &&
+            ((this.deprecated==null && other.getDeprecated()==null) || 
+             (this.deprecated!=null &&
+              this.deprecated.equals(other.getDeprecated()))) &&
+            ((this.deprecatedAndHidden==null && other.getDeprecatedAndHidden()==null) || 
+             (this.deprecatedAndHidden!=null &&
+              this.deprecatedAndHidden.equals(other.getDeprecatedAndHidden()))) &&
             this.digits == other.getDigits() &&
             ((this.externalId==null && other.getExternalId()==null) || 
              (this.externalId!=null &&
@@ -862,6 +988,9 @@ public class Field  implements java.io.Serializable {
              (this.htmlFormatted!=null &&
               this.htmlFormatted.equals(other.getHtmlFormatted()))) &&
             this.idLookup == other.isIdLookup() &&
+            ((this.inlineHelpText==null && other.getInlineHelpText()==null) || 
+             (this.inlineHelpText!=null &&
+              this.inlineHelpText.equals(other.getInlineHelpText()))) &&
             ((this.label==null && other.getLabel()==null) || 
              (this.label!=null &&
               this.label.equals(other.getLabel()))) &&
@@ -884,6 +1013,9 @@ public class Field  implements java.io.Serializable {
             ((this.relationshipName==null && other.getRelationshipName()==null) || 
              (this.relationshipName!=null &&
               this.relationshipName.equals(other.getRelationshipName()))) &&
+            ((this.relationshipOrder==null && other.getRelationshipOrder()==null) || 
+             (this.relationshipOrder!=null &&
+              this.relationshipOrder.equals(other.getRelationshipOrder()))) &&
             this.restrictedPicklist == other.isRestrictedPicklist() &&
             this.scale == other.getScale() &&
             ((this.soapType==null && other.getSoapType()==null) || 
@@ -896,7 +1028,10 @@ public class Field  implements java.io.Serializable {
              (this.type!=null &&
               this.type.equals(other.getType()))) &&
             this.unique == other.isUnique() &&
-            this.updateable == other.isUpdateable();
+            this.updateable == other.isUpdateable() &&
+            ((this.writeRequiresMasterRead==null && other.getWriteRequiresMasterRead()==null) || 
+             (this.writeRequiresMasterRead!=null &&
+              this.writeRequiresMasterRead.equals(other.getWriteRequiresMasterRead())));
         __equalsCalc = null;
         return _equals;
     }
@@ -927,6 +1062,12 @@ public class Field  implements java.io.Serializable {
         if (getDependentPicklist() != null) {
             _hashCode += getDependentPicklist().hashCode();
         }
+        if (getDeprecated() != null) {
+            _hashCode += getDeprecated().hashCode();
+        }
+        if (getDeprecatedAndHidden() != null) {
+            _hashCode += getDeprecatedAndHidden().hashCode();
+        }
         _hashCode += getDigits();
         if (getExternalId() != null) {
             _hashCode += getExternalId().hashCode();
@@ -936,6 +1077,9 @@ public class Field  implements java.io.Serializable {
             _hashCode += getHtmlFormatted().hashCode();
         }
         _hashCode += (isIdLookup() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getInlineHelpText() != null) {
+            _hashCode += getInlineHelpText().hashCode();
+        }
         if (getLabel() != null) {
             _hashCode += getLabel().hashCode();
         }
@@ -974,6 +1118,9 @@ public class Field  implements java.io.Serializable {
         if (getRelationshipName() != null) {
             _hashCode += getRelationshipName().hashCode();
         }
+        if (getRelationshipOrder() != null) {
+            _hashCode += getRelationshipOrder().hashCode();
+        }
         _hashCode += (isRestrictedPicklist() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += getScale();
         if (getSoapType() != null) {
@@ -987,6 +1134,9 @@ public class Field  implements java.io.Serializable {
         }
         _hashCode += (isUnique() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isUpdateable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getWriteRequiresMasterRead() != null) {
+            _hashCode += getWriteRequiresMasterRead().hashCode();
+        }
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -1068,6 +1218,20 @@ public class Field  implements java.io.Serializable {
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("deprecated");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecated"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("deprecatedAndHidden");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecatedAndHidden"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("digits");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "digits"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
@@ -1097,6 +1261,13 @@ public class Field  implements java.io.Serializable {
         elemField.setFieldName("idLookup");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "idLookup"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("inlineHelpText");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "inlineHelpText"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
@@ -1166,6 +1337,13 @@ public class Field  implements java.io.Serializable {
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("relationshipOrder");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relationshipOrder"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("restrictedPicklist");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "restrictedPicklist"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
@@ -1206,6 +1384,13 @@ public class Field  implements java.io.Serializable {
         elemField.setFieldName("updateable");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "updateable"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("writeRequiresMasterRead");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "writeRequiresMasterRead"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

@@ -19,8 +19,12 @@ public class LayoutComponentType implements java.io.Serializable {
 
     public static final java.lang.String _Field = "Field";
     public static final java.lang.String _Separator = "Separator";
+    public static final java.lang.String _SControl = "SControl";
+    public static final java.lang.String _EmptySpace = "EmptySpace";
     public static final LayoutComponentType Field = new LayoutComponentType(_Field);
     public static final LayoutComponentType Separator = new LayoutComponentType(_Separator);
+    public static final LayoutComponentType SControl = new LayoutComponentType(_SControl);
+    public static final LayoutComponentType EmptySpace = new LayoutComponentType(_EmptySpace);
     public java.lang.String getValue() { return _value_;}
     public static LayoutComponentType fromValue(java.lang.String value)
           throws java.lang.IllegalArgumentException {

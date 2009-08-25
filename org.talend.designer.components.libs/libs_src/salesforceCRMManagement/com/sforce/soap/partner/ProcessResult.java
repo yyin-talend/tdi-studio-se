@@ -8,6 +8,8 @@
 package com.sforce.soap.partner;
 
 public class ProcessResult  implements java.io.Serializable {
+    private java.lang.String[] actorIds;
+
     private java.lang.String entityId;
 
     private com.sforce.soap.partner.Error[] errors;
@@ -24,18 +26,48 @@ public class ProcessResult  implements java.io.Serializable {
     }
 
     public ProcessResult(
+           java.lang.String[] actorIds,
            java.lang.String entityId,
            com.sforce.soap.partner.Error[] errors,
            java.lang.String instanceId,
            java.lang.String instanceStatus,
            java.lang.String[] newWorkitemIds,
            boolean success) {
+           this.actorIds = actorIds;
            this.entityId = entityId;
            this.errors = errors;
            this.instanceId = instanceId;
            this.instanceStatus = instanceStatus;
            this.newWorkitemIds = newWorkitemIds;
            this.success = success;
+    }
+
+
+    /**
+     * Gets the actorIds value for this ProcessResult.
+     * 
+     * @return actorIds
+     */
+    public java.lang.String[] getActorIds() {
+        return actorIds;
+    }
+
+
+    /**
+     * Sets the actorIds value for this ProcessResult.
+     * 
+     * @param actorIds
+     */
+    public void setActorIds(java.lang.String[] actorIds) {
+        this.actorIds = actorIds;
+    }
+
+    public java.lang.String getActorIds(int i) {
+        return this.actorIds[i];
+    }
+
+    public void setActorIds(int i, java.lang.String _value) {
+        this.actorIds[i] = _value;
     }
 
 
@@ -186,6 +218,9 @@ public class ProcessResult  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.actorIds==null && other.getActorIds()==null) || 
+             (this.actorIds!=null &&
+              java.util.Arrays.equals(this.actorIds, other.getActorIds()))) &&
             ((this.entityId==null && other.getEntityId()==null) || 
              (this.entityId!=null &&
               this.entityId.equals(other.getEntityId()))) &&
@@ -213,6 +248,17 @@ public class ProcessResult  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getActorIds() != null) {
+            for (int i=0;
+                 i<java.lang.reflect.Array.getLength(getActorIds());
+                 i++) {
+                java.lang.Object obj = java.lang.reflect.Array.get(getActorIds(), i);
+                if (obj != null &&
+                    !obj.getClass().isArray()) {
+                    _hashCode += obj.hashCode();
+                }
+            }
+        }
         if (getEntityId() != null) {
             _hashCode += getEntityId().hashCode();
         }
@@ -256,6 +302,14 @@ public class ProcessResult  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "ProcessResult"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("actorIds");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "actorIds"));
+        elemField.setXmlType(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "ID"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        elemField.setMaxOccursUnbounded(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("entityId");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "entityId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));

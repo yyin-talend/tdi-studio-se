@@ -12,6 +12,10 @@ public class GetUserInfoResult  implements java.io.Serializable {
 
     private java.lang.String currencySymbol;
 
+    private java.lang.String orgDefaultCurrencyIsoCode;
+
+    private boolean orgHasPersonAccounts;
+
     private java.lang.String organizationId;
 
     private boolean organizationMultiCurrency;
@@ -48,6 +52,8 @@ public class GetUserInfoResult  implements java.io.Serializable {
     public GetUserInfoResult(
            boolean accessibilityMode,
            java.lang.String currencySymbol,
+           java.lang.String orgDefaultCurrencyIsoCode,
+           boolean orgHasPersonAccounts,
            java.lang.String organizationId,
            boolean organizationMultiCurrency,
            java.lang.String organizationName,
@@ -65,6 +71,8 @@ public class GetUserInfoResult  implements java.io.Serializable {
            java.lang.String userUiSkin) {
            this.accessibilityMode = accessibilityMode;
            this.currencySymbol = currencySymbol;
+           this.orgDefaultCurrencyIsoCode = orgDefaultCurrencyIsoCode;
+           this.orgHasPersonAccounts = orgHasPersonAccounts;
            this.organizationId = organizationId;
            this.organizationMultiCurrency = organizationMultiCurrency;
            this.organizationName = organizationName;
@@ -120,6 +128,46 @@ public class GetUserInfoResult  implements java.io.Serializable {
      */
     public void setCurrencySymbol(java.lang.String currencySymbol) {
         this.currencySymbol = currencySymbol;
+    }
+
+
+    /**
+     * Gets the orgDefaultCurrencyIsoCode value for this GetUserInfoResult.
+     * 
+     * @return orgDefaultCurrencyIsoCode
+     */
+    public java.lang.String getOrgDefaultCurrencyIsoCode() {
+        return orgDefaultCurrencyIsoCode;
+    }
+
+
+    /**
+     * Sets the orgDefaultCurrencyIsoCode value for this GetUserInfoResult.
+     * 
+     * @param orgDefaultCurrencyIsoCode
+     */
+    public void setOrgDefaultCurrencyIsoCode(java.lang.String orgDefaultCurrencyIsoCode) {
+        this.orgDefaultCurrencyIsoCode = orgDefaultCurrencyIsoCode;
+    }
+
+
+    /**
+     * Gets the orgHasPersonAccounts value for this GetUserInfoResult.
+     * 
+     * @return orgHasPersonAccounts
+     */
+    public boolean isOrgHasPersonAccounts() {
+        return orgHasPersonAccounts;
+    }
+
+
+    /**
+     * Sets the orgHasPersonAccounts value for this GetUserInfoResult.
+     * 
+     * @param orgHasPersonAccounts
+     */
+    public void setOrgHasPersonAccounts(boolean orgHasPersonAccounts) {
+        this.orgHasPersonAccounts = orgHasPersonAccounts;
     }
 
 
@@ -438,6 +486,10 @@ public class GetUserInfoResult  implements java.io.Serializable {
             ((this.currencySymbol==null && other.getCurrencySymbol()==null) || 
              (this.currencySymbol!=null &&
               this.currencySymbol.equals(other.getCurrencySymbol()))) &&
+            ((this.orgDefaultCurrencyIsoCode==null && other.getOrgDefaultCurrencyIsoCode()==null) || 
+             (this.orgDefaultCurrencyIsoCode!=null &&
+              this.orgDefaultCurrencyIsoCode.equals(other.getOrgDefaultCurrencyIsoCode()))) &&
+            this.orgHasPersonAccounts == other.isOrgHasPersonAccounts() &&
             ((this.organizationId==null && other.getOrganizationId()==null) || 
              (this.organizationId!=null &&
               this.organizationId.equals(other.getOrganizationId()))) &&
@@ -496,6 +548,10 @@ public class GetUserInfoResult  implements java.io.Serializable {
         if (getCurrencySymbol() != null) {
             _hashCode += getCurrencySymbol().hashCode();
         }
+        if (getOrgDefaultCurrencyIsoCode() != null) {
+            _hashCode += getOrgDefaultCurrencyIsoCode().hashCode();
+        }
+        _hashCode += (isOrgHasPersonAccounts() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         if (getOrganizationId() != null) {
             _hashCode += getOrganizationId().hashCode();
         }
@@ -560,6 +616,18 @@ public class GetUserInfoResult  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "currencySymbol"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orgDefaultCurrencyIsoCode");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "orgDefaultCurrencyIsoCode"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orgHasPersonAccounts");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "orgHasPersonAccounts"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("organizationId");
