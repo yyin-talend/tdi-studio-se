@@ -810,9 +810,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     public void dropAccept(DropTargetEvent event) {
     }
 
+    boolean value1 = true;
+
+    boolean value2 = true;
+
+    boolean value3 = true;
+
     private void getAppropriateComponent(Item item, boolean quickCreateInput, boolean quickCreateOutput, TempStore store,
             ERepositoryObjectType type) {
-
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
         String componentName = null;
         if (item instanceof JobletProcessItem) { // joblet
@@ -829,7 +834,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             store.component = ComponentsFactoryProvider.getInstance().get(componentName);
         } else {
             // for database, file, webservices, saleforce ...
+
             String productNameWanted = name.getProductName();
+            String needValue1 = "tELT" + name.getInputComponentName().substring(1, name.getInputComponentName().length());
+
+            String needValue2 = "tELT" + name.getOutPutComponentName().substring(1, name.getOutPutComponentName().length());
+
+            String needVlue3 = "tELT"
+                    + productNameWanted.substring(productNameWanted.indexOf(":") + 1, productNameWanted.length()) + "Map";
             List<IComponent> neededComponents = new ArrayList<IComponent>();
             for (IComponent component : components) {
                 if (component instanceof EmfComponent) {
@@ -843,6 +855,58 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     }
                 }
             }
+            if (type.toString().equalsIgnoreCase("Metadata schema")) {
+
+                for (IComponent component1 : neededComponents) {
+                    if (component1.getName().equalsIgnoreCase(needValue1)) {
+                        value1 = false;
+                    }
+                    if (component1.getName().equalsIgnoreCase(needValue2)) {
+                        value2 = false;
+                    }
+
+                }
+                for (IComponent component : components) {
+                    needValue1 = "tELT" + name.getInputComponentName().substring(1, name.getInputComponentName().length());
+
+                    needValue2 = "tELT" + name.getOutPutComponentName().substring(1, name.getOutPutComponentName().length());
+
+                    needVlue3 = "tELT"
+                            + productNameWanted.substring(productNameWanted.indexOf(":") + 1, productNameWanted.length()) + "Map";
+
+                    if ((component.getName().equals(needValue1) && value1)
+                            || (component.getName().equalsIgnoreCase(needValue2) && value2)) {
+                        neededComponents.add(component);
+                    }
+                    if (component.getName().equalsIgnoreCase(needVlue3)) {
+                        neededComponents.remove(component);
+                    }
+                }
+            }
+            if (type.toString().equalsIgnoreCase("Db Connections")) {
+                for (IComponent component1 : neededComponents) {
+
+                    if (component1.getName().equalsIgnoreCase(needVlue3)) {
+                        value3 = false;
+                    }
+                }
+                for (IComponent component : components) {
+                    needValue1 = "tELT" + name.getInputComponentName().substring(1, name.getInputComponentName().length());
+
+                    needValue2 = "tELT" + name.getOutPutComponentName().substring(1, name.getOutPutComponentName().length());
+
+                    needVlue3 = "tELT"
+                            + productNameWanted.substring(productNameWanted.indexOf(":") + 1, productNameWanted.length()) + "Map";
+
+                    if (component.getName().equals(needValue1) || component.getName().equalsIgnoreCase(needValue2)) {
+                        neededComponents.remove(component);
+                    }
+                    if (component.getName().equalsIgnoreCase(needVlue3) && value3) {
+                        neededComponents.add(component);
+                    }
+                }
+            }
+
             IComponent component = chooseOneComponent(neededComponents, name, quickCreateInput, quickCreateOutput);
             store.component = component;
         }
