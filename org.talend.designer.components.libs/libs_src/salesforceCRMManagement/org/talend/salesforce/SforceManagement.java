@@ -58,4 +58,6 @@ public interface SforceManagement {
     public abstract Calendar getServerTimestamp() throws Exception;
 
     public SoapBindingStub getBinding();
+    
+    public void setNeedCompression(Boolean needCompression);
 }

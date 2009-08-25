@@ -78,6 +78,20 @@ public class SforceManagementImpl implements SforceManagement {
     // TODO when timeout, reset it false, then login again.
     private boolean loggedIn = false;
 
+    private SoapBindingStub getStub() throws Exception {
+        if (this.needCompression) {
+            return (SoapBindingStub) new SforceCompressionService().getSoap(new URL(endPoint));
+        } else {
+            return (SoapBindingStub) new SforceServiceLocator().getSoap(new URL(endPoint));
+        }
+    }
+
+    private Boolean needCompression = false;
+
+    public void setNeedCompression(Boolean needCompression) {
+        this.needCompression = needCompression;
+    }
+    
     /**
      * login
      */
@@ -101,7 +115,7 @@ public class SforceManagementImpl implements SforceManagement {
         this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertKeyColumn = "";
 
-        binding = (SoapBindingStub) new SforceServiceLocator().getSoap(new URL(endPoint));
+        binding = getStub();
         // 10 minutes
         binding.setTimeout(60000);
 
@@ -117,7 +131,7 @@ public class SforceManagementImpl implements SforceManagement {
 
         return true;
     }
-
+    
     /**
      * login
      */
@@ -151,7 +165,7 @@ public class SforceManagementImpl implements SforceManagement {
         this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertKeyColumn = "";
 
-        binding = (SoapBindingStub) new SforceServiceLocator().getSoap(new URL(endPoint));
+        binding = getStub();
         // 10 minutes
         binding.setTimeout(60000);
 
