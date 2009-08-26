@@ -73,6 +73,9 @@ public class ComponentFileChecker {
     }
 
     private static void checkXSD(File file) throws MalformedMainXMLComponentFileException {
+        if (Platform.getOS().equals(Platform.OS_AIX)) {
+            return;
+        }
         Path path = new Path(XSD_PATH);
         try {
             URL url = FileLocator.toFileURL(FileLocator.find(XSD_CONTAINER_BUNDLE, path, null));
