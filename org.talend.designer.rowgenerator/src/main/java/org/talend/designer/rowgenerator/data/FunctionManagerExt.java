@@ -14,6 +14,9 @@ package org.talend.designer.rowgenerator.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.managers.UIManager;
@@ -149,9 +152,21 @@ public class FunctionManagerExt extends FunctionManager {
                                 currentFun = (Function) function.clone();
                             }
                         } else {
-                            String[] ps = para.split(FUN_PARAM_SEPARATED); //$NON-NLS-1$
-                            if (ps.length == function.getParameters().size()) {
-                                currentFun = function.clone(ps);
+                            // add by wzhang to fix bug 8732.
+                            try {
+                                Pattern regex = Pattern.compile("(\\.|\\w)+\\(([^()]|\\(([^()])*\\))*\\)|\".*?\"|\\w+", //$NON-NLS-1$
+                                        Pattern.CANON_EQ);
+                                Matcher m = regex.matcher(para);
+                                List<String> strs = new ArrayList<String>();
+                                while (m.find()) {
+                                    strs.add(m.group());
+                                }
+                                String[] ps = strs.toArray(new String[strs.size()]);
+                                if (ps.length == function.getParameters().size()) {
+                                    currentFun = function.clone(ps);
+                                }
+                            } catch (PatternSyntaxException ex) {
+                                // Syntax error in the regular expression
                             }
                         }
                     }
