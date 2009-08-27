@@ -21,8 +21,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	IMetadataTable metadata = metadatas.get(0);
 	if (metadata != null) {		
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-		for(IConnection outgoingConn : outgoingConns) {
-			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+		if (outgoingConns != null && outgoingConns.size() > 0){
+			for(IConnection outgoingConn : outgoingConns) {
+				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 			}
 		}
@@ -35,7 +36,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	}
 }
 <%
+				}
 			}
+%>
+		sfMgr_<%=cid%>.logout();	
+<%
 		}
 	}
 }

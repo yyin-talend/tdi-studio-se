@@ -19,6 +19,7 @@ INode node = (INode)codeGenArgument.getArgument();
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+   	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
 
 String cid = node.getUniqueName();
 %>
@@ -52,6 +53,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String password = ElementParameterParser.getValue(node, "__PASS__");		
 %>
 			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
+			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
 			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
 <%
 		}

@@ -22,6 +22,7 @@ INode node = (INode)codeGenArgument.getArgument();
    	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
    	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
    	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+   	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
 
 String cid = node.getUniqueName();
 %>
@@ -73,16 +74,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        java.util.GregorianCalendar startDate_<%=cid%> = (java.util.GregorianCalendar) startCal_<%=cid%>;
             java.util.GregorianCalendar endDate_<%=cid%> = (java.util.GregorianCalendar) endCal_<%=cid%>;
 	        
-			com.sforce.soap.partner.SoapBindingStub binding_<%=cid%> = null;
-        	com.sforce.soap.partner.LoginResult loginResult_<%=cid%> = null;
-
-			binding_<%=cid%> = (com.sforce.soap.partner.SoapBindingStub) new com.sforce.soap.partner.SforceServiceLocator().getSoap(new java.net.URL(<%=endPoint%>));
-			loginResult_<%=cid%> = binding_<%=cid%>.login(<%=username%>, <%=password%>);
-			binding_<%=cid%>._setProperty(com.sforce.soap.partner.SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult_<%=cid%>.getServerUrl());
-			
-			com.sforce.soap.partner.SessionHeader sh_<%=cid%> = new com.sforce.soap.partner.SessionHeader();
-			sh_<%=cid%>.setSessionId(loginResult_<%=cid%>.getSessionId());
-			binding_<%=cid%>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh_<%=cid%>);
+	        org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
+			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
+			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endPoint%>);
+	        
+			com.sforce.soap.partner.SoapBindingStub binding_<%=cid%> = sfMgr_<%=cid%>.getBinding();
+        	
 <%
 			java.lang.StringBuilder sb = new java.lang.StringBuilder();
 			for (IMetadataColumn column: columnList){

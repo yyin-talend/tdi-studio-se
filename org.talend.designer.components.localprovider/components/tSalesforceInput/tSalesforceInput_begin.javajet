@@ -111,7 +111,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				com.sforce.soap.partner.QueryResult qr_<%=cid %> = null;
 				com.sforce.soap.partner.QueryOptions qo_<%=cid %> = new com.sforce.soap.partner.QueryOptions();
 				qo_<%=cid %>.setBatchSize(new Integer(<%=batchSize%>));
-				binding_<%=cid %>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "QueryOptions", qo_<%=cid %>);
+				binding_<%=cid %>.setHeader(sfMgr_<%=cid%>.getSforceService().getServiceName().getNamespaceURI(), "QueryOptions", qo_<%=cid %>);
 				
 				qr_<%=cid %> = binding_<%=cid %>.query(<%=sql %>);
 				
