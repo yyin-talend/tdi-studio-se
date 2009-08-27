@@ -715,8 +715,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (connection instanceof DatabaseConnection) {
                 etlSchema = connection.getSchema();
             }
-            if (!"".equals(etlSchema) && etlSchema != null) {
-                node.getElementParameter("ELT_SCHEMA_NAME").setValue("\"" + etlSchema + "\"");
+            if (!"".equals(etlSchema)) {
+                IElementParameter e = node.getElementParameter("ELT_SCHEMA_NAME");
+                if (e != null) {
+                    e.setValue("\"" + etlSchema + "\"");
+                }
+                // node.getElementParameter("ELT_SCHEMA_NAME").setValue("\"" + etlSchema + "\"");
             }
             RepositoryObject object = (RepositoryObject) selectedNode.getObject();
             MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
