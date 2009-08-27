@@ -166,6 +166,9 @@ public class SelectorTableForm extends AbstractForm {
         this.parentWizardPage = page;
         this.tableInfoParameters = page.getTableInfoParameters();
         this.forTemplate = forTemplate;
+        if (forTemplate && getConnection().getTables().size() <= 0) {
+            page.setPageComplete(false);
+        }
         setupForm();
     }
 
@@ -430,6 +433,9 @@ public class SelectorTableForm extends AbstractForm {
                     }
                     tableItem.setChecked(true);
                 }
+                if (forTemplate) {
+                    parentWizardPage.setPageComplete(true);
+                }
             }
         });
 
@@ -448,7 +454,11 @@ public class SelectorTableForm extends AbstractForm {
                         tableItem.setChecked(false);
                     }
                 }
+                if (forTemplate) {
+                    parentWizardPage.setPageComplete(false);
+                }
             }
+
         });
 
         addTableListener();
@@ -478,6 +488,9 @@ public class SelectorTableForm extends AbstractForm {
                                 && tableItem.getText().equals(Messages.getString("SelectorTableForm.Pending"))) {
                             countPending--;
                         }
+                    }
+                    if (forTemplate && (getConnection().getTables().size() <= 0)) {
+                        parentWizardPage.setPageComplete(false);
                     }
                 }
             }
