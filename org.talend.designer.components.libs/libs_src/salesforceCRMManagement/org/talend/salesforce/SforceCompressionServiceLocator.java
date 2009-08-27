@@ -7,7 +7,11 @@ import org.apache.axis.transport.http.HTTPConstants;
 
 import com.sforce.soap.partner.SforceServiceLocator;
 
-public class SforceCompressionService extends SforceServiceLocator {
+public class SforceCompressionServiceLocator extends SforceServiceLocator {
+
+    public SforceCompressionServiceLocator(org.apache.axis.EngineConfiguration config) {
+        super(config);
+    }
 
     public Call createCall() throws ServiceException {
         Call call = super.createCall();

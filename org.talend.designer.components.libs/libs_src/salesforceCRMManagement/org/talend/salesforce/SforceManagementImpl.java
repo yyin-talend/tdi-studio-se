@@ -17,7 +17,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.axis.EngineConfiguration;
+import org.apache.axis.configuration.EngineConfigurationFactoryFinder;
+import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.message.MessageElement;
+import org.apache.axis.transport.http.CommonsHTTPSender;
+import org.apache.axis.transport.http.HTTPTransport;
 import org.w3c.dom.Element;
 
 import com.sforce.soap.partner.DeleteResult;
@@ -30,6 +35,7 @@ import com.sforce.soap.partner.QueryOptions;
 import com.sforce.soap.partner.QueryResult;
 import com.sforce.soap.partner.SaveResult;
 import com.sforce.soap.partner.SessionHeader;
+import com.sforce.soap.partner.SforceService;
 import com.sforce.soap.partner.SforceServiceLocator;
 import com.sforce.soap.partner.SoapBindingStub;
 import com.sforce.soap.partner.UpsertResult;
@@ -78,14 +84,28 @@ public class SforceManagementImpl implements SforceManagement {
     // TODO when timeout, reset it false, then login again.
     private boolean loggedIn = false;
 
-    private SoapBindingStub getStub() throws Exception {
+    private SforceService sforceService;
+
+    public SforceService getSforceService() {
+        return sforceService;
+    }
+
+    public void setSforceService(SforceService sforceService) {
+        this.sforceService = sforceService;
+    }
+
+    private SforceService createService() {
         if (this.needCompression) {
-            return (SoapBindingStub) new SforceCompressionService().getSoap(new URL(endPoint));
+            EngineConfiguration defaultConfig = EngineConfigurationFactoryFinder.newFactory().getClientEngineConfig();
+            SimpleProvider config = new SimpleProvider(defaultConfig);
+            config.deployTransport(HTTPTransport.DEFAULT_TRANSPORT_NAME, new CommonsHTTPSender());
+            return new SforceCompressionServiceLocator(config);
         } else {
-            return (SoapBindingStub) new SforceServiceLocator().getSoap(new URL(endPoint));
+            return new SforceServiceLocator();
         }
     }
 
+   
     private Boolean needCompression = false;
 
     public void setNeedCompression(Boolean needCompression) {
@@ -115,7 +135,9 @@ public class SforceManagementImpl implements SforceManagement {
         this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertKeyColumn = "";
 
-        binding = getStub();
+        this.sforceService = createService();
+        binding = (SoapBindingStub) sforceService.getSoap(new URL(endPoint));
+
         // 10 minutes
         binding.setTimeout(60000);
 
@@ -125,13 +147,13 @@ public class SforceManagementImpl implements SforceManagement {
 
         SessionHeader sh = new SessionHeader();
         sh.setSessionId(loginResult.getSessionId());
-        binding.setHeader(new SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh);
+        binding.setHeader(sforceService.getServiceName().getNamespaceURI(), "SessionHeader", sh);
 
         loggedIn = true;
 
         return true;
     }
-    
+
     /**
      * login
      */
@@ -165,7 +187,8 @@ public class SforceManagementImpl implements SforceManagement {
         this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertKeyColumn = "";
 
-        binding = getStub();
+        this.sforceService = createService();
+        binding = (SoapBindingStub) sforceService.getSoap(new URL(endPoint));
         // 10 minutes
         binding.setTimeout(60000);
 
@@ -175,7 +198,7 @@ public class SforceManagementImpl implements SforceManagement {
 
         SessionHeader sh = new SessionHeader();
         sh.setSessionId(loginResult.getSessionId());
-        binding.setHeader(new SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh);
+        binding.setHeader(sforceService.getServiceName().getNamespaceURI(), "SessionHeader", sh);
 
         loggedIn = true;
 
@@ -624,7 +647,7 @@ public class SforceManagementImpl implements SforceManagement {
         QueryResult qr = null;
         QueryOptions qo = new QueryOptions();
         qo.setBatchSize(new Integer(250));
-        binding.setHeader(new SforceServiceLocator().getServiceName().getNamespaceURI(), "QueryOptions", qo);
+        binding.setHeader(sforceService.getServiceName().getNamespaceURI(), "QueryOptions", qo);
 
         qr = binding.query(queryString);
 
