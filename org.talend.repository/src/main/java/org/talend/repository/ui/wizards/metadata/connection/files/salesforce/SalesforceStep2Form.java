@@ -13,6 +13,7 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -45,6 +46,7 @@ import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -80,6 +82,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
     private boolean readOnly;
 
+    private Button alphabet;
+
+    private boolean useAlphbet = false;
+
     private UtilsButton cancelButton;
 
     private TableViewer moduleViewer = null;
@@ -100,6 +106,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
     private Composite outputComposite;
 
     private SalesforceModuleParseAPI salesforceAPI = null;
+
+    private IMetadataTable metadataTable;
+
+    private IMetadataTable metadataTableClone;
 
     /**
      * DOC YeXiaowei SalesforceStep2Form constructor comment.
@@ -193,11 +203,15 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         data.horizontalSpan = 2;
         moduleViewerComposite.setLayoutData(data);
 
-        moduleViewerComposite.setLayout(new GridLayout());
+        moduleViewerComposite.setLayout(new GridLayout(2, true));
 
         Label label = new Label(moduleViewerComposite, SWT.NONE);
         label.setText(Messages.getString("SalesforceStep2Form.saleforceDetail")); //$NON-NLS-1$
-        label.setLayoutData(new GridData(GridData.FILL | GridData.CENTER));
+        label.setLayoutData(new GridData(GridData.FILL | GridData.BEGINNING));
+
+        alphabet = new Button(moduleViewerComposite, SWT.CHECK);
+        alphabet.setText("order the fields");
+        alphabet.setLayoutData(new GridData(GridData.CENTER));
 
         createModuleDetailViewer(moduleViewerComposite);
     }
@@ -238,12 +252,59 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             proxyPassword = getContextModeManager().getOriginalValue(proxyPassword);
         }
 
-        IMetadataTable metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize,
-                useProxy, useHttp, proxyHost, proxyPort, proxyUsername, proxyPassword, true);
+        metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize, useProxy, useHttp,
+                proxyHost, proxyPort, proxyUsername, proxyPassword, true);
+        if (metadataTable != null) {
+            metadataTableClone = metadataTable.clone();
 
-        List<IMetadataColumn> columns = metadataTable.getListColumns();
+            metadataTable = modifyMetadataTable();
+            if (useAlphbet) {
+                List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+                if (listColumns != null) {
+                    moduleViewer.setInput(listColumns.toArray());
+                }
+            } else {
+                List<IMetadataColumn> listColumns = metadataTableClone.getListColumns();
+                if (listColumns != null) {
 
-        moduleViewer.setInput(columns);
+                    moduleViewer.setInput(listColumns.toArray());
+                }
+            }
+        }
+    }
+
+    private IMetadataTable modifyMetadataTable() {
+        if (metadataTable != null) {
+            List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+            if (listColumns != null) {
+
+                Object[] array = listColumns.toArray();
+                for (int i = 0; i < array.length; i++) {
+                    for (int j = i + 1; j < array.length; j++) {
+
+                        String labela = ((MetadataColumn) array[i]).getLabel();
+                        String labelb = ((MetadataColumn) array[j]).getLabel();
+                        if (labela.compareTo(labelb) > 0) {
+                            MetadataColumn metadataColumn = (MetadataColumn) array[i];
+                            array[i] = array[j];
+                            array[j] = metadataColumn;
+                        }
+                    }
+                }
+                List<Object> asList = Arrays.asList(array);
+                List<IMetadataColumn> aa = new ArrayList();
+                if (asList != null && asList.size() > 0) {
+                    Object object = asList.get(0);
+                    if (object instanceof MetadataColumn) {
+                        for (int i = 0; i < asList.size(); i++) {
+                            aa.add(i, (MetadataColumn) asList.get(i));
+                        }
+                        metadataTable.setListColumns(aa);
+                    }
+                }
+            }
+        }
+        return metadataTable;
     }
 
     /*
@@ -261,6 +322,33 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                         getConnection().setQueryCondition(queryConditionText.getText());
                     }
                 }
+            }
+
+        });
+
+        alphabet.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                useAlphbet = alphabet.getSelection();
+                getConnection().setUseAlphbet(useAlphbet);
+
+                Object input = moduleViewer.getInput();
+                if (input instanceof Object[]) {
+                    if (useAlphbet) {
+                        List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+                        if (listColumns != null) {
+                            moduleViewer.setInput(listColumns.toArray());
+                        }
+                    } else {
+                        List<IMetadataColumn> listColumns = metadataTableClone.getListColumns();
+                        if (listColumns != null) {
+                            moduleViewer.setInput(listColumns.toArray());
+                        }
+                    }
+
+                }
+                moduleViewer.refresh();
             }
 
         });
@@ -327,6 +415,8 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         } else {
             queryConditionText.setText(""); //$NON-NLS-1$
         }
+        useAlphbet = getConnection().isUseAlphbet();
+        alphabet.setSelection(useAlphbet);
 
         checkFieldsValue();
     }
@@ -422,13 +512,18 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         public void nonUIProcessInThread() {
             // get the XmlArray width an adapt ProcessDescription
             try {
-                // the web service url is used by tSalesforceInput, see 0004027: Studio crashes when clicking Next on
-                // Step 3 of SF wizard
-                // if (salesforceAPI.getCurrentAPI() instanceof SalesforceModuleParserPartner) {
-                // processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_PARTNER_INPUT_URL);
-                // } else {
-                // processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
-                // }
+                List<IMetadataTable> schema = processDescription.getSchema();
+                if (schema != null && schema.size() > 0) {
+                    if (useAlphbet) {
+                        if (metadataTable != null) {
+                            schema.get(0).setListColumns(metadataTable.getListColumns());
+                        }
+                    } else {
+                        if (metadataTableClone != null) {
+                            schema.get(0).setListColumns(metadataTableClone.getListColumns());
+                        }
+                    }
+                }
 
                 csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
                 if (csvArray == null) {
@@ -544,7 +639,16 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
         if (tableGet != null) {
             moduleViewer.getTable().clearAll();
-            moduleViewer.setInput(tableGet.getListColumns());
+            if (useAlphbet) {
+                if (metadataTable != null) {
+                    tableGet.setListColumns(metadataTable.getListColumns());
+                }
+            } else {
+                if (metadataTableClone != null) {
+                    tableGet.setListColumns(metadataTableClone.getListColumns());
+                }
+            }
+            moduleViewer.setInput(tableGet.getListColumns().toArray());
             moduleViewer.refresh();
         }
 
@@ -557,12 +661,13 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
      * @param moduleGroup
      */
     private void createModuleDetailViewer(Composite moduleGroup) {
-        moduleViewer = new TableViewer(moduleGroup, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
+        moduleViewer = new TableViewer(moduleGroup, SWT.FILL | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
 
         moduleViewer.getTable().setHeaderVisible(true);
         moduleViewer.getTable().setLinesVisible(true);
-
-        moduleViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.horizontalSpan = 2;
+        moduleViewer.getTable().setLayoutData(gridData);
 
         moduleViewer.setContentProvider(new IStructuredContentProvider() {
 
@@ -575,8 +680,8 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             }
 
             public Object[] getElements(Object inputElement) {
-                if (inputElement instanceof List) {
-                    return ((List) inputElement).toArray();
+                if (inputElement instanceof Object[]) {
+                    return (Object[]) inputElement;
                 }
                 return null;
             }
