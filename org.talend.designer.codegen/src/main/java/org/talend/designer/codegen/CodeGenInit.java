@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -53,9 +52,7 @@ public class CodeGenInit implements IApplication {
     public Object start(IApplicationContext context) throws Exception {
         Timer.getTimer("CodeGenInit").start(); //$NON-NLS-1$
         String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-        if (ArrayUtils.contains(args, "-headless")) { //$NON-NLS-1$
-            CommonsPlugin.setHeadless(true);
-        }
+        CommonsPlugin.setHeadless(true);
         initLocalRepository();
         init(ECodeLanguage.JAVA);
         init(ECodeLanguage.PERL);
