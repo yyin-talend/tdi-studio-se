@@ -1,5 +1,10 @@
 package com.sforce.soap.partner;
 
+import java.rmi.RemoteException;
+
+import com.sforce.soap.partner.InvalidateSessionsResult;
+import com.sforce.soap.partner.fault.UnexpectedErrorFault;
+
 public class SoapProxy implements com.sforce.soap.partner.Soap {
   private String _endpoint = null;
   private com.sforce.soap.partner.Soap soap = null;
@@ -211,6 +216,14 @@ public class SoapProxy implements com.sforce.soap.partner.Soap {
       _initSoapProxy();
     return soap.sendEmail(messages);
   }
-  
+  public InvalidateSessionsResult[] invalidateSessions(String[] sessionIds) throws RemoteException, UnexpectedErrorFault {
+      // TODO Auto-generated method stub
+      return null;
+  }
+
+  public void logout() throws RemoteException, UnexpectedErrorFault {
+      // TODO Auto-generated method stub
+
+  }
   
 }
