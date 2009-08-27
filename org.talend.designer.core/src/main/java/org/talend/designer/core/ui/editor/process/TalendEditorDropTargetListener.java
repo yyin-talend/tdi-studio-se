@@ -710,6 +710,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     private Command getChangeMetadataCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
         if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE
                 || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+            String etlSchema = null;
+            DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
+            if (connection instanceof DatabaseConnection) {
+                etlSchema = connection.getSchema();
+            }
+            if (!"".equals(etlSchema) && etlSchema != null) {
+                node.getElementParameter("ELT_SCHEMA_NAME").setValue("\"" + etlSchema + "\"");
+            }
             RepositoryObject object = (RepositoryObject) selectedNode.getObject();
             MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
             String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
