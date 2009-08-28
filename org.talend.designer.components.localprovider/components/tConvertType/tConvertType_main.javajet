@@ -1,7 +1,8 @@
 <%@ jet 
 	imports="
         java.util.List
-        java.util.Map        
+        java.util.Map
+        java.util.ArrayList       
         org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.process.EConnectionType
@@ -53,11 +54,15 @@
 	List<IMetadataColumn> columns = metadata.getListColumns();
 	if(rejectConnName!=null){
 %>
+	<%=rejectConnName %> =new <%=rejectConnName %>Struct();
 	String errorCode_<%=cid %>="";
 	String errorMessage_<%=cid %>="";
 <%	
 	}
-	
+	stringBuffer.append("\n");//control code format	
+%>
+	<%=outconnName %>=new <%=outconnName %>Struct();
+<%
 	if(autoCast){ //autoCast begin
 		for(IMetadataColumn col:columns){//col:columns	
 		 String outLabel = col.getLabel();
@@ -169,10 +174,27 @@
 %>
 			}
 <%
+		} 
+
+		//Manual cast Map not contain columns
+		List<String> outLabelManualCasts = new ArrayList();
+		for(Map<String, String> manualColumn : manualtable){
+			String output = manualColumn.get("OUTPUT_COLUMN");
+			IMetadataColumn out = metadata.getColumn(output);
+			outLabelManualCasts.add(out.getLabel());
+		}
+		for(IMetadataColumn col:columns){
+			 String outLabel = col.getLabel();
+			if (! outLabelManualCasts.contains(outLabel)) {
+%>
+				<%=outconnName %>.<%=outLabel %> = <%=preconnName %>.<%=outLabel %>;
+<%
+			}
 		}
 	}//manual end.
 %>
 <% 
+	stringBuffer.append("\n");//control code format	
 	if(rejectConnName!=null){//occure Reject
 %>
 	if(errorMessage_<%=cid %>.length()>0){
