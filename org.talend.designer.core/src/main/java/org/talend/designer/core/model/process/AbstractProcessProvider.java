@@ -27,13 +27,14 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.designer.core.IReplaceNodeInProcess;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC qzhang class global comment. Detailled comment
  */
-public abstract class AbstractProcessProvider {
+public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
 
     public static final String EXTENSION_ID = "org.talend.designer.core.process_provider"; //$NON-NLS-1$
 
@@ -139,14 +140,6 @@ public abstract class AbstractProcessProvider {
     public boolean canCutNode(Node no) {
         return true;
     }
-
-    /**
-     * DOC nrousseau Comment method "rebuildGraphicProcessFromNode".
-     * 
-     * @param node
-     * @param graphicalNodeList
-     */
-    public abstract void rebuildGraphicProcessFromNode(Node node, List<Node> graphicalNodeList);
 
     // public abstract void updateJobletContext(Node node);
 

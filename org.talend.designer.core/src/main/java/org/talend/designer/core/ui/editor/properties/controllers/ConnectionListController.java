@@ -263,9 +263,9 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
     }
 
-    public static void renameConnection(String oldConnectionName, String newConnectionName, List<Node> nodesToUpdate) {
-        for (Node curNode : nodesToUpdate) {
-            renameConnectionInElement(oldConnectionName, newConnectionName, curNode);
+    public static void renameConnection(String oldConnectionName, String newConnectionName, List<INode> nodesToUpdate) {
+        for (INode curNode : nodesToUpdate) {
+            renameConnectionInElement(oldConnectionName, newConnectionName, (Node) curNode);
             for (Connection connection : (List<Connection>) curNode.getOutgoingConnections()) {
                 renameConnectionInElement(oldConnectionName, newConnectionName, connection);
             }

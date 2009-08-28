@@ -47,6 +47,8 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.NodeUtil;
+import org.talend.designer.core.IReplaceNodeInProcess;
+import org.talend.designer.core.ReplaceNodesInProcessProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -1081,7 +1083,7 @@ public class DataProcess {
         if (graphicalNodeList.size() == 0) {
             return;
         }
-        List<Node> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
+        List<INode> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
 
         replaceNodeFromProviders(newGraphicalNodeList);
 
@@ -1095,9 +1097,9 @@ public class DataProcess {
             }
         }
 
-        for (Node node : newGraphicalNodeList) {
+        for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
-                buildDataNodeFromNode(node);
+                buildDataNodeFromNode((Node) node);
             }
         }
 
@@ -1115,23 +1117,23 @@ public class DataProcess {
             }
         }
 
-        for (Node node : newGraphicalNodeList) {
+        for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
-                checkFlowRefLink(node);
+                checkFlowRefLink((Node) node);
             }
         }
 
-        for (Node node : newGraphicalNodeList) {
-            checkUseParallelize(node);
+        for (INode node : newGraphicalNodeList) {
+            checkUseParallelize((Node) node);
         }
 
-        for (Node node : newGraphicalNodeList) {
+        for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceMultipleComponents(node);
             }
         }
 
-        for (Node node : newGraphicalNodeList) {
+        for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceFileScalesComponents(node);
             }
@@ -1192,6 +1194,7 @@ public class DataProcess {
             dataNodeList.remove(preStaLogConNode);
             dataNodeList.add(0, preStaLogConNode);
         }
+
         checkRefList = null;
         checkMultipleMap = null;
         buildCheckMap = null;
@@ -1364,7 +1367,7 @@ public class DataProcess {
      * @param graphicalNodeList
      * @return
      */
-    private List<Node> buildCopyOfGraphicalNodeList(List<Node> graphicalNodeList) {
+    private List<INode> buildCopyOfGraphicalNodeList(List<Node> graphicalNodeList) {
         if (graphicalNodeList.size() == 0) {
             return Collections.emptyList();
         }
@@ -1381,22 +1384,22 @@ public class DataProcess {
 
         // keep the same instance of context manager as it won't be modified
         duplicatedProcess.setContextManager(process.getContextManager());
-        for (Node node : graphicalNodeList) {
+        for (INode node : graphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
-                buildNodeFromNode(node, duplicatedProcess);
+                buildNodeFromNode((Node) node, duplicatedProcess);
             }
         }
 
         // make sure the new tUnite incomingConnections order is the same as the old one. @see
         // Connection.setInputId(int id)
-        for (Node oldNode : graphicalNodeList) {
+        for (INode oldNode : graphicalNodeList) {
             if (oldNode.getComponent().useMerge()) {
                 INode newNode = (Node) buildGraphicalMap.get(oldNode);
                 adjustMergeOrderForDuplicateNode(oldNode, newNode);
             }
         }
 
-        List<Node> newBuildNodeList = new ArrayList<Node>();
+        List<INode> newBuildNodeList = new ArrayList<INode>();
 
         for (INode gnode : graphicalNodeList) {
             INode newNode = (Node) buildGraphicalMap.get(gnode);
@@ -1405,8 +1408,8 @@ public class DataProcess {
             }
 
         }
-        for (Node node : newBuildNodeList) {
-            if (node.isExternalNode()) {
+        for (INode node : newBuildNodeList) {
+            if (((Node) node).isExternalNode()) {
                 node.getExternalNode().initialize();
             }
         }
@@ -1421,14 +1424,11 @@ public class DataProcess {
      * @param graphicalNodeList
      * @return
      */
-    private void replaceNodeFromProviders(List<Node> graphicalNodeList) {
-        List<Node> orginalList = new ArrayList<Node>(graphicalNodeList);
-        for (Node node : orginalList) {
-            IComponent component = node.getComponent();
-            AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(component
-                    .getPluginFullName());
-            if (processProvider != null) {
-                processProvider.rebuildGraphicProcessFromNode(node, graphicalNodeList);
+    private void replaceNodeFromProviders(List<INode> graphicalNodeList) {
+        List<INode> orginalList = new ArrayList<INode>(graphicalNodeList);
+        for (INode node : orginalList) {
+            for (IReplaceNodeInProcess replaceProvider : ReplaceNodesInProcessProvider.findReplaceNodesProvider()) {
+                replaceProvider.rebuildGraphicProcessFromNode(node, graphicalNodeList);
             }
         }
     }
@@ -1496,4 +1496,5 @@ public class DataProcess {
             i++;
         }
     }
+
 }
