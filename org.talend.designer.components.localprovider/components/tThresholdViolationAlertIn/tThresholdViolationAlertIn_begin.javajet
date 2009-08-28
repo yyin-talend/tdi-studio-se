@@ -1,0 +1,41 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid_original = ElementParameterParser.getValue(node, "__ORIGIN__");
+String cid = cid_original.replace("tThresholdViolationAlert","tThresholdVA");
+
+String outputField = ElementParameterParser.getValue(node, "__OUTFIELD__");
+
+List< ? extends IConnection> outputConns = node.getOutgoingSortedConnections();
+
+if (outputConns!=null) {
+	if (outputConns.size()>0) {
+		IConnection connTemp = outputConns.get(0);
+		if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			for(IMetadataColumn column: connTemp.getMetadataTable().getListColumns()){
+				if(outputField.equals(column.getLabel())){
+%>
+<%=connTemp.getName() %>.<%=outputField %> = (String)globalMap.get("mailField");			
+<%
+					break;
+				}
+			}
+		}
+	}
+}
+
+%>

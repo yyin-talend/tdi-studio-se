@@ -1,0 +1,133 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.Map
+    java.util.List
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid_original = ElementParameterParser.getValue(node, "__DESTINATION__");
+String cid = cid_original.replace("tThresholdViolationAlert","tThresholdVA");
+
+String suffixSeparator = ElementParameterParser.getValue(node, "__SUFFIXSEPARATOR__");
+String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
+
+//XMLTool
+class XMLTool{
+	public boolean advancedSeparator = false;
+	public String thousandsSeparator = null;
+ 	public String decimalSeparator =null;
+	public String connName = null;
+	public String cid = null;
+	
+	public void getValue(IMetadataColumn column){
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+		String defaultValue=column.getDefault();
+		boolean isNotSetDefault = false;
+		if(defaultValue!=null){
+			isNotSetDefault = defaultValue.length()==0;
+		}else{
+			isNotSetDefault=true;
+		}
+%>
+	(
+<%
+		if(column.isNullable()){
+%>
+		<%=connName%>.<%=column.getLabel()%> != null?
+<%
+		}
+		
+        if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+        	if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+    		FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? connName + "." + column.getLabel() : connName + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator%>,<%=decimalSeparator %>)					
+<%
+    		} else {
+%>
+    		FormatterUtils.format_Number(String.valueOf(<%=connName%>.<%=column.getLabel()%>), <%= thousandsSeparator %>,<%=decimalSeparator %>)						
+<%
+	   		}
+        } else if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+%>
+            String.valueOf(<%=connName%>.<%=column.getLabel()%>)
+<%
+        }else if(javaType == JavaTypesManager.DATE){
+            if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
+%>
+            FormatterUtils.format_Date(<%=connName%>.<%=column.getLabel()%>,<%=column.getPattern()%>)
+<%
+            }else{
+%>
+			<%=connName%>.<%=column.getLabel()%>
+<%
+           }
+        }else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+			String.valueOf(<%=column.getPrecision() == null? connName + "." + column.getLabel() : connName + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>)
+<%
+        }else{
+%>
+            <%=connName%>.<%=column.getLabel()%>.toString()
+<%
+		}
+		if(column.isNullable()){
+			%>:<% 
+			if(isNotSetDefault == false){
+				%><%=column.getDefault()%><%
+			}else{
+				%>null<%
+			}
+		}
+%>
+		)
+<%
+	}
+}
+
+if (node.getIncomingConnections()!=null) {
+	for (IConnection incomingConn : node.getIncomingConnections()) {
+		if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			IMetadataTable inputMetadataTable = incomingConn.getMetadataTable();
+			List<IMetadataColumn> inputCols = inputMetadataTable.getListColumns();
+
+		    // init tool
+            XMLTool tool = new XMLTool();
+            tool.connName = incomingConn.getName();
+            tool.advancedSeparator=advancedSeparator;
+            tool.thousandsSeparator=thousandsSeparator;
+            tool.decimalSeparator=decimalSeparator;
+            tool.cid=cid;
+
+			for (int i=0; i<inputCols.size();i++) {
+				IMetadataColumn inputCol = inputCols.get(i);
+%>
+bd_<%=cid %><%if(i!=0){%>.append(<%=fieldSeparator%>)<%}%>.append("<%=inputCol.getLabel() %>" + <%=suffixSeparator %> + <% tool.getValue(inputCol); %>);
+<%
+			}
+%>
+bd_<%=cid %>.append(<%=rowSeparator %>);
+<%
+		}
+	}
+}
+%>
