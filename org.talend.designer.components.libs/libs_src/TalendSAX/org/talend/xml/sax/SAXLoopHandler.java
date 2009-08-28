@@ -152,7 +152,7 @@ public class SAXLoopHandler extends DefaultHandler {
                 int index = column.lastIndexOf("@");
                 if (index > 0) {
                     if (currentPath.equals(column.substring(0, index - 1))) {
-                        String attribute = attributes.getValue(column.substring(index + 1).trim());
+                        String attribute = attributes.getValue(column.substring(index + 1));
                         if (attribute != null && false == currentRowHaveValue[i]) {
                             currentRow[i] = attribute;
                             currentRowHaveValue[i] = true;
@@ -192,7 +192,7 @@ public class SAXLoopHandler extends DefaultHandler {
     public void characters(char ch[], int start, int length) throws SAXException {
         // System.out.println(new String(ch, start, length) + " | " + isLooping);
         if (isLooping) {
-            String text = new String(ch, start, length).trim();
+            String text = new String(ch, start, length);
             // System.out.println(text);
             if (text.length() > 0) {
                 if (outputText && indexOfColumn >= 0 && false == currentRowHaveValue[indexOfColumn]) {
