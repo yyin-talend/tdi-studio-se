@@ -703,7 +703,13 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     private Function getFunnctionByName(String talendType, String value) {
         Function func = null;
         for (Function fun : functionManager.getFunctionByName(talendType)) {
+            // see bug 8055,remove the getLastName() method in TDQ,it has the same name as in TIS.
             if (fun.getName().equals(value)) {
+                // if (value.equals("getLastName")) {
+                // if (fun.getClassName().equals("DataQuality")) {
+                // continue;
+                // }
+                // }
                 func = (Function) fun.clone();
             }
         }
