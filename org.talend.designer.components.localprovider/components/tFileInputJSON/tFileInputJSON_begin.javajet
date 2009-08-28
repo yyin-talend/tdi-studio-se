@@ -22,6 +22,10 @@ String cid = node.getUniqueName();
 List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 
+String useUrl = ElementParameterParser.getValue(node, "__USEURL__");
+boolean isUseUrl = "true".equals(useUrl);
+String urlpath = ElementParameterParser.getValue(node, "__URLPATH__");
+
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
@@ -31,8 +35,6 @@ String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__D
 
 %>
 int nb_line_<%=cid%> = 0;
-
-String filename_<%=cid %> = <%=filename %>;
 
 javax.script.ScriptEngineManager scriptEngineMgr_<%=cid%> = new javax.script.ScriptEngineManager();
 javax.script.ScriptEngine jsEngine_<%=cid%> = scriptEngineMgr_<%=cid%>.getEngineByName("JavaScript");
@@ -45,7 +47,13 @@ jsEngine_<%=cid%>.eval( new java.io.BufferedReader(new java.io.InputStreamReader
 java.io.InputStream jsonpathis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("jsonpath.js").openStream();
 jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathis_<%=cid%>)));
 
-java.io.FileReader fr_<%=cid%> = new java.io.FileReader(filename_<%=cid %>);
+<%if(!isUseUrl){//read from a file%>
+java.io.FileReader fr_<%=cid%> = new java.io.FileReader(<%=filename %>);
+<%}else{ //read from internet%>
+java.net.URL url_<%=cid %> = new java.net.URL(<%=urlpath %>);
+java.net.URLConnection urlConn_<%=cid %> = url_<%=cid %>.openConnection();
+java.io.InputStreamReader fr_<%=cid %> = new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream());
+<%}%>
 java.lang.Object jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
 jsEngine_<%=cid%>.eval("var obj="+jsonText_<%=cid%>.toString());
 
