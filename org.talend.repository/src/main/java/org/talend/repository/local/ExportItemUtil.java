@@ -40,16 +40,22 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.ExternalCrossReferencer;
 import org.talend.commons.emf.EmfHelper;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.IFileExporterFullPath;
@@ -147,9 +153,9 @@ public class ExportItemUtil {
         } finally {
             if (exporter != null) {
                 try {
-                    // exporter.finished();
+                    exporter.finished();
                 } catch (Exception e) {
-                    // ignore me
+                    ExceptionHandler.process(e);
                 }
             }
         }
@@ -241,6 +247,28 @@ public class ExportItemUtil {
                     fixItemLockState();
                     toExport.put(propertyFile, propertyPath);
                     toExport.put(itemFile, itemPath);
+                }
+
+                if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+                    List jarNameList = new ArrayList();
+
+                    if (item instanceof RoutineItem) {
+                        List list = ((RoutineItem) item).getImports();
+                        for (int i = 0; i < list.size(); i++) {
+                            String jarName = ((IMPORTTypeImpl) list.get(i)).getMODULE();
+                            jarNameList.add(jarName.toString());
+                        }
+
+                    }
+
+                    String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
+
+                    for (int j = 0; j < jarNameList.size(); j++) {
+                        String filePath = destinationDirectory.toString() + "/" + getNeedProjectPath() + "/lib/"
+                                + jarNameList.get(j);
+                        copyJarToDestination(path + "/" + jarNameList.get(j), filePath);
+                        toExport.put(new File(filePath), new Path("/" + getNeedProjectPath() + "/lib/" + jarNameList.get(j)));
+                    }
                 }
                 progressMonitor.worked(1);
             }
