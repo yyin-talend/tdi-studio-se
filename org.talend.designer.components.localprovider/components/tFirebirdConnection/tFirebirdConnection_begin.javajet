@@ -8,35 +8,25 @@ imports="
     java.util.List
 " 
 %>
-
+	<%@ include file="../templates/DB/HelpClass/HelpClass.javajet"%>
 <%
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
-String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-String dbuser = ElementParameterParser.getValue(node, "__USER__");
-String dbpass = ElementParameterParser.getValue(node, "__PASS__");
-String javaDbDriver = "org.firebirdsql.jdbc.FBDriver" ;
-boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
-String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+	class ConnectionUtil extends DefaultConnectionUtil{
+	
+		public void createURL(INode node) {
+			super.createURL(node);
+%>
+		String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + ":" + <%=dbname%>;
+<%	
+		}
+		
+		public String getDirverClassName(INode node){
+			return "org.firebirdsql.jdbc.FBDriver";
+		}	
+	}//end class
+	connUtil = new ConnectionUtil();
+%>
+<%//----------------------------component codes-----------------------------------------%>
 
-%>
-String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + ":" + <%=dbname%>;
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpass%>;
+	<%@ include file="../templates/DB/AbstractDBConnection.javajet"%>
 
-java.sql.Connection conn_<%=cid%> = null;
-<%if(isUseSharedConnection){
-%>
-	String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
-	conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%> , sharedConnectionName_<%=cid%>);
-<%
-}else {
-%>
-	java.lang.Class.forName("org.firebirdsql.jdbc.FBDriver");
-	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
-<%
-}%> 
-conn_<%=cid%>.setAutoCommit(false);
-globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
+	globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);

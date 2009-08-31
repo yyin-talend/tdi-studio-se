@@ -121,6 +121,12 @@
         
    </PARAMETERS>
 
+	<ADVANCED_PARAMETERS>
+		<PARAMETER NAME="AUTO_COMMIT" FIELD="CHECK" NUM_ROW="10">  
+			<DEFAULT>false</DEFAULT>    
+    	</PARAMETER>
+	</ADVANCED_PARAMETERS>
+
    <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="Driver-FireBird" MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />

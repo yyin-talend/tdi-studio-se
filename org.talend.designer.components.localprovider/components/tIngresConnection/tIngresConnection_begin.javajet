@@ -14,37 +14,26 @@ imports="
 		java.util.Map
 " 
 %>
-
+	<%@ include file="../templates/DB/HelpClass/HelpClass.javajet"%>
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();	
-	String dbServer = ElementParameterParser.getValue(node, "__SERVER__");
-	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
-	String javaDbDriver = "com.ingres.jdbc.IngresDriver";	
-	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
-	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+	class ConnectionUtil extends DefaultConnectionUtil{
+	
+		public void createURL(INode node) {
+			super.createURL(node);
+			String dbServer = ElementParameterParser.getValue(node, "__SERVER__");
+%>
+		String url_<%=cid %> = "jdbc:ingres://" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%	
+		}
+		
+		public String getDirverClassName(INode node){
+			return "com.ingres.jdbc.IngresDriver";
+		}	
+	}//end class
+	connUtil = new ConnectionUtil();
+%>
+<%//----------------------------component codes-----------------------------------------%>
 
-%>    	   
-	String url_<%=cid %> = "jdbc:ingres://" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
-	String dbUser_<%=cid %> = <%=dbuser%>;
-	String dbPwd_<%=cid %> = <%=dbpwd%>;
-	java.sql.Connection conn_<%=cid%> = null;
-	<%if(isUseSharedConnection){
-	%>
-		String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
-		conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%> , sharedConnectionName_<%=cid%>);
-	<%
-	}else {
-	%>
-		java.lang.Class.forName("<%=javaDbDriver%>");
-		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
-	<% 
-	}%> 
-	conn_<%=cid%>.setAutoCommit(false);
+	<%@ include file="../templates/DB/AbstractDBConnection.javajet"%>
+
 	globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
