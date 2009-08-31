@@ -279,10 +279,10 @@
              name="View Impact">
        </Action>
        <Action
-             class="org.talend.repository.ui.actions.metadata.ShowDependenciesAction"
-             id="org.talend.repository.ui.actions.metadata.ShowDependencies"
+             class="org.talend.repository.ui.actions.metadata.SimulateImpactAnalysisAction"
+             id="org.talend.repository.ui.actions.metadata.SimulateImpactAnalysis"
              level="21"
-             name="Show Dependencies">
+             name="Simulate impact analysis">
        </Action>
    </extension>
    <extension

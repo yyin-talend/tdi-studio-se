@@ -22,11 +22,11 @@ import org.talend.repository.i18n.Messages;
 /**
  * cli class global comment. Detailled comment
  */
-public class ShowDependenciesAction extends DetecteViewImpactAction {
+public class SimulateImpactAnalysisAction extends DetecteViewImpactAction {
 
-    public ShowDependenciesAction() {
+    public SimulateImpactAnalysisAction() {
         setOnlySimpleShow(true);
-        String label = Messages.getString("ShowDependenciesAction.ShowDependencies"); //$NON-NLS-1$
+        String label = Messages.getString("SimulateImpactAnalysisAction.ImpactAnalysis"); //$NON-NLS-1$
         setText(label);
         setToolTipText(label);
         setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
