@@ -1626,9 +1626,15 @@ public class DatabaseForm extends AbstractForm {
             }
 
             if (EDatabaseConnTemplate.isSchemaNeeded(getConnection().getDatabaseType())) {
-                schemaText.show();
-                schemaText.setEditable(visible);
-                addContextParams(EDBParamName.Schema, visible);
+                if (getConnection().getDatabaseType().equals("Sybase ASE")) {
+                    schemaText.show();
+                    schemaText.setEditable(false);
+                    addContextParams(EDBParamName.Schema, false);
+                } else {
+                    schemaText.show();
+                    schemaText.setEditable(visible);
+                    addContextParams(EDBParamName.Schema, visible);
+                }
             }
             if (EDatabaseConnTemplate.isAddtionParamsNeeded(getConnection().getDatabaseType())
                     && !EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText()) && visible) {
