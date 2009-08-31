@@ -46,9 +46,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 <%		
 		for(Map<String, String> element : elements){
+			String name = element.get("ELEMENT_NAME");
+			if(name.split("/").length > 1){
 %>
-			org.dom4j.Element <%=element.get("ELEMENT_NAME").substring(1,element.get("ELEMENT_NAME").length()-1)%>Element<%=cid%> = null;
+				org.dom4j.Element <%=name.substring(1,name.length()-1).replace("/","")%>_Element_<%=cid%> = null;
+<%
+			}else{
+%>
+				org.dom4j.Element <%=name.substring(1,name.length()-1)%>_Element_<%=cid%> = null;
 <%	
+			}
 		}
 %>	
 		if(<%=isAppend%> && file<%=cid%>.exists()){
@@ -70,10 +77,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 <%		
 			for(Map<String, String> element : elements){
+				String name = element.get("ELEMENT_NAME");
+				String value = element.get("ELEMENT_VALUE");
+				if(name.split("/").length > 1){
 %>
-				<%=element.get("ELEMENT_NAME").substring(1,element.get("ELEMENT_NAME").length()-1)%>Element<%=cid%> = channelElement<%=cid%>.addElement(<%=element.get("ELEMENT_NAME")%>);
-				<%=element.get("ELEMENT_NAME").substring(1,element.get("ELEMENT_NAME").length()-1)%>Element<%=cid%>.setText(<%=element.get("ELEMENT_VALUE")%>);
-<%	
+					<%=name.substring(1,name.length()-1).replace("/","")%>_Element_<%=cid%> = <%=name.substring(1,name.length()-1).substring(0,name.lastIndexOf("/")-1)%>_Element_<%=cid%>.addElement("<%=name.substring(1,name.length()-1).split("/")[1]%>");
+<%
+					if(value.trim().length() > 2){
+%>
+						<%=name.substring(1,name.length()-1).replace("/","")%>_Element_<%=cid%>.setText(<%=value%>);
+<%
+					}
+				}else{
+%>			
+					<%=name.substring(1,name.length()-1)%>_Element_<%=cid%> = channelElement<%=cid%>.addElement(<%=name%>);
+<%
+					if(value.trim().length() > 2){
+%>					
+			        	<%=name.substring(1,name.length()-1)%>_Element_<%=cid%>.setText(<%=value%>);
+<%
+					}
+				}
 			}
 %>
 		}
