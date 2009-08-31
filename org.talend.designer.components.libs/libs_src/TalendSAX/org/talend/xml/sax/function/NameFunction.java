@@ -31,11 +31,13 @@ public class NameFunction implements Function {
                 if (currentPath.indexOf(loopPath) == 0) {
                     num = currentPath.substring(loopPath.length()).split("/").length - 2;
                 }
-                if (map.get("value") instanceof String) {
-                    for (int j = 0; j < num; j++) {
-                        result = result + "\t";
+                if (map.get("value") != null && !"".equals(map.get("value").toString().trim())) {
+                    if (map.get("value") instanceof String) {
+                        for (int j = 0; j < num; j++) {
+                            result = result + "\t";
+                        }
+                        result = result + map.get("value") + "\n";
                     }
-                    result = result + map.get("value") + "\n";
                 }
             }
         }
