@@ -348,6 +348,24 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
 
             // get the XmlArray width an adapt ProcessDescription
             ProcessDescription processDescription = getProcessDescription(originalValueConnection);
+
+            IMetadataTable metadataTableOrder = readMetadataDetail();
+            if (metadataTableOrder != null) {
+                metadataTableClone = metadataTableOrder.clone();
+                metadataTableOrder = modifyMetadataTable();
+            }
+            List<IMetadataTable> schema = processDescription.getSchema();
+            if (schema != null && schema.size() > 0) {
+                if (useAlphbet) {
+                    if (metadataTableOrder != null) {
+                        schema.get(0).setListColumns(metadataTableOrder.getListColumns());
+                    }
+                } else {
+                    if (metadataTableClone != null) {
+                        schema.get(0).setListColumns(metadataTableClone.getListColumns());
+                    }
+                }
+            }
             // the web service url is used by tSalesforceInput, see 0004027: Studio crashes when clicking Next on
             // Step 3 of SF wizard
             // processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
@@ -566,5 +584,6 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             }
 
         }
+        useAlphbet = getConnection().isUseAlphbet();
     }
 }

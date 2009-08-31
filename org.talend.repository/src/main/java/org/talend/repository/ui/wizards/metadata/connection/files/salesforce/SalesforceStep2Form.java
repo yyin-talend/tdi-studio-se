@@ -84,8 +84,6 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
     private Button alphabet;
 
-    private boolean useAlphbet = false;
-
     private UtilsButton cancelButton;
 
     private TableViewer moduleViewer = null;
@@ -106,10 +104,6 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
     private Composite outputComposite;
 
     private SalesforceModuleParseAPI salesforceAPI = null;
-
-    private IMetadataTable metadataTable;
-
-    private IMetadataTable metadataTableClone;
 
     /**
      * DOC YeXiaowei SalesforceStep2Form constructor comment.
@@ -221,45 +215,13 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
      */
     private void readAndSetModuleDetailContent() {
 
-        String moduleName = getConnection().getModuleName();
+        metadataTableOrder = readMetadataDetail();
+        if (metadataTableOrder != null) {
+            metadataTableClone = metadataTableOrder.clone();
 
-        if (moduleName == null || moduleName.equals("")) { //$NON-NLS-1$
-            return;
-        }
-
-        String webServiceUrl = getConnection().getWebServiceUrl();
-        String userName = getConnection().getUserName();
-        String password = getConnection().getPassword();
-        // add for feature 7507
-        String betchSize = getConnection().getBatchSize();
-        boolean useProxy = getConnection().isUseProxy();
-        boolean useHttp = getConnection().isUseHttpProxy();
-        String proxyHost = getConnection().getProxyHost();
-        String proxyPort = getConnection().getProxyPort();
-        String proxyUsername = getConnection().getProxyHost();
-        String proxyPassword = getConnection().getProxyPassword();
-
-        if (isContextMode() && getContextModeManager() != null) {
-            webServiceUrl = getContextModeManager().getOriginalValue(webServiceUrl);
-            userName = getContextModeManager().getOriginalValue(userName);
-            password = getContextModeManager().getOriginalValue(password);
-            betchSize = getContextModeManager().getOriginalValue(betchSize);
-            useProxy = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useProxy)));
-            useHttp = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useHttp)));
-            proxyHost = getContextModeManager().getOriginalValue(proxyHost);
-            proxyPort = getContextModeManager().getOriginalValue(proxyPort);
-            proxyUsername = getContextModeManager().getOriginalValue(proxyUsername);
-            proxyPassword = getContextModeManager().getOriginalValue(proxyPassword);
-        }
-
-        metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize, useProxy, useHttp,
-                proxyHost, proxyPort, proxyUsername, proxyPassword, true);
-        if (metadataTable != null) {
-            metadataTableClone = metadataTable.clone();
-
-            metadataTable = modifyMetadataTable();
+            metadataTableOrder = modifyMetadataTable();
             if (useAlphbet) {
-                List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+                List<IMetadataColumn> listColumns = metadataTableOrder.getListColumns();
                 if (listColumns != null) {
                     moduleViewer.setInput(listColumns.toArray());
                 }
@@ -273,40 +235,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         }
     }
 
-    private IMetadataTable modifyMetadataTable() {
-        if (metadataTable != null) {
-            List<IMetadataColumn> listColumns = metadataTable.getListColumns();
-            if (listColumns != null) {
-
-                Object[] array = listColumns.toArray();
-                for (int i = 0; i < array.length; i++) {
-                    for (int j = i + 1; j < array.length; j++) {
-
-                        String labela = ((MetadataColumn) array[i]).getLabel();
-                        String labelb = ((MetadataColumn) array[j]).getLabel();
-                        if (labela.compareTo(labelb) > 0) {
-                            MetadataColumn metadataColumn = (MetadataColumn) array[i];
-                            array[i] = array[j];
-                            array[j] = metadataColumn;
-                        }
-                    }
-                }
-                List<Object> asList = Arrays.asList(array);
-                List<IMetadataColumn> aa = new ArrayList();
-                if (asList != null && asList.size() > 0) {
-                    Object object = asList.get(0);
-                    if (object instanceof MetadataColumn) {
-                        for (int i = 0; i < asList.size(); i++) {
-                            aa.add(i, (MetadataColumn) asList.get(i));
-                        }
-                        metadataTable.setListColumns(aa);
-                    }
-                }
-            }
-        }
-        return metadataTable;
-    }
-
+  
     /*
      * (non-Javadoc)
      * 
@@ -336,7 +265,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                 Object input = moduleViewer.getInput();
                 if (input instanceof Object[]) {
                     if (useAlphbet) {
-                        List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+                        List<IMetadataColumn> listColumns = metadataTableOrder.getListColumns();
                         if (listColumns != null) {
                             moduleViewer.setInput(listColumns.toArray());
                         }
@@ -515,8 +444,8 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                 List<IMetadataTable> schema = processDescription.getSchema();
                 if (schema != null && schema.size() > 0) {
                     if (useAlphbet) {
-                        if (metadataTable != null) {
-                            schema.get(0).setListColumns(metadataTable.getListColumns());
+                        if (metadataTableOrder != null) {
+                            schema.get(0).setListColumns(metadataTableOrder.getListColumns());
                         }
                     } else {
                         if (metadataTableClone != null) {
@@ -640,8 +569,8 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         if (tableGet != null) {
             moduleViewer.getTable().clearAll();
             if (useAlphbet) {
-                if (metadataTable != null) {
-                    tableGet.setListColumns(metadataTable.getListColumns());
+                if (metadataTableOrder != null) {
+                    tableGet.setListColumns(metadataTableOrder.getListColumns());
                 }
             } else {
                 if (metadataTableClone != null) {

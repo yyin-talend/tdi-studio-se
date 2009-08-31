@@ -15,6 +15,7 @@ package org.talend.repository.ui.swt.utils;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,8 +29,10 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.process.AbstractNode;
@@ -81,6 +84,12 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     public static final String TSALESFORCE_CUSTOM_MODULE = "org.talend.salesforce.custom.module"; //$NON-NLS-1$
 
     public static final String TSALESFORCE_CUSTOM_MODULE_SPILT = ","; //$NON-NLS-1$
+
+    public boolean useAlphbet;
+
+    public IMetadataTable metadataTableOrder;
+
+    public IMetadataTable metadataTableClone;
 
     public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             SalesforceModuleParseAPI salesforceAPI) {
@@ -328,6 +337,84 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         IMetadataTable metadataTable = (IMetadataTable) schemaParam.getValue();
 
         return metadataTable;
+    }
+
+    /**
+     * DOC zli Comment method "readMetadataDetail".
+     */
+    public IMetadataTable readMetadataDetail() {
+        String moduleName = getConnection().getModuleName();
+
+        if (moduleName == null || moduleName.equals("")) { //$NON-NLS-1$
+            return null;
+        }
+
+        String webServiceUrl = getConnection().getWebServiceUrl();
+        String userName = getConnection().getUserName();
+        String password = getConnection().getPassword();
+        // add for feature 7507
+        String betchSize = getConnection().getBatchSize();
+        boolean useProxy = getConnection().isUseProxy();
+        boolean useHttp = getConnection().isUseHttpProxy();
+        String proxyHost = getConnection().getProxyHost();
+        String proxyPort = getConnection().getProxyPort();
+        String proxyUsername = getConnection().getProxyHost();
+        String proxyPassword = getConnection().getProxyPassword();
+
+        if (isContextMode() && getContextModeManager() != null) {
+            webServiceUrl = getContextModeManager().getOriginalValue(webServiceUrl);
+            userName = getContextModeManager().getOriginalValue(userName);
+            password = getContextModeManager().getOriginalValue(password);
+            betchSize = getContextModeManager().getOriginalValue(betchSize);
+            useProxy = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useProxy)));
+            useHttp = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useHttp)));
+            proxyHost = getContextModeManager().getOriginalValue(proxyHost);
+            proxyPort = getContextModeManager().getOriginalValue(proxyPort);
+            proxyUsername = getContextModeManager().getOriginalValue(proxyUsername);
+            proxyPassword = getContextModeManager().getOriginalValue(proxyPassword);
+        }
+
+        metadataTableOrder = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize, useProxy,
+                useHttp, proxyHost, proxyPort, proxyUsername, proxyPassword, true);
+
+        return metadataTableOrder;
+    }
+
+    /**
+     * DOC zli Comment method "modifyMetadataTable".
+     */
+    public IMetadataTable modifyMetadataTable() {
+        if (metadataTableOrder != null) {
+            List<IMetadataColumn> listColumns = metadataTableOrder.getListColumns();
+            if (listColumns != null) {
+
+                Object[] array = listColumns.toArray();
+                for (int i = 0; i < array.length; i++) {
+                    for (int j = i + 1; j < array.length; j++) {
+
+                        String labela = ((MetadataColumn) array[i]).getLabel();
+                        String labelb = ((MetadataColumn) array[j]).getLabel();
+                        if (labela.compareTo(labelb) > 0) {
+                            MetadataColumn metadataColumn = (MetadataColumn) array[i];
+                            array[i] = array[j];
+                            array[j] = metadataColumn;
+                        }
+                    }
+                }
+                List<Object> asList = Arrays.asList(array);
+                List<IMetadataColumn> aa = new ArrayList();
+                if (asList != null && asList.size() > 0) {
+                    Object object = asList.get(0);
+                    if (object instanceof MetadataColumn) {
+                        for (int i = 0; i < asList.size(); i++) {
+                            aa.add(i, (MetadataColumn) asList.get(i));
+                        }
+                        metadataTableOrder.setListColumns(aa);
+                    }
+                }
+            }
+        }
+        return metadataTableOrder;
     }
 
     /*
