@@ -86,24 +86,32 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     private boolean isJobReadOnly = false;
 
+    private boolean onlySimpleShow = false;
+
     /**
      * ggu UpdateCheckDialog constructor comment.
      * 
      * @param parentShell
      */
     public UpdateDetectionDialog(Shell parentShell, List<UpdateResult> input) {
-        this(parentShell, input, null);
+        this(parentShell, input, false);
         setTitle(DEFAULT_TITLE);
         setMessage(DEFAULT_MESSAGE);
     }
 
-    public UpdateDetectionDialog(Shell parentShell, List<UpdateResult> input, String message) {
+    public UpdateDetectionDialog(Shell parentShell, List<UpdateResult> input, boolean onlySimpleShow) {
+        this(parentShell, input, null, onlySimpleShow);
+        setTitle(DEFAULT_TITLE);
+    }
+
+    public UpdateDetectionDialog(Shell parentShell, List<UpdateResult> input, String message, boolean onlySimpleShow) {
         super(parentShell);
         Assert.isNotNull(input);
+        this.onlySimpleShow = onlySimpleShow;
+        this.inputElement = input;
         setHelpAvailable(false);
         setTitle(UpdatesConstants.EMPTY);
         setShellStyle(SWT.TITLE | SWT.RESIZE | SWT.APPLICATION_MODAL | getDefaultOrientation());
-        inputElement = input;
         removeDuplication();
         if (message != null) {
             setMessage(message);
@@ -112,6 +120,10 @@ public class UpdateDetectionDialog extends SelectionDialog {
         }
         helper = new UpdateViewerHelper(this);
         checkInitialSelections();
+    }
+
+    public boolean isOnlySimpleShow() {
+        return this.onlySimpleShow;
     }
 
     /**
@@ -188,7 +200,9 @@ public class UpdateDetectionDialog extends SelectionDialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         // Ok
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        if (!isOnlySimpleShow()) {
+            createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        }
         if (canCancel) {
             createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
         }
@@ -229,34 +243,36 @@ public class UpdateDetectionDialog extends SelectionDialog {
                 }
             }
         });
-        // "select all" button
-        selectButton = createButton(composite, IDialogConstants.SELECT_ALL_ID, WorkbenchMessages.SelectionDialog_selectLabel,
-                false);
-        // init label;
-        if (getViewerHelper() != null) {
-            getViewerHelper().refreshSelectButton();
-        }
-
-        selectButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                if (getViewerHelper() != null) {
-                    boolean state = false;
-
-                    if (!isJobReadOnly && WorkbenchMessages.SelectionDialog_selectLabel.equals(selectButton.getText())) {
-                        state = true;
-                    }
-                    getViewerHelper().selectAll(state);
-                }
+        if (!isOnlySimpleShow()) {
+            // "select all" button
+            selectButton = createButton(composite, IDialogConstants.SELECT_ALL_ID, WorkbenchMessages.SelectionDialog_selectLabel,
+                    false);
+            // init label;
+            if (getViewerHelper() != null) {
+                getViewerHelper().refreshSelectButton();
             }
-        });
 
+            selectButton.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    if (getViewerHelper() != null) {
+                        boolean state = false;
+
+                        if (!isJobReadOnly && WorkbenchMessages.SelectionDialog_selectLabel.equals(selectButton.getText())) {
+                            state = true;
+                        }
+                        getViewerHelper().selectAll(state);
+                    }
+                }
+            });
+        }
         return composite;
     }
 
     @Override
     protected Control createDialogArea(Composite parent) {
+
         Composite composite = (Composite) super.createDialogArea(parent);
         initializeDialogUnits(composite);
 
@@ -289,11 +305,11 @@ public class UpdateDetectionDialog extends SelectionDialog {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(2, false));
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        imageLabe = new Label(composite, SWT.NONE);
-        imageLabe.setImage(Display.getDefault().getSystemImage(SWT.ICON_WARNING));
-        // imageLabe.setImage(ImageProvider.getImage(EImage.WARNING_ICON));
-
+        if (!isOnlySimpleShow()) {
+            imageLabe = new Label(composite, SWT.NONE);
+            imageLabe.setImage(Display.getDefault().getSystemImage(SWT.ICON_WARNING));
+            // imageLabe.setImage(ImageProvider.getImage(EImage.WARNING_ICON));
+        }
         messLabel = createMessageArea(composite);
 
         Label label = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR | SWT.SHADOW_OUT);
@@ -309,7 +325,12 @@ public class UpdateDetectionDialog extends SelectionDialog {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout());
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        viewer = new CheckboxTreeViewer(composite, SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+
+        int style = SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER;
+        if (!isOnlySimpleShow()) { // display check button.
+            style = SWT.CHECK | style;
+        }
+        viewer = new CheckboxTreeViewer(new Tree(composite, style));
 
         viewer.setContentProvider(new UpdateContentProvider());
         viewer.setLabelProvider(new UpdateLabelProvider());
@@ -338,17 +359,17 @@ public class UpdateDetectionDialog extends SelectionDialog {
         column.setWidth(SIZING_COLUMN_WIDTH * 10);
         tree.setSortColumn(column);
 
-        // column = new TreeColumn(tree, SWT.NONE);
-        // column.setText("property");
-        // column.setWidth(SIZING_COLUMN_WIDTH * 4);
+        if (isOnlySimpleShow()) {
+            column.setWidth(SIZING_COLUMN_WIDTH * 20);
+        } else {
+            column = new TreeColumn(tree, SWT.NONE);
+            column.setText(OPERATIONS);
+            column.setWidth(SIZING_COLUMN_WIDTH * 7);
 
-        column = new TreeColumn(tree, SWT.NONE);
-        column.setText(OPERATIONS);
-        column.setWidth(SIZING_COLUMN_WIDTH * 7);
-
-        column = new TreeColumn(tree, SWT.NONE);
-        column.setText(REMARKS);
-        column.setWidth(SIZING_COLUMN_WIDTH * 6);
+            column = new TreeColumn(tree, SWT.NONE);
+            column.setText(REMARKS);
+            column.setWidth(SIZING_COLUMN_WIDTH * 6);
+        }
     }
 
     private void addViewerListener() {
@@ -407,21 +428,34 @@ public class UpdateDetectionDialog extends SelectionDialog {
     }
 
     public void updateWarnMessage() {
-        imageLabe.setVisible(true);
-        messLabel.setText("\n" + WARNING_MESSAGE); //$NON-NLS-1$
+        if (imageLabe != null && !imageLabe.isDisposed()) {
+            imageLabe.setVisible(true);
+        }
+        if (messLabel != null && !messLabel.isDisposed()) {
+            messLabel.setText("\n" + WARNING_MESSAGE); //$NON-NLS-1$
+        }
     }
 
     public void updateNomarlMessage() {
-        imageLabe.setVisible(false);
-        messLabel.setText(DEFAULT_MESSAGE);
+        if (imageLabe != null && !imageLabe.isDisposed()) {
+            imageLabe.setVisible(false);
+        }
+        if (messLabel != null && !messLabel.isDisposed()) {
+            if (isOnlySimpleShow()) {
+                messLabel.setText(Messages.getString("UpdateDetectionDialog.ShowDependenciesMess")); //$NON-NLS-1$
+            } else {
+                messLabel.setText(DEFAULT_MESSAGE);
+            }
+        }
     }
 
-    /**
-     * DOC Administrator Comment method "updateReadOnlyJobWarnMessage".
-     */
     public void updateReadOnlyJobWarnMessage() {
-        imageLabe.setVisible(true);
-        messLabel.setText(READ_ONLY_JOB_WARNING_MESSAGE);
+        if (imageLabe != null && !imageLabe.isDisposed()) {
+            imageLabe.setVisible(true);
+        }
+        if (messLabel != null && !messLabel.isDisposed()) {
+            messLabel.setText(READ_ONLY_JOB_WARNING_MESSAGE);
+        }
 
     }
 }

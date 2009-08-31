@@ -438,8 +438,8 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#executeUpdatesManager(java.util.List)
      */
-    public boolean executeUpdatesManager(List<UpdateResult> results) {
-        return UpdateManagerUtils.executeUpdates(results);
+    public boolean executeUpdatesManager(List<UpdateResult> results, boolean onlySimpleShow) {
+        return UpdateManagerUtils.executeUpdates(results, onlySimpleShow);
     }
 
     /*

@@ -278,6 +278,12 @@
              level="20"
              name="View Impact">
        </Action>
+       <Action
+             class="org.talend.repository.ui.actions.metadata.ShowDependenciesAction"
+             id="org.talend.repository.ui.actions.metadata.ShowDependencies"
+             level="21"
+             name="Show Dependencies">
+       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

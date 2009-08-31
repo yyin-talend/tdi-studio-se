@@ -22,6 +22,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -46,6 +47,8 @@ public class DetecteViewImpactAction extends AContextualAction {
 
     private static final String LABEL = Messages.getString("DetecteViewImpactAction.Label"); //$NON-NLS-1$
 
+    private boolean onlySimpleShow;
+
     /**
      * ggu DetectedModificationAction constructor comment.
      */
@@ -53,6 +56,14 @@ public class DetecteViewImpactAction extends AContextualAction {
         setText(LABEL);
         setToolTipText(LABEL);
         setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
+    }
+
+    public boolean isOnlySimpleShow() {
+        return this.onlySimpleShow;
+    }
+
+    public void setOnlySimpleShow(boolean onlySimpleShow) {
+        this.onlySimpleShow = onlySimpleShow;
     }
 
     /*
@@ -139,11 +150,15 @@ public class DetecteViewImpactAction extends AContextualAction {
                 // schema
                 AbstractMetadataObject metadataObject = subObject.getAbstractMetadataObject();
                 if (metadataObject instanceof MetadataTable) {
-                    RepositoryUpdateManager.updateSchema((MetadataTable) metadataObject, false);
+                    RepositoryUpdateManager.updateSchema((MetadataTable) metadataObject, false, isOnlySimpleShow());
                 } else
                 // query
                 if (metadataObject instanceof Query) {
-                    RepositoryUpdateManager.updateQuery((Query) metadataObject, false);
+                    RepositoryUpdateManager.updateQuery((Query) metadataObject, false, isOnlySimpleShow());
+                } else
+                // sap function
+                if (metadataObject instanceof SAPFunctionUnit) {
+                    RepositoryUpdateManager.updateSAPFunction((SAPFunctionUnit) metadataObject, false, isOnlySimpleShow());
                 }
             }
         } else if (node.getObject() instanceof IRepositoryObject) {
@@ -153,20 +168,21 @@ public class DetecteViewImpactAction extends AContextualAction {
                 if (item != null) {
                     // context
                     if (item instanceof ContextItem) {
-                        RepositoryUpdateManager.updateContext((ContextItem) item, false);
+                        RepositoryUpdateManager.updateContext((ContextItem) item, false, isOnlySimpleShow());
                     } else
                     // connection
                     if (item instanceof ConnectionItem) {
                         Connection connection = ((ConnectionItem) item).getConnection();
                         if (connection instanceof DatabaseConnection) {
-                            RepositoryUpdateManager.updateDBConnection((DatabaseConnection) connection, false);
+                            RepositoryUpdateManager
+                                    .updateDBConnection((DatabaseConnection) connection, false, isOnlySimpleShow());
                         } else {
-                            RepositoryUpdateManager.updateFileConnection(connection, false);
+                            RepositoryUpdateManager.updateFileConnection(connection, false, isOnlySimpleShow());
                         }
                     } else
                     // joblet
                     if (item instanceof JobletProcessItem) {
-                        RepositoryUpdateManager.updateJoblet((JobletProcessItem) item, false);
+                        RepositoryUpdateManager.updateJoblet((JobletProcessItem) item, false, isOnlySimpleShow());
                     }
 
                 }

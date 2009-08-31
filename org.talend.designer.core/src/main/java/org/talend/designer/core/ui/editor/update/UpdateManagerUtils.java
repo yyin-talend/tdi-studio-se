@@ -166,14 +166,18 @@ public final class UpdateManagerUtils {
         return Collections.emptyList();
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static boolean executeUpdates(final List<UpdateResult> results) {
+        return executeUpdates(results, false);
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static boolean executeUpdates(final List<UpdateResult> results, final boolean onlySimpleShow) {
         RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(Messages
                 .getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
 
             @Override
             protected void run() throws LoginException, PersistenceException {
-                result = doExecuteUpdates(results);
+                result = doExecuteUpdates(results, onlySimpleShow);
             }
 
         };
@@ -181,12 +185,13 @@ public final class UpdateManagerUtils {
         return repositoryWorkUnit.getResult();
     }
 
-    private static boolean doExecuteUpdates(final List<UpdateResult> results) {
+    private static boolean doExecuteUpdates(final List<UpdateResult> results, boolean onlySimpleShow) {
         if (results == null || results.isEmpty()) {
             return false;
         }
         try {
-            UpdateDetectionDialog checkDialog = new UpdateDetectionDialog(Display.getCurrent().getActiveShell(), results);
+            UpdateDetectionDialog checkDialog = new UpdateDetectionDialog(Display.getCurrent().getActiveShell(), results,
+                    onlySimpleShow);
 
             if (checkDialog.open() == IDialogConstants.OK_ID) {
                 // final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
