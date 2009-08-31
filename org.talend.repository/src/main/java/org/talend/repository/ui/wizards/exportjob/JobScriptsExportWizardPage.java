@@ -55,13 +55,17 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
@@ -73,6 +77,7 @@ import org.talend.repository.documentation.FileSystemExporterFullPath;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -147,6 +152,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     public JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
+        ProcessTypeImpl.lazyBool = true;
         this.selection = selection;
         manager = createJobScriptsManager();
         nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
@@ -698,6 +704,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             ExceptionHandler.process(e);
         }
         // end
+        try {
+            ProxyRepositoryFactory.getInstance().initialize();
+            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
         return ok;
     }
 

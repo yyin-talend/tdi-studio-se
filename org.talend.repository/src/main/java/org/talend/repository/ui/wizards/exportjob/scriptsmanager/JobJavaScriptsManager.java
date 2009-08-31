@@ -56,6 +56,7 @@ import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -750,16 +751,29 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     @Override
     public List<String> getJobContexts(ProcessItem processItem) {
         List<String> contextNameList = new ArrayList<String>();
-        for (Object o : processItem.getProcess().getContext()) {
-            if (o instanceof ContextType) {
-                ContextType context = (ContextType) o;
-                if (contextNameList.contains(context.getName())) {
-                    continue;
+        if (((ProcessTypeImpl) processItem.getProcess()).lazyBool == true) {
+            for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getLazyContext()) {
+                if (o instanceof ContextType) {
+                    ContextType context = (ContextType) o;
+                    if (contextNameList.contains(context.getName())) {
+                        continue;
+                    }
+                    contextNameList.add(context.getName());
                 }
-                contextNameList.add(context.getName());
             }
+            return contextNameList;
+        } else {
+            for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getContext()) {
+                if (o instanceof ContextType) {
+                    ContextType context = (ContextType) o;
+                    if (contextNameList.contains(context.getName())) {
+                        continue;
+                    }
+                    contextNameList.add(context.getName());
+                }
+            }
+            return contextNameList;
         }
-        return contextNameList;
     }
 
     /*

@@ -620,8 +620,12 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             fullFolder = ((IFolder) fullFolder).getFolder(new Path(property.getItem().getState().getPath()));
         } else {
             // FolderItem
-            fullFolder = this.getFolderHelper(project.getEmfProject()).getFolder(
-                    ((FolderItem) folder).getProperty().getLabel() + "/" + property.getItem().getState().getPath());
+            if (!"".equals(property.getItem().getState().getPath())) {
+                fullFolder = this.getFolderHelper(project.getEmfProject()).getFolder(
+                        ((FolderItem) folder).getProperty().getLabel() + "/" + property.getItem().getState().getPath());
+            } else {
+                fullFolder = folder;
+            }
         }
         List<IRepositoryObject> allVersion = getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true,
                 false, true);
