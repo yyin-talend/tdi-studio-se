@@ -287,6 +287,18 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             } else if (repositoryValue.equals("CSV_OPTION")) { //$NON-NLS-1$
                                 setOtherProperties();
                             }
+
+                            if (repositoryValue.equals("MODULENAME")) {//$NON-NLS-1$
+                                List list = new ArrayList();
+                                Object[] listItemsValue = elem.getElementParameter("MODULENAME").getListItemsValue();
+                                for (int i = 0; i < listItemsValue.length; i++) {
+                                    list.add(listItemsValue[i]);
+                                }
+                                if (list != null && !list.contains(objectValue)) {
+                                    objectValue = "CustomModule";//$NON-NLS-1$
+                                }
+                            }
+
                             elem.setPropertyValue(param.getName(), objectValue);
                         }
                         param.setRepositoryValueUsed(true);

@@ -1570,9 +1570,6 @@ public class EmfComponent implements IComponent {
                 param.setBasedOnSubjobStarts(items.isBASEDONSUBJOBSTARTS());
             }
             nbItems = items.getITEM().size();
-            if ("MODULENAME".equals(param.getName())) {//$NON-NLS-1$
-                nbItems = nbItems - 1;
-            }
             if (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()) {
                 nbItems++;
             }

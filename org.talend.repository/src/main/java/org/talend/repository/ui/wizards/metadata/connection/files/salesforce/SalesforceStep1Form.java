@@ -12,10 +12,10 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
-import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -26,13 +26,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
@@ -46,6 +40,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractSalesforceStepForm;
 
 import com.sforce.soap.enterprise.DescribeGlobalResult;
+import com.sforce.soap.enterprise.fault.UnexpectedErrorFault;
 
 /**
  * DOC YeXiaowei class global comment. Detailled comment <br/>
@@ -108,13 +103,13 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     // private List<String> moduleNames = null;
 
-    private LabelledCombo customModuleCombo = null;
+    // private LabelledCombo customModuleCombo = null;
 
     // private CCombo customModuleCombo;
 
     // private Button clearButton;
 
-    private Button useCostomModuleButton;
+    // private Button useCostomModuleButton;
 
     private SalesforceModuleParseAPI salesforceAPI = new SalesforceModuleParseAPI();
 
@@ -186,33 +181,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         proxyPasswordText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyPassword")); //$NON-NLS-1$
         enableProxyParameters(false);
 
-        Group objectsGroup = Form.createGroup(group, 4, "standar objects"); //$NON-NLS-1$
-        GridData objectsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-        objectsLayoutData.horizontalSpan = 3;
-        objectsGroup.setLayoutData(objectsLayoutData);
-        moduleNameCombo = new LabelledCombo(
-                objectsGroup,
-                Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
-                null, 2, false);
-
-        initModuleNames();
-
-        new Label(group, SWT.NONE); // Pachlaer
-        useCostomModuleButton = new Button(group, SWT.CHECK);
-        useCostomModuleButton.setText(Messages.getString("SalesforceStep1Form.fetchModuleList")); //$NON-NLS-1$
-        new Label(group, SWT.NONE); // Pachlaer
-
-        customModuleCombo = new LabelledCombo(
-                group,
-                Messages.getString("SalesforceStep1Form.customModule"), Messages.getString("SalesforceStep1Form.selectCustomModule"), null, 1, false); //$NON-NLS-1$ //$NON-NLS-2$
-
-        GridData gd = new GridData();
-        gd.widthHint = 140;
-        customModuleCombo.getCombo().setLayoutData(gd);
-
-        GridData cdata = new GridData(GridData.FILL);
-        cdata.horizontalAlignment = SWT.LEFT;
-
         checkButton = new Button(group, SWT.NONE);
         checkButton.setText(Messages.getString("SalesforceStep1Form.checkLogin")); //$NON-NLS-1$
         checkButton.setEnabled(false);
@@ -229,6 +197,19 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     HEIGHT_BUTTON_PIXEL);
         }
 
+        Group objectsGroup = Form.createGroup(group, 4, "objects"); //$NON-NLS-1$
+        GridData objectsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+        objectsLayoutData.horizontalSpan = 3;
+        objectsGroup.setLayoutData(objectsLayoutData);
+        moduleNameCombo = new LabelledCombo(
+                objectsGroup,
+                Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
+                null, 2, false);
+        String moduleName2 = getConnection().getModuleName();
+        if (moduleName2 != null && !"".equals(moduleName2)) {
+            moduleNameCombo.add(moduleName2);
+            moduleNameCombo.select(0);
+        }
         addUtilsButtonListeners();
 
     }
@@ -400,41 +381,10 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 } else {
                     loginOk = checkSalesfoceLogin(null, endPoint, username, pwd, null, null, null, null);
                 }
-
-                if (useCostomModuleButton.getSelection()) {
-                    getConnection().setModuleName(customModuleCombo.getText().trim());
-                    // appendCustomModule(customModuleCombo.getText().trim());
-                    // qli modified to fix the bug 6627.
-                    // setCustomModuleCombo(getConnection().getModuleName());
-
-                }
                 checkFieldsValue();
+                initModuleNames();
             }
         });
-
-        customModuleCombo.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setModuleName(customModuleCombo.getText());
-            }
-        });
-
-        useCostomModuleButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                connectFromCustomModuleName();
-                moduleNameCombo.setEnabled(!useCostomModuleButton.getSelection());
-                customModuleCombo.setEnabled(useCostomModuleButton.getSelection());
-                getConnection().setUseCustomModuleName(useCostomModuleButton.getSelection());
-                if (useCostomModuleButton.getSelection()) {
-                    getConnection().setModuleName(customModuleCombo.getText());
-                }
-                checkFieldsValue();
-            }
-        });
-
     }
 
     private void enableProxyParameters(boolean enable) {
@@ -449,12 +399,22 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     private void initModuleNames() {
 
         INode node = getSalesforceNode();
-
+        String[] customModules = getCustomModules();
+        List list = new ArrayList();
         if (node == null) {
             moduleNameCombo.add(Messages.getString("SalesforceStep1Form.account")); //$NON-NLS-1$
         } else {
             IElementParameter modulesNameParam = node.getElementParameter("MODULENAME"); //$NON-NLS-1$
             modulename = modulesNameParam.getListItemsValue();
+            for (int i = 0; i < modulename.length - 1; i++) {
+                list.add(i, modulename[i]);
+            }
+            for (int j = 0; j < customModules.length; j++) {
+                if (!list.contains(customModules[j])) {
+                    list.add(customModules[j]);
+                }
+            }
+            modulename = list.toArray();
 
             if (modulename == null || modulename.length <= 0) {
                 return;
@@ -489,64 +449,34 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         }
     }
 
-    private void connectFromCustomModuleName() {
-        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell(), 0) {
-
-            private IProgressMonitor monitorWrap;
-
-            @SuppressWarnings("restriction")
-            @Override
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitorWrap = new EventLoopProgressMonitor(monitor);
-                monitorWrap.beginTask(Messages.getString("SalesforceStep1Form.connection"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                testSalesforceLogin();
-                SalesforceModuleParseAPI checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
-                preparModuleInit();
-                String[] types = null;
-                DescribeGlobalResult describeGlobalResult = null;
-                com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
-                monitorWrap.worked(50);
-
-                try {
-                    if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
-                        describeGlobalResult = describeGlobal();
-                        if (describeGlobalResult != null) {
-                            types = describeGlobalResult.getTypes();
-                        }
-                    } else {
-                        describeGlobalPartner = describeGlobalPartner();
-                        if (describeGlobalPartner != null) {
-                            types = describeGlobalPartner.getTypes();
-                        }
-                    }
-                    customModuleCombo.removeAll();
-                    if (types != null) {
-                        for (int i = 0; i < types.length; i++) {
-                            if (!ArrayUtils.contains(modulename, types[i])) {
-                                customModuleCombo.add(types[i]);
-                            }
-                        }
-                    }
-
-                    monitorWrap.done();
-                } catch (Exception ex) {
-                    ExceptionHandler.process(ex);
-                }
-                customModuleCombo.select(0);
-
-            }
-
-        };
+    private String[] getCustomModules() {
+        SalesforceModuleParseAPI checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
+        preparModuleInit();
+        String[] types = null;
+        DescribeGlobalResult describeGlobalResult = null;
+        com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
 
         try {
-            progressDialog.executeProcess();
-        } catch (InvocationTargetException e) {
-            ExceptionHandler.process(e);
-            return;
-        } catch (Exception e) {
-            MessageBoxExceptionHandler.process(e);
-            return;
+            if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
+                describeGlobalResult = describeGlobal();
+                if (describeGlobalResult != null) {
+                    types = describeGlobalResult.getTypes();
+                }
+            } else {
+                describeGlobalPartner = describeGlobalPartner();
+                if (describeGlobalPartner != null) {
+                    types = describeGlobalPartner.getTypes();
+                }
+            }
+        } catch (UnexpectedErrorFault e) {
+            e.printStackTrace();
+            return null;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
         }
+        return types;
+
     }
 
     private void testSalesforceLogin() {
@@ -623,18 +553,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             return false;
         }
 
-        if (!useCostomModuleButton.getSelection()) {
-            if (!isValueValid(moduleNameCombo.getText())) {
-                updateStatus(IStatus.ERROR, "Your must give module for using Salesforce service"); //$NON-NLS-1$
-                return false;
-            }
-        } else {
-            if (!isValueValid(customModuleCombo.getText())) {
-                updateStatus(IStatus.ERROR, "Your must give module for using Salesforce service"); //$NON-NLS-1$
-                return false;
-            }
-        }
-
         if (!loginOk) {
             updateStatus(IStatus.ERROR, "Click Check Login to make sure that URL, username, password are correct."); //$NON-NLS-1$
             return false;
@@ -683,30 +601,11 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         setTextValue(getConnection().getProxyUsername(), proxyUsernameText);
         setTextValue(getConnection().getProxyPassword(), proxyPasswordText);
 
-        boolean useCustom = false;
-        useCustom = getConnection().isUseCustomModuleName();
-        if (!useCustom) {
-            if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
-                moduleNameCombo.setText(getConnection().getModuleName());
-            } else {
-                getConnection().setModuleName(moduleNameCombo.getText()); // Set defult value
-            }
+        if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
+            moduleNameCombo.setText(getConnection().getModuleName());
         } else {
-            if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
-                setCustomModuleCombo(getConnection().getModuleName());
-            } else {
-                getConnection().setModuleName(customModuleCombo.getText()); // Set defult value
-            }
+            getConnection().setModuleName(moduleNameCombo.getText()); // Set defult value
         }
-        useCostomModuleButton.setSelection(useCustom);
-        customModuleCombo.setEnabled(useCustom);
-        moduleNameCombo.setEnabled(!useCustom);
-    }
-
-    private void setCustomModuleCombo(String moduleName) {
-        customModuleCombo.removeAll();
-        customModuleCombo.add(moduleName);
-        customModuleCombo.select(0);
     }
 
     private void setTextValue(String value, LabelledText control) {
