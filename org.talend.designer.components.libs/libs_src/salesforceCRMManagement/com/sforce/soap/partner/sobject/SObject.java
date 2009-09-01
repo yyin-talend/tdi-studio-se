@@ -239,9 +239,9 @@ public class SObject  implements java.io.Serializable, org.apache.axis.encoding.
            java.lang.String mechType, 
            java.lang.Class _javaType,  
            javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+        // modified by wyang: for bug:8530 
+        // return new  org.apache.axis.encoding.ser.BeanDeserializer(_javaType, _xmlType, typeDesc);
+        return new org.talend.FSQueryResultBeanDeserializer(_javaType, _xmlType, typeDesc); 
     }
 
 }
