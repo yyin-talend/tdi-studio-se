@@ -47,7 +47,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
 
     protected IStructuredSelection selection;
 
-    private WizardFileSystemResourceExportPage1 mainPage;
+    protected WizardFileSystemResourceExportPage1 mainPage;
 
     protected String exportType;
 
