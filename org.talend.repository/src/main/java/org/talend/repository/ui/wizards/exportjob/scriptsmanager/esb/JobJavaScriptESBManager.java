@@ -187,7 +187,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
      * @param processItem
      * @param contextName
      */
-    private void generateESBActionFile(ProcessItem processItem, String contextName) {
+    protected void generateESBActionFile(ProcessItem processItem, String contextName) {
         String packageName = JavaResourcesHelper.getProjectFolderName(processItem)
                 + "." //$NON-NLS-1$
                 + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
@@ -249,7 +249,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         }
     }
 
-    private void addSubJobResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
+    protected void addSubJobResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
             Map<ExportChoice, Object> exportChoice, ExportFileResource libResource, ExportFileResource contextResource,
             ExportFileResource srcResource, String selectedJobVersion) {
 
@@ -276,7 +276,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
     }
 
-    private void prepareESBFiles(HashMap<String, String> jobMap, Map<ExportChoice, Object> exportChoice) {
+    protected void prepareESBFiles(HashMap<String, String> jobMap, Map<ExportChoice, Object> exportChoice) {
         String jobName = jobMap.keySet().iterator().next();
         String jobWithPackageName = jobMap.get(jobName);
         String jobAlias = jobWithPackageName.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -311,7 +311,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
     }
 
-    private void readAndReplaceInXmlTemplate(String inputFile, String outputFile, String jobName, String jobAlias,
+    protected void readAndReplaceInXmlTemplate(String inputFile, String outputFile, String jobName, String jobAlias,
             String jobPackage, Map<ExportChoice, Object> exportChoice) {
         FileReader fr;
         try {
@@ -352,7 +352,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
      * @param list
      * @return
      */
-    private ExportFileResource genMetaInfoFolder() {
+    protected ExportFileResource genMetaInfoFolder() {
         ExportFileResource metaInfoResource = new ExportFileResource(null, "META-INF"); //$NON-NLS-1$
 
         // generate the MANIFEST.MF file in the temp folder
@@ -408,7 +408,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         return metaInfoResource;
     }
 
-    private Manifest getManifest() throws IOException {
+    protected Manifest getManifest() throws IOException {
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
