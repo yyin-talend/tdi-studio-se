@@ -66,10 +66,14 @@
 	<PARAMETER
       NAME="END_DATE"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="10"
     >
       <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
     </PARAMETER>
+    
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="9">
+	 	<DEFAULT>The start date cannot be older than 30 days ago.</DEFAULT>
+	</PARAMETER>
   
     <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
        <ITEMS DEFAULT="Account">
