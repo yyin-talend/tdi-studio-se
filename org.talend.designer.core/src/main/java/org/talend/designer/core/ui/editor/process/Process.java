@@ -300,6 +300,18 @@ public class Process extends Element implements IProcess2 {
                 TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
         param.setReadOnly(true);
         addElementParameter(param);
+        
+        param = new ElementParameter(this);
+        param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
+        param.setCategory(EComponentCategory.MAIN);
+        param.setField(EParameterFieldType.DIRECTORY);
+        param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(
+                TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
+        param.setReadOnly(true);
+        addElementParameter(param);
 
         param = new ElementParameter(this);
         param.setName(TalendDesignerPrefConstants.DISPLAY_SUBJOBS);

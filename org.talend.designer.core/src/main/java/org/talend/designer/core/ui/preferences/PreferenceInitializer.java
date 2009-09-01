@@ -30,6 +30,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
+import org.talend.repository.ProjectManager;
 
 /**
  * Preference Initializer for the designer.
@@ -67,6 +68,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toPortableString());
+        // see feature 7758 add project dir to COMP_DEFAULT_PROJECT_DIR.
+        store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR, Platform.getLocation().toPortableString() + "/"
+                + ProjectManager.getInstance().getCurrentProject().getLabel());
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
         store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "none"); //$NON-NLS-1$
