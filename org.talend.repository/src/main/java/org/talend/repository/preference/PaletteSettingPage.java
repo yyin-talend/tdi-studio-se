@@ -332,7 +332,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
         List<ComponentSetting> components = getComponentsFromProject();
 
         for (ComponentSetting componentSetting : components) {
-            if (componentSetting.getName().equals(label) && componentSetting.getFamily().equals(family)) {
+            if (componentSetting.getName().equals(label) && componentSetting.getFamily() != null
+                    && componentSetting.getFamily().equals(family)) {
                 return !componentSetting.isHidden();
             }
         }
@@ -351,7 +352,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
             String label = names[1];
             List<ComponentSetting> components = getComponentsFromProject();
             for (ComponentSetting componentSetting : components) {
-                if (componentSetting.getFamily().equals(family) && componentSetting.getName().equals(label)) {
+                if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
+                        && componentSetting.getName().equals(label)) {
                     componentSetting.setHidden(!visible);
                     return;
                 }
