@@ -1172,7 +1172,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDbName(dbName);
         if (connParameters.getDbType().equals(EDatabaseTypeName.SQLITE.getXmlName())
                 || connParameters.getDbType().equals(EDatabaseTypeName.ACCESS.getXmlName())
-                || connParameters.getDbType().equals(EDatabaseTypeName.FIREBIRD.getXmlName())) {//$NON-NLS-1$ //$NON-NLS-1$
+                || connParameters.getDbType().equals(EDatabaseTypeName.FIREBIRD.getXmlName())) {
             String file = getValueFromRepositoryName(element, EConnectionParameterName.FILE.getName());
             connParameters.setFilename(file);
         }
@@ -1232,12 +1232,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.DRIVER_JAR.getName(), context)));
 
-        if (connParameters.getDbType().equals("SQLite")) {//$NON-NLS-1$
-            if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && "" //$NON-NLS-1$
-            .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
-                connParameters
-                        .setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
-            }
+        if (connParameters.getDbType().equals(EDatabaseTypeName.SQLITE.getXmlName())
+                || connParameters.getDbType().equals(EDatabaseTypeName.ACCESS.getXmlName())
+                || connParameters.getDbType().equals(EDatabaseTypeName.FIREBIRD.getXmlName())) {
+            connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
         }
         connParameters.setJdbcProperties(getParameterValueWithContext(element, EConnectionParameterName.PROPERTIES_STRING
                 .getName(), context));
