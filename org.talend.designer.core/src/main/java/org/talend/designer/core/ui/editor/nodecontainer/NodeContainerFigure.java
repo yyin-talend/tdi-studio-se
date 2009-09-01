@@ -172,7 +172,7 @@ public class NodeContainerFigure extends Figure {
             infoFigure.setVisible(false);
         }
 
-        if (errorFigure.isVisible() || warningFigure.isVisible()) {
+        if (errorFigure.isVisible() || warningFigure.isVisible() || infoFigure.isVisible()) {
             List<String> problemsList;
 
             String text = "<b>" + nodeContainer.getNode().getUniqueName() + "</b><br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -196,6 +196,9 @@ public class NodeContainerFigure extends Figure {
             if (errorFigure.isVisible()) {
                 warningFigure.setToolTip(null);
                 errorFigure.setToolTip(htmlStatusHint);
+            } else if (infoFigure.isVisible()) {
+                errorFigure.setToolTip(null);
+                warningFigure.setToolTip(null);
             } else {
                 errorFigure.setToolTip(null);
                 warningFigure.setToolTip(htmlStatusHint);
@@ -270,4 +273,19 @@ public class NodeContainerFigure extends Figure {
 
         ResourceDisposeUtil.disposeColor(rectFig.getForegroundColor());
     }
+
+    public void setInfoHint(String hintText) {
+        if (infoFigure.isVisible()) {
+            if (hintText.equals("") || hintText == null) { //$NON-NLS-1$
+                infoFigure.setToolTip(null);
+            } else {
+                htmlStatusHint.setText(hintText);
+                infoFigure.setToolTip(htmlStatusHint);
+            }
+        } else {
+            infoFigure.setToolTip(null);
+        }
+
+    }
+
 }

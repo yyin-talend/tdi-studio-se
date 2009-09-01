@@ -99,6 +99,7 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
         if (param != null) {
             boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
             nodeContainerFigure.updateStatus(node.getStatus(), showInfoFlag);
+            nodeContainerFigure.setInfoHint(node.getShowHintText());
         }
         return nodeContainerFigure;
     }
@@ -130,7 +131,10 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent changeEvent) {
-
+        if (changeEvent.getPropertyName().equals(EParameterName.HINT.getName())) {
+            Node node = ((NodeContainer) getModel()).getNode();
+            ((NodeContainerFigure) figure).setInfoHint(node.getShowHintText());
+        }
         if (changeEvent.getPropertyName().equals(Node.UPDATE_STATUS)) {
             Node node = ((NodeContainer) getModel()).getNode();
 
@@ -143,6 +147,7 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
                     if (status != null) {
                         ((NodeContainerFigure) this.getFigure()).updateStatus(status, showInfoFlag);
                     }
+                    ((NodeContainerFigure) this.getFigure()).setInfoHint(node.getShowHintText());
                 }
                 refreshVisuals();
             }
