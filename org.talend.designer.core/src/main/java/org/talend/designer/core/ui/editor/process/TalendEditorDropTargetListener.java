@@ -896,6 +896,23 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     if (component.getName().equalsIgnoreCase(needVlue3)) {
                         neededComponents.remove(component);
                     }
+                    if (productNameWanted.equalsIgnoreCase("DATABASE:TERADATA")) {
+                        needValue1 = "t" + name.getInputComponentName().substring(1, name.getInputComponentName().length());
+
+                        needValue2 = "t" + name.getOutPutComponentName().substring(1, name.getOutPutComponentName().length());
+
+                        needVlue3 = "tELT"
+                                + productNameWanted.substring(productNameWanted.indexOf(":") + 1, productNameWanted.length())
+                                + "Map";
+
+                        if (component.getName().equals(needValue1) || component.getName().equalsIgnoreCase(needValue2)) {
+                            neededComponents.add(component);
+                        }
+                        if (component.getName().equalsIgnoreCase(needVlue3) && value3) {
+                            neededComponents.remove(component);
+                        }
+
+                    }
                 }
             }
             if (type.toString().equalsIgnoreCase("Db Connections")) {
@@ -919,7 +936,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     if (component.getName().equalsIgnoreCase(needVlue3) && value3) {
                         neededComponents.add(component);
                     }
+
                 }
+
             }
 
             IComponent component = chooseOneComponent(neededComponents, name, quickCreateInput, quickCreateOutput);
