@@ -620,6 +620,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         webServiceUrlText.setEditable(!isContextMode());
         userNameText.setEditable(!isContextMode());
         passwordText.setEditable(!isContextMode());
+        batchSizeText.setEditable(!isContextMode());
         proxyHostText.setEditable(!isContextMode());
         proxyPortText.setEditable(!isContextMode());
         proxyUsernameText.setEditable(!isContextMode());

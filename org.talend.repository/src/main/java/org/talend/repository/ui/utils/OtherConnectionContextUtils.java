@@ -342,11 +342,13 @@ public final class OtherConnectionContextUtils {
         String url = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getWebServiceUrl());
         String userName = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getUserName());
         String password = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getPassword());
+        String batchSize = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getBatchSize());
         String queryCondition = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getQueryCondition());
 
         ssConn.setWebServiceUrl(url);
         ssConn.setUserName(userName);
         ssConn.setPassword(password);
+        ssConn.setBatchSize(batchSize);
         ssConn.setQueryCondition(queryCondition);
     }
 
