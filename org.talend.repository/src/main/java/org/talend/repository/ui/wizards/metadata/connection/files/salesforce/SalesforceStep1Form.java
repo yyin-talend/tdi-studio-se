@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
@@ -181,7 +182,11 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         proxyPasswordText = new LabelledText(proxyGroup, Messages.getString("SalesforceStep1Form.ProxyPassword")); //$NON-NLS-1$
         enableProxyParameters(false);
 
-        checkButton = new Button(group, SWT.NONE);
+        new Label(this, SWT.NONE);
+        new Label(this, SWT.NONE);
+        new Label(this, SWT.NONE);
+
+        checkButton = new Button(this, SWT.NONE);
         checkButton.setText(Messages.getString("SalesforceStep1Form.checkLogin")); //$NON-NLS-1$
         checkButton.setEnabled(false);
 
@@ -197,7 +202,10 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     HEIGHT_BUTTON_PIXEL);
         }
 
-        Group objectsGroup = Form.createGroup(group, 4, "objects"); //$NON-NLS-1$
+        new Label(this, SWT.NONE);
+        new Label(this, SWT.NONE);
+
+        Group objectsGroup = Form.createGroup(this, 4, "objects"); //$NON-NLS-1$
         GridData objectsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
         objectsLayoutData.horizontalSpan = 3;
         objectsGroup.setLayoutData(objectsLayoutData);
