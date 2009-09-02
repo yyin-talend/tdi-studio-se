@@ -58,6 +58,7 @@ public final class OtherConnectionContextUtils {
         WebServiceUrl,
         UserName,
         Password,
+        BatchSize,
         QueryCondition,
 
         // LDAP
@@ -302,6 +303,9 @@ public final class OtherConnectionContextUtils {
         paramName = prefixName + EParamName.Password;
         ConnectionContextHelper.createParameters(varList, paramName, ssConn.getPassword(), JavaTypesManager.PASSWORD);
 
+        paramName = prefixName + EParamName.BatchSize;
+        ConnectionContextHelper.createParameters(varList, paramName, ssConn.getBatchSize());
+
         paramName = prefixName + EParamName.QueryCondition;
         ConnectionContextHelper.createParameters(varList, paramName, ssConn.getQueryCondition());
 
@@ -323,6 +327,9 @@ public final class OtherConnectionContextUtils {
 
         paramName = prefixName + EParamName.Password;
         ssConn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.BatchSize;
+        ssConn.setBatchSize(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EParamName.QueryCondition;
         ssConn.setQueryCondition(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
@@ -355,11 +362,13 @@ public final class OtherConnectionContextUtils {
         String url = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getWebServiceUrl());
         String userName = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getUserName());
         String password = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getPassword());
+        String batchSize = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getBatchSize());
         String queryCondition = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getQueryCondition());
 
         cloneConn.setWebServiceUrl(url);
         cloneConn.setUserName(userName);
         cloneConn.setPassword(password);
+        cloneConn.setBatchSize(batchSize);
         cloneConn.setQueryCondition(queryCondition);
 
         ConnectionContextHelper.cloneConnectionProperties(ssConn, cloneConn);
