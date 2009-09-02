@@ -43,6 +43,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -122,7 +123,8 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
     @Override
     protected void initialize() {
         // init the metadata Table
-        metadataNameText.setText(metadataTable.getLabel());
+        String label = MetadataTool.validataValue(metadataTable.getLabel(), 0);
+        metadataNameText.setText(label);
         metadataCommentText.setText(metadataTable.getComment());
         metadataEditor.setMetadataTable(metadataTable);
         tableEditorView.setMetadataEditor(metadataEditor);
@@ -195,6 +197,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         metadataNameText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
+                MetadataTool.validateSchema(metadataNameText.getText());
                 metadataTable.setLabel(metadataNameText.getText());
                 checkFieldsValue();
             }
@@ -204,10 +207,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if ((!Character.isIdentifierIgnorable(e.character))
-                        && (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, "" + e.character))) { //$NON-NLS-1$
-                    e.doit = false;
-                }
+                MetadataTool.checkSchema(getShell(), e);
             }
         });
 

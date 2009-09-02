@@ -37,6 +37,7 @@ import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.Escape;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -107,7 +108,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
     @Override
     protected void initialize() {
         // init the metadata Table
-        metadataNameText.setText(metadataTable.getLabel());
+        String label = MetadataTool.validataValue(metadataTable.getLabel(), 0);
+        metadataNameText.setText(label);
         metadataCommentText.setText(metadataTable.getComment());
         metadataEditor.setMetadataTable(metadataTable);
         tableEditorView.setMetadataEditor(metadataEditor);
@@ -186,6 +188,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         metadataNameText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
+                MetadataTool.validateSchema(metadataNameText.getText());
                 metadataTable.setLabel(metadataNameText.getText());
                 checkFieldsValue();
             }
@@ -195,10 +198,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if ((!Character.isIdentifierIgnorable(e.character))
-                        && (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, "" + e.character))) { //$NON-NLS-1$
-                    e.doit = false;
-                }
+                MetadataTool.checkSchema(getShell(), e);
             }
         });
 

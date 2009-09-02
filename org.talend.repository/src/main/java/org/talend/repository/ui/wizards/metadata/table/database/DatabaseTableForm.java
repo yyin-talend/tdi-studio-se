@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -65,6 +64,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -84,7 +84,6 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.GuessSchemaUtil;
@@ -292,7 +291,8 @@ public class DatabaseTableForm extends AbstractForm {
         });
 
         // init the fields
-        nameText.setText(metadataTable.getLabel());
+        String label = MetadataTool.validataValue(metadataTable.getLabel(), 0);
+        nameText.setText(label);
         commentText.setText(metadataTable.getComment());
         if (metadataTable.getTableType() != null) {
             typeText.setText(Messages.getString("DatabaseTableForm.type", metadataTable.getTableType())); //$NON-NLS-1$
@@ -708,6 +708,7 @@ public class DatabaseTableForm extends AbstractForm {
 
             public void modifyText(final ModifyEvent e) {
                 String labelText = nameText.getText();
+                MetadataTool.validateSchema(labelText);
                 changeTableNavigatorStatus(labelText);
                 metadataTable.setLabel(labelText);
                 if (tableNavigator.getSelection().length > 0) {
@@ -721,10 +722,7 @@ public class DatabaseTableForm extends AbstractForm {
         nameText.addKeyListener(new KeyAdapter() {
 
             public void keyPressed(KeyEvent e) {
-                if ((!Character.isIdentifierIgnorable(e.character))
-                        && (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, "" + e.character))) { //$NON-NLS-1$
-                    e.doit = false;
-                }
+                MetadataTool.checkSchema(getShell(), e);
             }
         });
 
@@ -851,8 +849,8 @@ public class DatabaseTableForm extends AbstractForm {
                     MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
                     if (metadataColumn.getTalendType().equals(JavaTypesManager.DATE.getId())
                             || metadataColumn.getTalendType().equals(PerlTypesManager.DATE)) {
-                        if ("".equals(metadataColumn.getPattern())) {
-                            metadataColumn.setPattern(TalendTextUtils.addQuotes("dd-MM-yyyy"));
+                        if ("".equals(metadataColumn.getPattern())) { //$NON-NLS-1$
+                            metadataColumn.setPattern(TalendTextUtils.addQuotes("dd-MM-yyyy")); //$NON-NLS-1$
                         }
                     }
 
