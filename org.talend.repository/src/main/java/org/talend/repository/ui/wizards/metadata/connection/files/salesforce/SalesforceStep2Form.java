@@ -13,7 +13,6 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -46,7 +45,6 @@ import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -235,7 +233,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         }
     }
 
-  
+
     /*
      * (non-Javadoc)
      * 
@@ -444,10 +442,17 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                 List<IMetadataTable> schema = processDescription.getSchema();
                 if (schema != null && schema.size() > 0) {
                     if (useAlphbet) {
+                        if (metadataTableOrder == null) {
+                            metadataTableOrder = schema.get(0);
+                            metadataTableOrder = modifyMetadataTable();
+                        }
                         if (metadataTableOrder != null) {
                             schema.get(0).setListColumns(metadataTableOrder.getListColumns());
                         }
                     } else {
+                        if (metadataTableClone == null) {
+                            metadataTableClone = schema.get(0);
+                        }
                         if (metadataTableClone != null) {
                             schema.get(0).setListColumns(metadataTableClone.getListColumns());
                         }
@@ -569,10 +574,23 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         if (tableGet != null) {
             moduleViewer.getTable().clearAll();
             if (useAlphbet) {
+                if (metadataTableOrder == null) {
+                    List<IMetadataTable> schema2 = processDescription.getSchema();
+                    if (schema2 != null && schema2.size() > 0) {
+                        metadataTableOrder = schema2.get(0);
+                        metadataTableOrder = modifyMetadataTable();
+                    }
+                }
                 if (metadataTableOrder != null) {
                     tableGet.setListColumns(metadataTableOrder.getListColumns());
                 }
             } else {
+                if (metadataTableClone == null) {
+                    List<IMetadataTable> schema2 = processDescription.getSchema();
+                    if (schema2 != null && schema2.size() > 0) {
+                        metadataTableClone = schema2.get(0);
+                    }
+                }
                 if (metadataTableClone != null) {
                     tableGet.setListColumns(metadataTableClone.getListColumns());
                 }
