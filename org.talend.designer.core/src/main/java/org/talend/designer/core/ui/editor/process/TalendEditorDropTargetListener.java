@@ -753,7 +753,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (schemaParam == null) {
                 return null;
             }
-            // && node.isELTComponent()
+            if (node.isELTComponent()) {
+                node.setPropertyValue(EParameterName.LABEL.getName(), "__ELT_TABLE_NAME__");
+            }
             schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
             RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":" //$NON-NLS-1$
                     + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
