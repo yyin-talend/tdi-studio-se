@@ -19,8 +19,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,7 +81,8 @@ public class Problems {
 
     private static List<IProcess> openJobs = new ArrayList<IProcess>();
 
-    public static List<Node> nodeList = new ArrayList<Node>();
+    // public static List<Node> nodeList = new ArrayList<Node>();
+    public static Map<Node, StringBuffer> nodeList = new HashMap<Node, StringBuffer>();
 
     private static String currentTitle = ""; //$NON-NLS-1$
 
@@ -668,6 +672,7 @@ public class Problems {
 
     public static void addErrorMark() {
         nodeList.clear();
+        String befor = "Error in the component's properties:";
         for (IProcess process : openJobs) {
             if (((Process) process).isActivate()) {
                 for (INode inode : ((Process) process).getGraphicalNodes()) {
@@ -689,20 +694,27 @@ public class Problems {
                                                 }
                                             }
                                             if (tProblem.getUnitName().equals(node.getUniqueName())) {
-                                                nodeList.add(node);
+                                                // nodeList.add(node);
+                                                if (nodeList.get(node) != null) {
+                                                    nodeList.get(node).append("\r\n");
+                                                    nodeList.get(node).append(tProblem.getDescription());
+                                                } else {
+                                                    nodeList.put(node, new StringBuffer(tProblem.getDescription()));
+                                                }
+
                                             } else {
-                                                if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
-                                                    if (node.isErrorFlag() == true) {
-                                                        node.setErrorFlag(false);
-                                                        node.setErrorInfo(null);
-                                                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                                                        node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
-                                                    } else {
-                                                        continue;
-                                                    }
+                                                //                                                if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
+                                                if (node.isErrorFlag() == true) {
+                                                    node.setErrorFlag(false);
+                                                    node.setErrorInfo(befor + tProblem.getDescription());
+                                                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                                    node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                                                 } else {
                                                     continue;
                                                 }
+                                                // } else {
+                                                // continue;
+                                                // }
                                             }
 
                                         }
@@ -738,10 +750,15 @@ public class Problems {
                 continue;
             }
         }
-        for (Node node : nodeList) {
+        Iterator<Entry<Node, StringBuffer>> set = nodeList.entrySet().iterator();
+        while (set.hasNext()) {
+            Entry<Node, StringBuffer> en = set.next();
+            Node node = en.getKey();
+            String des = en.getValue().toString();
+
             if (node.isErrorFlag() == false) {
                 node.setErrorFlag(true);
-                node.setErrorInfo(null);
+                node.setErrorInfo(befor + des);
                 node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                 node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
             } else {
@@ -750,7 +767,21 @@ public class Problems {
                     node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                 }
             }
-
         }
+
+        // for (Node node : nodeList) {
+        // if (node.isErrorFlag() == false) {
+        // node.setErrorFlag(true);
+        // node.setErrorInfo(null);
+        //                node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+        //                node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
+        // } else {
+        // if (node.getErrorInfo() != null) {
+        // node.setErrorInfo(null);
+        //                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+        // }
+        // }
+        //
+        // }
     }
 }

@@ -97,6 +97,7 @@ public class NodeFigure extends Figure {
         this.setOpaque(false);
         hint = new SimpleHtmlFigure();
         this.setBorder(lineBorder);
+
     }
 
     public void setHint(String hintText) {
@@ -375,4 +376,5 @@ public class NodeFigure extends Figure {
         if (targetDummy != null)
             targetDummy.disposeColors();
     }
+
 }

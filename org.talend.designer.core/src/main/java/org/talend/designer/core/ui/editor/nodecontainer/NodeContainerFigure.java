@@ -19,13 +19,17 @@ import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.ResourceDisposeUtil;
@@ -35,6 +39,8 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.dialog.mergeorder.ErrorMessageDialog;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 
@@ -60,11 +66,17 @@ public class NodeContainerFigure extends Figure {
 
     private SimpleHtmlFigure htmlStatusHint;
 
+    private SimpleHtmlFigure hint;
+
+    private ImageFigure markFigure;
+
     public static final String BREAKPOINT_IMAGE = "icons/breakpoint.png"; //$NON-NLS-1$
 
     private LabelCenter parallelFigure;
 
     private RoundedRectangle rectFig;
+
+    private Image errorMarkImage = ImageProvider.getImage(EImage.Error_Mark);
 
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
@@ -107,14 +119,23 @@ public class NodeContainerFigure extends Figure {
         infoFigure.setSize(infoFigure.getPreferredSize());
         this.add(infoFigure);
 
+        markFigure = new ImageFigure();
+        markFigure.setImage(errorMarkImage);
+        this.add(markFigure, null, 0);
+
         if (PluginChecker.isTIS()) {
             addParallelFigure();
         }
 
         htmlStatusHint = new SimpleHtmlFigure();
 
+        hint = new SimpleHtmlFigure();
+
         initializeNodeContainer(nodeContainer.getNodeMarkRectangle());
         rectFig.setVisible(false);
+        markFigure.setVisible(false);
+
+        addListenerForDialog();
     }
 
     /**
@@ -140,6 +161,7 @@ public class NodeContainerFigure extends Figure {
 
     public void updateErrorFlag(boolean flag) {
         rectFig.setVisible(flag);
+        markFigure.setVisible(flag);
     }
 
     public void updateStatus(int status, boolean showInfoFlag) {
@@ -250,6 +272,8 @@ public class NodeContainerFigure extends Figure {
             parallelFigure.setLocation(nodeContainer.getParallelLocation());
         }
         rectFig.setLocation(nodeContainer.getMarkLocation());
+        markFigure.setLocation(nodeContainer.getErrorMarkLocation());
+
         super.paint(graphics);
     }
 
@@ -266,7 +290,7 @@ public class NodeContainerFigure extends Figure {
         rectFig.setLocation(new Point(rectangle.x, rectangle.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height));
         rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(255, 102, 102)));
-
+        markFigure.setSize(errorMarkImage.getImageData().width, errorMarkImage.getImageData().height);
     }
 
     public void disposeColors() {
@@ -286,6 +310,36 @@ public class NodeContainerFigure extends Figure {
             infoFigure.setToolTip(null);
         }
 
+    }
+
+    public void addListenerForDialog() {
+
+        markFigure.addMouseMotionListener(new MouseMotionListener() {
+
+            public void mouseDragged(MouseEvent me) {
+            }
+
+            public void mouseEntered(MouseEvent me) {
+                Node node = nodeContainer.getNode();
+                if (node.isErrorFlag()) {
+                    Shell shell = Display.getCurrent().getActiveShell();// getViewer().getControl().getShell();
+                    ErrorMessageDialog dialog = new ErrorMessageDialog(new Shell(shell), node);
+                    dialog.open();
+                }
+
+            }
+
+            public void mouseExited(MouseEvent me) {
+            }
+
+            public void mouseHover(MouseEvent me) {
+
+            }
+
+            public void mouseMoved(MouseEvent me) {
+            }
+
+        });
     }
 
 }

@@ -46,17 +46,17 @@ public class NodeErrorFigure extends Figure {
 
     public void updateVisible(boolean flag, String mess) {
 
-        if (flag && mess != null) {
-            errorFig.setVisible(flag);
-            errorFig.setPreferredSize(widthFi, heightFi);
-            errorFig.setSize(errorFig.getPreferredSize());
-            this.setSize(errorFig.getSize());
-        } else {
-            errorFig.setVisible(false);
-            errorFig.setPreferredSize(0, 0);
-            errorFig.setSize(new Dimension(0, 0));
+        // if (flag && mess != null) {
+        // errorFig.setVisible(flag);
+        // errorFig.setPreferredSize(widthFi, heightFi);
+        // errorFig.setSize(errorFig.getPreferredSize());
+        // this.setSize(errorFig.getSize());
+        // } else {
+        errorFig.setVisible(false);
+        errorFig.setPreferredSize(0, 0);
+        errorFig.setSize(new Dimension(0, 0));
 
-        }
+        // }
     }
 
     @Override

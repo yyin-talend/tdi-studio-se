@@ -65,6 +65,8 @@ public class NodeContainer extends Element {
 
     private SubjobContainer subjobContainer;
 
+    private Point errorMarkLocation = new Point();
+
     private Dimension breakpointSize;
 
     private Dimension errorSize;
@@ -74,6 +76,8 @@ public class NodeContainer extends Element {
     private Dimension infoSize;
 
     private Dimension parallelSize;
+
+    private Dimension errorMarkSize;
 
     public NodeContainer(Node node) {
         this.node = node;
@@ -101,12 +105,14 @@ public class NodeContainer extends Element {
             infoSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.PARALLEL_EXECUTION);
             parallelSize = new Dimension(image.getImageData().width, image.getImageData().height);
+            image = ImageProvider.getImage(EImage.Error_Mark);
+            errorMarkSize = new Dimension(image.getImageData().width, image.getImageData().height);
         }
     }
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, parallelLocationRectangle;
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, parallelLocationRectangle, errorMarkRectangle;
 
         breakpointLocation.x = nodeLocation.x - breakpointSize.width;
         breakpointLocation.y = nodeLocation.y - breakpointSize.height;
@@ -130,6 +136,11 @@ public class NodeContainer extends Element {
 
         markLocation.x = statusRectangle.x;
         markLocation.y = statusRectangle.y;
+
+        errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
+        errorMarkLocation.y = markLocation.y - errorMarkSize.height;
+        errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
+        statusRectangle.union(errorMarkRectangle);
 
         parallelLocation.x = nodeLocation.x - nodeSize.width / 2 - parallelSize.width;
         parallelLocation.y = nodeLocation.y - parallelSize.height;
@@ -142,7 +153,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareCleanStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle;
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, errorMarkRectangle;
 
         breakpointLocation.x = nodeLocation.x - breakpointSize.width;
         breakpointLocation.y = nodeLocation.y - breakpointSize.height;
@@ -167,19 +178,13 @@ public class NodeContainer extends Element {
         markLocation.x = statusRectangle.x;
         markLocation.y = statusRectangle.y;
 
+        errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
+        errorMarkLocation.y = markLocation.y - errorMarkSize.height;
+        errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
+        statusRectangle.union(errorMarkRectangle);
+
         return statusRectangle;
     }
-
-    //
-    // private Rectangle cleanRectangle;
-    //
-    // public Rectangle getCleanRectangle() {
-    // return this.cleanRectangle;
-    // }
-    //
-    // public void setCleanRectangle(Rectangle cleanRectangle) {
-    // this.cleanRectangle = cleanRectangle;
-    // }
 
     public Rectangle getNodeContainerRectangle() {
         Point nodeLocation;
@@ -222,6 +227,7 @@ public class NodeContainer extends Element {
         finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(perfRectangle).getUnion(statusRectangle);
 
         finalRect.height += errorNodeSize.height;// .getUnion(errorNodeRectangle)
+        finalRect.height += errorMarkSize.height;
         if (node.isFileScaleComponent()) {
             finalRect = finalRect.getUnion(progressNodeRectangle);// finalRect.height += progressNodeSize.height;//
         }
@@ -342,6 +348,15 @@ public class NodeContainer extends Element {
      */
     public Point getInfoLocation() {
         return this.infoLocation;
+    }
+
+    /**
+     * Getter for errorMarkLocation.
+     * 
+     * @return the errorMarkLocation
+     */
+    public Point getErrorMarkLocation() {
+        return this.errorMarkLocation;
     }
 
     /**

@@ -487,4 +487,5 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
         super.performRequest(req);
     }
+
 }

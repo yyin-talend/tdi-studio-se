@@ -256,7 +256,6 @@ public class Node extends Element implements INode {
     private void init(IComponent newComponent) {
         this.component = newComponent;
         this.label = component.getName();
-
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 
         labelToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_LABEL);
@@ -2922,4 +2921,5 @@ public class Node extends Element implements INode {
         }
         return needMultiSchema;
     }
+
 }

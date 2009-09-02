@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1504,14 +1506,18 @@ public class ProcessComposite extends Composite {
                         if (inode instanceof Node) {
                             Node node = (Node) inode;
                             if (Problems.nodeList.size() > 0) {
-                                for (Node no : Problems.nodeList) {
+                                String befor = "Error in the component's properties:";
+                                Iterator<Entry<Node, StringBuffer>> set = Problems.nodeList.entrySet().iterator();
+                                while (set.hasNext()) {
+                                    Entry<Node, StringBuffer> en = set.next();
+                                    Node no = en.getKey();
+                                    String des = en.getValue().toString();
                                     if (node == no) {
                                         node.setErrorFlag(true);
-                                        node.setErrorInfo(null);
+                                        node.setErrorInfo(befor + des);
                                         node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                                         node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
                                     }
-
                                 }
                             } else {
                                 if (node.isErrorFlag() == true) {
