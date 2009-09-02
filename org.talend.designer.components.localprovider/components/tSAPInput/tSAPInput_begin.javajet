@@ -8,6 +8,7 @@
 	
 	org.talend.core.model.metadata.IMetadataColumn
 	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaType
 	org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.process.ElementParameterParser
 	org.talend.core.model.process.IConnection
@@ -425,7 +426,7 @@ for(Map<String, String> schemaMap : schemas) {
 <%	
 }
 %>
-
+java.util.List<String> tempValueList_<%=cid%> = new java.util.ArrayList<String>();
 while(<%
 boolean firstWhilePart = true;
 for(Map<String, String> schemaMap : schemas) {
@@ -501,17 +502,15 @@ if(paramNames == null || paramNames.length != justColumnList.size()){
 %>	
 	
 	if(go_<%=schemaName %>){
+		tempValueList_<%=cid%>.clear();
 		<%if(paramType.equals("output_single")){%>
 			go_<%=schemaName %> = false;	
     		<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
             <%
-                int i = 0;
-                for(IMetadataColumn justColumn : justColumnList){            	
-            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(justColumn.getTalendType(), justColumn.isNullable());
+                for(int i=0;i<justColumnList.size();i++){
             %>
-            	<%=justConn.getName() %>.<%=justColumn.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(exportParameterList_<%=cid %>.getString(<%=paramNames[i] %>)); // "output_single"--<%=justColumn.getLabel() %>
+            	tempValueList_<%=cid%>.add(exportParameterList_<%=cid %>.getString(<%=paramNames[i] %>));
             <%	
-            	i++;	
             	}
             %>            	
         <%}else if(paramType.equals("output_structure")){%>
@@ -519,13 +518,10 @@ if(paramNames == null || paramNames.length != justColumnList.size()){
         	com.sap.mw.jco.JCO.Structure output_structure_<%=justConn.getName() %>_<%=cid %> = exportParameterList_<%=cid %>.getStructure(<%=tableName %>);
     		<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
             <%
-                int i = 0;
-                for(IMetadataColumn justColumn : justColumnList){            	
-            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(justColumn.getTalendType(), justColumn.isNullable());
+                for(int i=0;i<justColumnList.size();i++){ 
             %>
-            	<%=justConn.getName() %>.<%=justColumn.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(output_structure_<%=justConn.getName() %>_<%=cid %>.getString(<%=paramNames[i] %>)); // "output_structure"--<%=justColumn.getLabel() %>
+            	tempValueList_<%=cid%>.add(output_structure_<%=justConn.getName() %>_<%=cid %>.getString(<%=paramNames[i] %>));
             <%	
-            	i++;	
             	}
             %>            	        
         
@@ -535,16 +531,45 @@ if(paramNames == null || paramNames.length != justColumnList.size()){
     		}        	
     		<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
             <%
-                int i = 0;
-                for(IMetadataColumn justColumn : justColumnList){            	
-            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(justColumn.getTalendType(), justColumn.isNullable());
+            	for(int i=0;i<justColumnList.size();i++){
             %>
-            	<%=justConn.getName() %>.<%=justColumn.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(table_<%=schemaName %>_<%=cid %>.getString(<%=paramNames[i] %>)); // "output_structure"--<%=justColumn.getLabel() %>
+            	tempValueList_<%=cid%>.add(table_<%=schemaName %>_<%=cid %>.getString(<%=paramNames[i] %>));
             <%	
-            	i++;
             	}
+            }
             %>
-            
+        <%
+        	int i = 0;
+        	for(IMetadataColumn justColumn : justColumnList){
+        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(justColumn.getTalendType(), justColumn.isNullable());
+        	JavaType javaType = JavaTypesManager.getJavaTypeFromId(justColumn.getTalendType());
+			String patternValue = justColumn.getPattern() == null || justColumn.getPattern().trim().length() == 0 ? null : justColumn.getPattern();
+        %>
+        	if(tempValueList_<%=cid%>.isEmpty()!=true && <%=i%> < tempValueList_<%=cid%>.size() && tempValueList_<%=cid%>.get(<%=i%>)!=null){
+        	<%							
+				if(javaType == JavaTypesManager.DATE) { // Date
+        	%>
+        		<%=justConn.getName() %>.<%=justColumn.getLabel() %> = ParserUtils.parseTo_Date(tempValueList_<%=cid%>.get(<%=i%>), <%= patternValue %>);
+        	<%
+        		} else if(javaType == JavaTypesManager.OBJECT) { // OBJECT
+        	%>
+        		<%=justConn.getName() %>.<%=justColumn.getLabel() %> = tempValueList_<%=cid%>.get(<%=i%>);
+        	<%
+        		} else  { // other
+        	%>							
+        		<%=justConn.getName() %>.<%=justColumn.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(tempValueList_<%=cid%>.get(<%=i%>));	
+        	<%
+        		}
+        	%>	
+        	}else{
+				<%=justConn.getName() %>.<%=justColumn.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+        	}
+        <%
+        	i++;
+        	}
+        %>
+        
+        <%if(paramType.equals("output_table") || paramType.equals("table_output")){%> 
             if(go_<%=schemaName %>){
             	table_<%=schemaName %>_<%=cid %>.nextRow();
             }             		
