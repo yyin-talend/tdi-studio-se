@@ -396,20 +396,23 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
             setDefaultDestination();
 
-            // webXMLButton.setSelection(settings.getBoolean(STORE_WEBXML_ID));
-            // configFileButton.setSelection(settings.getBoolean(STORE_CONFIGFILE_ID));
-            // axisLibButton.setSelection(settings.getBoolean(STORE_AXISLIB_ID));
-            // wsddButton.setSelection(settings.getBoolean(STORE_WSDD_ID));
-            // wsdlButton.setSelection(settings.getBoolean(STORE_WSDL_ID));
-            // sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
-            // contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
-            // applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
-            // chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
-            // if (chkButton.isVisible()) {
-            // zipOption = String.valueOf(chkButton.getSelection());
-            // } else {
-            // zipOption = "false";
-            // }
+            IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$ 
+            if (section == null) {
+                section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$ 
+            }
+            if (section.get(ESB_EXPORT_TYPE) != null) {
+                esbTypeCombo.setText(section.get(ESB_EXPORT_TYPE));
+                if (section.get(ESB_SERVICE_NAME) != null) {
+                    esbServiceName.setText(section.get(ESB_SERVICE_NAME));
+                }
+                if (section.get(ESB_CATEGORY) != null) {
+                    esbCategory.setText(section.get(ESB_CATEGORY));
+                }
+                if (section.get(QUERY_MESSAGE_NAME) != null) {
+                    this.esbQueueMessageName.setText(section.get(QUERY_MESSAGE_NAME));
+                }
+            }
+
         }
 
         if (process.length > 0) {
@@ -893,4 +896,23 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             this.setPageComplete(false);
         }
     }
+
+    @Override
+    public boolean finish() {
+        if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
+            if (getDialogSettings() != null) {
+                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$ 
+                if (section == null) {
+                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$ 
+                }
+                section.put(ESB_EXPORT_TYPE, this.esbTypeCombo.getText());//$NON-NLS-1$//$NON-NLS-1$ 
+                section.put(ESB_SERVICE_NAME, this.esbServiceName.getText());
+                section.put(ESB_CATEGORY, this.esbCategory.getText());
+                section.put(QUERY_MESSAGE_NAME, this.esbQueueMessageName.getText());
+            }
+
+        }
+        return super.finish();
+    }
+
 }

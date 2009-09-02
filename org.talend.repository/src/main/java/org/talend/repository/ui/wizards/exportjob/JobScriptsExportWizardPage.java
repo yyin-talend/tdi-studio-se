@@ -96,6 +96,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected static final String DESTINATION_FILE = "destinationFile";//$NON-NLS-1$
 
+    protected static final String ESB_EXPORT_TYPE = "esbExportType";//$NON-NLS-1$
+
+    protected static final String ESB_SERVICE_NAME = "serviceName";//$NON-NLS-1$
+
+    protected static final String ESB_CATEGORY = "category";//$NON-NLS-1$
+
+    protected static final String QUERY_MESSAGE_NAME = "queryMessageName";//$NON-NLS-1$
+
     // widgets
     protected Button shellLauncherButton;
 

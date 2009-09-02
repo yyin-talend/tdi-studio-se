@@ -176,18 +176,21 @@ public class JavaJobExportReArchieveCreator {
     }
 
     private String[] getLibJarFilenames() {
-        File[] files = libFolder.listFiles(new FilenameFilter() {
+        if (libFolder != null) {
+            File[] files = libFolder.listFiles(new FilenameFilter() {
 
-            public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".jar") //$NON-NLS-1$ //$NON-NLS-2$
-                        || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
+                public boolean accept(File dir, String name) {
+                    return name.toLowerCase().endsWith(".jar") //$NON-NLS-1$ //$NON-NLS-2$
+                            || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
+                }
+            });
+            String[] filenames = new String[files.length];
+            for (int i = 0; i < files.length; i++) {
+                filenames[i] = files[i].getName();
             }
-        });
-        String[] filenames = new String[files.length];
-        for (int i = 0; i < files.length; i++) {
-            filenames[i] = files[i].getName();
+            return filenames;
         }
-        return filenames;
+        return null;
     }
 
     // hywang add for 6484
@@ -264,8 +267,10 @@ public class JavaJobExportReArchieveCreator {
             sb.append(fs[i] + " "); //$NON-NLS-1$
         }
         String[] fn = getLibJarFilenames();
-        for (int i = 0; i < fn.length; i++) {
-            sb.append("../" + LIB + "/" + fn[i] + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (fn != null) {
+            for (int i = 0; i < fn.length; i++) {
+                sb.append("../" + LIB + "/" + fn[i] + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
         }
 
         // hywang add for set drl path in classpass.jar
