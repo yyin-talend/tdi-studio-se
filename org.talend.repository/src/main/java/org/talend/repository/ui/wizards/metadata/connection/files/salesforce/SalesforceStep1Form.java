@@ -12,10 +12,11 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
-import java.rmi.RemoteException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -26,8 +27,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
@@ -41,7 +47,6 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractSalesforceStepForm;
 
 import com.sforce.soap.enterprise.DescribeGlobalResult;
-import com.sforce.soap.enterprise.fault.UnexpectedErrorFault;
 
 /**
  * DOC YeXiaowei class global comment. Detailled comment <br/>
@@ -389,8 +394,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 } else {
                     loginOk = checkSalesfoceLogin(null, endPoint, username, pwd, null, null, null, null);
                 }
-                checkFieldsValue();
-                initModuleNames();
+                connectFromCustomModuleName();
             }
         });
     }
@@ -404,36 +408,82 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     Object[] modulename = null;
 
-    private void initModuleNames() {
+    private void connectFromCustomModuleName() {
+        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell(), 0) {
 
-        INode node = getSalesforceNode();
-        String[] customModules = getCustomModules();
-        List list = new ArrayList();
-        if (node == null) {
-            moduleNameCombo.add(Messages.getString("SalesforceStep1Form.account")); //$NON-NLS-1$
-        } else {
-            IElementParameter modulesNameParam = node.getElementParameter("MODULENAME"); //$NON-NLS-1$
-            modulename = modulesNameParam.getListItemsValue();
-            for (int i = 0; i < modulename.length - 1; i++) {
-                list.add(i, modulename[i]);
-            }
-            for (int j = 0; j < customModules.length; j++) {
-                if (!list.contains(customModules[j])) {
-                    list.add(customModules[j]);
+            private IProgressMonitor monitorWrap;
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitorWrap = new EventLoopProgressMonitor(monitor);
+                monitorWrap.beginTask(Messages.getString("SalesforceStep1Form.connection"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$ 
+                // testSalesforceLogin();
+                SalesforceModuleParseAPI checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
+                preparModuleInit();
+                String[] types = null;
+                DescribeGlobalResult describeGlobalResult = null;
+                com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
+                monitorWrap.worked(50);
+
+                try {
+                    if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
+                        describeGlobalResult = describeGlobal();
+                        if (describeGlobalResult != null) {
+                            types = describeGlobalResult.getTypes();
+                        }
+                    } else {
+                        describeGlobalPartner = describeGlobalPartner();
+                        if (describeGlobalPartner != null) {
+                            types = describeGlobalPartner.getTypes();
+                        }
+                    }
+                    INode node = getSalesforceNode();
+
+                    List list = new ArrayList();
+                    if (node == null) {
+                        moduleNameCombo.add(Messages.getString("SalesforceStep1Form.account")); //$NON-NLS-1$
+                    } else {
+                        IElementParameter modulesNameParam = node.getElementParameter("MODULENAME"); //$NON-NLS-1$
+                        modulename = modulesNameParam.getListItemsValue();
+                        if (modulename != null && modulename.length > 1) {
+                            for (int i = 0; i < modulename.length - 1; i++) {
+                                list.add(i, modulename[i]);
+                            }
+                        }
+                        if (types != null && types.length > 0) {
+                            for (int j = 0; j < types.length; j++) {
+                                if (!list.contains(types[j])) {
+                                    list.add(types[j]);
+                                }
+                            }
+                        }
+                        modulename = list.toArray();
+
+                        if (modulename == null || modulename.length <= 0) {
+                            return;
+                        }
+                        moduleNameCombo.removeAll(); // First clear
+
+                        for (Object module : modulename) {
+                            moduleNameCombo.add(module.toString());
+                        }
+                    }
+                    monitorWrap.done();
+                } catch (Exception ex) {
+                    ExceptionHandler.process(ex);
                 }
+                moduleNameCombo.select(0);
             }
-            modulename = list.toArray();
 
-            if (modulename == null || modulename.length <= 0) {
-                return;
-            }
-            moduleNameCombo.removeAll(); // First clear
-
-            for (Object module : modulename) {
-                moduleNameCombo.add(module.toString());
-            }
-            moduleNameCombo.select(0);
-
+        };
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+            return;
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e);
+            return;
         }
     }
 
@@ -455,36 +505,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
             endPoint = DEFAULT_WEB_SERVICE_URL;
         }
-    }
-
-    private String[] getCustomModules() {
-        SalesforceModuleParseAPI checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
-        preparModuleInit();
-        String[] types = null;
-        DescribeGlobalResult describeGlobalResult = null;
-        com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
-
-        try {
-            if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
-                describeGlobalResult = describeGlobal();
-                if (describeGlobalResult != null) {
-                    types = describeGlobalResult.getTypes();
-                }
-            } else {
-                describeGlobalPartner = describeGlobalPartner();
-                if (describeGlobalPartner != null) {
-                    types = describeGlobalPartner.getTypes();
-                }
-            }
-        } catch (UnexpectedErrorFault e) {
-            e.printStackTrace();
-            return null;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return types;
-
     }
 
     private void testSalesforceLogin() {
