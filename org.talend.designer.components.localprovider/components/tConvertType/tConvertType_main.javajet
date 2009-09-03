@@ -175,22 +175,6 @@
 			}
 <%
 		} 
-
-		//Manual cast Map not contain columns
-		List<String> outLabelManualCasts = new ArrayList();
-		for(Map<String, String> manualColumn : manualtable){
-			String output = manualColumn.get("OUTPUT_COLUMN");
-			IMetadataColumn out = metadata.getColumn(output);
-			outLabelManualCasts.add(out.getLabel());
-		}
-		for(IMetadataColumn col:columns){
-			 String outLabel = col.getLabel();
-			if (! outLabelManualCasts.contains(outLabel)) {
-%>
-				<%=outconnName %>.<%=outLabel %> = <%=preconnName %>.<%=outLabel %>;
-<%
-			}
-		}
 	}//manual end.
 %>
 <% 
