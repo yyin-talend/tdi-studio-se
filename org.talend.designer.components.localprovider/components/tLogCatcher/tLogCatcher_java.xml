@@ -39,7 +39,7 @@ COMPATIBILITY="ALL"
         <COLUMN NAME="root_pid" TYPE="id_String" LENGTH="20"/>
         <COLUMN NAME="father_pid" TYPE="id_String" LENGTH="20"/>
         <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
-        <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="job" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="context" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="priority" TYPE="id_Integer" LENGTH="3"/>
         <COLUMN NAME="type" TYPE="id_String" LENGTH="255"/>
