@@ -62,6 +62,12 @@ public class DetecteViewImpactAction extends AContextualAction {
         return this.onlySimpleShow;
     }
 
+    /**
+     * 
+     * cli Comment method "setOnlySimpleShow".
+     * 
+     * only work for impact analysis
+     */
     public void setOnlySimpleShow(boolean onlySimpleShow) {
         this.onlySimpleShow = onlySimpleShow;
     }

@@ -26,6 +26,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
@@ -301,7 +302,7 @@ public class JobSettingsManager {
         parentPropertyType.setValue(""); //$NON-NLS-1$
         parentPropertyType.setCategory(EComponentCategory.EXTRA);
         parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
-        parentPropertyType.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        parentPropertyType.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         parentPropertyType.setNumRow(41);
         parentPropertyType.setShowIf(dbCondition);
         parentPropertyType.setGroup(IMPLICIT_GROUP);
@@ -316,7 +317,7 @@ public class JobSettingsManager {
         param.setValue(EmfComponent.BUILTIN);
         param.setCategory(EComponentCategory.EXTRA);
         param.setField(EParameterFieldType.TECHNICAL);
-        param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        param.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         param.setNumRow(41);
         param.setShowIf(dbCondition);
         param.setGroup(IMPLICIT_GROUP);

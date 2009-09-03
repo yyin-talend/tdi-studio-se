@@ -47,6 +47,7 @@ import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -692,7 +693,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
             public void widgetSelected(SelectionEvent e) {
                 RepositoryReviewDialog dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(),
-                        ERepositoryObjectType.METADATA, "DATABASE"); //$NON-NLS-1$
+                        ERepositoryObjectType.METADATA, ERepositoryCategoryType.DATABASE.getName());
 
                 if (dialog.open() == RepositoryReviewDialog.OK) {
                     setDbId(dialog.getResult().getObject().getId());

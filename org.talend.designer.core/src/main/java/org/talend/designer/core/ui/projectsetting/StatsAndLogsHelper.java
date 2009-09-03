@@ -21,6 +21,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -292,7 +293,7 @@ public class StatsAndLogsHelper extends Utils {
         parentPropertyType.setValue(""); //$NON-NLS-1$
         parentPropertyType.setCategory(EComponentCategory.STATSANDLOGS);
         parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
-        parentPropertyType.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        parentPropertyType.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         parentPropertyType.setNumRow(51);
         parentPropertyType
                 .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
@@ -308,7 +309,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setValue(preferenceStore.getString(languagePrefix + EParameterName.PROPERTY_TYPE.getName()));
         param.setNumRow(51);
         param.setField(EParameterFieldType.TECHNICAL);
-        param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        param.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         param
                 .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
 

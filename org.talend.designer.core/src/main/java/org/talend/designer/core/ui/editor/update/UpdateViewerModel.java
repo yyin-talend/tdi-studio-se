@@ -18,7 +18,6 @@ import java.util.List;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
-import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -41,9 +40,9 @@ class Job {
 
     private boolean readOnlyProcess = false;
 
-    
     /**
      * Getter for readOnlyProcess.
+     * 
      * @return the readOnlyProcess
      */
     public boolean isReadOnlyProcess() {
@@ -120,9 +119,9 @@ class Category {
     private EUpdateItemType type;
 
     /**
-     * only used for node icon.
+     * only used for node or nodeType icon.
      */
-    private Node node;
+    private Object node;
 
     public Category(Job parent, String name) {
         this.parent = parent;
@@ -156,11 +155,11 @@ class Category {
         this.type = type;
     }
 
-    public Node getNode() {
+    public Object getNode() {
         return this.node;
     }
 
-    public void setNode(Node node) {
+    public void setNode(Object node) {
         this.node = node;
     }
 

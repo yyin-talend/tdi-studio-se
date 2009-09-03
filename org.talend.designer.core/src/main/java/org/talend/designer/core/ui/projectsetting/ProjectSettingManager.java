@@ -25,6 +25,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -413,7 +414,7 @@ public class ProjectSettingManager extends Utils {
         parentPropertyType.setValue(preferenceStore.getString(getPreferenceName(EParameterName.PROPERTY_TYPE)));
         parentPropertyType.setCategory(EComponentCategory.EXTRA);
         parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
-        parentPropertyType.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        parentPropertyType.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         parentPropertyType.setNumRow(41);
         parentPropertyType.setShowIf(dbCondition);
         parentPropertyType.setGroup(IMPLICIT_GROUP);
@@ -428,7 +429,7 @@ public class ProjectSettingManager extends Utils {
         param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.PROPERTY_TYPE)));
         param.setCategory(EComponentCategory.EXTRA);
         param.setField(EParameterFieldType.TECHNICAL);
-        param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        param.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         param.setNumRow(41);
         param.setShowIf(dbCondition);
         param.setGroup(IMPLICIT_GROUP);

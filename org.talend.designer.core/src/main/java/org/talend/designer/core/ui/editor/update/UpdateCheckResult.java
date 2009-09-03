@@ -26,7 +26,10 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 
@@ -182,6 +185,20 @@ public class UpdateCheckResult extends UpdateResult {
                         category = node.getLabel() + UpdateManagerUtils.addBrackets(node.getUniqueName());
                     }
                 }
+                if (getUpdateObject() instanceof NodeType) {
+                    NodeType node = (NodeType) getUpdateObject();
+                    String uniqueName = null;
+                    for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
+                        if (EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
+                            uniqueName = param.getValue();
+                            break;
+                        }
+
+                    }
+                    if (uniqueName != null) {
+                        category = uniqueName;
+                    }
+                }
             }
             break;
         case JOB_PROPERTY_EXTRA:
@@ -234,6 +251,10 @@ public class UpdateCheckResult extends UpdateResult {
             String jobInfor = null;
             if (getJob() instanceof IProcess) {
                 jobInfor = RepositoryUpdateManager.getUpdateJobInfor(((IProcess) getJob()).getProperty());
+            }
+            if (getJob() instanceof org.talend.core.model.properties.Item) {
+                jobInfor = RepositoryUpdateManager.getUpdateJobInfor(((org.talend.core.model.properties.Item) getJob())
+                        .getProperty());
             }
             String others = null;
             if (getItemProcess() != null) { // update item

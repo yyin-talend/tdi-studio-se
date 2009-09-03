@@ -68,6 +68,7 @@ import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.utils.SAPConnectionUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -133,7 +134,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     /*
      * check context.
      */
-    private List<UpdateResult> checkContext() {
+    private List<UpdateResult> checkContext(boolean onlySimpleShow) {
         List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
         final IContextManager contextManager = getProcess().getContextManager();
         // record the unsame
@@ -181,7 +182,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 final ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(
                                         contextType, paramName);
                                 if (contextParameterType != null) {
-                                    if (!ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
+                                    if (onlySimpleShow
+                                            || !ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
                                         unsameMap.add(contextItem, paramName);
                                     }
                                     builtin = false;
@@ -367,14 +369,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     /*
      * check job settings parameters.
      */
-    private List<UpdateResult> checkMainParameters(EUpdateItemType type) {
+    private List<UpdateResult> checkMainParameters(EUpdateItemType type, boolean onlySimpleShow) {
         List<UpdateResult> mainResults = new ArrayList<UpdateResult>();
         switch (type) {
         case JOB_PROPERTY_EXTRA:
-            mainResults.addAll(checkJobSettingsParameters(EComponentCategory.EXTRA, type));
+            mainResults.addAll(checkJobSettingsParameters(EComponentCategory.EXTRA, type, onlySimpleShow));
             break;
         case JOB_PROPERTY_STATS_LOGS:
-            mainResults.addAll(checkJobSettingsParameters(EComponentCategory.STATSANDLOGS, type));
+            mainResults.addAll(checkJobSettingsParameters(EComponentCategory.STATSANDLOGS, type, onlySimpleShow));
             break;
         default:
             return Collections.emptyList();
@@ -383,7 +385,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return mainResults;
     }
 
-    private List<UpdateResult> checkJobSettingsParameters(EComponentCategory category, EUpdateItemType type) {
+    private List<UpdateResult> checkJobSettingsParameters(EComponentCategory category, EUpdateItemType type,
+            boolean onlySimpleShow) {
         List<UpdateResult> jobSettingsResults = new ArrayList<UpdateResult>();
         final IElementParameter propertyTypeParam = getProcess().getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
                 category);
@@ -448,7 +451,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                             }
                         }
-                        if (!sameValues) {
+                        if (onlySimpleShow || !sameValues) {
                             result = new UpdateCheckResult(getProcess());
                             result.setResult(type, EUpdateResult.UPDATE, repositoryConnection, source);
 
@@ -488,20 +491,20 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * check node parameters.
      */
     @SuppressWarnings("unchecked")
-    private List<UpdateResult> checkNodesParameters(EUpdateItemType type) {
+    private List<UpdateResult> checkNodesParameters(EUpdateItemType type, boolean onlySimpleShow) {
         List<UpdateResult> nodesResults = new ArrayList<UpdateResult>();
         for (Node node : (List<Node>) getProcess().getGraphicalNodes()) {
             switch (type) {
             case NODE_SCHEMA:
-                nodesResults.addAll(checkNodeSchemaFromRepository(node));
+                nodesResults.addAll(checkNodeSchemaFromRepository(node, onlySimpleShow));
                 break;
             case NODE_PROPERTY:
-                nodesResults.addAll(checkNodePropertiesFromRepository(node));
+                nodesResults.addAll(checkNodePropertiesFromRepository(node, onlySimpleShow));
                 break;
             case NODE_QUERY:
-                nodesResults.addAll(checkNodeQueryFromRepository(node));
+                nodesResults.addAll(checkNodeQueryFromRepository(node, onlySimpleShow));
             case NODE_SAP_FUNCTION:
-                nodesResults.addAll(checkNodeSAPFunctionFromRepository(node));
+                nodesResults.addAll(checkNodeSAPFunctionFromRepository(node, onlySimpleShow));
                 break;
             default:
                 return Collections.emptyList();
@@ -518,7 +521,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * @param node
      * @return
      */
-    private List<UpdateResult> checkNodeSAPFunctionFromRepository(final Node node) {
+    private List<UpdateResult> checkNodeSAPFunctionFromRepository(final Node node, boolean onlySimpleShow) {
         if (node == null) {
             return Collections.emptyList();
         }
@@ -578,7 +581,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 .getValue(), false);
                     }
 
-                    if (!same || !inputSame || !outputSame) {
+                    if (!same || !inputSame || !outputSame || onlySimpleShow) {
                         String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
                         UpdateCheckResult result = new UpdateCheckResult(node);
                         result.setResult(EUpdateItemType.NODE_SAP_FUNCTION, EUpdateResult.UPDATE, function, source);
@@ -600,14 +603,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * @param metadataTable
      * @return true if the data have been modified
      */
-    private List<UpdateResult> checkNodeSchemaFromRepository(final Node node) {
+    private List<UpdateResult> checkNodeSchemaFromRepository(final Node node, boolean onlySimpleShow) {
         if (node == null) {
             return Collections.emptyList();
         }
         List<UpdateResult> schemaResults = new ArrayList<UpdateResult>();
 
         if (PluginChecker.isEBCDICPluginLoaded()) {
-            List<UpdateResult> resultForEBCDIC = checkNodeSchemaFromRepositoryForEBCDIC(node);
+            List<UpdateResult> resultForEBCDIC = checkNodeSchemaFromRepositoryForEBCDIC(node, onlySimpleShow);
             if (resultForEBCDIC != null) {
                 schemaResults.addAll(resultForEBCDIC);
             }
@@ -673,7 +676,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 // (List<IElementParameter>) node.getElementParameters());
 
                                 IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
-                                if (!metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
+                                if (onlySimpleShow
+                                        || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
                                     result = new UpdateCheckResult(node);
                                     result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, copyOfrepositoryMetadata,
                                             source);
@@ -708,7 +712,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * @param node
      * @return
      */
-    private List<UpdateResult> checkNodeSchemaFromRepositoryForEBCDIC(final Node node) {
+    private List<UpdateResult> checkNodeSchemaFromRepositoryForEBCDIC(final Node node, boolean onlySimpleShow) {
         if (node == null) {
             return Collections.emptyList();
         }
@@ -780,8 +784,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             metadataTable = MetadataTool.getMetadataTableFromNode(node, schemaName);
 
                                             if (metadataTable != null
-                                                    && !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
-                                                            IMetadataColumn.OPTIONS_NONE)) {
+                                                    && (onlySimpleShow || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
+                                                            IMetadataColumn.OPTIONS_NONE))) {
 
                                                 List<Object> parameter = new ArrayList<Object>();
                                                 parameter.add(copyOfrepositoryMetadata);
@@ -826,7 +830,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * @return true if the data have been modified
      */
     @SuppressWarnings("unchecked")
-    private List<UpdateResult> checkNodePropertiesFromRepository(final Node node) {
+    private List<UpdateResult> checkNodePropertiesFromRepository(final Node node, boolean onlySimpleShow) {
         if (node == null) {
             return Collections.emptyList();
         }
@@ -932,7 +936,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             }
                         }
                     }
-                    if (!sameValues) {
+                    if (onlySimpleShow || !sameValues) {
                         result = new UpdateCheckResult(node);
                         // for DBConnection
                         // boolean builtIn = true;
@@ -1051,7 +1055,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     /*
      * check node query.
      */
-    private List<UpdateResult> checkNodeQueryFromRepository(final Node node) {
+    private List<UpdateResult> checkNodeQueryFromRepository(final Node node, boolean onlySimpleShow) {
         if (node == null) {
             return Collections.emptyList();
         }
@@ -1090,7 +1094,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             connectQuery = QueryUtil.checkAndAddQuotes(connectQuery);
                         }
 
-                        if (!connectQuery.equals(paramValue)) {
+                        if (onlySimpleShow || !connectQuery.equals(paramValue)) {
                             result = new UpdateCheckResult(node);
                             result.setResult(EUpdateItemType.NODE_QUERY, EUpdateResult.UPDATE, query, source);
                         }
@@ -1183,7 +1187,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return str.trim();
     }
 
-    private List<UpdateResult> checkJobletNodeReload() {
+    private List<UpdateResult> checkJobletNodeReload(boolean onlySimpleShow) {
         if (getProcess() == null || jobletProcessProvider == null) {
             return Collections.emptyList();
         }
@@ -1198,7 +1202,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                 final Date oldDate = this.jobletReferenceMap.get(id);
 
-                if (!modificationDate.equals(oldDate) && !getProcess().getId().equals(id)) {
+                if ((!modificationDate.equals(oldDate) || onlySimpleShow) && !getProcess().getId().equals(id)) {
                     List<INode> jobletNodes = findRelatedJobletNode(getProcess(), property.getLabel(), null);
                     if (jobletNodes != null && !jobletNodes.isEmpty()) {
                         String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + property.getLabel();
@@ -1303,10 +1307,15 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
 
         List<INode> jobletNodes = new ArrayList<INode>();
-
-        for (Node node : (List<Node>) process.getGraphicalNodes()) {
-            if (node.getComponent().getName().equals(newJobletName)) {
-                jobletNodes.add(node);
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                    if (service.isJobletComponent(node) && node.getComponent().getName().equals(newJobletName)) {
+                        jobletNodes.add(node);
+                    }
+                }
             }
         }
         return jobletNodes;
@@ -1320,6 +1329,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type) {
+        return getUpdatesNeeded(type, false);
+    }
+
+    public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type, boolean onlySimpleShow) {
 
         if (type == null) {
             return null;
@@ -1330,14 +1343,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         case NODE_SCHEMA:
         case NODE_QUERY:
         case NODE_SAP_FUNCTION:
-            tmpResults = checkNodesParameters(type);
+            tmpResults = checkNodesParameters(type, onlySimpleShow);
             break;
         case JOB_PROPERTY_EXTRA:
         case JOB_PROPERTY_STATS_LOGS:
-            tmpResults = checkMainParameters(type);
+            tmpResults = checkMainParameters(type, onlySimpleShow);
             break;
         case CONTEXT:
-            tmpResults = checkContext();
+            tmpResults = checkContext(onlySimpleShow);
             break;
         case JOBLET_SCHEMA:
             tmpResults = checkJobletNodeSchema();
@@ -1347,7 +1360,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             tmpResults = checkJobletNodesPropertyChanger();
             break;
         case RELOAD:
-            tmpResults = checkJobletNodeReload();
+            tmpResults = checkJobletNodeReload(onlySimpleShow);
             break;
         case JOBLET_CONTEXT:
             tmpResults = checkJobletNodesContext();

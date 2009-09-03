@@ -64,6 +64,7 @@ import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -502,32 +503,40 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                 Connection connection = connectionItem.getConnection();
                 String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
                         + connectionItem.getProperty().getLabel();
-                if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
+                if ((connection instanceof DelimitedFileConnection)
+                        && (repositoryValue.equals(ERepositoryCategoryType.DELIMITED.getName()))) {
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
-                if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
+                if ((connection instanceof PositionalFileConnection)
+                        && (repositoryValue.equals(ERepositoryCategoryType.POSITIONAL.getName()))) {
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
-                if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
+                if ((connection instanceof RegexpFileConnection)
+                        && (repositoryValue.equals(ERepositoryCategoryType.REGEX.getName()))) {
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
-                if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
+                if ((connection instanceof XmlFileConnection) && (repositoryValue.equals(ERepositoryCategoryType.XML.getName()))) {
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
-                if ((connection instanceof FileExcelConnection) && (repositoryValue.equals("EXCEL"))) { //$NON-NLS-1$
+                if ((connection instanceof FileExcelConnection)
+                        && (repositoryValue.equals(ERepositoryCategoryType.EXCEL.getName()))) {
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
-                if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
+                if ((connection instanceof GenericSchemaConnection)
+                        && (repositoryValue.equals(ERepositoryCategoryType.GENERIC.getName()))) {
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
-                if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                if ((connection instanceof LDAPSchemaConnection)
+                        && (repositoryValue.equals(ERepositoryCategoryType.LDAP.getName()))) {
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
-                if ((connection instanceof SalesforceSchemaConnection) && (repositoryValue.equals("SALESFORCE"))) { //$NON-NLS-1$
+                if ((connection instanceof SalesforceSchemaConnection)
+                        && (repositoryValue.equals(ERepositoryCategoryType.SALESFORCE.getName()))) {
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
 
-                if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
+                if ((connection instanceof DatabaseConnection)
+                        && (repositoryValue.startsWith(ERepositoryCategoryType.DATABASE.getName()))) {
                     String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
                     if (repositoryValue.contains(":")) { // database //$NON-NLS-1$
                         // is

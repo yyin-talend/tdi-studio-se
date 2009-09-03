@@ -293,9 +293,11 @@ public final class UpdateManagerUtils {
         Set<IProcess2> process2List = new HashSet<IProcess2>();
 
         for (UpdateResult result : updatesNeededResult) {
-            IProcess2 process2 = result.getItemProcess();
-            if (process2 != null) { // for item update
-                process2List.add(process2);
+            if (result.getItemProcess() instanceof IProcess2) {
+                IProcess2 process2 = (IProcess2) result.getItemProcess();
+                if (process2 != null) { // for item update
+                    process2List.add(process2);
+                }
             }
         }
         if (process2List.isEmpty()) {

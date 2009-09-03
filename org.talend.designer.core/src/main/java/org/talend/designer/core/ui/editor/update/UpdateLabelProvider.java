@@ -20,6 +20,8 @@ import org.talend.commons.ui.image.IImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage.EPosition;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
@@ -29,7 +31,9 @@ import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * ggu class global comment. Detailled comment
@@ -60,7 +64,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     switch (type) {
                     case JOB_PROPERTY_EXTRA:
                     case JOB_PROPERTY_STATS_LOGS:
-                        image = ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
+                        image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
                         break;
                     case CONTEXT:
                     case JOBLET_CONTEXT:
@@ -191,11 +195,24 @@ public class UpdateLabelProvider implements ITableLabelProvider {
         return false;
     }
 
-    private Image getImageFromNode(Node node) {
-        if (node == null) {
-            return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
+    private Image getImageFromNode(Object node) {
+        if (node != null) {
+            if (node instanceof Node) {
+                return CoreImageProvider.getComponentIcon(((Node) node).getComponent(), ICON_SIZE.ICON_16);
+            } else if (node instanceof NodeType) {
+                NodeType nodeType = (NodeType) node;
+                nodeType.getComponentName();
+                String componentName = nodeType.getComponentName();
+                IComponentsFactory instance = ComponentsFactoryProvider.getInstance();
+                if (instance != null && componentName != null) {
+                    IComponent component = instance.get(componentName);
+                    if (component != null) {
+                        return CoreImageProvider.getComponentIcon(component, ICON_SIZE.ICON_16);
+                    }
+                }
+            }
         }
-        return CoreImageProvider.getComponentIcon(node.getComponent(), ICON_SIZE.ICON_16);
+        return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
     }
 
     /**

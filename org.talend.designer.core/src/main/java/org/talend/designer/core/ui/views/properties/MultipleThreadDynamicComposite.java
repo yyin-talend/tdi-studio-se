@@ -58,6 +58,7 @@ import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnect
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -199,40 +200,52 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                             }
 
                             if (repositoryValue != null) {
-                                if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
+                                if ((connection instanceof DelimitedFileConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.DELIMITED.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
+                                if ((connection instanceof PositionalFileConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.POSITIONAL.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof FileExcelConnection) && (repositoryValue.equals("EXCEL"))) { //$NON-NLS-1$
+                                if ((connection instanceof FileExcelConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.EXCEL.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof EbcdicConnection) && (repositoryValue.equals("EBCDIC"))) { //$NON-NLS-1$
+                                if ((connection instanceof EbcdicConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.EBCDIC.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
+                                if ((connection instanceof RegexpFileConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.REGEX.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
+                                if ((connection instanceof XmlFileConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.XML.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
+                                if ((connection instanceof GenericSchemaConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.GENERIC.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                                if ((connection instanceof LDAPSchemaConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.LDAP.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
+                                if ((connection instanceof WSDLSchemaConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.WSDL.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof SalesforceSchemaConnection) && (repositoryValue.equals("SALESFORCE"))) { //$NON-NLS-1$
+                                if ((connection instanceof SalesforceSchemaConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.SALESFORCE.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof SAPConnection) && (repositoryValue.equals("SAP"))) { //$NON-NLS-1$
+                                if ((connection instanceof SAPConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.SAP.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
-                                if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
+                                if ((connection instanceof DatabaseConnection)
+                                        && (repositoryValue.startsWith(ERepositoryCategoryType.DATABASE.getName()))) {
                                     String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
                                     if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
                                         String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$;

@@ -203,7 +203,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
         if (!isOnlySimpleShow()) {
             createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         }
-        if (canCancel) {
+        if (canCancel || isOnlySimpleShow()) {
             createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
         }
     }

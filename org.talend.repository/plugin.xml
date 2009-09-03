@@ -278,12 +278,6 @@
              level="20"
              name="View Impact">
        </Action>
-       <Action
-             class="org.talend.repository.ui.actions.metadata.SimulateImpactAnalysisAction"
-             id="org.talend.repository.ui.actions.metadata.SimulateImpactAnalysis"
-             level="21"
-             name="Simulate impact analysis">
-       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

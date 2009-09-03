@@ -19,8 +19,11 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -75,7 +78,12 @@ public class UpdateContentProvider implements ITreeContentProvider {
                     if (job2 != null) {
                         if (job2 instanceof IProcess2) {
                             job.setJoblet(((IProcess2) job2).disableRunJobView()); // ?? joblet
-                            job.setReadOnlyProcess(result.isReadOnlyProcess()); 
+                            job.setReadOnlyProcess(result.isReadOnlyProcess());
+                        }
+                        if (job2 instanceof ProcessItem) {
+                            job.setJoblet(false);
+                        } else if (job2 instanceof JobletProcessItem) {
+                            job.setJoblet(true);
                         }
                     }
                     jobs.add(job);
@@ -88,7 +96,18 @@ public class UpdateContentProvider implements ITreeContentProvider {
                     if (result.getUpdateObject() instanceof Node) { // for node icon
                         category.setNode((Node) result.getUpdateObject());
                     }
-
+                    if (result.getUpdateObject() instanceof NodeType) { // for node icon
+                        category.setNode((NodeType) result.getUpdateObject());
+                    }
+                    if (result.getUpdateObject() instanceof List) { // for node icon
+                        List list = (List) result.getUpdateObject();
+                        if (list.size() > 0) {
+                            Object object = list.get(0);
+                            if (object instanceof Node) {
+                                category.setNode((Node) object);
+                            }
+                        }
+                    }
                     job.addCategory(category);
                 }
                 Item item = new Item(category, result);
