@@ -12,11 +12,17 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.actions;
 
+import java.util.Properties;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.intro.IIntroSite;
+import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -27,6 +33,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -36,7 +43,9 @@ import org.talend.repository.ui.actions.AContextualAction;
  * $Id$
  * 
  */
-public class OpenDiagramAction extends AContextualAction {
+public class OpenDiagramAction extends AContextualAction implements IIntroAction {
+
+    private Properties params;
 
     public OpenDiagramAction() {
         super();
@@ -50,7 +59,7 @@ public class OpenDiagramAction extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     protected void doRun() {
-        ISelection selection = getSelection();
+        ISelection selection = getSelectedObject();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         if (obj instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) obj;
@@ -107,5 +116,27 @@ public class OpenDiagramAction extends AContextualAction {
     @Override
     public Class getClassForDoubleClick() {
         return BusinessProcessItem.class;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
+     */
+    public void run(IIntroSite site, Properties params) {
+        this.params = params;
+        PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
+        doRun();
+
+    }
+
+    private ISelection getSelectedObject() {
+        if (params == null) {
+            return getSelection();
+        } else {
+            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"));
+            return new StructuredSelection(repositoryNode);
+
+        }
     }
 }

@@ -1,6 +1,7 @@
 package org.talend.designer.business.diagram.custom.actions;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -10,7 +11,11 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.intro.IIntroSite;
+import org.eclipse.ui.intro.config.IIntroAction;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
@@ -18,6 +23,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -25,6 +31,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -32,7 +39,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * $Id$
  * 
  */
-public class CreateDiagramAction extends AContextualAction {
+public class CreateDiagramAction extends AContextualAction implements IIntroAction {
 
     private RepositoryNode repositoryNode;
 
@@ -105,14 +112,16 @@ public class CreateDiagramAction extends AContextualAction {
             return null;
 
         } else {
-
-            if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER || repositoryNode.getType() == ENodeType.SYSTEM_FOLDER) {
-                path = RepositoryNodeUtilities.getPath(repositoryNode);
-            } else {
-                path = new Path(""); //$NON-NLS-1$
+            if (repositoryNode != null) {
+                if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER || repositoryNode.getType() == ENodeType.SYSTEM_FOLDER) {
+                    path = RepositoryNodeUtilities.getPath(repositoryNode);
+                } else {
+                    path = new Path(""); //$NON-NLS-1$
+                }
+                return path;
             }
-            return path;
         }
+        return null;
 
     }
 
@@ -132,5 +141,36 @@ public class CreateDiagramAction extends AContextualAction {
         }
 
         return null;
+    }
+
+    /*
+     * added by wchen for intro
+     * 
+     * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
+     */
+    public void run(IIntroSite site, Properties params) {
+        PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
+        setRepositoryNode(params);
+        doRun();
+    }
+
+    private void setRepositoryNode(Properties params) {
+
+        try {
+            IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(RepositoryView.ID);
+            if (findView == null) {
+                findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(RepositoryView.ID);
+            }
+            RepositoryView view = (RepositoryView) findView;
+
+            Object type = params.get("type");
+            if (ERepositoryObjectType.BUSINESS_PROCESS.name().equals(type)) {
+                RepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot()).getProcessNode();
+                view.getViewer().expandToLevel(processNode, 1);
+                this.repositoryNode = processNode;
+            }
+        } catch (PartInitException e) {
+            ExceptionHandler.process(e);
+        }
     }
 }

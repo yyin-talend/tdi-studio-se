@@ -13,10 +13,12 @@
 package org.talend.designer.core.ui.action;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -26,6 +28,8 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.intro.IIntroSite;
+import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -42,6 +46,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
@@ -49,6 +54,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -56,7 +62,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * $Id$
  * 
  */
-public class CreateProcess extends AContextualAction {
+public class CreateProcess extends AContextualAction implements IIntroAction {
 
     private static final String CREATE_LABEL = Messages.getString("CreateProcess.createJob"); //$NON-NLS-1$
 
@@ -109,6 +115,9 @@ public class CreateProcess extends AContextualAction {
             processWizard = new NewProcessWizard(null);
         } else {
             ISelection selection = getSelection();
+            if (selection == null) {
+                return;
+            }
             Object obj = ((IStructuredSelection) selection).getFirstElement();
             node = (RepositoryNode) obj;
             ItemCacheManager.clearCache();
@@ -185,4 +194,36 @@ public class CreateProcess extends AContextualAction {
         setEnabled(canWork);
     }
 
+    /*
+     * only use for creating a process in the intro by url
+     */
+    public void run(IIntroSite site, Properties params) {
+        PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
+        selectRootObject(params);
+        doRun();
+    }
+
+    private void selectRootObject(Properties params) {
+        try {
+            IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(RepositoryView.ID);
+            if (findView == null) {
+                findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(RepositoryView.ID);
+            }
+            RepositoryView view = (RepositoryView) findView;
+
+            Object type = params.get("type");
+            if (ERepositoryObjectType.PROCESS.name().equals(type)) {
+                RepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot()).getProcessNode();
+                if (processNode != null) {
+                    setWorkbenchPart(view);
+                    view.getViewer().expandToLevel(processNode, 1);
+                    view.getViewer().setSelection(new StructuredSelection(processNode));
+                }
+
+            }
+        } catch (PartInitException e) {
+            ExceptionHandler.process(e);
+        }
+
+    }
 }

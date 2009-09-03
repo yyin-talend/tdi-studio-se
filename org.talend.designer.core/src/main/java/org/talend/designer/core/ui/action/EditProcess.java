@@ -14,14 +14,19 @@ package org.talend.designer.core.ui.action;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.intro.IIntroSite;
+import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -44,6 +49,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -52,11 +58,13 @@ import org.talend.repository.ui.actions.AContextualAction;
  * $Id$
  * 
  */
-public class EditProcess extends AContextualAction {
+public class EditProcess extends AContextualAction implements IIntroAction {
 
     private static final String EDIT_LABEL = Messages.getString("EditProcess.editJob"); //$NON-NLS-1$
 
     private static final String OPEN_LABEL = Messages.getString("EditProcess.openJob"); //$NON-NLS-1$
+
+    private Properties params;
 
     public EditProcess() {
         super();
@@ -72,9 +80,14 @@ public class EditProcess extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     protected void doRun() {
-        ISelection selection = getSelection();
+        ISelection selection = getSelectedObject();
+        if (selection == null) {
+            return;
+        }
         Object obj = ((IStructuredSelection) selection).getFirstElement();
-
+        if (obj == null) {
+            return;
+        }
         RepositoryNode node = (RepositoryNode) obj;
         Property property = (Property) node.getObject().getProperty();
         ProcessItem processItem = null;
@@ -224,5 +237,26 @@ public class EditProcess extends AContextualAction {
     @Override
     public Class getClassForDoubleClick() {
         return ProcessItem.class;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
+     */
+    public void run(IIntroSite site, Properties params) {
+        this.params = params;
+        PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
+        doRun();
+    }
+
+    private ISelection getSelectedObject() {
+        if (params == null) {
+            return getSelection();
+        } else {
+            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"));
+            return new StructuredSelection(repositoryNode);
+
+        }
     }
 }
