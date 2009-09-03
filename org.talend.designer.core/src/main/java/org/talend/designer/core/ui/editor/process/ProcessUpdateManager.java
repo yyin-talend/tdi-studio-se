@@ -887,7 +887,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                 } else {
                                     // check the value
-                                    if (!param.getValue().equals(objectValue)) {
+                                    if (!param.getValue().equals("CustomModule") && !param.getValue().equals(objectValue)) {//$NON-NLS-1$
                                         if (repositoryConnection instanceof XmlFileConnectionImpl) {
                                             if ((((XmlFileConnectionImpl) repositoryConnection).getXmlFilePath().endsWith("xsd") || ((XmlFileConnectionImpl) repositoryConnection)
                                                     .getXmlFilePath().endsWith("xsd\""))
