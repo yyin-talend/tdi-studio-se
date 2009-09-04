@@ -1505,7 +1505,7 @@ public class DatabaseForm extends AbstractForm {
         clearContextParams();
         EDBParamName sidOrDatabase = null;
         // update the UI label
-        if (EDatabaseConnTemplate.isSchemaNeeded(getConnection().getDatabaseType())) {
+        if (EDatabaseTypeName.ORACLEFORSID.getProduct().equals(getConnection().getProductId())) {
             if (EDatabaseConnTemplate.ORACLESN.getDBDisplayName().equals(getConnection().getDatabaseType())) {
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.service_name")); //$NON-NLS-1$
                 sidOrDatabaseText.setLabelWidth(65);
