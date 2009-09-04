@@ -267,7 +267,7 @@ public class DeleteAction extends AContextualAction {
                 String label = property.getLabel();
                 String version = property.getVersion();
                 Item item = property.getItem();
-                if (item instanceof ProcessItem) {
+                if (!(item instanceof JobletProcessItem)) {
                     return list;
                 }
 
