@@ -28,6 +28,7 @@
       FIELD="FILE"
       NUM_ROW="20"
       REQUIRED="true"
+      REPOSITORY_VALUE="DATA_FILE"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/data.ebcdic"</DEFAULT>
     </PARAMETER>
