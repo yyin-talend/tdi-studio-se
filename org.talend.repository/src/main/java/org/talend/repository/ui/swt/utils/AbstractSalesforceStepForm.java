@@ -71,7 +71,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     private com.sforce.soap.partner.SoapBindingStub bindingPartner = null;
 
-    public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/10.0"; //$NON-NLS-1$
+    public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/16.0"; //$NON-NLS-1$
 
     public static final String TSALESFORCE_PARTNER_INPUT_URL = "https://test.salesforce.com/services/Soap/u/10.0"; //$NON-NLS-1$
 
