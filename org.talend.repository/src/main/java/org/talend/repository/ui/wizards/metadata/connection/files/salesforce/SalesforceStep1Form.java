@@ -502,9 +502,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             pwd = getContextModeManager().getOriginalValue(pwd);
         }
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the logic doesn't work with this url
-        if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
-            endPoint = DEFAULT_WEB_SERVICE_URL;
-        }
+        // if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
+        // endPoint = DEFAULT_WEB_SERVICE_URL;
+        // }
     }
 
     private void testSalesforceLogin() {
@@ -517,9 +517,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             pwd = getContextModeManager().getOriginalValue(pwd);
         }
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the logic doesn't work with this url
-        if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
-            endPoint = DEFAULT_WEB_SERVICE_URL;
-        }
+        // if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
+        // endPoint = DEFAULT_WEB_SERVICE_URL;
+        // }
     }
 
     @Override
