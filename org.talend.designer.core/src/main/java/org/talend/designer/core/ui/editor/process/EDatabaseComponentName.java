@@ -172,7 +172,10 @@ public enum EDatabaseComponentName {
     }
 
     public String getDBType() {
-        return dbTypeName.getDisplayName();
+        if (dbTypeName != null) {
+            return dbTypeName.getDisplayName();
+        }
+        return null;
     }
 
     public String getProductName() {
