@@ -605,6 +605,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 									isNotSetDefault=true;
 								}
 								
+								if(("Dom4j").equals(mode) && ("true").equals(nodeCheck)){
+%>
+								<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
+<%
+									continue;
+								}
 								if(javaType == JavaTypesManager.STRING){
 									if(column.isNullable()){
 %>
@@ -641,14 +647,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 										}else{
 <%
 									}
-								}
-								
-								if(("Dom4j").equals(mode) && ("true").equals(nodeCheck)){
-%>
-											<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
-										}
-<%
-									continue;
 								}
 								
 								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
