@@ -52,6 +52,7 @@ import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -827,12 +828,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     public void dropAccept(DropTargetEvent event) {
     }
 
-    boolean value1 = true;
-
-    boolean value2 = true;
-
-    boolean value3 = true;
-
     private void getAppropriateComponent(Item item, boolean quickCreateInput, boolean quickCreateOutput, TempStore store,
             ERepositoryObjectType type) {
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
@@ -853,100 +848,58 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // for database, file, webservices, saleforce ...
 
             String productNameWanted = name.getProductName();
-            String needValue1 = "tELT" + name.getInputComponentName().substring(1, name.getInputComponentName().length());
-
-            String needValue2 = "tELT" + name.getOutPutComponentName().substring(1, name.getOutPutComponentName().length());
-
-            String needVlue3 = "tELT"
-                    + productNameWanted.substring(productNameWanted.indexOf(":") + 1, productNameWanted.length()) + "Map";
+            EmfComponent emfComponent = null;
             List<IComponent> neededComponents = new ArrayList<IComponent>();
             for (IComponent component : components) {
                 if (component instanceof EmfComponent) {
-                    EmfComponent emfComponent = (EmfComponent) component;
+                    emfComponent = (EmfComponent) component;
                     String componentProductname = emfComponent.getRepositoryType();
-                    if (componentProductname == null) {
-                        continue;
+                    boolean value = true;
+                    if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
+                        if (emfComponent.getName().toUpperCase().endsWith("MAP")) {
+                            value = false;
+                        }
                     }
-                    if (productNameWanted.endsWith(componentProductname)) {
+                    boolean flag = filterComponent(component, name, type);
+                    if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
                         neededComponents.add(emfComponent);
                     }
-                }
-            }
-            if (type.toString().equalsIgnoreCase("Metadata schema")) {
-
-                for (IComponent component1 : neededComponents) {
-                    if (component1.getName().equalsIgnoreCase(needValue1)) {
-                        value1 = false;
-                    }
-                    if (component1.getName().equalsIgnoreCase(needValue2)) {
-                        value2 = false;
-                    }
 
                 }
-                for (IComponent component : components) {
-                    needValue1 = "tELT" + name.getInputComponentName().substring(1, name.getInputComponentName().length());
-
-                    needValue2 = "tELT" + name.getOutPutComponentName().substring(1, name.getOutPutComponentName().length());
-
-                    needVlue3 = "tELT"
-                            + productNameWanted.substring(productNameWanted.indexOf(":") + 1, productNameWanted.length()) + "Map";
-
-                    if ((component.getName().equals(needValue1) && value1)
-                            || (component.getName().equalsIgnoreCase(needValue2) && value2)) {
-                        neededComponents.add(component);
-                    }
-                    if (component.getName().equalsIgnoreCase(needVlue3)) {
-                        neededComponents.remove(component);
-                    }
-                    if (productNameWanted.equalsIgnoreCase("DATABASE:TERADATA")) {
-                        needValue1 = "t" + name.getInputComponentName().substring(1, name.getInputComponentName().length());
-
-                        needValue2 = "t" + name.getOutPutComponentName().substring(1, name.getOutPutComponentName().length());
-
-                        needVlue3 = "tELT"
-                                + productNameWanted.substring(productNameWanted.indexOf(":") + 1, productNameWanted.length())
-                                + "Map";
-
-                        if (component.getName().equals(needValue1) || component.getName().equalsIgnoreCase(needValue2)) {
-                            neededComponents.add(component);
-                        }
-                        if (component.getName().equalsIgnoreCase(needVlue3) && value3) {
-                            neededComponents.remove(component);
-                        }
-
-                    }
-                }
-            }
-            if (type.toString().equalsIgnoreCase("Db Connections")) {
-                for (IComponent component1 : neededComponents) {
-
-                    if (component1.getName().equalsIgnoreCase(needVlue3)) {
-                        value3 = false;
-                    }
-                }
-                for (IComponent component : components) {
-                    needValue1 = "tELT" + name.getInputComponentName().substring(1, name.getInputComponentName().length());
-
-                    needValue2 = "tELT" + name.getOutPutComponentName().substring(1, name.getOutPutComponentName().length());
-
-                    needVlue3 = "tELT"
-                            + productNameWanted.substring(productNameWanted.indexOf(":") + 1, productNameWanted.length()) + "Map";
-
-                    if (component.getName().equals(needValue1) || component.getName().equalsIgnoreCase(needValue2)) {
-                        neededComponents.remove(component);
-                    }
-                    if (component.getName().equalsIgnoreCase(needVlue3) && value3) {
-                        neededComponents.add(component);
-                    }
-
-                }
-
             }
 
             IComponent component = chooseOneComponent(neededComponents, name, quickCreateInput, quickCreateOutput);
             store.component = component;
         }
         store.componentName = name;
+    }
+
+    private boolean filterComponent(IComponent component, EDatabaseComponentName name, ERepositoryObjectType type) {
+        if (component != null && name != null && type != null) {
+            String originalFamilyName = component.getOriginalFamilyName();
+            if (originalFamilyName.startsWith("ELT")) {
+                String dbType = name.getDBType();
+                switch (name) {
+                case DBORACLEFORSID:
+                case DBORACLESN:
+                    dbType = EDatabaseTypeName.ORACLEFORSID.getProduct();
+                }
+                if (dbType != null && originalFamilyName.toUpperCase().endsWith(dbType.toUpperCase())) {
+                    final String suffix = "MAP";
+                    if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
+                        if (component.getName().toUpperCase().endsWith(suffix)) {
+                            return true;
+                        }
+                    }
+                    if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
+                        if (!component.getName().toUpperCase().endsWith(suffix)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
