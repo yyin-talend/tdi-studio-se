@@ -26,16 +26,11 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
-import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Job scripts export wizard. <br/>
@@ -138,14 +133,6 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
     @Override
     public boolean performCancel() {
         ProcessorUtilities.resetExportConfig();
-        ProcessTypeImpl.lazyBool = false;
-
-        try {
-            ProxyRepositoryFactory.getInstance().initialize();
-            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
         return true;
     }
 }

@@ -751,29 +751,30 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     @Override
     public List<String> getJobContexts(ProcessItem processItem) {
         List<String> contextNameList = new ArrayList<String>();
-        if (((ProcessTypeImpl) processItem.getProcess()).lazyBool == true) {
-            for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getLazyContext()) {
-                if (o instanceof ContextType) {
-                    ContextType context = (ContextType) o;
-                    if (contextNameList.contains(context.getName())) {
-                        continue;
-                    }
-                    contextNameList.add(context.getName());
+        for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getContext()) {
+            if (o instanceof ContextType) {
+                ContextType context = (ContextType) o;
+                if (contextNameList.contains(context.getName())) {
+                    continue;
                 }
+                contextNameList.add(context.getName());
             }
-            return contextNameList;
-        } else {
-            for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getContext()) {
-                if (o instanceof ContextType) {
-                    ContextType context = (ContextType) o;
-                    if (contextNameList.contains(context.getName())) {
-                        continue;
-                    }
-                    contextNameList.add(context.getName());
-                }
-            }
-            return contextNameList;
         }
+        return contextNameList;
+    }
+
+    public List<String> getJobContextsComboValue(ProcessItem processItem) {
+        List<String> contextNameList = new ArrayList<String>();
+        for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getContext()) {
+            if (o instanceof ContextType) {
+                ContextType context = (ContextType) o;
+                if (contextNameList.contains(context.getName())) {
+                    continue;
+                }
+                contextNameList.add(context.getName());
+            }
+        }
+        return contextNameList;
     }
 
     /*

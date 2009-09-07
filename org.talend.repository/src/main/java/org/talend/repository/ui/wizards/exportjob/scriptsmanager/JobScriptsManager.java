@@ -111,8 +111,7 @@ public abstract class JobScriptsManager {
 
     /**
      * 
-     * DOC Represent exportchoice <br/>
-     * .
+     * DOC Represent exportchoice <br/> .
      * 
      * $Id: JobScriptsExportWizardPage.java 1 2007-1-31下�?�06:14:19 +0000 ylv $
      * 
@@ -131,7 +130,7 @@ public abstract class JobScriptsManager {
         needJobItem,
         needJobScript,
         needSourceCode, // only usefull for Java, as source code is job script in Perl. Activated when needJobItem is
-                        // selected
+        // selected
         needContext,
         applyToChildren,
         doNotCompileCode,
@@ -696,5 +695,16 @@ public abstract class JobScriptsManager {
             projectUrls.add(projectURL);
             curResource.addResources(relativePath, projectUrls);
         }
+    }
+
+    /**
+     * DOC Administrator Comment method "getJobContextsComboValue".
+     * 
+     * @param item
+     * @return
+     */
+    public List<String> getJobContextsComboValue(ProcessItem item) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

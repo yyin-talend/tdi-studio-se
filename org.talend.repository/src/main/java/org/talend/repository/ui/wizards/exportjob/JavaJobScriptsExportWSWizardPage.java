@@ -45,7 +45,6 @@ import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.documentation.ExportFileResource;
@@ -295,7 +294,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     @Override
     protected String getOutputSuffix() {
-        ProcessTypeImpl.lazyBool = true;
         if (getCurrentExportType().equals(EXPORTTYPE_WSWAR)) {
             return ".war"; //$NON-NLS-1$
         } else if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
@@ -522,7 +520,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             } catch (PersistenceException e) {
                 throw new RuntimeException(e);
             }
-            List<String> contextNames = manager.getJobContexts(item);
+            List<String> contextNames;
+            contextNames = manager.getJobContexts(item);
+
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);
