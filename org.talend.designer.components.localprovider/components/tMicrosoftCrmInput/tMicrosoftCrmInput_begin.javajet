@@ -107,7 +107,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
         %>
             			com.microsoft.schemas.crm._2006.query.ArrayOfAnyType values_<%=conditionID%> = com.microsoft.schemas.crm._2006.query.ArrayOfAnyType.Factory.newInstance();
             			org.xmlsoap.schemas.soap.encoding.String StringValue_<%=conditionID%> = org.xmlsoap.schemas.soap.encoding.String.Factory.newInstance();
-            			StringValue_<%=conditionID%>.setStringValue("<%=keyColumn.get("RVALUE").replaceAll("\"","")%>");
+            			StringValue_<%=conditionID%>.setStringValue(<%=keyColumn.get("RVALUE")%>);
             			values_<%=conditionID%>.setValueArray(new org.xmlsoap.schemas.soap.encoding.String[] { StringValue_<%=conditionID%> });
             			condition_<%=conditionID%>.setValues(values_<%=conditionID%>);
        	<%
