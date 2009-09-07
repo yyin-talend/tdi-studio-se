@@ -119,6 +119,10 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private SalesforceModuleParseAPI salesforceAPI = new SalesforceModuleParseAPI();
 
+    Object[] modulename = null;
+
+    Object[] standardModulename = null;
+
     /**
      * DOC YeXiaowei SalesforceStep1Form constructor comment.
      * 
@@ -369,7 +373,15 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 checkFieldsValue();
                 String moduleName = moduleNameCombo.getText();
                 getConnection().setModuleName(moduleName);
+
+                List list = getModuleName();
+                if (moduleName != null && !"".equals(moduleName) && list != null && !list.contains(moduleName)) {
+                    getConnection().setUseCustomModuleName(true);
+                } else {
+                    getConnection().setUseCustomModuleName(false);
+                }
             }
+
         });
 
         checkButton.addSelectionListener(new SelectionAdapter() {
@@ -395,8 +407,30 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     loginOk = checkSalesfoceLogin(null, endPoint, username, pwd, null, null, null, null);
                 }
                 connectFromCustomModuleName();
+
             }
         });
+    }
+
+    /**
+     * DOC zli Comment method "getModuleName".
+     * 
+     * @return
+     */
+    private List getModuleName() {
+        INode node = getSalesforceNode();
+        List list = new ArrayList();
+        if (node != null) {
+            IElementParameter modulesNameParam = node.getElementParameter("MODULENAME"); //$NON-NLS-1$
+            standardModulename = modulesNameParam.getListItemsValue();
+            if (standardModulename != null && standardModulename.length > 1) {
+                for (int i = 0; i < standardModulename.length - 1; i++) {
+                    list.add(i, standardModulename[i]);
+                }
+            }
+
+        }
+        return list;
     }
 
     private void enableProxyParameters(boolean enable) {
@@ -405,8 +439,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         proxyUsernameText.setEnabled(enable);
         proxyPasswordText.setEnabled(enable);
     }
-
-    Object[] modulename = null;
 
     private void connectFromCustomModuleName() {
         ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell(), 0) {
@@ -631,6 +663,12 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
         if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
             moduleNameCombo.setText(getConnection().getModuleName());
+            List moduleName2 = getModuleName();
+            if (moduleName2 != null && !moduleName2.contains(getConnection().getModuleName())) {
+                getConnection().setUseCustomModuleName(true);
+            } else {
+                getConnection().setUseCustomModuleName(false);
+            }
         } else {
             getConnection().setModuleName(moduleNameCombo.getText()); // Set defult value
         }
