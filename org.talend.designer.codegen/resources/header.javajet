@@ -256,7 +256,7 @@ private class TalendException extends Exception {
 		try {
 			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
 				if (m.getName().compareTo(currentComponent + "_error") == 0) {
-					m.invoke(<%=process.getName() %>.this, new Object[] { e , globalMap});
+					m.invoke(<%=process.getName() %>.this, new Object[] { e , currentComponent, globalMap});
 					break;
 				}
 			}
@@ -331,7 +331,7 @@ private class TalendException extends Exception {
 	for (INode node : processNodes) {
 		if (node.isActivate()) {
 		    %>
-            public void <%=node.getUniqueName() %>_error(Exception exception, final java.util.Map<String, Object> globalMap) throws TalendException {
+            public void <%=node.getUniqueName() %>_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
                 end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
                 <%
                 boolean ifBeforRunError = NodeUtil.checkComponentErrorConnectionAfterNode(node);
@@ -392,7 +392,7 @@ private class TalendException extends Exception {
                     }
                 }
                 %>
-                <%=node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, globalMap);
+                <%=node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, errorComponent, globalMap);
             }
             <%
 		}
@@ -400,9 +400,28 @@ private class TalendException extends Exception {
 	for (INode node : processNodes) {
 		if (node.isDesignSubjobStartNode()) {
 %>
-			public void <%=node.getUniqueName() %>_onSubJobError(Exception exception, final java.util.Map<String, Object> globalMap) throws TalendException {
+			public void <%=node.getUniqueName() %>_onSubJobError(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 <%
 			List< ? extends IConnection> conns = node.getOutgoingConnections();
+			int count = 0;
+			for (IConnection conn : conns) {
+				if (conn.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)) {
+					count++;
+				}
+			}				
+			
+			String label = "ERROR";
+			
+			if(count == 0){//FATAL
+				label = "FATAL";
+			}else{//ERROR------>RunSubJobError 
+				label = "ERROR";
+			}
+%>
+
+resumeUtil.addLog(FormatterUtils.format_Date(new Date(), "mm:ss.S"), "SYSTEM_LOG", "NODE:"+ errorComponent, "", "", Thread.currentThread().getId()+ "", "<%=label %>", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception));
+
+<%			
 			for (IConnection conn : conns) {
 				if (conn.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)) {
 %>

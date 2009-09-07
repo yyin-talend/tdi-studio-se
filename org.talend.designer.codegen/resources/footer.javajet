@@ -39,7 +39,11 @@
     	exist_tParallelize = true;
     }
 %>
-    public boolean watch = false;
+	public String resuming_logs_dir_path = null;
+	public String resuming_checkpoint_path = null;
+	public String parent_part_launcher = null; 
+	    
+    public boolean watch = false;	  
     public int portStats = 3334;
     public int portTraces = 4334;
     public String clientHost;
@@ -114,7 +118,7 @@
     
     
     public int runJobInTOS(String[] args) {
-    
+    	
         String lastStr = "";
         for (String arg : args) {
             if (arg.equalsIgnoreCase("--context_param")) {
@@ -143,6 +147,13 @@
     	}else{
     		isChildJob = true;
     	}
+    	
+    	//Resume: init the resumeUtil
+    	resumeUtil = new ResumeUtil(resuming_logs_dir_path);
+		resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
+    	
+    	//Resume: jobStart
+    	resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "JOB_STARTED", "JOB:" + jobName, parent_part_launcher, "", Thread.currentThread().getId() + "", "","","","");    	
     	
     	try {
     		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/Default.properties");    		
@@ -362,6 +373,10 @@
 		}		
 <%
     	}	
+%>
+
+		if (resuming_checkpoint_path == null || resuming_checkpoint_path.equals("null")) {
+<%
 
 	//5. all others sub-job (MultiThread mode)
 	if(isRunInMultiThread){
@@ -432,6 +447,18 @@
 }// end if(isRunInMultiThread)
 %>
 
+} else{
+	try {
+		ResumeUtil.invokeTargetCheckPoint(resuming_checkpoint_path, this, this.globalMap);
+	} catch (Exception e_tRunJob_1) {
+		status = "failure";
+		e_tRunJob_1.printStackTrace();
+		globalMap.put("tRunJob_1_SUBPROCESS_STATE", -1);
+
+	} finally {
+	}
+}
+
 <%
 //6. run the post-job
  if(!postjobNodes.isEmpty()){
@@ -480,6 +507,8 @@
 	}	
 %>
 	
+	resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "JOB_ENDED", "JOB:" + jobName, parent_part_launcher, "", Thread.currentThread().getId() + "", "","","","");
+    
     if(errorCode == null) {
          return status != null && status.equals("failure") ? 1 : 0;	
     } else {   
@@ -487,8 +516,14 @@
     }
   }
 	
-	private void evalParam(String arg) {	   
-		if (arg.startsWith("--watch")) {
+	private void evalParam(String arg) {
+		if (arg.startsWith("--resuming_logs_dir_path")) {
+			resuming_logs_dir_path = arg.substring(25);
+		} else if (arg.startsWith("--resuming_checkpoint_path")) {
+			resuming_checkpoint_path = arg.substring(27);
+		} else if (arg.startsWith("--parent_part_launcher")) {
+			parent_part_launcher = arg.substring(23);
+		} else if (arg.startsWith("--watch")) {
     		watch = true;
     	} else if (arg.startsWith("--stat_port=")) {
     		portStats = Integer.parseInt(arg.substring(12));
@@ -521,5 +556,7 @@
 
 	public String getStatus() {
 		return status;
-	}		
+	}
+	
+	ResumeUtil resumeUtil = null;			
 }
