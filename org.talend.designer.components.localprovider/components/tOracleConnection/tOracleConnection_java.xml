@@ -144,7 +144,7 @@
     </PARAMETER>
 
     <PARAMETER 
-      NAME="DB_SCHEMA"
+      NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="40"
       REPOSITORY_VALUE="SCHEMA"
