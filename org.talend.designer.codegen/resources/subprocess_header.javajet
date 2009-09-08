@@ -767,7 +767,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
     	if(activeResume){
     		EConnectionType lineStyle = conn.getLineStyle();
     		%>
-    			resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=subTree.getName() %>:<%=conn.getName() %>", "", "", Thread.currentThread().getId() + "", "", "", "", "");
+    			resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=subTree.getName() %>:<%=conn.getName() %>", "", Thread.currentThread().getId() + "", "", "", "", "");
     		<%
     	}
     }

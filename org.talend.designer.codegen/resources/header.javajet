@@ -419,7 +419,7 @@ private class TalendException extends Exception {
 			}
 %>
 
-resumeUtil.addLog(FormatterUtils.format_Date(new Date(), "mm:ss.S"), "SYSTEM_LOG", "NODE:"+ errorComponent, "", "", Thread.currentThread().getId()+ "", "<%=label %>", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception));
+resumeUtil.addLog(FormatterUtils.format_Date(new Date(), "mm:ss.S"), "SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "<%=label %>", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception));
 
 <%			
 			for (IConnection conn : conns) {

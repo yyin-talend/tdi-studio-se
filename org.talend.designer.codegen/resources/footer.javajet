@@ -153,7 +153,7 @@
 		resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
     	
     	//Resume: jobStart
-    	resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "JOB_STARTED", "JOB:" + jobName, parent_part_launcher, "", Thread.currentThread().getId() + "", "","","","");    	
+    	resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","");    	
     	
     	try {
     		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/Default.properties");    		
@@ -507,7 +507,7 @@
 	}	
 %>
 	
-	resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "JOB_ENDED", "JOB:" + jobName, parent_part_launcher, "", Thread.currentThread().getId() + "", "","","","");
+	resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","");
     
     if(errorCode == null) {
          return status != null && status.equals("failure") ? 1 : 0;	
