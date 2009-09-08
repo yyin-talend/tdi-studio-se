@@ -754,10 +754,10 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 {
     INode firstNode = subTree.getNode(subTree.getName());
     
-    System.out.println(firstNode.getUniqueName());
+    //System.out.println(firstNode.getUniqueName());
     List<? extends IConnection> inConns = firstNode.getIncomingConnections();
     
-    System.out.println(inConns.size());
+    //System.out.println(inConns.size());
     for(IConnection conn : inConns){
     
     	boolean activeResume = "true".equals(ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
