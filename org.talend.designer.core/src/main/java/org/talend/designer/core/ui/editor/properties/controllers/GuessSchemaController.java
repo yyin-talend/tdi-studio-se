@@ -55,6 +55,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ConnectionStatus;
@@ -351,7 +352,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         labelName = "_" + labelName;
                         b = true;
                     }
-                    oneColum.setLabel(labelName);
+                    oneColum.setLabel(MetadataTool.validateColumnName(labelName, i));
                     String label = labelName;
                     if (b && label != null && label.length() > 0) {
                         String substring = label.substring(1);
