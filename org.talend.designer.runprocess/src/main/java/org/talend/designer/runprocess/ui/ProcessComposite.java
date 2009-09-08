@@ -884,7 +884,9 @@ public class ProcessComposite extends Composite {
         this.processContext = processContext;
         if (processContext != null) {
             processContext.addPropertyChangeListener(pcl);
-            argumentsViewer.refresh(processContext);
+            if (argumentsViewer != null) {
+                argumentsViewer.refresh(processContext);
+            }
         }
 
         boolean disableAll = false;
