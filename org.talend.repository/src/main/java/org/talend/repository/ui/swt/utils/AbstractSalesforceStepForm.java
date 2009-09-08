@@ -132,9 +132,9 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             String betchSize, boolean useProxy, boolean useHttp, String proxyHost, String proxyPort, String proxyUsername,
             String proxyPassword, boolean update) {
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the wizard doesn't work with this url
-        if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
-            endPoint = DEFAULT_WEB_SERVICE_URL;
-        }
+        // if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
+        // endPoint = DEFAULT_WEB_SERVICE_URL;
+        // }
         IMetadataTable result = null;
 
         if (!moduleName.equals(salesforceAPI.getCurrentModuleName())) {
