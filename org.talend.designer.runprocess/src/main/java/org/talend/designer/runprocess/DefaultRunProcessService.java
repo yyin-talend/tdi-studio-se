@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
@@ -238,5 +239,15 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void saveJobBeforeRun(IProcess activeProcess) {
         // TODO Auto-generated method stub
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getPreferenceStore()
+     */
+    public IPreferenceStore getPreferenceStore() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -103,6 +103,7 @@ import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IJavaProcessorStates;
@@ -110,6 +111,7 @@ import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
@@ -1034,7 +1036,15 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     }
 
     private String[] addVMArguments(String[] strings) {
-        String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
+        String string = null;
+        RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        if (activeContext != null) {
+            string = (activeContext.getProcess().getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName()).getValue())
+                    .toString();
+        }
+        if (string == null || "".equals(string)) {
+            string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
+        }
         String replaceAll = string.trim();
         String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
         String[] lines = new String[strings.length + vmargs.length];

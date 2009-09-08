@@ -43,6 +43,8 @@ public class TalendDesignerPrefConstants {
     /** Path used for components for the default project directory. */
     public static final String COMP_DEFAULT_PROJECT_DIR = "projectFileDir";//$NON-NLS-1$
 
+    public static final String JOB_RUN_VM_ARGUMENTS = "jobVMArguments";//$NON-NLS-1$
+
     /** Property code check. */
     public static final String PROPERTY_CODE_CHECK = "propertyCodeCheck"; //$NON-NLS-1$
 

@@ -89,13 +89,11 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ReplaceNodesInProcessProvider;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -143,6 +141,10 @@ public class ProcessComposite extends Composite {
     /** Context composite. */
     private ProcessContextComposite contextComposite;
 
+    private Composite argumentsComposite;
+
+    private JobVMArgumentsComposite argumentsViewer;
+
     /** Performance button. */
     private Button perfBtn;
 
@@ -174,6 +176,8 @@ public class ProcessComposite extends Composite {
     private PropertyChangeListener pcl;
 
     private CTabItem targetExecutionTabItem;
+
+    private CTabItem jobVMTabItem;
 
     private CTabFolder leftTabFolder;
 
@@ -261,6 +265,21 @@ public class ProcessComposite extends Composite {
         // "ProcessComposite.targetExecutionTabTooltipAvailable"
         // ));
         targetExecutionTabItem.setControl(targetExecutionComposite);
+
+        // Job Run VM Arguments Tab if language is java.
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+            jobVMTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
+            jobVMTabItem.setText(Messages.getString("ProcessComposite.JVMTab")); //$NON-NLS-1$
+            argumentsComposite = new Composite(leftTabFolder, SWT.NONE);
+            argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+            GridLayout gridLayoutArguments = new GridLayout(1, false);
+            argumentsComposite.setLayout(gridLayoutArguments);
+            argumentsViewer = new JobVMArgumentsComposite("vmarguments", Messages
+                    .getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
+                    argumentsComposite);
+            // argumentsViewer.setEnabled(false, argumentsComposite);
+            jobVMTabItem.setControl(argumentsComposite);
+        }
 
         // group Button
         // qli,see the feature 6366.
@@ -865,11 +884,13 @@ public class ProcessComposite extends Composite {
         this.processContext = processContext;
         if (processContext != null) {
             processContext.addPropertyChangeListener(pcl);
+            argumentsViewer.refresh(processContext);
         }
 
         boolean disableAll = false;
         if (processContext != null) {
             disableAll = processContext.getProcess().disableRunJobView();
+
         }
 
         perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
@@ -899,7 +920,6 @@ public class ProcessComposite extends Composite {
         // getPreferenceStore().getBoolean(
         // RunProcessPrefsConstants.ISCLEARBEFORERUN)
         // && !disableAll);
-
         saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
         setRunnable(processContext != null && !processContext.isRunning() && !disableAll);
         killBtn.setEnabled(processContext != null && processContext.isRunning() && !disableAll);
@@ -916,6 +936,9 @@ public class ProcessComposite extends Composite {
 
         setExecBtn(runnable);
         contextComposite.setEnabled(runnable);
+        if (argumentsComposite != null) {
+            argumentsComposite.setEnabled(runnable);
+        }
         clearBeforeExec.setEnabled(runnable);
         saveJobBeforeRunButton.setEnabled(runnable);
         watchBtn.setEnabled(runnable);
@@ -1128,9 +1151,9 @@ public class ProcessComposite extends Composite {
         if (getProcessContext() == null) {
             return;
         }
-        if (getProcessContext().getProcess() instanceof IProcess2) {
-            ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
-        }
+        // if (getProcessContext().getProcess() instanceof IProcess2) {
+        // ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
+        // }
         CorePlugin.getDefault().getRunProcessService().saveJobBeforeRun(getProcessContext().getProcess());
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();

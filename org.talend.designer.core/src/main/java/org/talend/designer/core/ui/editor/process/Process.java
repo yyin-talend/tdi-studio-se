@@ -121,6 +121,7 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -300,7 +301,7 @@ public class Process extends Element implements IProcess2 {
                 TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
         param.setReadOnly(true);
         addElementParameter(param);
-        
+
         param = new ElementParameter(this);
         param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
         param.setCategory(EComponentCategory.MAIN);
@@ -311,6 +312,19 @@ public class Process extends Element implements IProcess2 {
         param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(
                 TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
         param.setReadOnly(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
+        param.setCategory(EComponentCategory.MAIN);
+        param.setField(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.JOB_RUN_VM_ARGUMENTS.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+        if (service != null) {
+            param.setValue(service.getPreferenceStore().getString("vmarguments"));
+        }
         addElementParameter(param);
 
         param = new ElementParameter(this);
