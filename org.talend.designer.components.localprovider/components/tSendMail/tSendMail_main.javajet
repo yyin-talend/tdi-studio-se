@@ -26,6 +26,7 @@
 
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	String mimesubtype = ElementParameterParser.getValue(node,"__TEXT_SUBTYPE__");	
+	boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 %>
 <%
  
@@ -53,7 +54,7 @@
 <%
 	}
 %>     
-     
+try{     
 <% 
    if ("false".equals(needAuth)) {
 %>  
@@ -117,3 +118,10 @@
            
      // -- Send the message --
      javax.mail.Transport.send(msg_<%=cid %>);
+} catch(Exception e){
+  <%if (isDieOnError){%>
+      throw(e);
+  <%}else{%>
+      System.err.println(e.toString());
+  <%}%>
+}

@@ -155,7 +155,13 @@ COMPATIBILITY="ALL"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
-	
+    
+	<PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      REQUIRED="false"
+      NUM_ROW="160">
+    </PARAMETER>
   </PARAMETERS>
 
   <ADVANCED_PARAMETERS>
