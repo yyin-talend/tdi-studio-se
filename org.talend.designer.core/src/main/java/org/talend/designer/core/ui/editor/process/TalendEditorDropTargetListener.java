@@ -568,7 +568,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         .getAbstractMetadataObject();
                 for (MetadataTable table : (List<MetadataTable>) functionUnit.getTables()) {
                     Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
-                            table.getLabel(), ConvertionHelper.convert(table));
+                            table.getLabel(), ConvertionHelper.convert(table), functionUnit);
                     list.add(sapCmd);
                 }
             }
@@ -740,9 +740,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // for SAP
             if (PluginChecker.isSAPWizardPluginLoaded() && connectionItem instanceof SAPConnectionItem
                     && object instanceof MetadataTableRepositoryObject) {
-                Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS, table.getLabel(),
-                        ConvertionHelper.convert(table));
-                return sapCmd;
+                if (table.eContainer() instanceof SAPFunctionUnit) {
+                    SAPFunctionUnit functionUnit = (SAPFunctionUnit) table.eContainer();
+                    Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
+                            table.getLabel(), ConvertionHelper.convert(table), functionUnit);
+                    return sapCmd;
+                } else {
+                    Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
+                            table.getLabel(), ConvertionHelper.convert(table));
+                    return sapCmd;
+                }
             }
 
             // for EBCDIC (bug 5860)
