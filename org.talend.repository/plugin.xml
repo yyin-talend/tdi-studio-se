@@ -1043,6 +1043,27 @@
           message="Library needed to export to JBoss ESB"
           name="jbossesb-rosetta.jar"
           required="true"/>
+      <libraryNeeded
+            context="%libraryneeded.dbconnectionwizard"
+            language="java"
+            message="%libraryneeded.forsasconnection"
+            name="sas.core.jar"
+            required="true">
+      </libraryNeeded>
+      <libraryNeeded
+            context="%libraryneeded.dbconnectionwizard"
+            language="java"
+            message="%libraryneeded.forsasconnection"
+            name="sas.svc.connection.jar"
+            required="true">
+      </libraryNeeded>
+      <libraryNeeded
+            context="%libraryneeded.dbconnectionwizard"
+            language="java"
+            message="%libraryneeded.forsasconnection"
+            name="sas.intrnet.javatools.jar"
+            required="true">
+      </libraryNeeded>
    </extension>
    <!--
    <extension

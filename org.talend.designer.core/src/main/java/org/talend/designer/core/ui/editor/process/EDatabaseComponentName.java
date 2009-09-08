@@ -99,6 +99,8 @@ public enum EDatabaseComponentName {
     VERTICA(DatabaseConnectionItem.class, EDatabaseTypeName.VERTICA, "tVerticaInput", "tVerticaOutput", true), //"VERTICA" //$NON-NLS-1$ //$NON-NLS-2$
     MAXDB(DatabaseConnectionItem.class, EDatabaseTypeName.MAXDB, "tMaxDBInput", "tMaxDBOutput", true), // "MAXDB"); //$NON-NLS-1$ //$NON-NLS-2$
 
+    SAS(DatabaseConnectionItem.class, EDatabaseTypeName.SAS, "tSasInput", "tSasOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+
     // FILES
     FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF", "DELIMITED"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited", "DELIMITED"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
