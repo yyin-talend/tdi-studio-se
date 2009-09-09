@@ -423,15 +423,15 @@ public class ShadowProcessHelper {
 
         LDAPSchemaBean bean = new LDAPSchemaBean();
         // TODO: added properties here...
-        bean.setHost(TalendTextUtils.addQuotes(connection.getHost()));
+        bean.setHost(TalendTextUtils.addQuotes(connection.getHost().replaceAll("\\", "\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
         bean.setPort(connection.getPort());// int
         bean.setEncryMethod(TalendTextUtils.addQuotes(connection.getEncryptionMethodName()));
         bean.setAuthen(connection.isUseAuthen());
         bean.setAuthMethod(TalendTextUtils.addQuotes(connection.getProtocol()));
-        bean.setUser(TalendTextUtils.addQuotes(connection.getBindPrincipal()));
-        bean.setPasswd(TalendTextUtils.addQuotes(connection.getBindPassword()));
+        bean.setUser(TalendTextUtils.addQuotes(connection.getBindPrincipal().replaceAll("\\", "\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
+        bean.setPasswd(TalendTextUtils.addQuotes(connection.getBindPassword().replaceAll("\\", "\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
 
-        bean.setBaseDN(TalendTextUtils.addQuotes(connection.getSelectedDN()));
+        bean.setBaseDN(TalendTextUtils.addQuotes(connection.getSelectedDN().replaceAll("\\", "\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
 
         bean.setReferrals(connection.getReferrals());
         bean.setAliasDereferenring(connection.getAliases());
