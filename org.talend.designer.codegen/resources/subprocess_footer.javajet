@@ -69,7 +69,9 @@
 
 			if (pool.isFull()) {
 				ParallelThread pt = pool.getFreeThread();// wait for Free Thread
-				pt.putBuffer(buffer);// notify the ParallelThread
+				if (pt!= null) {
+					pt.putBuffer(buffer);// notify the ParallelThread
+				}
 			} else {
 				// Start a new thread
 				<%=subTree.getName() %>_ParallelThread pt = new <%=subTree.getName()%>_ParallelThread(
