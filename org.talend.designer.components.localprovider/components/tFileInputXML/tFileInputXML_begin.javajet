@@ -34,6 +34,9 @@ if (("").equals(limit)) {
 	limit = "-1";
 }
 
+String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
+
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
@@ -547,10 +550,39 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	if (metadata!=null) {
 		List<IMetadataColumn> columns=metadata.getListColumns();
 		if (conns!=null) {
-			if (conns.size()>0) {
+//************ add for reject start*****************
+		    String rejectConnName = "";
+		    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+		    if(rejectConns != null && rejectConns.size() > 0) {
+		        IConnection rejectConn = rejectConns.get(0);
+		        rejectConnName = rejectConn.getName();
+		    }
+		    List<IMetadataColumn> rejectColumnList = null;
+		    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+		    if(metadataTable != null) {
+		        rejectColumnList = metadataTable.getListColumns();      
+		    }
+			for (int i=0;i<conns.size();i++) {
+				IConnection connTemp = conns.get(i);
+				if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+	<%=connTemp.getName() %> = null;			
+<%
+				}
+    		}
+//***************************end********************
+			if (conns.size()>0) { // S_if_a_0_0		
 				IConnection conn = conns.get(0);
 				firstConnName = conn.getName();
-				for (int i=0;i<mapping.size();i++) { 
+				
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // add for reject
+%>
+	boolean whetherReject_<%=cid %> = false;
+	<%=firstConnName %> = new <%=conn.getName() %>Struct();
+	try{
+<%
+				
+				for (int i=0;i<mapping.size();i++) { // S_for_a_1_0
 					String query = mapping.get(i).get("QUERY");
 					String nodeCheck = mapping.get(i).get("NODECHECK");
 					if(("Xerces").equals(mode)){
@@ -590,9 +622,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 						}
 					}
-					for(IMetadataColumn column:columns) {
-						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
-							if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+					for(IMetadataColumn column:columns) {  // S_for_0_1
+						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) { // S_if_0_2
+							if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) { // S_if_0_3
 								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
@@ -673,24 +705,76 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 	}
 <%
-							}
-						}
-					}
-				}
-			}
-			if (conns.size()>1) {
-				for (int i=1;i<conns.size();i++) {
-					IConnection conn = conns.get(i);
-					if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
-						for (IMetadataColumn column: metadata.getListColumns()) {
+							} //S_if_1_2
+						} // S_if_1_1
+					} // S_for_1_0
+				} // S_for_a_0_1
 %>
-	<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+<%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
+			
+    } catch (Exception e) {
+        whetherReject_<%=cid%> = true;
 <%
-						}
+        if (dieOnError) {
+            %>
+            throw(e);
+            <%
+        } else {
+            if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+
+                %>
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                <%
+                for(IMetadataColumn column : metadata.getListColumns()) {
+                    %>
+                    <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
+                    <%
+                }
+                %>
+                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+                <%=firstConnName %> = null;
+                <%
+            } else if(("").equals(rejectConnName)){
+                %>
+                System.err.println(e.getMessage());
+                <%=firstConnName %> = null;
+                <%
+            } else if(rejectConnName.equals(firstConnName)){%>
+            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+          <%}
+		}
+        %>
+    }
+<%
+				} //if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))
+			} // S_if_a_1_1
+
+//***********************************
+			if (conns.size()>0) {	
+				boolean isFirstEnter = true;
+				for (int i=0;i<conns.size();i++) {
+					IConnection tmpconn = conns.get(i);
+					if ((tmpconn.getName().compareTo(firstConnName)!=0)&&(tmpconn.getName().compareTo(rejectConnName)!=0)&&(tmpconn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+%>
+		<% if(isFirstEnter) {%>if(!whetherReject_<%=cid%>) { <% isFirstEnter = false; } %>      
+             if(<%=tmpconn.getName() %> == null){ 
+            	 <%=tmpconn.getName() %> = new <%=tmpconn.getName() %>Struct();
+             }
+<%
+			    	 	for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+	    	 <%=tmpconn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
+<%
+				 		}
 					}
 				}
+%>
+		<% if(!isFirstEnter) {%> } <% } %>	
+<%
 			}
-		}
+//***********************************
+
+		} // if(conn!=null)
 		
 		// limit
 		if (limit.compareTo("-1")!=0) {
@@ -699,9 +783,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	if (nb_line_<%=cid %>><%=limit %>) {
 		break;
 	}
-<%
+<% 
 		}
-	}
-}
+	}// if (metadata!=null)
+} //if ((metadatas!=null)&&(metadatas.size()>0))
 %>
 			
