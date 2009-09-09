@@ -233,6 +233,7 @@ public class DataProcess {
                 dataConnec.setCondition(connection.getCondition());
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
+                dataConnec.setOutputId(connection.getOutputId());
                 if (connection.getLineStyle().equals(EConnectionType.ITERATE)) {
                     IElementParameter param = new ElementParameter(dataConnec);
                     param.setField(EParameterFieldType.CHECK);
@@ -1194,7 +1195,6 @@ public class DataProcess {
             dataNodeList.remove(preStaLogConNode);
             dataNodeList.add(0, preStaLogConNode);
         }
-
         checkRefList = null;
         checkMultipleMap = null;
         buildCheckMap = null;
@@ -1496,5 +1496,4 @@ public class DataProcess {
             i++;
         }
     }
-
 }
