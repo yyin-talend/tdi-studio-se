@@ -21,6 +21,7 @@ class="MomInput"
 	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
 	String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
+	String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
 	
 	IMetadataTable metadata=null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -34,86 +35,48 @@ class="MomInput"
 		String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
 		String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
 %>
-
-class HelloInput implements javax.jms.MessageListener {
-	javax.jms.<%=msgType%>Connection connection<%=cid%>;
-	javax.jms.<%=msgType%>Session session<%=cid%>;
-	javax.jms.<%=msgType%> topic<%=cid%>;
-	java.util.Queue<String> msgQueue<%=cid%>=null;	
-	public HelloInput(String factoryJNDI, String topicJNDI) throws javax.jms.JMSException, javax.naming.NamingException{
-		msgQueue<%=cid%>=new java.util.LinkedList<String>();
-		java.util.Hashtable props<%=cid%>=new java.util.Hashtable();
-		props<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
-		props<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
-		props<%=cid%>.put("java.naming.rmi.security.manager", "yes");
-		props<%=cid%>.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.naming");
-		props<%=cid%>.put("java.naming.factory.url.pkgs","org.jboss.naming:org.jnp.interfaces");	
-		javax.naming.Context context<%=cid%>=new javax.naming.InitialContext(props<%=cid%>);
-		javax.jms.<%=msgType%>ConnectionFactory factory<%=cid%>=(javax.jms.<%=msgType%>ConnectionFactory)context<%=cid%>.lookup(factoryJNDI);	
-		connection<%=cid%>=factory<%=cid%>.create<%=msgType%>Connection();
-		session<%=cid%>=connection<%=cid%>.create<%=msgType%>Session(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
-		topic<%=cid%>=(javax.jms.<%=msgType%>)context<%=cid%>.lookup(topicJNDI);
-
-
-<%
-		if(("Queue").equals(msgType)){
-%>
-		javax.jms.<%=msgType%>Receiver receiver<%=cid%>=session<%=cid%>.createReceiver(topic<%=cid%>);
-		receiver<%=cid%>.setMessageListener(this);
-<%
-		}else{
-%>
-		javax.jms.<%=msgType%>Subscriber subscriber<%=cid%>=session<%=cid%>.createSubscriber(topic<%=cid%>);
-		subscriber<%=cid%>.setMessageListener(this);
-<%
-		}
-%>	
-		connection<%=cid%>.start();
-	}
+	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
+	props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
+	props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
+	props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
+	props_<%=cid%>.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.naming");
+	props_<%=cid%>.put("java.naming.factory.url.pkgs","org.jboss.naming:org.jnp.interfaces");	
 	
-	public void onMessage(javax.jms.Message m){
-		try {
-<%
-		if(("true").equals(useMsgId)){
-%>
-			String msg<%=cid%>=((javax.jms.MapMessage)m).getString(<%=msgId%>);
-			if(msg<%=cid%> != null){
-				msgQueue<%=cid%>.add(msg<%=cid%>);
-			}
-<%
-		}else{
-%>
-			String msg<%=cid%>=((javax.jms.TextMessage)m).getText();
-			msgQueue<%=cid%>.add(msg<%=cid%>);
-<%
-		}
-%>
-		} catch (javax.jms.JMSException e) {
-			System.err.println("Could not get text message:" + e);
-			e.printStackTrace();
-		}
-	}
-	public void close() throws javax.jms.JMSException{
-		session<%=cid%>.close();
-		connection<%=cid%>.close();
-	}	
-}
+	javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
+	javax.jms.ConnectionFactory factory_<%=cid%>=(javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
+	javax.jms.Connection connection_<%=cid%>=factory_<%=cid%>.createConnection();
+	javax.jms.Session session_<%=cid%>=connection_<%=cid%>.createSession(false, javax.jms.Session.CLIENT_ACKNOWLEDGE);
+	javax.jms.Destination dest_<%=cid%>=(javax.jms.<%=msgType%>)context_<%=cid%>.lookup(<%=from%>);
+	javax.jms.MessageConsumer msgconsumer_<%=cid%> = session_<%=cid%>.createConsumer(dest_<%=cid%>);
 
-		HelloInput input<%=cid%>=null;
-		try {
-		//begin part
-			input<%=cid%>=new HelloInput("ConnectionFactory",<%=from%>);			
-		} catch (java.lang.Exception e) {
-			System.err.println("An exception occurred while testing HelloSubscriber:" + e);
-			e.printStackTrace();
-		}
-		System.out.println("Ready to receive message");
-		System.out.println("Waiting...");	
+	connection_<%=cid%>.start();
 			
-		Boolean flag<%=cid%>=true;
-		while(flag<%=cid%>){
-			while(!(input<%=cid%>.msgQueue<%=cid%>.size()==0)){
-				String msg<%=cid%>=(String)input<%=cid%>.msgQueue<%=cid%>.poll();
+	System.out.println("Ready to receive message");
+	System.out.println("Waiting...");	
+	javax.jms.Message message_<%=cid%>;
+	String msg_<%=cid%> = "";
+<%if("true".equals(kListen)){%>
+	while((message_<%=cid%>=msgconsumer_<%=cid%>.receive(<%=timeOut%>*1000))!=null){
+<%}else{%>
+	while((message_<%=cid%>=msgconsumer_<%=cid%>.receiveNoWait())!=null){
+<%}%>
+<%
+if(("true").equals(useMsgId)){
+%>
+	if (message_<%=cid%> instanceof javax.jms.MapMessage) {
+		javax.jms.MapMessage txtMsg_<%=cid%> = (javax.jms.MapMessage) message_<%=cid%>;
+		msg_<%=cid %> = txtMsg_<%=cid%>.getString(<%=msgId%>);
+		if(msg_<%=cid %> !=null){
+
+<%
+}else{
+%>
+	if (message_<%=cid%> instanceof javax.jms.TextMessage) {
+		javax.jms.TextMessage txtMsg_<%=cid%> = (javax.jms.TextMessage) message_<%=cid%>;
+		msg_<%=cid %> = txtMsg_<%=cid%>.getText();
+		
+<%}%>
+		
 	
 <%
 		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -124,7 +87,7 @@ class HelloInput implements javax.jms.MessageListener {
 %>
 
 				<%=firstConnName%>.from=<%=from%>;	
-				<%=firstConnName%>.message=msg<%=cid%>;	
+				<%=firstConnName%>.message=msg_<%=cid%>;	
 <%
 				if(("true").equals(useMsgId)){
 %>		

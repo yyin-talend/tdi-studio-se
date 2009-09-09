@@ -11,16 +11,28 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String serverType=ElementParameterParser.getValue(node, "__SERVER__");
-String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
-String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
+String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
+
 if(("JBoss").equals(serverType)){
 %>
-					
+		message_<%=cid%>.acknowledge();
+		
+		
+<%	
+	if(("true").equals(useMsgId)){
+%>
+		}
+<%
 	}
-	<%if(("false").equals(kListen)){%> flag<%=cid%>=false;input<%=cid%>.close();<%}else{%>Thread.sleep(<%=timeOut%>000);<%}%>			
-
-
+%>
+	}
 }
+	 	System.out.println("Closing connection");
+		msgconsumer_<%=cid%>.close();
+		session_<%=cid%>.close();
+		connection_<%=cid%>.close();
+		
+
 <%
 }else if(("ActiveMQ").equals(serverType)){%>
 
