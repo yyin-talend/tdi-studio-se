@@ -87,6 +87,9 @@
 	}else{
 %>
 
+globalResumeTicket = true;
+}//end the resume
+
 <%
 	// Calls for RUN BEFORE links
 	for (String before : subTree.getBeforeSubProcesses()) {

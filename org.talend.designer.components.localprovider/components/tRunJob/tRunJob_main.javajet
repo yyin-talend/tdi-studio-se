@@ -80,8 +80,13 @@ for (int i=1; i<commandLine.length; i++) {
 	<%}
 }
 %>
-paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
-paraList_<%=cid %>.add("--resuming_checkpoint_path=" + ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path));
+if(resuming_logs_dir_path != null){
+	paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
+}
+String childResumePath_<%=cid %> = ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path);
+if(childResumePath_<%=cid %> != null){
+	paraList_<%=cid %>.add("--resuming_checkpoint_path=" + ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path));
+}
 paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %>");
 
 <%

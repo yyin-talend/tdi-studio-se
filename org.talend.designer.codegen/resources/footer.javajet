@@ -41,7 +41,9 @@
 %>
 	public String resuming_logs_dir_path = null;
 	public String resuming_checkpoint_path = null;
-	public String parent_part_launcher = null; 
+	public String parent_part_launcher = null;
+	private String resumeEntryMethodName = null;
+	private boolean globalResumeTicket = false;	 
 	    
     public boolean watch = false;	  
     public int portStats = 3334;
@@ -149,6 +151,7 @@
     	}
     	
     	//Resume: init the resumeUtil
+    	resumeEntryMethodName = ResumeUtil.getResumeEntryMethodName(resuming_checkpoint_path);
     	resumeUtil = new ResumeUtil(resuming_logs_dir_path);
 		resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
     	
@@ -350,6 +353,8 @@
  }
 %>
 
+this.globalResumeTicket = true;//to run tPreJob
+
 <%
 //3. run pre-job
  if(!prejobNodes.isEmpty()){
@@ -375,7 +380,8 @@
     	}	
 %>
 
-		if (resuming_checkpoint_path == null || resuming_checkpoint_path.equals("null")) {
+this.globalResumeTicket = false;//to run others jobs
+
 <%
 
 	//5. all others sub-job (MultiThread mode)
@@ -447,17 +453,7 @@
 }// end if(isRunInMultiThread)
 %>
 
-} else{
-	try {
-		ResumeUtil.invokeTargetCheckPoint(resuming_checkpoint_path, this, this.globalMap);
-	} catch (Exception e_tRunJob_1) {
-		status = "failure";
-		e_tRunJob_1.printStackTrace();
-		globalMap.put("tRunJob_1_SUBPROCESS_STATE", -1);
-
-	} finally {
-	}
-}
+this.globalResumeTicket = true;//to run tPostJob
 
 <%
 //6. run the post-job
