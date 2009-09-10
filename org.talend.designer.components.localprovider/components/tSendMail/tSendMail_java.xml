@@ -159,7 +159,7 @@ COMPATIBILITY="ALL"
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      REQUIRED="false"
+      REQUIRED="true"
       NUM_ROW="160">
     </PARAMETER>
   </PARAMETERS>
