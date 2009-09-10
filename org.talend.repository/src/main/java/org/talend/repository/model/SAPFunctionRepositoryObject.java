@@ -67,7 +67,9 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
      */
     @Override
     public void setLabel(String value) {
-        functionUnit.setLabel(value);
+        if (functionUnit.getLabel() == null) {
+            functionUnit.setLabel(value);
+        }
     }
 
     /*

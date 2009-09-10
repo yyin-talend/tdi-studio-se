@@ -617,7 +617,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     command1.setGuessQuery(true);
                 }
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
-                    command1.setSapFunctionName((String) selectedNode.getProperties(EProperties.LABEL));
+                    IRepositoryObject selectedObj = selectedNode.getObject();
+                    if (selectedObj instanceof SAPFunctionRepositoryObject) {
+                        SAPFunctionRepositoryObject sapObj = (SAPFunctionRepositoryObject) selectedObj;
+
+                        command1.setSapFunctionName(((SAPFunctionUnit) sapObj.getAbstractMetadataObject()).getName());
+                    }
                 }
                 list.add(command1);
             }
