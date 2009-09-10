@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.projectsetting;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
@@ -19,10 +22,16 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.StatAndLogsSettings;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.repository.preference.ProjectSettingPage;
@@ -87,13 +96,43 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
      */
     @Override
     public boolean performOk() {
-        if (mComposite != null) {
-            // save the Element's parameters to EMF model
-            Element elem = pro.getStatsAndLog();
-            StatAndLogsSettings stats = pro.getEmfProject().getStatAndLogsSettings();
-            // save to the memory
-            ElementParameter2ParameterType.saveElementParameters(elem, stats.getParameters());
-            ProjectSettingManager.saveProject();
+        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell(), 0) {
+
+            private IProgressMonitor monitorWrap;
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitorWrap = new EventLoopProgressMonitor(monitor);
+                monitorWrap.beginTask("Use Project Settings ...", IProgressMonitor.UNKNOWN); //$NON-NLS-1$ 
+
+                ParametersType parameters = null;
+                if (mComposite != null) {
+                    // save the Element's parameters to EMF model
+                    Element elem = pro.getStatsAndLog();
+                    StatAndLogsSettings stats = pro.getEmfProject().getStatAndLogsSettings();
+                    if (stats != null) {
+                        parameters = stats.getParameters();
+                        if (parameters != null && !"".equals(parameters)) {
+                            // save to the memory
+                            ElementParameter2ParameterType.saveElementParameters(elem, parameters);
+                        }
+                    }
+                    ProjectSettingManager.saveProject();
+                }
+                monitorWrap.worked(20);
+                if (parameters != null) {
+                    ElementParameter2ParameterType.loadProjectsettingsParameters(parameters);
+                }
+
+            }
+
+        };
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e);
         }
         return super.performOk();
     }

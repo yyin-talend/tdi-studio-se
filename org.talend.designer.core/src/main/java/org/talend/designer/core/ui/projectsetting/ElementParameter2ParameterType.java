@@ -19,18 +19,30 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PlatformUI;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
 
 /**
@@ -311,6 +323,56 @@ public class ElementParameter2ParameterType {
             }
         }
         return pType;
+    }
+
+    /**
+     * DOC zli Comment method "loadProjectsettingsParameters".
+     * 
+     * @param parameters
+     */
+    public static void loadProjectsettingsParameters(ParametersType parameters) {
+        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+        designerCoreService.switchToCurJobSettingsView();
+        List<IProcess> openedProcess = designerCoreService.getOpenedProcess(reference);
+
+        for (IProcess process : openedProcess) {
+            if (process instanceof Element) {
+                Element processElem = (Element) process;
+                ElementParameter2ParameterType.loadElementParameters(processElem, parameters);
+            }
+            process.setNeedRegenerateCode(true);
+        }
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getProxyRepositoryFactory();
+        IProcess process = null;
+
+        try {
+            List<IRepositoryObject> all = repositoryFactory.getAll(ERepositoryObjectType.PROCESS);
+            for (IRepositoryObject object : all) {
+                if (!openedProcess.contains(object)) {
+                    Item item = object.getProperty().getItem();
+                    if (item instanceof ProcessItem) {
+                        process = designerCoreService.getProcessFromProcessItem((ProcessItem) item);
+                        if (process != null && process instanceof IProcess2) {
+                            IProcess2 process2 = (IProcess2) process;
+                            if (process2 instanceof Element) {
+                                Element processElem = (Element) process2;
+                                ElementParameter2ParameterType.loadElementParameters(processElem, parameters);
+                                ProcessType processType = process2.saveXmlFile();
+                                if (processType != null) {
+                                    ((ProcessItem) item).setProcess(processType);
+                                }
+                                repositoryFactory.save(item);
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

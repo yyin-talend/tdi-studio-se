@@ -23,6 +23,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ImplicitContextSettings;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.repository.preference.ProjectSettingPage;
@@ -86,13 +87,24 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
      */
     @Override
     public boolean performOk() {
+
+        ImplicitContextSettings implicit = null;
+        ParametersType parameters = null;
         if (mComposite != null) {
             // save the Element's parameters to EMF model
             Element elem = pro.getInitialContextLoad();
-            ImplicitContextSettings implicit = pro.getEmfProject().getImplicitContextSettings();
-            // save to the memory
-            ElementParameter2ParameterType.saveElementParameters(elem, implicit.getParameters());
+            implicit = pro.getEmfProject().getImplicitContextSettings();
+            if (implicit != null) {
+                parameters = implicit.getParameters();
+                if (parameters != null && !"".equals(parameters)) {
+                    // save to the memory
+                    ElementParameter2ParameterType.saveElementParameters(elem, parameters);
+                }
+            }
             ProjectSettingManager.saveProject();
+        }
+        if (parameters != null) {
+            ElementParameter2ParameterType.loadProjectsettingsParameters(parameters);
         }
         return super.performOk();
     }
