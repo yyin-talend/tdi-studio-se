@@ -113,6 +113,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, true);
         store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT, 15);
 
+        store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
+
         if (!CommonsPlugin.isHeadless()) {
             Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE); //$NON-NLS-1$
             store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData()[0].toString());

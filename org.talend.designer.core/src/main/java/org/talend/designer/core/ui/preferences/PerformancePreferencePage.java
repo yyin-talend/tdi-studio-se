@@ -12,7 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -21,17 +27,21 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.views.IRepositoryView;
 
 public class PerformancePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -141,6 +151,43 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
 
         addField(dbConnTimeoutActive);
         addField(dbConnTimeout);
+
+        CheckBoxFieldEditor itemIndex = new CheckBoxFieldEditor(ITalendCorePrefConstants.ITEM_INDEX,
+                Messages.getString("PerformancePreferencePage.itemsRelationsCheckbox"), getFieldEditorParent()); //$NON-NLS-1$
+
+        itemIndex.getButton().addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Button sourceCheckBox = ((Button) e.getSource());
+                if (sourceCheckBox.getSelection()) {
+                    // need to update to ask question about use or not
+                    if (!RelationshipItemBuilder.getInstance().isAlreadyBuilt(ProjectManager.getInstance().getCurrentProject())) {
+                        if (MessageDialog.openQuestion(sourceCheckBox.getShell(), Messages.getString("PerformancePreferencePage.itemsRelationDialogTitle"), //$NON-NLS-1$
+                                Messages.getString("PerformancePreferencePage.itemsRelationDialogMessage"))) { //$NON-NLS-1$
+                            IRunnableWithProgress runnable = new IRunnableWithProgress() {
+
+                                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                                    RelationshipItemBuilder.getInstance().buildIndex(
+                                            ProjectManager.getInstance().getCurrentProject(), monitor);
+                                }
+                            };
+                            ProgressMonitorDialog dialog = new ProgressMonitorDialog(sourceCheckBox.getShell());
+                            try {
+                                dialog.run(false, true, runnable);
+                            } catch (InvocationTargetException e1) {
+                                MessageBoxExceptionHandler.process(e1);
+                            } catch (InterruptedException e1) {
+                                // force uncheck as index is not finished.
+                                ((CheckBoxFieldEditor) e.getSource()).setChecked(false);
+                            }
+                        }
+                    }
+                }
+            }
+
+        });
+        addField(itemIndex);
     }
 
     private void addListeners() {
