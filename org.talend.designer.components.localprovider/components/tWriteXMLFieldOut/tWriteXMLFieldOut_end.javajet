@@ -153,6 +153,9 @@ String cid = node.getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
+%>
+if(nb_line_<%=cid %> > 0){
+<%
 	if(("Dom4j").equals(mode)){
 		if(("true").equals(outputAsXSD)){
 %>
@@ -187,9 +190,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
 <%
 		}
-%>
-	globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
-<%
 	}else if(("Null").equals(mode)){
 		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
@@ -228,12 +228,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	out_<%=cid%>.close();
 	
 	listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
-	globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
 <%
 	}
 %>
 
-globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 
 // ------------------- *** xsd output code start *** ------------------- //
@@ -280,5 +278,10 @@ globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}
     }
+%>
+}
+globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+<%
 }
 %>
