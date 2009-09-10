@@ -346,7 +346,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
                 // hywang add for feature 6484
                 case RULE_TYPE:
-                    column.setTitle("Rules"); //$NON-NLS-1$
+                    column.setTitle("Rule"); //$NON-NLS-1$
                     column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
                             && (!currentParam.isReadOnly()));
                     final INode node1 = (INode) element;

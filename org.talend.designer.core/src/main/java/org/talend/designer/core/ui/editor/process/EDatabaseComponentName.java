@@ -120,8 +120,8 @@ public enum EDatabaseComponentName {
     SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", "tSalesforceOutput", "SALESFORCE"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     // hywang add for Rule
-    Rules(RulesItem.class, "tFileInputMSXML", "tFileOutputMSXML", "RULE"), //$NON-NLS-1$ //$NON-NLS-2$
-    LinkRules(LinkRulesItem.class, "tFileInputMSXML", "tFileOutputMSXML", "RULE"),
+    Rules(RulesItem.class, "tRules", "tRules", "RULE"), //$NON-NLS-1$ //$NON-NLS-2$
+    LinkRules(LinkRulesItem.class, "tRules", "tRules", "RULE"),
     // RunJob
     RunJob(ProcessItem.class, "tRunJob", "tRunJob"); //$NON-NLS-1$ //$NON-NLS-2$
 

@@ -330,7 +330,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                         for (int i = 0; i < allNodes.size(); i++) {
                             if (allNodes.get(i) instanceof INode) {
                                 INode node = (INode) allNodes.get(i);
-                                if (rulesService.isRuleComponent(node)) {
+                                if (rulesService.isRuleComponent(node)
+                                        && !node.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getValue()
+                                                .toString().equals("BUILT_IN")) { //$NON-NLS-N$
                                     useGenerateRuleFiles = true;
                                     break;
                                 }

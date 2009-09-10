@@ -163,11 +163,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(talendLibraries);
 
         if (PluginChecker.isRulesPluginLoaded()) {
-            // hywang add for 6484,add final drl files to exported job script
+            // hywang add for 6484,add final drl files or xls files to exported job script
             List<URL> talendDrlFiles = new ArrayList<URL>();
             try {
-                initUrlForDrlFiles(process, talendDrlFiles);
-                ExportFileResource drlResource = new ExportFileResource(null, "drl/rules/final"); //$NON-NLS-N$
+                initUrlForRulesFiles(process, talendDrlFiles);
+                ExportFileResource drlResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$
                 list.add(drlResource);
                 drlResource.addResources(talendDrlFiles);
             } catch (CoreException e) {
@@ -831,53 +831,62 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @throws CoreException
      * @throws MalformedURLException
      */
-    private void initUrlForDrlFiles(ExportFileResource[] process, List<URL> talendDrlFiles) throws PersistenceException,
+    private void initUrlForRulesFiles(ExportFileResource[] process, List<URL> talendDrlFiles) throws PersistenceException,
             CoreException, MalformedURLException {
+        // String processLabelAndVersion = null;
         IFile file;
+        Item item = null;
+        ProcessItem pi = null;
         if (PluginChecker.isRulesPluginLoaded()) {
             IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
                     IRulesProviderService.class);
 
             List<String> ids = new ArrayList<String>();
             List<Item> items = new ArrayList<Item>();
-            Item item = ((ExportFileResource) process[0]).getItem();
-            ProcessItem pi = null;
-            if (item instanceof ProcessItem) {
-                pi = (ProcessItem) item;
-            }
-            for (int i = 0; i < pi.getProcess().getNode().size(); i++) {
-                if (pi.getProcess().getNode().get(i) instanceof NodeType) {
-                    NodeType node = (NodeType) pi.getProcess().getNode().get(i);
-                    if (rulesService.isRuleComponent(node)) {
-                        for (Object obj : node.getElementParameter()) {
-                            if (obj instanceof ElementParameterType) {
-                                ElementParameterType elementParameter = (ElementParameterType) obj;
-                                if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$
-                                    String id = elementParameter.getValue();
-                                    ids.add(id);
+            for (int i = 0; i < process.length; i++) {
+                item = ((ExportFileResource) process[i]).getItem();
+
+                if (item instanceof ProcessItem) {
+                    pi = (ProcessItem) item;
+                    // processLabelAndVersion = JavaResourcesHelper.getJobFolderName(pi.getProperty().getLabel(),
+                    // pi.getProperty()
+                    // .getVersion());
+                }
+                for (int j = 0; j < pi.getProcess().getNode().size(); j++) {
+                    if (pi.getProcess().getNode().get(j) instanceof NodeType) {
+                        NodeType node = (NodeType) pi.getProcess().getNode().get(j);
+                        if (rulesService.isRuleComponent(node)) {
+                            for (Object obj : node.getElementParameter()) {
+                                if (obj instanceof ElementParameterType) {
+                                    ElementParameterType elementParameter = (ElementParameterType) obj;
+                                    if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$
+                                        String id = elementParameter.getValue();
+                                        ids.add(id);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-            try {
-                for (String id : ids) {
-                    if (factory.getLastVersion(id).getProperty().getItem() != null) {
-                        items.add(factory.getLastVersion(id).getProperty().getItem());
+                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                try {
+                    for (String id : ids) {
+                        if (factory.getLastVersion(id).getProperty().getItem() != null) {
+                            items.add(factory.getLastVersion(id).getProperty().getItem());
+                        }
                     }
-                }
-                for (Item rulesItem : items) {
-                    if (rulesItem != null) {
-                        file = rulesService.getFinalRuleFile(rulesItem);
-                        URL url = file.getLocationURI().toURL();
-                        talendDrlFiles.add(url);
+                    for (Item rulesItem : items) {
+                        if (rulesItem != null) {
+                            file = rulesService.getFinalRuleFile(rulesItem);
+                            URL url = file.getLocationURI().toURL();
+                            talendDrlFiles.add(url);
+                        }
                     }
+                } catch (Exception e) { // catch exception,return new list
+                    talendDrlFiles = new ArrayList<URL>();
                 }
-            } catch (Exception e) { // catch exception,return new list
-                talendDrlFiles = new ArrayList<URL>();
             }
+
         }
     }
 

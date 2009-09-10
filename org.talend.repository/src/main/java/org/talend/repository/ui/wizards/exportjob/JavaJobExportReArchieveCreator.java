@@ -42,7 +42,7 @@ public class JavaJobExportReArchieveCreator {
 
     private File libFolder;
 
-    private File drlFolder; // hywang add for 6484
+    private File drlFolder, xlsFolder; // hywang add for 6484
 
     private File batFile;
 
@@ -53,6 +53,10 @@ public class JavaJobExportReArchieveCreator {
     private static final String LIB = "lib"; // lib folder //$NON-NLS-1$
 
     private static final String DRL = "drl"; //drl folder hywang add //$NON-NLS-N$
+
+    private static final String XLS = "xls"; //xls folder hywang add //$NON-NLS-N$
+
+    private static final String RULES_ROOT = "Rules"; //ruleRoot folder hywang add //$NON-NLS-N$
 
     public JavaJobExportReArchieveCreator(String zipFile, String jobFolderName) {
         this.zipFile = zipFile;
@@ -120,9 +124,16 @@ public class JavaJobExportReArchieveCreator {
         BufferedWriter bw = null;
         try {
             br = new BufferedReader(new FileReader(file));
+            StringBuffer changedContent = new StringBuffer();
+
+            // write all the lines before the java command
             String line = br.readLine();
+            while (line != null && !line.contains("java")) { //$NON-NLS-N$  hywang modify for 6484
+                changedContent.append(line + "\n"); //$NON-NLS-1$
+                line = br.readLine();
+            }
             // get java command line
-            String line1 = br.readLine().trim();
+            String line1 = line.trim();
             String[] strs = line1.split("\\s"); //$NON-NLS-1$
             int pos = -1;
             for (int i = 0; i < strs.length; i++) {
@@ -138,7 +149,7 @@ public class JavaJobExportReArchieveCreator {
                     strs[pos + 1] = CLASSPATH_JAR + ";"; //$NON-NLS-1$
                 }
             }
-            StringBuffer changedContent = new StringBuffer();
+
             for (String s : strs) {
                 changedContent.append(s).append(" "); //$NON-NLS-1$
             }
@@ -148,9 +159,8 @@ public class JavaJobExportReArchieveCreator {
                 changedContent.append(('\n')).append(line2); //$NON-NLS-1$
                 line2 = br.readLine();
             }
-            // rewrite the changed content to file
             bw = new BufferedWriter(new FileWriter(file));
-            bw.write(line + "\n"); //$NON-NLS-1$
+            // rewrite the changed content to file
             bw.write(changedContent.toString());
             bw.flush();
             // br.close();
@@ -213,6 +223,25 @@ public class JavaJobExportReArchieveCreator {
         return filenames;
     }
 
+    private String[] getXLSFilenames() {
+        String[] filenames = null;
+        if (xlsFolder != null) {
+            File[] files = xlsFolder.listFiles(new FilenameFilter() {
+
+                public boolean accept(File dir, String name) {
+                    return name.toLowerCase().endsWith(".xls") //$NON-NLS-1$ 
+                    ? true
+                            : false; //$NON-NLS-1$
+                }
+            });
+            filenames = new String[files.length];
+            for (int i = 0; i < files.length; i++) {
+                filenames[i] = files[i].getName();
+            }
+        }
+        return filenames;
+    }
+
     private String[] getJobFolderJarFilenames() {
         File[] files = jobFolder.listFiles(new FilenameFilter() {
 
@@ -257,6 +286,9 @@ public class JavaJobExportReArchieveCreator {
             if (fs[i].getName().equals(DRL)) {
                 drlFolder = fs[i];
             }
+            if (fs[i].getName().equals(XLS)) {
+                xlsFolder = fs[i];
+            }
         }
     }
 
@@ -274,10 +306,13 @@ public class JavaJobExportReArchieveCreator {
         }
 
         // hywang add for set drl path in classpass.jar
-        String[] drls = getDrlFilenames();
-        if (drls != null) {
-            sb.append("../" + DRL + "/"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
+        // String[] drls = getDrlFilenames();
+        // String[] xlss = getXLSFilenames();
+        // if (drls != null || xlss != null) {
+        sb.append("../" + RULES_ROOT + "/"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        // }
+
+        //            sb.append("../" + XLS + "/"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         // sb.append("\n");
         return sb.toString();
     }

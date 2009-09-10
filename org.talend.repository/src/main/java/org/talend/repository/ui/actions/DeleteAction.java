@@ -255,13 +255,18 @@ public class DeleteAction extends AContextualAction {
     public static List<JobletReferenceBean> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory,
             DeleteActionCache deleteActionCache, RepositoryNode currentJobNode) {
         IRepositoryObject object = currentJobNode.getObject();
+        Item nodeItem = object.getProperty().getItem(); // hywang add
+        boolean needCheckJobletIfUsedInProcess = false;
+        if (nodeItem instanceof JobletProcessItem) {
+            needCheckJobletIfUsedInProcess = true;
+        }
         List<JobletReferenceBean> list = new ArrayList<JobletReferenceBean>();
 
         if (deleteActionCache == null) {
             deleteActionCache = DeleteActionCache.getInstance();
             deleteActionCache.createRecords();
         }
-        if (object != null) {
+        if (object != null && needCheckJobletIfUsedInProcess) {
             Property property = object.getProperty();
             if (property != null) {
                 String label = property.getLabel();
