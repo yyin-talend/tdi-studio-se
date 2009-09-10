@@ -152,11 +152,11 @@
     	
     	//Resume: init the resumeUtil
     	resumeEntryMethodName = ResumeUtil.getResumeEntryMethodName(resuming_checkpoint_path);
-    	resumeUtil = new ResumeUtil(resuming_logs_dir_path);
+    	resumeUtil = new ResumeUtil(resuming_logs_dir_path, !isChildJob);
 		resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
     	
     	//Resume: jobStart
-    	resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","");    	
+    	resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","");    	
     	
     	try {
     		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/Default.properties");    		
@@ -503,7 +503,7 @@ this.globalResumeTicket = true;//to run tPostJob
 	}	
 %>
 	
-	resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","");
+	resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","");
     
     if(errorCode == null) {
          return status != null && status.equals("failure") ? 1 : 0;	
