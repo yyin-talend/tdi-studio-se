@@ -188,6 +188,7 @@ public class PropertyChangeCommand extends Command {
 
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
+
         if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             // newValue is the id of the job
             ProcessItem processItem = ItemCacheManager.getProcessItem((String) newValue);
@@ -487,6 +488,7 @@ public class PropertyChangeCommand extends Command {
         ComponentSettings.switchToCurComponentSettingsView();
         JobSettings.switchToCurJobSettingsView();
         refreshTraceConnections();
+        refreshResumingConnections();
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
@@ -543,6 +545,7 @@ public class PropertyChangeCommand extends Command {
         ComponentSettings.switchToCurComponentSettingsView();
         JobSettings.switchToCurJobSettingsView();
         refreshTraceConnections();
+        refreshResumingConnections();
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
@@ -551,6 +554,12 @@ public class PropertyChangeCommand extends Command {
     private void refreshTraceConnections() {
         if (propName.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName()) || this.elem instanceof Connection) {
             ((Connection) this.elem).getConnectionTrace().setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), true);
+        }
+    }
+
+    private void refreshResumingConnections() {
+        if (propName.equals(EParameterName.RESUMING_CHECKPOINT.getName()) || this.elem instanceof Connection) {
+            ((Connection) this.elem).getConnectionTrace().setPropertyValue(EParameterName.RESUMING_CHECKPOINT.getName(), true);
         }
     }
 

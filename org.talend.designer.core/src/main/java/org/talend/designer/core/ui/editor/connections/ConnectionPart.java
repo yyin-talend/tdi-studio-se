@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
@@ -53,6 +54,12 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
             super.activate();
             ((Element) getModel()).addPropertyChangeListener(this);
         }
+    }
+
+    @Override
+    protected void addChildVisual(EditPart childEditPart, int index) {
+        IFigure child = ((GraphicalEditPart) childEditPart).getFigure();
+        getContentPane().add(child, index);
     }
 
     @Override
@@ -216,6 +223,11 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         elements = new ArrayList<Element>();
         elements.add(((Connection) getModel()).getConnectionLabel());
         elements.add(((Connection) getModel()).getPerformance());
+
+        if (((Connection) getModel()).getResuming() != null) {
+            elements.add(((Connection) getModel()).getResuming());
+        }
+
         if (((Connection) getModel()).getConnectionTrace() != null) {
             elements.add(((Connection) getModel()).getConnectionTrace());
         }

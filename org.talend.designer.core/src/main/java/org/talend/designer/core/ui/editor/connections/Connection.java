@@ -77,6 +77,8 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private ConnectionTrace trace;
 
+    private ConnectionResuming resuming;
+
     private MonitorConnectionLabel monitorLabel;
 
     private String metaName;
@@ -171,6 +173,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         this.lineStyle = lineStyle;
         this.metaName = metaName;
         this.monitorConnection = monitorConnection;
+        resuming = new ConnectionResuming(this);
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
             createTraceParamters();
@@ -182,6 +185,9 @@ public class Connection extends Element implements IConnection, IPerformance {
         setName(linkName);
         if (trace != null) {
             trace.setOffset(label.getOffset());
+        }
+        if (resuming != null) {
+            resuming.setOffset(label.getOffset());
         }
 
         reconnect(source, target, lineStyle);
@@ -360,6 +366,9 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (trace != null) {
             this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
         }
+        // if (resuming != null) {
+        // this.resuming.setPropertyValue(EParameterName.RESUMING_CHECKPOINT.getName(), checkResumingShowEnable());
+        // }
     }
 
     public boolean checkTraceShowEnable() {
@@ -367,6 +376,12 @@ public class Connection extends Element implements IConnection, IPerformance {
         boolean enabled = DesignerPlugin.getDefault().getRunProcessService().enableTraceForActiveRunProcess();
         return enabled;
     }
+
+    // public boolean checkResumingShowEnable() {
+    // // enable
+    // boolean enabled = DesignerPlugin.getDefault().getRunProcessService().enableResumingForActiveRunProcess();
+    // return enabled;
+    // }
 
     private void createMeterParameters(Process process) {
 
@@ -794,6 +809,15 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (id.equals(EParameterName.ACTIVATE.getName())) {
             setActivate((Boolean) value);
         }
+
+        if (id.equals(EParameterName.RESUMING_CHECKPOINT.getName())) {
+            setResumingConnection((Boolean) value);
+        }
+
+        if (id.equals(EParameterName.RESUMLABEL.getName())) {
+            setResumingLabelConnection(value.toString());
+        }
+
         // feature 6355
         if (EParameterName.TRACES_CONNECTION_ENABLE.getName().equals(id) && value instanceof Boolean) {
             setTraceConnection((Boolean) value);
@@ -1154,6 +1178,36 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
+    public void setResumingConnection(boolean resumingConnBool) {
+        final String parameterName = EParameterName.RESUMING_CHECKPOINT.getName();
+        Object propertyValue = this.getPropertyValue(parameterName);
+
+        if (propertyValue == null || !propertyValue.equals(new Boolean(resumingConnBool))) {
+            super.setPropertyValue(parameterName, resumingConnBool);
+            if (this.resuming != null) {
+                this.resuming.setPropertyValue(parameterName, resumingConnBool);
+            }
+            setProcessStates();
+
+            firePropertyChange(parameterName, null, resumingConnBool);
+        }
+    }
+
+    public void setResumingLabelConnection(String resumingLabelValue) {
+        final String parameterName = EParameterName.RESUMLABEL.getName();
+        Object propertyValue = this.getPropertyValue(parameterName);
+
+        if (propertyValue == null || !propertyValue.equals(resumingLabelValue)) {
+            super.setPropertyValue(parameterName, resumingLabelValue);
+            if (this.resuming != null) {
+                this.resuming.setPropertyValue(parameterName, resumingLabelValue);
+            }
+            setProcessStates();
+
+            firePropertyChange(parameterName, null, resumingLabelValue);
+        }
+    }
+
     private void setProcessStates() {
         IProcess process = this.getSource().getProcess();
         process.setNeedRegenerateCode(true); // generate code again.
@@ -1194,6 +1248,10 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public void setMonitorLabel(MonitorConnectionLabel monitorLabel) {
         this.monitorLabel = monitorLabel;
+    }
+
+    public ConnectionResuming getResuming() {
+        return this.resuming;
     }
 
 }
