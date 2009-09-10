@@ -91,42 +91,13 @@ globalResumeTicket = true;
 }//end the resume
 
 <%
-//this part for "Resume Management"
-{
-    INode firstNode = subTree.getNode(subTree.getName());
-    
-    List<String> beforeSubProcesses = subTree.getBeforeSubProcesses();
-    
-    //System.out.println(firstNode.getUniqueName());
-    List<? extends IConnection> outConns = firstNode.getOutgoingConnections();
-    
-    //System.out.println(inConns.size());
-    for(IConnection conn : outConns){
-    
-//    	boolean activeResume = "true".equals(ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
-    	boolean activeResume = true;
-    	
-    	//System.out.println("Test:" + ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
-    	
-    	String uniqueNameTargetNode = conn.getTarget().getUniqueName();
-    	
-   		EConnectionType lineStyle = conn.getLineStyle();
-
-		if(beforeSubProcesses.indexOf(uniqueNameTargetNode) != -1) {   		
-	    	if(activeResume){
-	    		%>
-	    			resumeUtil.addLog(FormatterUtils.format_Date(new Date(),"mm:ss.S"), "CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=subTree.getName() %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");
-	    		<%
-	    	}
-	    	%>
-	    	<%= uniqueNameTargetNode %>Process(globalMap);
-	    	<%
-    	}
-    }
-}
+	// Calls for RUN BEFORE links
+	for (String before : subTree.getBeforeSubProcesses()) {
 %>
-
-<%	
+		<%=before %>Process(globalMap);
+<%
+	}
+	
 	if (subTree.getRootNode().getProcess().getNodesOfType("tFlowMeterCatcher").size() > 0 
 		&& subTree.getRootNode().getProcess().getNodesOfType("tFlowMeter").size() >0 ) {
 		List<INode> metterCatchers = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tFlowMeterCatcher");
