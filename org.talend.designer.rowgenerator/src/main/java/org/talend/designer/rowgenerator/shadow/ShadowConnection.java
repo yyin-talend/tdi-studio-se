@@ -182,4 +182,8 @@ public class ShadowConnection implements IConnection {
         return false;
     }
 
+    public int getOutputId() {
+        return 0;
+    }
+
 }
