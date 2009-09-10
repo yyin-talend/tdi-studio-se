@@ -151,43 +151,47 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
 
         addField(dbConnTimeoutActive);
         addField(dbConnTimeout);
+        if (false) { // disable it. will check it later
+            CheckBoxFieldEditor itemIndex = new CheckBoxFieldEditor(ITalendCorePrefConstants.ITEM_INDEX, Messages
+                    .getString("PerformancePreferencePage.itemsRelationsCheckbox"), getFieldEditorParent()); //$NON-NLS-1$
 
-        CheckBoxFieldEditor itemIndex = new CheckBoxFieldEditor(ITalendCorePrefConstants.ITEM_INDEX,
-                Messages.getString("PerformancePreferencePage.itemsRelationsCheckbox"), getFieldEditorParent()); //$NON-NLS-1$
+            itemIndex.getButton().addSelectionListener(new SelectionAdapter() {
 
-        itemIndex.getButton().addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    Button sourceCheckBox = ((Button) e.getSource());
+                    if (sourceCheckBox.getSelection()) {
+                        // need to update to ask question about use or not
+                        if (!RelationshipItemBuilder.getInstance().isAlreadyBuilt(
+                                ProjectManager.getInstance().getCurrentProject())) {
+                            if (MessageDialog.openQuestion(sourceCheckBox.getShell(), Messages
+                                    .getString("PerformancePreferencePage.itemsRelationDialogTitle"), //$NON-NLS-1$
+                                    Messages.getString("PerformancePreferencePage.itemsRelationDialogMessage"))) { //$NON-NLS-1$
+                                IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Button sourceCheckBox = ((Button) e.getSource());
-                if (sourceCheckBox.getSelection()) {
-                    // need to update to ask question about use or not
-                    if (!RelationshipItemBuilder.getInstance().isAlreadyBuilt(ProjectManager.getInstance().getCurrentProject())) {
-                        if (MessageDialog.openQuestion(sourceCheckBox.getShell(), Messages.getString("PerformancePreferencePage.itemsRelationDialogTitle"), //$NON-NLS-1$
-                                Messages.getString("PerformancePreferencePage.itemsRelationDialogMessage"))) { //$NON-NLS-1$
-                            IRunnableWithProgress runnable = new IRunnableWithProgress() {
-
-                                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                                    RelationshipItemBuilder.getInstance().buildIndex(
-                                            ProjectManager.getInstance().getCurrentProject(), monitor);
+                                    public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                                            InterruptedException {
+                                        RelationshipItemBuilder.getInstance().buildIndex(
+                                                ProjectManager.getInstance().getCurrentProject(), monitor);
+                                    }
+                                };
+                                ProgressMonitorDialog dialog = new ProgressMonitorDialog(sourceCheckBox.getShell());
+                                try {
+                                    dialog.run(false, true, runnable);
+                                } catch (InvocationTargetException e1) {
+                                    MessageBoxExceptionHandler.process(e1);
+                                } catch (InterruptedException e1) {
+                                    // force uncheck as index is not finished.
+                                    ((CheckBoxFieldEditor) e.getSource()).setChecked(false);
                                 }
-                            };
-                            ProgressMonitorDialog dialog = new ProgressMonitorDialog(sourceCheckBox.getShell());
-                            try {
-                                dialog.run(false, true, runnable);
-                            } catch (InvocationTargetException e1) {
-                                MessageBoxExceptionHandler.process(e1);
-                            } catch (InterruptedException e1) {
-                                // force uncheck as index is not finished.
-                                ((CheckBoxFieldEditor) e.getSource()).setChecked(false);
                             }
                         }
                     }
                 }
-            }
 
-        });
-        addField(itemIndex);
+            });
+            addField(itemIndex);
+        }
     }
 
     private void addListeners() {
