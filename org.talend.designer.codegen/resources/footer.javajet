@@ -152,7 +152,7 @@
     	
     	//Resume: init the resumeUtil
     	resumeEntryMethodName = ResumeUtil.getResumeEntryMethodName(resuming_checkpoint_path);
-    	resumeUtil = new ResumeUtil(resuming_logs_dir_path, !isChildJob);
+    	resumeUtil = new ResumeUtil(resuming_logs_dir_path, isChildJob, rootPid);
 		resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
     	
     	//Resume: jobStart

@@ -23,7 +23,7 @@ if(priority.equals("1")){
 }else if(priority.equals("3")){
 	label = "INFO";
 }else if(priority.equals("4")){
-	label = "WARNING";
+	label = "WARN";
 }else if(priority.equals("5")){
 	label = "ERROR";
 }else if(priority.equals("6")){
