@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
@@ -32,6 +34,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -148,13 +151,13 @@ public class UpdateJobletNodeCommand extends Command {
         if (node == null || newComponent == null) {
             return;
         }
-        Map<String, Object> parameters = createParameters(node);
+        Map<String, Object> parameters = createParameters(node, newComponent);
         if (!parameters.isEmpty()) {
             node.reloadComponent(newComponent, parameters);
         }
     }
 
-    private Map<String, Object> createParameters(Node node) {
+    private Map<String, Object> createParameters(Node node, IComponent newComponent) {
         if (node == null) {
             Collections.emptyMap();
         }
@@ -164,6 +167,15 @@ public class UpdateJobletNodeCommand extends Command {
                 parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
             }
             parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
+
+        }
+        // set some parameter from joblet
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                service.updateParametersFromJoblet(node, newComponent);
+            }
         }
         parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
         parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
