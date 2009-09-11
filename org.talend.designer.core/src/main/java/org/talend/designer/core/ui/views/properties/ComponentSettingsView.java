@@ -538,12 +538,22 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                         || propertyValue.equals(EConnectionType.ON_SUBJOB_ERROR)) {
 
                     int length = categories.length;
-                    EComponentCategory[] newCategories = new EComponentCategory[length + 1];
-                    for (int i = 0; i < length; i++) {
-                        newCategories[i] = categories[i];
+                    EComponentCategory[] newCategories;
+                    if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)
+                            || propertyValue.equals(EConnectionType.ON_COMPONENT_ERROR)) {
+                        newCategories = new EComponentCategory[length];
+                        for (int i = 0; i < length; i++) {
+                            newCategories[i] = categories[i];
+                        }
+                    } else {
+                        newCategories = new EComponentCategory[length + 1];
+                        for (int i = 0; i < length; i++) {
+                            newCategories[i] = categories[i];
+                        }
+
+                        EComponentCategory resuming = EComponentCategory.RESUMING;
+                        newCategories[length] = resuming;
                     }
-                    EComponentCategory resuming = EComponentCategory.RESUMING;
-                    newCategories[length] = resuming;
                     return newCategories;
                 }
 

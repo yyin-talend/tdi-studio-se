@@ -125,9 +125,7 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
 
     private boolean resumingIf() {
         Connection connection = (Connection) elem;
-        return (connection.getLineStyle() == EConnectionType.ON_COMPONENT_OK)
-                || (connection.getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)
-                || (connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK)
+        return (connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK)
                 || (connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR);
     }
 
