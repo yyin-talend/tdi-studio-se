@@ -211,6 +211,7 @@ public class LoginComposite extends Composite {
 
         GridData projectGroupData2 = new GridData(GridData.FILL_HORIZONTAL);
         projectGroupData2.horizontalSpan = 3;
+        projectGroupData2.minimumWidth = 250; // if don't set, when i18n, it will more ugly for UI.
         messageImageStatus.setLayoutData(projectGroupData2);
 
         Group groupConnection = new Group(formBody, SWT.NONE);
@@ -295,7 +296,7 @@ public class LoginComposite extends Composite {
         manageViewer.setInput(getManageElements());
 
         data = new FormData();
-        data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
+        // data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
         data.left = new FormAttachment(manageViewer.getControl(), HORIZONTAL_SPACE);
         data.top = new FormAttachment(0, HORIZONTAL_SPACE);
         manageProjectsButton.setLayoutData(data);
@@ -311,6 +312,8 @@ public class LoginComposite extends Composite {
         data = new FormData();
         data.left = new FormAttachment(manageProjectLabel1, HORIZONTAL_SPACE);
         data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
+        Point pbtnPoint = manageProjectsButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        data.right = new FormAttachment(100, -HORIZONTAL_SPACE * 2 - pbtnPoint.x);
         manageViewer.getControl().setLayoutData(data);
 
         existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
