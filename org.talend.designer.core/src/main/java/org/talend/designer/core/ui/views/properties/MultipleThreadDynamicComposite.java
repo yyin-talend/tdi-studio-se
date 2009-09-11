@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.views.properties;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -84,6 +86,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.GroupController
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
 import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -154,6 +157,50 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         return aliasName;
     }
 
+    /**
+     * 
+     * cli Comment method "getAllRepositoryMetadata".
+     * 
+     * fixed for 8971
+     */
+    private List<IRepositoryObject> getAllRepositoryMetadata() {
+        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+        ProjectManager pManager = ProjectManager.getInstance();
+        pManager.getReferencedProjects(); // retrieve reference project.
+
+        List<IRepositoryObject> repositoryObjects;
+        try {
+            repositoryObjects = retrieveMetadataFromProject(factory, pManager, pManager.getCurrentProject());
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+        return repositoryObjects;
+    }
+
+    /**
+     * 
+     * cli Comment method "getAllRepositoryMetadata".
+     * 
+     * fixed for 8971
+     */
+    private List<IRepositoryObject> retrieveMetadataFromProject(IProxyRepositoryFactory factory, ProjectManager pManager,
+            Project parentProject) throws PersistenceException {
+        List<IRepositoryObject> repositoryObjects = factory.getAll(parentProject, ERepositoryObjectType.METADATA);
+        if (repositoryObjects == null) {
+            repositoryObjects = new ArrayList<IRepositoryObject>();
+        }
+        List<Project> referencedProjects = pManager.getReferencedProjects(parentProject);
+        if (referencedProjects != null) {
+            for (Project p : referencedProjects) {
+                List<IRepositoryObject> refRepObjects = retrieveMetadataFromProject(factory, pManager, p);
+                if (refRepObjects != null) {
+                    repositoryObjects.addAll(refRepObjects);
+                }
+            }
+        }
+        return repositoryObjects;
+    }
+
     public void updateRepositoryList() {
 
         ProgressDialog progressDialog = new ProgressDialog(this.getShell(), 1000) {
@@ -164,13 +211,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-
-                List<IRepositoryObject> repositoryObjects;
-                try {
-                    repositoryObjects = factory.getAll(ERepositoryObjectType.METADATA);
-                } catch (PersistenceException e) {
-                    throw new RuntimeException(e);
-                }
+                List<IRepositoryObject> repositoryObjects = getAllRepositoryMetadata();
 
                 int total = repositoryObjects.size(); // + elem.getElementParameters().size();
                 monitorWrap.beginTask(Messages.getString("MultipleThreadDynamicComposite.gatherInformation"), total); //$NON-NLS-1$

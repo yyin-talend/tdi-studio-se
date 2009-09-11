@@ -1919,7 +1919,7 @@ public class Node extends Element implements INode {
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
             if (param.getName().equals(EParameterName.COMMENT.getName())) {
                 String infoValue = (String) param.getValue();
-                if (!infoValue.equals("") && !(infoValue == null)) { //$NON-NLS-1$
+                if (infoValue != null && !infoValue.equals("")) { //$NON-NLS-1$
                     Problems.add(ProblemStatus.INFO, this, infoValue);
                 }
             }
@@ -1928,10 +1928,11 @@ public class Node extends Element implements INode {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    if (tableValues != null
+                            && "tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$ //$NON-NLS-2$
                         checkFileOutputMSXML(param, tableValues);
                     } else {
-                        if (tableValues.size() == 0) {
+                        if (tableValues == null || tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
@@ -1946,10 +1947,11 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    if (tableValues != null
+                            && "tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$ //$NON-NLS-2$
                         checkFileOutputMSXML(param, tableValues);
                     } else {
-                        if (tableValues.size() == 0) {
+                        if (tableValues == null || tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
@@ -1963,7 +1965,11 @@ public class Node extends Element implements INode {
                     break;
                 case MEMO_SQL:
                     String errMessage = Messages.getString("Node.schemaDifferent", param.getDisplayName()); //$NON-NLS-1$
-                    String currentQuery = param.getValue().toString();
+                    Object value2 = param.getValue();
+                    if (value2 == null) {
+                        break;
+                    }
+                    String currentQuery = value2.toString();
 
                     // Checks if current query is empty.
                     // if (currentQuery.equals("")) {
@@ -1986,7 +1992,7 @@ public class Node extends Element implements INode {
                     break;
                 case CLOSED_LIST:
                     value = (String) param.getValue();
-                    if (value.equals("")) { //$NON-NLS-1$
+                    if (value == null || value.equals("")) { //$NON-NLS-1$
                         String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     } else {
@@ -2009,7 +2015,7 @@ public class Node extends Element implements INode {
                         break;
                     }
                     value = (String) param.getValue();
-                    if (value.equals("")) { //$NON-NLS-1$
+                    if (value == null || value.equals("")) { //$NON-NLS-1$
                         if (this.getComponent() != null && "tFileInputMSDelimited".equals(this.getComponent().getName())) {
                             multiSchemaDelimetedSeparaor.add(param);
                             if (multiSchemaDelimetedSeparaor.size() == 2) {
@@ -2026,7 +2032,7 @@ public class Node extends Element implements INode {
         }
 
         IElementParameter enableParallelizeParameter = getElementParameter(EParameterName.PARALLELIZE.getName());
-        if (enableParallelizeParameter != null) {
+        if (enableParallelizeParameter != null && enableParallelizeParameter.getValue() != null) {
             boolean x = (Boolean) enableParallelizeParameter.getValue();
             if (x) {
                 addStatus(Process.PARALLEL_STATUS);
