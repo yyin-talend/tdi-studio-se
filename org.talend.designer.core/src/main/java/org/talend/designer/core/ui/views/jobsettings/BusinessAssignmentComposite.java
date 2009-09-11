@@ -61,6 +61,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.business.BusinessType;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -70,6 +71,7 @@ import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.Query;
 import org.talend.designer.business.model.business.Routine;
+import org.talend.designer.business.model.business.SAPFunction;
 import org.talend.designer.business.model.business.SQLPattern;
 import org.talend.designer.business.model.business.TableMetadata;
 import org.talend.designer.business.model.business.TalendItem;
@@ -294,6 +296,15 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                             select(viewer, node);
                         }
 
+                    } else if (item instanceof SAPFunction) {
+                        SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(item.getId());
+                        if (function != null) {
+                            IRepositoryView view = getRepositoryView();
+                            RepositoryNode node = RepositoryNodeUtilities.getSAPFunctionFromConnection(item.getId());
+                            RepositoryNodeUtilities.expandParentNode(view, node);
+                            select(viewer, node);
+                        }
+
                     } else {
 
                         for (RepositoryNode rNode : rootRepositoryNode.getChildren()) {
@@ -332,6 +343,9 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
             private void select(JobSettingsView viewer, RepositoryNode repositoryNode) {
                 if (viewer == null) {
+                    return;
+                }
+                if (repositoryNode == null) {
                     return;
                 }
                 CorePlugin.getDefault().getRepositoryService().removeRepositoryTreeViewListener(viewer);
@@ -374,9 +388,9 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                                 }
                             }
                         }
-                        CorePlugin.getDefault().getDiagramModelService().addDeleteAssignmentAction(mgr);
 
                     }
+                    CorePlugin.getDefault().getDiagramModelService().addDeleteAssignmentAction(mgr, tableViewer.getSelection());
                 }
 
             }
@@ -426,6 +440,11 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                 org.talend.core.model.metadata.builder.connection.Query query = MetadataTool.getQueryFromRepository(item.getId());
                 if (query != null) {
                     return RepositoryNodeUtilities.getQueryFromConnection(item.getId());
+                }
+            } else if (item instanceof SAPFunction) {
+                SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(item.getId());
+                if (function != null) {
+                    return RepositoryNodeUtilities.getSAPFunctionFromConnection(item.getId());
                 }
             }
 

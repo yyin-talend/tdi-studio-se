@@ -24,6 +24,8 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.RepositoryPlugin;
@@ -404,9 +406,33 @@ public class RepositoryNodeUtilities {
 
         try {
             final RepositoryNode realNode = getRepositoryNode(repositoryID);
-            return getSchemeFromConnection(realNode, tableName, ERepositoryObjectType.METADATA_CON_TABLE);
+            if (realNode.getObject() != null && realNode.getObject().getProperty() != null) {
+                Item item = realNode.getObject().getProperty().getItem();
+                if (item instanceof SAPConnectionItem) {
+                    return getSAPSchemaFromConnection(realNode, schemaValue);
+                } else {
+                    return getSchemeFromConnection(realNode, tableName, ERepositoryObjectType.METADATA_CON_TABLE);
+                }
+            }
+
         } catch (Exception e) {
             ExceptionHandler.process(e);
+        }
+        return null;
+    }
+
+    private static RepositoryNode getSAPSchemaFromConnection(RepositoryNode realNode, String name) {
+        String[] values = name.split(" - "); //$NON-NLS-1$
+        if (values.length != 3) {
+            return null;
+        }
+        String metadataName = values[2];
+        String repositoryId = name.substring(0, name.lastIndexOf(" - "));
+        RepositoryNode functionNode = getSAPFunctionFromConnection(repositoryId);
+        for (RepositoryNode node : functionNode.getChildren()) {
+            if (metadataName.equals(node.getProperties(EProperties.LABEL))) {
+                return node;
+            }
         }
         return null;
     }
@@ -419,6 +445,33 @@ public class RepositoryNodeUtilities {
         try {
             final RepositoryNode realNode = getRepositoryNode(repositoryID);
             return getSchemeFromConnection(realNode, tableName, ERepositoryObjectType.METADATA_CON_QUERY);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
+    }
+
+    public static RepositoryNode getSAPFunctionFromConnection(String id) {
+        String[] values = id.split(" - "); //$NON-NLS-1$
+        String repositoryID = values[0];
+        String functionName = values[1];
+
+        try {
+            final RepositoryNode realNode = getRepositoryNode(repositoryID);
+            if (realNode.getObject() != null) {
+                if (ERepositoryObjectType.METADATA_SAPCONNECTIONS.equals(realNode.getObject().getType())) {
+                    for (RepositoryNode node : realNode.getChildren()) {
+                        if (Messages.getString("RepositoryContentProvider.repositoryLabel.sapFunction").equals(node.getLabel())) { //$NON-NLS-1$
+                            for (RepositoryNode function : node.getChildren()) {
+                                if (functionName.equals(function.getProperties(EProperties.LABEL))) {
+                                    return function;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }

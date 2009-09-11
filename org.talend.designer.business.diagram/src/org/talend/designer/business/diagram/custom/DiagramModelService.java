@@ -192,8 +192,12 @@ public class DiagramModelService implements IDiagramModelService {
         return diagramResourceManager.createDiagramFile();
     }
 
-    public void addDeleteAssignmentAction(IMenuManager mgr) {
-        DeleteAssignmentAction action = new DeleteAssignmentAction();
+    public void addDeleteAssignmentAction(IMenuManager mgr, ISelection selection) {
+        if (selection == null || selection.isEmpty()) {
+            return;
+        }
+
+        DeleteAssignmentAction action = new DeleteAssignmentAction(selection);
         mgr.add(action);
     }
 }

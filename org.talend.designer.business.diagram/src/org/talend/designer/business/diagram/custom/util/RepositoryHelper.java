@@ -15,7 +15,9 @@ package org.talend.designer.business.diagram.custom.util;
 import java.util.Iterator;
 
 import org.eclipse.emf.ecore.EClass;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.business.model.business.BusinessAssignment;
@@ -27,6 +29,7 @@ import org.talend.designer.business.model.business.TalendItem;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
@@ -66,11 +69,23 @@ public class RepositoryHelper {
                 if (class1 != null) {
                     result = (TalendItem) BusinessFactory.eINSTANCE.create(class1);
                     result.setRepository(repository);
-                    if ("METADATA_CON_TABLE".equals(repositoryObject.getType().name())) { //$NON-NLS-1$
+                    if (ERepositoryObjectType.METADATA_CON_TABLE.equals(repositoryObject.getType())) {
                         Property property = ((MetadataTableRepositoryObject) repositoryObject).getProperty();
-                        result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
-                    } else if ("METADATA_CON_QUERY".equals(repositoryObject.getType().name())) { //$NON-NLS-1$
+                        Item item = property.getItem();
+                        if (item instanceof SAPConnectionItem) {
+                            if (repositoryNode.getParent() != null) {
+                                result.setId(property.getId() + " - "
+                                        + repositoryNode.getParent().getProperties(EProperties.LABEL) + " - "
+                                        + repositoryObject.getLabel());
+                            }
+                        } else {
+                            result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
+                        }
+                    } else if (ERepositoryObjectType.METADATA_CON_QUERY.equals(repositoryObject.getType())) {
                         Property property = ((QueryRepositoryObject) repositoryObject).getProperty();
+                        result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
+                    } else if (ERepositoryObjectType.METADATA_SAP_FUNCTION.equals(repositoryObject.getType())) {
+                        Property property = ((SAPFunctionRepositoryObject) repositoryObject).getProperty();
                         result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
                     } else {
                         result.setId(repositoryObject.getId());
@@ -111,8 +126,8 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getDatabaseMetadata();
         } else if (type == ERepositoryObjectType.METADATA_SAPCONNECTIONS) {
             return BusinessPackage.eINSTANCE.getSapFunctionMetadata();
-        } else if (type == ERepositoryObjectType.METADATA_SAPCONNECTIONS) {
-            return BusinessPackage.eINSTANCE.getSapFunctionMetadata();
+        } else if (type == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+            return BusinessPackage.eINSTANCE.getSAPFunction();
         } else if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
             return BusinessPackage.eINSTANCE.getTableMetadata();
         } else if (type == ERepositoryObjectType.METADATA_FILE_DELIMITED) {

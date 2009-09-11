@@ -46,6 +46,7 @@ import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -163,6 +164,7 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
 
                                 MetadataTable table = MetadataTool.getMetadataTableFromRepository(talendItem.getId());
                                 Query query = MetadataTool.getQueryFromRepository(talendItem.getId());
+                                SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(talendItem.getId());
                                 if (table != null) {
                                     img = ImageDescriptor.createFromFile(ECoreImage.class,
                                             ECoreImage.METADATA_TABLE_ICON.getPath()).createImage();
@@ -201,6 +203,13 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                                             labels.add(label);
                                         }
                                     }
+                                } else if (function != null) {
+                                    img = ImageDescriptor.createFromFile(ECoreImage.class,
+                                            ECoreImage.METADATA_SAPCONNECTION_ICON.getPath()).createImage();
+                                    label = new Label(
+                                            talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
+                                    labels.add(label);
+
                                 } else {
                                     img = (Image) provider.getImage(assignment);
                                     img = new OverlayImage(img, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),

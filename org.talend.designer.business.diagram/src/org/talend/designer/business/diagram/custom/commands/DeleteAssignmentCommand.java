@@ -21,23 +21,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.gmf.runtime.common.core.command.CommandResult;
 import org.eclipse.gmf.runtime.emf.commands.core.command.AbstractTransactionalCommand;
-import org.talend.designer.business.model.business.BusinessAssignment;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.designer.business.model.business.BusinessItem;
-import org.talend.designer.business.model.business.Query;
-import org.talend.designer.business.model.business.Routine;
-import org.talend.designer.business.model.business.SQLPattern;
-import org.talend.designer.business.model.business.SapFunctionMetadata;
-import org.talend.designer.business.model.business.TableMetadata;
-import org.talend.designer.business.model.business.TalendItem;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
 public class DeleteAssignmentCommand extends AbstractTransactionalCommand {
 
-    private RepositoryNode node;
+    private ISelection selection;
 
     private BusinessItem businessItem;
 
@@ -48,9 +41,9 @@ public class DeleteAssignmentCommand extends AbstractTransactionalCommand {
      * @param label
      * @param affectedFiles
      */
-    public DeleteAssignmentCommand(BusinessItem businessItem, RepositoryNode node) {
+    public DeleteAssignmentCommand(BusinessItem businessItem, ISelection selection) {
         super(TransactionUtil.getEditingDomain(businessItem), null, null);
-        this.node = node;
+        this.selection = selection;
         this.businessItem = businessItem;
     }
 
@@ -64,24 +57,32 @@ public class DeleteAssignmentCommand extends AbstractTransactionalCommand {
     @Override
     protected CommandResult doExecuteWithResult(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
         List assignements = businessItem.getAssignments();
+        Object firstElement = null;
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection iSelection = (IStructuredSelection) selection;
+            firstElement = iSelection.getFirstElement();
+        }
         Iterator iterator = assignements.iterator();
         while (iterator.hasNext()) {
             Object assignment = iterator.next();
-            if (assignment instanceof BusinessAssignment) {
-                TalendItem item = ((BusinessAssignment) assignment).getTalendItem();
-                if (item != null) {
-                    if (item.getId().equals(node.getId())) {
-                        iterator.remove();
-                    } else if (item instanceof SQLPattern || item instanceof Routine || item instanceof TableMetadata
-                            || item instanceof Query || item instanceof SapFunctionMetadata) {
-                        if (item.getLabel().equals(node.getProperties(EProperties.LABEL))) {
-                            iterator.remove();
-                        }
-
-                    }
-                }
-
+            if (firstElement == assignment) {
+                iterator.remove();
             }
+            // if (assignment instanceof BusinessAssignment) {
+            // TalendItem item = ((BusinessAssignment) assignment).getTalendItem();
+            // if (item != null) {
+            // if (item.getId().equals(node.getId())) {
+            // iterator.remove();
+            // } else if (item instanceof SQLPattern || item instanceof Routine || item instanceof TableMetadata
+            // || item instanceof Query || item instanceof SapFunctionMetadata) {
+            // if (item.getLabel().equals(node.getProperties(EProperties.LABEL))) {
+            // iterator.remove();
+            // }
+            //
+            // }
+            // }
+            //
+            // }
         }
 
         return CommandResult.newOKCommandResult();

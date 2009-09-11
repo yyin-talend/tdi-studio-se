@@ -19,22 +19,21 @@ import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeE
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
 public class DeleteAssignmentAction extends AContextualAction {
 
-    public DeleteAssignmentAction() {
+    private ISelection selection;
+
+    public DeleteAssignmentAction(ISelection selection) {
         super();
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.DELETE_ICON));
         setText(Messages.getString("DeleteAssignmentAction.DeleteAssignment")); //$NON-NLS-1$
+        this.selection = selection;
     }
 
     @Override
     protected void doRun() {
-        ISelection selection = getSelection();
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
-        RepositoryNode node = (RepositoryNode) obj;
 
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         if (activeEditor instanceof BusinessDiagramEditor) {
@@ -47,7 +46,7 @@ public class DeleteAssignmentAction extends AContextualAction {
                 EObject element = ((Node) editpart.getModel()).getElement();
                 if (element instanceof BusinessItem) {
                     BusinessItem businessItem = (BusinessItem) element;
-                    DeleteAssignmentCommand command = new DeleteAssignmentCommand(businessItem, node);
+                    DeleteAssignmentCommand command = new DeleteAssignmentCommand(businessItem, selection);
                     try {
                         command.execute(null, null);
                     } catch (ExecutionException e) {

@@ -14,6 +14,7 @@ import org.talend.commons.ui.image.OverlayImage.EPosition;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -47,6 +48,10 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
                     }
                     Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
                     if (query != null) {
+                        return image;
+                    }
+                    SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(assignment.getTalendItem().getId());
+                    if (function != null) {
                         return image;
                     }
                     TalendItem item = assignment.getTalendItem();
@@ -101,6 +106,12 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
                     Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
                     if (query != null) {
                         if (SubItemHelper.isDeleted(query))
+                            columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                        return columnText;
+                    }
+                    SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(assignment.getTalendItem().getId());
+                    if (function != null) {
+                        if (SubItemHelper.isDeleted(function))
                             columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
                         return columnText;
                     }
