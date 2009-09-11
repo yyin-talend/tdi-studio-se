@@ -254,8 +254,12 @@ public class EditProcess extends AContextualAction implements IIntroAction {
         if (params == null) {
             return getSelection();
         } else {
-            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"));
-            return new StructuredSelection(repositoryNode);
+            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"), false);
+            if (repositoryNode != null) {
+                RepositoryNodeUtilities.expandParentNode(getViewPart(), repositoryNode);
+                return new StructuredSelection(repositoryNode);
+            }
+            return null;
 
         }
     }

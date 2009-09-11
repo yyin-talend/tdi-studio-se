@@ -60,6 +60,9 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
      */
     protected void doRun() {
         ISelection selection = getSelectedObject();
+        if (selection == null) {
+            return;
+        }
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         if (obj instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) obj;
@@ -134,9 +137,12 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
         if (params == null) {
             return getSelection();
         } else {
-            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"));
-            return new StructuredSelection(repositoryNode);
-
+            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"), false);
+            if (repositoryNode != null) {
+                RepositoryNodeUtilities.expandParentNode(getViewPart(), repositoryNode);
+                return new StructuredSelection(repositoryNode);
+            }
+            return null;
         }
     }
 }
