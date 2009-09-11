@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +50,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
+import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
@@ -164,12 +166,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         if (PluginChecker.isRulesPluginLoaded()) {
             // hywang add for 6484,add final drl files or xls files to exported job script
-            List<URL> talendDrlFiles = new ArrayList<URL>();
+            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$
+            list.add(ruleFileResource);
             try {
-                initUrlForRulesFiles(process, talendDrlFiles);
-                ExportFileResource drlResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$
-                list.add(drlResource);
-                drlResource.addResources(talendDrlFiles);
+                Map<String, List<URL>> map = initUrlForRulesFiles(process);
+                Object[] keys = map.keySet().toArray();
+                for (int i = 0; i < keys.length; i++) {
+                    List<URL> talendDrlFiles = map.get(keys[i].toString());
+                    ruleFileResource.addResources(keys[i].toString(), talendDrlFiles);
+                }
             } catch (CoreException e) {
                 ExceptionHandler.process(e);
             } catch (MalformedURLException e) {
@@ -831,28 +836,33 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @throws CoreException
      * @throws MalformedURLException
      */
-    private void initUrlForRulesFiles(ExportFileResource[] process, List<URL> talendDrlFiles) throws PersistenceException,
-            CoreException, MalformedURLException {
-        // String processLabelAndVersion = null;
+    private Map<String, List<URL>> initUrlForRulesFiles(ExportFileResource[] process) throws PersistenceException, CoreException,
+            MalformedURLException {
+
+        Map<String, List<URL>> map = new HashMap<String, List<URL>>();
+        List<URL> urlList = new ArrayList<URL>();
+
+        String processLabelAndVersion = null;
         IFile file;
         Item item = null;
         ProcessItem pi = null;
         if (PluginChecker.isRulesPluginLoaded()) {
+            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
             IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
                     IRulesProviderService.class);
 
-            List<String> ids = new ArrayList<String>();
-            List<Item> items = new ArrayList<Item>();
-            for (int i = 0; i < process.length; i++) {
+            for (int i = 0; i < process.length; i++) { // loop every exported job
+                if (!urlList.isEmpty()) {
+                    urlList = new ArrayList<URL>();
+                }
                 item = ((ExportFileResource) process[i]).getItem();
 
                 if (item instanceof ProcessItem) {
                     pi = (ProcessItem) item;
-                    // processLabelAndVersion = JavaResourcesHelper.getJobFolderName(pi.getProperty().getLabel(),
-                    // pi.getProperty()
-                    // .getVersion());
+                    processLabelAndVersion = JavaResourcesHelper.getJobFolderName(pi.getProperty().getLabel(), pi.getProperty()
+                            .getVersion());
                 }
-                for (int j = 0; j < pi.getProcess().getNode().size(); j++) {
+                for (int j = 0; j < pi.getProcess().getNode().size(); j++) { // loop every node in every exported job
                     if (pi.getProcess().getNode().get(j) instanceof NodeType) {
                         NodeType node = (NodeType) pi.getProcess().getNode().get(j);
                         if (rulesService.isRuleComponent(node)) {
@@ -861,33 +871,25 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                                     ElementParameterType elementParameter = (ElementParameterType) obj;
                                     if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$
                                         String id = elementParameter.getValue();
-                                        ids.add(id);
+                                        if (factory.getLastVersion(id).getProperty().getItem() != null) {
+                                            if (factory.getLastVersion(id).getProperty().getItem() instanceof RulesItem) {
+                                                RulesItem rulesItem = (RulesItem) factory.getLastVersion(id).getProperty()
+                                                        .getItem();
+                                                file = rulesService.getFinalRuleFile(rulesItem, processLabelAndVersion);
+                                                URL url = file.getLocationURI().toURL();
+                                                urlList.add(url);
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                try {
-                    for (String id : ids) {
-                        if (factory.getLastVersion(id).getProperty().getItem() != null) {
-                            items.add(factory.getLastVersion(id).getProperty().getItem());
-                        }
-                    }
-                    for (Item rulesItem : items) {
-                        if (rulesItem != null) {
-                            file = rulesService.getFinalRuleFile(rulesItem);
-                            URL url = file.getLocationURI().toURL();
-                            talendDrlFiles.add(url);
-                        }
-                    }
-                } catch (Exception e) { // catch exception,return new list
-                    talendDrlFiles = new ArrayList<URL>();
-                }
+                map.put(processLabelAndVersion, urlList);
             }
-
         }
+        return map;
     }
 
 }
