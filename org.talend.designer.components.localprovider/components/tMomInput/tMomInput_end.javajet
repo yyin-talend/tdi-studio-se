@@ -12,6 +12,8 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
+String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
+String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
 
 if(("JBoss").equals(serverType)){
 %>
@@ -26,6 +28,12 @@ if(("JBoss").equals(serverType)){
 	}
 %>
 	}
+	
+<%if("true".equals(kListen)){%>
+	Thread.sleep(<%=timeOut%>*1000);
+<%}else{%>
+	break;
+<%}%>
 }
 	 	System.out.println("Closing connection");
 		msgconsumer_<%=cid%>.close();

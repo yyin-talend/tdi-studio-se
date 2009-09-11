@@ -55,11 +55,9 @@ class="MomInput"
 	System.out.println("Waiting...");	
 	javax.jms.Message message_<%=cid%>;
 	String msg_<%=cid%> = "";
-<%if("true".equals(kListen)){%>
-	while((message_<%=cid%>=msgconsumer_<%=cid%>.receive(<%=timeOut%>*1000))!=null){
-<%}else{%>
-	while((message_<%=cid%>=msgconsumer_<%=cid%>.receiveNoWait())!=null){
-<%}%>
+
+	while((message_<%=cid%>=msgconsumer_<%=cid%>.receive())!=null){
+
 <%
 if(("true").equals(useMsgId)){
 %>
