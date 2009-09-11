@@ -247,6 +247,7 @@ class GenerateExprCmpByDom4j{
 //	String cid = null;
 	XMLTool tool = null;
 	XMLNode groupNode = null;
+	boolean needEmptyNode = true;
 	public void generateCode(XMLNode node, String parentName){
 		String tmpPath = node.path.replaceFirst(groupNode.path,"");
 		String[] arrNames = tmpPath.split("/");
@@ -256,16 +257,15 @@ class GenerateExprCmpByDom4j{
 		}
 		
 		if(node.relatedColumn != null){
-%>
+%> && (<%
+			if(!needEmptyNode){
+%>(<%tool.getValue(node); %>==null && <%generateCmnExpr(arrNames, parentName); %> == null) || (true &&
+<%			}%>
  <%generateCmnExpr(arrNames, parentName); %>!=null
- <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
- <%generateCmnExpr(arrNames, parentName); %>.getText().equals(<%tool.getValue(node); %>)
-<%
-		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
-%>
- <%generateCmnExpr(arrNames, parentName); %>!=null
- <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
- <%generateCmnExpr(arrNames, parentName); %>.getText().equals("<%=node.defaultValue %>")
+ && <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
+ && <%generateCmnExpr(arrNames, parentName); %>.getText().equals(<%tool.getValue(node); %>)
+<%if(!needEmptyNode){%>)<%}%>
+)
 <%
 		}
 		
@@ -273,17 +273,16 @@ class GenerateExprCmpByDom4j{
 		if(node.attributes!=null){
 			for(XMLNode attri:node.attributes){
 				if(attri.relatedColumn !=null){
-%>
+%> && (<%
+					if(!needEmptyNode){
+%>(<%tool.getValue(attri); %>==null && <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>") == null) || (true && 
+<%					}%>
  <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>")!=null
- <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
- <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals(<%tool.getValue(attri); %>)
+&& <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
+&& <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals(<%tool.getValue(attri); %>)
 <%
-				}else if(attri.defaultValue !=null && !("").equals(attri.defaultValue) ){
-%>
- <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>")!=null
- <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
- <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals("<%=attri.defaultValue %>")
-<%
+					if(!needEmptyNode){%>)<%}
+%>)<%
 				}
 			}
 		}
@@ -294,12 +293,12 @@ class GenerateExprCmpByDom4j{
 					generateCode(child,parentName);
 				}
 			}
-		}
+		}		
 	}
 	
 	private void generateCmnExpr(String[] arrNames, String parentName){
 %>
- && <%=parentName %>
+<%=parentName %>
 <%
 		for(int i=1;arrNames != null && i<arrNames.length; i++){
 %>.element("<%=arrNames[i]%>")
@@ -604,6 +603,7 @@ if(groupTable.size()>0){					//init the generate tool.
 			GenerateExprCmpByDom4j generateExprCmpByDom4j = new GenerateExprCmpByDom4j();
 			generateExprCmpByDom4j.tool = tool;
 			generateExprCmpByDom4j.groupNode = groupNode;
+			generateExprCmpByDom4j.needEmptyNode = ("true").equals(allowEmpty);
 %>
 		if(bl_<%=cid %>==false){
 			java.util.List<org.dom4j.Element> listNodes= subTreeRootParent_<%=cid %>.elements();
