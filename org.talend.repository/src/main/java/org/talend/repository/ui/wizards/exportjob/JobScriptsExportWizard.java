@@ -78,6 +78,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             section.put(JavaJobScriptsExportWSWizardPage.STORE_AXISLIB_ID, true);
             section.put(JavaJobScriptsExportWSWizardPage.STORE_WSDD_ID, true);
             section.put(JavaJobScriptsExportWSWizardPage.STORE_WSDL_ID, true);
+            section.put(JavaJobScriptsExportWSWizardPage.STORE_SOURCE_ID, true);
 
             // section.put(JobScriptsExportWizardPage.STORE_GENERATECODE_ID, true);
         }
