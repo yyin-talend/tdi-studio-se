@@ -23,6 +23,7 @@ import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentConnection;
@@ -260,6 +261,24 @@ public class DataProcess {
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
                     copyElementParametersValue(connection, dataConnec);
                 }
+                if (PluginChecker.isTIS()
+                        && (connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK
+                                || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR
+                                || connection.getLineStyle() == EConnectionType.RUN_IF
+                                || connection.getLineStyle() == EConnectionType.ON_COMPONENT_OK || connection.getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)) {
+
+                    IElementParameter param = new ElementParameter(dataConnec);
+                    param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
+                    param.setValue(Boolean.FALSE);
+                    param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
+                    param.setField(EParameterFieldType.CHECK);
+                    param.setCategory(EComponentCategory.RESUMING);
+                    param.setNumRow(2);
+                    param.setShow(true);
+                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+                    copyElementParametersValue(connection, dataConnec);
+                }
+
                 INode target = buildDataNodeFromNode((Node) connection.getTarget(), prefix);
                 dataConnec.setTarget(target);
                 incomingConnections = (List<IConnection>) target.getIncomingConnections();
