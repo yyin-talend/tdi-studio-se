@@ -736,6 +736,8 @@ public class CLASS {
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
                 if(dbType != null && dbType.equals("BLOB")) {
                     setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BLOB);\r\n");
+        		} else if("CLOB".equals(dbType)){
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CLOB);\r\n");
                 } else {
                     setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                    
                 }               
