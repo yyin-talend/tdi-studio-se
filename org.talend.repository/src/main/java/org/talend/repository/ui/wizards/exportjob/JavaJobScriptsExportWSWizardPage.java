@@ -414,6 +414,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
 
         if (process.length > 0) {
+            try {
+                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                        process[0].getItem().getProperty()).getItem());
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+            }
             List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
@@ -463,6 +469,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
 
         if (process.length > 0) {
+            try {
+                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                        process[0].getItem().getProperty()).getItem());
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+            }
             List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
@@ -512,6 +524,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             launcherCombo.select(0);
         }
         if (process.length > 0) {
+            try {
+                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                        process[0].getItem().getProperty()).getItem());
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+            }
             ProcessItem item = (ProcessItem) process[0].getItem();
             try {
                 String id = item.getProperty().getId();
@@ -649,6 +667,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             String jobLabel = ""; //$NON-NLS-1$
             contextCombo = new Combo(left, SWT.PUSH);
             if (process.length > 0) {
+                try {
+                    process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                            process[0].getItem().getProperty()).getItem());
+                } catch (PersistenceException e) {
+                    e.printStackTrace();
+                }
                 jobLabel = (process[0].getItem()).getProperty().getLabel();
                 List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
                 contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));

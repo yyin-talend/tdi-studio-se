@@ -34,6 +34,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponent;
@@ -54,6 +55,7 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC qwei class global comment. Detailled comment <br/>
@@ -292,6 +294,11 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         if (processedJob.contains(process)) {
             // prevent circle
             return;
+        }
+        try {
+            process = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()).getItem();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
         }
         processedJob.add(process);
         addComponentModules(process, resource);

@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponent;
@@ -51,6 +52,7 @@ import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -348,6 +350,11 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
+        }
+        try {
+            process = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()).getItem();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
         }
         processedJob.add(process);
         addComponentModules(process, curResource);

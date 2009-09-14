@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -54,6 +55,7 @@ import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -424,6 +426,12 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         List<JobResource> jobResources = new ArrayList<JobResource>();
 
         for (int i = 0; i < process.length; i++) {
+            try {
+                process[i].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                        process[i].getItem().getProperty()).getItem());
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+            }
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             JobInfo jobInfo = new JobInfo(processItem, processItem.getProcess().getDefaultContext());
             jobResources.add(new JobResource(projectName, jobInfo));

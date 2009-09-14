@@ -71,6 +71,7 @@ import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -460,6 +461,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
+        }
+        try {
+            process = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()).getItem();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
         }
         processedJob.add(process);
         addJobItem(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needJobItem), resource);

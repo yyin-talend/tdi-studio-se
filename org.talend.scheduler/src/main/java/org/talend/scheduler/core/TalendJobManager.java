@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
@@ -175,7 +176,12 @@ public class TalendJobManager {
                     List<JobInfo> jobInfos = new ArrayList<JobInfo>();
                     JobInfo mainJobInfo = new JobInfo((ProcessItem) item, ((ProcessItem) item).getProcess().getDefaultContext());
                     // jobInfos.add(mainJobInfo);
-                    jobInfos.addAll(ProcessorUtilities.getChildrenJobInfo((ProcessItem) item));
+                    try {
+                        jobInfos.addAll(ProcessorUtilities.getChildrenJobInfo(((ProcessItem) ProxyRepositoryFactory.getInstance()
+                                .getUptodateProperty(((ProcessItem) item).getProperty()).getItem())));
+                    } catch (PersistenceException e) {
+                        e.printStackTrace();
+                    }
                     mainJobInfoByName.put(process.getLabel(), mainJobInfo);
                     runjobInfosByName.put(process.getLabel(), jobInfos);
                 }

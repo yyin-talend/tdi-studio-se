@@ -29,6 +29,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 
@@ -134,6 +136,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
     @Override
     public boolean performCancel() {
         ProcessorUtilities.resetExportConfig();
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
         return true;
     }
 }
