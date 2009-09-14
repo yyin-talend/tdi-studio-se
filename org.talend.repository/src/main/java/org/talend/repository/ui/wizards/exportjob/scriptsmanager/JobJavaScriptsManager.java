@@ -237,7 +237,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File contextDir = classRoot.toFile();
             if (contextDir.isDirectory()) {
                 // See bug 0003568: Three contexts file exported, while only two contexts in the job.
-                list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), processItem));
+                list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), (ProcessItem) ProxyRepositoryFactory
+                        .getInstance().getUptodateProperty(processItem.getProperty()).getItem()));
             }
 
             // list.add(classRoot.toFile().toURL());
