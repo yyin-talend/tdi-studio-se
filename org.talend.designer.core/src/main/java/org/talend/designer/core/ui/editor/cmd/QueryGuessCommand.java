@@ -189,6 +189,11 @@ public class QueryGuessCommand extends Command {
                         realTableName, b));
             }
         } else {
+            realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
+            if (realTableName.startsWith(TalendTextUtils.QUOTATION_MARK)
+                    && realTableName.endsWith(TalendTextUtils.QUOTATION_MARK) && realTableName.length() > 2) {
+                realTableName = realTableName.substring(1, realTableName.length() - 1);
+            }
             newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, dbType, schema,
                     realTableName));
         }
