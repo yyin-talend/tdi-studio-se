@@ -113,8 +113,10 @@ SendStat(
                         || lineStyle.equals(EConnectionType.FLOW_MERGE)) {
 
                         String perlArrayRefName = node.getUniqueName();
-                        if (!conn.getConnectorName().equals("FLOW")) {
-                            perlArrayRefName = perlArrayRefName + "_" + conn.getConnectorName();
+                        if (conn.getConnectorName()!=null) {
+                        	if (!conn.getConnectorName().equals("FLOW")) {
+                            	perlArrayRefName = perlArrayRefName + "_" + conn.getConnectorName();
+                        	}
                         }
 
                         if (componentName.equals("tReplicate")) {
