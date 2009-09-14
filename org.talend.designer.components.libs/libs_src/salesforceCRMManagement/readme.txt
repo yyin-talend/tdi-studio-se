@@ -11,3 +11,5 @@ some resources:
 2. feature 6982: API10.0 --> API16.0.
 
 3. feature 8570: modified SforceManagement.java and SforceManagementImpl.java , add SforceCompressionService.java
+
+4. Bug 9056, modify bug when upsert.

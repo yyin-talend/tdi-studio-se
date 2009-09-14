@@ -384,7 +384,7 @@ public class SforceManagementImpl implements SforceManagement {
 
                 returnObject = saveResults;
             }
-            if (upsertItems.size() >= commitLevel) {
+            if (upsertItems.size() > 0) {
                 SObject[] upds = upsertItems.toArray(new SObject[upsertItems.size()]);
                 UpsertResult[] upsertResults = binding.upsert(upsertKeyColumn, upds);
                 upsertItems.clear();
