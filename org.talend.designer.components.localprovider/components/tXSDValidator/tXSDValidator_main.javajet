@@ -62,7 +62,16 @@ int validate_<%=cid %> = 0;
 			}
 				//throw ex;
 		}
+		
+		public void error(java.io.IOException ioEx){
+			if (errorMessage == null) {
+				errorMessage = "There is an Error on line " + " : " + ioEx.getMessage();
+			} else {
 
+				errorMessage = errorMessage + "\n" + "There is an Error on line " + " : " + ioEx.getMessage();
+			}
+		}
+		
 		public void fatalError(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException
 		{
 
@@ -100,9 +109,11 @@ try {
 	  	
 } catch (org.xml.sax.SAXParseException ex<%=cid %>) {
 	errorHandler_<%=cid %>.error(ex<%=cid %>);
+} catch (java.io.IOException ioEx<%=cid %>){
+	errorHandler_<%=cid %>.error(ioEx<%=cid %>);
 }
-ErrorMessage_<%=cid%>=errorHandler_<%=cid %>.returnMessage();
-if (ErrorMessage_<%=cid%>.length()>0&&ErrorMessage_<%=cid%>!=null) {
+ErrorMessage_<%=cid %>=errorHandler_<%=cid %>.returnMessage();
+if (ErrorMessage_<%=cid%>!=null&& ErrorMessage_<%=cid%>.length()>0) {
 	message_<%=cid %> = <%=invalidMessage %>;
 } else {
 	message_<%=cid %> = <%=validMessage %>;
