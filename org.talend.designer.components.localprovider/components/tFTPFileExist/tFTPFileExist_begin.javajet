@@ -33,7 +33,8 @@
 	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
 	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
 	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");		
-    String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");		
+    String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");    
 %>
 
 <%
@@ -50,29 +51,35 @@ if(useProxy){
 
 <%if(sftp){%>
 
-	class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
-    	String passphrase_<%=cid %> = <%=passPhrase %>;
-        public String getPassphrase() { return passphrase_<%=cid %>; }
-        
-        public String getPassword() { return null; } 
-        
-        public boolean promptPassword(String arg0) { return true; } 
-        
-        public boolean promptPassphrase(String arg0) { return true; } 
-        
-        public boolean promptYesNo(String arg0) { return true; } 
-        
-        public void showMessage(String arg0) { } 
-        
-        public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
-                boolean[] echo) {
-           String[] password<%=cid%> = {<%=pass%>};
-           return password<%=cid%>;
-        }
-    }; 
-    
-    final com.jcraft.jsch.UserInfo defaultUserInfo<%=cid%> = new MyUserInfo();
-    
+<%
+	if(("false").equals(useExistingConn)){
+%>
+	    class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+	    
+	    	String passphrase_<%=cid %> = <%=passPhrase %>;
+	        public String getPassphrase() { return passphrase_<%=cid %>; }
+	        
+	        public String getPassword() { return null; } 
+	        
+	        public boolean promptPassword(String arg0) { return true; } 
+	        
+	        public boolean promptPassphrase(String arg0) { return true; } 
+	        
+	        public boolean promptYesNo(String arg0) { return true; } 
+	        
+	        public void showMessage(String arg0) { } 
+	        
+	        public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+	                boolean[] echo) {
+	           String[] password_<%=cid%> = {<%=pass%>};
+	           return password_<%=cid%>;
+	        }
+	    }; 
+	    
+	    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo();
+<%
+	}
+%>
     
     class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
 
@@ -83,18 +90,35 @@ if(useProxy){
         public void end() {}
     }
     
-    com.jcraft.jsch.JSch jsch<%=cid%>=new com.jcraft.jsch.JSch(); 
-    <%if(("PUBLICKEY").equals(authMethod)){%>
-    jsch<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo<%=cid%>.getPassphrase());
-    <%}%>
-    com.jcraft.jsch.Session session<%=cid%>=jsch<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 
-    <%if(("PASSWORD").equals(authMethod)){%> 
-	session<%=cid%>.setPassword(<%=pass%>); 
-    <%}%>
-    session<%=cid%>.setUserInfo(defaultUserInfo<%=cid%>); 
-    session<%=cid%>.connect(); 
+<%
+	if(("true").equals(useExistingConn)){
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String conn= "conn_" + connection;
+%>
+		com.jcraft.jsch.Session session_<%=cid%> = (com.jcraft.jsch.Session)globalMap.get("<%=conn %>");
+<%
+	}else{
+%>		
     
-    com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
+	    com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
+	    
+	    <%if(("PUBLICKEY").equals(authMethod)){%>
+	    jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
+	    <%}%>
+	    
+	    com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
+	    
+	    <%if(("PASSWORD").equals(authMethod)){%> 
+		session_<%=cid%>.setPassword(<%=pass%>); 
+	    <%}%>
+	    
+	    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
+	    session_<%=cid%>.connect();
+<%
+	}
+%> 
+    
+    com.jcraft.jsch. Channel channel<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
     channel<%=cid%>.connect();
      
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>;
@@ -102,8 +126,6 @@ if(useProxy){
 		com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> =null;
 		
 		<%
-		String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
-		
 		if(("true").equals(useExistingConn)){
 			String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 			String conn= "conn_" + connection;

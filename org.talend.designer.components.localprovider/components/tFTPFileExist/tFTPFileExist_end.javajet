@@ -20,7 +20,7 @@
 	if(sftp){
 %>
 
-    	session<%=cid%>.disconnect(); 
+    	session_<%=cid%>.disconnect(); 
     
 <%
 	}else{

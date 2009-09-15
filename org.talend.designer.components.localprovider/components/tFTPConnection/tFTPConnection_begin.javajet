@@ -21,6 +21,10 @@ imports="
 	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 	String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
+	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
+	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
+	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");
 if(useProxy){	    
 %>	
     java.util.Properties props_<%=cid%> = System.getProperties();
@@ -30,6 +34,7 @@ if(useProxy){
     props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);
 <%
 }
+if(!sftp){
 %>
 	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp<%=cid %>.setRemoteHost(<%=host %>);
@@ -50,3 +55,48 @@ if(useProxy){
 	ftp<%=cid %>.login(<%=user %>, <%=pass %>);  
 
 	globalMap.put("conn_<%=cid%>",ftp<%=cid %>);
+<%
+}else{
+%>
+    class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+    
+    	String passphrase_<%=cid %> = <%=passPhrase %>;
+        public String getPassphrase() { return passphrase_<%=cid %>; }
+        
+        public String getPassword() { return null; } 
+        
+        public boolean promptPassword(String arg0) { return true; } 
+        
+        public boolean promptPassphrase(String arg0) { return true; } 
+        
+        public boolean promptYesNo(String arg0) { return true; } 
+        
+        public void showMessage(String arg0) { } 
+        
+        public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+                boolean[] echo) {
+           String[] password_<%=cid%> = {<%=pass%>};
+           return password_<%=cid%>;
+        }
+    };
+    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo();
+    
+    com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
+    
+    <%if(("PUBLICKEY").equals(authMethod)){%>
+    jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
+    <%}%>
+    
+    com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
+    
+    <%if(("PASSWORD").equals(authMethod)){%> 
+	session_<%=cid%>.setPassword(<%=pass%>); 
+    <%}%>
+    
+    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
+    session_<%=cid%>.connect();
+    
+    globalMap.put("conn_<%=cid%>",session_<%=cid%>);
+<%
+}
+%>
