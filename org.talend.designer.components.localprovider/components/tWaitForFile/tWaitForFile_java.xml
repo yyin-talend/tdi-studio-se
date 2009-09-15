@@ -110,6 +110,7 @@
       	<COLUMN NAME="CREATED_FILE"			TYPE="id_String"  LENGTH="255" />
       	<COLUMN NAME="UPDATED_FILE"         TYPE="id_String"  LENGTH="255" />
       	<COLUMN NAME="FILENAME"             TYPE="id_String"  LENGTH="255"/>
+      	<COLUMN NAME="NOT_UPDATED_FILE"             TYPE="id_String"  LENGTH="255"/>
       </TABLE>
 	</PARAMETER>
 	
@@ -120,6 +121,14 @@
       NAME="WAIT_RELEASE"
       FIELD="CHECK"
       NUM_ROW="5"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="NON_UPDATE"
+      FIELD="CHECK"
+      NUM_ROW="10"
+      SHOW_IF="(ACTION_ON == 'FILE_UPDATED')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -134,6 +143,7 @@
     <RETURN NAME="CREATED_FILE" TYPE="id_String" AVAILABILITY="FLOW"/>
     <RETURN NAME="UPDATED_FILE" TYPE="id_String" AVAILABILITY="FLOW"/>
     <RETURN NAME="FILENAME" TYPE="id_String" AVAILABILITY="FLOW"/>
+    <RETURN NAME="NOT_UPDATED_FILE" TYPE="id_String" AVAILABILITY="FLOW"/>
     
   </RETURNS>
 </COMPONENT>

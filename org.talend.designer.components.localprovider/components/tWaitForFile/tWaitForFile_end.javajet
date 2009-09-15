@@ -20,4 +20,9 @@ String cid = node.getUniqueName();
         break;
     }
 <% }%>
+<%if("true".equals(ElementParameterParser.getValue(node, "__NON_UPDATE__"))){%>
+	if(globalMap.get("<%=cid %>_NOT_UPDATED_FILE")!=null){
+		break;
+	}
+<%}%>
 }

@@ -20,6 +20,7 @@
     boolean present = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDE_PRESENT__"));
     String triggerAction = ElementParameterParser.getValue(node, "__ACTION_ON__");
     boolean waitRelease = ("true").equals(ElementParameterParser.getValue(node, "__WAIT_RELEASE__"));
+    boolean nonUpdate = "true".equals(ElementParameterParser.getValue(node, "__NON_UPDATE__"));
 %>
        
         class Util_<%=cid %> {
@@ -223,19 +224,33 @@
             } else if(("fileupdated").equals(triggerAction)) {
                 %>
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
+                <%if(!nonUpdate){%>    
                     if(null == originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))) {
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
-                        found_<%=cid %> = true;
+                       	found_<%=cid %> = true;
                         originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>), file_<%=cid %>);
                         /*originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                         originalMap_<%=cid%>.clear();
                         for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
                             originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
-                        } */                       
+                        } */    
                         break;                        
-                    }                   
-                }                
+                    }
+            	<%}else{%>
+            		if(null == originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))) {
+            			originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>), file_<%=cid %>);
+            			globalMap.put("<%=cid %>_NOT_UPDATED_FILE", null);
+            			found_<%=cid%> = false;
+                   	}else{                   
+                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
+                    	globalMap.put("<%=cid %>_NOT_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
+                    	found_<%=cid %> = true;
+                    	break;
+                    }
+                <%}%>
+                }    
+                
                 <%
             } else if(("fileall").equals(triggerAction)) {
                 %>
