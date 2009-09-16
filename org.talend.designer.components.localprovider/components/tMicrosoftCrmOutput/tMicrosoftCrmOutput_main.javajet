@@ -87,6 +87,8 @@ StringBuffer OperXml_<%=cid%> = new StringBuffer();
 								OperXml_<%=cid%>.append("<");
 								OperXml_<%=cid%>.append("<%=column.getLabel()%>");
 								OperXml_<%=cid%>.append(">");
+								
+								OperXml_<%=cid%>.append("<![CDATA[");
 <%     
     					String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
         				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
@@ -99,6 +101,8 @@ StringBuffer OperXml_<%=cid%> = new StringBuffer();
 <%				
 						}
 %>
+								OperXml_<%=cid%>.append("]]>");
+								
 								OperXml_<%=cid%>.append("</");
 								OperXml_<%=cid%>.append("<%=column.getLabel()%>");
 								OperXml_<%=cid%>.append(">");
