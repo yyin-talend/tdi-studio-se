@@ -831,6 +831,13 @@
       </projecttask>
       <projecttask
             beforeLogon="false"
+            class="org.talend.repository.model.migration.RenametFSFilterRow"
+            description="rename tFSFilterRow into tFSFilterRows"
+            id="org.talend.repository.model.migration.RenametFSFilterRow"
+            name="rename tFSFilterRow into tFSFilterRows">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
             class="org.talend.repository.model.migration.UpgradetDenormalizeMigrationTask"
             description="Replace DELIMITER, GROUPS, MERGE with DENORMALIZE_COLUMNS"
             id="org.talend.repository.model.migration.UpgradetDenormalizeMigrationTask"
