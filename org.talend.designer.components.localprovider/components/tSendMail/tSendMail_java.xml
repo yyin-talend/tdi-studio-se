@@ -161,7 +161,9 @@ COMPATIBILITY="ALL"
       FIELD="CHECK"
       REQUIRED="true"
       NUM_ROW="160">
+        <DEFAULT>true</DEFAULT>
     </PARAMETER>
+      
   </PARAMETERS>
 
   <ADVANCED_PARAMETERS>
