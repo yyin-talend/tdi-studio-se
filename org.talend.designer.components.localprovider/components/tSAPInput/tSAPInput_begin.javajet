@@ -294,6 +294,10 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
         com.sap.mw.jco.IRepository repository_<%=cid %> = com.sap.mw.jco.JCO.createRepository("REPOSITORY", client_<%=cid %>);
 
         com.sap.mw.jco.IFunctionTemplate functionTemplate_<%=cid %> = repository_<%=cid %>.getFunctionTemplate(<%=functionName %>);
+        
+		if(functionTemplate_<%=cid %> == null){
+			throw new RuntimeException("The RFC can't support the function: " + <%=functionName %> + ".");
+		}        
 
         com.sap.mw.jco.JCO.Function function_<%=cid %> = functionTemplate_<%=cid %>.getFunction();
 
