@@ -731,18 +731,18 @@ public class Problems {
                                 }
                             }
                         } else {
-                            if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
-                                if (node.isErrorFlag() == true) {
-                                    node.setErrorFlag(false);
-                                    node.setErrorInfo(null);
-                                    node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
-                                    node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
-                                } else {
-                                    continue;
-                                }
+                            //                            if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
+                            if (node.isErrorFlag() == true) {
+                                node.setErrorFlag(false);
+                                node.setErrorInfo(null);
+                                node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                             } else {
                                 continue;
                             }
+                            // } else {
+                            // continue;
+                            // }
                         }
                     }
                 }
