@@ -629,7 +629,7 @@
     <extension point="org.eclipse.ui.actionSets">
     <actionSet
             label="Talend Run History"
-            visible="true"
+            visible="false"
             id="org.talend.debug.ui.launchActionSet">
          <menu
                label="%RunMenu.label"

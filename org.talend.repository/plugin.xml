@@ -415,7 +415,7 @@
       <actionSet
             id="org.talend.repository.actionSet"
             label="Action set"
-            visible="true">
+            visible="false">
          <!--action
                class="org.talend.repository.ui.actions.importproject.ImportProjectsAction"
                icon="icons/import_projects_action.gif"
@@ -1127,7 +1127,7 @@
       <actionSet
             id="org.talend.repository.bootTalendActionSet"
             label="label"
-            visible="true">
+            visible="false">
          <action
                class="org.talend.repository.plugin.integration.BootTalendAction"
                icon="icons/newProject.png"
@@ -1141,7 +1141,7 @@
          <actionSet
             id="org.talend.repository.CreateactionSet"
             label="Action set"
-            visible="true">
+            visible="false">
          <action
                class="org.talend.repository.ui.actions.toolbar.CreateToolbarItemAction"
               icon="icons/process_icon.gif"
