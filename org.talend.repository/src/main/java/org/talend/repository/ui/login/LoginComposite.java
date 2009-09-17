@@ -15,6 +15,8 @@ package org.talend.repository.ui.login;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -855,6 +857,13 @@ public class LoginComposite extends Composite {
         if (initialized) {
             try {
                 projects = repositoryFactory.readProject();
+                Arrays.sort(projects, new Comparator<Project>() {
+
+                    public int compare(Project p1, Project p2) {
+                        return p1.getLabel().compareTo(p2.getLabel());
+                    }
+
+                });
             } catch (PersistenceException e) {
                 projects = new Project[0];
 
