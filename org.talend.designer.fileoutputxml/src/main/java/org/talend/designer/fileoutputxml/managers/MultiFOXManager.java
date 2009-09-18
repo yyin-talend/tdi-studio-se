@@ -79,15 +79,18 @@ public class MultiFOXManager extends FOXManager {
                 for (Map<String, String> rootMap : rootTable) {
                     String newPath = rootMap.get(FileOutputXMLComponent.PATH);
                     String columnName = rootMap.get(FileOutputXMLComponent.COLUMN);
+                    defaultValue = rootMap.get(FileOutputXMLComponent.VALUE);
                     String flag = columnName + ":"; //$NON-NLS-1$
                     if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
                     }
                     if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                         temp = new Attribute(newPath);
+                        temp.setDefaultValue(defaultValue);
                         current.addChild(temp);
                     } else if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                         temp = new NameSpaceNode(newPath);
+                        temp.setDefaultValue(defaultValue);
                         current.addChild(temp);
                     } else {
                         temp = addElement(current, currentPath, newPath, defaultValue);
@@ -121,15 +124,18 @@ public class MultiFOXManager extends FOXManager {
                 for (Map<String, String> groupMap : groupTable) {
                     String newPath = groupMap.get(FileOutputXMLComponent.PATH);
                     String columnName = groupMap.get(FileOutputXMLComponent.COLUMN);
+                    defaultValue = groupMap.get(FileOutputXMLComponent.VALUE);
                     String flag = columnName + ":"; //$NON-NLS-1$
                     if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
                     }
                     if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                         temp = new Attribute(newPath);
+                        temp.setDefaultValue(defaultValue);
                         current.addChild(temp);
                     } else if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                         temp = new NameSpaceNode(newPath);
+                        temp.setDefaultValue(defaultValue);
                         current.addChild(temp);
                     } else {
                         temp = this.addElement(current, currentPath, newPath, defaultValue);
@@ -164,15 +170,18 @@ public class MultiFOXManager extends FOXManager {
                 for (Map<String, String> loopMap : loopTable) {
                     String newPath = loopMap.get(FileOutputXMLComponent.PATH);
                     String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
+                    defaultValue = loopMap.get(FileOutputXMLComponent.VALUE);
                     String flag = columnName + ":"; //$NON-NLS-1$
                     if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
                     }
                     if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                         temp = new Attribute(newPath);
+                        temp.setDefaultValue(defaultValue);
                         current.addChild(temp);
                     } else if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                         temp = new NameSpaceNode(newPath);
+                        temp.setDefaultValue(defaultValue);
                         current.addChild(temp);
                     } else {
                         temp = this.addElement(current, currentPath, newPath, defaultValue);

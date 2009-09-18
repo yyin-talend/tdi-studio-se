@@ -36,7 +36,11 @@ public class MultiUIManager extends UIManager {
     }
 
     protected void getMappableNode(Element node, List<FOXTreeNode> mappableNodes) {
-        mappableNodes.add(node);
+        if (node.getElementChildren().size() == 0) {
+            if (node.getColumn() == null) {
+                mappableNodes.add(node);
+            }
+        }
         for (FOXTreeNode attri : node.getAttributeChildren()) {
             if (attri.getColumn() == null) {
                 mappableNodes.add(attri);
@@ -70,6 +74,7 @@ public class MultiUIManager extends UIManager {
                         if (node.getLabel().equals(column.getLabel())) {
                             node.setTable(metadataTable);
                             node.setColumn(column);
+                            node.setDefaultValue(null);
                             node.setRow(foxManager.getCurrentSchema());
                             break;
                         }
