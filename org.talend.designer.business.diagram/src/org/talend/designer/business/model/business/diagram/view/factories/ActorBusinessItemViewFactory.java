@@ -8,8 +8,12 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.gmf.runtime.diagram.core.util.ViewUtil;
 import org.eclipse.gmf.runtime.diagram.ui.view.factories.AbstractShapeViewFactory;
+import org.eclipse.gmf.runtime.draw2d.ui.figures.FigureUtilities;
+import org.eclipse.gmf.runtime.notation.FillStyle;
 import org.eclipse.gmf.runtime.notation.NotationFactory;
 import org.eclipse.gmf.runtime.notation.View;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.part.BusinessVisualIDRegistry;
@@ -19,6 +23,10 @@ import org.talend.designer.business.model.business.diagram.part.BusinessVisualID
  */
 public class ActorBusinessItemViewFactory extends AbstractShapeViewFactory {
 
+    private static final Color DEFAULT_COLOR = new Color(null, new RGB(202, 143, 135));
+
+    private FillStyle createFillStyle;
+
     /**
      * @generated
      */
@@ -26,7 +34,8 @@ public class ActorBusinessItemViewFactory extends AbstractShapeViewFactory {
         List styles = new ArrayList();
         styles.add(NotationFactory.eINSTANCE.createFontStyle());
         styles.add(NotationFactory.eINSTANCE.createDescriptionStyle());
-        styles.add(NotationFactory.eINSTANCE.createFillStyle());
+        createFillStyle = NotationFactory.eINSTANCE.createFillStyle();
+        styles.add(createFillStyle);
         styles.add(NotationFactory.eINSTANCE.createLineStyle());
         return styles;
     }
@@ -34,8 +43,8 @@ public class ActorBusinessItemViewFactory extends AbstractShapeViewFactory {
     /**
      * @generated
      */
-    protected void decorateView(View containerView, View view, IAdaptable semanticAdapter, String semanticHint,
-            int index, boolean persisted) {
+    protected void decorateView(View containerView, View view, IAdaptable semanticAdapter, String semanticHint, int index,
+            boolean persisted) {
         if (semanticHint == null) {
             semanticHint = BusinessVisualIDRegistry
                     .getType(org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemEditPart.VISUAL_ID);
@@ -51,6 +60,12 @@ public class ActorBusinessItemViewFactory extends AbstractShapeViewFactory {
         getViewService().createNode(semanticAdapter, view,
                 BusinessVisualIDRegistry.getType(ActorBusinessItemNameEditPart.VISUAL_ID), ViewUtil.APPEND, true,
                 getPreferencesHint());
+    }
+
+    @Override
+    protected void initializeFromPreferences(View view) {
+        super.initializeFromPreferences(view);
+        createFillStyle.setFillColor(FigureUtilities.colorToInteger(DEFAULT_COLOR));
     }
 
 }

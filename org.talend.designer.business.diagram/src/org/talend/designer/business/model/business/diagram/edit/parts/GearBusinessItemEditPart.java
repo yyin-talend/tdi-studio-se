@@ -14,7 +14,6 @@ import org.eclipse.gmf.runtime.draw2d.ui.figures.ConstrainedToolbarLayout;
 import org.eclipse.gmf.runtime.gef.ui.figures.DefaultSizeNodeFigure;
 import org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure;
 import org.eclipse.gmf.runtime.notation.View;
-import org.eclipse.swt.graphics.RGB;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.model.business.diagram.edit.policies.GearBusinessItemCanonicalEditPolicy;
 import org.talend.designer.business.model.business.diagram.edit.policies.GearBusinessItemGraphicalNodeEditPolicy;
@@ -138,8 +137,6 @@ public class GearBusinessItemEditPart extends BusinessItemShapeEditPart {
         IFigure shape = createNodeShape();
         figure.add(shape);
         contentPane = setupContentPane(shape);
-        RGB finalColor = new RGB(224, 166, 155);
-        setDefaultColor(getModel(), finalColor);
         return figure;
     }
 
