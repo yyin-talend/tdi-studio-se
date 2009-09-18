@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.debug;
 
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
@@ -30,10 +33,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -84,9 +91,11 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             try {
                 if (launch.getType().getIdentifier().equals(TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE)
                         && isCurrentProject(launch)) {
-                    LaunchAction action = new LaunchAction(launch, getMode());
-                    addToMenu(menu, action, accelerator);
-                    accelerator++;
+                    if (checkItemExisted(launch)) {
+                        LaunchAction action = new LaunchAction(launch, getMode());
+                        addToMenu(menu, action, accelerator);
+                        accelerator++;
+                    }
                 }
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -94,6 +103,21 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             }
         }
         return accelerator;
+    }
+
+    private boolean checkItemExisted(ILaunchConfiguration launch) throws CoreException, PersistenceException {
+        String jobId = launch.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
+        String jobVersion = launch.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
+        if (jobId != null) {
+            IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+            List<IRepositoryObject> allVersion = factory.getAllVersion(jobId);
+            for (IRepositoryObject obj : allVersion) {
+                if (obj.getProperty().getVersion().equals(jobVersion)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /*
@@ -169,11 +193,15 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
     protected ILaunchConfiguration getLastLaunch() {
         LaunchHistory history = getLaunchConfigurationManager().getLaunchHistory(getLaunchGroupIdentifier());
         if (history != null) {
-            ILaunchConfiguration[] filterConfigs = history.getCompleteLaunchHistory();
-            for (ILaunchConfiguration launchConfiguration : filterConfigs) {
-                if (isCurrentProject(launchConfiguration)) {
-                    return launchConfiguration;
+            try {
+                ILaunchConfiguration[] filterConfigs = history.getCompleteLaunchHistory();
+                for (ILaunchConfiguration launchConfiguration : filterConfigs) {
+                    if (isCurrentProject(launchConfiguration) && checkItemExisted(launchConfiguration)) {
+                        return launchConfiguration;
+                    }
                 }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
             }
         }
         return null;
@@ -215,7 +243,10 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         ILaunchConfiguration configuration = getLastLaunch();
 
         if (configuration == null) {
-            MessageDialog.openInformation(DebugUIPlugin.getShell(), Messages.getString("TalendLaunchToolbarAction.information"), Messages.getString("TalendLaunchToolbarAction.noAvailableItem")); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog
+                    .openInformation(
+                            DebugUIPlugin.getShell(),
+                            Messages.getString("TalendLaunchToolbarAction.information"), Messages.getString("TalendLaunchToolbarAction.noAvailableItem")); //$NON-NLS-1$ //$NON-NLS-2$
             // DebugUITools.openLaunchConfigurationDialogOnGroup(DebugUIPlugin.getShell(), new StructuredSelection(),
             // getLaunchGroupIdentifier());
         } else {

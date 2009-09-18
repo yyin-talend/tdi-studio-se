@@ -58,7 +58,9 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.IUIRefresher;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -102,7 +104,11 @@ public class EditPropertiesAction extends AContextualAction {
             } else {
                 processRoutineRenameOperation(originalName, node, path);
             }
-
+            // rename the job launch, for bug 8878
+            IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
+            if (designerCoreService != null) {
+                designerCoreService.renameJobLaunch(node.getObject(), originalName);
+            }
             // refresh ...
             IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
                     IJobSettingsView.ID);

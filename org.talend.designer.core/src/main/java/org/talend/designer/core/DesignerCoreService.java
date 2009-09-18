@@ -51,8 +51,10 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -692,4 +694,11 @@ public class DesignerCoreService implements IDesignerCoreService {
         ProjectSettingManager.createImplicitContextLoadElement(project);
     }
 
+    public void removeJobLaunch(IRepositoryObject objToDelete) {
+        JobLaunchShortcutManager.removeJobLaunch(objToDelete);
+    }
+
+    public void renameJobLaunch(IRepositoryObject obj, String originalName) {
+        JobLaunchShortcutManager.renameJobLaunch(obj, originalName);
+    }
 }

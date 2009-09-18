@@ -88,6 +88,7 @@ import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.joblet.ui.IJobCheckService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
@@ -597,6 +598,13 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET
                 || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
+            if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
+                // delete the job launch, for bug 8878
+                IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
+                if (designerCoreService != null) {
+                    designerCoreService.removeJobLaunch(objToDelete);
+                }
+            }
         }
         if (objToDelete.getType() == ERepositoryObjectType.BUSINESS_PROCESS) {
             fireRepositoryPropertyChange(ERepositoryActionName.BUSINESS_DELETE_FOREVER.getName(), null, objToDelete);
