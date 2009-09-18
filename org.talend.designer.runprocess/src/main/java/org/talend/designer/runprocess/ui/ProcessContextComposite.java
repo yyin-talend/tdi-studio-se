@@ -13,6 +13,7 @@
 package org.talend.designer.runprocess.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -218,6 +219,7 @@ public class ProcessContextComposite extends Composite {
 
             }
         }
+        Collections.sort(internalContextList, new ContextCompare());
         contextComboViewer.setInput(internalContextList);
 
         if (newSelectedCopiedContext != null) {
@@ -228,6 +230,21 @@ public class ProcessContextComposite extends Composite {
             contextTableViewer.setInput(internalContextList.get(0).getContextParameterList());
         }
 
+    }
+
+    /**
+     * DOC hshen ContextCompare class global comment. Detailled comment
+     */
+    private class ContextCompare implements java.util.Comparator<IContext> {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(IContext o1, IContext o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 
     public void setContextComboSelection(StructuredSelection selection) {
@@ -347,13 +364,13 @@ public class ProcessContextComposite extends Composite {
                 text = parameter.getName();
                 break;
             case 1:
-            	if (ContextParameterUtils.isPasswordType(parameter)) {
-					// see bug 0005661: In Run, Context password fields appear
-					// in plaintext
-					text = "****"; //$NON-NLS-1$
-				} else {
-					text = parameter.getValue();
-				}
+                if (ContextParameterUtils.isPasswordType(parameter)) {
+                    // see bug 0005661: In Run, Context password fields appear
+                    // in plaintext
+                    text = "****"; //$NON-NLS-1$
+                } else {
+                    text = parameter.getValue();
+                }
                 break;
             default:
                 text = super.getText(element);
