@@ -66,8 +66,10 @@ public class RepositoryNodeUtilities {
         // checks if node is under Documentations/Generatated/Jobs
         if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
                 && (node.getContentType() == ERepositoryObjectType.JOBS || node.getContentType() == ERepositoryObjectType.JOBLETS)) {
-            String nodeLabel = (String) node.getProperties(EProperties.LABEL);
-            if (nodeLabel.equalsIgnoreCase(ERepositoryObjectType.JOBS.toString())) {
+
+            Object nodeLabel = node.getProperties(EProperties.LABEL);
+
+            if (nodeLabel == ERepositoryObjectType.JOBS) {
                 return new Path(""); //$NON-NLS-1$
             } else {
                 return getPath(node.getParent()).append(label);
