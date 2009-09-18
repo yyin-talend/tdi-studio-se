@@ -5,6 +5,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.codegen.config.SubTreeArgument
 		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
 	"
   class="SubTreeEnd"     
 %>
@@ -12,13 +13,6 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	SubTreeArgument subTreeArgument = (SubTreeArgument)codeGenArgument.getArgument();
 	IConnection connection = subTreeArgument.getInputSubtreeConnection(); 
-	
-	if (subTreeArgument.isMultiplyingOutputComponents()) {
-%>
-		// end for
-	}
-<%
-	}
 
 	if(subTreeArgument.isSourceComponentHasConditionnalOutputs() 
 		&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
@@ -27,7 +21,15 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 } // End of branch "<%= connection.getName()%>"
 
 <% 
-} 
+	} 
+
+	if (subTreeArgument.isMultiplyingOutputComponents() && 
+			NodeUtil.isLastMultiplyingOutputComponents(connection)) {
+%>
+		// end for
+	}
+<%
+	}
 %>
 
 
