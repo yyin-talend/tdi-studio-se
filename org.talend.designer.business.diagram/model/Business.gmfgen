@@ -2,15 +2,15 @@
 <gmfgen:GenEditorGenerator xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:gmfgen="http://www.eclipse.org/gmf/2005/GenModel" sameFileForDiagramAndModel="true"
+    xmlns:gmfgen="http://www.eclipse.org/gmf/2008/GenModel" sameFileForDiagramAndModel="true"
     templateDirectory="">
   <diagram
       visualID="79"
       editPartClassName="BusinessProcessEditPart"
       itemSemanticEditPolicyClassName="BusinessProcessItemSemanticEditPolicy"
       notationViewFactoryClassName="BusinessProcessViewFactory"
-      iconProviderPriority="Low"
-      canonicalEditPolicyClassName="BusinessProcessCanonicalEditPolicy">
+      canonicalEditPolicyClassName="BusinessProcessCanonicalEditPolicy"
+      iconProviderPriority="Low">
     <diagramRunTimeClass
         href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Diagram"/>
     <elementType
@@ -63,7 +63,7 @@
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet"
             viewPattern="">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -109,7 +109,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -155,7 +155,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -201,7 +201,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -247,7 +247,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -293,7 +293,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -339,7 +339,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -385,7 +385,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -431,7 +431,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -477,7 +477,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -523,7 +523,7 @@
             figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -580,7 +580,7 @@
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet"
             editPattern="">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -637,7 +637,7 @@
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet"
             editPattern="">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -694,7 +694,7 @@
         <modelFacet
             xsi:type="gmfgen:FeatureLabelModelFacet"
             editPattern="">
-          <metaFeature
+          <metaFeatures
               href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
         </modelFacet>
       </labels>
@@ -784,6 +784,7 @@
       version="0.0.1"
       printingEnabled="true"/>
   <editor/>
+  <diagramUpdater/>
   <domainGenModel
       href="../../org.talend.model/model/Business.genmodel#/"/>
 </gmfgen:GenEditorGenerator>
