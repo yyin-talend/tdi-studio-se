@@ -95,10 +95,12 @@ int validate_<%=cid %> = 0;
 	}
 TalendErrorHandler_<%=cid %> errorHandler_<%=cid %>=new TalendErrorHandler_<%=cid %>();
 
+java.io.InputStream xmlfile<%=cid %> = null;
+
 try {
 	javax.xml.validation.Schema schema<%=cid %> = factory<%=cid %>.newSchema(schemaLocation<%=cid %>);
 	javax.xml.validation.Validator validator<%=cid %> = schema<%=cid %>.newValidator();
-	java.io.File xmlfile<%=cid %> = new java.io.File(<%=xmlfile %>);
+	xmlfile<%=cid %> = new java.io.FileInputStream(<%=xmlfile %>);
 	javax.xml.transform.Source source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid %>);
 	 
 	validator<%=cid %>.setErrorHandler(errorHandler_<%=cid %>);
@@ -111,6 +113,8 @@ try {
 	errorHandler_<%=cid %>.error(ex<%=cid %>);
 } catch (java.io.IOException ioEx<%=cid %>){
 	errorHandler_<%=cid %>.error(ioEx<%=cid %>);
+}finally{
+	xmlfile<%=cid %>.close();
 }
 ErrorMessage_<%=cid %>=errorHandler_<%=cid %>.returnMessage();
 if (ErrorMessage_<%=cid%>!=null&& ErrorMessage_<%=cid%>.length()>0) {
