@@ -33,6 +33,8 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.LinkRulesItem;
@@ -335,8 +337,41 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
-        CodeView.refreshCodeView(elem);
+        // see bug 9151:100% CPU when typing text.
+        boolean updateCode = false;
+        if (getNewValue() instanceof String && elem instanceof INode) {
+            INode curNode = (INode) elem;
+            String uniqueName = curNode.getUniqueName();
+            IProcess process = curNode.getProcess();
+            if (process != null && process instanceof IProcess2) {
+                IProcess2 process2 = (IProcess2) process;
+                List<? extends INode> generatingNodes = null;
+                if (process2.isProcessModified()) {
+                    process2.setProcessModified(false);
+                    generatingNodes = process2.getGeneratingNodes();
+                    if (generatingNodes != null) {
+                        for (INode genNode : generatingNodes) {
+                            if (genNode.getUniqueName().equals(uniqueName)) {
+                                IElementParameter genParam = genNode.getElementParameter(propName);
+                                if (genParam != null) {
+                                    genParam.setValue(newValue);
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
+                    CodeView.refreshCodeView(elem);
+                    process2.setProcessModified(true);
+                    updateCode = true;
+                }
+
+            }
+        }
+        if (!updateCode) {
+            CodeView.refreshCodeView(elem);
+        }
+        //
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
