@@ -535,6 +535,15 @@ public class DeleteAction extends AContextualAction {
                             enabled = true;
                         }
                     }
+
+                    // 1. the select node should belong to the SQL Patterns
+                    // 2. the select node is the father node of the SQL Patterns
+                    // 3. the select node do not has father node(means do not contain "/")
+                    String selectName = selection.getFirstElement().toString();
+                    if (node.getContentType() == ERepositoryObjectType.SQLPATTERNS && selectName.equals(label)
+                            && !selectName.contains("/")) {
+                        visible = false;
+                    }
                     break;
                 case REPOSITORY_ELEMENT:
                     if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC
