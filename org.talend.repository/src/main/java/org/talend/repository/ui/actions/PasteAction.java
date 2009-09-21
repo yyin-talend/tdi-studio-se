@@ -33,6 +33,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -100,6 +101,11 @@ public class PasteAction extends AContextualAction {
         }
         RepositoryNode target = (RepositoryNode) selection.getFirstElement();
         if (!(LocalSelectionTransfer.getTransfer().getSelection() instanceof TreeSelection)) {
+            setEnabled(false);
+            return;
+        }
+
+        if (target instanceof BinRepositoryNode) {
             setEnabled(false);
             return;
         }
