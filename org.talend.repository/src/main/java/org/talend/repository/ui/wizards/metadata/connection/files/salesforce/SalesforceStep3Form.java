@@ -392,7 +392,6 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
 
     public void refreshMetaDataTable(final CsvArray csvArray, ProcessDescription processDescription) {
         informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
-
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
@@ -426,19 +425,23 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
 
                 int current = firstRowToExtractMetadata;
                 while (globalType == null) {
+                    String value = csvRows.get(current)[i];
                     if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                         if (i >= csvRows.get(current).length) {
                             globalType = "id_String"; //$NON-NLS-1$
                         } else {
-                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
+                            if (value != null && !"".equals(value)) {
+                                globalType = JavaDataTypeHelper.getTalendTypeOfValue(value);
+                            } else {
+                                globalType = listColumns.get(i).getTalendType();
+                            }
                             current++;
-
                         }
                     } else {
                         if (i >= csvRows.get(current).length) {
                             globalType = "String"; //$NON-NLS-1$
                         } else {
-                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
+                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(value);
                             current++;
                         }
                     }
@@ -467,14 +470,14 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                         metadataColumn.setPrecision(0);
                     }
                 }
+
                 metadataColumn.setNullable(nullAble);
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
+                // bug 6758
                 if (talendType.equals("id_Date")) { //$NON-NLS-1$
-                    if (metadataColumn.getLength() > 10) {
-                        metadataColumn.setPattern("\"yyyy-MM-dd'T'HH:mm:ss'.000Z'\""); //$NON-NLS-1$
-                    } else
-                        metadataColumn.setPattern("\"yyyy-MM-dd\""); //$NON-NLS-1$
+                    String pattern = listColumns.get(i).getPattern();
+                    metadataColumn.setPattern(pattern);
                 }
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));
