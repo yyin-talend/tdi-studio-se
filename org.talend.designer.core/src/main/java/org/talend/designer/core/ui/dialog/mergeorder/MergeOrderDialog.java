@@ -141,11 +141,11 @@ public class MergeOrderDialog extends Dialog {
             }
         });
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Connection Name"); //$NON-NLS-1$
+        column.setTitle(Messages.getString("MergeOrderDialog.ConnectionName")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Connection, String>() {
 
             public String get(Connection bean) {
-                return bean.getUniqueName();
+                return getDisplayStr(bean);
             }
 
             public void set(Connection bean, String value) {
@@ -199,6 +199,13 @@ public class MergeOrderDialog extends Dialog {
 
         });
         return composite;
+    }
+
+    protected String getDisplayStr(Connection bean) {
+        if (bean != null) {
+            return bean.getUniqueName();
+        }
+        return "";//$NON-NLS-1$
     }
 
     /**

@@ -18,6 +18,7 @@ import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.dialog.mergeorder.ModifyOutputOrderDialog;
 import org.talend.designer.core.ui.editor.cmd.ChangeOutputConnectionOrderCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
@@ -34,6 +35,8 @@ public class ModifyOutputOrderAction extends SelectionAction {
     public static final String ID = "org.talend.designer.core.ui.editor.action.ModifyOutputOrderAction"; //$NON-NLS-1$
 
     private Node multipleOutputNode;
+
+    private boolean usedConnType = false;
 
     /**
      * yzhang ModifyOutputOrderAction constructor comment.
@@ -61,16 +64,18 @@ public class ModifyOutputOrderAction extends SelectionAction {
             return false;
         }
         Object o = parts.get(0);
-
+        EConnectionType tmpConnType = null;
         Node node = null;
         if (o instanceof ConnectionPart) {
             ConnectionPart part = (ConnectionPart) o;
             Connection connection = (Connection) part.getModel();
             node = connection.getSource();
+            tmpConnType = connection.getLineStyle();
         } else if (o instanceof ConnLabelEditPart) {
             ConnectionPart part = (ConnectionPart) ((ConnLabelEditPart) o).getParent();
             Connection connection = (Connection) part.getModel();
             node = connection.getSource();
+            tmpConnType = connection.getLineStyle();
         } else if (o instanceof NodePart) {
             node = (Node) ((NodePart) o).getModel();
         }
@@ -78,32 +83,41 @@ public class ModifyOutputOrderAction extends SelectionAction {
         if (node == null) {
             return false;
         }
-        boolean isIterate = false;
+        usedConnType = false;
+        String midStr = "output"; //$NON-NLS-1$
         int nb = 0;
         for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
-            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-                nb++;
-
+            if (getConnectionCategory() != null && connection.getLineStyle().hasConnectionCategory(getConnectionCategory())) {
+                // avoid the not useful action, on connection.
+                if (tmpConnType == null || tmpConnType != null && tmpConnType.hasConnectionCategory(getConnectionCategory())) {
+                    nb++;
+                }
             } else
-            // feature 4505
-            if (connection.getLineStyle() == EConnectionType.ITERATE) {
-                isIterate = true;
-                nb++;
+            // feature 4505 & 8087
+            if (getConnectionType() != null && connection.getLineStyle() == getConnectionType()) {
+                midStr = getConnectionType().getDefaultLinkName();
+                usedConnType = true;
+                // avoid the not useful action, on connection.
+                if (tmpConnType == null || tmpConnType != null && tmpConnType == getConnectionType()) {
+                    nb++;
+                }
             }
         }
 
-        boolean multipleOutput = nb > 1;
-
-        if (!multipleOutput) {
+        if (nb < 2) {
             return false;
         }
         multipleOutputNode = node;
-        String midStr = "output"; //$NON-NLS-1$
-        if (isIterate) {
-            midStr = "iterate"; //$NON-NLS-1$
-        }
-        setText("Modify " + midStr + " links order"); //$NON-NLS-1$ //$NON-NLS-2$
+        setText(Messages.getString("ModifyOutputOrderAction.text", midStr)); //$NON-NLS-1$
         return true;
+    }
+
+    protected Integer getConnectionCategory() {
+        return IConnectionCategory.DATA;
+    }
+
+    protected EConnectionType getConnectionType() {
+        return null;
     }
 
     /*
@@ -114,14 +128,20 @@ public class ModifyOutputOrderAction extends SelectionAction {
     @Override
     public void run() {
         super.run();
-        ModifyOutputOrderDialog dialog = new ModifyOutputOrderDialog(this.getWorkbenchPart().getSite().getShell(),
-                multipleOutputNode);
+        ModifyOutputOrderDialog dialog = null;
+        if (usedConnType && getConnectionType() != null) {
+            dialog = new ModifyOutputOrderDialog(this.getWorkbenchPart().getSite().getShell(), multipleOutputNode,
+                    getConnectionType());
+        } else if (getConnectionCategory() != null) {
+            dialog = new ModifyOutputOrderDialog(this.getWorkbenchPart().getSite().getShell(), multipleOutputNode,
+                    getConnectionCategory());
 
-        if (dialog.open() == ModifyOutputOrderDialog.OK) {
+        }
+
+        if (dialog != null && dialog.open() == ModifyOutputOrderDialog.OK) {
             ChangeOutputConnectionOrderCommand cmd = new ChangeOutputConnectionOrderCommand(multipleOutputNode, dialog
                     .getConnectionList());
             execute(cmd);
         }
     }
-
 }

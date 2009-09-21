@@ -144,6 +144,7 @@ import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
+import org.talend.designer.core.ui.action.ModifyConnectionOrderAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
@@ -1033,6 +1034,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IAction modifyOutputOrderAction = new ModifyOutputOrderAction(this);
         getActionRegistry().registerAction(modifyOutputOrderAction);
         getSelectionActions().add(modifyOutputOrderAction.getId());
+
+        List<IAction> calcOrderActions = ModifyConnectionOrderAction.getOrderActions(this);
+        for (IAction orderAction : calcOrderActions) {
+            getActionRegistry().registerAction(orderAction);
+            getSelectionActions().add(orderAction.getId());
+        }
 
         viewer.setRootEditPart(root);
 

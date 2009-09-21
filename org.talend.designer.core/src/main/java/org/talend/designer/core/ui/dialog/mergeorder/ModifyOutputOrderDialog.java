@@ -15,9 +15,11 @@ package org.talend.designer.core.ui.dialog.mergeorder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.INodeConnector;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -28,31 +30,45 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
 
     private Node multipleOutputNode;
 
-    List<Connection> notDataList;
+    private List<Connection> OtherConnectionList = new ArrayList<Connection>();
 
-    private boolean isIterate = false;
-
-    /**
-     * yzhang ModifyOutputOrderDialog constructor comment.
-     * 
-     * @param parentShell
-     * @param mergeNode
-     */
-    public ModifyOutputOrderDialog(Shell parentShell, Node multipleOutputNode) {
+    private ModifyOutputOrderDialog(Shell parentShell, Node multipleOutputNode) {
         super(parentShell);
         this.multipleOutputNode = multipleOutputNode;
-        List<Connection> fullList = (List<Connection>) multipleOutputNode.getOutgoingConnections();
-        notDataList = new ArrayList<Connection>();
         this.connectionList = new ArrayList<Connection>();
+    }
+
+    private EConnectionType connType;
+
+    public ModifyOutputOrderDialog(Shell parentShell, Node multipleOutputNode, EConnectionType connType) {
+        this(parentShell, multipleOutputNode);
+        Assert.isNotNull(connType);
+        this.connType = connType;
+        List<Connection> fullList = (List<Connection>) multipleOutputNode.getOutgoingConnections();
         for (Connection connection : fullList) {
-            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-                connectionList.add(connection);
-            } else if (connection.getLineStyle() == EConnectionType.ITERATE) {
-                // feature 4505
-                isIterate = true;
+            if (connection.getLineStyle() == connType) {
                 connectionList.add(connection);
             } else {
-                notDataList.add(connection);
+                OtherConnectionList.add(connection);
+            }
+        }
+    }
+
+    /**
+     * connCategory must be in IConnectionCategory
+     */
+    private Integer connCategory;
+
+    public ModifyOutputOrderDialog(Shell parentShell, Node multipleOutputNode, Integer connCategory) {
+        this(parentShell, multipleOutputNode);
+        Assert.isNotNull(connCategory);
+        this.connCategory = connCategory;
+        List<Connection> fullList = (List<Connection>) multipleOutputNode.getOutgoingConnections();
+        for (Connection connection : fullList) {
+            if (connection.getLineStyle().hasConnectionCategory(connCategory)) {
+                connectionList.add(connection);
+            } else {
+                OtherConnectionList.add(connection);
             }
         }
     }
@@ -76,12 +92,11 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
      */
     @Override
     protected void configureSizeAndTitle(Shell shell) {
-        // shell.setSize(new Point(300, 400));
         String midStr = "output"; //$NON-NLS-1$
-        if (isIterate) {
-            midStr = "iterate"; //$NON-NLS-1$
+        if (connType != null) {
+            midStr = connType.getDefaultLinkName();
         }
-        shell.setText(multipleOutputNode.getUniqueName() + " Modify " + midStr + " orders"); //$NON-NLS-1$ //$NON-NLS-2$
+        shell.setText(Messages.getString("ModifyOutputOrderDialog.title", multipleOutputNode.getUniqueName(), midStr)); //$NON-NLS-1$
     }
 
     /*
@@ -93,13 +108,30 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
     protected int getConnectionQty() {
         int nb = 0;
         for (Connection connection : (List<Connection>) multipleOutputNode.getOutgoingConnections()) {
-            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            if (connCategory != null && connection.getLineStyle().hasConnectionCategory(connCategory)) {
                 nb++;
-            } else if (connection.getLineStyle().equals(EConnectionType.ITERATE)) {
+            } else if (connection.getLineStyle().equals(connType)) {
                 nb++;
             }
         }
         return nb;
+    }
+
+    @Override
+    protected String getDisplayStr(Connection bean) {
+        if (bean != null && connType != null) {
+            INodeConnector sourceNodeConnector = bean.getSourceNodeConnector();
+            if (sourceNodeConnector != null) {
+                String linkName = sourceNodeConnector.getLinkName();
+                if (linkName != null) {
+                    if (linkName.equals(bean.getName())) {
+                        return bean.getName();
+                    }
+                    return linkName + " (" + bean.getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }
+        return super.getDisplayStr(bean);
     }
 
     /*
@@ -109,7 +141,9 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
      */
     @Override
     public List<Connection> getConnectionList() {
-        connectionList.addAll(notDataList);
-        return connectionList;
+        List<Connection> fillConnectionList = new ArrayList<Connection>();
+        fillConnectionList.addAll(this.connectionList);
+        fillConnectionList.addAll(this.OtherConnectionList);
+        return fillConnectionList;
     }
 }

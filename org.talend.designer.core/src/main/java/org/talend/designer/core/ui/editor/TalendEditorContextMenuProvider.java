@@ -42,6 +42,7 @@ import org.talend.designer.core.ui.action.DisplaySubjobAction;
 import org.talend.designer.core.ui.action.FilterTraceColumnAction;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
+import org.talend.designer.core.ui.action.ModifyConnectionOrderAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
@@ -158,7 +159,13 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
             }
-
+            List<String> orderActionIDs = ModifyConnectionOrderAction.getOrderActionIDs();
+            for (String id : orderActionIDs) {
+                action = getAction(id);
+                if (action != null && action.isEnabled()) {
+                    menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
+                }
+            }
             MenuManager subMenu = new MenuManager(Messages.getString("TalendEditorContextMenuProvider.Row")); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
 
