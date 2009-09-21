@@ -119,7 +119,8 @@ public class PromptDefaultValueDialog extends Dialog {
             } else if (param.getField() == EParameterFieldType.TEXT) {
                 // create text input
                 createTextEditor(item, 1, (String) defaultValue);
-            } else if (param.getField() == EParameterFieldType.CLOSED_LIST) {
+            } else if (param.getField() == EParameterFieldType.CLOSED_LIST
+                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
                 // create combo
                 int selectIndex = 0;
                 Object[] values = param.getListItemsValue();
@@ -182,13 +183,14 @@ public class PromptDefaultValueDialog extends Dialog {
             TableItem item = editor.getItem();
             ColumnInfo row = (ColumnInfo) item.getData();
 
-            if (row.parameter.getField() == EParameterFieldType.CHECK) {
+            EParameterFieldType field = row.parameter.getField();
+            if (field == EParameterFieldType.CHECK) {
                 Button button = (Button) control;
                 row.defaultValue = button.getSelection();
-            } else if (row.parameter.getField() == EParameterFieldType.TEXT) {
+            } else if (field == EParameterFieldType.TEXT) {
                 Text text = (Text) control;
                 row.defaultValue = text.getText();
-            } else if (row.parameter.getField() == EParameterFieldType.CLOSED_LIST) {
+            } else if (field == EParameterFieldType.CLOSED_LIST || field == EParameterFieldType.PREV_COLUMN_LIST) {
                 CCombo combo = (CCombo) control;
                 int index = combo.getSelectionIndex();
                 Object[] values = row.parameter.getListItemsValue();
