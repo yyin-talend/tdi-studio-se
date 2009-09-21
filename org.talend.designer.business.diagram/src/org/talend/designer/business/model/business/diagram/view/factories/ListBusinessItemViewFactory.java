@@ -11,6 +11,7 @@ import org.eclipse.gmf.runtime.diagram.ui.view.factories.AbstractShapeViewFactor
 import org.eclipse.gmf.runtime.draw2d.ui.figures.FigureUtilities;
 import org.eclipse.gmf.runtime.notation.FillStyle;
 import org.eclipse.gmf.runtime.notation.NotationFactory;
+import org.eclipse.gmf.runtime.notation.NotationPackage;
 import org.eclipse.gmf.runtime.notation.View;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -23,9 +24,10 @@ import org.talend.designer.business.model.business.diagram.part.BusinessVisualID
  */
 public class ListBusinessItemViewFactory extends AbstractShapeViewFactory {
 
+    /**
+     * @generated NOT
+     */
     private static final Color DEFAULT_COLOR = new Color(null, new RGB(255, 153, 18));
-
-    private FillStyle createFillStyle;
 
     /**
      * @generated
@@ -34,8 +36,7 @@ public class ListBusinessItemViewFactory extends AbstractShapeViewFactory {
         List styles = new ArrayList();
         styles.add(NotationFactory.eINSTANCE.createFontStyle());
         styles.add(NotationFactory.eINSTANCE.createDescriptionStyle());
-        createFillStyle = NotationFactory.eINSTANCE.createFillStyle();
-        styles.add(createFillStyle);
+        styles.add(NotationFactory.eINSTANCE.createFillStyle());
         styles.add(NotationFactory.eINSTANCE.createLineStyle());
         return styles;
     }
@@ -62,10 +63,13 @@ public class ListBusinessItemViewFactory extends AbstractShapeViewFactory {
                 getPreferencesHint());
     }
 
-    @Override
+    /**
+     * @generated NOT
+     */
     protected void initializeFromPreferences(View view) {
         super.initializeFromPreferences(view);
-        createFillStyle.setFillColor(FigureUtilities.colorToInteger(DEFAULT_COLOR));
+        ((FillStyle) view.getStyle(NotationPackage.Literals.FILL_STYLE)).setFillColor(FigureUtilities
+                .colorToInteger(DEFAULT_COLOR));
     }
 
 }
