@@ -102,12 +102,12 @@ public class PerlXMLConfigWizardPage extends AbstractXMLConfigPage {
                     Element importEle = importsEle.getOwnerDocument().createElement(IMPORT);
                     importsEle.appendChild(importEle);
                     importEle.setAttribute(NAME, libEntry.getNamePrefix());
-                    importEle.setAttribute(MODULE, libEntry.getNamePrefix());
+                    importEle.setAttribute(MODULE, libEntry.getName());
                     importEle.setAttribute(REQUIRED, "true"); //$NON-NLS-1$
 
                     TreeNodeData nodeData = new TreeNodeData();
                     nodeData.putAttrValue(NAME, libEntry.getNamePrefix());
-                    nodeData.putAttrValue(MODULE, libEntry.getNamePrefix());
+                    nodeData.putAttrValue(MODULE, libEntry.getName());
                     nodeData.putAttrValue(REQUIRED, "true"); //$NON-NLS-1$
                     nodeData.setXMLNode(importEle);
                     nodeData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(IMPORTITEMPATH));

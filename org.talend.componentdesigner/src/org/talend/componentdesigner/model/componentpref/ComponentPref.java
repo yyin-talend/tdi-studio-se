@@ -402,48 +402,49 @@ public class ComponentPref {
     }
 
     public Document getJavaXmlDocument() {
-        Node[] importNodes = this.getJavaImportNodes();
-
-        Document documentCopy = null;
-
-        if (importNodes != null && importNodes.length != 0) {
-            Node importsNode = importNodes[0].getParentNode();
-            for (Node node : importNodes) {
-                importsNode.removeChild(node);
-            }
-
-            documentCopy = (Document) this.javaXMLDocument.cloneNode(true);
-
-            for (Node node : importNodes) {
-                importsNode.appendChild(node);
-            }
-        } else {
-            documentCopy = this.javaXMLDocument;
-        }
-        return documentCopy;
-
+        // Node[] importNodes = this.getJavaImportNodes();
+        //
+        // Document documentCopy = null;
+        //
+        // if (importNodes != null && importNodes.length != 0) {
+        // Node importsNode = importNodes[0].getParentNode();
+        // for (Node node : importNodes) {
+        // importsNode.removeChild(node);
+        // }
+        //
+        // documentCopy = (Document) this.javaXMLDocument.cloneNode(true);
+        //
+        // for (Node node : importNodes) {
+        // importsNode.appendChild(node);
+        // }
+        // } else {
+        // documentCopy = this.javaXMLDocument;
+        // }
+        // return documentCopy;
+        return this.javaXMLDocument;
     }
 
     public Document getPerlXmlDocument() {
-        Node[] importNodes = this.getPerlImportNodes();
-
-        Document documentCopy = null;
-
-        if (importNodes != null && importNodes.length != 0) {
-            Node importsNode = importNodes[0].getParentNode();
-            for (Node node : importNodes) {
-                importsNode.removeChild(node);
-            }
-
-            documentCopy = (Document) this.perlXMLDocument.cloneNode(true);
-
-            for (Node node : importNodes) {
-                importsNode.appendChild(node);
-            }
-        } else {
-            documentCopy = this.perlXMLDocument;
-        }
-        return documentCopy;
+        // Node[] importNodes = this.getPerlImportNodes();
+        //
+        // Document documentCopy = null;
+        //
+        // if (importNodes != null && importNodes.length != 0) {
+        // Node importsNode = importNodes[0].getParentNode();
+        // for (Node node : importNodes) {
+        // importsNode.removeChild(node);
+        // }
+        //
+        // documentCopy = (Document) this.perlXMLDocument.cloneNode(true);
+        //
+        // for (Node node : importNodes) {
+        // importsNode.appendChild(node);
+        // }
+        // } else {
+        // documentCopy = this.perlXMLDocument;
+        // }
+        // return documentCopy;
+        return this.perlXMLDocument;
 
     }
 
