@@ -71,9 +71,9 @@ public class ConnectionResumingConstraint implements Locator {
         offsetCopy.translate(location);
         if ((connFigure.getStart().y == connFigure.getEnd().y)
                 || (Math.abs(connFigure.getEnd().y - connFigure.getStart().y) < 70)) {
-            offsetCopy.translate(-(resumingSize.width / 2), nameSize.height + 16);
+            offsetCopy.translate(-(resumingSize.width / 2), -nameSize.height - 28);
         } else {
-            offsetCopy.translate(-(resumingSize.width / 2), -(resumingSize.height / 2) + 32);
+            offsetCopy.translate(-(resumingSize.width / 2), -(resumingSize.height / 2) - 28);
         }
         figure.setLocation(offsetCopy);
     }
