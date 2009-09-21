@@ -13,10 +13,13 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
+import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 
 /**
@@ -125,11 +128,32 @@ public class DbInfo {
     }
 
     private void getConnFromNode() {
+        DriverShim wapperDriver = null;
         try {
-            conn = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion);
+            List list = new ArrayList();
+            list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion);
+            if (list != null && list.size() > 0) {
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i) instanceof Connection) {
+                        conn = (Connection) list.get(i);
+                    }
+                    if (list.get(i) instanceof DriverShim) {
+                        wapperDriver = (DriverShim) list.get(i);
+                    }
+                }
+            }
         } catch (Exception e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);
+        } finally {
+            // bug 9162
+            if ((dbType.equals("JavaDB Embeded") || dbType.equals("General JDBC")) && wapperDriver != null) { //$NON-NLS-1$
+                try {
+                    wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
+                } catch (SQLException e) {
+                    // exception of shutdown success. no need to catch.
+                }
+            }
         }
     }
 
@@ -138,7 +162,7 @@ public class DbInfo {
     }
 
     private void genarateDriverJarPath() {
-    //modified by wzhang. when driver has more than one jar.
+        // modified by wzhang. when driver has more than one jar.
         List<String> drivers = EDatabaseVersion4Drivers.getDrivers(dbType, dbVersion);
         if (drivers.size() == 1) {
             String driverName = EDatabaseVersion4Drivers.getDriversStr(dbType, dbVersion);
