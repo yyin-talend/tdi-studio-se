@@ -26,7 +26,7 @@ public class ConnectionResumingConstraint implements Locator {
 
     String name;
 
-    Dimension traceSize;
+    Dimension resumingSize;
 
     String position;
 
@@ -42,10 +42,10 @@ public class ConnectionResumingConstraint implements Locator {
      * @param offset
      * @param connFigure
      */
-    public ConnectionResumingConstraint(String name, Dimension traceSize, String position, Point offset,
+    public ConnectionResumingConstraint(String name, Dimension resumingSize, String position, Point offset,
             PolylineConnection connFigure) {
         this.name = name;
-        this.traceSize = traceSize;
+        this.resumingSize = resumingSize;
         this.position = position;
         this.offset = offset;
         this.connFigure = connFigure;
@@ -58,7 +58,7 @@ public class ConnectionResumingConstraint implements Locator {
      */
     public void relocate(IFigure figure) {
         Dimension nameSize = FigureUtilities.getTextExtents(name, figure.getFont());
-        figure.setSize(traceSize);
+        figure.setSize(resumingSize);
         Point location;
         if (position.equals("start")) { //$NON-NLS-1$
             location = connFigure.getStart();
@@ -71,9 +71,9 @@ public class ConnectionResumingConstraint implements Locator {
         offsetCopy.translate(location);
         if ((connFigure.getStart().y == connFigure.getEnd().y)
                 || (Math.abs(connFigure.getEnd().y - connFigure.getStart().y) < 70)) {
-            offsetCopy.translate(-(traceSize.width / 2), nameSize.height + 16);
+            offsetCopy.translate(-(resumingSize.width / 2), nameSize.height + 16);
         } else {
-            offsetCopy.translate(-(traceSize.width / 2), -(traceSize.height / 2) + 16);
+            offsetCopy.translate(-(resumingSize.width / 2), -(resumingSize.height / 2) + 32);
         }
         figure.setLocation(offsetCopy);
     }
