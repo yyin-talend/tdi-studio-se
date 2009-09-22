@@ -499,7 +499,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
             // define the metadataColumn to field i
             MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-            metadataColumn.setPattern("\"dd-MM-yyyy\"");
+            metadataColumn.setPattern("\"dd-MM-yyyy\""); //$NON-NLS-1$
             String talendType = null;
             if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                 talendType = globalType;
@@ -560,6 +560,10 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, metadataNameText.getText())) {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlertIllegalChar")); //$NON-NLS-1$
+            return false;
+        } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, metadataNameText.getText())) {
+            metadataNameText.forceFocus();
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep3Form.nameInvalid")); //$NON-NLS-1$
             return false;
         } else if (isNameAllowed(metadataNameText.getText())) {
             updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist")); //$NON-NLS-1$

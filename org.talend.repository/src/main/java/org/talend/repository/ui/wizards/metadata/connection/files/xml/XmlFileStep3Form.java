@@ -584,9 +584,13 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlert")); //$NON-NLS-1$
             return false;
-        } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, metadataNameText.getText())) {
+        } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_SCHEMA_PATTERN, metadataNameText.getText())) {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlertIllegalChar")); //$NON-NLS-1$
+            return false;
+        } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, metadataNameText.getText())) {
+            metadataNameText.forceFocus();
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep3Form.nameInvalid")); //$NON-NLS-1$
             return false;
         } else if (isNameAllowed(metadataNameText.getText())) {
             updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist")); //$NON-NLS-1$

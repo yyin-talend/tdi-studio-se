@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -84,6 +85,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.GuessSchemaUtil;
@@ -786,8 +788,13 @@ public class DatabaseTableForm extends AbstractForm {
             } else if (existNames.contains(table.getLabel())) {
                 updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return false;
+            } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_SCHEMA_PATTERN, table.getLabel())) {
+                updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.invalidChar", table.getLabel())); //$NON-NLS-1$
+                return false;
+            } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, table.getLabel())) {
+                updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameInvalid", table.getLabel())); //$NON-NLS-1$
+                return false;
             }
-
             if (table.getColumns().size() == 0) {
                 updateStatus(IStatus.ERROR, Messages.getString("FileStep3.itemAlert") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return false;
