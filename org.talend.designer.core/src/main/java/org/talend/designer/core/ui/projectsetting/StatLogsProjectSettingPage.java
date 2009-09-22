@@ -31,6 +31,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.StatAndLogsSettings;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
@@ -64,8 +65,8 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
         }
         elem = ProjectSettingManager.createStatsAndLogsElement(pro);
         StatAndLogsSettings stats = pro.getEmfProject().getStatAndLogsSettings();
-
-        ElementParameter2ParameterType.loadElementParameters(elem, stats.getParameters());
+        ElementParameter2ParameterType.loadElementParameters(elem, stats.getParameters(), EParameterName.PROPERTY_TYPE.getName()
+                + ":" + EParameterName.PROPERTY_TYPE.getName());
         // create StatsAndLogs control base on the statsAndLogsElement
         mComposite = new MultipleThreadDynamicComposite(composite, SWT.V_SCROLL | SWT.BORDER, EComponentCategory.STATSANDLOGS,
                 elem, true);
@@ -157,7 +158,9 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
     public void refresh() {
         if (mComposite != null) {
             StatAndLogsSettings sal = pro.getEmfProject().getStatAndLogsSettings();
-            ElementParameter2ParameterType.loadElementParameters(elem, sal.getParameters());
+            ElementParameter2ParameterType.loadElementParameters(elem, sal.getParameters(), EParameterName.PROPERTY_TYPE
+                    .getName()
+                    + ":" + EParameterName.PROPERTY_TYPE.getName());
             mComposite.refresh();
         }
 

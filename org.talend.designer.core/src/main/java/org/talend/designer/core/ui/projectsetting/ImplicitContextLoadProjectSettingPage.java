@@ -23,6 +23,8 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ImplicitContextSettings;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
@@ -56,7 +58,9 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
         }
         elem = ProjectSettingManager.createImplicitContextLoadElement(pro);
         ImplicitContextSettings implicit = pro.getEmfProject().getImplicitContextSettings();
-        ElementParameter2ParameterType.loadElementParameters(elem, implicit.getParameters());
+        ElementParameter2ParameterType.loadElementParameters(elem, implicit.getParameters(), JobSettingsConstants
+                .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName())
+                + ":" + EParameterName.PROPERTY_TYPE.getName());
         // create implicitContextLoad Control base on the ImplicitContextLoadElement
         mComposite = new MultipleThreadDynamicComposite(composite, SWT.V_SCROLL | SWT.BORDER, EComponentCategory.EXTRA, elem,
                 true);
@@ -129,7 +133,9 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
     public void refresh() {
         if (mComposite != null) {
             ImplicitContextSettings implicit = pro.getEmfProject().getImplicitContextSettings();
-            ElementParameter2ParameterType.loadElementParameters(elem, implicit.getParameters());
+            ElementParameter2ParameterType.loadElementParameters(elem, implicit.getParameters(), JobSettingsConstants
+                    .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName())
+                    + ":" + EParameterName.PROPERTY_TYPE.getName());
             mComposite.refresh();
         }
 

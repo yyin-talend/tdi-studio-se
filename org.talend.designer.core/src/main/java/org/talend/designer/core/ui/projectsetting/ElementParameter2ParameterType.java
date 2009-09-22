@@ -131,10 +131,16 @@ public class ElementParameter2ParameterType {
      * @param elemParam
      * @param paType
      */
-    public static void loadElementParameters(Element elemParam, ParametersType paType) {
+    public static void loadElementParameters(Element elemParam, ParametersType paType, String repParamName) {
         EList listParamType = paType.getElementParameter();
-        ElementParameterType repositoryParam = findElementParameterType(paType, EParameterName.PROPERTY_TYPE.getName() + ":"
-                + EParameterName.PROPERTY_TYPE.getName());
+        ElementParameterType repositoryParam = null;
+
+        if (repParamName != null && !repParamName.equals("")) { //$NON-NLS-N$
+            repositoryParam = findElementParameterType(paType, repParamName);
+        } else {
+            repositoryParam = findElementParameterType(paType, EParameterName.PROPERTY_TYPE.getName() + ":"
+                    + EParameterName.PROPERTY_TYPE.getName());
+        }
 
         for (int j = 0; j < listParamType.size(); j++) {
             ElementParameterType pType = (ElementParameterType) listParamType.get(j);
@@ -339,7 +345,7 @@ public class ElementParameter2ParameterType {
         for (IProcess process : openedProcess) {
             if (process instanceof Element) {
                 Element processElem = (Element) process;
-                ElementParameter2ParameterType.loadElementParameters(processElem, parameters);
+                ElementParameter2ParameterType.loadElementParameters(processElem, parameters, null);
             }
             process.setNeedRegenerateCode(true);
         }
@@ -357,7 +363,7 @@ public class ElementParameter2ParameterType {
                             IProcess2 process2 = (IProcess2) process;
                             if (process2 instanceof Element) {
                                 Element processElem = (Element) process2;
-                                ElementParameter2ParameterType.loadElementParameters(processElem, parameters);
+                                ElementParameter2ParameterType.loadElementParameters(processElem, parameters, null);
                                 ProcessType processType = process2.saveXmlFile();
                                 if (processType != null) {
                                     ((ProcessItem) item).setProcess(processType);

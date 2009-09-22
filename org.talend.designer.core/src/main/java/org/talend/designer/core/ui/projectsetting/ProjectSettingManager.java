@@ -168,7 +168,8 @@ public class ProjectSettingManager extends Utils {
         createStatsAndLogsElement(pro);
         ParametersType stats = pro.getEmfProject().getStatAndLogsSettings().getParameters();
         // load the project settings to process
-        ElementParameter2ParameterType.loadElementParameters(process, stats);
+        ElementParameter2ParameterType.loadElementParameters(process, stats, EParameterName.PROPERTY_TYPE.getName() + ":" //$NON-NLS-N$
+                + EParameterName.PROPERTY_TYPE.getName());
         // change repository item
         // TODO
         // StatsAndLogsHelper.changeRepositoryConnection(process, statsComposite);
@@ -180,7 +181,9 @@ public class ProjectSettingManager extends Utils {
         ParametersType implicitType = pro.getEmfProject().getImplicitContextSettings().getParameters();
 
         // load the project settings to process
-        ElementParameter2ParameterType.loadElementParameters(process, implicitType);
+        ElementParameter2ParameterType.loadElementParameters(process, implicitType, JobSettingsConstants
+                .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName())
+                + ":" + EParameterName.PROPERTY_TYPE.getName());
         // TODO
         // changeImplicitContextRepositoryItem(process, extraComposite);
     }
