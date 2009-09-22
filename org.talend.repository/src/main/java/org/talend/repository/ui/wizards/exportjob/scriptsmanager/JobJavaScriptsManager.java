@@ -442,7 +442,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 Project project = projectManager.getProject(jobInfo.getProcessItem());
                 String childProjectName = projectName;
                 if (project != null) {
-                    childProjectName = project.getLabel().toLowerCase();
+                    childProjectName = project.getTechnicalLabel().toLowerCase(); // hywang modify for 7932
                 }
                 allJobScripts.addAll(getJobScripts(childProjectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
                         isOptionChoosed(exportChoice, ExportChoice.needJobScript)));
