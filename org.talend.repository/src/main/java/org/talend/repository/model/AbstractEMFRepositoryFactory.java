@@ -621,8 +621,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         } else {
             // FolderItem
             if (!"".equals(property.getItem().getState().getPath())) {
-                fullFolder = this.getFolderHelper(project.getEmfProject()).getFolder(
-                        ((FolderItem) folder).getProperty().getLabel() + "/" + property.getItem().getState().getPath());
+                // MOD mzhao feature 9207
+                if (folder == null) {
+                    fullFolder = ResourceModelUtils.getProject(project).getFolder(
+                            new Path(property.getItem().getState().getPath()));
+                } else {
+                    fullFolder = this.getFolderHelper(project.getEmfProject()).getFolder(
+                            ((FolderItem) folder).getProperty().getLabel() + "/" + property.getItem().getState().getPath());
+                }
             } else {
                 fullFolder = folder;
             }

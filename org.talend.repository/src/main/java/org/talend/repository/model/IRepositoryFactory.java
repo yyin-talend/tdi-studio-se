@@ -322,4 +322,12 @@ public interface IRepositoryFactory {
     public void unloadResources();
 
     public void unloadResources(Property property);
+
+    /**
+     * 
+     * DOC mzhao feature 9207 unload and remove the specification resource from the resource set.
+     * 
+     * @param uriString the uri sting of resource.
+     */
+    public void unloadResources(String uriString);
 }

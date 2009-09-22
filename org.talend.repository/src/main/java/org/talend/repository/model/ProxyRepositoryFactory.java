@@ -1914,7 +1914,16 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void unloadResources(Property property) throws PersistenceException {
         repositoryFactoryFromProvider.unloadResources(property);
     }
-
+    /**
+     * 
+     * DOC mzhao Comment method "unloadResources".
+     * 
+     * @param uriString
+     * @throws PersistenceException
+     */
+    public void unloadResources(String uriString) throws PersistenceException {
+        repositoryFactoryFromProvider.unloadResources(uriString);
+    }
     public void unloadResources() throws PersistenceException {
         repositoryFactoryFromProvider.unloadResources();
     }
