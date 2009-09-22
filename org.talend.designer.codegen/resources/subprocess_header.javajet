@@ -750,33 +750,6 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 0);
 
 <%
-//this part for "Resume Management"
-{
-    INode firstNode = subTree.getNode(subTree.getName());
-    
-    //System.out.println(firstNode.getUniqueName());
-    List<? extends IConnection> inConns = firstNode.getIncomingConnections();
-    
-    //System.out.println(inConns.size());
-    for(IConnection conn : inConns){
-    
-    	boolean activeResume = "true".equals(ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
-    	
-    	//System.out.println("Test:" + ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
-    	
-    	if(activeResume){
-    		EConnectionType lineStyle = conn.getLineStyle();
-    		 INode sourceNode = conn.getSource();
-    		 String sourceNodeName = sourceNode.getUniqueName();
-    		%>
-    			resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=sourceNodeName %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");
-    		<%
-    	}
-    }
-}
-%>
-
-<%
 	boolean isParallelize = false;
 	for (INode node : subTree.getNodes()) {
 		if(node!=null){
@@ -822,7 +795,35 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	
 			String currentMethodName = new Exception().getStackTrace()[0].getMethodName();
 			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume		
+			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+
+<%
+//this part for "Resume Management"
+{
+    INode firstNode = subTree.getNode(subTree.getName());
+    
+    //System.out.println(firstNode.getUniqueName());
+    List<? extends IConnection> inConns = firstNode.getIncomingConnections();
+    
+    //System.out.println(inConns.size());
+    for(IConnection conn : inConns){
+    
+    	boolean activeResume = "true".equals(ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
+    	
+    	//System.out.println("Test:" + ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
+    	
+    	if(activeResume){
+    		EConnectionType lineStyle = conn.getLineStyle();
+    		 INode sourceNode = conn.getSource();
+    		 String sourceNodeName = sourceNode.getUniqueName();
+    		%>
+    			resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=sourceNodeName %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");
+    		<%
+    	}
+    }
+}
+%>
+					
 <%
 	// Call for RUN AFTER links
 	for (String after : subTree.getAfterSubProcesses()) {
