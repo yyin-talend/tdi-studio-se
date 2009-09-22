@@ -84,7 +84,8 @@ if(resuming_logs_dir_path != null){
 	paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
 }
 String childResumePath_<%=cid %> = ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path);
-if(childResumePath_<%=cid %> != null){
+String tRunJobName_<%=cid %> = ResumeUtil.getRighttRunJob(resuming_checkpoint_path);
+if("<%=cid %>".equals(tRunJobName_<%=cid %>) && childResumePath_<%=cid %> != null){
 	paraList_<%=cid %>.add("--resuming_checkpoint_path=" + ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path));
 }
 paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %>");
