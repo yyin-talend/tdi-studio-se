@@ -44,6 +44,8 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.ILocalRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Class that define the connection. It's the model part of the Gef element <br/>
@@ -276,7 +278,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
 
         if (PluginChecker.isTIS()) {
-
+            boolean isLocalRepository = (ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider() instanceof ILocalRepositoryFactory);
             param = new ElementParameter(this);
             param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
             param.setValue(Boolean.FALSE);
@@ -287,6 +289,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setGroup(RESUMING_CHECKPOINT);
             param.setNumRow(2);
             param.setShow(true);
+            param.setReadOnly(isLocalRepository);
             addElementParameter(param);
 
             param = new ElementParameter(this);
@@ -298,6 +301,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setValue("");
             param.setNumRow(3);
             param.setShow(true);
+            param.setReadOnly(isLocalRepository);
             addElementParameter(param);
 
             param = new ElementParameter(this);
@@ -309,6 +313,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setNbLines(5);
             param.setNumRow(4);
             param.setShow(true);
+            param.setReadOnly(isLocalRepository);
             addElementParameter(param);
 
         }
