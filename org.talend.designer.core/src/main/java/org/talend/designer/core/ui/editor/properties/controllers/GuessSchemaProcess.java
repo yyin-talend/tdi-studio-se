@@ -27,6 +27,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -104,6 +105,7 @@ public class GuessSchemaProcess {
                 EDatabaseComponentName.FILEDELIMITED.getOutPutComponentName());
 
         // create the tLibraryLoad for the input node
+
         for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
             if (module.isRequired()) {
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
@@ -113,7 +115,20 @@ public class GuessSchemaProcess {
         }
         for (IElementParameter param : node.getElementParameters()) {
             Set<String> neededLibraries = new HashSet<String>();
-            JavaProcessUtil.findMoreLibraries(neededLibraries, param, true);
+            // for bug 8350
+            // add for tJDBCInput component
+            if (param.getField().equals(EParameterFieldType.MODULE_LIST)) {
+                if (!"".equals(param.getValue())) { //$NON-NLS-1$
+                    // if the parameter is not empty.
+                    String moduleValue = (String) param.getValue();
+                    neededLibraries.add(moduleValue); //$NON-NLS-1$
+                }
+                if (param.isShow(node.getElementParameters())) {
+                    JavaProcessUtil.findMoreLibraries(neededLibraries, param, true);
+                } else {
+                    JavaProcessUtil.findMoreLibraries(neededLibraries, param, false);
+                }
+            }
             for (String lib : neededLibraries) {
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
                 libNode1.setPropertyValue("LIBRARY", "\"" + lib + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
