@@ -95,6 +95,7 @@ public class QueryGuessCommand extends Command {
         this.dbType = dbType;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() {
 
@@ -233,7 +234,9 @@ public class QueryGuessCommand extends Command {
     @Override
     public void undo() {
         node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-        node.setPropertyValue(this.propName, oldValue);
+        if (propName != null && oldValue != null) {
+            node.setPropertyValue(propName, oldValue);
+        }
     }
 
     @Override
