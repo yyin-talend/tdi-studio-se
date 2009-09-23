@@ -147,24 +147,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
   	        }        
        
 
-   		if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
-   		
-//this part for "Resume Management"
-{
-	IConnection conn = outgoingConn;
-	boolean activeResume = "true".equals(ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
-	
-	//System.out.println("Test:" + ElementParameterParser.getValue(conn, "__RESUMING_CHECKPOINT__"));
-	
-	if(activeResume){
-		EConnectionType lineStyle = conn.getLineStyle();
-		 INode sourceNode = conn.getSource();
-		 String sourceNodeName = sourceNode.getUniqueName();
-		%>
-			resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=sourceNodeName %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");
-		<%
-	}	
-}
+   		if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {  		
 %>
    if (<%=outgoingConn.getCondition() %>) {
     <%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
@@ -172,13 +155,13 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 
 <%
 //send the false status to socket, about the true status, please see: subprocess_header.javajet
-if(stat){%>   
+			if(stat){
+%>   
    else{
    	 runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "false");
    }
-<%}%>
-   
 <%
+			}
    		}
    	}
   }

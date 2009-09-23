@@ -111,16 +111,6 @@ globalResumeTicket = true;
     	
    		EConnectionType lineStyle = conn.getLineStyle();
 
-		if(beforeSubProcesses.indexOf(uniqueNameTargetNode) != -1) {   		
-	    	if(activeResume){
-	    		%>
-	    			resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=subTree.getName() %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");	    			
-	    		<%
-	    	}
-	    	%>
-	    	//<%= uniqueNameTargetNode %>Process(globalMap);
-	    	<%
-    	}
     }
 }
 %>
@@ -151,7 +141,9 @@ globalResumeTicket = true;
 		if(beforeSubProcesses.indexOf(uniqueNameTargetNode) != -1) {   		
 	    	if(activeResume){
 	    		%>
-	    			//resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=subTree.getName() %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");	    			
+	    			if( resumeEntryMethodName == null || globalResumeTicket){
+	    				resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=subTree.getName() %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");
+					}	    				    			
 	    		<%
 	    	}
 	    	%>
