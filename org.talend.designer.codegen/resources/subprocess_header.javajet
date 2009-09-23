@@ -817,7 +817,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
     		 INode sourceNode = conn.getSource();
     		 String sourceNodeName = sourceNode.getUniqueName();
     		%>
-    			resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=sourceNodeName %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");
+    			//resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=sourceNodeName %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");
     		<%
     	}
     }
