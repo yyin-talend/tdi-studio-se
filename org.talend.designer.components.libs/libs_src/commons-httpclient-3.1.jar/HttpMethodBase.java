@@ -1865,7 +1865,7 @@ public abstract class HttpMethodBase implements HttpMethod {
                     if (connectionHeader != null) {
                         connectionDirective = connectionHeader.getValue();
                     }
-                    if (!"close".equalsIgnoreCase(connectionDirective)) {
+                    if (isHttp11() && !"close".equalsIgnoreCase(connectionDirective)) {
                         LOG.info("Response content length is not known");
                         setConnectionCloseForced(true);
                     }
