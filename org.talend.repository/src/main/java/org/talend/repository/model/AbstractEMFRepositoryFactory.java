@@ -615,6 +615,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
         Object folder = getFolder(project, itemType);
         Object fullFolder;
+        
+        if (folder == null)
+            return property; // we do not support the top/tdq folders support
+        
         if (folder instanceof IFolder) {
             fullFolder = (IFolder) getFolder(project, itemType);
             fullFolder = ((IFolder) fullFolder).getFolder(new Path(property.getItem().getState().getPath()));
