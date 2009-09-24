@@ -179,6 +179,7 @@
           <ITEMS DEFAULT="IN">
             <ITEM NAME="IN" VALUE="IN"/>
             <ITEM NAME="OUT" VALUE="OUT"/>
+            <ITEM NAME="INOUT" VALUE="INOUT"/>
             <ITEM NAME="RECORDSET" VALUE="RECORDSET"/>
           </ITEMS>
         </ITEM>
