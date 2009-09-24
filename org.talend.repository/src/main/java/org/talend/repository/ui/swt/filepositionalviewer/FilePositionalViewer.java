@@ -91,7 +91,7 @@ public class FilePositionalViewer extends Composite {
 
         composite = this;
 
-        text = new Text(this, SWT.MULTI | SWT.WRAP | SWT.LEFT);
+        text = new Text(this, SWT.LEFT);
         text.setEditable(false);
         Font font = new Font(this.getDisplay(), "Courier", 12, SWT.NORMAL); //$NON-NLS-1$
         this.text.setFont(font);
