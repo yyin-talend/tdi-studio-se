@@ -26,7 +26,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  * Migration task to rename tFSFilterRow into tFSFilterRows.
  */
 
-public class RenametFSFilterRow extends AbstractJobMigrationTask {
+public class RenametFSFilterRows extends AbstractJobMigrationTask {
 
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);

@@ -830,11 +830,11 @@
             name="rename tFileInputBasic into tFileIntoFullRow">
       </projecttask>
       <projecttask
-            beforeLogon="false"
-            class="org.talend.repository.model.migration.RenametFSFilterRow"
-            description="rename tFSFilterRow into tFSFilterRows"
-            id="org.talend.repository.model.migration.RenametFSFilterRow"
-            name="rename tFSFilterRow into tFSFilterRows">
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.RenametFSFilterRows"
+             description="Rename tFSFilterRow to tFSFilterRows"
+             id="org.talend.repository.model.migration.RenametFSFilterRows"
+             name="Rename tFSFilterRow to tFSFilterRows">
       </projecttask>
       <projecttask
             beforeLogon="false"
