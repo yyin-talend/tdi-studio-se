@@ -114,6 +114,7 @@ public enum EParameterName {
     FONT_ITALIC(Messages.getString("EParameterName.FontItalic")), //$NON-NLS-1$
     NOTE_LINECOLOR(Messages.getString("EParameterName.NoteLineColor")), //$NON-NLS-1$
     SCHEMAS("Schema(s)"), //$NON-NLS-1$
+    SCHEMA("Schema"), //$NON-NLS-1$
     MONITOR_CONNECTION(Messages.getString("Connection.monitorConnection")), //$NON-NLS-1$
     TRACES_CONNECTION_ENABLE(Messages.getString("EParameterName.TracesConnection")), //$NON-NLS-1$
     TRACES_CONNECTION_FILTER("Filter the traces"), //$NON-NLS-1$ Hidden parameter so no translation needed

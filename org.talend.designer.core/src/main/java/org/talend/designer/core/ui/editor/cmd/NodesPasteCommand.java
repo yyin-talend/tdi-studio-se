@@ -440,6 +440,15 @@ public class NodesPasteCommand extends Command {
                             for (Map<String, Object> map : tableValues) {
                                 Map<String, Object> newMap = new HashMap<String, Object>();
                                 newMap.putAll(map);
+                                // rename schemas
+                                if (EParameterName.SCHEMAS.name().equals(param.getName()) && !oldMetaToNewMeta.isEmpty()) {
+                                    String newSchemaName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":"
+                                            + map.get(EParameterName.SCHEMA.getName()));
+                                    if (newSchemaName != null) {
+                                        newMap.put(EParameterName.SCHEMA.getName(), newSchemaName);
+                                    }
+                                }
+
                                 newValues.add(newMap);
                             }
                             elementParameter.setValue(newValues);
