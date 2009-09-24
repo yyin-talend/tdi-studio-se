@@ -23,7 +23,7 @@ public class ExternalMultiSchemasData implements IExternalData {
 
     public IExternalData clone() throws CloneNotSupportedException {
         // TODO
-        return this.clone();
+        return (IExternalData) super.clone();
     }
 
 }
