@@ -20,7 +20,6 @@ import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.utils.DesignerColorUtils;
@@ -116,7 +115,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
 
         if (!CommonsPlugin.isHeadless()) {
-            Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE); //$NON-NLS-1$
+            Font font = new Font(null, "courier", 10, SWT.NONE); //$NON-NLS-1$
             store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData()[0].toString());
             store.setDefault(TalendDesignerPrefConstants.EDITOR_ANTIALIASING, false);
             // store.setDefault(TalendDesignerPrefConstants.EDITOR_INTERPOLATION, false);
