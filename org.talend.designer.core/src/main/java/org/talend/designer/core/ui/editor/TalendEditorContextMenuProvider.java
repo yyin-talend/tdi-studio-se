@@ -14,8 +14,11 @@ package org.talend.designer.core.ui.editor;
 
 import java.util.List;
 
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.SelectionAction;
@@ -120,6 +123,19 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             Point p = Display.getCurrent().getCursorLocation();
 
             p = this.getViewer().getControl().toControl(p);
+
+            // gcui see bug 7812:Copy/Paste component in Job designer.
+            LayerManager layerManager = (LayerManager) this.getViewer().getEditPartRegistry().get(LayerManager.ID);
+            IFigure contentLayer = layerManager.getLayer(LayerConstants.PRINTABLE_LAYERS);
+            // System.out.println("X:" + contentLayer.getSize().width + "   Y:" + contentLayer.getSize().height);
+
+            org.eclipse.draw2d.geometry.Point p1 = new org.eclipse.draw2d.geometry.Point(p.x, p.y);
+            contentLayer.translateToAbsolute(p1);
+            // System.out.println("relative:" + p);
+
+            p.x = 2 * (p.x) - p1.x;
+            p.y = 2 * (p.y) - p1.y;
+            // System.out.println("absolute:" + p);
 
             pasteAction.setCursorLocation(p);
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
