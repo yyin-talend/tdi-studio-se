@@ -42,6 +42,12 @@ public class JarBuilder {
 
     List<String> excludeDirs = null;
 
+    List<File> excludeFiles = null;
+
+    List<File> includeSystemRoutines = null;
+
+    private static final String SYSTEM = "system";
+
     /**
      * Constructure.
      * 
@@ -65,6 +71,14 @@ public class JarBuilder {
         this.excludeDirs = excludeDirs;
     }
 
+    public void setExcludeFiles(List<File> excludeFiles) {
+        this.excludeFiles = excludeFiles;
+    }
+
+    public void setIncludeSystemRoutines(List<File> includeSystemRoutines) {
+        this.includeSystemRoutines = includeSystemRoutines;
+    }
+
     /**
      * Gets the files to zip in jar.
      * 
@@ -81,6 +95,12 @@ public class JarBuilder {
         if (excludeDirs != null) {
             List<File> excludeFiles = getAllFiles(excludeDirs);
             includeFiles.removeAll(excludeFiles);
+        }
+        if (excludeFiles != null) {
+            includeFiles.removeAll(excludeFiles);
+        }
+        if (includeSystemRoutines != null) {
+            includeFiles.addAll(includeSystemRoutines);
         }
 
         return includeFiles;

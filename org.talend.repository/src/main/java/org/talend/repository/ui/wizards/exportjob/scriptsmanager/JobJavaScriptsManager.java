@@ -50,8 +50,10 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -704,7 +706,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // make a jar file of system routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
             jarbuilder.setIncludeDir(include);
-
+            jarbuilder.setIncludeSystemRoutines(getExcludeUerRoutines());
             jarbuilder.buildJar();
 
             File jarFile = new File(jarPath);
@@ -737,11 +739,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             String jarPath = getTmpFolder() + PATH_SEPARATOR + USERROUTINE_JAR;
 
-            // make a jar file of system routine classes
+            // make a jar file of user routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
             jarbuilder.setIncludeDir(include);
             jarbuilder.setExcludeDir(excludes);
-
+            jarbuilder.setExcludeFiles(getExcludeUerRoutines());
             jarbuilder.buildJar();
 
             File jarFile = new File(jarPath);
@@ -899,4 +901,48 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return map;
     }
 
+    private List<File> getExcludeUerRoutines() {
+        List<File> userRoutines = null;
+
+        try {
+            String classRoot = getClassRootLocation();
+            userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
+            List<IRepositoryObject> allRoutines = ProxyRepositoryFactory.getInstance().getAll(
+                    ProjectManager.getInstance().getCurrentProject(), ERepositoryObjectType.ROUTINES);
+            Iterator<File> iterator = userRoutines.iterator();
+            while (iterator.hasNext()) {
+                File file = (File) iterator.next();
+                for (IRepositoryObject object : allRoutines) {
+                    RoutineItem item = (RoutineItem) object.getProperty().getItem();
+                    if (!item.isBuiltIn() && file.getName().equals(item.getProperty().getLabel() + ".class")) {
+                        iterator.remove();
+                    }
+                }
+            }
+
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return userRoutines;
+    }
+
+    private List<File> getAllFiles(String rootPath, String childPath) {
+        final List<File> list = new ArrayList<File>();
+        File file = new File(rootPath, childPath);
+        file.listFiles(new java.io.FilenameFilter() {
+
+            public boolean accept(java.io.File dir, String name) {
+                File file = new java.io.File(dir, name);
+                if (file.isFile()) {
+                    list.add(file);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        return list;
+    }
 }
