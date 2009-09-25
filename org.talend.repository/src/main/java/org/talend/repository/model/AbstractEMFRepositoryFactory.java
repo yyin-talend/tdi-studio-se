@@ -572,14 +572,38 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     public synchronized IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = null;
         serializableAllVersion = getSerializable(project, id, false);
-        if (serializableAllVersion.size() > 1) {
+        int size = serializableAllVersion.size();
+        if (size > 1) {
+            String message = getItemsMessages(serializableAllVersion, size);
+
             throw new PersistenceException(Messages
-                    .getString("AbstractEMFRepositoryFactory.presistenceException.onlyOneOccurenceAllowed")); //$NON-NLS-1$
-        } else if (serializableAllVersion.size() == 1) {
+                    .getString("AbstractEMFRepositoryFactory.OnlyOneOccurenceMustbeFound", message)); //$NON-NLS-1$
+        } else if (size == 1) {
             return serializableAllVersion.get(0);
         } else {
             return null;
         }
+    }
+
+    /**
+     * DOC zli Comment method "getItemsMessages".
+     * 
+     * @param serializableAllVersion
+     * @param size
+     * @return
+     */
+    // for bug 9265
+    private String getItemsMessages(List<IRepositoryObject> serializableAllVersion, int size) {
+        String message = Messages.getString("AbstractEMFRepositoryFactory.presistenceException.whoCauseProblems");//$NON-NLS-1$
+        int k = 0;
+        for (IRepositoryObject object : serializableAllVersion) {
+            message += object.getProperty().getLabel();
+            k++;
+            if (k < size) {
+                message += ", ";//$NON-NLS-1$
+            }
+        }
+        return message;
     }
 
     public synchronized IRepositoryObject getLastVersion(Project project, String id, String relativeFolder,
@@ -588,10 +612,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         IFolder fullFolder = (IFolder) getFolder(project, type);
         fullFolder = fullFolder.getFolder(new Path(relativeFolder));
         serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, false, false, true);
-        if (serializableAllVersion.size() > 1) {
+        int size = serializableAllVersion.size();
+        if (size > 1) {
+            String message = getItemsMessages(serializableAllVersion, size);
+
             throw new PersistenceException(Messages
-                    .getString("AbstractEMFRepositoryFactory.presistenceException.onlyOneOccurenceAllowed")); //$NON-NLS-1$
-        } else if (serializableAllVersion.size() == 1) {
+                    .getString("AbstractEMFRepositoryFactory.OnlyOneOccurenceMustbeFound", message)); //$NON-NLS-1$
+        } else if (size == 1) {
             return serializableAllVersion.get(0);
         } else {
             return null;
@@ -615,10 +642,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
         Object folder = getFolder(project, itemType);
         Object fullFolder;
-        
+
         if (folder == null)
             return property; // we do not support the top/tdq folders support
-        
+
         if (folder instanceof IFolder) {
             fullFolder = (IFolder) getFolder(project, itemType);
             fullFolder = ((IFolder) fullFolder).getFolder(new Path(property.getItem().getState().getPath()));
