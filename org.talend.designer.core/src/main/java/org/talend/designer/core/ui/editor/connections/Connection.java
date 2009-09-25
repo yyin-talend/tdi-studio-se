@@ -100,10 +100,14 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private boolean monitorConnection = false;
 
+    public boolean setNullColumn = false;
+
     /**
      * Tells if this connection has a subjob source or not instead of a node.
      */
     private boolean isSubjobConnection;
+
+    public ArrayList<Integer> traceColumn = new ArrayList<Integer>();
 
     // used only for copy / paste (will generate the name) && connection
     // creation

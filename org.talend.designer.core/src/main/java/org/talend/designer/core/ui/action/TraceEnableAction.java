@@ -20,6 +20,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionTraceEditPart;
@@ -54,7 +55,39 @@ public class TraceEnableAction extends SelectionAction {
             return false;
         }
         Object input = parts.get(0);
-
+        if (input instanceof ConnectionPart) {
+            ConnectionPart connPart = (ConnectionPart) input;
+            List childParts = connPart.getChildren();
+            for (Object part : childParts) {
+                if (part != null && part instanceof ConnectionTraceEditPart) {
+                    Connection conn = (Connection) connPart.getModel();
+                    if (conn.enableTraces()) {
+                        IElementParameter element = conn.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+                        Boolean flag = (Boolean) element.getValue();
+                        if (flag == false) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        if (input instanceof ConnLabelEditPart) {
+            ConnLabelEditPart labelPart = (ConnLabelEditPart) input;
+            ConnectionPart connPart = (ConnectionPart) labelPart.getParent();
+            List childParts = connPart.getChildren();
+            for (Object part : childParts) {
+                if (part != null && part instanceof ConnectionTraceEditPart) {
+                    Connection conn = (Connection) connPart.getModel();
+                    if (conn.enableTraces()) {
+                        IElementParameter element = conn.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+                        Boolean flag = (Boolean) element.getValue();
+                        if (flag == false) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
         if (input instanceof ConnectionTraceEditPart) {
             ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) input;
 
@@ -76,6 +109,33 @@ public class TraceEnableAction extends SelectionAction {
         List selection = getSelectedObjects();
 
         Object input = selection.get(0);
+        if (input instanceof ConnectionPart) {
+            ConnectionPart connPart = (ConnectionPart) input;
+            List childParts = connPart.getChildren();
+            for (Object part : childParts) {
+                if (part != null && part instanceof ConnectionTraceEditPart) {
+                    ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) part;
+                    Connection conn = (Connection) connPart.getModel();
+                    execute(new PropertyChangeCommand(conn, EParameterName.TRACES_CONNECTION_ENABLE.getName(), true));
+                    tracePart.refresh();
+                    break;
+                }
+            }
+        }
+        if (input instanceof ConnLabelEditPart) {
+            ConnLabelEditPart labelPart = (ConnLabelEditPart) input;
+            ConnectionPart connPart = (ConnectionPart) labelPart.getParent();
+            List childParts = connPart.getChildren();
+            for (Object part : childParts) {
+                if (part != null && part instanceof ConnectionTraceEditPart) {
+                    ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) part;
+                    Connection conn = (Connection) connPart.getModel();
+                    execute(new PropertyChangeCommand(conn, EParameterName.TRACES_CONNECTION_ENABLE.getName(), true));
+                    tracePart.refresh();
+                    break;
+                }
+            }
+        }
         if (input instanceof ConnectionTraceEditPart) {
             ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) input;
 

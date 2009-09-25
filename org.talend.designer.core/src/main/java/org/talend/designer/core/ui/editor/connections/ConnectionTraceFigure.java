@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.connections;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -35,6 +36,7 @@ import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
+import org.talend.designer.core.model.components.EParameterName;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -62,6 +64,8 @@ public class ConnectionTraceFigure extends Figure {
 
     private CollapseFigure collapseButton;
 
+    private int contentWidth = 0;
+
     public ConnectionTraceFigure(Connection connection, boolean maximized) {
         ToolbarLayout layout = new ToolbarLayout();
         setLayoutManager(layout);
@@ -85,6 +89,13 @@ public class ConnectionTraceFigure extends Figure {
         super.paint(graphics);
     }
 
+    Figure variableFigure = null;
+
+    private void setVariableFigureBorder() {
+        if (variableFigure != null && variableFigure.getBorder() == null)
+            variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.BOTTOM | SWT.RIGHT));
+    }
+
     public void setTraceData(String data, boolean flag, boolean traceFlag) {
         if (data != null) {
             List childrens = this.getChildren();
@@ -105,7 +116,8 @@ public class ConnectionTraceFigure extends Figure {
                         refreshCollapseStatus();
                     }
                 });
-                outlineFigure.add(collapseButton);
+                if (flag == true)
+                    outlineFigure.add(collapseButton);
             }
             int sepIndex = data.indexOf(FIELD_SEP); // index separator for row name
 
@@ -131,15 +143,16 @@ public class ConnectionTraceFigure extends Figure {
                 titleFigureSe.setOpaque(false);
             }
             titleFigureSe.getPreferredSize().expand(20, 2);
-
-            outlineFigure.add(titleFigure);
+            if (flag == true)
+                outlineFigure.add(titleFigure);
 
             ImageFigure figure = new ImageFigure(getTraceConnectionImage(flag));
             outlineFigure.add(figure);
-
-            outlineFigure.add(titleFigureSe);
+            if (flag == true)
+                outlineFigure.add(titleFigureSe);
 
             outlineFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT | SWT.TOP | SWT.BOTTOM));
+            outlineFigure.setOpaque(true);
             add(outlineFigure);
 
             Dimension size = titleFigure.getPreferredSize().getCopy();
@@ -147,6 +160,49 @@ public class ConnectionTraceFigure extends Figure {
             int variableWidth = 0;
             int valueWidth = 0;
             String lineInfo = dataWithoutRowName.substring(sepIndex + 1);
+            ArrayList columnValueList = new ArrayList();
+            int lastLocation = 0;
+            int endLocation = lineInfo.indexOf(FIELD_SEP, lastLocation);
+            while (endLocation != -1) {
+                columnValueList.add(lineInfo.substring(lastLocation, endLocation + 1));
+                lastLocation = endLocation + 2;
+                endLocation = lineInfo.indexOf(FIELD_SEP, lastLocation);
+            }
+            if (columnValueList.size() > 0 && connection.traceColumn.size() == 0
+                    && connection.getPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName()) != null) {
+                Object value = connection.getPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName());
+                lineInfo = "";
+                for (Object o : columnValueList) {
+                    for (Object o1 : (ArrayList) value) {
+                        if (((HashMap) o1).get("TRACE_COLUMN").toString().equals(
+                                o.toString().substring(0, o.toString().indexOf("=")).trim())
+                                && ((HashMap) o1).get("TRACE_COLUMN_CHECKED").toString().equals("true")) {
+                            lineInfo += o.toString();
+                            break;
+                        }
+                    }
+                }
+            }
+            if (columnValueList.size() > 0 && (connection.traceColumn.size() > 0 || connection.setNullColumn == true)) {
+                lineInfo = "";
+                Object value = connection.getPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName());
+                int columnNum = 0;
+                for (Object o : columnValueList) {
+                    if (connection.traceColumn != null && connection.traceColumn.contains(columnNum))
+                        lineInfo += o.toString();
+                    else {
+                        for (Object o1 : (ArrayList) value) {
+                            if (((HashMap) o1).get("TRACE_COLUMN").toString().equals(
+                                    o.toString().substring(0, o.toString().indexOf("=")).trim())
+                                    && ((HashMap) o1).get("TRACE_COLUMN_CHECKED").toString().equals("true")) {
+                                lineInfo += o.toString();
+                                break;
+                            }
+                        }
+                    }
+                    columnNum++;
+                }
+            }
             StringTokenizer st = new StringTokenizer(lineInfo, FIELD_SEP);
             while (st.hasMoreTokens()) {
                 String str = st.nextToken();
@@ -208,7 +264,7 @@ public class ConnectionTraceFigure extends Figure {
 
             st = new StringTokenizer(lineInfo, FIELD_SEP);
             int nbVar = 0;
-            Figure variableFigure = null;
+
             while (st.hasMoreTokens()) {
                 String str = st.nextToken();
                 int valueStart = str.indexOf(FIELD_EQUAL);
@@ -235,7 +291,8 @@ public class ConnectionTraceFigure extends Figure {
                     variableFigure.setLayoutManager(variableLayout);
                     variableFigure.add(var);
                     variableFigure.add(value);
-                    add(variableFigure);
+                    if (flag == true)
+                        add(variableFigure);
                 } else {
                     String formatedValue = "<font color='#FF8040'> <b> " + str + "</b></font>"; //$NON-NLS-1$ //$NON-NLS-2$
                     SimpleHtmlFigure value = new SimpleHtmlFigure();
@@ -250,8 +307,8 @@ public class ConnectionTraceFigure extends Figure {
                     variableFigure = new Figure();
                     variableFigure.setLayoutManager(variableLayout);
                     variableFigure.add(value);
-
-                    add(variableFigure);
+                    if (flag == true)
+                        add(variableFigure);
                 }
                 if (tooltip != null) {
                     variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT));
@@ -272,6 +329,8 @@ public class ConnectionTraceFigure extends Figure {
                     variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.BOTTOM | SWT.RIGHT));
                 }
             }
+            if (maximized)
+                this.setVariableFigureBorder();
             if (noVarNameDefined) {
                 size.width = valueWidth;
             } else {
@@ -285,6 +344,10 @@ public class ConnectionTraceFigure extends Figure {
             size.expand(5, 3);
             setPreferredSize(size);
             setVisible(true);
+            if (!flag) {
+                this.remove(outlineFigure);
+                add(figure);
+            }
 
         } else {
             if (traceFlag) {
@@ -303,7 +366,8 @@ public class ConnectionTraceFigure extends Figure {
             }
         }
         if (tooltip != null) {
-            tooltip.setTraceData(data, flag, traceFlag);
+            if (flag)
+                tooltip.setTraceData(data, flag, traceFlag);
         }
         contents = new ArrayList(getChildren());
         refreshCollapseStatus();
@@ -346,6 +410,11 @@ public class ConnectionTraceFigure extends Figure {
             }
             IFigure figure = (IFigure) contents.get(0);
             this.getPreferredSize().height = figure.getPreferredSize().height;
+            if (contentWidth <= this.getPreferredSize().width) {
+                contentWidth = this.getPreferredSize().width;
+            } else {
+                this.getPreferredSize().width = contentWidth;
+            }
             setPreferredSize(getPreferredSize());
         } else {
             removeAll();
@@ -355,7 +424,13 @@ public class ConnectionTraceFigure extends Figure {
             }
             IFigure figure = (IFigure) contents.get(0);
             this.getPreferredSize().height = figure.getPreferredSize().height * contents.size();
+            if (contentWidth <= this.getPreferredSize().width) {
+                contentWidth = this.getPreferredSize().width;
+            } else {
+                this.getPreferredSize().width = contentWidth;
+            }
             setPreferredSize(getPreferredSize());
+
         }
     }
 

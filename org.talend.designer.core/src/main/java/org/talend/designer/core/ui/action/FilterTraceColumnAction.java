@@ -43,6 +43,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionTraceEditPart;
@@ -85,6 +86,27 @@ public class FilterTraceColumnAction extends SelectionAction {
         }
         Object input = parts.get(0);
 
+        if (input instanceof ConnectionPart) {
+            ConnectionPart connPart = (ConnectionPart) input;
+            List childParts = connPart.getChildren();
+            for (Object part : childParts) {
+                if (part != null && part instanceof ConnectionTraceEditPart) {
+                    connection = (Connection) connPart.getModel();
+                    return connection.enableTraces();
+                }
+            }
+        }
+        if (input instanceof ConnLabelEditPart) {
+            ConnLabelEditPart labelPart = (ConnLabelEditPart) input;
+            ConnectionPart connPart = (ConnectionPart) labelPart.getParent();
+            List childParts = connPart.getChildren();
+            for (Object part : childParts) {
+                if (part != null && part instanceof ConnectionTraceEditPart) {
+                    connection = (Connection) connPart.getModel();
+                    return connection.enableTraces();
+                }
+            }
+        }
         if (input instanceof ConnectionTraceEditPart) {
             ConnectionTraceEditPart connTrace = (ConnectionTraceEditPart) input;
             if (connTrace.getParent() instanceof ConnectionPart) {
@@ -247,17 +269,28 @@ public class FilterTraceColumnAction extends SelectionAction {
                 @Override
                 public void execute() {
                     List<Object> checkedElements = Arrays.asList(tabView.getCheckedElements());
-
+                    if (checkedElements.size() == 0)
+                        conn.setNullColumn = true;
+                    Integer validColumn1 = 0;
+                    Object value = conn.getPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName());
+                    conn.traceColumn.clear();
                     for (TableItem item : tabView.getTable().getItems()) {
                         Object data = item.getData();
                         if (data instanceof ConditionBean) {
                             ConditionBean bean = (ConditionBean) data;
+                            if (checkedElements.contains(bean)) {
+                                conn.setNullColumn = false;
+                                conn.traceColumn.add(validColumn1);
+                            } else {
+                                tabView.setChecked(item, false);
+                            }
                             TracesConnectionUtils.setTraceColumnValues(conn, bean.getColumnName(), bean.getCondition(),
                                     checkedElements.contains(bean));
+                            validColumn1++;
                         }
                     }
                     // fire property change and refresh
-                    Object value = conn.getPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName());
+
                     conn.setPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName(), value);
                 }
             });
