@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
@@ -28,12 +29,21 @@ public class TalendPaletteViewerProvider extends PaletteViewerProvider {
 
     @Override
     public PaletteViewer createPaletteViewer(Composite parent) {
+        if (SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_MAC) {
+            // PTDO need check it later and fix the bug on MacOS.
+            return super.createPaletteViewer(parent);
+        }
         PaletteViewer pViewer = new TalendPaletteViewer(this.getEditDomain());
         pViewer.createControl(parent);
-        // configurePaletteViewer(pViewer);
-        pViewer.setContextMenu(new TalendPaletteContextMenuProvider(pViewer));
-        pViewer.addDragSourceListener(new TalendPaletteDragSourceListener(pViewer));
+        configurePaletteViewer(pViewer);
         hookPaletteViewer(pViewer);
         return pViewer;
     }
+
+    @Override
+    protected void configurePaletteViewer(PaletteViewer pViewer) {
+        pViewer.setContextMenu(new TalendPaletteContextMenuProvider(pViewer));
+        pViewer.addDragSourceListener(new TalendPaletteDragSourceListener(pViewer));
+    }
+
 }
