@@ -205,7 +205,7 @@ public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
      */
     protected void initialize() {
         // init the metadata Table
-        String label = MetadataTool.validataValue(metadataTable.getLabel(), 0);
+        String label = MetadataTool.validateValue(metadataTable.getLabel());
         metadataNameText.setText(label);
         metadataCommentText.setText(metadataTable.getComment());
         metadataEditor.setMetadataTable(metadataTable);

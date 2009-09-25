@@ -159,7 +159,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
      */
     @Override
     protected void initialize() {
-        String label = MetadataTool.validataValue(metadataTable.getLabel(), 0);
+        String label = MetadataTool.validateValue(metadataTable.getLabel());
         metadataNameText.setText(label);
         metadataCommentText.setText(metadataTable.getComment());
         metadataEditor.setMetadataTable(metadataTable);

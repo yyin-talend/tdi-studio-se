@@ -123,7 +123,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
     @Override
     protected void initialize() {
         // init the metadata Table
-        String label = MetadataTool.validataValue(metadataTable.getLabel(), 0);
+        String label = MetadataTool.validateValue(metadataTable.getLabel());
         metadataNameText.setText(label);
         metadataCommentText.setText(metadataTable.getComment());
         metadataEditor.setMetadataTable(metadataTable);

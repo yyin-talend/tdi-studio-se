@@ -293,7 +293,7 @@ public class DatabaseTableForm extends AbstractForm {
         });
 
         // init the fields
-        String label = MetadataTool.validataValue(metadataTable.getLabel(), 0);
+        String label = MetadataTool.validateValue(metadataTable.getLabel());
         nameText.setText(label);
         commentText.setText(metadataTable.getComment());
         if (metadataTable.getTableType() != null) {
