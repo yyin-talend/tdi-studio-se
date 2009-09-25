@@ -539,20 +539,20 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
                     int length = categories.length;
                     EComponentCategory[] newCategories;
-                    if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)
-                            || propertyValue.equals(EConnectionType.ON_COMPONENT_ERROR)) {
-                        newCategories = new EComponentCategory[length];
-                        for (int i = 0; i < length; i++) {
-                            newCategories[i] = categories[i];
-                        }
-                    } else {
+                    // rusuming checkBox only for ON_SUBJOB_OK and ON_SUBJOB_ERROR, modified by nma, order 8663
+                    if (propertyValue.equals(EConnectionType.ON_SUBJOB_OK)
+                            || propertyValue.equals(EConnectionType.ON_SUBJOB_ERROR)) {
                         newCategories = new EComponentCategory[length + 1];
                         for (int i = 0; i < length; i++) {
                             newCategories[i] = categories[i];
                         }
-
                         EComponentCategory resuming = EComponentCategory.RESUMING;
                         newCategories[length] = resuming;
+                    } else {
+                        newCategories = new EComponentCategory[length];
+                        for (int i = 0; i < length; i++) {
+                            newCategories[i] = categories[i];
+                        }
                     }
                     return newCategories;
                 }
