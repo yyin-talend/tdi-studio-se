@@ -237,6 +237,12 @@ public class CLASS {
         public Manager(String cid) {
             this.cid = cid;
         }
+      protected  String getLProtectedChar(String columName) {
+    	  return "";
+      }
+      protected  String getRProtectedChar(String columName) {
+    	  return "";
+      }
         public String getSelectionSQL() {
             StringBuilder selectionSQL = new StringBuilder();
             selectionSQL.append("SELECT COUNT(1) FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -269,7 +275,7 @@ public class CLASS {
                     List<Column> replacedColumns = column.getReplacement();
                     if (column.isKey()) {
                         for (Column replacedColumn : replacedColumns) {
-                            pkList.add(getLProtectedChar() + replacedColumn.getColumnName() + getRProtectedChar());
+                            pkList.add(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()));
                         }
                     }
                     int replacedCount = 0;
@@ -277,7 +283,7 @@ public class CLASS {
                         if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1 && pkList.size() == 0) {
                             ending = "";
                         }
-                        createSQL.append(getLProtectedChar() + replacedColumn.getColumnName() + getRProtectedChar() + " ");
+                        createSQL.append(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()) + " ");
                         createSQL.append(replacedColumn.getDataType() + ending);
                         replacedCount++;
                     }
@@ -286,13 +292,13 @@ public class CLASS {
                         if (count == columnList.size() - 1 && pkList.size() == 0) {
                             ending = "";
                         }
-                        createSQL.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " ");
+                        createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
                     } else {
                         if (column.isKey()) {
-                            pkList.add(getLProtectedChar() + column.getColumnName() + getRProtectedChar());
+                            pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
                         }
-                        createSQL.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " ");
+                        createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         String dataType = null;
                         if (column.getColumn().getType() == null || column.getColumn().getType().trim().equals("")) {
                             dataType = mappingType.getDefaultSelectedDbType(column.getColumn().getTalendType());
@@ -628,7 +634,7 @@ public class CLASS {
                     suffix = ",";
                 }
                 insertColName.append(suffix);
-                insertColName.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar());
+                insertColName.append(getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName()));
                 insertValueStmt.append(suffix);
                 insertValueStmt.append(column.getSqlStmt());
             }
@@ -640,7 +646,7 @@ public class CLASS {
                     suffix = ",";
                 }
                 updateSetStmt.append(suffix);
-                updateSetStmt.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
+                updateSetStmt.append(getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName()) + " " + column.getOperator() + " " + column.getSqlStmt());
             }
             if(column.isDeleteKey()) {
                 if(firstDeleteKeyColumn.toString().equals("true")) {
@@ -906,13 +912,13 @@ public class CLASS {
                 whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
             }
             if (whereSupportNull && column.getColumn().isNullable()) {
-                updateWhereStmt.append("((" + getLProtectedChar() + column.getColumnName() + getRProtectedChar()
+                updateWhereStmt.append("((" + getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName())
                         + " IS NULL AND 0x1 " + column.getOperator() + " " + column.getSqlStmt() + ") ");
-                updateWhereStmt.append("OR " + getLProtectedChar() + column.getColumnName() + getRProtectedChar()
+                updateWhereStmt.append("OR " + getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName())
                         + column.getOperator() + column.getSqlStmt() + ")");
             } else {
                 //if node = null, go this branch as the old behave
-                updateWhereStmt.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " "
+                updateWhereStmt.append(getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName()) + " "
                         + column.getOperator() + " " + column.getSqlStmt());
             }
         }
@@ -1338,6 +1344,35 @@ public class CLASS {
     }
     
     public class OracleManager extends Manager {
+    	  private String[] oracleKeyWords= {
+    		    	"ACCESS" ,"AUDIT","COMPRESS","DESC" , 
+    		    	"ADD","ACCESS","CONNECT","DISTINCT" ,
+    		    	"ALL","BY","CREATE","DROP",
+    		    	"ALTER","CHAR","CURRENT","ELSE",
+    		    	"AND","CHECK","DATE","EXCLUSIVE",
+    		    	"ANY","CLUSTER","DECIMAL","	EXISTS",
+    		    	"AS","COLUMN","DEFAULT","FILE",
+    		    	"ASC","COMMENT","DELETE","FLOAT",
+    		    	"FOR","LONG","PCTFREE","SUCCESSFUL",
+    		    	"FROM","MAXEXTENTS","PRIOR","SYNONYM",
+    		    	"GRANT","MINUS","PRIVILEGES","SYSDATE",
+    		    	"GROUP","MODE","PUBLIC","TABLE",
+    		    	"HAVING","MODIFY","RAW","THEN",
+    		    	"IDENTIFIED","NETWORK","RENAME","TO",
+    				"IMMEDIATE","NOAUDIT","RESOURCE","TRIGGER",
+    				"IN","NOCOMPRESS","REVOKE","UID",
+    				"INCREMENT","NOT","ROW","UNION",
+    				"INDEX","NOWAIT","ROWID","UNIQUE",
+    				"INITIAL","NULL","ROWNUM","UPDATE",
+    				"INSERT","NUMBER","ROWS","USER",
+    				"INTEGER","OF","SELECT","VALIDATE",
+    				"INTERSECT","OFFLINE","SESSION","VALUES",
+    				"INTO","ON","SET","VARCHAR",
+    				"IS","ONLINE","SHARE","VARCHAR2",
+    				"LEVEL","OPTION","SIZE","VIEW",
+    				"LIKE","OR","SMALLINT","WHENEVER",
+    				"LOCK","ORDER","START","WHERE","WITH"
+    		    	};
         public OracleManager(String cid) {
             super(cid);
         }
@@ -1349,7 +1384,27 @@ public class CLASS {
         }
         protected String getRProtectedChar() {
             return "";
+        }   
+        protected boolean isOracleKeyword (String keyword) {
+            for (int i=0 ; i < oracleKeyWords.length ; i++){
+                if (oracleKeyWords[i].equalsIgnoreCase(keyword)) {
+                	return true;
+                }
+            }
+        	return false;
         }
+        protected String getLProtectedChar(String keyword) {
+        	if (isOracleKeyword(keyword)){
+        		return "\\\"";
+        	}
+        	return getLProtectedChar();
+        }
+        protected String getRProtectedChar(String keyword) {
+        	if (isOracleKeyword(keyword)){
+        		return "\\\"";
+        	}
+        	return getRProtectedChar();
+        }  
         public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
             StringBuilder updateBulkSQL = new StringBuilder();
             StringBuilder updateSetStmt = new StringBuilder();
@@ -1817,8 +1872,8 @@ public class CLASS {
     }
 
     public String generate(Object argument) {
+		return null;
         
     }
-    
     
 }
