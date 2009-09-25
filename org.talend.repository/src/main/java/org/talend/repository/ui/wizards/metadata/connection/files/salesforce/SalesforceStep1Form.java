@@ -218,10 +218,11 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         GridData objectsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
         objectsLayoutData.horizontalSpan = 3;
         objectsGroup.setLayoutData(objectsLayoutData);
+        String[] item = { "                                  " };//$NON-NLS-1$
         moduleNameCombo = new LabelledCombo(
                 objectsGroup,
                 Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
-                null, 2, false);
+                item, 2, false);
         String moduleName2 = getConnection().getModuleName();
         if (moduleName2 != null && !"".equals(moduleName2)) {
             moduleNameCombo.add(moduleName2);
