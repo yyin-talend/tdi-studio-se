@@ -1400,11 +1400,11 @@
   <context id="tFilterColumns">
     <description>Maps input columns with output columns. Mapping is based on column names.</description>
     <topic
-      href="guide/components/en/tFilterColumns_Prop.html"
+      href="guide/components/en/tFilterColumn_Prop.html"
       label="tFilterColumns properties description"
     />
     <topic
-      href="guide/components/en/tFilterColumns_Scenario.html"
+      href="guide/components/en/tFilterColumn_Scenario.html"
       label="tFilterColumns scenario example"
     />
   </context>
