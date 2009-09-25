@@ -103,6 +103,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         String helpLink = (String) ((Node) getModel()).getPropertyValue(EParameterName.HELP.getName());
         if (ctrl != null) {
             PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
+            String requiredHelpLink = helpLink = "org.talend.help." + ((Node) getModel()).getComponent().getName();
+            if (helpLink == null || "".equals(helpLink) || !requiredHelpLink.equals(helpLink)) {
+                helpLink = "org.talend.help." + ((Node) getModel()).getComponent().getName();
+            }
         }
         IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
         if (view != null) {
