@@ -96,6 +96,8 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
     private boolean nextFreeRowCalled;
 
+    private boolean sortEnabled = true;
+
     /**
      * DOC amaumont SortedMultipleHashFile constructor comment.
      * 
@@ -195,7 +197,9 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
         // long time1 = System.currentTimeMillis();
         // System.out.println("Sorting buffer...");
 
-        Arrays.sort(buffer, 0, bufferBeanIndex + 1);
+        if (this.sortEnabled) {
+            Arrays.sort(buffer, 0, bufferBeanIndex + 1);
+        }
 
         // long time2 = System.currentTimeMillis();
         // long deltaTimeSort = (time2 - time1);
@@ -432,6 +436,25 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
             }
 
         };
+    }
+
+    
+    /**
+     * Getter for sortEnabled.
+     * 
+     * @return the sortEnabled
+     */
+    public boolean isSortEnabled() {
+        return sortEnabled;
+    }
+
+    /**
+     * Sets the sortEnabled.
+     * 
+     * @param sortEnabled the sortEnabled to set
+     */
+    public void setSortEnabled(boolean sortEnabled) {
+        this.sortEnabled = sortEnabled;
     }
 
 }

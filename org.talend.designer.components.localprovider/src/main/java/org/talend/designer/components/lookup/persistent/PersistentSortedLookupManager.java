@@ -92,6 +92,8 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
 
     private boolean waitingHeapException;
 
+    private boolean sortEnabled = true;
+    
     public PersistentSortedLookupManager(MATCHING_MODE matchingMode, String container, IRowCreator<B> rowCreator)
             throws IOException {
         this.matchingMode = matchingMode;
@@ -160,7 +162,9 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
     }
 
     private void writeBuffer() throws FileNotFoundException, IOException {
-        Arrays.sort(buffer, 0, bufferBeanIndex);
+        if (this.sortEnabled) {
+            Arrays.sort(buffer, 0, bufferBeanIndex);
+        }
         File keysDataFile = new File(buildKeysFilePath(fileIndex));
         File valuesDataFile = new File(buildValuesFilePath(fileIndex));
         ObjectOutputStream keysDataOutputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(
@@ -383,6 +387,25 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    
+    /**
+     * Getter for sortEnabled.
+     * 
+     * @return the sortEnabled
+     */
+    public boolean isSortEnabled() {
+        return sortEnabled;
+    }
+
+    /**
+     * Sets the sortEnabled.
+     * 
+     * @param sortEnabled the sortEnabled to set
+     */
+    public void setSortEnabled(boolean sortEnabled) {
+        this.sortEnabled = sortEnabled;
     }
 
 }
