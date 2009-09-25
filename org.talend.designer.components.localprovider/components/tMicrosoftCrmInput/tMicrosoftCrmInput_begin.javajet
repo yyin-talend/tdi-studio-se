@@ -63,7 +63,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
             auth_<%=cid%> .setPreemptiveAuthentication(false);
             
             options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.AUTHENTICATE, auth_<%=cid%>);
-            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.REUSE_HTTP_CLIENT, "true");
+           	options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.REUSE_HTTP_CLIENT, "false");
+
             
             options_<%=cid%> .setUserName(<%=username%>);
             options_<%=cid%> .setPassword(<%=password%>);
