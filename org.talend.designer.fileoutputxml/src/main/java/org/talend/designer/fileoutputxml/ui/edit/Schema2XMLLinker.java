@@ -199,7 +199,8 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
                     if (node.getColumn() == null) { //$NON-NLS-1$
                         continue;
                     }
-                    createLoopLinks(node.getColumn().getLabel(), treeItem, monitorWrap);
+                    // add now parameter for bug 9279
+                    createLoopLinks(node.getColumn().getLabel(), treeItem, monitorWrap, i == totalWork - 1);
 
                     monitorWrap.worked(1);
                 }
@@ -242,8 +243,8 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
      * @param tree
      * @param dataItem2
      */
-    public void addLoopLink(Item tableItem, Object dataItem1, Tree tree, FOXTreeNode dataItem2) {
-        LinkDescriptor<Item, Object, Tree, Object> link = addLink(tableItem, dataItem1, tree, dataItem2);
+    public void addLoopLink(Item tableItem, Object dataItem1, Tree tree, FOXTreeNode dataItem2, boolean lastOne) {
+        LinkDescriptor<Item, Object, Tree, Object> link = addLink(tableItem, dataItem1, tree, dataItem2, lastOne);
     }
 
     /**
@@ -254,13 +255,14 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
      * @param tree
      * @param dataItem2
      */
-    private LinkDescriptor<Item, Object, Tree, Object> addLink(Item tableItem, Object dataItem1, Tree tree, Object dataItem2) {
+    private LinkDescriptor<Item, Object, Tree, Object> addLink(Item tableItem, Object dataItem1, Tree tree, Object dataItem2,
+            boolean lastOne) {
         LinkDescriptor<Item, Object, Tree, Object> link = new LinkDescriptor<Item, Object, Tree, Object>(
                 new ItemExtremityDescriptor(tableItem, dataItem1), new ExtremityLink<Tree, Object>(tree, dataItem2));
 
         link.setStyleLink(getUnselectedStyleLink());
         getLinksManager().addLink(link);
-        updateLinksStyleAndControlsSelection(tree);
+        updateLinksStyleAndControlsSelection(tree, lastOne);
         return link;
     }
 
@@ -307,7 +309,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
      * @param pathQuery
      * @param tableItem
      */
-    private void createLoopLinks(String xPathExpression, TreeItem tableItemTarget, IProgressMonitor monitorWrap) {
+    private void createLoopLinks(String xPathExpression, TreeItem tableItemTarget, IProgressMonitor monitorWrap, boolean lastOne) {
 
         if (monitorWrap != null && monitorWrap.isCanceled()) {
             return;
@@ -316,7 +318,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
         TableItem treeItemFromAbsoluteXPath = getItem(xPathExpression);
         if (treeItemFromAbsoluteXPath != null) {
             addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
-                    (FOXTreeNode) tableItemTarget.getData());
+                    (FOXTreeNode) tableItemTarget.getData(), lastOne);
         }
     }
 
@@ -342,7 +344,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public void updateLinksStyleAndControlsSelection(Control currentControl) {
+    public void updateLinksStyleAndControlsSelection(Control currentControl, boolean lastOne) {
         // super.updateLinksStyleAndControlsSelection(currentControl);
         boolean isTarget = false;
         if (getSource() != currentControl) {
@@ -433,7 +435,10 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
             }
         }
         getLinksManager().sortLinks(getDrawingLinksComparator());
-        getBackgroundRefresher().refreshBackground();
+        // for bug 9279
+        if (lastOne) {
+            getBackgroundRefresher().refreshBackground();
+        }
     }
 
     public StyleLink getSelectedLoopStyleLink() {

@@ -214,7 +214,7 @@ public class FOXUI {
                 for (int i = 0; i < tableItems.length; i++) {
                     IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
                     if (mColumn.getLabel().equals(column.getLabel())) {
-                        linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode);
+                        linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode, true);
                         break;
                     }
                 }
@@ -222,7 +222,7 @@ public class FOXUI {
             for (int i = 0; i < tableItems.length; i++) {
                 IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
                 if (mColumn.getLabel().equals(column.getLabel())) {
-                    linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode);
+                    linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), treeNode, true);
                     break;
                 }
             }
