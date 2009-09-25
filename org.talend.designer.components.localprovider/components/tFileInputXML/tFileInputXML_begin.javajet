@@ -403,28 +403,39 @@ class XML_API_<%=cid%>{
 <%
 	if(("true").equals(ignore_NS_Str)){
 %>
-	class XML_NS_RMV_<%=cid %>{
-	
-        public void removeNamespace(org.dom4j.Document reader, org.dom4j.Document writer) {
-            org.dom4j.Element elemReader = reader.getRootElement();
-            org.dom4j.Element elemTo = writer.addElement(elemReader.getName());
-            elemTo.setText(elemReader.getText());
-            for (org.dom4j.Attribute attri : (List<org.dom4j.Attribute>) elemReader.attributes()) {
-                elemTo.add((org.dom4j.Attribute) attri.clone());
-            }
-            removeSubNamespace(elemReader, elemTo);
-        }
-    
-        public void removeSubNamespace(org.dom4j.Element elemFrom, org.dom4j.Element elemTo) {
-            for (org.dom4j.Element subFrom : (List<org.dom4j.Element>) elemFrom.elements()) {
-                org.dom4j.Element tmpElemTo = elemTo.addElement(subFrom.getName());
-                tmpElemTo.setText(subFrom.getText());
-                for (org.dom4j.Attribute attri : (List<org.dom4j.Attribute>) subFrom.attributes()) {
-                    tmpElemTo.add((org.dom4j.Attribute) attri.clone());
-                }
-                removeSubNamespace(subFrom, tmpElemTo);
-            }
-        }
+	class XML_NS_RMV_<%=cid %>{	
+
+		public void removeNamespace(org.dom4j.Document reader,
+				org.dom4j.Document writer) {
+			org.dom4j.Element elemReader = reader.getRootElement();
+			org.dom4j.Element elemTo = writer.addElement(elemReader
+					.getName());
+			if(elemReader!=null && elemReader.getText()!=null && !"".equals(elemReader.getText())){
+				elemTo.setText(elemReader.getText());
+			}
+			for (org.dom4j.Attribute attri : (List<org.dom4j.Attribute>) elemReader
+					.attributes()) {
+				elemTo.addAttribute(attri.getName(),attri.getText());
+			}
+			removeSubNamespace(elemReader, elemTo);
+		}
+
+		public void removeSubNamespace(org.dom4j.Element elemFrom,
+				org.dom4j.Element elemTo) {
+			for (org.dom4j.Element subFrom : (List<org.dom4j.Element>) elemFrom
+					.elements()) {
+				org.dom4j.Element tmpElemTo = elemTo.addElement(subFrom
+						.getName());
+				if(subFrom!=null && subFrom.getText()!=null && !"".equals(subFrom.getText())){
+					tmpElemTo.setText(subFrom.getText());
+				}
+				for (org.dom4j.Attribute attri : (List<org.dom4j.Attribute>) subFrom
+						.attributes()) {
+					tmpElemTo.addAttribute(attri.getName(),attri.getText());
+				}
+				removeSubNamespace(subFrom, tmpElemTo);
+			}
+		}
 	}
 <%
 	}
@@ -447,9 +458,13 @@ if(filename_<%=cid %> instanceof java.io.InputStream){
 }
 org.dom4j.Document doc_tmp_<%=cid %> = org.dom4j.DocumentHelper.createDocument();
 org.dom4j.io.OutputFormat format_<%=cid %> = org.dom4j.io.OutputFormat.createPrettyPrint();
+format_<%=cid %>.setTrimText(false);
 format_<%=cid %>.setEncoding(<%=encoding %>);
 
 new XML_NS_RMV_<%=cid %>().removeNamespace(doc_reader_<%=cid %>,doc_tmp_<%=cid %>);
+
+doc_reader_<%=cid %>.clearContent();
+doc_reader_<%=cid %> = null;
 
 java.io.FileOutputStream stream_<%=cid %> = new java.io.FileOutputStream(<%=tmp_filename %>);
 org.dom4j.io.XMLWriter output_<%=cid %> = new org.dom4j.io.XMLWriter(stream_<%=cid %>, format_<%=cid %>);
