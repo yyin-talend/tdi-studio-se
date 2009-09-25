@@ -93,10 +93,11 @@ public class DataSetTableLabelProvider implements ITableLabelProvider {
 
             Class clazz = tmp.getClass();
 
+            // modified by nma, order 9183.
             // filter out scientific values
-            if (clazz == Double.class || clazz == Integer.class) {
-                return pdecimalFormat.format(tmp);
-            }
+            // if (clazz == Double.class || clazz == Integer.class) {
+            // return pdecimalFormat.format(tmp);
+            // }
 
             // format dates
             if (pformatDates && clazz == Timestamp.class) {
@@ -125,7 +126,8 @@ public class DataSetTableLabelProvider implements ITableLabelProvider {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
+     * @see
+     * org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
      */
     public void removeListener(ILabelProviderListener listener) {
 
