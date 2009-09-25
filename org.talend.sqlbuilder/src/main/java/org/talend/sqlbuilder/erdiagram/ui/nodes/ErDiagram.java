@@ -137,8 +137,9 @@ public class ErDiagram extends Element {
         for (Table table : tables) {
             for (Column column : (List<Column>) table.getColumns()) {
                 String columnName = table.getElementName();
-                allColumns.put(
-                        columnName != null ? columnName.toLowerCase() : "" + "." + column.getElementName().toLowerCase(), column); //$NON-NLS-1$ //$NON-NLS-2$
+                allColumns
+                        .put(
+                                (columnName != null ? columnName.toLowerCase() + "." : "") + column.getElementName().toLowerCase(), column); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 
