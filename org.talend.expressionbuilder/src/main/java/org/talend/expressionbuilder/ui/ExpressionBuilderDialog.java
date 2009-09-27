@@ -91,6 +91,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
     private String nodeStyle;
 
+    private String expressionForTable = null;
+
     /**
      * Create the dialog
      * 
@@ -349,11 +351,17 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         String sub = nodeStyle.substring(nodeStyle.indexOf("-") + 2, nodeStyle.lastIndexOf("-") - 1); //$NON-NLS-1$ //$NON-NLS-2$
         if (sub.equals("tRowGenerator")) { //$NON-NLS-1$
             expression = expressionComposite.getReplaceExpression();
+            expressionForTable = expression; // hywang add for 9225
         } else {
             expression = expressionComposite.getExpression();
+            expressionForTable = expression;
         }
-        dataBean.setConsumerExpression(expression + " "); //$NON-NLS-1$
-        ExpressionPersistance.getInstance().saveExpression(new Expression(expression, testComposite.getVariableList()));
+        if (dataBean != null) {
+            dataBean.setConsumerExpression(expression + " "); //$NON-NLS-1$
+            if (ExpressionPersistance.getInstance().getPath() != null) { // hywang add for 9225
+                ExpressionPersistance.getInstance().saveExpression(new Expression(expression, testComposite.getVariableList()));
+            }
+        }
 
         super.okPressed();
     }
@@ -447,5 +455,9 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         String jobName = component.getProcess().getLabel();
         IPath path = expressionFolder.getLocation().append(jobName + ".xml"); //$NON-NLS-1$
         return path.toOSString();
+    }
+
+    public String getExpressionForTable() {
+        return this.expressionForTable;
     }
 }

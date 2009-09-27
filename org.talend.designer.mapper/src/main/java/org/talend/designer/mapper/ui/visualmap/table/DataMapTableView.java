@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
@@ -26,6 +27,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
@@ -55,6 +57,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -69,6 +72,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
@@ -237,12 +241,18 @@ public abstract class DataMapTableView extends Composite {
 
     private UnnotifiableColorStyledText expressionFilterText;
 
+    private Button openExpressionBuilder; // hywang add for 9225
+
     public static final String DEFAULT_EXPRESSION_FILTER = "<Type your filter expression>"; //$NON-NLS-1$ // DO NOT TRANSLATE IT !
 
-    public static final String DEFAULT_POST_MATCHING_EXPRESSION_FILTER = Messages.getString("DataMapTableView.defaultPostMatchingFilterExpression"); //$NON-NLS-1$
-    
-    public static final String DEFAULT_OUT_EXPRESSION_FILTER = Messages.getString("DataMapTableView.defaultOutputFilterExpression"); //$NON-NLS-1$
-    
+    public static final String DEFAULT_POST_MATCHING_EXPRESSION_FILTER = "";
+
+    //        Messages.getString("DataMapTableView.defaultPostMatchingFilterExpression"); //$NON-NLS-1$
+
+    public static final String DEFAULT_OUT_EXPRESSION_FILTER = "";
+
+    //     Messages.getString("DataMapTableView.defaultOutputFilterExpression"); //$NON-NLS-1$
+
     private static final String EXPRESSION_FILTER_ENTRY = "EXPRESSION_FILTER_ENTRY"; //$NON-NLS-1$
 
     private String previousTextForExpressionFilter;
@@ -2012,6 +2022,7 @@ public abstract class DataMapTableView extends Composite {
 
     /**
      * DOC amaumont Comment method "createExpressionFilter".
+     * 
      * @param defaultValue TODO
      */
     protected void createExpressionFilter(final String defaultText) {
@@ -2023,8 +2034,54 @@ public abstract class DataMapTableView extends Composite {
 
             // expressionFilterText = new Text(scrolledComposite, SWT.MULTI |
             // SWT.WRAP | SWT.BORDER);
-            expressionFilterText = new UnnotifiableColorStyledText(getCenterComposite(), SWT.MULTI | SWT.WRAP | SWT.BORDER
-                    | SWT.V_SCROLL, preferenceStore, LanguageManager.getCurrentLanguage().getName());
+            Composite filterCompsite = new Composite(getCenterComposite(), SWT.NONE);
+            filterCompsite.setLayout(new GridLayout(2, false));
+            filterCompsite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            expressionFilterText = new UnnotifiableColorStyledText(filterCompsite, SWT.BORDER | SWT.V_SCROLL, preferenceStore,
+                    LanguageManager.getCurrentLanguage().getName());
+            // hywang add for 9225
+            openExpressionBuilder = new Button(filterCompsite, SWT.PUSH);
+            openExpressionBuilder.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
+            openExpressionBuilder.setVisible(table.isActivateExpressionFilter());
+            openExpressionBuilder.addSelectionListener(new SelectionListener() {
+
+                IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
+                        IExpressionBuilderDialogService.class);
+
+                IExpressionBuilderDialogController dialogForTable = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
+                        .getExpressionBuilderInstance(DataMapTableView.this.getCenterComposite(), null, mapperManager
+                                .getAbstractMapComponent());
+
+                public void widgetDefaultSelected(SelectionEvent e) {
+                }
+
+                public void widgetSelected(SelectionEvent e) {
+                    if (dialogForTable instanceof TrayDialog) {
+                        TrayDialog parentDialog = (TrayDialog) dialogForTable;
+                        dialogForTable.setDefaultExpression(expressionFilterText.getText());
+                        if (Window.OK == parentDialog.open()) {
+                            String expressionForTable = dialogForTable.getExpressionForTable();
+                            ControlUtils.setText(expressionFilterText, expressionForTable);
+                            if (isFilterEqualsToDefault(expressionForTable)) {
+                                table.getExpressionFilter().setExpression(null);
+                            } else {
+                                table.getExpressionFilter().setExpression(expressionForTable);
+                            }
+                            checkProblemsForExpressionFilter(false, true);
+                            StyledTextHandler textTarget = mapperManager.getUiManager().getTabFolderEditors()
+                                    .getStyledTextHandler();
+                            mapperManager.getUiManager().parseNewExpression(textTarget.getStyledText().getText(),
+                                    textTarget.getCurrentEntry(), false);
+                        }
+                    }
+                }
+
+            });
+            GridData gridData1 = new GridData();
+            gridData1.exclude = !table.isActivateExpressionFilter();
+            openExpressionBuilder.setLayoutData(gridData1);
+            //
+
             GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
             gridData.minimumHeight = 10;
             // gridData.grabExcessVerticalSpace = true;
@@ -2441,16 +2498,27 @@ public abstract class DataMapTableView extends Composite {
 
         GridData gridData = (GridData) expressionFilterText.getLayoutData();
 
+        GridData gridData2 = (GridData) openExpressionBuilder.getLayoutData();
+
         if (activateFilterCheck.getSelection()) {
             expressionFilterText.setVisible(true);
             gridData.exclude = false;
             table.setActivateExpressionFilter(true);
+
+            // hywang add
+            openExpressionBuilder.setVisible(true);
+            gridData2.exclude = false;
+
             mapperManager.getUiManager().parseExpression(expressionFilterText.getText(), table.getExpressionFilter(), false,
                     false, false);
         } else {
             expressionFilterText.setVisible(false);
             gridData.exclude = true;
             table.setActivateExpressionFilter(false);
+            // hywang add
+            openExpressionBuilder.setVisible(false);
+            gridData2.exclude = true;
+
             mapperManager.removeTableEntry(table.getExpressionFilter());
         }
 
@@ -2542,12 +2610,13 @@ public abstract class DataMapTableView extends Composite {
     }
 
     public static boolean isFilterEqualsToDefault(String value) {
-        if(DEFAULT_POST_MATCHING_EXPRESSION_FILTER.equals(value) || DEFAULT_OUT_EXPRESSION_FILTER.equals(value) || DEFAULT_EXPRESSION_FILTER.equals(value)) {
+        if (DEFAULT_POST_MATCHING_EXPRESSION_FILTER.equals(value) || DEFAULT_OUT_EXPRESSION_FILTER.equals(value)
+                || DEFAULT_EXPRESSION_FILTER.equals(value)) {
             return true;
         }
         return false;
     }
-    
+
     /**
      * 
      * DOC amaumont InputDataMapTableView class global comment. Detailled comment <br/>
