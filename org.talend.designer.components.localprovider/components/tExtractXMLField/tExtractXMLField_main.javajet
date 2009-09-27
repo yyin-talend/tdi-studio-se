@@ -126,6 +126,7 @@ if(!("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.
 <%}%>
     }
     
+    org.dom4j.Node node_<%=cid %> = null;
     String str_<%=cid %> = "";
     for(int i_<%=cid %>=0; isStructError_<%=cid %> || (nodeList_<%=cid %>!=null && i_<%=cid %> < nodeList_<%=cid %>.size());i_<%=cid %>++){
     	
@@ -167,13 +168,27 @@ if(!("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.
 					if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
         				String query = mapping.get(i).get("QUERY");
         				if(query.trim().length()>0 && query.startsWith("\"")){
+        					
+        					String nodeCheck = mapping.get(i).get("NODECHECK");
+        					
         					if(query.startsWith("\"") && query.endsWith("\"")){
         						query = query.substring(1, query.length() - 1);
         					}
 %>
 				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix("<%=query%>",<%=loopQuery%>));
-			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);  
-			    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
+			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+			    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+<%
+							if(("true").equals(nodeCheck)){
+%>
+				str_<%=cid %> = node_<%=cid %>.asXML();
+<%
+							}else{
+%>
+			    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
+<%
+							}
+%>
 				if (str_<%=cid %> != null ) {
 <%
 							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
