@@ -29,6 +29,9 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String ignore_NS_Str = ElementParameterParser.getValue(node, "__IGNORE_NS__");
 String tmp_filename = ElementParameterParser.getValue(node, "__TMP_FILENAME__");
 
+String useSeparator = ElementParameterParser.getValue(node, "__USE_SEPARATOR__");
+String fieldSeparator = ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
+
 String limit = ElementParameterParser.getValue(node, "__LIMIT__");
 if (("").equals(limit)) {
 	limit = "-1";
@@ -232,6 +235,43 @@ class XML_API_<%=cid%>{
 	}    
 
 }
+
+<%if("true".equals(useSeparator)){%>
+class ContentTool_<%=cid %>{
+	public String field_separator=",";//default value
+	
+	public String getNodeContent(org.w3c.dom.Node node){
+		String result=getSubNodeContent(node);
+		if(result.equals("")) return "";
+		else return result.substring(1);
+	}
+	
+	private String getSubNodeContent(org.w3c.dom.Node node){
+		if(node==null) return "";
+		
+		String tmp=node.getNodeValue();
+		
+		if(tmp==null){
+			tmp="";
+		}else{
+			tmp=field_separator+tmp;
+		}
+		
+		if(node.hasChildNodes()){
+			org.w3c.dom.NodeList nodeList = node.getChildNodes();
+			for(int i=0;i<nodeList.getLength();i++){
+				org.w3c.dom.Node tmpNode= nodeList.item(i);	
+				tmp=tmp+getSubNodeContent(tmpNode);
+
+			}
+		}
+		
+		return tmp;
+	}
+}
+ContentTool_<%=cid %> contentTool_<%=cid %> = new ContentTool_<%=cid %>();
+contentTool_<%=cid %>.field_separator=<%=fieldSeparator %>;
+<%}%>
 
 XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
 xml_api_<%=cid%>.loopPath=<%=loopQuery%>;
@@ -603,8 +643,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					if(("Xerces").equals(mode)){
 %>
 	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
+<%
+						if("true".equals(useSeparator)){
+%>
+	if(node_<%=cid %>!=null && node_<%=cid %>.getNodeType()==org.w3c.dom.Node.ELEMENT_NODE && node_<%=cid %>.hasChildNodes()){
+		str_<%=cid %> = contentTool_<%=cid %>.getNodeContent(node_<%=cid%>);
+	}else{
+		str_<%=cid %> = node_<%=cid%>!=null?node_<%=cid%>.getTextContent():"";
+	}
+<%
+						}else{
+%>
 	str_<%=cid %> = node_<%=cid%>!=null?node_<%=cid%>.getTextContent():"";
 <%
+						}
 					}else if(("Dom4j").equals(mode)){
 %>
 	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
