@@ -145,7 +145,17 @@
     </PARAMETER>
     
     
-    
+        <PARAMETER
+      NAME="MESSAGE_BODY_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="40"
+    >
+      <ITEMS DEFAULT="TEXT">
+        <ITEM NAME="TEXT"   VALUE="Text" />
+        <ITEM NAME="BYTES"   VALUE="Bytes" />
+        <ITEM NAME="MAP"   VALUE="Map" />
+      </ITEMS>
+    </PARAMETER>
     
 
     <PARAMETER
@@ -158,10 +168,17 @@
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
+       <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'true') or (SERVER == 'ACTIVEMQ')" READONLY="true">
+        <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
       <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')" READONLY="true">
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+	 <TABLE IF="(MESSAGE_BODY_TYPE == 'MAP')" READONLY="false">
       </TABLE>
     </PARAMETER>
    
@@ -184,7 +201,7 @@
     </PARAMETER>
 
     <PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" 
-      SHOW_IF="(SERVER == 'WEBSPHERE')">
+      SHOW_IF="(SERVER == 'WEBSPHERE') AND (MESSAGE_BODY_TYPE != 'MAP')">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
     
@@ -192,7 +209,7 @@
       NAME="MSG_ID"
       FIELD="TEXT"
       NUM_ROW="70"
-      SHOW_IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')"
+      SHOW_IF="(SERVER == 'WEBSPHERE') AND (IS_USE_MESSAGE_ID == 'true') AND (MESSAGE_BODY_TYPE != 'MAP')"
     > 
     	<DEFAULT>""</DEFAULT>
 	</PARAMETER> 

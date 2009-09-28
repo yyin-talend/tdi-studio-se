@@ -100,7 +100,19 @@
       SHOW_IF="(SERVER == 'WEBSPHERE')" >
    	<DEFAULT>"DC.SVRCONN"</DEFAULT>
     </PARAMETER>
-
+    
+    <PARAMETER
+      NAME="MESSAGE_BODY_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="35"
+    >
+      <ITEMS DEFAULT="TEXT">
+        <ITEM NAME="TEXT"   VALUE="Text" />
+        <ITEM NAME="BYTES"   VALUE="Bytes" />
+        <ITEM NAME="MAP"   VALUE="Map" />
+      </ITEMS>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -108,12 +120,21 @@
       NUM_ROW="40"
 	  
     >
-      <TABLE IF="(IS_USE_MESSAGE_ID == 'true')" READONLY="true">
+       <TABLE IF="(IS_USE_MESSAGE_ID == 'false') AND (MESSAGE_BODY_TYPE == 'TEXT')" READONLY="true">
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+      <TABLE IF="(IS_USE_MESSAGE_ID == 'true') AND (MESSAGE_BODY_TYPE == 'TEXT')" READONLY="true">
+         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
       </TABLE>
-      <TABLE IF="(IS_USE_MESSAGE_ID == 'false')" READONLY="true">
-        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+	  <TABLE IF="(IS_USE_MESSAGE_ID == 'false') AND (MESSAGE_BODY_TYPE == 'BYTES')" READONLY="true">
+        <COLUMN NAME="message" TYPE="id_byte[]"/>
+      </TABLE>
+      <TABLE IF="(IS_USE_MESSAGE_ID == 'true') AND (MESSAGE_BODY_TYPE == 'BYTES')" READONLY="true">
+         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+      <TABLE IF="(MESSAGE_BODY_TYPE == 'MAP')" READONLY="false">
       </TABLE>
     </PARAMETER>
    
@@ -135,7 +156,7 @@
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
-	<PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" >
+	<PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60"  SHOW_IF="(MESSAGE_BODY_TYPE != 'MAP') AND (SERVER == 'WEBSPHERE') " >
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
   </PARAMETERS>
@@ -179,7 +200,7 @@
    <IMPORTS>
    		<IMPORT NAME="JBOSS REMOTING" MODULE="jboss-remoting.jar" REQUIRED="true" />
        <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
-       <IMPORT NAME="JBOSS MQ LIB" MODULE="jbossall-client.jar" REQUIRED="false" />
+       <IMPORT NAME="JBOSS MQ LIB" MODULE="jbossall-client.jar" REQUIRED="true" />
        <IMPORT NAME="WEBSPHERE MQ LIB" MODULE="com.ibm.mq.jar" REQUIRED="false" />
        <IMPORT NAME="WEBSPHERE JMS LIB" MODULE="com.ibm.mqjms.jar" REQUIRED="false" />
        <IMPORT NAME="WEBSPHERE CONNECTOR" MODULE="websphere-connector-1_5.jar" REQUIRED="false" />
@@ -190,7 +211,7 @@
        <IMPORT NAME="JBOSS MDR" MODULE="jboss-mdr.jar" REQUIRED="true" />
        <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" /> 
        <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />   
-       <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" REQUIRED="true" /> 
+       <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" REQUIRED="false" /> 
      </IMPORTS>
   </CODEGENERATION>
 

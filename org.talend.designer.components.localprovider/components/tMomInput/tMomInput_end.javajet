@@ -27,7 +27,6 @@ if(("JBoss").equals(serverType)){
 <%
 	}
 %>
-	}
 	
 <%if("true".equals(kListen)){%>
 	Thread.sleep(<%=timeOut%>*1000);
@@ -36,7 +35,7 @@ if(("JBoss").equals(serverType)){
 <%}%>
 }
 	 	System.out.println("Closing connection");
-		msgconsumer_<%=cid%>.close();
+		 consumer_<%=cid %>.close();
 		session_<%=cid%>.close();
 		connection_<%=cid%>.close();
 		
@@ -46,7 +45,7 @@ if(("JBoss").equals(serverType)){
 
 }
 
- System.out.println("Closing connection");
+ 		System.out.println("Closing connection");
         consumer_<%=cid %>.close();
         session_<%=cid %>.close();
         connection_<%=cid %>.close();

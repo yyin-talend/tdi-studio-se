@@ -7,7 +7,10 @@ imports="
     org.talend.core.model.process.IConnection
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
     java.util.List
+    java.util.Map
 " 
 class="MomInput"
 %>
@@ -21,6 +24,7 @@ class="MomInput"
 	boolean useMQFormat = ("true").equals(ElementParameterParser.getValue(node, "__USE_FORMAT__"));
 	String wsMQFormat = ElementParameterParser.getValue(node, "__WS_MQ_FORMAT__");
 	
+	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
@@ -29,81 +33,143 @@ class="MomInput"
 		if((conns!=null)&&(conns.size()>0)) {
 			IConnection conn = conns.get(0);
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-%>
-	String msg_<%=cid%> = <%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel() %>;
-<%
-				if(("true").equals(useMsgId)){
-%>
-	String msgID_<%=cid%> = <%=conn.getName() %>.<%=((IMetadataColumn)columns.get(1)).getLabel() %>;
-<%
-				}
-				if(("JBoss").equals(serverType)){ // server judgement
-					String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+			
+				if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
+				
+					/*-------------------1.is use message id.this functions just use map message type-------------------------------------*/
 					if(("true").equals(useMsgId)){
 %>
-	javax.jms.MapMessage messageQ_<%=cid%> = session_<%=cid%>.createMapMessage();
-    messageQ_<%=cid%>.setString(msgID_<%=cid%>,msg_<%=cid%>);
-<%
-					}else{
-%>					
-    javax.jms.TextMessage messageQ_<%=cid%> = session_<%=cid%>.createTextMessage();
-    messageQ_<%=cid%>.setText(msg_<%=cid%>);
+						String msgID_<%=cid%> = <%=conn.getName() %>.<%=((IMetadataColumn)columns.get(1)).getLabel() %>;
+						javax.jms.MapMessage message_<%=cid%> = session_<%=cid%>.createMapMessage();
 <%
 					}
-                    if(("Queue").equals(msgType)){
+					
+					/*--------------------------2.judge message body type----------------------------------------------------------------*/
+					if ("Text".equals(msgBobyType)) {
 %>
-    javax.jms.QueueSender queueSender_<%=cid%>=session_<%=cid%>.createSender(type_<%=cid%>);
-    queueSender_<%=cid%>.send(type_<%=cid%>,messageQ_<%=cid%>);
+						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
 <%
-                    }else{
+						if(!("true").equals(useMsgId)){
 %>
-	javax.jms.TopicPublisher topicPublisher_<%=cid%>=session_<%=cid%>.createPublisher(type_<%=cid%>);
-	topicPublisher_<%=cid%>.publish(type_<%=cid%>,messageQ_<%=cid%>);
+							javax.jms.TextMessage message_<%=cid%> = session_<%=cid%>.createTextMessage( msgBody_<%=cid%>);
+<%
+						} else {
+%>
+							 message_<%=cid%>.setString(msgID_<%=cid%>,msgBody_<%=cid%>);
+<%
+						}
+					} else if ("Bytes".equals(msgBobyType)) {
+						IMetadataColumn column = (IMetadataColumn)columns.get(0);
+						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+%>
+						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
+<%
+						if(!("true").equals(useMsgId)){
+%>
+							javax.jms.BytesMessage message_<%=cid%> = session_<%=cid%>.createBytesMessage();
+							message_<%=cid%>.writeBytes(msgBody_<%=cid%>.getBytes());
+<%
+						} else {
+%>
+							message_<%=cid%>.setBytes(msgID_<%=cid%>,msgBody_<%=cid%>.getBytes());
+<%
+						}
+					} else if ("Map".equals(msgBobyType)) {
+%>
+						javax.jms.MapMessage message_<%=cid%> = session_<%=cid%>.createMapMessage();
+<%
+						for(IMetadataColumn column : columns) {
+							 String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							  if(("byte[]").equals(typeToGenerate)) {
+					                typeToGenerate = "Bytes";
+					            }else if(("Character").equals(typeToGenerate)) {
+					            	 typeToGenerate = "Char";
+					            }else if(("Integer").equals(typeToGenerate)) {
+					            	 typeToGenerate = "Int";
+					            } else if(("Java.util.Date").equals(typeToGenerate)||"BigDecimal".equals(typeToGenerate)
+					            			||"List".equals(typeToGenerate)) {
+					            	 typeToGenerate = "Object";
+					            }else {
+					                typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+					            }
+%>
+							message_<%=cid%>.set<%=typeToGenerate%>("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel() %>);
+<%
+						}
+					} 
+					
+					/*---------------------------------------------3.send message to server------------------------------------------------------*/
+					if(("JBoss").equals(serverType)){ // server judgement
+						String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+	                    if(("Queue").equals(msgType)){
+%>
+						    queueSender_<%=cid%>.send(type_<%=cid%>,message_<%=cid%>);
+<%
+	                    }else{
+%>
+							topicPublisher_<%=cid%>.publish(type_<%=cid%>,message_<%=cid%>);
+<%
+						}
+					}else if(("ActiveMQ").equals(serverType)){
+%>
+						producer_<%=cid %>.send(message_<%=cid %>);
 <%
 					}
-				}else if(("ActiveMQ").equals(serverType)){
-					if(("true").equals(useMsgId)){
+				} else {//server judgement   /***WebSphere MQ*****/
 %>
-	javax.jms.MapMessage message_<%=cid%> = session_<%=cid%>.createMapMessage();
-    message_<%=cid%>.setString(msgID_<%=cid%>,msg_<%=cid%>);
+					com.ibm.mq.MQMessage message_<%=cid%> = new com.ibm.mq.MQMessage();
+<% 
+					if(useMQFormat) {
+%>
+						message_<%=cid%>.format = <%=wsMQFormat%>;
 <%
-					}else{
+					}
+%>	
+<%
+					if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
 %>
-	javax.jms.TextMessage message_<%=cid %> = session_<%=cid%>.createTextMessage(msg_<%=cid%>);
+						String msgID_<%=cid%> = <%=conn.getName() %>.<%=((IMetadataColumn)columns.get(1)).getLabel() %>;
+						if (msgID_<%=cid%> != null & !("").equals(msgID_<%=cid%>)) {
+							String padding = new String();
+					       	int padlen = 24;
+					 
+					       	int len = Math.abs(padlen) - msgID_<%=cid%>.toString().length();
+					       	if (len > 0) {
+					        	for (int i = 0 ; i < len ; i++) {
+					           		padding = padding + " ";
+					         	}
+					        	msgID_<%=cid%> = msgID_<%=cid%> + padding;
+					        }
+						}
+						message_<%=cid%>.messageId = msgID_<%=cid%>.getBytes("ISO-8859-15");
+<%
+					}
+					if ("Text".equals(msgBobyType)) {
+%>
+						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
+						message_<%=cid%>.writeString(msgBody_<%=cid%>);
+<%
+					} else if ("Bytes".equals(msgBobyType)) {
+%>
+						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
+						message_<%=cid%>.write(msgBody_<%=cid%>.getBytes());
+<%
+					} else if ("Map".equals(msgBobyType)) {
+%>
+						java.util.Map msgBody_<%=cid%> = new java.util.HashMap();
+<%
+						for(IMetadataColumn column : columns) {
+%>
+							msgBody_<%=cid%>.put("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel() %>);
+<%
+						}
+%>
+				    	message_<%=cid%>.writeObject(msgBody_<%=cid%>);
+				  
 <%
 					}
 %>
-	producer_<%=cid %>.send(message_<%=cid %>);
-<%
-				}else{//server judgement   /***WebSphere MQ*****/
-%>
-	com.ibm.mq.MQMessage message_<%=cid%> = new com.ibm.mq.MQMessage();
-	<% if(useMQFormat) {
-	%>
-	message_<%=cid%>.format = <%=wsMQFormat%>;
-	<%
-	}%>	
-<%
-					if(("true").equals(useMsgId)){
-%>
-	if (msgID_<%=cid%> != null & !("").equals(msgID_<%=cid%>)) {
-		String padding = new String();
-       	int padlen = 24;
- 
-       	int len = Math.abs(padlen) - msgID_<%=cid%>.toString().length();
-       	if (len > 0) {
-        	for (int i = 0 ; i < len ; i++) {
-           		padding = padding + " ";
-         	}
-        	msgID_<%=cid%> = msgID_<%=cid%> + padding;
-        }
-	}
-	message_<%=cid%>.messageId = msgID_<%=cid%>.getBytes("ISO-8859-15");
-<%
-					}
-%>
-    message_<%=cid%>.writeString(msg_<%=cid%>);
-    remoteQ_<%=cid%>.put(message_<%=cid%>, opM_<%=cid%>);
+					remoteQ_<%=cid%>.put(message_<%=cid%>, opM_<%=cid%>);
 <%
 				}
 			}

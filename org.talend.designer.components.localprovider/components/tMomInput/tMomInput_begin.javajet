@@ -7,6 +7,8 @@ imports="
     org.talend.core.model.process.IConnection
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
     java.util.List
 " 
 class="MomInput"
@@ -22,388 +24,341 @@ class="MomInput"
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
 	String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
 	String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
+	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
+	String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
+	String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
+	String from=ElementParameterParser.getValue(node, "__FROM__");
+	boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
 	
 	IMetadataTable metadata=null;
+	List<IMetadataColumn> columns = null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
-	metadata = metadatas.get(0);
+		metadata = metadatas.get(0);
+		columns = metadata.getListColumns();
 	}
-
-	if(("JBoss").equals(serverType)){ // server judgement
-		String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
-		String from=ElementParameterParser.getValue(node, "__FROM__");
-		String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
-		String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
-%>
-	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
-	props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
-	props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
-	props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
-	props_<%=cid%>.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.naming");
-	props_<%=cid%>.put("java.naming.factory.url.pkgs","org.jboss.naming:org.jnp.interfaces");	
+	if (("JBoss").equals(serverType)||("ActiveMQ").equals(serverType)) {
 	
-	javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
-	javax.jms.ConnectionFactory factory_<%=cid%>=(javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
-	javax.jms.Connection connection_<%=cid%>=factory_<%=cid%>.createConnection();
-	javax.jms.Session session_<%=cid%>=connection_<%=cid%>.createSession(false, javax.jms.Session.CLIENT_ACKNOWLEDGE);
-	javax.jms.Destination dest_<%=cid%>=(javax.jms.<%=msgType%>)context_<%=cid%>.lookup(<%=from%>);
-	javax.jms.MessageConsumer msgconsumer_<%=cid%> = session_<%=cid%>.createConsumer(dest_<%=cid%>);
-
-	connection_<%=cid%>.start();
+		/*---------------------------------------1.jboss and activemq set client config----------------------------------*/ 
+		if(("JBoss").equals(serverType) ){ // server judgement
+			String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+%>
+			java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
+			props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
+			props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
+			props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
+			props_<%=cid%>.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.naming");
+			props_<%=cid%>.put("java.naming.factory.url.pkgs","org.jboss.naming:org.jnp.interfaces");	
 			
-	System.out.println("Ready to receive message");
-	System.out.println("Waiting...");	
-	javax.jms.Message message_<%=cid%>;
-	String msg_<%=cid%> = "";
-
-	while((message_<%=cid%>=msgconsumer_<%=cid%>.receive())!=null){
-
-<%
-if(("true").equals(useMsgId)){
-%>
-	if (message_<%=cid%> instanceof javax.jms.MapMessage) {
-		javax.jms.MapMessage txtMsg_<%=cid%> = (javax.jms.MapMessage) message_<%=cid%>;
-		msg_<%=cid %> = txtMsg_<%=cid%>.getString(<%=msgId%>);
-		if(msg_<%=cid %> !=null){
-
-<%
-}else{
-%>
-	if (message_<%=cid%> instanceof javax.jms.TextMessage) {
-		javax.jms.TextMessage txtMsg_<%=cid%> = (javax.jms.TextMessage) message_<%=cid%>;
-		msg_<%=cid %> = txtMsg_<%=cid%>.getText();
+			javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
+			javax.jms.ConnectionFactory factory_<%=cid%>=(javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
+			javax.jms.Connection connection_<%=cid%>=factory_<%=cid%>.createConnection();
+			javax.jms.Session session_<%=cid%>=connection_<%=cid%>.createSession(false, javax.jms.Session.CLIENT_ACKNOWLEDGE);
+			javax.jms.Destination dest_<%=cid%>=(javax.jms.<%=msgType%>)context_<%=cid%>.lookup(<%=from%>);
+			javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid%>.createConsumer(dest_<%=cid%>);
 		
-<%}%>
+			connection_<%=cid%>.start();
+					
+			System.out.println("Ready to receive message");
+			System.out.println("Waiting...");	
+			javax.jms.Message message_<%=cid%>;
 		
-	
+			while((message_<%=cid%>=consumer_<%=cid %>.receive())!=null){
+<%		
+		}else if(("ActiveMQ").equals(serverType)){
+			boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
+			boolean topic = ("Topic").equals(ElementParameterParser.getValue(node, "__MSGTYPE__"));
+			String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
+			String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
+			
+			if(("").equals(maxiumMessages)|| maxiumMessages == null){
+				maxiumMessages = "0";
+			}
+			if(("").equals(receiveTimeOut)|| receiveTimeOut == null){
+				receiveTimeOut = "0L";
+			}
+%>
+			String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
+			long timeout_<%=cid %> =<%=receiveTimeOut %>;
 <%
+			if(startServer){
+%>
+			org.apache.activemq.broker.BrokerService broker_<%=cid %> = new org.apache.activemq.broker.BrokerService();
+			broker_<%=cid %>.setUseJmx(true);
+			broker_<%=cid %>.addConnector(url_<%=cid %>);
+			broker_<%=cid %>.start();
+<%
+			}
+%>
+			System.out.println("Connecting to URL: " + url_<%=cid %>);
+			System.out.println("Consuming " + (<%=topic%> ? "topic" : "queue") + ": " + <%=from%>);
+			
+			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
+			new org.apache.activemq.ActiveMQConnectionFactory
+			(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
+			
+			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
+			connection_<%=cid %>.start();
+			javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+			javax.jms.Destination des_<%=cid %> = null;
+			if (<%=topic%>) {
+				des_<%=cid %> = session_<%=cid %>.createTopic(<%=from%>);
+			} else {
+				des_<%=cid %> = session_<%=cid %>.createQueue(<%=from%>);
+			}
+			javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
+			replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+			
+			javax.jms.MessageConsumer consumer_<%=cid %> = null;
+			consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
+		 
+<%
+			if(("true").equals(kListen)){
+%>
+			System.out.println("We will consume messages while they continue to be delivered ");
+			javax.jms.Message message_<%=cid%>;
+			while ((message_<%=cid%> = consumer_<%=cid %>.receive()) != null) {
+		
+<%
+			}else if (useMax) {
+%>
+			int maxMsg_<%=cid %> = <%=maxiumMessages %>;
+			System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
+			for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
+		        javax.jms.Message message_<%=cid%> = consumer_<%=cid %>.receive();
+		        if (message_<%=cid%> != null) {
+	            	i_<%=cid %>++;
+<%
+				}else {
+%>
+			    System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
+			    javax.jms.Message message_<%=cid%>;
+			    while ((message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
+<%
+				}
+		}
+		/*---------------------------------------end 1----------------------------------------------------------------------------*/ 
+%>
+
+<%
+		/*-----------------------------------------------------------2.judge message body type---------------------------------------*/
+		if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
+%>
+			if (message_<%=cid%> instanceof javax.jms.MapMessage) {
+				javax.jms.MapMessage txtMsg_<%=cid%> = (javax.jms.MapMessage) message_<%=cid%>;
+				String msg_<%=cid %> = txtMsg_<%=cid%>.getString(<%=msgId%>);
+				if(msg_<%=cid %> !=null){
+
+<%
+		}else{
+			if ("Text".equals(msgBobyType)) {
+%>
+				javax.jms.TextMessage txtMsg_<%=cid%> = (javax.jms.TextMessage) message_<%=cid%>;
+				String msg_<%=cid %> = txtMsg_<%=cid%>.getText();
+			
+<%
+			} else if ("Bytes".equals(msgBobyType)) {
+%>
+				javax.jms.BytesMessage bytesMsg_<%=cid%> = (javax.jms.BytesMessage) message_<%=cid%>;
+				byte[] bytesMsgBody_<%=cid%> = new byte[(int)bytesMsg_<%=cid%>.getBodyLength()];
+				bytesMsg_<%=cid%>.readBytes(bytesMsgBody_<%=cid%>);
+				String msg_<%=cid %> = new String(bytesMsgBody_<%=cid%>);
+<%
+			} else if ("Map".equals(msgBobyType)) {
+%>
+				javax.jms.MapMessage  msg_<%=cid %>  = (javax.jms.MapMessage) message_<%=cid%>;
+<%
+			}
+		}
+		//out put
 		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 		List<IMetadataColumn> columnList = metadata.getListColumns();
 		for(IConnection conn:conns){
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 		 		String firstConnName = conn.getName();
+		 		
+		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
 %>
-
-				<%=firstConnName%>.from=<%=from%>;	
-				<%=firstConnName%>.message=msg_<%=cid%>;	
+					<%=firstConnName%>.from=<%=from%>;	
+					<%=firstConnName%>.message=msg_<%=cid%>;	
 <%
-				if(("true").equals(useMsgId)){
+				} else {
+					for(IMetadataColumn column : columns) {
+						 String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						  if(("byte[]").equals(typeToGenerate)) {
+				                typeToGenerate = "Bytes";
+				            }else if(("Character").equals(typeToGenerate)) {
+				            	 typeToGenerate = "Char";
+				            }else if(("Integer").equals(typeToGenerate)) {
+				            	 typeToGenerate = "Int";
+				            } else if(("Java.util.Date").equals(typeToGenerate)||"BigDecimal".equals(typeToGenerate)
+				            			||"List".equals(typeToGenerate)) {
+				            	 typeToGenerate = "Object";
+				            }else {
+				                typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+				            }
+%>
+							<%=conn.getName() %>.<%=column.getLabel() %> = msg_<%=cid %>.get<%=typeToGenerate%>("<%=column.getLabel()%>");
+
+<%
+					}
+				}
+				if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
 %>		
-				<%=firstConnName%>.messageid=<%=msgId%>;
-			
+					<%=firstConnName%>.messageid=<%=msgId%>;
+					}
+				}
 <%
 				}
 			}
-		}
-	}else if(("ActiveMQ").equals(serverType)){
-		boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
-		boolean topic = ("Topic").equals(ElementParameterParser.getValue(node, "__MSGTYPE__"));
-		String from = ElementParameterParser.getValue(node, "__FROM__");
-		boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
-		String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
-		String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
-		String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
-		String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
+		}	
 		
-		if(("").equals(maxiumMessages)|| maxiumMessages == null){
-			maxiumMessages = "0";
-		}
-		if(("").equals(receiveTimeOut)|| receiveTimeOut == null){
-			receiveTimeOut = "0L";
-		}
+		if (useMax) {
 %>
-String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
-long timeout_<%=cid %> =<%=receiveTimeOut %>;
-<%
-		if(startServer){
-%>
-org.apache.activemq.broker.BrokerService broker_<%=cid %> = new org.apache.activemq.broker.BrokerService();
-broker_<%=cid %>.setUseJmx(true);
-broker_<%=cid %>.addConnector(url_<%=cid %>);
-broker_<%=cid %>.start();
+			}
 <%
 		}
+		/*---------------------------------------------------------end 2----------------------------------------------------------------*/	
+%>	    
+<%
+	} else { //server judgement   /***WebSphere MQ*****/
+		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
+		String qm=ElementParameterParser.getValue(node, "__QM__");
+		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
 %>
-System.out.println("Connecting to URL: " + url_<%=cid %>);
-System.out.println("Consuming " + (<%=topic%> ? "topic" : "queue") + ": " + <%=from%>);
-
-org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
-new org.apache.activemq.ActiveMQConnectionFactory
-(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
-
-javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
-connection_<%=cid %>.start();
-javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
-javax.jms.Destination des_<%=cid %> = null;
-if (<%=topic%>) {
-	des_<%=cid %> = session_<%=cid %>.createTopic(<%=from%>);
-} else {
-	des_<%=cid %> = session_<%=cid %>.createQueue(<%=from%>);
-}
-javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
-replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-
-javax.jms.MessageConsumer consumer_<%=cid %> = null;
-consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
-String msg_<%=cid %>  = "";
- 
- 
+		java.util.Hashtable properties<%=cid%>=new java.util.Hashtable();
+		properties<%=cid%>.put("hostname", <%=host%>);
+		properties<%=cid%>.put("port", Integer.valueOf(<%=port%>));
+		properties<%=cid%>.put("channel", <%=channel%>);
+		properties<%=cid%>.put("CCSID", new Integer(1208));
+		properties<%=cid%>.put("transport","MQSeries");
+		
+		com.ibm.mq.MQQueueManager qMgr<%=cid%>=null;
+		com.ibm.mq.MQQueue remoteQ<%=cid%>=null;
 <%
-		if(("true").equals(kListen)){
+		if(("true").equals(useMsgId)){
 %>
-System.out.println("We will consume messages while they continue to be delivered ");
-javax.jms.Message message;
-while ((message = consumer_<%=cid %>.receive()) != null) {
-<%
-			if(("true").equals(useMsgId)){
-%>
-	if (message instanceof javax.jms.MapMessage) {
-		javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
-		msg_<%=cid %> = txtMsg.getString(<%=msgId%>);
-		if(msg_<%=cid %> !=null){
-
-<%
-			}else{
-%>
-	if (message instanceof javax.jms.TextMessage) {
-		javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
-		msg_<%=cid %> = txtMsg.getText();
-<%
-			}
-			List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
-			List<IMetadataColumn> columnLists = metadata.getListColumns();
-			for(IConnection conn:connss){
-				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
-			 		String firstConnName = conn.getName();
-%>
-		<%=firstConnName%>.from=<%=from%>;	
-		<%=firstConnName%>.message=msg_<%=cid %>;	
-<%
-					if(("true").equals(useMsgId)){
-%>		
-		<%=firstConnName%>.messageid=<%=msgId%>;
-
-<%
-					}
-				}
-			}
-			if(("true").equals(useMsgId)){
-%>
-			}
-<%
-			}
-%> 
-	}         
-<%
-		}else if (useMax) {
-%>
-	int maxMsg_<%=cid %> = <%=maxiumMessages %>;
-	System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
-	for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
-        javax.jms.Message message = consumer_<%=cid %>.receive();
-        if (message != null) {
-            i_<%=cid %>++;
-<%
-			if(("true").equals(useMsgId)){
-%>
-			if (message instanceof javax.jms.MapMessage) {
-				javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
-				msg_<%=cid %> = txtMsg.getString(<%=msgId%>);
-				if(msg_<%=cid %> !=null){
-<%
-			}else{
-%>
-            if (message instanceof javax.jms.TextMessage) {
-		        javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
-		        msg_<%=cid %> = txtMsg.getText();
-<%
-			}
-			List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
-			List<IMetadataColumn> columnLists = metadata.getListColumns();
-			for(IConnection conn:connss){
-				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
-			 	String firstConnName = conn.getName();
-%>
-			<%=firstConnName%>.from=<%=from%>;	
-			<%=firstConnName%>.message=msg_<%=cid %>;	
-<%
-					if(("true").equals(useMsgId)){
-%>		
-			<%=firstConnName%>.messageid=<%=msgId%>;
-<%
-					}
-				}
-			}
-			if(("true").equals(useMsgId)){
-%>
-			}
-<%
-			}
-%>
+		String msgId_<%=cid%> = <%=msgId%>;
+	    if (msgId_<%=cid%> != null & !("").equals(msgId_<%=cid%>)) {
+			String padding_<%=cid%> = new String();
+	       	int padlen_<%=cid%> = 24;
+	 
+	       	int len_<%=cid%> = Math.abs(padlen_<%=cid%>) - msgId_<%=cid%>.toString().length();
+	       	if (len_<%=cid%> > 0) {
+	        	for (int i = 0 ; i < len_<%=cid%> ; i++) {
+	           		padding_<%=cid%> = padding_<%=cid%> + " ";
+	         	}
+	        	msgId_<%=cid%> = msgId_<%=cid%> + padding_<%=cid%>;
+	        }
 		}
-	}
-       
-<%
-		}else {
-%>
-    System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
-    javax.jms.Message message;
-    while ((message = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
-<%
-			if(("true").equals(useMsgId)){
-%>
-		if (message instanceof javax.jms.MapMessage) {
-			javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
-			msg_<%=cid %> = txtMsg.getString(<%=msgId%>);
-			if(msg_<%=cid %> !=null){
-<%
-			}else{
-%>
-		if (message instanceof javax.jms.TextMessage) {
-			javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
-			msg_<%=cid %> = txtMsg.getText();
-<%
-			}
-			List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
-			List<IMetadataColumn> columnLists = metadata.getListColumns();
-			for(IConnection conn:connss){
-				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
-			 		String firstConnName = conn.getName();
-%>
-			<%=firstConnName%>.from=<%=from%>;	
-			<%=firstConnName%>.message=msg_<%=cid %>;	
-<%
-					if(("true").equals(useMsgId)){
-%>		
-			<%=firstConnName%>.messageid=<%=msgId%>;
-			
-<%
-					}
-				}
-			}
-			if(("true").equals(useMsgId)){
-%>
-			}
-<%
-			}
-%>          
-         } 
 <%
 		}
 %>
-
-    
-<%
-	}  //server judgement   /***WebSphere MQ*****/
-else{
-	String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
-	String qm=ElementParameterParser.getValue(node, "__QM__");
-	String queue = ElementParameterParser.getValue(node, "__QUEUE__");
-	String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
-	String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
-%>
-	java.util.Hashtable properties<%=cid%>=new java.util.Hashtable();
-	properties<%=cid%>.put("hostname", <%=host%>);
-	properties<%=cid%>.put("port", Integer.valueOf(<%=port%>));
-	properties<%=cid%>.put("channel", <%=channel%>);
-	properties<%=cid%>.put("CCSID", new Integer(1208));
-	properties<%=cid%>.put("transport","MQSeries");
-	
-	com.ibm.mq.MQQueueManager qMgr<%=cid%>=null;
-	com.ibm.mq.MQQueue remoteQ<%=cid%>=null;
-<%
-	if(("true").equals(useMsgId)){
-%>
-	String msgId_<%=cid%> = <%=msgId%>;
-    if (msgId_<%=cid%> != null & !("").equals(msgId_<%=cid%>)) {
-		String padding_<%=cid%> = new String();
-       	int padlen_<%=cid%> = 24;
- 
-       	int len_<%=cid%> = Math.abs(padlen_<%=cid%>) - msgId_<%=cid%>.toString().length();
-       	if (len_<%=cid%> > 0) {
-        	for (int i = 0 ; i < len_<%=cid%> ; i++) {
-           		padding_<%=cid%> = padding_<%=cid%> + " ";
-         	}
-        	msgId_<%=cid%> = msgId_<%=cid%> + padding_<%=cid%>;
-        }
-	}
-<%
-	}
-%>
-	try{
-
-	int openOptions<%=cid%>=com.ibm.mq.MQC.MQOO_INPUT_SHARED | com.ibm.mq.MQC.MQOO_FAIL_IF_QUIESCING | com.ibm.mq.MQC.MQOO_INQUIRE;
-
-	com.ibm.mq.MQGetMessageOptions gmo<%=cid%>=new com.ibm.mq.MQGetMessageOptions();
-	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
-	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(("false").equals(kListen)){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
-	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
-	gmo<%=cid%>.waitInterval=com.ibm.mq.MQC.MQWI_UNLIMITED;
-	com.ibm.mq.MQException.log = null;
-	boolean flag<%=cid%>=true;
-
-	qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
-	remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
-
-	<%if(("false").equals(kListen)) {
-	%>
-	if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0))
-	{
-		flag<%=cid%>= false;
-	} 	
-	<%}%>	
-	System.out.println("Ready to receive message");
-	System.out.println("Waiting...");	
-	while(flag<%=cid%>){
-<%
-	if(("false").equals(kListen)){
-%>
-		if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(1))
-		{
-			flag<%=cid%>= false;
-		} 			
-<%
-	}
-%>
-		com.ibm.mq.MQMessage inMessage<%=cid%>=new com.ibm.mq.MQMessage();
-<%
-	if(("true").equals(useMsgId)){
-%>
-		inMessage<%=cid%>.messageId = msgId_<%=cid%>.getBytes("ISO-8859-15");
-<%
-	}
-	if(("false").equals(kListen) && ("true").equals(useMsgId)){
-%>		
 		try{
+	
+			int openOptions<%=cid%>=com.ibm.mq.MQC.MQOO_INPUT_SHARED | com.ibm.mq.MQC.MQOO_FAIL_IF_QUIESCING | com.ibm.mq.MQC.MQOO_INQUIRE;
+		
+			com.ibm.mq.MQGetMessageOptions gmo<%=cid%>=new com.ibm.mq.MQGetMessageOptions();
+			gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
+			gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(("false").equals(kListen)){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
+			gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
+			gmo<%=cid%>.waitInterval=com.ibm.mq.MQC.MQWI_UNLIMITED;
+			com.ibm.mq.MQException.log = null;
+			boolean flag<%=cid%>=true;
+		
+			qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
+			remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
+	
+<%
+		if(("false").equals(kListen)) {
+%>
+			if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0))
+			{
+				flag<%=cid%>= false;
+			} 	
+<%
+		}	
+%>	
+			System.out.println("Ready to receive message");
+			System.out.println("Waiting...");	
+			while(flag<%=cid%>){
+<%
+		if(("false").equals(kListen)){
+%>
+			if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(1))
+			{
+				flag<%=cid%>= false;
+			} 			
+<%
+		}
+%>
+			com.ibm.mq.MQMessage inMessage<%=cid%>=new com.ibm.mq.MQMessage();
+<%
+		if(("true").equals(useMsgId)&& !"Map".equals(msgBobyType)){
+%>
+			inMessage<%=cid%>.messageId = msgId_<%=cid%>.getBytes("ISO-8859-15");
+<%
+		}
+		if(("false").equals(kListen) && ("true").equals(useMsgId) && !"Map".equals(msgBobyType) ){
+%>		
+			try{
+				remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
+			}catch (com.ibm.mq.MQException me_<%=cid%>) {   
+	            if (me_<%=cid%>.reasonCode == com.ibm.mq.MQException.MQRC_NO_MSG_AVAILABLE) {
+	            	break;   
+	            }else{
+	            	throw me_<%=cid%>;
+	            }   
+	     	}
+<%
+		} else {
+%>
 			remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
-		}catch (com.ibm.mq.MQException me_<%=cid%>) {   
-            if (me_<%=cid%>.reasonCode == com.ibm.mq.MQException.MQRC_NO_MSG_AVAILABLE) {
-            	break;   
-            }else{
-            	throw me_<%=cid%>;
-            }   
-     	}
 <%
-	}else{
+		}
 %>
-		remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
+
+<%		
+		if ("Text".equals(msgBobyType)) {
+%>
+			String msg_<%=cid%>=inMessage<%=cid%>.readString(inMessage<%=cid%>.getMessageLength());
 <%
-	}
+		} else if ("Bytes".equals(msgBobyType)) {
 %>
-		String message<%=cid%>=inMessage<%=cid%>.readString(inMessage<%=cid%>.getMessageLength());
+			byte[] bytesMsgBody_<%=cid%> = new byte[inMessage<%=cid%>.getMessageLength()];
+			inMessage<%=cid%>.readFully(bytesMsgBody_<%=cid%>);
+			String msg_<%=cid%> = new String(bytesMsgBody_<%=cid%>);
+<%
+		} else if ("Map".equals(msgBobyType)) {
+%>
+			java.util.Map msg_<%=cid%> = (java.util.Map)inMessage<%=cid%>.readObject();			  
+<%
+		}
+%>
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	List<IMetadataColumn> columnList = metadata.getListColumns();
 	for(IConnection conn:conns){
 		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
  			String firstConnName = conn.getName();
+		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
 %>
-		<%=firstConnName%>.from=<%=queue%>;	
-		<%=firstConnName%>.message=message<%=cid%>;			
+					<%=firstConnName%>.from=<%=from%>;	
+					<%=firstConnName%>.message=msg_<%=cid%>;	
 <%
-			if(("true").equals(useMsgId)){
+				} else {
+					for(IMetadataColumn column : columns) {
+						String columType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+
 %>
-		<%=firstConnName%>.messageid=new String(inMessage<%=cid%>.messageId,"ISO-8859-15");	
+						<%=conn.getName() %>.<%=column.getLabel() %> = (<%=columType%>)msg_<%=cid %>.get("<%=column.getLabel()%>");
+
+<%
+					}
+				}
+			if(("true").equals(useMsgId)&& !"Map".equals(msgBobyType)){
+%>
+				<%=firstConnName%>.messageid=new String(inMessage<%=cid%>.messageId,"ISO-8859-15");	
 <%
 			}
 		}
