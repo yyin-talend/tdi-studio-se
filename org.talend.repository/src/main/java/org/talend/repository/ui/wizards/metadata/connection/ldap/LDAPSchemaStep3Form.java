@@ -53,6 +53,7 @@ import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.EEncryptionMethod;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractLDAPSchemaStepForm;
@@ -587,6 +588,9 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
      * 
      * */
     private SchemaOps getSchema(LDAPSchemaConnection talendLDAPConnection) {
+        if (talendLDAPConnection == null) {
+            return null;
+        }
         SchemaOps schemaOps = null;
         ConnectionData newCon = new ConnectionData();
         newCon.protocol = ConnectionData.LDAP;
@@ -606,6 +610,11 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         newCon.pwd = talendLDAPConnection.getBindPassword().toCharArray();
         newCon.useSSL = false;
         newCon.baseDN = (String) talendLDAPConnection.getBaseDNs().get(0);
+        if (EEncryptionMethod.SSL_ENCRYPTION_METHOD.getName().equals(talendLDAPConnection.getEncryptionMethodName())) {
+            String keystorePath = System.getProperty("java.home") + "\\lib\\security\\cacerts";
+            newCon.cacerts = keystorePath;
+            newCon.useSSL = true;
+        }
         // finish the connection
 
         JNDIBroker jndiBroker = new JNDIBroker();
