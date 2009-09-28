@@ -34,6 +34,8 @@ boolean useEnclosed = ("true").equals(ElementParameterParser.getValue(node, "__E
 boolean useFixedLength= ("true").equals(ElementParameterParser.getValue(node, "__FIXED_LENGTH__"));
 String fileName = ElementParameterParser.getValue(node, "__FILENAME__") ;
 
+String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__") ;
+
 List<IMetadataColumn> columnList = getColumnList(node);
 
 if(useExistingConn) {
@@ -43,9 +45,34 @@ if(useExistingConn) {
 	java.sql.Connection con_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 <%
 }else{
+	if ("jconn3.jar".equals(dbVersion)) {//sybase IQ 12
 %>
-    String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=host %> + ":" + <%=port %> + "/" + <%=dbName %>;
-    java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+		 String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=host %> + ":" + <%=port %> + "/" + <%=dbName %>;
+		 String dirverName = "com.sybase.jdbc3.jdbc.SybDriver";
+<%	
+	} else {//sybase IQ 15
+		if ("DSN".equals(ElementParameterParser.getValue(node,"__DATA_SOURCE__"))) {
+%>
+			String url_<%=cid %> = "jdbc:odbc:dsn="+<%=ElementParameterParser.getValue(node,"__DATA_SOURCE_NAME__")%>;
+<%
+		}else {//FileDSN
+%>
+			String url_<%=cid %> = "jdbc:odbc:FileDSN="+<%=ElementParameterParser.getValue(node,"__FILE_DATA_SOURCE_NAME__")%>;
+<%
+		}
+		//set database
+		if (0 != dbName.trim().length()) {
+%>
+			url_<%=cid %> +=";DatabaseName="+<%=dbName%>;
+<%
+		}
+%>
+		String dirverName = "ianywhere.ml.jdbcodbc.IDriver";
+<%
+	}//end sybase IQ 15
+%>
+   
+    java.lang.Class.forName(dirverName);
     java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=userName %>, <%=password %>);
 <%
 }
@@ -148,8 +175,22 @@ if(columnList != null && columnList.size() > 0) {
 
     java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
     stmt_<%=cid %>.execute("SET TEMPORARY OPTION ESCAPE_CHARACTER='ON'");
+    
+    //stmt_<%=cid %>.execute("SET TEMPORARY OPTION ALLOW_READ_CLIENT_FILE='ON'");//sybaseIQ 15 whether is set?
         
-    String strSQL = "LOAD TABLE " + <%=userName%> + "." + tableName_<%=cid %> + loadingCols.toString() + " from '" + <%=fileName %> + "' ";
+    String strSQL = "LOAD TABLE " + <%=userName%> + "." + tableName_<%=cid %> + loadingCols.toString() ;
+<%
+	if ("jconn3.jar".equals(dbVersion)) {
+%>
+		strSQL +=" from '" + <%=fileName %> + "' ";
+<%    
+    } else {
+%>
+		strSQL +=" USING CLIENT FILE '" + <%=fileName %> + "' ";
+<%
+    }
+%>
+   
     
 <%if(useFixedLength==true){ %>
 	strSQL = strSQL + " row delimited by '" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\")%> + "' quotes off";
