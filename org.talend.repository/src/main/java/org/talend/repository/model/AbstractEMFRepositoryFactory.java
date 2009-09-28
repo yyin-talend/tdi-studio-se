@@ -664,8 +664,12 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 fullFolder = folder;
             }
         }
-        List<IRepositoryObject> allVersion = getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true,
-                false, true);
+        List<IRepositoryObject> allVersion;
+        if (fullFolder != null) {
+            allVersion = getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true, false, true);
+        } else {
+            allVersion = getAllVersion(project, property.getId());
+        }
         for (IRepositoryObject repositoryObject : allVersion) {
             Property uptodateProperty = repositoryObject.getProperty();
             if (uptodateProperty.getVersion().equals(property.getVersion())) {
