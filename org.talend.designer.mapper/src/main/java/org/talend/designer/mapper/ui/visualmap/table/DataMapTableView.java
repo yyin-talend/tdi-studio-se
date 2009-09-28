@@ -2068,10 +2068,16 @@ public abstract class DataMapTableView extends Composite {
                                 table.getExpressionFilter().setExpression(expressionForTable);
                             }
                             checkProblemsForExpressionFilter(false, true);
+                            ITableEntry currentExpressionFilterEntry = null;
                             StyledTextHandler textTarget = mapperManager.getUiManager().getTabFolderEditors()
                                     .getStyledTextHandler();
+                            if (textTarget.getCurrentEntry() != null) {
+                                currentExpressionFilterEntry = textTarget.getCurrentEntry();
+                            } else {
+                                currentExpressionFilterEntry = table.getExpressionFilter();
+                            }
                             mapperManager.getUiManager().parseNewExpression(textTarget.getStyledText().getText(),
-                                    textTarget.getCurrentEntry(), false);
+                                    currentExpressionFilterEntry, false);
                         }
                     }
                 }
