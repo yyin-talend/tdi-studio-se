@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,11 +43,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.tis.ITDQPatternService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -396,6 +399,42 @@ public class ComboController extends AbstractElementPropertySectionController {
         if (combo == null || combo.isDisposed()) {
             return;
         }
+        // add by wzhang for feature 8147
+        try {
+            ITDQPatternService service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(
+                    ITDQPatternService.class);
+            if (service != null && elem instanceof Node) {
+                Node node = (Node) elem;
+                IElementParameter propertyParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+                if (propertyParam != null) {
+                    String value = propertyParam.getValue().toString();
+                    String dbtype = value.split(":")[1]; //$NON-NLS-1$
+
+                    String[][][] tdqPatterns = service.retrieveTDQPatterns();
+                    if (tdqPatterns != null) {
+                        if (param.getName() != null && param.getName().equals("PATTERN_LIST")) { //$NON-NLS-1$
+                            Map<String, String> patternMap = new HashMap<String, String>();
+
+                            for (String[][] pattern : tdqPatterns) {
+                                for (String[] expression : pattern) {
+                                    if (expression[2].equalsIgnoreCase(dbtype)) {
+                                        patternMap.put(expression[0], expression[1]);
+                                    }
+                                }
+                            }
+
+                            // set into paramlist
+                            param.setListItemsDisplayCodeName(patternMap.keySet().toArray(new String[patternMap.size()]));
+                            param.setListItemsValue(patternMap.values().toArray(new String[patternMap.size()]));
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            // nothing to do
+        }
+
         Object value = param.getValue();
 
         if (value instanceof String) {
