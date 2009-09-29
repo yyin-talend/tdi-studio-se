@@ -104,8 +104,8 @@ import org.talend.repository.model.ExternalNodesFactory;
 
 /**
  * 
- * Component manager that read each information in a xml file with Emf. <br/> $Id: EmfComponent.java 5524 2007-09-10
- * 02:23:53Z nrousseau $
+ * Component manager that read each information in a xml file with Emf. <br/>
+ * $Id$
  */
 public class EmfComponent implements IComponent {
 
@@ -199,6 +199,9 @@ public class EmfComponent implements IComponent {
         if (isLoaded == null) {
             try {
                 ResourceSet resourceSet = new ResourceSetImpl();
+                resourceSet.getLoadOptions().put("OPTION_DEFER_IDREF_RESOLUTION", Boolean.TRUE);
+                resourceSet.getLoadOptions().put("OPTION_USE_PARSER_POOL", Boolean.TRUE);
+
                 ComponentResourceFactoryImpl compFact;
                 compFact = new ComponentResourceFactoryImpl();
                 URI createURI = URI.createURI(file.toURI().toString());
