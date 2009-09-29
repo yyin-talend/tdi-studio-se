@@ -359,8 +359,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     };
 
-    public void checkExport() {
-
+    public boolean checkExport() {
+        return true;
     }
 
     protected SashForm createExportTree(Composite parent) {
@@ -1108,5 +1108,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     public String getSelectedJobVersion() {
         return this.selectedJobVersion;
+    }
+
+    @Override
+    protected boolean validateDestinationGroup() {
+        return super.validateDestinationGroup() && this.checkExport();
     }
 }

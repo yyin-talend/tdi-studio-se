@@ -187,7 +187,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         updateWidgetEnablements();
         setPageComplete(determinePageCompletion());
-        setErrorMessage(null); // should not initially have error message
 
         giveFocusToDestination();
 
@@ -888,7 +887,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#checkExport()
      */
     @Override
-    public void checkExport() {
+    public boolean checkExport() {
+        boolean noError = true;
         this.setErrorMessage(null);
         this.setPageComplete(true);
         if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
@@ -897,6 +897,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport")); //$NON-NLS-1$
                 this.setErrorMessage(buff.toString());
                 this.setPageComplete(false);
+                noError = false;
             }
 
             // check if the needed librairy is installed.
@@ -912,6 +913,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
                         this.setErrorMessage(buff.toString());
                         this.setPageComplete(false);
+                        noError = false;
                     }
                 }
             }
@@ -921,7 +923,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.needOneJobSelected")); //$NON-NLS-1$
             this.setErrorMessage(buff.toString());
             this.setPageComplete(false);
+            noError = false;
         }
+
+        return noError;
     }
 
     @Override
