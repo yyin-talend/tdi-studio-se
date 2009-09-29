@@ -22,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.talend.commons.CommonsPlugin;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -107,6 +108,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                 .addQuotes(DEFAULT_STATS_FILE_NAME));
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils //$NON-NLS-1$
                 .addQuotes(DEFAULT_METER_FILE_NAME));
+        // repository refresh
+        store.setDefault(IRepositoryPrefConstants.MANUALLY_REFRESH, false);
+        store.setDefault(IRepositoryPrefConstants.CREATING_REFRESH, true);
+        store.setDefault(IRepositoryPrefConstants.SAVING_REFRESH, true);
+        store.setDefault(IRepositoryPrefConstants.DELETING_REFRESH, true);
 
         // db connection time out
         store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, true);

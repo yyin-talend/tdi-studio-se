@@ -30,10 +30,10 @@ public class RepositoryPreferenceInitializer extends AbstractPreferenceInitializ
     @Override
     public void initializeDefaultPreferences() {
         final IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
-        preferenceStore.setDefault(IRepositoryPrefConstants.MANUALLY_REFRESH, false);
-        preferenceStore.setDefault(IRepositoryPrefConstants.CREATING_REFRESH, true);
-        preferenceStore.setDefault(IRepositoryPrefConstants.SAVING_REFRESH, true);
-        preferenceStore.setDefault(IRepositoryPrefConstants.DELETING_REFRESH, true);
+        // preferenceStore.setDefault(IRepositoryPrefConstants.MANUALLY_REFRESH, false);
+        // preferenceStore.setDefault(IRepositoryPrefConstants.CREATING_REFRESH, true);
+        // preferenceStore.setDefault(IRepositoryPrefConstants.SAVING_REFRESH, true);
+        // preferenceStore.setDefault(IRepositoryPrefConstants.DELETING_REFRESH, true);
         preferenceStore.setDefault(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, true);
     }
 
