@@ -15,6 +15,10 @@ public class CLASS {
         public String sourceName=null;
 
         public String column = null;
+        
+        public String defaultValue = null;
+        
+        public boolean hasDefaultValue = false;
 
         // special node
         public int special = 0; // 1 is subtree root, 2 is subtree root parent, 4 is main
@@ -35,10 +39,12 @@ public class CLASS {
 
         public List<XMLNode> elements = new LinkedList<XMLNode>(); // the main element is the last element
 
-        public XMLNode(String path, String type, XMLNode parent, String column) {
+        public XMLNode(String path, String type, XMLNode parent, String column, String value) {
             this.path = path;
             this.parent = parent;
             this.type = type;
+            this.column = column;
+            this.defaultValue = value;
             
             if (column.indexOf(":") >= 0) {
                 this.column = column.substring(column.indexOf(":") + 1);
@@ -161,14 +167,14 @@ public class CLASS {
             for (Map<String, String> tmpMap : tmpTable) {
                 XMLNode tmpNew = null;
                 if (tmpMap.get("ATTRIBUTE").equals("attri")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                     tmpParent.attributes.add(tmpNew);
                 } else if (tmpMap.get("ATTRIBUTE").equals("ns")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                     tmpParent.namespaces.add(tmpNew);
                 } else {
                     if (tmpParent == null) {
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                         tmpNew.special |= 1;
                         root = tmpNew;
                     } else {
@@ -185,7 +191,7 @@ public class CLASS {
                                 tmpParent = tmpParent.parent;
                             }
                         }
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                         if (tmpMap.get("ATTRIBUTE").equals("branch")) {
                             tmpParent.elements.add(tmpNew);
                         }
@@ -297,14 +303,14 @@ public class CLASS {
             for (Map<String, String> tmpMap : tmpTable) {
                 XMLNode tmpNew = null;
                 if (tmpMap.get("ATTRIBUTE").equals("attri")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                     tmpParent.attributes.add(tmpNew);
                 } else if (tmpMap.get("ATTRIBUTE").equals("ns")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                     tmpParent.namespaces.add(tmpNew);
                 } else {
                     if (tmpParent == null) {
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                         tmpNew.special |= 1;
                         root = tmpNew;
                         mains.add(root);
@@ -313,7 +319,7 @@ public class CLASS {
                         while (tmpParent != null && !tmpParentPath.equals(tmpParent.path)) {
                             tmpParent = tmpParent.parent;
                         }
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                         tmpParent.elements.add(tmpNew);
                         if (tmpMap.get("ATTRIBUTE").equals("main")) {
                             if (tmpTable == groupTable) {
@@ -336,11 +342,25 @@ public class CLASS {
                     tmpParent = tmpNew;
                 }
                 setIMetadataColumn(tmpNew, colList);
+                setDefaultValues(tmpNew);//add by wliu
             }
         }
         return new Object[] { mains, groups, loop };
     }
-
+    
+    private void setDefaultValues(XMLNode node){
+    	if(node.defaultValue != null && !"".equals(node.defaultValue)){
+    		XMLNode tmp = node;
+    		while(tmp !=null){
+    			tmp.hasDefaultValue = true;
+    			if(tmp.isMainNode()){
+    				break;
+    			}
+    			tmp = tmp.parent;
+    		}
+    	}
+    }
+    
     private void setIMetadataColumn(XMLNode node, List<IMetadataColumn> colList) {
         String value = null;
         JavaType javaType = null;
@@ -366,11 +386,12 @@ public class CLASS {
     public List<XMLNode> getGroupByNodeList(XMLNode group) {
         List<XMLNode> list = new ArrayList<XMLNode>();
         for (XMLNode attri : group.attributes) {
-            if (attri.column != null && attri.column.length() != 0) {
+            if ((attri.column != null && attri.column.length() != 0) || 
+            	(attri.defaultValue != null && !"".equals(attri.defaultValue)) ) {
                 list.add(attri);
             }
         }
-        if (group.relatedColumn != null) {
+        if (group.relatedColumn != null || (group.defaultValue != null && !"".equals(group.defaultValue)) ) {
             list.add(group);
         } else {
             for (XMLNode element : group.elements) {
@@ -385,7 +406,8 @@ public class CLASS {
     public XMLNode removeEmptyElement(XMLNode root) {
         List<XMLNode> removeNodes = new LinkedList<XMLNode>();
         for (XMLNode attri : root.attributes) {
-            if (attri.column == null || attri.column.length() == 0) {
+            if ((attri.column == null || attri.column.length() == 0) && 
+            		(attri.defaultValue == null || "".equals(attri.defaultValue)) ) {
                 attri.parent = null;
                 removeNodes.add(attri);
             }
@@ -394,7 +416,8 @@ public class CLASS {
 
         removeNodes.clear();
         for (XMLNode ns : root.namespaces) {
-            if (ns.column == null || ns.column.length() == 0) {
+            if ( (ns.column == null || ns.column.length() == 0)
+            		&& (ns.defaultValue == null || "".equals(ns.defaultValue)) ) {
                 ns.parent = null;
                 removeNodes.add(ns);
             }
@@ -408,7 +431,8 @@ public class CLASS {
         root.elements.removeAll(removeNodes);
 
         if (root.attributes.size() == 0 && root.namespaces.size() == 0 && root.elements.size() == 0
-                && (root.column == null || root.column.length() == 0)) {
+                && (root.column == null || root.column.length() == 0)
+                && (root.defaultValue == null || "".equals(root.defaultValue)) ) {
             return root;
         } else {
             return null;

@@ -194,6 +194,11 @@ class GenerateToolByDom4j{
 <%
 				}
 			}
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+		nestXMLTool_<%=cid %>.parseAndAdd(<%=currEleName %>_<%=cid %>,"<%=node.defaultValue %>");
+
+<%
 		}
 	}
 	private void addAttribute(String currEleName, XMLNode node){
@@ -202,6 +207,10 @@ class GenerateToolByDom4j{
 		if(<%tool.getValue(node);%>!=null){
 			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>",<%tool.getValue(node);%>);
 		}
+<%
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", "<%=node.defaultValue %>");
 <%
 		}
 	}
@@ -220,6 +229,16 @@ class GenerateToolByDom4j{
 %>
 		}
 <%
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+			<%=currEleName %>_<%=cid %>.addNamespace("<%=node.path %>",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"));
+<%
+			if(node.path ==null || node.path.length()==0){
+%>
+        	<%=currEleName %>_<%=cid %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>_<%=cid %>.getName(),
+        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"))));
+<%
+			}
 		}
 	}
 }
@@ -249,6 +268,13 @@ class GenerateExprCmpByDom4j{
 <%if(!needEmptyNode){%>)<%}%>
 )
 <%
+		}else if(node.defaultValue!=null && !"".equals(node.defaultValue)){
+%> && (
+ <%generateCmnExpr(arrNames, parentName); %>!=null
+ && <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
+ && <%generateCmnExpr(arrNames, parentName); %>.getText().equals("<%=node.defaultValue %>")
+ )
+<%
 		}
 		
 		//first generate the attribute comparision	
@@ -265,6 +291,13 @@ class GenerateExprCmpByDom4j{
 <%
 					if(!needEmptyNode){%>)<%}
 %>)<%
+				}else if(attri.defaultValue!=null && !"".equals(attri.defaultValue)){
+%> && (
+ <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>")!=null
+&& <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
+&& <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals("<%=attri.defaultValue %>")
+ )
+<%
 				}
 			}
 		}	
@@ -358,7 +391,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 // change tables to a tree 
                 List<List<Map<String, String>>> tables = getTables(rootTable, groupTable, loopTable, sourceName);
 				Object[] treeObjs = getTree(tables.get(0), tables.get(1), tables.get(2), preMetadata.getListColumns());
-				
+
+				if(treeObjs == null || treeObjs.length == 0){
+					return "";
+				}
+
             	List<XMLNode> mainList = (ArrayList<XMLNode>)treeObjs[0];
                 List<XMLNode> groupList = (ArrayList<XMLNode>)treeObjs[1];
                 XMLNode root = mainList.get(0);                
@@ -472,6 +509,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				int j=0;
 				for(j=0;j<listNodes.size();j++){
 					org.dom4j.Element tempElem =listNodes.get(j);
+//					String tmpPath=tempElem.getName();
+//					if(tempElem.getNamespacePrefix() !=null && !tempElem.getNamespacePrefix().equals("")){
+//						tmpPath = tempElem.getNamespacePrefix() + ":" + tmpPath;
+//					}
 					if(("<%=groupNode.path %>").equals(tempElem.getPath())){
 						if(<%generateExprCmpByDom4j.generateCode(groupNode, "tempElem"); %>){
 							subTreeRootParent_<%=cid %> =  tempElem;
