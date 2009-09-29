@@ -741,7 +741,8 @@ public class Node extends Element implements INode {
     }
 
     /**
-     * Set the label of a node. <br/><b> /!\ This is the text of the label, not the name of the component</b>
+     * Set the label of a node. <br/>
+     * <b> /!\ This is the text of the label, not the name of the component</b>
      * 
      * @param titleName
      */
@@ -804,6 +805,11 @@ public class Node extends Element implements INode {
     }
 
     public void updateVisibleData() {
+        // if it's a duplicate process, it's a process used only for code generation, so no need to update any graphical
+        // data.
+        if (this.process.isDuplicate()) {
+            return;
+        }
         String newLabel = label;
         String newShowHintText = showHintText;
         String newConnectionName = connectionName;
