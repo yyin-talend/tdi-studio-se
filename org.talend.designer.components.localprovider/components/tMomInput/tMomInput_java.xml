@@ -38,6 +38,7 @@
       FIELD="CHECK"
       SHOW="true"
       NUM_ROW="10"
+      SHOW_IF="(USEMAX == 'false')"
     >
     <DEFAULT IF="(SERVER == 'JBOSS')">true</DEFAULT>
     <DEFAULT IF="(SERVER == 'WEBSPHERE')">false</DEFAULT>
@@ -164,11 +165,11 @@
       REQUIRED="true"
       NUM_ROW="45"
     >
-      <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'false') or (SERVER == 'ACTIVEMQ')" READONLY="true">
+      <TABLE IF="((SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'false')" READONLY="true">
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
-       <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'true') or (SERVER == 'ACTIVEMQ')" READONLY="true">
+       <TABLE IF="((SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'true')" READONLY="true">
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
@@ -215,7 +216,23 @@
 	</PARAMETER> 
 
   </PARAMETERS>
+  
+	<ADVANCED_PARAMETERS>	
+	
+	<PARAMETER NAME="IS_TRANSACTED" FIELD="CHECK" REQUIRED="false" NUM_ROW="20" SHOW="false">
+	  <DEFAULT>false</DEFAULT>
+	</PARAMETER>
 
+		<PARAMETER NAME="ACKNOWLEDGMENT_MODE" FIELD="CLOSED_LIST" NUM_ROW="30"  SHOW_IF="(SERVER != 'WEBSPHERE')">
+	      <ITEMS DEFAULT="AUTO_ACKNOWLEDGE">
+	        <ITEM NAME="AUTO_ACKNOWLEDGE"   VALUE="AUTO_ACKNOWLEDGE" />
+	        <ITEM NAME="CLIENT_ACKNOWLEDGE"   VALUE="CLIENT_ACKNOWLEDGE" />
+	        <ITEM NAME="DUPS_OK_ACKNOWLEDGE"   VALUE="DUPS_OK_ACKNOWLEDGE" />
+	      </ITEMS>
+	    </PARAMETER>
+	    
+	</ADVANCED_PARAMETERS>
+	
   <CODEGENERATION>
      <IMPORTS>
       <IMPORT NAME="JBOSS REMOTING" MODULE="jboss-remoting.jar" REQUIRED="true" />

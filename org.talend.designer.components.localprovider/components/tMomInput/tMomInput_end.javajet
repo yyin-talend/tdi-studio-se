@@ -7,52 +7,52 @@
 %>
 
 <%
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
-String serverType=ElementParameterParser.getValue(node, "__SERVER__");
-String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
-String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
-String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
-
-if(("JBoss").equals(serverType)){
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+	String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
+	String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
+	String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
+	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
+	
+	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
+		if ("CLIENT_ACKNOWLEDGE".equals(acknowledgmentMode)) {
 %>
-		message_<%=cid%>.acknowledge();
-		
+			message_<%=cid%>.acknowledge();
 		
 <%	
-	if(("true").equals(useMsgId)){
+		}
+	
+		if(("JBoss").equals(serverType)){
+			if(("true").equals(useMsgId)){
+%>
+				}
+<%
+			}
+			
+			if("true".equals(kListen)){
+%>
+				Thread.sleep(<%=timeOut%>*1000);
+<%		
+			}else{
+%>
+				break;
+<%			
+			}
+		}else if(("ActiveMQ").equals(serverType)){
+		}
 %>
 		}
-<%
-	}
-%>
-	
-<%if("true".equals(kListen)){%>
-	Thread.sleep(<%=timeOut%>*1000);
-<%}else{%>
-	break;
-<%}%>
-}
-	 	System.out.println("Closing connection");
-		 consumer_<%=cid %>.close();
-		session_<%=cid%>.close();
-		connection_<%=cid%>.close();
-		
-
-<%
-}else if(("ActiveMQ").equals(serverType)){%>
-
-}
-
  		System.out.println("Closing connection");
         consumer_<%=cid %>.close();
         session_<%=cid %>.close();
         connection_<%=cid %>.close();
 
-<%}else{
+<%		
+	}else{
 %>
-	}	
+		}	
 		System.out.println("Closing connection");
 		remoteQ<%=cid%>.close();
 		qMgr<%=cid%>.disconnect();

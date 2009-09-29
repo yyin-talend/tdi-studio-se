@@ -29,6 +29,10 @@ class="MomInput"
 	String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
 	String from=ElementParameterParser.getValue(node, "__FROM__");
 	boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
+	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+	
+	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
+	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
 	
 	IMetadataTable metadata=null;
 	List<IMetadataColumn> columns = null;
@@ -39,9 +43,8 @@ class="MomInput"
 	}
 	if (("JBoss").equals(serverType)||("ActiveMQ").equals(serverType)) {
 	
-		/*---------------------------------------1.jboss and activemq set client config----------------------------------*/ 
+		/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
 		if(("JBoss").equals(serverType) ){ // server judgement
-			String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
 %>
 			java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
 			props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
@@ -52,22 +55,9 @@ class="MomInput"
 			
 			javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
 			javax.jms.ConnectionFactory factory_<%=cid%>=(javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
-			javax.jms.Connection connection_<%=cid%>=factory_<%=cid%>.createConnection();
-			javax.jms.Session session_<%=cid%>=connection_<%=cid%>.createSession(false, javax.jms.Session.CLIENT_ACKNOWLEDGE);
-			javax.jms.Destination dest_<%=cid%>=(javax.jms.<%=msgType%>)context_<%=cid%>.lookup(<%=from%>);
-			javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid%>.createConsumer(dest_<%=cid%>);
-		
-			connection_<%=cid%>.start();
-					
-			System.out.println("Ready to receive message");
-			System.out.println("Waiting...");	
-			javax.jms.Message message_<%=cid%>;
-		
-			while((message_<%=cid%>=consumer_<%=cid %>.receive())!=null){
 <%		
 		}else if(("ActiveMQ").equals(serverType)){
 			boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
-			boolean topic = ("Topic").equals(ElementParameterParser.getValue(node, "__MSGTYPE__"));
 			String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
 			String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
 			
@@ -91,28 +81,50 @@ class="MomInput"
 			}
 %>
 			System.out.println("Connecting to URL: " + url_<%=cid %>);
-			System.out.println("Consuming " + (<%=topic%> ? "topic" : "queue") + ": " + <%=from%>);
+			System.out.println("Consuming " + (<%="Topic".equals(msgType)%> ? "topic" : "queue") + ": " + <%=from%>);
 			
 			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
 			new org.apache.activemq.ActiveMQConnectionFactory
 			(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
+<%
+		}
+		
+	/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
+%>		
 			
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
 			connection_<%=cid %>.start();
-			javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+			javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
 			javax.jms.Destination des_<%=cid %> = null;
-			if (<%=topic%>) {
-				des_<%=cid %> = session_<%=cid %>.createTopic(<%=from%>);
-			} else {
-				des_<%=cid %> = session_<%=cid %>.createQueue(<%=from%>);
-			}
+<%
+		if (("Queue").equals(msgType)) {
+%>
+			des_<%=cid %> = session_<%=cid %>.createQueue(<%=from %>);
+<%
+		} else {
+%>
+	    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=from %>);
+<%
+		}
+%>
 			javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
 			replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
 			
-			javax.jms.MessageConsumer consumer_<%=cid %> = null;
-			consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
-		 
-<%
+			javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
+			
+<%		
+		/*---------------------------------------3.recevice message form server ---------------------------------*/ 	
+		if(("JBoss").equals(serverType) ){ 
+%>					
+			System.out.println("Ready to receive message");
+			System.out.println("Waiting...");	
+			javax.jms.Message message_<%=cid%>;
+		
+			while((message_<%=cid%>=consumer_<%=cid %>.receive())!=null){
+<%		
+		}else if(("ActiveMQ").equals(serverType)){
+			String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
+			String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
 			if(("true").equals(kListen)){
 %>
 			System.out.println("We will consume messages while they continue to be delivered ");
@@ -137,11 +149,10 @@ class="MomInput"
 <%
 				}
 		}
-		/*---------------------------------------end 1----------------------------------------------------------------------------*/ 
 %>
 
 <%
-		/*-----------------------------------------------------------2.judge message body type---------------------------------------*/
+		/*-----------------------------------------------------------4.judge message body type---------------------------------------*/
 		if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
 %>
 			if (message_<%=cid%> instanceof javax.jms.MapMessage) {
@@ -218,7 +229,7 @@ class="MomInput"
 			}
 <%
 		}
-		/*---------------------------------------------------------end 2----------------------------------------------------------------*/	
+		/*---------------------------------------------------------end 4----------------------------------------------------------------*/	
 %>	    
 <%
 	} else { //server judgement   /***WebSphere MQ*****/

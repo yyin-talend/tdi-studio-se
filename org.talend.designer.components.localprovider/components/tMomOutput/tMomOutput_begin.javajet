@@ -21,6 +21,11 @@ class="MomInput"
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
 	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
 	String to = ElementParameterParser.getValue(node, "__TO__");
+	String deliverMode = ElementParameterParser.getValue(node, "__DELIVERY_MODE__");
+	
+	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
+	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
+	
 	IMetadataTable metadata=null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -29,49 +34,40 @@ class="MomInput"
 %>
 	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
 <%
-	if(("JBoss").equals(serverType)){ // server judgement
+	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {// server judgement
+	
+	/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
+		if(("JBoss").equals(serverType)){ 
 %>
-		props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
-		props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
-		props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
-		
-		javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
-		javax.jms.<%=msgType%>ConnectionFactory factory_<%=cid%>
-			= (javax.jms.<%=msgType%>ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
-		javax.jms.<%=msgType%>Connection connection_<%=cid%>
-			= factory_<%=cid%>.create<%=msgType%>Connection();
-		javax.jms.<%=msgType%>Session session_<%=cid%>
-			= connection_<%=cid%>.create<%=msgType%>Session(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
-		javax.jms.<%=msgType%> type_<%=cid%>=(javax.jms.<%=msgType%>)context_<%=cid%>.lookup(<%=to%>);
-
+			props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
+			props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
+			props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
+			
+			javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
+			javax.jms.ConnectionFactory factory_<%=cid%>
+				= (javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
+				
 <%
-		if(("Queue").equals(msgType)){
+		}else if(("ActiveMQ").equals(serverType)){
 %>
-			javax.jms.QueueSender queueSender_<%=cid%>=session_<%=cid%>.createSender(type_<%=cid%>);
-<%
-		}else{
-%>
-			javax.jms.TopicPublisher topicPublisher_<%=cid%>=session_<%=cid%>.createPublisher(type_<%=cid%>);
+			String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
+			System.out.println("Connecting to URL: " + url_<%=cid %>);
+			System.out.println("Producing " + (<%=!("Queue").equals(msgType)%> ? "topic" : "queue") + ": " + <%=to %>);
+			
+			
+			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
+				new org.apache.activemq.ActiveMQConnectionFactory
+					(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
 <%
 		}
-%>
-
-<%
-	}else if(("ActiveMQ").equals(serverType)){
-		String deliverMode = ElementParameterParser.getValue(node, "__DELIVERY_MODE__");
-%>
-		String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
-		System.out.println("Connecting to URL: " + url_<%=cid %>);
-		System.out.println("Producing " + (<%=!("Queue").equals(msgType)%> ? "topic" : "queue") + ": " + <%=to %>);
 		
-		
-		org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
-			new org.apache.activemq.ActiveMQConnectionFactory
-				(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
+		/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
+%>	
+				
 		javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
 		connection_<%=cid %>.start();
 	
-		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
 		
 		javax.jms.Destination des_<%=cid %>;
 <%

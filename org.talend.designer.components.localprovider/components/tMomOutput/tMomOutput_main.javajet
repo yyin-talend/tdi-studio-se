@@ -99,22 +99,9 @@ class="MomInput"
 					} 
 					
 					/*---------------------------------------------3.send message to server------------------------------------------------------*/
-					if(("JBoss").equals(serverType)){ // server judgement
-						String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
-	                    if(("Queue").equals(msgType)){
-%>
-						    queueSender_<%=cid%>.send(type_<%=cid%>,message_<%=cid%>);
-<%
-	                    }else{
-%>
-							topicPublisher_<%=cid%>.publish(type_<%=cid%>,message_<%=cid%>);
-<%
-						}
-					}else if(("ActiveMQ").equals(serverType)){
 %>
 						producer_<%=cid %>.send(message_<%=cid %>);
 <%
-					}
 				} else {//server judgement   /***WebSphere MQ*****/
 %>
 					com.ibm.mq.MQMessage message_<%=cid%> = new com.ibm.mq.MQMessage();
