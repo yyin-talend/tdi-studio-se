@@ -23,6 +23,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
+import org.talend.designer.core.ui.MultiPageEditorContributor;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -34,7 +35,9 @@ public class RunProcessShortcutAction extends RunProcessAction {
 
     public RunProcessShortcutAction() {
         super();
-        this.setActionDefinitionId("showAndRunProcess"); //$NON-NLS-1$
+        this.setActionDefinitionId("org.talend.common.runTalendElement"); //$NON-NLS-1$
+        // MOD mzhao bug 8710
+        MultiPageEditorContributor.setShowAndRunProcessAction(this);
     }
 
     @SuppressWarnings("restriction")

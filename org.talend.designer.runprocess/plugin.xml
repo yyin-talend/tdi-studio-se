@@ -34,7 +34,7 @@
          name="Show run process view"/>
       <command
             categoryId="Talend"
-            id="showAndRunProcess"
+            id="org.talend.common.runTalendElement"
             name="Show and Run"/>
       <command
             categoryId="Talend"
@@ -53,7 +53,7 @@
          schemeId="org.talend.core.scheme"
          sequence="F4"/>
       <key
-            commandId="showAndRunProcess"
+            commandId="org.talend.common.runTalendElement"
             contextId="talend.global"
             schemeId="org.talend.core.scheme"
             sequence="F6"/>

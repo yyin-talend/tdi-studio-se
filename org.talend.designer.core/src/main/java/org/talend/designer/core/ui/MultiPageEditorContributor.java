@@ -24,24 +24,12 @@ import org.eclipse.gef.ui.actions.UndoRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem;
 import org.eclipse.gef.ui.actions.ZoomInRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomOutRetargetAction;
-import org.eclipse.jface.action.ContributionItem;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -49,7 +37,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.talend.core.model.components.ComponentUtilities;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ToggleSubjobsAction;
 import org.talend.designer.core.ui.action.ToggleSubjobsRetargetAction;
@@ -66,7 +53,9 @@ import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 public class MultiPageEditorContributor extends MultiPageEditorActionBarContributor {
 
     private IEditorPart activeEditorPart;
-
+    
+    // MOD mzhao bug 8710.
+    private static Action showAndRunProcessAction = null;
     private ActionRegistry registry = new ActionRegistry();
 
     public MultiPageEditorContributor() {
@@ -80,6 +69,11 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     private static final String[] VIEW_MENU_ACTIONS_ID = new String[] { GEFActionConstants.ZOOM_IN, GEFActionConstants.ZOOM_OUT,
             GEFActionConstants.TOGGLE_GRID_VISIBILITY, GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY };
 
+    public static void setShowAndRunProcessAction(Action action) {
+        showAndRunProcessAction = action;
+    }
+    
+    
     @Override
     public void init(final IActionBars bars) {
         buildDesignActions();
@@ -178,7 +172,13 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
             actionBars.setGlobalActionHandler(ToggleSubjobsAction.ID, getAction(activeEditor, ToggleSubjobsAction.ID));
             // see bug 0003656: Actions in the main menu "View" are always disabled.
             activateActionsInViewMenu(activeEditor, actionBars, VIEW_MENU_ACTIONS_ID);
+            // MOD mzhao bug 8710
+            if (showAndRunProcessAction != null) {
+                actionBars.setGlobalActionHandler(showAndRunProcessAction.getActionDefinitionId(), showAndRunProcessAction);
+            }
             actionBars.updateActionBars();
+            
+            
         }
     }
 
