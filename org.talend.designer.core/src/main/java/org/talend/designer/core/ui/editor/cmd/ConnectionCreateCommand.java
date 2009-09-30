@@ -62,6 +62,8 @@ public class ConnectionCreateCommand extends Command {
 
     private static boolean creatingConnection = false;
 
+    private boolean insertTMap;
+
     /**
      * Initialisation of the creation of the connection with a source and style of connection.
      * 
@@ -75,6 +77,16 @@ public class ConnectionCreateCommand extends Command {
         this.connectorName = connectorName;
         this.metaName = (String) listArgs.get(0);
         this.connectionName = (String) listArgs.get(1);
+        newMetadata = (IMetadataTable) listArgs.get(2);
+    }
+
+    public ConnectionCreateCommand(Node nodeSource, String connectorName, List<Object> listArgs, boolean insertTMap) {
+        setLabel(Messages.getString("ConnectionCreateCommand.Label")); //$NON-NLS-1$
+        this.source = nodeSource;
+        this.connectorName = connectorName;
+        this.metaName = (String) listArgs.get(0);
+        this.connectionName = (String) listArgs.get(1);
+        this.insertTMap = insertTMap;
         newMetadata = (IMetadataTable) listArgs.get(2);
     }
 
@@ -206,12 +218,14 @@ public class ConnectionCreateCommand extends Command {
                 return false;
             }
             newLineStyle = ConnectionManager.getNewConnectionType();
+
         }
         creatingConnection = true;
         return true;
     }
 
     public void execute() {
+        canExecute();
         if (connectionName == null) {
             // ask for the name if there is no
 
@@ -270,7 +284,18 @@ public class ConnectionCreateCommand extends Command {
 
         }
 
+        if (insertTMap) {
+            metaName = connectionName;
+            newMetadata = new MetadataTable();
+            newMetadata.setTableName(connectionName);
+            newMetadata.setLabel(connectionName);
+            newMetadata.setAttachedConnector(connectorName);
+        }
+
         boolean monitorConnection = false; // Default not monitor the connection
+        if (newLineStyle == null) {
+            newLineStyle = source.getConnectorFromName(connectorName).getDefaultConnectionType();
+        }
         if (newMetadata != null) {
             source.getMetadataList().add(newMetadata);
             this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName,
@@ -339,5 +364,9 @@ public class ConnectionCreateCommand extends Command {
      */
     public static void setCreatingConnection(boolean creatingConnection) {
         ConnectionCreateCommand.creatingConnection = creatingConnection;
+    }
+
+    public Connection getConnection() {
+        return this.connection;
     }
 }

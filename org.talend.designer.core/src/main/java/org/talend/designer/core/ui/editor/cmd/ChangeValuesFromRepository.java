@@ -96,6 +96,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private boolean isNotSim = false;
 
+    private String currentTableName;
+
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
@@ -408,6 +410,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
                 if (tables != null && !tables.isEmpty()) {
                     if (tables.size() > index) {
+                        for (MetadataTable table : tables) {
+                            if (table.getLabel().equals(getCurrentTableName())) {
+                                return table.getLabel();
+                            }
+                        }
                         return tables.get(index).getLabel();
                     } else {
                         return tables.get(0).getLabel();
@@ -770,5 +777,13 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     public void ignoreContextMode(boolean ignore) {
         this.ignoreContextMode = ignore;
+    }
+
+    public String getCurrentTableName() {
+        return this.currentTableName;
+    }
+
+    public void setCurrentTableName(String currentTableName) {
+        this.currentTableName = currentTableName;
     }
 }

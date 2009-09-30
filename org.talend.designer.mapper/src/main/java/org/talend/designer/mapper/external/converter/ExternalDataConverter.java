@@ -217,6 +217,21 @@ public class ExternalDataConverter {
         return externalData;
     }
 
+    public ExternalMapperData setTMapMess(MapperModel mapperModel, ExternalMapperUiProperties uiProperties) {
+        ExternalMapperData externalData = new ExternalMapperData();
+        inputTables = new ArrayList<ExternalMapperTable>();
+        externalData.setInputTables(inputTables);
+        outputTables = new ArrayList<ExternalMapperTable>();
+        externalData.setOutputTables(outputTables);
+        varsTables = new ArrayList<ExternalMapperTable>();
+        externalData.setVarsTables(varsTables);
+        loadInExternalData(mapperModel.getInputDataMapTables());
+        loadInExternalData(mapperModel.getVarsDataMapTables());
+        loadInExternalData(mapperModel.getOutputDataMapTables(), mapperModel.getInputDataMapTables());
+        externalData.setUiProperties(uiProperties);
+        return externalData;
+    }
+
     private void loadInExternalData(Collection<? extends AbstractDataMapTable> tables) {
         for (IDataMapTable table : tables) {
             ExternalMapperTable externalMapperTable = new ExternalMapperTable();
@@ -241,6 +256,28 @@ public class ExternalDataConverter {
             externalMapperTable.setMetadataTableEntries(perTableEntries);
 
         }
+    }
+
+    private void loadInExternalData(List<? extends AbstractDataMapTable> tables, List<? extends AbstractDataMapTable> intables) {
+        // for (int i = 0; i < tables.size(); i++) {
+        if (tables.size() <= 0 || intables.size() <= 0) {
+            return;
+        }
+        IDataMapTable outtable = tables.get(0);
+        IDataMapTable intable = intables.get(0);
+        ExternalMapperTable externalMapperTable = new ExternalMapperTable();
+        fillExternalTable(outtable, externalMapperTable);
+        ArrayList<ExternalMapperTableEntry> perTableEntries = new ArrayList<ExternalMapperTableEntry>();
+        for (ITableEntry dataMapTableEntry : intable.getColumnEntries()) {
+            ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
+            externalMapperTableEntry.setExpression(intable.getName() + "." + dataMapTableEntry.getName());
+            externalMapperTableEntry.setName(dataMapTableEntry.getName());
+            externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn().getTalendType());
+            externalMapperTableEntry.setNullable(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn().isNullable());
+            perTableEntries.add(externalMapperTableEntry);
+        }
+        externalMapperTable.setMetadataTableEntries(perTableEntries);
+        // }
     }
 
     /**

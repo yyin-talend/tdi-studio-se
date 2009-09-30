@@ -176,6 +176,35 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return mapperMain.getMapperDialogResponse();
     }
 
+    public IExternalData getTMapExternalData() {
+        initMapperMain(true);
+        mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
+        IExternalData data = restoreMapModelFromInternalData();
+        try {
+            mapperMain.getMapperManager().setOriginalExternalData(externalData.clone());
+        } catch (CloneNotSupportedException e) {
+            if (MapperMain.isStandAloneMode()) {
+                e.printStackTrace();
+            } else {
+                ExceptionHandler.process(e);
+            }
+        }
+        return data;
+    }
+
+    private IExternalData restoreMapModelFromInternalData() {
+        super.restoreMapperModelFromInternalData();
+        externalData = mapperMain.buildTMAPExternalData();
+        IExternalData data = null;
+        try {
+            data = externalData.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        sortOutputsConnectionsLikeVisualOrder();
+        return data;
+    }
+
     /**
      * Restore mapper model from internal stored data.
      */

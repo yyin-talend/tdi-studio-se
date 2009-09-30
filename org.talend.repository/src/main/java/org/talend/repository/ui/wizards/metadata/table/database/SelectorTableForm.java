@@ -232,8 +232,14 @@ public class SelectorTableForm extends AbstractForm {
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
-        gridData1.widthHint = WIDTH_GRIDDATA_PIXEL;
-        gridData1.heightHint = 325;
+        int width = 700;
+        int hight = 325;
+        if (forTemplate) {
+            width = 375;
+            hight = 300;
+        }
+        gridData1.widthHint = width;
+        gridData1.heightHint = hight;
         gridData1.horizontalSpan = 2;
         scrolledCompositeFileViewer.setLayoutData(gridData1);
 
@@ -277,7 +283,18 @@ public class SelectorTableForm extends AbstractForm {
         // tableViewerCreator.setAdjustWidthValue(-15);
         tableViewerCreator.setFirstColumnMasked(true);
 
+        int columnWidth1 = 300;
+        int columnWidth2 = 140;
+        int columnWidth3 = 125;
+        int columnWidth4 = 140;
+
         table = tableViewerCreator.createTable();
+        if (forTemplate) {
+            columnWidth1 = 150;
+            columnWidth2 = 100;
+            columnWidth3 = 100;
+            columnWidth4 = 110;
+        }
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         // table = new Table(scrolledCompositeFileViewer, SWT.CHECK | SWT.BORDER);
@@ -287,21 +304,21 @@ public class SelectorTableForm extends AbstractForm {
         // table.setHeaderVisible(true);
         TableColumn tableName = new TableColumn(table, SWT.NONE);
         tableName.setText(Messages.getString("SelectorTableForm.TableName")); //$NON-NLS-1$
-        tableName.setWidth(300);
+        tableName.setWidth(columnWidth1);
 
         tableName.addSelectionListener(getColumnSelectionListener());
         TableColumn tableType = new TableColumn(table, SWT.NONE);
         tableType.setText(Messages.getString("SelectorTableForm.TableType")); //$NON-NLS-1$
-        tableType.setWidth(140);
+        tableType.setWidth(columnWidth2);
 
         tableType.addSelectionListener(getColumnSelectionListener());
         TableColumn nbColumns = new TableColumn(table, SWT.RIGHT);
         nbColumns.setText(Messages.getString("SelectorTableForm.ColumnNumber")); //$NON-NLS-1$
-        nbColumns.setWidth(125);
+        nbColumns.setWidth(columnWidth3);
 
         TableColumn creationStatus = new TableColumn(table, SWT.RIGHT);
         creationStatus.setText(Messages.getString("SelectorTableForm.CreationStatus")); //$NON-NLS-1$
-        creationStatus.setWidth(140);
+        creationStatus.setWidth(columnWidth4);
 
         scrolledCompositeFileViewer.setContent(table);
         scrolledCompositeFileViewer.setMinSize(table.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -968,6 +985,9 @@ public class SelectorTableForm extends AbstractForm {
     protected void restoreCheckItems() {
         Set<String> checkedItems = new HashSet<String>();
         for (Object obj : getConnection().getTables()) {
+            if (obj == null) {
+                continue;
+            }
             MetadataTable table = (MetadataTable) obj;
             checkedItems.add(table.getLabel());
         }

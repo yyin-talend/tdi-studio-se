@@ -14,6 +14,10 @@ package org.talend.repository.ui.wizards.metadata.table.database;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -21,6 +25,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.wizards.metadata.table.composites.StateComposite;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -28,7 +33,11 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
  */
 public class SelectorTableWizardPage extends WizardPage {
 
+    private Composite container;
+
     private SelectorTableForm tableForm;
+
+    private StateComposite stateCom;
 
     private final MetadataTable metadataTable;
 
@@ -78,7 +87,35 @@ public class SelectorTableWizardPage extends WizardPage {
      * @see IDialogPage#createControl(Composite)
      */
     public void createControl(final Composite parent) {
-        tableForm = new SelectorTableForm(parent, connectionItem, this, isCreateTemplate);
+        container = new Composite(parent, SWT.NONE);
+
+        GridData data = new GridData(GridData.FILL_BOTH);
+
+        container.setLayoutData(data);
+        container.setLayout(new FillLayout());
+        addFields(container);
+
+        setControl(container);
+    }
+
+    private void addFields(Composite container) {
+        int lines = 7;
+        if (isCreateTemplate) {
+            lines = 9;
+        }
+        container.setLayout(new GridLayout(lines, true));
+        GridData data = new GridData(GridData.FILL_BOTH);
+        if (isCreateTemplate) {
+            data.horizontalSpan = 2;
+            stateCom = new StateComposite(container, SWT.NONE);
+            stateCom.setLayoutData(data);
+            stateCom.refreshState("step3");//$NON-NLS-1$
+        }
+
+        data = new GridData(GridData.FILL_BOTH);
+        data.horizontalSpan = 7;
+        tableForm = new SelectorTableForm(container, connectionItem, this, isCreateTemplate);
+        tableForm.setLayoutData(data);
         tableForm.setIMetadataConnection(metadataConnection);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 
@@ -94,7 +131,7 @@ public class SelectorTableWizardPage extends WizardPage {
             }
         };
         tableForm.setListener(listener);
-        setControl(tableForm);
+        setControl(container);
         if (isCreateTemplate) {
             tableForm.initControlData(true);
         }
@@ -123,6 +160,9 @@ public class SelectorTableWizardPage extends WizardPage {
     }
 
     public DatabaseConnection getDatabaseConnection() {
+        if (tableForm == null) {
+            return null;
+        }
         return tableForm.getConnection();
     }
 }

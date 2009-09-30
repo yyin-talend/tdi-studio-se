@@ -205,6 +205,18 @@ public class Node extends Element implements INode {
 
     private boolean checkProperty;
 
+    private boolean insertSet = false;
+
+    private boolean template = false;
+
+    public boolean isTemplate() {
+        return this.template;
+    }
+
+    public void setTemplate(boolean template) {
+        this.template = template;
+    }
+
     public boolean isCheckProperty() {
         return this.checkProperty;
     }
@@ -237,7 +249,24 @@ public class Node extends Element implements INode {
      */
     public Node(IComponent component) {
         this.oldcomponent = component;
-        process = ActiveProcessTracker.getCurrentProcess();
+        this.process = ActiveProcessTracker.getCurrentProcess();
+        currentStatus = 0;
+
+        init(component);
+        IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+        if (param != null) {
+            param.setValue(Boolean.TRUE);
+        }
+    }
+
+    public Node(IComponent component, Process process, boolean insertSet, boolean template) {
+        this.oldcomponent = component;
+        this.insertSet = insertSet;
+        this.template = template;
+        this.process = ActiveProcessTracker.getCurrentProcess();
+        if (this.process == null) {
+            this.process = process;
+        }
         currentStatus = 0;
 
         init(component);
@@ -921,6 +950,9 @@ public class Node extends Element implements INode {
                 mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
             Boolean takeSchema = null;
+            if (insertSet) {
+                return;
+            }
             if (!mainConnector.isMultiSchema()
                     && (connection.getLineStyle() == EConnectionType.FLOW_MAIN
                             || (connection.getLineStyle() == EConnectionType.TABLE) || ((connection.getLineStyle() == EConnectionType.FLOW_MERGE) && (connection
@@ -1017,16 +1049,28 @@ public class Node extends Element implements INode {
                             outputConnection = connection.getSource().getOutgoingConnections(connection.getConnectorName())
                                     .get(0);
                         }
-
-                        if (takeSchema == null) {
-                            takeSchema = getTakeSchema();
+                        if (template) {
+                            if (takeSchema == null) {
+                                takeSchema = true;
+                            }
+                        } else {
+                            if (takeSchema == null) {
+                                takeSchema = getTakeSchema();
+                            }
                         }
+
                         if (takeSchema) {
                             connection.getSource().takeSchemaFrom(this, mainConnector.getName());
                         }
                     } else if (connection.getSourceNodeConnector().isMultiSchema()) {
-                        if (takeSchema == null) {
-                            takeSchema = getTakeSchema();
+                        if (template) {
+                            if (takeSchema == null) {
+                                takeSchema = true;
+                            }
+                        } else {
+                            if (takeSchema == null) {
+                                takeSchema = getTakeSchema();
+                            }
                         }
                         if (takeSchema.booleanValue()) {
                             MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
@@ -1089,8 +1133,13 @@ public class Node extends Element implements INode {
 
     private CommandStack getCommandStack() {
         CommandStack cmdStack = null;
-        AbstractTalendEditor talendEditor = process.getEditor().getTalendEditor();
-        cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
+        if (template) {
+            cmdStack = process.getCommandStack();
+        } else {
+            AbstractTalendEditor talendEditor = process.getEditor().getTalendEditor();
+            cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
+        }
+
         return cmdStack;
     }
 

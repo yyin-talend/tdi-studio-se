@@ -76,6 +76,8 @@ public class ExternalNodeChangeCommand extends Command {
 
     private Boolean propagate;
 
+    private boolean forTemlate;
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public ExternalNodeChangeCommand(Node node, IExternalNode externalNode) {
         this.node = node;
@@ -179,7 +181,14 @@ public class ExternalNodeChangeCommand extends Command {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 IODataComponent dataComponent = inAndOut.getDataComponent(connection);
                 if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
-                    if (getPropagate()) {
+                    boolean openDialog = false;
+                    if (isForTemlate()) {
+                        openDialog = true;
+                    } else {
+                        openDialog = getPropagate();
+                    }
+
+                    if (openDialog) {
                         IElementParameter schemaParam = null;
                         for (IElementParameter param : ((Node) connection.getSource()).getElementParameters()) {
                             if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
@@ -259,5 +268,13 @@ public class ExternalNodeChangeCommand extends Command {
         }
         ((Process) node.getProcess()).checkProcess();
         refreshCodeView();
+    }
+
+    public boolean isForTemlate() {
+        return this.forTemlate;
+    }
+
+    public void setForTemlate(boolean forTemlate) {
+        this.forTemlate = forTemlate;
     }
 }

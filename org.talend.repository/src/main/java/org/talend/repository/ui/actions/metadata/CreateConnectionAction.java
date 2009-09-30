@@ -63,6 +63,8 @@ public class CreateConnectionAction extends AbstractCreateAction {
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
             .getImage(ECoreImage.METADATA_CONNECTION_ICON));
 
+    private ConnectionItem connItem;
+
     public CreateConnectionAction() {
         super();
 
@@ -161,6 +163,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
         wizardDialog.setPageSize(600, 510);
         wizardDialog.create();
         wizardDialog.open();
+        connItem = databaseWizard.getConnectionItem();
         RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
 
     }
@@ -208,5 +211,9 @@ public class CreateConnectionAction extends AbstractCreateAction {
     @Override
     public Class getClassForDoubleClick() {
         return DatabaseConnectionItem.class;
+    }
+
+    public ConnectionItem getConnectionItem() {
+        return connItem;
     }
 }

@@ -529,4 +529,14 @@ public class DbMapComponent extends AbstractMapComponent {
         }
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IExternalNode#getTMapExternalData()
+     */
+    public IExternalData getTMapExternalData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

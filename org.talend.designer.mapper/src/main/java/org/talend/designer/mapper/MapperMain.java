@@ -80,8 +80,8 @@ public class MapperMain {
     }
 
     public void loadModelFromInternalData() {
-        this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables(),
-                mapperManager.getVarsTables());
+        this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables(), mapperManager
+                .getVarsTables());
     }
 
     /**
@@ -97,6 +97,11 @@ public class MapperMain {
         ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
         return converter.prepareExternalData(mapperModel, mapperManager.getUiManager().getUiProperties());
 
+    }
+
+    public ExternalMapperData buildTMAPExternalData() {
+        ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
+        return converter.setTMapMess(mapperModel, mapperManager.getUiManager().getUiProperties());
     }
 
     /**
@@ -130,8 +135,8 @@ public class MapperMain {
         return ioConnections;
     }
 
-    public void createModelFromExternalData(IODataComponentContainer ioDataContainer,
-            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData, boolean checkProblems) {
+    public void createModelFromExternalData(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables,
+            ExternalMapperData externalData, boolean checkProblems) {
         List<IODataComponent> inputsData = ioDataContainer.getInputs();
         List<IODataComponent> ouputsData = ioDataContainer.getOuputs();
 

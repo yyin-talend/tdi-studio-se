@@ -40,18 +40,18 @@ import org.talend.designer.codegen.ICodeGeneratorService;
  * 
  */
 public class AlfrescoOutputComponent extends AbstractExternalNode {
-    
+
     private AlfrescoOutputModelManager modelManager; // created on open()
 
-	private AlfrescoOutputManager alfrescoOutputManager;
+    private AlfrescoOutputManager alfrescoOutputManager;
 
-	public AlfrescoOutputComponent() {
+    public AlfrescoOutputComponent() {
         super();
     }
 
     public AlfrescoOutputModelManager getModelManager() {
-		return modelManager;
-	}
+        return modelManager;
+    }
 
     /*
      * (non-Javadoc)
@@ -141,22 +141,21 @@ public class AlfrescoOutputComponent extends AbstractExternalNode {
      */
     @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
-    	// used in super's metadataInputChanged() and metadataOutputChanged()
-    	// but since we don't need them, we don't need renameMetadataColumnName() either
+        // used in super's metadataInputChanged() and metadataOutputChanged()
+        // but since we don't need them, we don't need renameMetadataColumnName() either
     }
 
     @Override
     public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
-    	// column mappings are automatically remapped by talend on change
-    	// since they are done using COLUMN_LIST fields
+        // column mappings are automatically remapped by talend on change
+        // since they are done using COLUMN_LIST fields
     }
 
     @Override
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
-    	// column mappings are automatically remapped by talend on change
-    	// since they are done using COLUMN_LIST fields
+        // column mappings are automatically remapped by talend on change
+        // since they are done using COLUMN_LIST fields
     }
-
 
     /*
      * (non-Javadoc)
@@ -179,6 +178,16 @@ public class AlfrescoOutputComponent extends AbstractExternalNode {
 
     public void renameOutputConnection(String oldName, String newName) {
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IExternalNode#getTMapExternalData()
+     */
+    public IExternalData getTMapExternalData() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

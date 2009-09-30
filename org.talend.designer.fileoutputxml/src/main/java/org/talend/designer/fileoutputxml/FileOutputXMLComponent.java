@@ -382,4 +382,14 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IExternalNode#getTMapExternalData()
+     */
+    public IExternalData getTMapExternalData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

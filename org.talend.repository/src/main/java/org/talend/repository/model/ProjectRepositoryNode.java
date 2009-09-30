@@ -872,6 +872,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj, EList list,
             ERepositoryObjectType repositoryObjectType) {
         for (Object currentTable : list) {
+            if (currentTable == null) {
+                continue;
+            }
             if (currentTable instanceof org.talend.core.model.metadata.builder.connection.MetadataTable) {
                 org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
                 RepositoryNode tableNode = createMetatableNode(node, repObj, metadataTable, repositoryObjectType);
@@ -904,6 +907,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private void createTable(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj,
             org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable,
             ERepositoryObjectType repositoryObjectType) {
+        if (metadataTable == null) {
+            return;
+        }
         RepositoryNode tableNode = createMetatableNode(node, repObj, metadataTable, repositoryObjectType);
         if (TableHelper.isDeleted(metadataTable)) {
             recBinNode.getChildren().add(tableNode);
@@ -943,7 +949,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         .next();
 
                 String typeTable = null;
-                if (metadataTable.getTableType() != null) {
+                if (metadataTable != null && metadataTable.getTableType() != null) {
                     typeTable = metadataTable.getTableType();
                     if (typeTable.equals("TABLE")) { //$NON-NLS-1$
                         createTable(recBinNode, tablesNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
