@@ -991,6 +991,13 @@
              description="Rename tUnpivotRow to tPivotToRows "
              id="org.talend.repository.model.migration.RenametUnpivotRowTotPivotToRows"
              name="Rename tUnpivotRow to tPivotToRows ">
+       </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.AddOneOptionAndReverseTheValueOnFSComponents"
+             description="Add a option and reverse its value on FS components"
+             id="org.talend.repository.model.migration.AddOneOptionAndReverseTheValueOnFSComponents"
+             name="Add a option and reverse its value on FS components">
        </projecttask>              
        <projecttask
              beforeLogon="false"
