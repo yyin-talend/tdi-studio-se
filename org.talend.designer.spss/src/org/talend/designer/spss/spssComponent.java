@@ -171,6 +171,11 @@ public class spssComponent extends AbstractExternalNode{
         spssComponent component = new spssComponent();
         component.open(display);
     }
+
+	public IExternalData getTMapExternalData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
 
 }

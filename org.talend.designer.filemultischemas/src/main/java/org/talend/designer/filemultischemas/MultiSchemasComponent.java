@@ -159,4 +159,9 @@ public class MultiSchemasComponent extends AbstractExternalNode {
 
     }
 
+	public IExternalData getTMapExternalData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
