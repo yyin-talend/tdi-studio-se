@@ -73,6 +73,7 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
         outNode.setInCnx(cnx);
 
         inNode.setProcess(this);
+
         outNode.setProcess(this);
 
         contextManager = new EmptyContextManager();

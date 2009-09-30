@@ -417,6 +417,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     return;
                 }
                 TempStore store = new TempStore();
+
                 store.seletetedNode = sourceNode;
                 getAppropriateComponent(item, quickCreateInput, quickCreateOutput, store, type);
                 if (store.component != null) {

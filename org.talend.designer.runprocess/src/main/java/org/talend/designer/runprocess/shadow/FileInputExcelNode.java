@@ -21,6 +21,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.preview.ExcelSchemaBean;
 
 /**
@@ -31,6 +32,8 @@ public class FileInputExcelNode extends FileInputNode {
     private List<IMetadataTable> metadatas = null;
 
     private final ExcelSchemaBean excelBean;
+
+    private String versionCheck; // hywang add for excel2007 wizard
 
     /**
      * 
@@ -46,7 +49,7 @@ public class FileInputExcelNode extends FileInputNode {
      * @param bean
      */
     public FileInputExcelNode(String filename, List<IMetadataTable> metadatas, String encoding, String limitRows, String header,
-            String footer, String emptyEmptyRow, ExcelSchemaBean bean) {
+            String footer, String emptyEmptyRow, ExcelSchemaBean bean, String versionCheck) {
         super("tFileInputExcel"); //$NON-NLS-1$
         excelBean = bean;
 
@@ -55,6 +58,12 @@ public class FileInputExcelNode extends FileInputNode {
                 "FILENAME", "ENCODING", "LIMIT", "HEADER", "FOOTER", "REMOVE_EMPTY_ROW", "FIRST_COLUMN", "LAST_COLUMN", "WITH_FORMAT" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
 
         String[] paramValues;
+
+        // // hywang add for excel 2007
+        // ElementParameter elem = new ElementParameter(inNode);
+        // elem.setName("VERSION_2007");
+        // elem.setValue(true);
+
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
             paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding, //$NON-NLS-1$
@@ -74,6 +83,12 @@ public class FileInputExcelNode extends FileInputNode {
                 addParameter(param);
             }
         }
+
+        // hywang for excel2007 wizard
+        ElementParameter checkVesionFor2007 = new ElementParameter(this);
+        checkVesionFor2007.setName("VERSION_2007"); //$NON-NLS-N$
+        checkVesionFor2007.setValue(versionCheck);
+        addParameter(checkVesionFor2007);
 
         addSheetsParameters();
 

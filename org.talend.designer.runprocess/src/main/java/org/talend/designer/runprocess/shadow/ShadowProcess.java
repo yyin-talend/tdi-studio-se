@@ -193,8 +193,14 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_EXCEL:
-            FileInputExcelNode excelNode = null;
+            // hywang add for excel 2007
+            String versionCheck = "false"; //$NON-NLS-N$
+            String afterRemoveQuotesPath = TalendTextUtils.removeQuotes(inPath);
+            if (afterRemoveQuotesPath.endsWith(".xlsx")) { //$NON-NLS-N$
+                versionCheck = "true"; //$NON-NLS-N$
+            }
 
+            FileInputExcelNode excelNode = null;
             ExcelSchemaBean excelBean = description.getExcelSchemaBean();
 
             excelNode = new FileInputExcelNode(inPath,
@@ -202,7 +208,7 @@ public class ShadowProcess<T extends IProcessDescription> {
                     description.getEncoding() == null ? TalendTextUtils.addQuotes("ISO-8859-1") : description.getEncoding(), //$NON-NLS-1$
                     Integer.toString(description.getLimitRows()), Integer.toString(description.getHeaderRow()), Integer
                             .toString(description.getFooterRow()), Boolean.toString(description.getRemoveEmptyRowsToSkip()),
-                    excelBean);
+                    excelBean, versionCheck);
 
             outNode.setMetadataList(excelNode.getMetadataList());
 

@@ -23,6 +23,9 @@ import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Assert;
 import org.junit.Test;
 import org.talend.commons.exception.ExceptionHandler;
@@ -35,6 +38,12 @@ public class ExcelReader {
     private String excelPath = null;
 
     private Workbook workbook = null;
+
+    private XSSFWorkbook xwb = null;
+
+    private String[] sheetNamesForXlsx = null;
+
+    private boolean isXlsx = false;
 
     public ExcelReader() {
 
@@ -56,35 +65,85 @@ public class ExcelReader {
     }
 
     private void init() throws BiffException, IOException {
-        WorkbookSettings worksetting = new WorkbookSettings();
-        //worksetting.setEncoding("ISO-8859-15"); //$NON-NLS-1$
-        worksetting.setCellValidationDisabled(true); //$NON-NLS-1$
-        worksetting.setSuppressWarnings(true); //$NON-NLS-1$
-        workbook = Workbook.getWorkbook(new File(excelPath), worksetting);
+        // hywang modified for excel 2007
+        if (excelPath.endsWith(".xls")) {
+            isXlsx = false;
+        } else if (excelPath.endsWith(".xlsx")) {
+            isXlsx = true;
+        }
+
+        if (!isXlsx) {
+            WorkbookSettings worksetting = new WorkbookSettings();
+            //worksetting.setEncoding("ISO-8859-15"); //$NON-NLS-1$
+            worksetting.setCellValidationDisabled(true); //$NON-NLS-1$
+            worksetting.setSuppressWarnings(true); //$NON-NLS-1$
+            workbook = Workbook.getWorkbook(new File(excelPath), worksetting);
+        } else {
+            xwb = new XSSFWorkbook(excelPath);
+            List<String> sheetlist = new ArrayList<String>();
+            for (XSSFSheet sheet : xwb) {
+                sheetlist.add(sheet.getSheetName());
+            }
+            sheetNamesForXlsx = new String[sheetlist.size()];
+            for (int i = 0; i < sheetlist.size(); i++) {
+                sheetNamesForXlsx[i] = sheetlist.get(i);
+            }
+            sheetlist.clear();
+        }
+
     }
 
     public String[] getSheetNames() {
-        return workbook.getSheetNames();
+        if (!this.isXlsx) {
+            return workbook.getSheetNames();
+        }
+        return sheetNamesForXlsx;
     }
 
     public List<String[]> readSheet(String sheetName) {
-
-        Sheet sheet = workbook.getSheet(sheetName);
-
-        if (sheet == null) {
-            return null;
-        }
-
-        int rows = sheet.getRows();
-
         List<String[]> res = new ArrayList<String[]>();
-        for (int i = 0; i < rows; i++) {
-            Cell[] cells = sheet.getRow(i);
-            String[] contents = new String[cells.length];
-            for (int j = 0, k = cells.length; j < k; j++) {
-                contents[j] = cells[j].getContents();
+
+        // hywang modified for excel 2007
+        if (!this.isXlsx) {
+            Sheet sheet = workbook.getSheet(sheetName);
+
+            if (sheet == null) {
+                return null;
             }
-            res.add(contents);
+
+            int rows = sheet.getRows();
+
+            for (int i = 0; i < rows; i++) {
+                Cell[] cells = sheet.getRow(i);
+                String[] contents = new String[cells.length];
+                for (int j = 0, k = cells.length; j < k; j++) {
+                    contents[j] = cells[j].getContents();
+                }
+                res.add(contents);
+            }
+        } else {
+            XSSFSheet sheet = xwb.getSheet(sheetName);
+            for (int i = sheet.getFirstRowNum(); i < sheet.getPhysicalNumberOfRows(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    List<String> contents = new ArrayList<String>();
+                    for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
+                        String cell = null;
+                        if (row.getCell(j) != null && !row.getCell(j).equals("")) {
+                            cell = row.getCell(j).toString();
+                        } else {
+                            cell = "";
+                        }
+                        contents.add(cell);
+                    }
+                    Object[] objs = contents.toArray();
+                    String[] rowContents = new String[objs.length];
+                    for (int k = 0; k < rowContents.length; k++) {
+                        rowContents[k] = objs[k].toString();
+                    }
+                    res.add(rowContents);
+                }
+            }
         }
 
         return res.size() <= 0 ? null : res;

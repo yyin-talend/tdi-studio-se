@@ -159,6 +159,17 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // Force redraw of Commponents propoerties
         elem.setPropertyValue(updataComponentParamName, new Boolean(true));
 
+        // hywang add for excel2007
+        // Object obj = RepositoryToComponentProperty.getValue(connection, EParameterName.FILE_PATH.getName());
+        // String s = TalendTextUtils.removeQuotes(obj.toString());
+        // String versionCheckFor2007 = "false";
+        // if (s.endsWith(".xlsx")) {
+        // versionCheckFor2007 = "true";
+        // }
+        // if (elem.getElementParameter("VERSION_2007") != null) {
+        // elem.getElementParameter("VERSION_2007").setValue(versionCheckFor2007);
+        // }
+
         boolean allowAutoSwitch = true;
 
         IElementParameter elemParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
@@ -299,6 +310,17 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 }
                             }
 
+                            // hywang add for excel 2007
+                            if (repositoryValue.equals(EParameterName.FILE_PATH.getName())) {
+                                String s = TalendTextUtils.removeQuotes(objectValue.toString());
+                                String versionCheckFor2007 = "false"; //$NON-NLS-N$
+                                if (s.endsWith(".xlsx")) { //$NON-NLS-N$
+                                    versionCheckFor2007 = "true"; //$NON-NLS-N$
+                                }
+                                if (elem.getElementParameter("VERSION_2007") != null) { //$NON-NLS-N$
+                                    elem.setPropertyValue("VERSION_2007", versionCheckFor2007); //$NON-NLS-N$
+                                }
+                            }
                             elem.setPropertyValue(param.getName(), objectValue);
                         }
                         param.setRepositoryValueUsed(true);

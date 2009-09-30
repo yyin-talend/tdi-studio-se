@@ -128,7 +128,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         serverCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep1.server"), Messages //$NON-NLS-1$
                 .getString("FileStep1.serverTip"), serverLocation, 2, true, SWT.NONE); //$NON-NLS-1$
 
-        String[] extensions = { "*.xls" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        String[] extensions = { "*.xls;*.xlsx" }; //$NON-NLS-1$ //$NON-NLS-2$  hywang add "*.xlsx"
         fileField = new LabelledFileField(compositeFileLocation, Messages.getString("FileStep1.filepath"), extensions); //$NON-NLS-1$
 
         int numColumnForViewer = 4;
