@@ -995,10 +995,10 @@
        <projecttask
              beforeLogon="false"
              class="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskBug8562"
-             description="111"
+             description="Change tSalesforceOutput Extened Ouput Default Value to true"
              id="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskBug8562"
-             name="111">
-       </projecttask>              
+             name="Change Default Value">
+       </projecttask>
    </extension>
    
    <extension
