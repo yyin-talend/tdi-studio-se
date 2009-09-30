@@ -992,6 +992,13 @@
              id="org.talend.repository.model.migration.RenametUnpivotRowTotPivotToRows"
              name="Rename tUnpivotRow to tPivotToRows ">
        </projecttask>              
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskBug8562"
+             description="111"
+             id="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskBug8562"
+             name="111">
+       </projecttask>              
    </extension>
    
    <extension
