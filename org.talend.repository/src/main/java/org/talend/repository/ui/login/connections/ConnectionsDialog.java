@@ -49,6 +49,8 @@ public class ConnectionsDialog extends TitleAreaDialog {
 
     public static final int STANDARD_LABEL_WIDTH = 102;
 
+    public static final int STANDARD_TEXT_WIDTH = 260;
+
     public static final int VSPACE = 5;
 
     public static final int HSPACE = 5;
