@@ -58,9 +58,8 @@ public class ChangeDefaultValueMigrationTaskBug8562 extends AbstractJobMigration
                             public void transform(NodeType node) {
                                 if (ComponentUtilities.getNodeProperty(node, "EXTENDINSERT") == null) {
                                     ComponentUtilities.addNodeProperty(node, "EXTENDINSERT", "CHECK");
+                                    ComponentUtilities.getNodeProperty(node, "EXTENDINSERT").setValue("false");
                                 }
-                                ComponentUtilities.getNodeProperty(node, "EXTENDINSERT").setValue("true");
-
                             }
 
                         }));
