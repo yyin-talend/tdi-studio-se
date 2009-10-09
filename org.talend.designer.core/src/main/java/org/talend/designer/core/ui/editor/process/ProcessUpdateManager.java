@@ -40,7 +40,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
-import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -871,6 +871,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
+                            Object value = param.getValue();
                             if (objectValue != null) {
                                 if ((param.getField().equals(EParameterFieldType.CLOSED_LIST) && UpdatesConstants.TYPE
                                         .equals(param.getRepositoryValue()))) {
@@ -886,26 +887,59 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     }
 
                                 } else {
-                                    // check the value
-                                    if (!param.getValue().equals("CustomModule") && !param.getValue().equals(objectValue)) {//$NON-NLS-1$
-                                        if (repositoryConnection instanceof XmlFileConnectionImpl) {
-                                            if ((((XmlFileConnectionImpl) repositoryConnection).getXmlFilePath().endsWith("xsd") || ((XmlFileConnectionImpl) repositoryConnection)
-                                                    .getXmlFilePath().endsWith("xsd\""))
-                                                    && repositoryValue.equals("FILE_PATH")) {
+                                    if (param.getField().equals(EParameterFieldType.TABLE)) { // hywang modified for bug
+                                                                                              // 9537
+                                        List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) value;
+                                        if (param.getName().equals("SHEETLIST") && oldMaps != null && objectValue instanceof List) {
+                                            List repList = (List) objectValue;
+                                            if (oldMaps.size() == repList.size()) {
+                                                for (Map<String, Object> line : oldMaps) {
+                                                    final String sheetName = "SHEETNAME";
+                                                    Object oldValue = line.get(sheetName);
+                                                    if (oldValue instanceof String && repList.get(0) instanceof Map) {
+                                                        boolean found = false;
+                                                        for (Map map : (List<Map>) repList) {
+                                                            Object repValue = map.get(sheetName);
+                                                            if (oldValue.equals(repValue)) {
+                                                                found = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                        if (!found) {
+                                                            sameValues = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
                                             } else {
                                                 sameValues = false;
                                             }
-                                        } else {
-                                            sameValues = false;
+                                        }
+
+                                    } else
+                                    // check the value
+                                    if (value instanceof String && objectValue instanceof String) {
+                                        if (!value.equals("CustomModule") && !value.equals(objectValue)) {//$NON-NLS-1$
+                                            if (repositoryConnection instanceof XmlFileConnection) {
+                                                if ((((XmlFileConnection) repositoryConnection).getXmlFilePath().endsWith("xsd") || ((XmlFileConnection) repositoryConnection)
+                                                        .getXmlFilePath().endsWith("xsd\""))
+                                                        && repositoryValue.equals("FILE_PATH")) {
+                                                } else {
+                                                    sameValues = false;
+                                                }
+                                            } else {
+                                                sameValues = false;
+                                            }
                                         }
                                     }
+
                                 }
                             } else if (param.getField().equals(EParameterFieldType.TABLE)
                                     && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {
                                 List<Map<String, Object>> newMaps = RepositoryToComponentProperty.getXMLMappingValue(
                                         repositoryConnection, node.getMetadataList().get(0));
-                                if ((param.getValue() instanceof List) && newMaps != null) {
-                                    List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) param.getValue();
+                                if ((value instanceof List) && newMaps != null) {
+                                    List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) value;
                                     // sameValues = oldMaps.size() == newMaps.size();
                                     for (int i = 0; i < newMaps.size() && sameValues; i++) {
                                         Map<String, Object> newmap = newMaps.get(i);

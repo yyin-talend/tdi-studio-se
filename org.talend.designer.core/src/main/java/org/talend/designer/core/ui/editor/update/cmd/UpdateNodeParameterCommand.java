@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.update.cmd;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +160,43 @@ public class UpdateNodeParameterCommand extends Command {
                                         }
                                     }
                                 } else {
-                                    node.setPropertyValue(param.getName(), objectValue);
+                                    // update tFileInputExcel job
+                                    if (param.getField().equals(EParameterFieldType.TABLE)) {
+                                        if (param.getName().equals("SHEETLIST") && objectValue instanceof List) {
+                                            List<Map<String, Object>> paramMaps = (List<Map<String, Object>>) param.getValue();
+                                            if (paramMaps == null) {
+                                                paramMaps = new ArrayList<Map<String, Object>>();
+                                                node.setPropertyValue(param.getName(), paramMaps);
+                                            } else {
+                                                // hywang add for 9537
+                                                List<Map<String, Object>> objectValueList = (List<Map<String, Object>>) objectValue;
+
+                                                if (paramMaps.size() < objectValueList.size()) {
+                                                    paramMaps.clear();
+                                                    for (int i = 0; i < objectValueList.size(); i++) {
+                                                        Map<String, Object> map = objectValueList.get(i);
+                                                        paramMaps.add(map);
+                                                    }
+                                                } else {
+                                                    String value = null;
+                                                    List<String> repNames = new ArrayList<String>();
+                                                    for (int i = 0; i < objectValueList.size(); i++) {
+                                                        repNames.add(objectValueList.get(i).get("SHEETNAME").toString());
+                                                    }
+                                                    for (int j = 0; j < paramMaps.size(); j++) {
+                                                        Map<String, Object> map = paramMaps.get(j);
+                                                        value = map.get("SHEETNAME").toString();
+                                                        if (!repNames.contains(value)) {
+                                                            paramMaps.remove(j);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            //
+                                        }
+                                    } else {
+                                        node.setPropertyValue(param.getName(), objectValue);
+                                    }
                                 }
                             } else if (param.getField().equals(EParameterFieldType.TABLE)
                                     && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {
