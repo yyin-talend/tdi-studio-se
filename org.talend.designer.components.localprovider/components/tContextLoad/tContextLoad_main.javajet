@@ -36,6 +36,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
 %>
 		//////////////////////////
+		boolean contextFail = false;
 <%      
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	///----------------lihan------------
@@ -101,22 +102,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             		}
             	}//here end the last for, the List "columns"
 %>
-    			
-<%
-                if(node.getElementParameter("PRINT_OPERATIONS").isContextMode()){
-%>
-                    if(<%=ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__")%>){
-                        System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
-                    }
-<%
-                }else{
-                   	if (("true").equals(ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__"))){
-%>
-                    System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
-<%
-                  	}
-                }
-%>
+
     			if (context.getProperty(key_<%=cid %>)!=null){
     				context.setProperty(key_<%=cid %>,value_<%=cid %>);
 <%
@@ -148,6 +134,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						}
 						catch(NumberFormatException e)
 						{
+							contextFail = true;
 							context.<%=ctxParam.getName()%>=null;
 							noAssignList_<%=cid %>.add(key_<%=cid %>);
 						}
@@ -169,6 +156,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	   					try{
 	       					context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
 	   					}catch(NumberFormatException e){
+	   						contextFail = true;
 	       					context.<%=ctxParam.getName()%>=null;
 	       					assignList_<%=cid %>.add(key_<%=cid %>);
 	   					}
@@ -200,6 +188,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
    						try{
        						context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
    						}catch(NumberFormatException e){
+   							contextFail = true;
        						context.<%=ctxParam.getName()%>=null;
        						noAssignList_<%=cid %>.add(key_<%=cid %>);
    						}
@@ -220,6 +209,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
    						try{
        						context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
    						}catch(NumberFormatException e){
+   							contextFail = true;
        						context.<%=ctxParam.getName()%>=null;
    						}
 <%
@@ -257,6 +247,26 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         			}
 				}
+%>
+				// print only if the context have been loaded correctly
+    			if(!contextFail){
+<%
+                	if(node.getElementParameter("PRINT_OPERATIONS").isContextMode()){
+%>
+                    	if(<%=ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__")%>){
+                        	System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
+                    	}
+<%
+                	}else{
+                   		if (("true").equals(ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__"))){
+%>
+                    	System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
+<%
+                  		}
+                	}
+%>
+				}
+<%
 						///-----------------------------------  
         	}
       	 }//here end the first for, the List "conns"
