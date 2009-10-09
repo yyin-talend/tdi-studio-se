@@ -152,9 +152,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							noAssignList_<%=cid %>.add(key_<%=cid %>);
 						}
 <%
-					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate) || ("Character").equals(typeToGenerate)){
+					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate)){				
 %>
            				context.<%=ctxParam.getName()%>=value_<%=cid %>;
+<%
+					}else if(("Character").equals(typeToGenerate)){
+%>
+                        context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
 <%
 					}else if(("BigDecimal").equals(typeToGenerate)){
 %>
@@ -200,8 +204,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        						noAssignList_<%=cid %>.add(key_<%=cid %>);
    						}
 <%
-					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate) || ("Character").equals(typeToGenerate)){%>
+					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate)){%>
            				context.<%=ctxParam.getName()%>=value_<%=cid %>;
+<%
+					}else if(("Character").equals(typeToGenerate)){
+%>
+                        context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
 <%
 					}else if(("BigDecimal").equals(typeToGenerate)){
 %>
