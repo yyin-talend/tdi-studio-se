@@ -222,7 +222,7 @@
 			    }else if(typeToGenerate.equals("Character")&&ctxParam.getName()!=null)
 			    {
 			 %>
-			 context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>").charAt(0));
+			 context.<%=ctxParam.getName()%>= new java.text.StringCharacterIterator(context.getProperty("<%=ctxParam.getName()%>")).first();			 
 			 <%
 			    } else if(typeToGenerate.equals("BigDecimal"))
             {
