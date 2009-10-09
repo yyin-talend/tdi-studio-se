@@ -238,10 +238,10 @@ public class CLASS {
             this.cid = cid;
         }
       protected  String getLProtectedChar(String columName) {
-    	  return "";
+    	  return getLProtectedChar();
       }
       protected  String getRProtectedChar(String columName) {
-    	  return "";
+    	  return getRProtectedChar();        
       }
         public String getSelectionSQL() {
             StringBuilder selectionSQL = new StringBuilder();
