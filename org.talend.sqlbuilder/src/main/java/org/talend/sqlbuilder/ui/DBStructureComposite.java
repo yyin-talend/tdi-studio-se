@@ -239,6 +239,7 @@ public class DBStructureComposite extends Composite {
         }
         ((DBTreeProvider) treeViewer.getContentProvider()).setInitialized(false);
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
+        doExpand();
     }
 
     private DatabaseConnectionItem getDisplayedConnection() {
@@ -284,7 +285,7 @@ public class DBStructureComposite extends Composite {
         treeViewer.setLabelProvider(treeLabelProvider);
         treeViewer.addFilter(filter);
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
-
+        doExpand();
         treeViewer.addTreeListener(new ITreeViewerListener() {
 
             public void treeCollapsed(TreeExpansionEvent event) {
@@ -299,6 +300,12 @@ public class DBStructureComposite extends Composite {
         hookDoubleClickAction();
         addContextMenu();
 
+    }
+
+    // see bug 8621:direct refresh Db metadata in sqlbuilder with folder.
+    private void doExpand() {
+        treeViewer.expandAll();
+        treeViewer.collapseAll();
     }
 
     private ViewerFilter filter = new ViewerFilter() {
