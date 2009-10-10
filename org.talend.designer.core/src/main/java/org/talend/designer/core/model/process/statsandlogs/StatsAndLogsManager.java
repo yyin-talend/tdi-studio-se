@@ -262,7 +262,10 @@ public class StatsAndLogsManager {
         dataNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
                 OracleComponentHelper.filterOracleConnectionType((String) process.getElementParameter(
                         EParameterName.DB_TYPE.getName()).getValue()));
-
+        IElementParameter param = dataNode.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName());
+        if (param != null) {
+            param.setValue(Boolean.FALSE);
+        }
         dataNode.getMetadataFromConnector(connectionUID);
         if (process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue().toString().indexOf("Access") != -1) {//$NON-NLS-1$
             dataNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
@@ -273,9 +276,14 @@ public class StatsAndLogsManager {
 
     private static DataNode addConnection(DataNode connectionNode, Process process, String connectionUID, DataNode dataNode,
             List<DataNode> nodeList, DataNode commitNode) {
-        dataNode.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName()).setValue(Boolean.TRUE);
-        dataNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(connectionUID);
-
+        IElementParameter param = dataNode.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName());
+        if (param != null) {
+            param.setValue(Boolean.TRUE);
+        }
+        param = dataNode.getElementParameter(EParameterName.CONNECTION.getName());
+        if (param != null) {
+            param.setValue(connectionUID);
+        }
         if (connectionNode == null) {
             IComponent component = null;
             String[] javaDbComponents = StatsAndLogsConstants.DB_OUTPUT_COMPONENTS;

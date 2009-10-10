@@ -1006,6 +1006,13 @@
              id="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskBug8562"
              name="Change Default Value">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.MigrateOracleJobSettingsParameterMigrationTask"
+             description="Migrate JobSettings Parameter for Oracle DB type"
+             id="org.talend.repository.model.migration.MigrateOracleJobSettingsParameter"
+             name="Migrate JobSettings Parameter for Oracle DB type">
+       </projecttask>
    </extension>
    
    <extension
