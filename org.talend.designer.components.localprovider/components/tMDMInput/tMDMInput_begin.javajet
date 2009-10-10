@@ -1,0 +1,138 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser
+    	org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        java.util.List
+        java.util.Map
+		"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	
+	if (metadata != null) {
+	
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+
+		// if output columns are defined
+		if (outgoingConns != null && outgoingConns.size() > 0){
+		
+			IConnection outgoingConn = outgoingConns.get(0);
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
+	
+	String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
+	String username = ElementParameterParser.getValue(node, "__USERNAME__");
+	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+	String universe = ElementParameterParser.getValue(node, "__UNIVERSE__");
+	String concept = ElementParameterParser.getValue(node, "__CONCEPT__");
+	String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
+	
+	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+	
+	boolean useWhere = ("true").equals(ElementParameterParser.getValue(node, "__USE_ITEMS__"));
+	List<Map<String, String>> ids = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__IDS__");
+	List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+	
+	String spellThrehold = ElementParameterParser.getValue(node, "__SPELLTHREHOLD__");
+	String skip = ElementParameterParser.getValue(node, "__SKIP__");
+	String maxValue = ElementParameterParser.getValue(node, "__MAXVALUE__");
+	if(spellThrehold==null || ("").equals(spellThrehold)){
+		spellThrehold = "0";
+	}
+	if(skip==null || ("").equals(skip)){
+		skip = "0";
+	}
+	
+	if(maxValue==null || ("").equals(maxValue)){
+		maxValue = "0";
+	}
+%>       
+int nb_line_<%=cid %> = 0;
+
+org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new org.talend.mdm.webservice.XtentisServiceLocator();
+xtentisService_<%=cid %>.setXtentisPortEndpointAddress(<%=mdmUrl %>);
+org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = xtentisService_<%=cid %>.getXtentisPort();    
+org.talend.mdm.webservice.XtentisBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.XtentisBindingStub)xtentisWS_<%=cid %>;
+
+// Authentification
+<%if(universe==null || ("").equals(universe.trim())){%>
+stub_<%=cid %>.setUsername(<%=username %>);
+<%}else{%>
+stub_<%=cid %>.setUsername(<%=universe%> + "/" + <%=username %>);
+<%}%>
+stub_<%=cid %>.setPassword(<%=password %>);
+
+org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %>);
+
+<%if(!useWhere){//item%>
+String[] ids_<%=cid %> = {
+<%
+	for(int i=0; i<ids.size(); i++){
+		Map<String, String> map = ids.get(i);
+		String idValue = map.get("IDVALUE");
+%>
+<%=(i==0? "":",")%><%=idValue %>
+<%
+	}
+%>
+};
+org.talend.mdm.webservice.WSGetItem wsitem_<%=cid %> = 
+new org.talend.mdm.webservice.WSGetItem(new org.talend.mdm.webservice.WSItemPK(dataCluster_<%=cid %>,<%=concept %>,ids_<%=cid %>));
+org.talend.mdm.webservice.WSItem item_<%=cid %>=xtentisWS_<%=cid %>.getItem(wsitem_<%=cid %>);
+
+<%=outgoingConn.getName() %>.<%=xmlField %> = item_<%=cid %>.getContent();
+nb_line_<%=cid %> ++;
+
+<%
+}else{//items
+%>
+org.talend.mdm.webservice.WSWhereCondition wc_<%=cid %> = null;
+java.util.List<org.talend.mdm.webservice.WSWhereItem> conditions_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSWhereItem>();
+<%
+	for(int i=0; i < operations.size(); i++){
+		Map<String, String> map= operations.get(i);
+		String xpath=map.get("XPATH");
+		String operator=map.get("FUNCTION");
+		String value = map.get("VALUE");
+		String predicate = map.get("PREDICATE");
+%>
+wc_<%=cid %> =new org.talend.mdm.webservice.WSWhereCondition(<%=xpath %>,org.talend.mdm.webservice.WSWhereOperator.<%=operator %>, <%=value %>, org.talend.mdm.webservice.WSStringPredicate.<%=predicate %>,false);
+org.talend.mdm.webservice.WSWhereItem wsItem_<%=i %>=new org.talend.mdm.webservice.WSWhereItem(wc_<%=cid %>,null,null);
+conditions_<%=cid %>.add(wsItem_<%=i %>);
+<%
+	}//for
+%>
+org.talend.mdm.webservice.WSWhereItem wsItem_<%=cid %> = null;
+if(conditions_<%=cid %>.size() > 0){
+	wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(null,conditions_<%=cid %>.toArray(new org.talend.mdm.webservice.WSWhereItem[conditions_<%=cid %>.size()]),null);
+}
+org.talend.mdm.webservice.WSGetItems getitems_<%=cid %>=new org.talend.mdm.webservice.WSGetItems(dataCluster_<%=cid %>, <%=concept %>, wsItem_<%=cid %>,
+				    <%=spellThrehold %>,		//spell Threshold
+					<%=skip %>,		//start
+					<%=(("0").equals(maxValue)? "Integer.MAX_VALUE":maxValue)%>);
+String[] items_<%=cid %> = xtentisWS_<%=cid %>.getItems(getitems_<%=cid %>);
+for(String item_<%=cid %> : items_<%=cid %>){
+	nb_line_<%=cid %> ++;
+	<%=outgoingConn.getName() %>.<%=xmlField %> = item_<%=cid %>;	
+<%
+}
+%>
+
+
+<%
+			}
+		}
+	}
+}
+%>

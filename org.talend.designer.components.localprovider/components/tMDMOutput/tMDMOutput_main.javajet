@@ -1,0 +1,149 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
+		java.util.List
+		"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
+String xmlField = ElementParameterParser.getValue(node,"__XMLFIELD__");
+String needCheck = ElementParameterParser.getValue(node,"__ISINVOKE__");
+
+boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
+String numMassInsert = ElementParameterParser.getValue(node,"__COMMIT_LEVEL__");
+
+String sourceName = ElementParameterParser.getValue(node,"__SOURCE__");
+boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
+String isUpdate = ElementParameterParser.getValue(node,"__ISUPDATE__");
+
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {//3
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+    		
+			    String rejectConnName = null;
+			    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+			    if(rejectConns != null && rejectConns.size() > 0) {
+			        IConnection rejectConn = rejectConns.get(0);
+			        rejectConnName = rejectConn.getName();
+			    }
+			    List<IMetadataColumn> rejectColumnList = null;
+			    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+			    String outConnName = null;
+			    if(metadataTable != null) {
+			        rejectColumnList = metadataTable.getListColumns();      
+			    }
+			    List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+			    for(IConnection tmpconn : outgoingConns) {
+			        if (tmpconn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			        	if(rejectConnName==null || !rejectConnName.equals(tmpconn.getName())){
+			        		outConnName=tmpconn.getName();
+			        	}
+%>
+<%=tmpconn.getName() %> = null;
+<%
+			        }
+			    }
+%>
+///////////////////////	
+input_<%=cid %> = <%=conn.getName() %>.<%=xmlField %>;
+
+try{
+	org.talend.mdm.webservice.WSPutItem item_<%=cid %> = new org.talend.mdm.webservice.WSPutItem(dataCluster_<%=cid %>,input_<%=cid %>,dataModel_<%=cid %>, <%=isUpdate %>);
+<%
+	if(withReport == true){%>
+	org.talend.mdm.webservice.WSPutItemWithReport itemReport_<%=cid %> = new org.talend.mdm.webservice.WSPutItemWithReport(item_<%=cid %>,<%=sourceName %>,<%=needCheck %>);
+<%
+		if(isMassInsert){%>
+	miList_<%=cid %>.add(itemReport_<%=cid %>);
+	if(miList_<%=cid %>.size()>=<%=numMassInsert %>){
+		xtentisWS_<%=cid %>.putItemWithReportArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItemWithReport[<%=numMassInsert %>]));
+		miList_<%=cid %>.clear();
+	}
+<%
+		}else{%>
+	xtentisWS_<%=cid %>.putItemWithReport(itemReport_<%=cid %>);
+<%
+		}
+	}else{
+		if(isMassInsert){%>
+	miList_<%=cid %>.add(item_<%=cid %>);
+	if(miList_<%=cid %>.size()>=<%=numMassInsert %>){
+		xtentisWS_<%=cid %>.putItemArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItem[<%=numMassInsert %>]));
+		miList_<%=cid %>.clear();
+	}
+<%
+		}else{%>
+	xtentisWS_<%=cid %>.putItem(item_<%=cid %>);
+<%
+		}
+	}
+if(outConnName !=null){
+%>
+	<%=outConnName %> = new <%=outConnName %>Struct();
+<%
+	for(IMetadataColumn column : metadata.getListColumns()) {
+%>
+    <%=outConnName %>.<%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+<%
+	}
+}
+%>
+}catch(Exception e){
+<%
+if(dieOnError){
+%>
+	throw(e);
+<%
+}else{
+	if(rejectConnName != null){
+		if(outConnName != null){
+%>
+	<%=outConnName %> = null;
+<%
+		}
+%>
+	<%=rejectConnName %> = new <%=rejectConnName %>Struct();
+<%
+    	for(IMetadataColumn column : metadata.getListColumns()) {
+%>
+    <%=rejectConnName %>.<%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+<%
+		}
+%>
+	<%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+<%
+	}else{
+%>
+	System.err.println(e.getMessage());
+<%
+	}
+}
+%>
+}
+nb_line_<%=cid %>++;    			
+
+///////////////////////    			
+<%
+    		}//4
+    	}//3
+    }//2
+}//1
+%>
