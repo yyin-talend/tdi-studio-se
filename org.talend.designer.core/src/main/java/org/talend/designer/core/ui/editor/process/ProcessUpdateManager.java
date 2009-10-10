@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -866,10 +867,24 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                 if (repositoryConnection != null) {
                     boolean sameValues = true;
+                    // added by wzhang for 9302
+                    boolean isXsdPath = false;
+                    if (repositoryConnection instanceof XmlFileConnectionImpl) {
+                        String filePath = ((XmlFileConnectionImpl) repositoryConnection).getXmlFilePath();
+                        if (filePath != null) {
+                            if (filePath.toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$ 
+                                isXsdPath = true;
+                            }
+                        }
+                    }
+
                     // if the repository connection exists then test the values
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
+                            if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
+                                continue;
+                            }
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
                             Object value = param.getValue();
                             if (objectValue != null) {
@@ -888,7 +903,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                 } else {
                                     if (param.getField().equals(EParameterFieldType.TABLE)) { // hywang modified for bug
-                                                                                              // 9537
+                                        // 9537
                                         List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) value;
                                         if (param.getName().equals("SHEETLIST") && oldMaps != null && objectValue instanceof List) {
                                             List repList = (List) objectValue;

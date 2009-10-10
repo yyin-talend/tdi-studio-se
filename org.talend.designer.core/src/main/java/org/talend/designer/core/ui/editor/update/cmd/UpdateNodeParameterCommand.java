@@ -25,6 +25,7 @@ import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -135,6 +136,18 @@ public class UpdateNodeParameterCommand extends Command {
             Node node = (Node) updateObject;
 
             boolean update = false;
+            // added by wzhang for bug 9302
+            boolean isXsdPath = false;
+            Object parameter = result.getParameter();
+            if (parameter instanceof XmlFileConnectionImpl) {
+                String filePath = ((XmlFileConnectionImpl) parameter).getXmlFilePath();
+                if (filePath != null) {
+                    if (filePath.toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$ 
+                        isXsdPath = true;
+                    }
+                }
+            }
+
             if (result.getResultType() == EUpdateResult.UPDATE) {
                 // upgrade from repository
                 if (result.isChecked()) {
@@ -143,6 +156,9 @@ public class UpdateNodeParameterCommand extends Command {
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
                             if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
                                     || param.getField() == EParameterFieldType.MEMO_SQL) {
+                                continue;
+                            }
+                            if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
                                 continue;
                             }
                             Object objectValue = RepositoryToComponentProperty.getValue(
