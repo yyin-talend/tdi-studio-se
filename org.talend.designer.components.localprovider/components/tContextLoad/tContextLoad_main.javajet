@@ -36,7 +36,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
 %>
 		//////////////////////////
-		boolean contextFail = false;
+		boolean contextFail_<%=cid%> = false;
 <%      
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	///----------------lihan------------
@@ -104,7 +104,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
     			if (context.getProperty(key_<%=cid %>)!=null){
-    				context.setProperty(key_<%=cid %>,value_<%=cid %>);
 <%
             	for (IContextParameter ctxParam :params){
             		String typeToGenerate ="String";
@@ -125,16 +124,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							context_<%=ctxParam.getName()%>_value = context_<%=ctxParam.getName()%>_value.substring(context_<%=ctxParam.getName()%>_pos + 1);
 						}
 						context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value));
+						context.setProperty("<%=ctxParam.getName()%>",(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value))+"");
 <%
 					}else if(("Integer").equals(typeToGenerate)){
 %>
 						try
 						{
 							context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
+							context.setProperty("<%=ctxParam.getName()%>",Integer.parseInt(value_<%=cid %>)+"");
 						}
 						catch(NumberFormatException e)
 						{
-							contextFail = true;
+							contextFail_<%=cid%> = true;
 							context.<%=ctxParam.getName()%>=null;
 							noAssignList_<%=cid %>.add(key_<%=cid %>);
 						}
@@ -142,21 +143,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate)){				
 %>
            				context.<%=ctxParam.getName()%>=value_<%=cid %>;
+           				context.setProperty("<%=ctxParam.getName()%>",value_<%=cid %>+"");
 <%
 					}else if(("Character").equals(typeToGenerate)){
 %>
                         context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
+                        context.setProperty("<%=ctxParam.getName()%>",(new java.text.StringCharacterIterator(value_<%=cid %>).first())+"");
 <%
 					}else if(("BigDecimal").equals(typeToGenerate)){
 %>
            				context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
+           				context.setProperty("<%=ctxParam.getName()%>",(new <%=typeToGenerate%> (value_<%=cid %>))+"");
 <%
 					}else{
 %>
 	   					try{
 	       					context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
+	       					context.setProperty("<%=ctxParam.getName()%>",<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>)+"");
 	   					}catch(NumberFormatException e){
-	   						contextFail = true;
+	   						contextFail_<%=cid%> = true;
 	       					context.<%=ctxParam.getName()%>=null;
 	       					assignList_<%=cid %>.add(key_<%=cid %>);
 	   					}
@@ -169,7 +174,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>	
     				assignList_<%=cid %>.add(key_<%=cid %>);
     			}else{
-    				context.setProperty(key_<%=cid %>,value_<%=cid %>);
 <%
             	for (IContextParameter ctxParam :params){
                 	String typeToGenerate ="String";
@@ -182,34 +186,40 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					if(("java.util.Date").equals(typeToGenerate)){
 %>
            				context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
+           				context.setProperty("<%=ctxParam.getName()%>",(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>))+"");
 <%
 					}else if(("Integer").equals(typeToGenerate)){
 %>
    						try{
        						context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
+       						context.setProperty("<%=ctxParam.getName()%>",Integer.parseInt(value_<%=cid %>)+"");
    						}catch(NumberFormatException e){
-   							contextFail = true;
+   							contextFail_<%=cid%> = true;
        						context.<%=ctxParam.getName()%>=null;
        						noAssignList_<%=cid %>.add(key_<%=cid %>);
    						}
 <%
 					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate)){%>
            				context.<%=ctxParam.getName()%>=value_<%=cid %>;
+           				context.setProperty("<%=ctxParam.getName()%>",value_<%=cid %>+"");
 <%
 					}else if(("Character").equals(typeToGenerate)){
 %>
                         context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
+                        context.setProperty("<%=ctxParam.getName()%>",(new java.text.StringCharacterIterator(value_<%=cid %>).first())+"");
 <%
 					}else if(("BigDecimal").equals(typeToGenerate)){
 %>
              			context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
+             			context.setProperty("<%=ctxParam.getName()%>",(new <%=typeToGenerate%> (value_<%=cid %>))+"");
 <%
 					}else{
 %>
    						try{
        						context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
+       						context.setProperty("<%=ctxParam.getName()%>",(<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>))+"");
    						}catch(NumberFormatException e){
-   							contextFail = true;
+   							contextFail_<%=cid%> = true;
        						context.<%=ctxParam.getName()%>=null;
    						}
 <%
@@ -249,7 +259,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 %>
 				// print only if the context have been loaded correctly
-    			if(!contextFail){
+    			if(!contextFail_<%=cid%>){
 <%
                 	if(node.getElementParameter("PRINT_OPERATIONS").isContextMode()){
 %>
@@ -266,6 +276,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	}
 %>
 				}
+				context.synchronizeContext();
 <%
 						///-----------------------------------  
         	}
