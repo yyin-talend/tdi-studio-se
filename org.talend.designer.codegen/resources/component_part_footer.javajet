@@ -99,11 +99,17 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
      if (metadata != null) {
       for (IConnection conn : node.getOutgoingConnections()) {
        if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+%>
+if(<%=inputColName %> != null){
+<%
         for (IMetadataColumn column : metadata.getListColumns()) {
 %>
- <%=conn.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
+	<%=conn.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
 <% 
        }
+%>
+}
+<%
       }
      }
     }
