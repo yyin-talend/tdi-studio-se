@@ -17,7 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.oro.text.regex.Perl5Substitution;
+import org.apache.oro.text.regex.Util;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -25,12 +33,9 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.shadow.TextElementParameter;
-import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.shadow.ObjectElementParameter;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
-import org.talend.expressionbuilder.ui.ExpressionComposite;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -92,14 +97,54 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
             value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
             List<Variable> variables = ExpressionBuilderDialog.getTestComposite().getVariableList();
             String expression = ExpressionBuilderDialog.getExpressionComposite().getExpression();
-            for (Variable var : variables) {
-                expression = expression.replaceAll(var.getName(), "\"" + var.getValue() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+            // modify for bug 9471
+            try {
+                for (Variable varible : variables) {
+                    Integer.parseInt(varible.getValue());
+                }
+                for (Variable var : variables) {
+                    expression = renameValues(expression, var.getName(), var.getValue());
+                }
+            } catch (NumberFormatException e1) {
+                for (Variable var : variables) {
+                    expression = renameValues(expression, var.getName(), "\"" + var.getValue() + "\"");//$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
             value.put(RowGeneratorComponent.ARRAY, expression + "+\"\""); //$NON-NLS-1$
             map.add(value);
         }
 
         return map;
+
+    }
+
+    // add for bug 9471
+    private String renameValues(final String value, final String oldName, final String newName) {
+        if (value == null || oldName == null || newName == null) {
+            return value; // keep original value
+        }
+
+        PatternCompiler compiler = new Perl5Compiler();
+        Perl5Matcher matcher = new Perl5Matcher();
+        matcher.setMultiline(true);
+        Perl5Substitution substitution = new Perl5Substitution(newName + "$2", //$NON-NLS-1$
+                Perl5Substitution.INTERPOLATE_ALL);
+
+        Pattern pattern;
+        try {
+            pattern = compiler.compile("\\b(" //$NON-NLS-1$
+                    + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)"); //$NON-NLS-1$
+        } catch (MalformedPatternException e) {
+            return value; // keep original value
+        }
+
+        if (matcher.contains(value, pattern)) {
+            // replace
+            String returnValue = Util.substitute(matcher, pattern, substitution, value, Util.SUBSTITUTE_ALL);
+            return returnValue;
+
+        }
+        return value; // keep original value
 
     }
 }
