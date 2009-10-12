@@ -576,8 +576,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         if (size > 1) {
             String message = getItemsMessages(serializableAllVersion, size);
 
-            throw new PersistenceException(Messages
-                    .getString("AbstractEMFRepositoryFactory.OnlyOneOccurenceMustbeFound", message)); //$NON-NLS-1$
+            throw new PersistenceException(Messages.getString(
+                    "AbstractEMFRepositoryFactory.presistenceException.OnlyOneOccurenceMustbeFound", message)); //$NON-NLS-1$
         } else if (size == 1) {
             return serializableAllVersion.get(0);
         } else {
@@ -616,8 +616,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         if (size > 1) {
             String message = getItemsMessages(serializableAllVersion, size);
 
-            throw new PersistenceException(Messages
-                    .getString("AbstractEMFRepositoryFactory.OnlyOneOccurenceMustbeFound", message)); //$NON-NLS-1$
+            throw new PersistenceException(Messages.getString(
+                    "AbstractEMFRepositoryFactory.presistenceException.OnlyOneOccurenceMustbeFound\", message)", message)); //$NON-NLS-1$
         } else if (size == 1) {
             return serializableAllVersion.get(0);
         } else {
