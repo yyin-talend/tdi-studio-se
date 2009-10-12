@@ -267,8 +267,8 @@ public class CLASS {
                 // find and save the root tag from the source node to the resultRoot List
                 for (Map<String, String> map : tables.get(i)) {
 
-                    int index = map.get("COLUMN").indexOf(sourceNode);
-                    if (index >= 0) {
+                    boolean b_exit = map.get("COLUMN").equals(sourceNode) || (map.get("COLUMN").indexOf(":")>0 && map.get("COLUMN").substring(0, map.get("COLUMN").indexOf(":")).equals(sourceNode));
+                    if (b_exit ) {
                         result.get(i).add(map);
                     }
                 }
