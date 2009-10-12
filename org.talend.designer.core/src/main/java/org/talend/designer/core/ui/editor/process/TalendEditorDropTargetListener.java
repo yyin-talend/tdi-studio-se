@@ -671,8 +671,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             String value = processItem.getProperty().getId();
             PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS.getName(), value);
             list.add(command4);
-            PropertyChangeCommand command5 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_CONTEXT.getName(), node
-                    .getProcess().getContextManager().getDefaultContext().getName());
+            PropertyChangeCommand command5 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_CONTEXT.getName(),
+                    processItem.getProcess().getDefaultContext());
             list.add(command5);
         } else if (selectedNode.getObject().getProperty().getItem() instanceof FileItem) { // hywang add for 6484
             if (selectedNode.getObject().getProperty().getItem() instanceof RulesItem) {
