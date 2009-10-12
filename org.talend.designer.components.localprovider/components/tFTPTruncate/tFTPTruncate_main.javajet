@@ -70,14 +70,14 @@
 			dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
 			mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1); 
     	}
-    	if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
+    	if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp_<%=cid %>.chdir(dir<%=cid %>);
     	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-		String[] listings<%=cid %> = ftp<%=cid %>.dir(null, false);
+		String[] listings<%=cid %> = ftp_<%=cid %>.dir(null, false);
 		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
 		{  
 			if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
 			{
-				ftp<%=cid %>.put(new ByteArrayInputStream(new byte[]{}), listings<%=cid %>[m<%=cid %>]);
+				ftp_<%=cid %>.put(new ByteArrayInputStream(new byte[]{}), listings<%=cid %>[m<%=cid %>]);
 				globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate OK.");
 				nb_file_<%=cid%>++;
 			}
@@ -87,5 +87,5 @@
    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate fail.");
    		throw e;
    	}
-   ftp<%=cid %>.chdir(root<%=cid %>);
+   ftp_<%=cid %>.chdir(root<%=cid %>);
 <%}%>

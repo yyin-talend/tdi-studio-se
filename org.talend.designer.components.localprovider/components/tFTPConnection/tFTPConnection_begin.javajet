@@ -36,25 +36,24 @@ if(useProxy){
 }
 if(!sftp){
 %>
-	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-	ftp<%=cid %>.setRemoteHost(<%=host %>);
-	ftp<%=cid %>.setRemotePort(<%=port %>);
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp_<%=cid %>.setRemoteHost(<%=host %>);
+	ftp_<%=cid %>.setRemotePort(<%=port %>);
 <%
 	if(("ACTIVE").equals(connectMode)){
 %>
-		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
 <%
 	}else{
 %>
-		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
 <%
 	}
-%>	
-	ftp<%=cid %>.connect();	
-	
-	ftp<%=cid %>.login(<%=user %>, <%=pass %>);  
-
-	globalMap.put("conn_<%=cid%>",ftp<%=cid %>);
+%>
+	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+	ftp_<%=cid %>.connect();	
+	ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
+	globalMap.put("conn_<%=cid%>",ftp_<%=cid %>);
 <%
 }else{
 %>

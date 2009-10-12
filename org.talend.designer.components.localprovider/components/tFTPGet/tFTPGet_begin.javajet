@@ -359,7 +359,7 @@ if(useProxy){
 	%>
 	
 	ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
-	
+	 
 	<%}else{%>		
 	ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp_<%=cid %>.setRemoteHost(<%=host %>);
@@ -374,7 +374,8 @@ if(useProxy){
 		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
 <%
 	}
-%>		
+%>
+	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
 	ftp_<%=cid %>.connect();
 	ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
 	<%} %>	 

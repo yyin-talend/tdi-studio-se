@@ -139,7 +139,7 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
 {
 <%}else{%>
 
-	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> =null;
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
 	
 	<%
 	if(("true").equals(useExistingConn)){
@@ -147,25 +147,26 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
 		String conn= "conn_" + connection;
 	%>
 	
-	ftp<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
 	
 	<%}else{%>		
-	ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-	ftp<%=cid %>.setRemoteHost(<%=host %>);
-	ftp<%=cid %>.setRemotePort(<%=port %>);
+	ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp_<%=cid %>.setRemoteHost(<%=host %>);
+	ftp_<%=cid %>.setRemotePort(<%=port %>);
 <%
 	if(("ACTIVE").equals(connectMode)){
 %>
-		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
 <%
 	}else{
 %>
-		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
 <%
 	}
-%>		
-	ftp<%=cid %>.connect();	
-	ftp<%=cid %>.login(<%=user %>, <%=pass %>); 
+%>
+	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+	ftp_<%=cid %>.connect();	
+	ftp_<%=cid %>.login(<%=user %>, <%=pass %>); 
 	<%} %>	
    
 	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();	
@@ -180,9 +181,9 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
   }
 %>	
 	String remotedir<%=cid %> = <%=remotedir%>;
-	ftp<%=cid %>.chdir(remotedir<%=cid %>);
+	ftp_<%=cid %>.chdir(remotedir<%=cid %>);
 	
-	String root<%=cid %> = ftp<%=cid %>.pwd();
+	String root<%=cid %> = ftp_<%=cid %>.pwd();
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 	{
 	

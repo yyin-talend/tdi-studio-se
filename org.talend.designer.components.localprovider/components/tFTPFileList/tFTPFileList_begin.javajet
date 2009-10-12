@@ -169,7 +169,7 @@ if(useProxy){
 <%}else{%>
 	int nb_file_<%=cid%> = 0;
 	
-	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> =null;
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
 	
 	<%
 	if(("true").equals(useExistingConn)){
@@ -177,36 +177,37 @@ if(useProxy){
 		String conn= "conn_" + connection;
 	%>
 	
-	ftp<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
 	
 	<%}else{%>		
-	ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-	ftp<%=cid %>.setRemoteHost(<%=host %>);
-	ftp<%=cid %>.setRemotePort(<%=port %>);
+	ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp_<%=cid %>.setRemoteHost(<%=host %>);
+	ftp_<%=cid %>.setRemotePort(<%=port %>);
 <%
 	if(("ACTIVE").equals(connectMode)){
 %>
-		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
 <%
 	}else{
 %>
-		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
 <%
 	}
-%>		
-	ftp<%=cid %>.connect();	
-	ftp<%=cid %>.login(<%=user %>, <%=pass %>); 
+%>
+	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+	ftp_<%=cid %>.connect();	
+	ftp_<%=cid %>.login(<%=user %>, <%=pass %>); 
 	<%} %>	    
 	
 	String remotedir_<%=cid %> = <%=remotedir%>;
-	ftp<%=cid %>.chdir(remotedir_<%=cid %>);
+	ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
     
     String[] fileList_<%=cid %>;
     if (<%=dirFull %>) {
-        fileList_<%=cid %> = ftp<%=cid %>.dir(null, true);
+        fileList_<%=cid %> = ftp_<%=cid %>.dir(null, true);
     }
     else {
-        fileList_<%=cid %> = ftp<%=cid %>.dir(null, false);
+        fileList_<%=cid %> = ftp_<%=cid %>.dir(null, false);
     }
 	List<String> fileListTemp_<%=cid %> = new java.util.ArrayList<String>();
 	for (String filemask_<%=cid %> : maskList_<%=cid %>) {

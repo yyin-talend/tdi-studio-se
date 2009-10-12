@@ -189,7 +189,8 @@ if (outputConnName != null){
 		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
 <%
 	}
-%>	
+%>
+	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
 	ftp_<%=cid %>.connect();
 	ftp_<%=cid %>.login(<%=username %>, <%=password %>);
 	<%} %>	

@@ -45,56 +45,56 @@
      		<%if(("always").equals(overwrite)){%>
      			String fromFile_<%=cid%> = key<%=cid %>;
      			String toFile_<%=cid%> = map<%=cid %>.get(key<%=cid %>);
-     		    if(ftp<%=cid%>.exists(fromFile_<%=cid%>)){
-     		    	if(ftp<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
-     		    		ftp<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
+     		    if(ftp_<%=cid%>.exists(fromFile_<%=cid%>)){
+     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
+     		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
      		    	}
-     		    	if(ftp<%=cid%>.exists(toFile_<%=cid%>)){
-		     			ftp<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + ".tmp");
+     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%>)){
+		     			ftp_<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + ".tmp");
      		    	}
-	     			ftp<%=cid %>.rename(fromFile_<%=cid%>, toFile_<%=cid%>);
-	     			if(ftp<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
-		     			ftp<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
+	     			ftp_<%=cid %>.rename(fromFile_<%=cid%>, toFile_<%=cid%>);
+	     			if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
+		     			ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
 	     			}
 	     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 	     			nb_file_<%=cid%>++;
      			}
      		<%}%>
      		<%if(("never").equals(overwrite)){%>
-     			if(!(ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
+     			if(!(ftp_<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
      			{
-     			ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     			ftp_<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
      			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
      			nb_file_<%=cid%>++;
      			}
      		<%}%>
      		<%if(("size_differ").equals(overwrite)){%>
-     			if((ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>)))){
-					com.enterprisedt.net.ftp.FTPFile ftpnewNamefile<%=cid%>=ftp<%=cid%>.fileDetails(map<%=cid %>.get(key<%=cid %>));
-					com.enterprisedt.net.ftp.FTPFile ftporigNamefile<%=cid%>=ftp<%=cid%>.fileDetails(key<%=cid %>);
+     			if((ftp_<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>)))){
+					com.enterprisedt.net.ftp.FTPFile ftpnewNamefile<%=cid%>=ftp_<%=cid%>.fileDetails(map<%=cid %>.get(key<%=cid %>));
+					com.enterprisedt.net.ftp.FTPFile ftporigNamefile<%=cid%>=ftp_<%=cid%>.fileDetails(key<%=cid %>);
 					long newNameSize<%=cid%>=ftpnewNamefile<%=cid%>.size();
 					long origNameSize<%=cid%>=ftporigNamefile<%=cid%>.size();
 					if(!(newNameSize<%=cid%>==origNameSize<%=cid%>))
 					{
 		     			String fromFile_<%=cid%> = key<%=cid %>;
 		     			String toFile_<%=cid%> = map<%=cid %>.get(key<%=cid %>);
-						if(ftp<%=cid%>.exists(fromFile_<%=cid%>)){
-		     		    	if(ftp<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
-		     		    		ftp<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
+						if(ftp_<%=cid%>.exists(fromFile_<%=cid%>)){
+		     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
+		     		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
 		     		    	}
-		     		    	if(ftp<%=cid%>.exists(toFile_<%=cid%>)){
-				     			ftp<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + ".tmp");
+		     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%>)){
+				     			ftp_<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + ".tmp");
 		     		    	}
-			     			ftp<%=cid %>.rename(fromFile_<%=cid%>, toFile_<%=cid%>);
-			     			if(ftp<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
-				     			ftp<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
+			     			ftp_<%=cid %>.rename(fromFile_<%=cid%>, toFile_<%=cid%>);
+			     			if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
+				     			ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
 			     			}
 			     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 			     			nb_file_<%=cid%>++;
 		     			}
 					}
 				}else{
-					ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+					ftp_<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
 					globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 					nb_file_<%=cid%>++;
 				}

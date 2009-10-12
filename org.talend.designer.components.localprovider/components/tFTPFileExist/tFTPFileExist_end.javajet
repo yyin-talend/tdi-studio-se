@@ -28,14 +28,14 @@
  			if(("true").equals(ignoreFailureAtQuit)){
 %>
 				try{
-					ftp<%=cid %>.quit();
+					ftp_<%=cid %>.quit();
 				}catch(java.net.SocketException se_<%=cid%>){
 					//ignore failure
 				}
 <%
 			}else{
 %>
-				ftp<%=cid %>.quit();
+				ftp_<%=cid %>.quit();
 <%
 			}
 		}

@@ -30,7 +30,7 @@
 <%}else{%>
 	}
 	
-	msg_<%=cid%>.add(ftp<%=cid %>.getUploadCount() + " files have been uploaded.");
+	msg_<%=cid%>.add(ftp_<%=cid %>.getUploadCount() + " files have been uploaded.");
 	
 	String[] msgAll_<%=cid %> = msg_<%=cid%>.getAll();
     StringBuffer sb_<%=cid %> = new StringBuffer();
@@ -46,14 +46,14 @@
  			if(("true").equals(ignoreFailureAtQuit)){
 %>
 				try{
-					ftp<%=cid %>.quit();
+					ftp_<%=cid %>.quit();
 				}catch(java.net.SocketException se_<%=cid%>){
 					//ignore failure
 				}
 <%
 			}else{
 %>
-				ftp<%=cid %>.quit();
+				ftp_<%=cid %>.quit();
 <%
 			}
 		}

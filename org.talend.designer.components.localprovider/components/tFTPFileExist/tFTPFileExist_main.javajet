@@ -35,7 +35,7 @@
 <%}else{%>
 
     	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
-    	if(ftp<%=cid %>.exists(<%=remoteDir %> + "/" + <%=filename%>)){
+    	if(ftp_<%=cid %>.exists(<%=remoteDir %> + "/" + <%=filename%>)){
     		globalMap.put("<%=cid %>_EXISTS", true);
     	}else{
     		globalMap.put("<%=cid %>_EXISTS", false);
