@@ -77,6 +77,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
+import org.talend.core.model.properties.impl.FolderItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -902,13 +903,17 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     private void addChildren(List<String> target, FolderItem source, String type, String path) {
         if (source.getType() == FolderType.FOLDER_LITERAL) {
-            target.add(path + source.getProperty().getLabel());
-
-            for (Object current : source.getChildren()) {
-                if (current instanceof FolderItem) {
-                    addChildren(target, (FolderItem) current, type, path + source.getProperty().getLabel() + "/"); //$NON-NLS-1$
+            // for bug 9352: .svnlog folder should not be visible in wizards
+            EObject obj = source.eContainer();
+            if (obj != null && obj instanceof FolderItemImpl) {
+                target.add(path + source.getProperty().getLabel());
+                for (Object current : source.getChildren()) {
+                    if (current instanceof FolderItem) {
+                        addChildren(target, (FolderItem) current, type, path + source.getProperty().getLabel() + "/"); //$NON-NLS-1$
+                    }
                 }
             }
+
         }
 
         if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
@@ -1914,6 +1919,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void unloadResources(Property property) throws PersistenceException {
         repositoryFactoryFromProvider.unloadResources(property);
     }
+
     /**
      * 
      * DOC mzhao Comment method "unloadResources".
@@ -1924,6 +1930,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void unloadResources(String uriString) throws PersistenceException {
         repositoryFactoryFromProvider.unloadResources(uriString);
     }
+
     public void unloadResources() throws PersistenceException {
         repositoryFactoryFromProvider.unloadResources();
     }
