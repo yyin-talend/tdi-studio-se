@@ -88,6 +88,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     }
                 }
 %>
+  try{
     	if (context.getProperty(key_<%=cid %>)!=null)
     	{
     		context.setProperty(key_<%=cid %>,value_<%=cid %>);
@@ -114,11 +115,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value));
 			    
             <%}else if(typeToGenerate.equals("Integer")){%>
-            try{
+
                 context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
-            }catch(NumberFormatException e){
-                context.<%=ctxParam.getName()%>=null;
-            }
+
            <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")){%>
            context.<%=ctxParam.getName()%>=value_<%=cid %>;
            <%}else if(typeToGenerate.equals("Character")){%>
@@ -127,11 +126,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
            <%}
            else{%>
-           try{
+
                context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
-           }catch(NumberFormatException e){
-               context.<%=ctxParam.getName()%>=null;
-           }
+
            <%}%>             
         }
        
@@ -157,11 +154,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            %>
            context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
            <%}else if(typeToGenerate.equals("Integer")){%>
-           try{
+
                context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
-           }catch(NumberFormatException e){
-               context.<%=ctxParam.getName()%>=null;
-           }
+
            <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")){%>
            context.<%=ctxParam.getName()%>=value_<%=cid %>;
            <%}else if(typeToGenerate.equals("Character")){%>
@@ -169,11 +164,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            <%}else if(typeToGenerate.equals("BigDecimal")){%>
            context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
            <%}else{%>
-           try{
+
                context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
-           }catch(NumberFormatException e){
-               context.<%=ctxParam.getName()%>=null;
-           }
+
            <%}%> 
            
         }
@@ -183,6 +176,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         %>  
     		newPropertyList_<%=cid %>.add(key_<%=cid %>);
     	}
+    }catch(Exception e){    	
+    	System.err.println("Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
+    }	
     	nb_line_<%=cid %>++;
 <%
         	}
