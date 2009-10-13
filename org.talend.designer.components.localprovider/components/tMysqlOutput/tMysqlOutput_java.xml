@@ -305,10 +305,42 @@
       </ITEMS>
     </PARAMETER>
     
+     <PARAMETER
+      NAME="USE_HINT_OPTIONS"
+      FIELD="CHECK"
+      NUM_ROW="15"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="HINT_OPTIONS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="16"
+      NB_LINES="5"      
+	  SHOW_IF="USE_HINT_OPTIONS == 'true'"
+    >
+      <ITEMS>
+        <ITEM NAME="HINT" VALUE="&quot;&quot;" FIELD="TEXT" />
+        <ITEM NAME="POSITION" VALUE="AFTER" FIELD="CLOSED_LIST">
+        	<ITEMS DEFAULT="AFTER">
+        		<ITEM NAME="AFTER"  VALUE="AFTER"/>
+        	</ITEMS>
+		</ITEM>
+        <ITEM NAME="SQL_STMT"  VALUE="true"  FIELD="CLOSED_LIST">
+        	<ITEMS DEFAULT="INSERT">
+        		<ITEM NAME="INSERT"  VALUE="INSERT"/>
+				<ITEM NAME="UPDATE"  VALUE="UPDATE"/>
+				<ITEM NAME="DELETE"  VALUE="DELETE"/>
+        	</ITEMS>
+		</ITEM>
+      </ITEMS>
+    </PARAMETER>
   	<PARAMETER 
   	  NAME="ENABLE_DEBUG_MODE" 
   	  FIELD="CHECK"
-	  NUM_ROW="15">
+	  NUM_ROW="17">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>  
 	
