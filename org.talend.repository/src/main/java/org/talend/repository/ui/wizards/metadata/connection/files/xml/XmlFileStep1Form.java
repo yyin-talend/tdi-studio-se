@@ -221,7 +221,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // labelIsGuess.setText(Messages.getString("XmlFileStep1.checkBoxIsGuess"));
 
         // file Field XML
-        String[] xmlExtensions = { "*.xml", "*.xsd", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        String[] xmlExtensions = { "*.xml;*.xsd", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"), //$NON-NLS-1$
                 xmlExtensions);
 
