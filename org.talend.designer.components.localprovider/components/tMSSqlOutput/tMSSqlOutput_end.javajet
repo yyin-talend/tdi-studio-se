@@ -32,7 +32,11 @@ imports="
         IConnection rejectConn = rejectConns.get(0);
         rejectConnName = rejectConn.getName();
     }
-	
+	if(("true").equals(identityInsert) && useExistingConnection ) {
+        %>
+        stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+        <%
+    } 
     if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){

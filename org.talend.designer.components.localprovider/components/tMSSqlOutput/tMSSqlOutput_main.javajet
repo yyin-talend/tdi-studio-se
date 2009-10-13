@@ -47,7 +47,11 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
     
      String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
+     
     String batchSize =ElementParameterParser.getValue(node, "__BATCH_SIZE__");
+    
+    String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
+    
     String incomingConnName = null;
     
     List<IMetadataColumn> columnList = getColumnList(node);
@@ -100,6 +104,11 @@ skeleton="../templates/db_output_bulk.skeleton"
     
 
     if(incomingConnName != null && columnList != null){
+    	if(("true").equals(identityInsert) && useExistingConnection ) {
+        %>
+        stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+        <%
+   		 } 
         %>
         whetherReject_<%=cid%> = false;
         <%    
@@ -890,5 +899,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
     		}
     	}
+    	
+		if(("true").equals(identityInsert) && useExistingConnection ) {
+        %>
+        stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] OFF");
+        <%
+   		 } 
     }
     %>

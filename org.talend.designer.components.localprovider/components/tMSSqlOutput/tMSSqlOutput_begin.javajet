@@ -224,11 +224,15 @@ if(columnList != null && columnList.size()>0) {
         String query_<%=cid%> = null;
         <%
     }
-    if(("true").equals(identityInsert)) {
+    if(("true").equals(identityInsert) ) {
         %>
         java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+        <%
+        if (!useExistingConnection) {
+        %>
         stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
         <%
+        }
     }    
 }
 %>
