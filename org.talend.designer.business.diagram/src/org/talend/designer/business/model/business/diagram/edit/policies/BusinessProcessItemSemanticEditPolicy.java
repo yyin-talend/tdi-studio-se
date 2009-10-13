@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gmf.runtime.diagram.ui.commands.ICommandProxy;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart;
 import org.eclipse.gmf.runtime.emf.commands.core.commands.DuplicateEObjectsCommand;
 import org.eclipse.gmf.runtime.emf.type.core.commands.CreateElementCommand;
@@ -433,11 +434,12 @@ public class BusinessProcessItemSemanticEditPolicy extends BusinessBaseItemSeman
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     protected Command getDuplicateCommand(DuplicateElementsRequest req) {
         TransactionalEditingDomain editingDomain = ((IGraphicalEditPart) getHost()).getEditingDomain();
-        return getMSLWrapper(new DuplicateAnythingCommand(editingDomain, req));
+        return new ICommandProxy(new org.talend.designer.business.diagram.custom.commands.DuplicateAnythingCommand(editingDomain,
+                (DuplicateElementsRequest) req));
     }
 
     /**
