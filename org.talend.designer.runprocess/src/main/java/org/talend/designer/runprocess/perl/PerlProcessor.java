@@ -464,9 +464,9 @@ public class PerlProcessor extends Processor {
         Properties envVars = new Properties();
         Runtime r = Runtime.getRuntime();
         String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
-        if (os.indexOf("windows 9") > -1) { //$NON-NLS-1$
+        if ((os.indexOf("windows 95") > -1) || (os.indexOf("windows 98") > -1)) { //$NON-NLS-1$
             p = r.exec("command.com /c path"); //$NON-NLS-1$
-        } else if ((os.indexOf("nt") > -1) || (os.indexOf("windows 2000") > -1) || (os.indexOf("windows xp") > -1) || (os.indexOf("windows 2003") > -1) || (os.indexOf("windows vista") > -1) || (os.indexOf("windows 7") > -1)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-1$
+        } else if ((os.indexOf("nt") > -1) || (os.indexOf("windows") > -1)) { //$NON-NLS-1$ //$NON-NLS-2$ 
             p = r.exec("cmd.exe /c path"); //$NON-NLS-1$
         } else {
             p = r.exec("env"); //$NON-NLS-1$
