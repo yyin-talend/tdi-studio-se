@@ -119,6 +119,12 @@ public class DatabaseForm extends AbstractForm {
 
     private LabelledText nullCharText;
 
+    private Label sqlModeLabel;
+
+    private Button button1;
+
+    private Button button2;
+
     private LabelledText urlConnectionStringText;
 
     private LabelledFileField fileField;
@@ -222,7 +228,8 @@ public class DatabaseForm extends AbstractForm {
         stringQuoteText.setText(getConnection().getStringQuote());
         nullCharText.setText(getConnection().getNullChar());
         directoryField.setText(getConnection().getDBRootPath());
-
+        button1.setSelection(getConnection().isSQLMode());
+        button2.setSelection(!getConnection().isSQLMode());
         checkAS400SpecificCase();
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL
         // Syntax (need by SQL Editor)
@@ -503,11 +510,11 @@ public class DatabaseForm extends AbstractForm {
         Group group1 = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseProperties")); //$NON-NLS-1$
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.minimumHeight = 80;
-        gridData.heightHint = 80;
+        // gridData.heightHint = 80;
         group1.setLayoutData(gridData);
         // Composite compositeGroupDbProperties =
         // Form.startNewGridLayout(group1, 4, false, SWT.LEFT, SWT.CENTER);
-        Composite compositeGroupDbProperties = Form.startNewDimensionnedGridLayout(group1, 4, width, 70);
+        Composite compositeGroupDbProperties = Form.startNewDimensionnedGridLayout(group1, 4, width, 100);
 
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL
         // Syntax (need by SQL Editor)
@@ -517,6 +524,7 @@ public class DatabaseForm extends AbstractForm {
 
         stringQuoteText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.stringQuote"), false); //$NON-NLS-1$
         nullCharText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.nullChar"), false); //$NON-NLS-1$
+
         gridData = new GridData();
         gridData.horizontalSpan = 2;
         standardButton = new Button(compositeGroupDbProperties, SWT.RADIO);
@@ -524,7 +532,30 @@ public class DatabaseForm extends AbstractForm {
         standardButton.setLayoutData(gridData);
         systemButton = new Button(compositeGroupDbProperties, SWT.RADIO);
         systemButton.setText(Messages.getString("DatabaseForm.SystemSQL")); //$NON-NLS-1$
+        gridData = new GridData();
+        gridData.horizontalSpan = 2;
         systemButton.setLayoutData(gridData);
+
+        Composite c = new Composite(compositeGroupDbProperties, SWT.NONE);
+        GridLayout layout = new GridLayout(4, false);
+        layout.horizontalSpacing = 15;
+        layout.verticalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 4;
+        c.setLayoutData(layoutData);
+        c.setLayout(layout);
+        sqlModeLabel = new Label(c, SWT.NONE);
+        sqlModeLabel.setText(Messages.getString("DatabaseForm.sqlMode")); //$NON-NLS-1$
+        button1 = new Button(c, SWT.RADIO);
+        button1.setText(Messages.getString("DatabaseForm.yes")); //$NON-NLS-1$
+        button2 = new Button(c, SWT.RADIO);
+        button2.setText(Messages.getString("DatabaseForm.no")); //$NON-NLS-1$
+        sqlModeLabel.setVisible(false);
+        button1.setVisible(false);
+        button2.setVisible(false);
+
     }
 
     /**
@@ -1177,7 +1208,7 @@ public class DatabaseForm extends AbstractForm {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(false);
         }
-        if (selectedVersion != null && !"".equals(selectedVersion)) {
+        if (selectedVersion != null && !"".equals(selectedVersion)) { //$NON-NLS-1$
             EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersion(selectedVersion);
             if (version != null) {
                 dbVersionCombo.setText(version.getVersionDisplay());
@@ -1325,6 +1356,10 @@ public class DatabaseForm extends AbstractForm {
         if (!checkGeneralDB || dbTypeCombo.getText().equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())) {
             getConnection().setURL(getStringConnection());
         }
+        boolean isTeradata = EDatabaseTypeName.TERADATA.getDisplayName().equals(dbTypeCombo.getText());
+        sqlModeLabel.setVisible(isTeradata);
+        button1.setVisible(isTeradata);
+        button2.setVisible(isTeradata);
 
         if (isContextMode()) {
             return true;
@@ -1740,6 +1775,8 @@ public class DatabaseForm extends AbstractForm {
         sqlSyntaxCombo.setReadOnly(isContextMode());
         stringQuoteText.setEditable(!isContextMode());
         nullCharText.setEditable(!isContextMode());
+        button1.setEnabled(!isContextMode());
+        button2.setEnabled(!isContextMode());
         // hshen
         generalJdbcUrlText.setEditable(!isContextMode());
 
