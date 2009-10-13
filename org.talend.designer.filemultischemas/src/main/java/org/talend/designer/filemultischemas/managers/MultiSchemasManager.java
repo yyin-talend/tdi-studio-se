@@ -626,19 +626,54 @@ public class MultiSchemasManager {
         if (value != null) {
             IProcess process = this.getMultiSchemasComponent().getProcess();
             if (process != null) {
-                String varName = ContextParameterUtils.getVariableFromCode(value);
-                if (varName != null) {
-                    IContextParameter contextParameter = process.getContextManager().getDefaultContext().getContextParameter(
-                            varName);
-                    if (contextParameter != null) {
-                        String value2 = contextParameter.getValue();
-                        if (value2 != null) {
-                            if (value2.startsWith(TalendTextUtils.getQuoteChar())
-                                    && value2.endsWith(TalendTextUtils.getQuoteChar())) {
+                // add for bug9559
+                String newValue = null;
+                if (value.contains("+")) {//$NON-NLS-1$
+                    // not noly use context variable .
+                    String[] split = value.split("\\+");//$NON-NLS-1$ 
+                    for (int i = 0; i < split.length; i++) {
+                        split[i] = split[i].trim();
+                        if (split[i].startsWith(TalendTextUtils.getQuoteChar())
+                                && split[i].endsWith(TalendTextUtils.getQuoteChar())) {
+                            split[i] = split[i].substring(1, split[i].length() - 1);
+                        }
+                        String varName = ContextParameterUtils.getVariableFromCode(split[i]);
+                        if (varName != null) {
+                            IContextParameter contextParameter = process.getContextManager().getDefaultContext()
+                                    .getContextParameter(varName);
+                            if (contextParameter != null) {
+                                String value2 = contextParameter.getValue();
+                                if (value2 != null) {
+                                    split[i] = value2;
+                                }
+                            }
+                        }
+                        if (newValue == null) {
+                            newValue = split[i];
+                        } else {
+                            newValue = newValue + split[i];
+                        }
+                    }
+                    if (newValue.startsWith(TalendTextUtils.getQuoteChar()) && newValue.endsWith(TalendTextUtils.getQuoteChar())) {
+                        return newValue;
+                    } else {
+                        return TalendTextUtils.addQuotes(newValue);
+                    }
+                } else {// only use context variable.
+                    String varName = ContextParameterUtils.getVariableFromCode(value);
+                    if (varName != null) {
+                        IContextParameter contextParameter = process.getContextManager().getDefaultContext().getContextParameter(
+                                varName);
+                        if (contextParameter != null) {
+                            String value2 = contextParameter.getValue();
+                            if (value2 != null) {
+                                if (value2.startsWith(TalendTextUtils.getQuoteChar())
+                                        && value2.endsWith(TalendTextUtils.getQuoteChar())) {
 
-                                return value2;
-                            } else { // no quote
-                                return TalendTextUtils.addQuotes(value2);
+                                    return value2;
+                                } else { // no quote
+                                    return TalendTextUtils.addQuotes(value2);
+                                }
                             }
                         }
                     }
