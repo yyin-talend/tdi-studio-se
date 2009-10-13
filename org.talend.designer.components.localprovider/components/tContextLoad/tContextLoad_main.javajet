@@ -1,8 +1,7 @@
 <%@ jet
 	imports="
 		org.talend.core.model.process.INode
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-        org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.process.ElementParameterParser  
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
@@ -14,276 +13,179 @@
 		org.talend.core.model.process.IProcess
 		org.talend.core.model.process.IContextParameter
 		java.util.ArrayList
-		java.util.Map
 	"
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String contextcid = node.getUniqueName();
 IProcess process=node.getProcess();
 List<IContextParameter> params = new ArrayList<IContextParameter>();
 params=process.getContextManager().getDefaultContext().getContextParameterList();
 List<IMetadataTable> metadatas = node.getMetadataList();
-boolean discontextError=("true").equals(ElementParameterParser.getValue(node, "__DISABLE_ERROR__"));
-String newcontextVariable = ElementParameterParser.getValue(node, "__LOAD_NEW_VARIABLE__");
-String oldcontextVariable = ElementParameterParser.getValue(node, "__NOT_LOAD_OLD_VARIABLE__");
-
-String cid = node.getUniqueName();
-
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
+        String cid = node.getUniqueName();
 %>
 		//////////////////////////
-		boolean contextFail_<%=cid%> = false;
-<%      
+<%
     	List< ? extends IConnection> conns = node.getIncomingConnections();
-    	///----------------lihan------------
-    	List<? extends IConnection> connsoutgoings = node.getOutgoingSortedConnections();
-		List<? extends IConnection> connsNotincontext = node.getOutgoingConnections("NOTINCONTEXT");
-		if (connsoutgoings!=null) 
-		{
-			if (connsoutgoings.size()>0) 
-			{
-				for (int i=0;i<connsoutgoings.size();i++) 
-				{
-					IConnection connsoutgoing = connsoutgoings.get(i);
-					if (connsoutgoing.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) 
-					{
-%>
-						<%=connsoutgoing.getName() %> = null;			
-<%					 
-			    	}
-				}
-			}
-		}
-	
-		///---------------------------------
-    	for (IConnection conn : conns){
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) 
-    		{
+    	for (IConnection conn : conns) {
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    		
+    		    %>    		
+    		    <%
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
-    			
-    			for (int i = 0; (sizeColumns >= 2)&&(i < 2); i++){
+    			for (int i = 0; (sizeColumns >= 2)&&(i < 2); i++) {
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
-%>
+					%>
 					String <%=i==0?"key":"value" %>_<%=cid %> = null;				
-<%
-					if(!isPrimitive){
-%>   				
-					if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
-<%
+					<%
+					if(!isPrimitive) {
+					    %>   				
+					    if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
+				        <%
 					}
-%>
-			    	<%=i==0?"key":"value" %>_<%=cid %> =
-<%
-        			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-        			if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0){
-%>
-		    		FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%=pattern %>);					
-<% 
-					}else if(javaType == JavaTypesManager.STRING){
-%>
-					<%=conn.getName() %>.<%=column.getLabel() %>;				
-<%
-					}else{
-%>
-				    String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);					
-<%
+				    %>
+				    <%=i==0?"key":"value" %>_<%=cid %> =
+			        <%
+            		String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+            		if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+            		    %>
+            		    FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);					
+            		    <%
+					} else if(javaType == JavaTypesManager.STRING) {
+					    %>
+					    <%=conn.getName() %>.<%=column.getLabel() %>;					
+					    <%
+					} else {
+					    %>
+					    String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);					
+					    <%
             		}
-            		if(!isPrimitive){
-%>
-            		}
-<%
+            		if(!isPrimitive) {
+            		    %>
+            		    }
+            		    <%
             		}
             	}//here end the last for, the List "columns"
+    			%>
+    			
+    			<%
+                if(node.getElementParameter("PRINT_OPERATIONS").isContextMode()) {
+                    %>
+                    if(<%=ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__")%>) {
+                        System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
+                    }
+                    <%
+                } else {
+                    if (ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__").equals("true")) {
+                        %>
+                        System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
+                        <%
+                    }
+                }
 %>
-
-    			if (context.getProperty(key_<%=cid %>)!=null){
-<%
-            	for (IContextParameter ctxParam :params){
-            		String typeToGenerate ="String";
-            		if( !(("id_File").equals(ctxParam.getType()) || ("id_Directory").equals(ctxParam.getType()) ||("id_List Of Value").equals(ctxParam.getType()) || ("id_Password").equals(ctxParam.getType()) )){
-               			typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
-            		}
-        			%>  
-        			if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>)){                
-<%
-					if(("java.util.Date").equals(typeToGenerate)){
-%>            
-				   		String context_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
-						int context_<%=ctxParam.getName()%>_pos = context_<%=ctxParam.getName()%>_value.indexOf(";");
-						String context_<%=ctxParam.getName()%>_pattern =  "yyyy-MM-dd HH:mm:ss";
-						if(context_<%=ctxParam.getName()%>_pos > -1)
-						{
-							context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);
-							context_<%=ctxParam.getName()%>_value = context_<%=ctxParam.getName()%>_value.substring(context_<%=ctxParam.getName()%>_pos + 1);
-						}
-						context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value));
-						context.setProperty("<%=ctxParam.getName()%>",(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value))+"");
-<%
-					}else if(("Integer").equals(typeToGenerate)){
-%>
-						try
-						{
-							context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
-							context.setProperty("<%=ctxParam.getName()%>",Integer.parseInt(value_<%=cid %>)+"");
-						}
-						catch(NumberFormatException e)
-						{
-							contextFail_<%=cid%> = true;
-							context.<%=ctxParam.getName()%>=null;
-							noAssignList_<%=cid %>.add(key_<%=cid %>);
-						}
-<%
-					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate)){				
-%>
-           				context.<%=ctxParam.getName()%>=value_<%=cid %>;
-           				context.setProperty("<%=ctxParam.getName()%>",value_<%=cid %>+"");
-<%
-					}else if(("Character").equals(typeToGenerate)){
-%>
-                        context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
-                        context.setProperty("<%=ctxParam.getName()%>",(new java.text.StringCharacterIterator(value_<%=cid %>).first())+"");
-<%
-					}else if(("BigDecimal").equals(typeToGenerate)){
-%>
-           				context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
-           				context.setProperty("<%=ctxParam.getName()%>",(new <%=typeToGenerate%> (value_<%=cid %>))+"");
-<%
-					}else{
-%>
-	   					try{
-	       					context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
-	       					context.setProperty("<%=ctxParam.getName()%>",<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>)+"");
-	   					}catch(NumberFormatException e){
-	   						contextFail_<%=cid%> = true;
-	       					context.<%=ctxParam.getName()%>=null;
-	       					assignList_<%=cid %>.add(key_<%=cid %>);
-	   					}
-<%
-					}
-%>
-        			} 
-<%
-             	}
-%>	
-    				assignList_<%=cid %>.add(key_<%=cid %>);
-    			}else{
-<%
-            	for (IContextParameter ctxParam :params){
-                	String typeToGenerate ="String";
-                	if( !(("id_File").equals(ctxParam.getType()) || ("id_Directory").equals(ctxParam.getType()) ||("id_List Of Value").equals(ctxParam.getType()) || ("id_Password").equals(ctxParam.getType()) )){
-                   		typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
-                	}
-%>  
-        			if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>)){               
-<%
-					if(("java.util.Date").equals(typeToGenerate)){
-%>
-           				context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
-           				context.setProperty("<%=ctxParam.getName()%>",(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>))+"");
-<%
-					}else if(("Integer").equals(typeToGenerate)){
-%>
-   						try{
-       						context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
-       						context.setProperty("<%=ctxParam.getName()%>",Integer.parseInt(value_<%=cid %>)+"");
-   						}catch(NumberFormatException e){
-   							contextFail_<%=cid%> = true;
-       						context.<%=ctxParam.getName()%>=null;
-       						noAssignList_<%=cid %>.add(key_<%=cid %>);
-   						}
-<%
-					}else if(("Object").equals(typeToGenerate)||("String").equals(typeToGenerate)){%>
-           				context.<%=ctxParam.getName()%>=value_<%=cid %>;
-           				context.setProperty("<%=ctxParam.getName()%>",value_<%=cid %>+"");
-<%
-					}else if(("Character").equals(typeToGenerate)){
-%>
-                        context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
-                        context.setProperty("<%=ctxParam.getName()%>",(new java.text.StringCharacterIterator(value_<%=cid %>).first())+"");
-<%
-					}else if(("BigDecimal").equals(typeToGenerate)){
-%>
-             			context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
-             			context.setProperty("<%=ctxParam.getName()%>",(new <%=typeToGenerate%> (value_<%=cid %>))+"");
-<%
-					}else{
-%>
-   						try{
-       						context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
-       						context.setProperty("<%=ctxParam.getName()%>",(<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>))+"");
-   						}catch(NumberFormatException e){
-   							contextFail_<%=cid%> = true;
-       						context.<%=ctxParam.getName()%>=null;
-   						}
-<%
-					}
-%>
-        			}
-<%
-             	}
-%>  
-					newPropertyList_<%=cid %>.add(key_<%=cid %>);
+    	if (context.getProperty(key_<%=cid %>)!=null)
+    	{
+    		context.setProperty(key_<%=cid %>,value_<%=cid %>);
+    	<%
+            for (IContextParameter ctxParam :params)
+             {
+                String typeToGenerate ="String";
+                if( !(ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") ||ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_Password")))
+                {
+                   typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
+                }
+        %>  
+        if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>))
+        {                
+           <% if(typeToGenerate.equals("java.util.Date"))
+            {%>            
+                String context_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
+				int context_<%=ctxParam.getName()%>_pos = context_<%=ctxParam.getName()%>_value.indexOf(";");
+				String context_<%=ctxParam.getName()%>_pattern =  "yyyy-MM-dd HH:mm:ss";
+				if(context_<%=ctxParam.getName()%>_pos > -1){
+					context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);
+					context_<%=ctxParam.getName()%>_value = context_<%=ctxParam.getName()%>_value.substring(context_<%=ctxParam.getName()%>_pos + 1);
 				}
-    			nb_line_<%=cid %>++;
+			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value));
+			    
+            <%}else if(typeToGenerate.equals("Integer")){%>
+            try{
+                context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
+            }catch(NumberFormatException e){
+                context.<%=ctxParam.getName()%>=null;
+            }
+           <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") || typeToGenerate.equals("Character")){%>
+           context.<%=ctxParam.getName()%>=value_<%=cid %>;
+           <%}else if(typeToGenerate.equals("BigDecimal")){%>
+           context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
+           <%}
+           else{%>
+           try{
+               context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
+           }catch(NumberFormatException e){
+               context.<%=ctxParam.getName()%>=null;
+           }
+           <%}%>             
+        }
+       
+         <%               
+             }
+        %>	
+    		assignList_<%=cid %>.add(key_<%=cid %>);
+    	}else  {
+    		context.setProperty(key_<%=cid %>,value_<%=cid %>);
+    		<%
+            for (IContextParameter ctxParam :params)
+             {
+                String typeToGenerate ="String";
+                if( !(ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") ||ctxParam.getType().equals("id_List Of Value")))
+                {
+                   typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
+                }
+        %>  
+        if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>))
+        {               
+           <% if(typeToGenerate.equals("java.util.Date"))
+            {
+           %>
+           context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
+           <%}else if(typeToGenerate.equals("Integer")){%>
+           try{
+               context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
+           }catch(NumberFormatException e){
+               context.<%=ctxParam.getName()%>=null;
+           }
+           <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") || typeToGenerate.equals("Character")){%>
+           context.<%=ctxParam.getName()%>=value_<%=cid %>;
+           <%}else if(typeToGenerate.equals("BigDecimal")){%>
+           context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
+           <%}else{%>
+           try{
+               context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
+           }catch(NumberFormatException e){
+               context.<%=ctxParam.getName()%>=null;
+           }
+           <%}%> 
+           
+        }
+       
+         <%               
+             }
+        %>  
+    		newPropertyList_<%=cid %>.add(key_<%=cid %>);
+    	}
+    	nb_line_<%=cid %>++;
 <%
-			   ///----------lihan-------------------    	
-			   if (connsNotincontext != null && connsNotincontext.size()>0){
-			   		for (int i=0;i<connsNotincontext.size();i++){				
-						IConnection contextconn = connsNotincontext.get(i);
-%>
-  				String incomingdata = <%=conn.getName() %>.<%=metadata.getListColumns().get(0).getLabel()%>;
- 				java.util.List<String> contextlist = newPropertyList_<%=cid%>;
- 				if(<%=contextconn.getName() %> == null){ 
- 					if(contextlist.contains(incomingdata)){
-    					<%=contextconn.getName() %> = new <%=contextconn.getName() %>Struct();
-    				}
- 				}
- 				if(contextlist.contains(incomingdata)){
- <%
-				    	for (IMetadataColumn column: metadata.getListColumns()){	     						
-%>
-			    	<%=contextconn.getName() %>.<%=column.getLabel() %> = <%=conn.getName()%>.<%=column.getLabel() %>;
-<%
-			   			} 
-%>
-				}
-<%
-        			}
-				}
-%>
-				// print only if the context have been loaded correctly
-    			if(!contextFail_<%=cid%>){
-<%
-                	if(node.getElementParameter("PRINT_OPERATIONS").isContextMode()){
-%>
-                    	if(<%=ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__")%>){
-                        	System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
-                    	}
-<%
-                	}else{
-                   		if (("true").equals(ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__"))){
-%>
-                    	System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
-<%
-                  		}
-                	}
-%>
-				}
-				context.synchronizeContext();
-<%
-						///-----------------------------------  
         	}
-      	 }//here end the first for, the List "conns"
+        }//here end the first for, the List "conns"
 %>    	
-  
-<% 
+    	//////////////////////////
+<%
 	}
-}
+}  
 %>

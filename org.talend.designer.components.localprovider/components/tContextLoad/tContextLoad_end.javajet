@@ -10,9 +10,9 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-    boolean disError=("true").equals(ElementParameterParser.getValue(node, "__DISABLE_ERROR__"));
-    boolean disWarning=("true").equals(ElementParameterParser.getValue(node, "__DISABLE_WARNINGS__"));
-    boolean disInfo=("true").equals(ElementParameterParser.getValue(node, "__DISABLE_INFO__"));
+    boolean disError=ElementParameterParser.getValue(node, "__DISABLE_ERROR__").equals("true");
+    boolean disWarning=ElementParameterParser.getValue(node, "__DISABLE_WARNINGS__").equals("true");
+    boolean disInfo=ElementParameterParser.getValue(node, "__DISABLE_INFO__").equals("true");
     String newVariable = ElementParameterParser.getValue(node, "__LOAD_NEW_VARIABLE__");
     String oldVariable = ElementParameterParser.getValue(node, "__NOT_LOAD_OLD_VARIABLE__");
 %>	
@@ -26,26 +26,33 @@
         }          
     }
 <%
-	if( (("Error").equals(newVariable) && disError==false) 
-		|| (("Warning").equals(newVariable) && disWarning==false)
-		|| (("Info").equals(newVariable) && disInfo==false) ){
+	if( (newVariable.equals("Error") && disError==false) 
+		|| (newVariable.equals("Warning") && disWarning==false)
+		|| (newVariable.equals("Info") && disInfo==false) ){
 %>
 	for(Object obj_<%=cid %> :newPropertyList_<%=cid%>){
-		System.<%=("Error").equals(newVariable)?"err":"out"%>.println("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
-		errorMessage_<%=cid %>.append("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
+		System.<%=newVariable.equals("Error")?"err":"out"%>.println("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
 	}
 <%
 	}
-	if( (("Error").equals(oldVariable) && disError==false) 
-		|| (("Warning").equals(oldVariable) && disWarning==false)
-		|| (("Info").equals(oldVariable) && disInfo==false) ){
+	if( (oldVariable.equals("Error") && disError==false) 
+		|| (oldVariable.equals("Warning") && disWarning==false)
+		|| (oldVariable.equals("Info") && disInfo==false) ){
 %>
 	for(Object obj_<%=cid %> :noAssignList_<%=cid %>){
-		System.<%=("Error").equals(oldVariable)?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
-		errorMessage_<%=cid %>.append("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>"); 
+		System.<%=oldVariable.equals("Error")?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
 	}
 <%
 	}
 %> 
+
+    String newPropertyStr_<%=cid %> = newPropertyList_<%=cid %>.toString();
+    String newProperty_<%=cid %> = newPropertyStr_<%=cid %>.substring(1, newPropertyStr_<%=cid %>.length() - 1);
+    
+    String noAssignStr_<%=cid %> = noAssignList_<%=cid %>.toString();
+    String noAssign_<%=cid %> = noAssignStr_<%=cid %>.substring(1, noAssignStr_<%=cid %>.length() - 1);
+    
+    globalMap.put("tContextLoad_1_KEY_NOT_INCONTEXT", newProperty_<%=cid %>);
+    globalMap.put("tContextLoad_1_KEY_NOT_LOADED", noAssign_<%=cid %>);
+
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-    globalMap.put("<%=cid %>_ERROR_MESSAGE",errorMessage_<%=cid %>.toString());

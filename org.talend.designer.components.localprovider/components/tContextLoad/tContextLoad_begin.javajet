@@ -13,4 +13,3 @@
 	java.util.List<String> newPropertyList_<%=cid %> = new java.util.ArrayList<String>();
 	java.util.List<String> noAssignList_<%=cid %> = new java.util.ArrayList<String>();
 	int nb_line_<%=cid %> = 0;
-	java.lang.StringBuilder errorMessage_<%=cid %> = new java.lang.StringBuilder();
