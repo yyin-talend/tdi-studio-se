@@ -119,8 +119,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             }catch(NumberFormatException e){
                 context.<%=ctxParam.getName()%>=null;
             }
-           <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") || typeToGenerate.equals("Character")){%>
+           <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")){%>
            context.<%=ctxParam.getName()%>=value_<%=cid %>;
+           <%}else if(typeToGenerate.equals("Character")){%>
+           context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
            <%}else if(typeToGenerate.equals("BigDecimal")){%>
            context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
            <%}
@@ -160,8 +162,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            }catch(NumberFormatException e){
                context.<%=ctxParam.getName()%>=null;
            }
-           <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") || typeToGenerate.equals("Character")){%>
+           <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")){%>
            context.<%=ctxParam.getName()%>=value_<%=cid %>;
+           <%}else if(typeToGenerate.equals("Character")){%>
+           context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
            <%}else if(typeToGenerate.equals("BigDecimal")){%>
            context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
            <%}else{%>
