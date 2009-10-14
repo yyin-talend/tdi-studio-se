@@ -122,7 +122,7 @@ public enum EParameterName {
     VARIABLES("VARIABLES"), //$NON-NLS-1$
     USE_EXISTING_CONNECTION(Messages.getString("EParameterName.useExistConn")), //$NON-NLS-1$
 
-    RESUMING_CHECKPOINT("Resuming Checkpoint"), //$NON-NLS-1$
+    RESUMING_CHECKPOINT("Recovery Checkpoint"), //$NON-NLS-1$
     RESUMLABEL("Label"), //$NON-NLS-1$
     FAILURE_INSTRUCTIONS("Failure instructions"), //$NON-NLS-1$
 
