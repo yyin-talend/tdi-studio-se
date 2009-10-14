@@ -513,14 +513,16 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         new StatusPreferenceInitializer().initializeDefaultPreferences();
         String productVersion = RepositoryPlugin.getDefault().getBundle().getHeaders().get(
                 org.osgi.framework.Constants.BUNDLE_VERSION).toString();
-
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-
-        String productBranding = brandingService.getFullProductName();
-
-        project.getEmfProject().setProductVersion(productBranding + "-" + productVersion); //$NON-NLS-1$
-
+        IBrandingService brandingService = null;
+        try {
+            brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+        } catch (Exception e) {
+            // nothing to do.
+        }
+        if (brandingService != null) {
+            String productBranding = brandingService.getFullProductName();
+            project.getEmfProject().setProductVersion(productBranding + "-" + productVersion); //$NON-NLS-1$
+        }
         saveProject();
     }
 
