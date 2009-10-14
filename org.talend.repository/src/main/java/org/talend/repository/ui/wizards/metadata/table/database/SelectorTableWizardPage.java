@@ -118,6 +118,7 @@ public class SelectorTableWizardPage extends WizardPage {
         data = new GridData(GridData.FILL_BOTH);
         data.horizontalSpan = 7;
         if (isCreateTemplate) {
+            templateConnection.getConnection().getTables().clear();
             tableForm = new SelectorTableForm(container, templateConnection, this, isCreateTemplate);
         } else {
             tableForm = new SelectorTableForm(container, connectionItem, this, isCreateTemplate);
