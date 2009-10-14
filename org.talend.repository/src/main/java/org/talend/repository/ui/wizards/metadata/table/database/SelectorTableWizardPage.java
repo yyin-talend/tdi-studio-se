@@ -43,6 +43,8 @@ public class SelectorTableWizardPage extends WizardPage {
 
     private final ConnectionItem connectionItem;
 
+    private ConnectionItem templateConnection;
+
     private boolean isRepositoryObjectEditable;
 
     private final TableInfoParameters tableInfoParameters;
@@ -74,6 +76,7 @@ public class SelectorTableWizardPage extends WizardPage {
             boolean isCreateTemplate) {
         super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
+        this.templateConnection = connectionItem;
         this.metadataTable = metadataTable;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.tableInfoParameters = tableInfoParameters;
@@ -114,7 +117,12 @@ public class SelectorTableWizardPage extends WizardPage {
 
         data = new GridData(GridData.FILL_BOTH);
         data.horizontalSpan = 7;
-        tableForm = new SelectorTableForm(container, connectionItem, this, isCreateTemplate);
+        if (isCreateTemplate) {
+            tableForm = new SelectorTableForm(container, templateConnection, this, isCreateTemplate);
+        } else {
+            tableForm = new SelectorTableForm(container, connectionItem, this, isCreateTemplate);
+        }
+
         tableForm.setLayoutData(data);
         tableForm.setIMetadataConnection(metadataConnection);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
@@ -165,4 +173,29 @@ public class SelectorTableWizardPage extends WizardPage {
         }
         return tableForm.getConnection();
     }
+
+    public void setTemplateConnection(ConnectionItem templateConnection, IMetadataConnection metadataConnection) {
+        if (this.templateConnection == templateConnection) {// && this.metadataConnection == metadataConnection) {
+            return;
+        }
+        this.templateConnection = templateConnection;
+        this.metadataConnection = metadataConnection;
+        if (tableForm != null) {
+            tableForm.setTemplateConntion(templateConnection);
+            tableForm.setIMetadataConnection(metadataConnection);
+            // tableForm.getConnection().getTables().clear();
+            if (isCreateTemplate) {
+                tableForm.initControlData(true);
+            }
+        }
+    }
+
+    // public IMetadataConnection getMetadataConnection() {
+    // return this.metadataConnection;
+    // }
+    //
+    // public void setMetadataConnection(IMetadataConnection metadataConnection) {
+    // this.metadataConnection = metadataConnection;
+    // }
+
 }

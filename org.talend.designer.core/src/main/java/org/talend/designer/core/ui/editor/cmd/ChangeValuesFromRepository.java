@@ -407,20 +407,21 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     private String getFirstRepositoryTable(Item item) {
         if (isNotSim) {
             if (item != null) {
-                final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
-                if (tables != null && !tables.isEmpty()) {
-                    if (tables.size() > index) {
-                        for (MetadataTable table : tables) {
-                            if (table.getLabel().equals(getCurrentTableName())) {
-                                return table.getLabel();
-                            }
-                        }
-                        return tables.get(index).getLabel();
-                    } else {
-                        return tables.get(0).getLabel();
-                    }
-
-                }
+                // final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
+                // if (tables != null && !tables.isEmpty()) {
+                // if (tables.size() > index) {
+                // for (MetadataTable table : tables) {
+                // if (table.getLabel().equals(getCurrentTableName())) {
+                // return table.getLabel();
+                // }
+                // }
+                // return tables.get(index).getLabel();
+                // } else {
+                // return tables.get(0).getLabel();
+                // }
+                //
+                // }
+                return getCurrentTableName();
             }
         } else {
             if (item != null) {

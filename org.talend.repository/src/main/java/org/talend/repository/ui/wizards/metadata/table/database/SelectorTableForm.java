@@ -116,8 +116,9 @@ public class SelectorTableForm extends AbstractForm {
      */
     private final ConnectionItem connectionItem;
 
-    // private DatabaseConnection connection;
+    private ConnectionItem templateConntion;
 
+    // private DatabaseConnection connection;
     protected Table table;
 
     private int count = 0;
@@ -163,6 +164,7 @@ public class SelectorTableForm extends AbstractForm {
         super(parent, SWT.NONE);
         managerConnection = new ManagerConnection();
         this.connectionItem = connectionItem;
+        this.templateConntion = connectionItem;
         this.parentWizardPage = page;
         this.tableInfoParameters = page.getTableInfoParameters();
         this.forTemplate = forTemplate;
@@ -667,7 +669,10 @@ public class SelectorTableForm extends AbstractForm {
                 metadataColumnsValid.add(metadataColumn);
                 metadataTable.getColumns().add(metadataColumn);
             }
-            getConnection().getTables().add(metadataTable);
+            if (!getConnection().getTables().contains(metadataTable) && !limitTemplateTable(metadataTable)) {
+                getConnection().getTables().add(metadataTable);
+            }
+
         }
     }
 
@@ -844,7 +849,9 @@ public class SelectorTableForm extends AbstractForm {
                 metadataColumnsValid.add(metadataColumn);
                 metadataTable.getColumns().add(metadataColumn);
             }
-            getConnection().getTables().add(metadataTable);
+            if (!getConnection().getTables().contains(metadataTable) && !limitTemplateTable(metadataTable)) {
+                getConnection().getTables().add(metadataTable);
+            }
 
             checkConnectionIsDone = true;
 
@@ -1057,7 +1064,12 @@ public class SelectorTableForm extends AbstractForm {
     }
 
     protected DatabaseConnection getConnection() {
-        return (DatabaseConnection) connectionItem.getConnection();
+        if (forTemplate) {
+            return (DatabaseConnection) templateConntion.getConnection();
+        } else {
+            return (DatabaseConnection) connectionItem.getConnection();
+        }
+
     }
 
     public Table getTable() {
@@ -1094,6 +1106,29 @@ public class SelectorTableForm extends AbstractForm {
             threadExecutor.clearThreads();
             ExtractMetaDataUtils.closeConnection();
         }
+    }
+
+    public ConnectionItem getTemplateConntion() {
+        return this.templateConntion;
+    }
+
+    public void setTemplateConntion(ConnectionItem templateConntion) {
+        this.templateConntion = templateConntion;
+    }
+
+    private boolean limitTemplateTable(MetadataTable tabel) {
+        boolean exist = false;
+        if (!forTemplate) {
+            return exist;
+        }
+        for (int i = 0; i < getConnection().getTables().size(); i++) {
+            String sourceName = tabel.getSourceName();
+            if (((MetadataTable) getConnection().getTables().get(i)).getSourceName().equals(sourceName)) {
+                exist = true;
+                break;
+            }
+        }
+        return exist;
     }
 
 }
