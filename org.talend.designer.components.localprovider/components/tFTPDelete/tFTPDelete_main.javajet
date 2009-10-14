@@ -34,7 +34,7 @@
 			mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1); 
     	}
     	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-		java.util.Vector listings<%=cid %> = c<%=cid %>.ls(<%=remotedir %>);
+		java.util.Vector listings<%=cid %> = c_<%=cid %>.ls(<%=remotedir %>);
 		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.size(); m<%=cid %>++)
 		{ 
 			String filePath<%=cid%> =  ((com.jcraft.jsch.ChannelSftp.LsEntry) listings<%=cid %>.elementAt(m<%=cid %>)).getFilename() ;
@@ -44,11 +44,11 @@
 <%
 				if("FILE".equals(targetType)){
 %>			
-				 	c<%=cid%>.rm((<%=remotedir %>)+"/"+ filePath<%=cid%>);
+				 	c_<%=cid%>.rm((<%=remotedir %>)+"/"+ filePath<%=cid%>);
 <%
 				}else{
 %>
-				 	c<%=cid%>.rmdir((<%=remotedir %>)+"/"+ filePath<%=cid%>);
+				 	c_<%=cid%>.rmdir((<%=remotedir %>)+"/"+ filePath<%=cid%>);
 <%
 				}
 %>

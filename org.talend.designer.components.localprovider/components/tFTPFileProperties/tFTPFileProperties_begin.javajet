@@ -24,7 +24,7 @@ String username = ElementParameterParser.getValue(node,"__USERNAME__");
 String password = ElementParameterParser.getValue(node,"__PASSWORD__");
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String remoteDir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
-
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 
 String user = ElementParameterParser.getValue(node, "__USERNAME__");
@@ -141,11 +141,11 @@ if (outputConnName != null){
 	}
 %> 
     
-    com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
-    channel<%=cid%>.connect();
+    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
+    channel_<%=cid%>.connect();
      
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>;    
-    
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;    
+    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
 	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
 	<%=outputConnName %> = new <%=outputConnName %>Struct();
 	String remoteFile_<%=cid %> = <%=remoteDir %> + "/" + <%=filename%>;
@@ -190,7 +190,7 @@ if (outputConnName != null){
 <%
 	}
 %>
-	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+	ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
 	ftp_<%=cid %>.connect();
 	ftp_<%=cid %>.login(<%=username %>, <%=password %>);
 	<%} %>	

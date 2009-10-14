@@ -50,7 +50,7 @@ if(!sftp){
 <%
 	}
 %>
-	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__ENCODING__")%>);
 	ftp_<%=cid %>.connect();	
 	ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
 	globalMap.put("conn_<%=cid%>",ftp_<%=cid %>);

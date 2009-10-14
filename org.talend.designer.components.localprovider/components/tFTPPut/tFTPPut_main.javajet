@@ -63,19 +63,19 @@
 						int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
 						<%}%>
 						try{
-		    				c<%=cid%>.put(listings<%=cid %>[m<%=cid %>].getAbsolutePath(), <%=remotedir%>, monitor<%=cid%>, mode<%=cid%>);
+		    				c_<%=cid%>.put(listings<%=cid %>[m<%=cid %>].getAbsolutePath(), <%=remotedir%>, monitor<%=cid%>, mode<%=cid%>);
 		    				 
 		    				// add info to list will return
 		    				msg_<%=cid%>.add("file: " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + ", size: "
 		                    	+ listings<%=cid %>[m<%=cid %>].length() + " bytes upload successfully");
 		                                            
 		    				globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
-		    				if(c<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
+		    				if(c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
 		    					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",true);
 		    				}
 		    			}catch(com.jcraft.jsch.SftpException se) {
 		                	globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
-		                	if(c<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
+		                	if(c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
 		                		globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",true);
 		                	}
 		                         
@@ -96,7 +96,7 @@
 	    	//do rename
 	    	if(map<%=cid %>.get(key<%=cid %>) != ""){
 		    	try{
-		   			c<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
+		   			c_<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 		   		}catch(com.jcraft.jsch.SftpException se){
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");

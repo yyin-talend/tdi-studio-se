@@ -375,7 +375,7 @@ if(useProxy){
 <%
 	}
 %>
-	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+	ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
 	ftp_<%=cid %>.connect();
 	ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
 	<%} %>	 

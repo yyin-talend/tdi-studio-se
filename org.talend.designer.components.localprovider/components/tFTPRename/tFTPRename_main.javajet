@@ -25,7 +25,7 @@
     	for (String key<%=cid %> : keySet<%=cid %>)
    		{    
    			try{
-   			c<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
+   			c_<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
    			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
    			}catch(com.jcraft.jsch.SftpException se){
    			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");

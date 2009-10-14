@@ -25,7 +25,7 @@
 	String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
 	String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
 	String proxyPass = ElementParameterParser.getValue(node, "__PROXY_PASSWORD__");
-	
+	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	
 	String user = ElementParameterParser.getValue(node, "__USERNAME__");
@@ -118,10 +118,11 @@ if(useProxy){
 	}
 %> 
     
-    com.jcraft.jsch. Channel channel<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
-    channel<%=cid%>.connect();
+    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
+    channel_<%=cid%>.connect();
      
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>;
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
+    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
 <%}else{%>
 		com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
 		
@@ -148,7 +149,7 @@ if(useProxy){
 <%
 	}
 %>
-		ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+		ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
 		ftp_<%=cid %>.connect();	
     	ftp_<%=cid %>.login(<%=username %>, <%=password %>);
 		<%} %>

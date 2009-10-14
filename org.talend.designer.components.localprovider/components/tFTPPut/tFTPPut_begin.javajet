@@ -120,10 +120,10 @@ if(sftp){
     // becasue there is not the same method in JSch class as FTPClient class, define a list here
     java.util.List<String> msg_<%=cid%> = new java.util.ArrayList<String>();
     
-    com.jcraft.jsch. Channel channel<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
-    channel<%=cid%>.connect(); 
-    com.jcraft.jsch.ChannelSftp c<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>; 
-    c<%=cid%>.setFilenameEncoding(<%=encoding%>);
+    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
+    channel_<%=cid%>.connect(); 
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
+    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
     
     com.jcraft.jsch.SftpProgressMonitor monitor<%=cid%> = new MyProgressMonitor();
     
@@ -170,7 +170,7 @@ if(sftp){
 <%
 	}
 %>
-	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+	ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
 	ftp_<%=cid %>.connect();	
 	ftp_<%=cid %>.login(<%=user %>, <%=pass %>); 
 	<%} %>	

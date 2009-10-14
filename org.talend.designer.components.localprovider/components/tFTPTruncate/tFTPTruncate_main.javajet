@@ -33,14 +33,14 @@
 			mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1); 
     	}
     	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-		java.util.Vector listings<%=cid %> = c<%=cid %>.ls(<%=remotedir %>);
+		java.util.Vector listings<%=cid %> = c_<%=cid %>.ls(<%=remotedir %>);
 		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.size(); m<%=cid %>++)
 		{ 
 			String filePath<%=cid%> =  ((com.jcraft.jsch.ChannelSftp.LsEntry) listings<%=cid %>.elementAt(m<%=cid %>)).getFilename() ;
 			if ( filePath<%=cid%>.matches(mask<%=cid %>))
 			{
 			try {
-				 c<%=cid%>.put(new java.io.ByteArrayInputStream(new byte[]{}), <%=remotedir %>+"/"+filePath<%=cid%>);
+				 c_<%=cid%>.put(new java.io.ByteArrayInputStream(new byte[]{}), <%=remotedir %>+"/"+filePath<%=cid%>);
 				 globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate OK.");
 				 } catch (com.jcraft.jsch.SftpException se) {
                        globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate fail.");

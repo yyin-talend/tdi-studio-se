@@ -19,7 +19,7 @@
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	boolean dirFull = ("true").equals(ElementParameterParser.getValue(node, "__DIR_FULL__"));
 	String cid = node.getUniqueName();
-	
+	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));	
 
 	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
@@ -133,10 +133,11 @@ if(useProxy){
 	}
 %>
     
-    com.jcraft.jsch. Channel channel<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
-    channel<%=cid%>.connect();
+    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
+    channel_<%=cid%>.connect();
      
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>; 
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
+    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
     String remotedir_<%=cid %> = <%=remotedir %>.replaceAll("\\\\","/");
     
     java.util.Vector<com.jcraft.jsch.ChannelSftp.LsEntry> vector_<%=cid %> = c_<%=cid%>.ls(remotedir_<%=cid %>);
@@ -194,7 +195,7 @@ if(useProxy){
 <%
 	}
 %>
-	ftp_<%=cid %>.setControlEncoding(<%=ElementParameterParser.getValue(node, "__CONTROL_ENCODING__")%>);
+	ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
 	ftp_<%=cid %>.connect();	
 	ftp_<%=cid %>.login(<%=user %>, <%=pass %>); 
 	<%} %>	    
