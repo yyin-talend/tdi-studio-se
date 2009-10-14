@@ -25,6 +25,7 @@ import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
@@ -99,36 +100,39 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             compSettings.cleanDisplay();
             return;
         }
-        Control ctrl = this.getViewer().getControl();
-        String helpLink = (String) ((Node) getModel()).getPropertyValue(EParameterName.HELP.getName());
-        String requiredHelpLink = "org.talend.help." + ((Node) getModel()).getComponent().getName();
-        if (helpLink == null || "".equals(helpLink) || !requiredHelpLink.equals(helpLink)) {
-            helpLink = "org.talend.help." + ((Node) getModel()).getComponent().getName();
-        }
-        if (ctrl != null) {
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
-        }
-        IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
-        if (view != null) {
-            PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
-        }
-
-        TalendSelectionManager selectionManager = (TalendSelectionManager) getViewer().getSelectionManager();
-        if (value == SELECTED || value == SELECTED_PRIMARY) {
-            ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
-            if (viewer == null) {
-                return;
+        IEditorPart activeEditor = page.getActiveEditor();
+        if (activeEditor instanceof AbstractMultiPageTalendEditor) {
+            GraphicalViewer designerViewer = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor().getViewer();
+            Control ctrl = designerViewer.getControl();
+            String helpLink = (String) ((Node) getModel()).getPropertyValue(EParameterName.HELP.getName());
+            String requiredHelpLink = "org.talend.help." + ((Node) getModel()).getComponent().getName();
+            if (helpLink == null || "".equals(helpLink) || !requiredHelpLink.equals(helpLink)) {
+                helpLink = "org.talend.help." + ((Node) getModel()).getComponent().getName();
             }
-
-            if (selectionManager.getSelectionType() == ETalendSelectionType.SINGLE) {
-                ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
-                compSettings.setElement((Node) getModel());
-                CodeView.refreshCodeView((Node) getModel());
-            } else if (!viewer.isCleaned() && selectionManager.getSelectionType() == ETalendSelectionType.MULTIPLE) {
-                ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
-                compSettings.cleanDisplay();
+            if (ctrl != null) {
+                PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
             }
+            IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
+            if (view != null) {
+                PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
+            }
+            TalendSelectionManager selectionManager = (TalendSelectionManager) designerViewer.getSelectionManager();
+            if (value == SELECTED || value == SELECTED_PRIMARY) {
+                ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+                if (viewer == null) {
+                    return;
+                }
 
+                if (selectionManager.getSelectionType() == ETalendSelectionType.SINGLE) {
+                    ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+                    compSettings.setElement((Node) getModel());
+                    CodeView.refreshCodeView((Node) getModel());
+                } else if (!viewer.isCleaned() && selectionManager.getSelectionType() == ETalendSelectionType.MULTIPLE) {
+                    ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+                    compSettings.cleanDisplay();
+                }
+
+            }
         }
     }
 
