@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.process;
 
 import org.eclipse.gef.commands.CompoundCommand;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -61,7 +62,13 @@ public class ConvertRepositoryNodeToProcessNode {
         String pwd = iMetadataConnection.getPassword();
         String dbVersion = iMetadataConnection.getDbVersionString();
         String url = iMetadataConnection.getUrl();
-        info = new DbInfo(dbType, username, pwd, dbVersion, url);
+
+        if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(dbType)) { // hywang for 9594
+            info = new DbInfo(dbType, username, pwd, dbVersion, url, iMetadataConnection.getDriverClass(), iMetadataConnection
+                    .getDriverJarPath());
+        } else {
+            info = new DbInfo(dbType, username, pwd, dbVersion, url);
+        }
         try {
             convertToProcessNode(connectionItem, tableName);
         } catch (ProcessorException e) {

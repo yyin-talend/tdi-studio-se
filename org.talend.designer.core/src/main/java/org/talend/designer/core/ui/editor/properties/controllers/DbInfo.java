@@ -47,7 +47,7 @@ public class DbInfo {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
-        this.dbVersion = dbType;
+        this.dbVersion = dbVersion;
         this.url = url;
         generateDriverName();
         genarateDriverJarPath();
@@ -65,6 +65,18 @@ public class DbInfo {
 
         getConnFromNode();
         genarateDriverJarPath();
+    }
+
+    // hywang add constructor for bug 9594
+    public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String driverClassName,
+            String driverJarPath) {
+        this.dbType = dbType;
+        this.username = username;
+        this.pwd = pwd;
+        this.dbVersion = dbVersion;
+        this.url = url;
+        this.driverClassName = driverClassName;
+        this.driverJarPath = driverJarPath;
     }
 
     public String getUrl() {
