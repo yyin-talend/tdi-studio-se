@@ -14,7 +14,6 @@ package org.talend.designer.core.ui.action;
 
 import java.util.List;
 
-import org.eclipse.draw2d.Figure;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.IElementParameter;
@@ -114,8 +113,8 @@ public class TraceDisableAction extends SelectionAction {
                 if (part != null && part instanceof ConnectionTraceEditPart) {
                     ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) part;
                     Connection conn = (Connection) connPart.getModel();
-                    List l = tracePart.getFigure().getChildren();
-                    ((Figure) l.get(0)).setVisible(false);
+                    // List l = tracePart.getFigure().getChildren();
+                    // ((Figure) l.get(0)).setVisible(false);
                     execute(new PropertyChangeCommand(conn, EParameterName.TRACES_CONNECTION_ENABLE.getName(), false));
                     tracePart.refresh();
                     break;
@@ -130,8 +129,8 @@ public class TraceDisableAction extends SelectionAction {
                 if (part != null && part instanceof ConnectionTraceEditPart) {
                     ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) part;
                     Connection conn = (Connection) connPart.getModel();
-                    List l = tracePart.getFigure().getChildren();
-                    ((Figure) l.get(0)).setVisible(false);
+                    // List l = tracePart.getFigure().getChildren();
+                    // ((Figure) l.get(0)).setVisible(false);
                     execute(new PropertyChangeCommand(conn, EParameterName.TRACES_CONNECTION_ENABLE.getName(), false));
                     tracePart.refresh();
                     break;
@@ -142,8 +141,8 @@ public class TraceDisableAction extends SelectionAction {
             ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) input;
             ConnectionPart connPart = (ConnectionPart) tracePart.getParent();
             Connection conn = (Connection) connPart.getModel();
-            List l = tracePart.getFigure().getChildren();
-            ((Figure) l.get(0)).setVisible(false);
+            // List l = tracePart.getFigure().getChildren();
+            // ((Figure) l.get(0)).setVisible(false);
             execute(new PropertyChangeCommand(conn, EParameterName.TRACES_CONNECTION_ENABLE.getName(), false));
             tracePart.refresh();
         }
