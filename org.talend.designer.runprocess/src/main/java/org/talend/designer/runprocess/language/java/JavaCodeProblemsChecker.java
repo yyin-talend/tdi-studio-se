@@ -25,12 +25,14 @@ import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IOpenable;
 import org.eclipse.jdt.core.IProblemRequestor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.WorkingCopyOwner;
 import org.eclipse.jdt.core.compiler.IProblem;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -50,6 +52,7 @@ import org.talend.designer.core.ui.editor.DetailedProblem;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.java.JavaProcessor;
 
 /**
  * Check syntax of Java expressions.
@@ -106,74 +109,88 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
      * 
      * @return
      */
-    private List<DetailedProblem> retrieveDetailedProblems(IAloneProcessNodeConfigurer nodeConfigurer) {
+    private List<DetailedProblem> retrieveDetailedProblems(final IAloneProcessNodeConfigurer nodeConfigurer) {
 
         final ArrayList<DetailedProblem> iproblems = new ArrayList<DetailedProblem>();
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-        IEditorPart editorPart = page.getActiveEditor();
-        //
-        if (editorPart instanceof AbstractMultiPageTalendEditor) {
-            AbstractMultiPageTalendEditor multiPageTalendEditor = ((AbstractMultiPageTalendEditor) editorPart);
-            AbstractTalendEditor talendEditor = multiPageTalendEditor.getTalendEditor();
-            TalendJavaEditor codeEditor = (TalendJavaEditor) multiPageTalendEditor.getCodeEditor();
-            org.eclipse.jdt.core.ICompilationUnit compilationUnit = (org.eclipse.jdt.core.ICompilationUnit) codeEditor.getUnit();
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        Display display = workbench.getDisplay();
+        if (display != null) {
+            display.syncExec(new Runnable() {
 
-            IProcess process = talendEditor.getProcess();
+                public void run() {
+                    IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                    IEditorPart editorPart = page.getActiveEditor();
+                    if (editorPart instanceof AbstractMultiPageTalendEditor) {
+                        AbstractMultiPageTalendEditor multiPageTalendEditor = ((AbstractMultiPageTalendEditor) editorPart);
+                        AbstractTalendEditor talendEditor = multiPageTalendEditor.getTalendEditor();
+                        TalendJavaEditor codeEditor = (TalendJavaEditor) multiPageTalendEditor.getCodeEditor();
+                        org.eclipse.jdt.core.ICompilationUnit compilationUnit = (org.eclipse.jdt.core.ICompilationUnit) codeEditor
+                                .getUnit();
 
-            String selectedNodeName = multiPageTalendEditor.getSelectedNodeName();
+                        IProcess process = talendEditor.getProcess();
 
-            if (selectedNodeName == null) {
-                return null;
-            }
+                        String selectedNodeName = multiPageTalendEditor.getSelectedNodeName();
 
-            String uniqueNodeName = null;
+                        if (selectedNodeName == null) {
+                            return;
+                        }
 
-            boolean found = false;
-            List<? extends INode> generatingNodes = process.getGeneratingNodes();
-            int generatingNodesListSize = generatingNodes.size();
-            for (int i = 0; i < generatingNodesListSize; i++) {
-                INode node = generatingNodes.get(i);
-                /* startsWith method used in case of virtual component such as 'tMap_1_TMAP_OUT' */
-                if (node.getUniqueName().equals(selectedNodeName) || node.getUniqueName().startsWith(selectedNodeName + "_")) { //$NON-NLS-1$
-                    uniqueNodeName = node.getUniqueName();
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                // in case the component doesn't exist
-                return null;
-            }
+                        String uniqueNodeName = null;
 
-            final String code = retrieveCode(process, uniqueNodeName, nodeConfigurer);
+                        boolean found = false;
+                        List<? extends INode> generatingNodes = process.getGeneratingNodes();
+                        int generatingNodesListSize = generatingNodes.size();
+                        for (int i = 0; i < generatingNodesListSize; i++) {
+                            INode node = generatingNodes.get(i);
+                            /* startsWith method used in case of virtual component such as 'tMap_1_TMAP_OUT' */
+                            if (node.getUniqueName().equals(selectedNodeName)
+                                    || node.getUniqueName().startsWith(selectedNodeName + "_")) { //$NON-NLS-1$
+                                uniqueNodeName = node.getUniqueName();
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            // in case the component doesn't exist
+                            return;
+                        }
 
-            // System.out.println(code);
+                        final String code = retrieveCode(process, uniqueNodeName, nodeConfigurer);
 
-            // create requestor for accumulating discovered problems
-            MyProblemRequestor problemRequestor = new MyProblemRequestor(code, iproblems, selectedNodeName);
+                        // System.out.println(code);
 
-            // use working copy to hold source with error
-            org.eclipse.jdt.core.ICompilationUnit workingCopy = null;
-            try {
-                try {
-                    WorkingCopyOwner workingCopyOwner = new WorkingCopyOwner() {
-                    };
-                    workingCopy = ((org.eclipse.jdt.core.ICompilationUnit) compilationUnit).getWorkingCopy(workingCopyOwner,
-                            problemRequestor, null);
-                    problemRequestor.setReportProblems(true);
-                    ((IOpenable) workingCopy).getBuffer().setContents(code);
-                    ((org.eclipse.jdt.core.ICompilationUnit) workingCopy).reconcile(ICompilationUnit.NO_AST, true, null, null);
-                    problemRequestor.setReportProblems(false);
-                } finally {
-                    if (workingCopy != null) {
-                        workingCopy.discardWorkingCopy();
+                        // create requestor for accumulating discovered problems
+                        MyProblemRequestor problemRequestor = new MyProblemRequestor(code, iproblems, selectedNodeName);
+
+                        // use working copy to hold source with error
+                        org.eclipse.jdt.core.ICompilationUnit workingCopy = null;
+                        try {
+                            JavaProcessor.updateClasspath();
+                            try {
+                                WorkingCopyOwner workingCopyOwner = new WorkingCopyOwner() {
+                                };
+                                workingCopy = ((org.eclipse.jdt.core.ICompilationUnit) compilationUnit).getWorkingCopy(
+                                        workingCopyOwner, problemRequestor, null);
+                                problemRequestor.setReportProblems(true);
+                                ((IOpenable) workingCopy).getBuffer().setContents(code);
+                                ((org.eclipse.jdt.core.ICompilationUnit) workingCopy).reconcile(ICompilationUnit.NO_AST, true,
+                                        null, null);
+                                problemRequestor.setReportProblems(false);
+                            } finally {
+                                if (workingCopy != null) {
+                                    workingCopy.discardWorkingCopy();
+                                }
+                            }
+                        } catch (JavaModelException e) {
+                            ExceptionHandler.process(e);
+                        } catch (CoreException e) {
+                            ExceptionHandler.process(e);
+                        }
                     }
                 }
-            } catch (JavaModelException e) {
-                ExceptionHandler.process(e);
-            }
+            });
         }
+        //
 
         return iproblems;
     }

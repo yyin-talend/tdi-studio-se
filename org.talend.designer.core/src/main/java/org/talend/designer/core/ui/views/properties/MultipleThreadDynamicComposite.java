@@ -40,6 +40,9 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
@@ -66,6 +69,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.Problem;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
@@ -86,6 +90,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.GroupController
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
 import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -815,11 +820,26 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             }
         }
 
+        final ECodeLanguage language = ((RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
+                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+        final ICodeProblemsChecker syntaxChecker = service.getSyntaxChecker(language);
+        List<Problem> javaProblem = null;
+
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
                 if (listParam.get(i).isShow(listParam)) {
 
                     final IElementParameter e = listParam.get(i);
+                    e.isReadOnly();
+                    e.isNoCheck();
+                    if (language == ECodeLanguage.JAVA && javaProblem == null) {
+                        if (!e.isReadOnly() && !e.isNoCheck()) {
+                            javaProblem = syntaxChecker.checkProblems(null);
+                        }
+                    }
+                    final List<Problem> nodePros = javaProblem;
 
                     Display.getDefault().syncExec(new Runnable() {
 
@@ -828,6 +848,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 AbstractElementPropertySectionController controller = generator.getController(e.getField(),
                                         MultipleThreadDynamicComposite.this);
                                 if (controller != null) {
+                                    controller.updateCodeProblems(nodePros);
                                     controller.refresh(e, checkErrorsWhenViewRefreshed);
                                 }
                             }

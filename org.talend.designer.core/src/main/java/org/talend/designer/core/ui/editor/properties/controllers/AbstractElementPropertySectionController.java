@@ -66,6 +66,7 @@ import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -166,6 +167,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     private static Map<String, Problem> proForPerlErrorMark = new HashMap<String, Problem>();
 
     protected EParameterFieldType paramFieldType;
+
+    private List<Problem> codeProblems;
 
     // for job settings extra.(feature 2710)
     protected IElementParameter curParameter;
@@ -487,6 +490,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             public void focusLost(FocusEvent event) {
                 if (!extendedProposal.isProposalOpened()) {
                     Control control = (Control) event.widget;
+                    setCodeProblems(null);
                     checkErrorsForPropertiesOnly(control);
                 }
             }
@@ -576,7 +580,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
             ControlProperties existingControlProperties = controlToProp.get(control);
 
-            List<Problem> problems = new ArrayList<Problem>();
+            List<Problem> problems = getCodeProblems();
             List<Problem> proForJavaErrorMark = new ArrayList<Problem>();
             if (valueFinal != null) {
                 String key = CodeGenerationUtils.buildProblemKey(elem.getElementName(), elementParameter.getName());
@@ -585,7 +589,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     getAllPerlProblem(key, problems);
                     showErrorMarkForPerl(elem);
                 } else if (language == ECodeLanguage.JAVA) {
-                    problems = syntaxChecker.checkProblemsFromKey(key, null);
+                    if (problems == null) {
+                        problems = syntaxChecker.checkProblemsFromKey(key, null);
+                    } else {
+                        ((CodeProblemsChecker) syntaxChecker).updateNodeProblems(problems, key);
+                    }
                     proForJavaErrorMark = syntaxChecker.checkProblemsForErrorMark(key, null);
                     showErrorMarkForJava(proForJavaErrorMark, elem);
 
@@ -1637,4 +1645,19 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
 
     }
+
+    public List<Problem> getCodeProblems() {
+        return this.codeProblems;
+    }
+
+    public void updateCodeProblems(List<Problem> codeProblems) {
+        if (codeProblems != null) {
+            this.codeProblems = new ArrayList<Problem>(codeProblems);
+        }
+    }
+
+    public void setCodeProblems(List<Problem> codeProblems) {
+        this.codeProblems = codeProblems;
+    }
+
 }
