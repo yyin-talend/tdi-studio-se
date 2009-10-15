@@ -140,7 +140,12 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
 
                         // save error status
                         property.getInformations().clear();
-                        property.getInformations().addAll(informations);
+                        // add only the errors in the property, not the warnings
+                        for (Information info : informations) {
+                            if (info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
+                                property.getInformations().add(info);
+                            }
+                        }
                         Problems.computePropertyMaxInformationLevel(property);
                     } catch (SystemException e) {
                         ExceptionHandler.process(e);

@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -124,8 +123,12 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
 
                     // save error status
                     property.getInformations().clear();
-                    // property.getInformations().addAll(collectOnlyErrors(informations));
-                    property.getInformations().addAll(informations);
+                    // add only the errors in the property, not the warnings
+                    for (Information info : informations) {
+                        if (info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
+                            property.getInformations().add(info);
+                        }
+                    }
                     Problems.computePropertyMaxInformationLevel(property);
 
                 } catch (SystemException e) {
@@ -143,22 +146,6 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
 
         // need some time to wait for PerlSyntaxValidationThread, as revalidateSyntax will activate it
         refreshJob.schedule(300);
-    }
-
-    /**
-     * For job item, we only need to display if it is error.
-     * 
-     * @param informations
-     * @return
-     */
-    private List<Information> collectOnlyErrors(List<Information> informations) {
-        List<Information> errors = new ArrayList<Information>();
-        for (Information info : informations) {
-            if (info.getLevel() == InformationLevel.ERROR_LITERAL) {
-                errors.add(info);
-            }
-        }
-        return errors;
     }
 
     /*
