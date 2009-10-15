@@ -142,7 +142,7 @@ public class SelectorTableWizardPage extends WizardPage {
         tableForm.setListener(listener);
         setControl(container);
         if (isCreateTemplate) {
-            tableForm.initControlData(true);
+            tableForm.initControlData(false);
         }
     }
 
@@ -186,7 +186,7 @@ public class SelectorTableWizardPage extends WizardPage {
             tableForm.setIMetadataConnection(metadataConnection);
             // tableForm.getConnection().getTables().clear();
             if (isCreateTemplate) {
-                tableForm.initControlData(true);
+                tableForm.initControlData(false);
             }
         }
     }

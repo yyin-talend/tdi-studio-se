@@ -46,7 +46,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -597,19 +596,19 @@ public class SelectorTableForm extends AbstractForm {
                     }
                 }
                 restoreCheckItems();
-                if (forTemplate) {
-                    if (!displayMessageBox) {
-                        MessageBox box = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK | SWT.CANCEL);
-                        box.setText(Messages.getString("DatabaseTableForm.checkConnection")); //$NON-NLS-1$
-                        box.setMessage("Connection unsuccessfully!"); //$NON-NLS-1$
-                        box.open();
-                    }
-                } else {
-                    if (displayMessageBox) {
-                        String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
-                        openInfoDialogInUIThread(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
-                    }
+                // if (forTemplate) {
+                // if (displayMessageBox) {
+                // MessageBox box = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK | SWT.CANCEL);
+                //                        box.setText(Messages.getString("DatabaseTableForm.checkConnection")); //$NON-NLS-1$
+                //                        box.setMessage("Connection unsuccessfully!"); //$NON-NLS-1$
+                // box.open();
+                // }
+                // } else {
+                if (displayMessageBox) {
+                    String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
+                    openInfoDialogInUIThread(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
                 }
+                // }
             }
         });
     }
