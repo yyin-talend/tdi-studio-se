@@ -1006,6 +1006,26 @@ public class DatabaseForm extends AbstractForm {
             }
 
         });
+        // button1 parameter:Event modifyText
+        button1.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (!isContextMode()) {
+                    getConnection().setSQLMode(button1.getSelection());
+                }
+            }
+        });
+        // button2 parameter:Event modifyText
+        button2.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (!isContextMode()) {
+                    getConnection().setSQLMode(!button2.getSelection());
+                }
+            }
+        });
         // Event dbTypeCombo
         dbTypeCombo.addModifyListener(new ModifyListener() {
 
