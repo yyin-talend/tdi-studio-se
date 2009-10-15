@@ -327,6 +327,9 @@ public class ExportItemUtil {
         if (projectFolderStructure) {
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
             IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
+            if (item.getProperty().getItem().getState().getPath() == null) {
+                item.getProperty().getItem().getState().setPath("");
+            }
             IPath itemDestinationPath = typeFolderPath.append(item.getProperty().getItem().getState().getPath());
             fileNamePath = fileNamePath.append(itemDestinationPath);
         }
