@@ -91,7 +91,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
   try{
     	if (context.getProperty(key_<%=cid %>)!=null)
     	{
-    		//context.setProperty(key_<%=cid %>,value_<%=cid %>);
     	<%
             for (IContextParameter ctxParam :params)
              {
@@ -137,7 +136,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         %>	
     		assignList_<%=cid %>.add(key_<%=cid %>);
     	}else  {
-    		//context.setProperty(key_<%=cid %>,value_<%=cid %>);
     		<%
             for (IContextParameter ctxParam :params)
              {
