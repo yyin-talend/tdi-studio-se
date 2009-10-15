@@ -73,25 +73,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	}//here end the last for, the List "columns"
     			%>
     			
-    			<%
+<%
                 if(node.getElementParameter("PRINT_OPERATIONS").isContextMode()) {
-                    %>
+%>
                     if(<%=ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__")%>) {
                         System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
                     }
-                    <%
+<%
                 } else {
                     if (ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__").equals("true")) {
-                        %>
+%>
                         System.out.println("<%=cid %> set key \"" + key_<%=cid %> + "\" with value \"" + value_<%=cid %> + "\"");
-                        <%
+<%
                     }
                 }
 %>
   try{
     	if (context.getProperty(key_<%=cid %>)!=null)
     	{
-    		context.setProperty(key_<%=cid %>,value_<%=cid %>);
+    		//context.setProperty(key_<%=cid %>,value_<%=cid %>);
     	<%
             for (IContextParameter ctxParam :params)
              {
@@ -137,7 +137,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         %>	
     		assignList_<%=cid %>.add(key_<%=cid %>);
     	}else  {
-    		context.setProperty(key_<%=cid %>,value_<%=cid %>);
+    		//context.setProperty(key_<%=cid %>,value_<%=cid %>);
     		<%
             for (IContextParameter ctxParam :params)
              {
@@ -176,9 +176,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         %>  
     		newPropertyList_<%=cid %>.add(key_<%=cid %>);
     	}
+	    context.setProperty(key_<%=cid %>,value_<%=cid %>);
     }catch(Exception e){    	
     	System.err.println("Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
-    }	
+    }
     	nb_line_<%=cid %>++;
 <%
         	}
