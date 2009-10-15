@@ -770,8 +770,7 @@ public class Node extends Element implements INode {
     }
 
     /**
-     * Set the label of a node. <br/>
-     * <b> /!\ This is the text of the label, not the name of the component</b>
+     * Set the label of a node. <br/> <b> /!\ This is the text of the label, not the name of the component</b>
      * 
      * @param titleName
      */
@@ -1281,13 +1280,15 @@ public class Node extends Element implements INode {
             List<Map<String, String>> vlist = (List<Map<String, String>>) elementParameter.getValue();
 
             IMetadataTable table = connection.getMetadataTable();
-            String label = table.getTableName();
-            IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(target, label);
-            if (metadataTable != null) {
-                target.metadataList.remove(metadataTable);
-                int pos = getIndex(vlist, label);
-                if (pos != -1)
-                    vlist.remove(pos);
+            if (table != null) { // hywang add for bug 0009593
+                String label = table.getTableName();
+                IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(target, label);
+                if (metadataTable != null) {
+                    target.metadataList.remove(metadataTable);
+                    int pos = getIndex(vlist, label);
+                    if (pos != -1)
+                        vlist.remove(pos);
+                }
             }
         }
     }
