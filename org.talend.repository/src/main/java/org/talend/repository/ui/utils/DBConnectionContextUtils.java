@@ -376,6 +376,13 @@ public final class DBConnectionContextUtils {
         cloneConn.setVersion(dbConn.getVersion());
         cloneConn.setReadOnly(dbConn.isReadOnly());
         cloneConn.setDriverClass(className);
+        if (dbConn.isSetSQLMode()) {
+            cloneConn.setSQLMode(dbConn.isSQLMode());
+        } else {
+            // set true by default as it's only used actually for teradata.
+            // should be modified if default value is changed later.
+            cloneConn.setSQLMode(true);
+        }
 
         // cloneConn.setProperties(dbConn.getProperties());
         // cloneConn.setCdcConns(dbConn.getCdcConns());
