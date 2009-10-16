@@ -184,7 +184,7 @@ public class SelectorTableWizardPage extends WizardPage {
         if (tableForm != null) {
             tableForm.setTemplateConntion(templateConnection);
             tableForm.setIMetadataConnection(metadataConnection);
-            // tableForm.getConnection().getTables().clear();
+            tableForm.getConnection().getTables().clear();
             if (isCreateTemplate) {
                 tableForm.initControlData(false);
             }

@@ -93,6 +93,8 @@ public class RepositoryReviewDialog extends Dialog {
 
     private String selectedNodeName;
 
+    private boolean hidenTypeSelection;
+
     ViewerTextFilter textFilter = new ViewerTextFilter();
 
     /**
@@ -120,6 +122,24 @@ public class RepositoryReviewDialog extends Dialog {
          */
         this.repositoryType = repositoryType;
         typeProcessor = createTypeProcessor();
+    }
+
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType, boolean hidenTypeSelection) {
+        super(parentShell);
+        setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
+        this.type = type;
+        /*
+         * avoid select self repository node for Process Type.
+         * 
+         * borrow the repositoryType to set the current process id here.
+         */
+        this.repositoryType = repositoryType;
+        this.hidenTypeSelection = hidenTypeSelection;
+        typeProcessor = createTypeProcessor();
+        if (hidenTypeSelection && (typeProcessor instanceof RepositoryTypeProcessor)) {
+            ((RepositoryTypeProcessor) typeProcessor).setHidenTypeSelection(hidenTypeSelection);
+        }
+
     }
 
     public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type) {
@@ -589,6 +609,8 @@ class RepositoryTypeProcessor implements ITypeProcessor {
 
     String repositoryType;
 
+    boolean hidenTypeSelection;
+
     /**
      * DOC bqian RepositoryTypeProcessor constructor comment.
      * 
@@ -774,6 +796,14 @@ class RepositoryTypeProcessor implements ITypeProcessor {
         return true;
     }
 
+    public boolean isHidenTypeSelection() {
+        return this.hidenTypeSelection;
+    }
+
+    public void setHidenTypeSelection(boolean hidenTypeSelection) {
+        this.hidenTypeSelection = hidenTypeSelection;
+    }
+
     public ViewerFilter makeFilter() {
         return new ViewerFilter() {
 
@@ -815,6 +845,9 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                         // specified
                         // //$NON-NLS-1$
                         String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
+                        if (hidenTypeSelection) {
+                            return true;
+                        }
                         if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
                             return false;
                         }
