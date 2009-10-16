@@ -83,7 +83,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     private final String updataComponentParamName;
 
     // use for SAP
-    private String sapFunctionName = null;
+    private String sapFunctionLabel = null;
 
     // for jobtemplate plugin(true, bug 5198)
     private boolean ignoreContextMode = false;
@@ -347,7 +347,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         param.setRepositoryValueUsed(true);
                     } else {
                         // For SAP
-                        SAPParametersUtils.retrieveSAPParams(elem, connection, param, getSapFunctionName());
+                        SAPParametersUtils.retrieveSAPParams(elem, connection, param, getSapFunctionLabel());
                     }
 
                     if (param.isRepositoryValueUsed()) {
@@ -744,9 +744,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      * 
      * @return the sapFunctionName
      */
-    public String getSapFunctionName() {
+    public String getSapFunctionLabel() {
         // Use the first function
-        if (this.sapFunctionName == null) {
+        if (this.sapFunctionLabel == null) {
 
             if (connection == null) {
                 return null;
@@ -760,7 +760,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 return ((SAPFunctionUnit) sapConn.getFuntions().get(0)).getName();
             }
         }
-        return this.sapFunctionName;
+        return this.sapFunctionLabel;
     }
 
     /**
@@ -768,8 +768,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      * 
      * @param sapFunctionName the sapFunctionName to set
      */
-    public void setSapFunctionName(String sapFunctionName) {
-        this.sapFunctionName = sapFunctionName;
+    public void setSapFunctionLabel(String sapFunctionName) {
+        this.sapFunctionLabel = sapFunctionName;
     }
 
     public boolean isIgnoreContextMode() {

@@ -622,7 +622,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     if (selectedObj instanceof SAPFunctionRepositoryObject) {
                         SAPFunctionRepositoryObject sapObj = (SAPFunctionRepositoryObject) selectedObj;
 
-                        command1.setSapFunctionName(((SAPFunctionUnit) sapObj.getAbstractMetadataObject()).getName());
+                        command1.setSapFunctionLabel(((SAPFunctionUnit) sapObj.getAbstractMetadataObject()).getLabel());
                     }
                 }
                 list.add(command1);
