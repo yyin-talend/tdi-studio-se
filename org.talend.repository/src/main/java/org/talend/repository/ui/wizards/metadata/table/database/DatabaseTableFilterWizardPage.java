@@ -18,6 +18,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
@@ -30,6 +31,8 @@ public class DatabaseTableFilterWizardPage extends WizardPage {
 
     private final TableInfoParameters tableInfoParameters;
 
+    private final ConnectionItem connectionItem; // hywang add
+
     /**
      * DatabaseWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
      * exist, it's an update of existing metadata else it's a new metadata.
@@ -40,9 +43,14 @@ public class DatabaseTableFilterWizardPage extends WizardPage {
      * 
      * @param ISelection
      */
-    public DatabaseTableFilterWizardPage(TableInfoParameters tableInfoParameters) {
+    public DatabaseTableFilterWizardPage(TableInfoParameters tableInfoParameters, ConnectionItem connectionItem) {
         super("wizardPage"); //$NON-NLS-1$
         this.tableInfoParameters = tableInfoParameters;
+        this.connectionItem = connectionItem;
+    }
+
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
     }
 
     /**
@@ -78,8 +86,8 @@ public class DatabaseTableFilterWizardPage extends WizardPage {
      */
     @Override
     public IWizardPage getNextPage() {
-        CorePlugin.getDefault().getPreferenceStore().setValue(DatabaseTableFilterForm.PREFS_NAMEFILTER,
-                tableForm.getNameFilter());
+        CorePlugin.getDefault().getPreferenceStore()
+                .setValue(DatabaseTableFilterForm.PREFS_NAMEFILTER, tableForm.getNameFilter());
         getTableInfoParameters().setNameFilters(tableForm.getFilters());
         IWizardPage nextPage = super.getNextPage();
         if (nextPage instanceof SelectorTableWizardPage) {

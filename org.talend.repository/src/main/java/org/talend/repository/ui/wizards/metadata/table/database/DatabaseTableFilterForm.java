@@ -30,9 +30,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.CorePlugin;
+import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase.ETableTypes;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
@@ -81,9 +85,12 @@ public class DatabaseTableFilterForm extends AbstractForm {
 
     private Button newButton;
 
+    private final ConnectionItem connectionItem;
+
     public DatabaseTableFilterForm(Composite parent, DatabaseTableFilterWizardPage page) {
         super(parent, SWT.NONE);
         tableInfoParameters = page.getTableInfoParameters();
+        this.connectionItem = page.getConnectionItem(); // hywang add
         setupForm();
     }
 
@@ -99,7 +106,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         getTableInfoParameters().changeType(ETableTypes.TABLETYPE_VIEW, viewCheck.getSelection());
         getTableInfoParameters().changeType(ETableTypes.TABLETYPE_SYNONYM, synonymCheck.getSelection());
         // hide for the bug 7959
-        if (ExtractMetaDataUtils.conn != null && ExtractMetaDataUtils.conn.toString().contains("oracle.jdbc.driver")) {
+        if (isOracle()) {
             getTableInfoParameters().changeType(ETableTypes.TABLETYPE_ALL_SYNONYM, publicSynonymCheck.getSelection());
         }
 
@@ -120,7 +127,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         viewCheck.setEnabled(getTableInfoParameters().isUsedName());
         synonymCheck.setEnabled(getTableInfoParameters().isUsedName());
 
-        if (ExtractMetaDataUtils.conn != null && ExtractMetaDataUtils.conn.toString().contains("oracle.jdbc.driver")) {
+        if (isOracle()) {
             publicSynonymCheck.setEnabled(getTableInfoParameters().isUsedName());
             ExtractMetaDataUtils.setUseAllSynonyms(publicSynonymCheck.getSelection());
         }
@@ -262,7 +269,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         synonymCheck.setText(Messages.getString("DatabaseTableFilterForm.synonym")); //$NON-NLS-1$
         synonymCheck.setSelection(true);
         // hide for the bug 7959
-        if (ExtractMetaDataUtils.conn != null && ExtractMetaDataUtils.conn.toString().contains("oracle.jdbc.driver")) {
+        if (isOracle()) {
             publicSynonymCheck = new Button(typesFilter, SWT.CHECK);
             publicSynonymCheck.setText("ALL_SYNONYM");
             publicSynonymCheck.setSelection(false);
@@ -384,7 +391,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         });
         // hide for the bug 7959
 
-        if (ExtractMetaDataUtils.conn != null && ExtractMetaDataUtils.conn.toString().contains("oracle.jdbc.driver")) {
+        if (isOracle()) {
             publicSynonymCheck.addSelectionListener(new SelectionAdapter() {
 
                 @Override
@@ -597,4 +604,29 @@ public class DatabaseTableFilterForm extends AbstractForm {
         return nameFilter.getItems();
     }
 
+    private boolean isOracle() { // hywang add for 0007959
+        if (this.connectionItem != null) {
+            if (this.connectionItem instanceof DatabaseConnectionItem) {
+                DatabaseConnectionItem dbConnItem = (DatabaseConnectionItem) this.connectionItem;
+                DatabaseConnection dbConn = null;
+                String dbtype = null;
+                if (dbConnItem.getConnection() instanceof DatabaseConnection) {
+                    dbConn = (DatabaseConnection) dbConnItem.getConnection();
+                    dbtype = dbConn.getDatabaseType();
+                }
+                if (EDatabaseTypeName.ORACLEFORSID.getDisplayName().equals(dbtype)
+                        || EDatabaseTypeName.ORACLESN.getDisplayName().equals(dbtype)) {
+                    return true;
+                } else if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(dbtype)) {
+                    String driver = dbConn.getDriverClass();
+                    dbtype = ExtractMetaDataUtils.getDbTypeByClassName(driver);
+                    if (EDatabaseTypeName.ORACLEFORSID.getDisplayName().equals(dbtype)
+                            || EDatabaseTypeName.ORACLESN.getDisplayName().equals(dbtype)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
