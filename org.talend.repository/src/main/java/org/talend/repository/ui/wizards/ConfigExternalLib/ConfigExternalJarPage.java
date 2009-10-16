@@ -24,6 +24,7 @@ import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -275,21 +276,37 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         protected void okPressed() {
             IMPORTType type = ComponentFactory.eINSTANCE.createIMPORTType();
             type.setMESSAGE(desText.getText());
-
             String modelName = "modelName"; //$NON-NLS-1$
+            boolean libExists = true; // hywang add
             if (typeNameRadioButton.getSelection()) {
                 modelName = nameText.getText();
+                String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath() + "/" + modelName; //$NON-NLS-N$
+                File f = new File(path);
+                if (!f.exists()) {
+                    final String name = modelName;
+                    libExists = false;
+                    Display.getDefault().asyncExec(new Runnable() {
+
+                        public void run() {
+                            MessageDialog.openError(getParentShell(), "Error", "File " + name + " can't be found in lib " //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$
+                                    + CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath()
+                                    + ",please check it again."); //$NON-NLS-N$
+
+                        }
+                    });
+                }
             } else {
                 file = new File(fileField.getStringValue());
                 modelName = file.getName();
             }
+            if (libExists) {
+                type.setMODULE(modelName);
+                type.setREQUIRED(requiredButton.getSelection());
+                type.setUrlPath(fileField.getStringValue());
+                this.importType = type;
+                super.okPressed();
+            }
 
-            type.setMODULE(modelName);
-            type.setREQUIRED(requiredButton.getSelection());
-            type.setUrlPath(fileField.getStringValue());
-            this.importType = type;
-
-            super.okPressed();
         }
 
         /**
