@@ -140,7 +140,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             for (IContextParameter ctxParam :params)
              {
                 String typeToGenerate ="String";
-                if( !(ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") ||ctxParam.getType().equals("id_List Of Value")))
+                if( !(ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") ||ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_Password")))
                 {
                    typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
                 }
