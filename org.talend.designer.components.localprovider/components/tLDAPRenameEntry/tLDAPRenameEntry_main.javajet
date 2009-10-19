@@ -17,8 +17,7 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-	Boolean renameBool = (Boolean)ElementParameterParser.getObjectValue(node, "__REMANE_DN__");
-	
+		
 	String rejectConnName = null;
 	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
 	if(rejectConns != null && rejectConns.size() > 0) {
@@ -52,17 +51,10 @@ imports="
 %>
 	try{
 
-<%
-
-	if (renameBool) {
-%>
 		LDAPRenameEntryUtil_<%=cid%> renameUtil<%=cid%> = new LDAPRenameEntryUtil_<%=cid%>();
 		renameUtil<%=cid%>.renameWithChilds(<%=conn.getName() %>.<%=ElementParameterParser.getObjectValue(node, "__REMANE_DN_OLD__")%>.trim(),
 						<%=conn.getName() %>.<%=ElementParameterParser.getObjectValue(node, "__REMANE_DN_NEW__")%>.trim(),
 						ctx_<%=cid%>);
-<%
-	}
-%>
 	}catch(Exception e){
         whetherReject_<%=cid%> = true;
 <%
