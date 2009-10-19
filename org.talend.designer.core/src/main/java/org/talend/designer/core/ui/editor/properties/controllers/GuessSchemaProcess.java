@@ -115,6 +115,7 @@ public class GuessSchemaProcess {
         }
         for (IElementParameter param : node.getElementParameters()) {
             Set<String> neededLibraries = new HashSet<String>();
+            JavaProcessUtil.findMoreLibraries(neededLibraries, param, true); // add by hywang
             // for bug 8350
             // add for tJDBCInput component
             if (param.getField().equals(EParameterFieldType.MODULE_LIST)) {
