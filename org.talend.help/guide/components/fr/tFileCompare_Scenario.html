@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:38">
+    <meta name="LASTUPDATED" content="10/19/09 17:32:02">
     <title>Scénario&#160;: Comparer des fichiers dézippés</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scénario&#160;: Comparer des fichiers dézippés
 </h2>
 <a name="wp1690509"> </a><p class="pIndented1">
-Ce scénario décrit un job permettant de dézipper un fichier et de le comparer avec un fichier de référence pour s&#39;assurer qu&#39;il n&#39;a pas été modifié. La sortie de cette comparaison est stockée dans un fichier délimité et un message est affiché dans la console.
+Ce scénario décrit un Job permettant de dézipper un fichier et de le comparer avec un fichier de référence pour s&#39;assurer qu&#39;il n&#39;a pas été modifié. La sortie de cette comparaison est stockée dans un fichier délimité et un message est affiché dans la console.
 </p>
 <a name="wp1690517"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,14 +37,12 @@ Ce scénario décrit un job permettant de dézipper un fichier et de le comparer av
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1690528"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tFileUnarchive</b>, <b class="cBold">tFileCompare</b> et <b class="cBold">tFileOutputDelimited</b>.</li></div>
-<a name="wp1690545"> </a><div class="pSmartList2"><li>Reliez les composants <b class="cBold">tFileUnarchive</b> et <b class="cBold">tFileCompare</b> à l&#39;aide d&#39;une connexion de type <b class="cBold">Iterate</b>.</li></div>
-<a name="wp1690555"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tFileCompare</b> au composant de sortie à l&#39;aide d&#39;un lien <b class="cBold">Main</b> row.</li></div>
-<a name="wp1692349"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileUnarchive</b>, renseignez le chemin d&#39;accès au fichier à dézipper.</li></div>
-<a name="wp1692356"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Extraction Directory</b>, renseignez le chemin de destination du fichier dézippé.</li></div>
-<a name="wp1695949"> </a><div class="pSmartList2"><li>Dans l&#39;onglet Basic settings du composant <b class="cBold">tFileCompare</b>, paramétrez les propriétés du fichier à comparer. Dans le champ <b class="cBold">File to compare</b>, appuyez sur <b class="cBold">Ctrl+Espace</b> pour afficher la liste des variables globales. Sélectionnez <em class="cEmphasis">$_globals{tFileUnarchive_1}{CURRENT_FILEPATH}</em> ou <em class="cEmphasis">&quot;((String)globalMap.get(&quot;tFileUnarchive_1_CURRENT_FILEPATH&quot;))&quot;</em> en fonction du langage avec lequel vous travaillez, pour récupérer le chemin d&#39;accès du fichier à partir du composant <b class="cBold">tFileUnarchive</b>.</li></div>
-</ul></div>
+<a name="wp1690528"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tFileUnarchive</b>, <b class="cBold">tFileCompare</b> et <b class="cBold">tFileOutputDelimited</b>.</li></div>
+<a name="wp1690545"> </a><div class="pSmartList1"><li>Reliez les composants <b class="cBold">tFileUnarchive</b> et <b class="cBold">tFileCompare</b> à l&#39;aide d&#39;une connexion de type <b class="cBold">Iterate</b>.</li></div>
+<a name="wp1690555"> </a><div class="pSmartList1"><li>Connectez le composant <b class="cBold">tFileCompare</b> au composant de sortie à l&#39;aide d&#39;un lien <b class="cBold">Main</b> row.</li></div>
+<a name="wp1692349"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileUnarchive</b>, renseignez le chemin d&#39;accès au fichier à dézipper.</li></div>
+<a name="wp1692356"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Extraction Directory</b>, renseignez le chemin de destination du fichier dézippé.</li></div>
+<a name="wp1695949"> </a><div class="pSmartList1"><li>Dans l&#39;onglet Basic settings du composant <b class="cBold">tFileCompare</b>, paramétrez les propriétés du fichier à comparer. Dans le champ <b class="cBold">File to compare</b>, appuyez sur <b class="cBold">Ctrl+Espace</b> pour afficher la liste des variables globales. Sélectionnez <em class="cEmphasis">$_globals{tFileUnarchive_1}{CURRENT_FILEPATH}</em> ou <em class="cEmphasis">&quot;((String)globalMap.get(&quot;tFileUnarchive_1_CURRENT_FILEPATH&quot;))&quot;</em> en fonction du langage avec lequel vous travaillez, pour récupérer le chemin d&#39;accès du fichier à partir du composant <b class="cBold">tFileUnarchive</b>.</li></div>
 </ul></div>
 <a name="wp1690605"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -52,12 +50,10 @@ Ce scénario décrit un job permettant de dézipper un fichier et de le comparer av
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1692696"> </a><div class="pSmartList2"><li>Puis dans le champ <b class="cBold">Reference file</b>, paramétrez le fichier de référence sur lequel est basé la comparaison.</li></div>
-<a name="wp1690617"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">If differences detected, display</b> et <b class="cBold">If no differences detected, dispay</b>, paramétrez les messages à afficher lorsque les fichiers sont différents et lorsqu&#39;ils sont identiques, par exemple&#160;: <code class="cCode">&#39;[job &#39;.$_globals{job_name}.&#39;] Files differ&#39; </code>si vous travaillez en Perl ou <code class="cCode">&quot;[job &quot; + jobName + &quot;] Files differ&quot; </code>si vous travaillez en Java.</li></div>
-<a name="wp1690627"> </a><div class="pSmartList2"><li>Cohez la case <b class="cBold">Print to Console</b>, pour que le message défini apparaisse à la fin de l&#39;exécution du job.</li></div>
-<a name="wp1690634"> </a><div class="pSmartList2"><li>Le schéma est en lecture seule et contient les informations standard. Cliquez sur <b class="cBold">Edit schema</b> pour le consulter.</li></div>
-</ul></div>
+<a name="wp1692696"> </a><div class="pSmartList1"><li>Puis dans le champ <b class="cBold">Reference file</b>, paramétrez le fichier de référence sur lequel est basé la comparaison.</li></div>
+<a name="wp1690617"> </a><div class="pSmartList1"><li>Dans les champs <b class="cBold">If differences detected, display</b> et <b class="cBold">If no differences detected, dispay</b>, paramétrez les messages à afficher lorsque les fichiers sont différents et lorsqu&#39;ils sont identiques, par exemple&#160;: <code class="cCode">&#39;[Job &#39;.$_globals{Job_name}.&#39;] Files differ&#39; </code>si vous travaillez en Perl ou <code class="cCode">&quot;[Job &quot; + JobName + &quot;] Files differ&quot; </code>si vous travaillez en Java.</li></div>
+<a name="wp1690627"> </a><div class="pSmartList1"><li>Cohez la case <b class="cBold">Print to Console</b>, pour que le message défini apparaisse à la fin de l&#39;exécution du Job.</li></div>
+<a name="wp1690634"> </a><div class="pSmartList1"><li>Le schéma est en lecture seule et contient les informations standard. Cliquez sur <b class="cBold">Edit schema</b> pour le consulter.</li></div>
 </ul></div>
 <a name="wp1690643"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -65,10 +61,8 @@ Ce scénario décrit un job permettant de dézipper un fichier et de le comparer av
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1690649"> </a><div class="pSmartList2"><li>Puis paramétrez le composant de sortie en utilisant des points-virgules comme spérateurs de données.</li></div>
-<a name="wp1690657"> </a><div class="pSmartList2"><li>Enregistrez le job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
-</ul></div>
+<a name="wp1690649"> </a><div class="pSmartList1"><li>Puis paramétrez le composant de sortie en utilisant des points-virgules comme spérateurs de données.</li></div>
+<a name="wp1690657"> </a><div class="pSmartList1"><li>Enregistrez le Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
 </ul></div>
 <a name="wp1690664"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

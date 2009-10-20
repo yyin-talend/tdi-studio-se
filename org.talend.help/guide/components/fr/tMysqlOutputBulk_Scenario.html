@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:03">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
     <title>Scénario&#160;: Insérer des données transformées dans une base MySQL</title>
   </head>
 
@@ -22,87 +22,79 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2339486"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2739095"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2339494"> </a><h2 class="pHeading2">
+<a name="wp2739103"> </a><h2 class="pHeading2">
 Scénario&#160;: Insérer des données transformées dans une base MySQL
 </h2>
-<a name="wp2339497"> </a><p class="pIndented1">
-Ce scénario décrit un job contenant quatre composants dont le but est d&#39;alimenter un base MySQL à partir d&#39;un fichier paramètres contenant des données transformées. Deux étapes sont requises pour ce job, d&#39;une part pour créer le fichier paramètres qui sera utilisé dans un second temps. La première étape inclut une phase de transformation des données contenues dans le fichier.
+<a name="wp2739106"> </a><p class="pIndented1">
+Ce scénario décrit un Job contenant quatre composants dont le but est d&#39;alimenter un base MySQL à partir d&#39;un fichier paramètres contenant des données transformées. Deux étapes sont requises pour ce Job, d&#39;une part pour créer le fichier paramètres qui sera utilisé dans un second temps. La première étape inclut une phase de transformation des données contenues dans le fichier.
 </p>
-<a name="wp2339505"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2739114"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMysqlOB_BE1.png" id="wp2339502" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE1.png" id="wp2739111" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2339519"> </a><div class="pSmartList2"><li>Glissez et déposez les composants suivants&#160;: <b class="cBold">tRowGenerator</b>, <b class="cBold">tMap</b>, <b class="cBold">tMysqlOutputBulk</b> et <b class="cBold">tMysqlBulkExec</b>.</li></div>
-<a name="wp2339530"> </a><div class="pSmartList2"><li>Connectez le flux principal à l&#39;aide de connexions <b class="cBold">row main</b>.</li></div>
-<a name="wp2339536"> </a><div class="pSmartList2"><li>Et connectez le composant de début (<b class="cBold">tRowgenerator</b>, dans cet exemple) au composant <b class="cBold">tMysqlBulkExec</b> à l&#39;aide d&#39;une connexion <b class="cBold">trigger</b> de type <b class="cBold">ThenRun</b>.</li></div>
-<a name="wp2339552"> </a><div class="pSmartList2"><li>Un composant <b class="cBold">tRowGenerator</b> est utilisé pour générer des données de façon aléatoire. Double-cliquez sur le composant <b class="cBold">tRowGenerator</b> pour lancer l&#39;éditeur.</li></div>
-<a name="wp2339559"> </a><div class="pSmartList2"><li>Définissez le schéma des lignes à générer et la nature des données à générer. Dans cet exemple, le fichier <em class="cEmphasis">clients</em> à créer contient les colonnes suivantes&#160;: <em class="cEmphasis">ID</em>, <em class="cEmphasis">First Name</em>, <em class="cEmphasis">Last Name</em>, <em class="cEmphasis">Address</em>, <em class="cEmphasis">City</em> qui sont toutes de type chaîne de caractères (string) à l&#39;exception de l&#39;<em class="cEmphasis">ID</em> qui est de type entier (integer).</li></div>
+<a name="wp2739128"> </a><div class="pSmartList1"><li>Glissez et déposez les composants suivants&#160;: <b class="cBold">tRowGenerator</b>, <b class="cBold">tMap</b>, <b class="cBold">tMysqlOutputBulk</b> et <b class="cBold">tMysqlBulkExec</b>.</li></div>
+<a name="wp2739139"> </a><div class="pSmartList1"><li>Connectez le flux principal à l&#39;aide de connexions <b class="cBold">row main</b>.</li></div>
+<a name="wp2739145"> </a><div class="pSmartList1"><li>Et connectez le composant de début (<b class="cBold">tRowgenerator</b>, dans cet exemple) au composant <b class="cBold">tMysqlBulkExec</b> à l&#39;aide d&#39;une connexion <b class="cBold">trigger</b> de type <b class="cBold">ThenRun</b>.</li></div>
+<a name="wp2739161"> </a><div class="pSmartList1"><li>Un composant <b class="cBold">tRowGenerator</b> est utilisé pour générer des données de façon aléatoire. Double-cliquez sur le composant <b class="cBold">tRowGenerator</b> pour lancer l&#39;éditeur.</li></div>
+<a name="wp2739168"> </a><div class="pSmartList1"><li>Définissez le schéma des lignes à générer et la nature des données à générer. Dans cet exemple, le fichier <em class="cEmphasis">clients</em> à créer contient les colonnes suivantes&#160;: <em class="cEmphasis">ID</em>, <em class="cEmphasis">First Name</em>, <em class="cEmphasis">Last Name</em>, <em class="cEmphasis">Address</em>, <em class="cEmphasis">City</em> qui sont toutes de type chaîne de caractères (string) à l&#39;exception de l&#39;<em class="cEmphasis">ID</em> qui est de type entier (integer).</li></div>
 </ul></div>
-</ul></div>
-<a name="wp2339589"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2739198"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMysqlOB_BE2.png" id="wp2339586" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE2.png" id="wp2739195" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2339594"> </a><div class="pSmartList2"><li>Certaines informations du schéma n&#39;ont pas nécessairement besoin d&#39;être affichées. Pour les dissimuler, cliquez sur le bouton <b class="cBold">Columns</b> dans la barre d&#39;outils et décochez les colonnes à cacher, par exemple&#160;: <b class="cBold">Precision</b> ou <b class="cBold">Parameters</b>.</li></div>
-<a name="wp2339607"> </a><div class="pSmartList2"><li>Utilisez le bouton (+) pour ajouter autant de colonnes que possible à votre définition de schéma.</li></div>
-<a name="wp2339615"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Refresh</b> pour visualiser un aperçu des lignes générées en sortie.</li></div>
-<a name="wp2339622"> </a><div class="pSmartList2"><li>Puis sélectionnez le composant <b class="cBold">tMap</b> pour paramétrer la transformation.</li></div>
-<a name="wp2339627"> </a><div class="pSmartList2"><li>Faites glisser et déposez toutes les colonnes de la table Input vers la table Output.</li></div>
+<a name="wp2739203"> </a><div class="pSmartList1"><li>Certaines informations du schéma n&#39;ont pas nécessairement besoin d&#39;être affichées. Pour les dissimuler, cliquez sur le bouton <b class="cBold">Columns</b> dans la barre d&#39;outils et décochez les colonnes à cacher, par exemple&#160;: <b class="cBold">Precision</b> ou <b class="cBold">Parameters</b>.</li></div>
+<a name="wp2739216"> </a><div class="pSmartList1"><li>Utilisez le bouton (+) pour ajouter autant de colonnes que possible à votre définition de schéma.</li></div>
+<a name="wp2739224"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Refresh</b> pour visualiser un aperçu des lignes générées en sortie.</li></div>
+<a name="wp2739231"> </a><div class="pSmartList1"><li>Puis sélectionnez le composant <b class="cBold">tMap</b> pour paramétrer la transformation.</li></div>
+<a name="wp2739236"> </a><div class="pSmartList1"><li>Faites glisser et déposez toutes les colonnes de la table Input vers la table Output.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp2339634"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2739243"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMysqlOB_BE3.png" id="wp2339631" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE3.png" id="wp2739240" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2339646"> </a><div class="pSmartList2"><li>Appliquez la transformation sur la colonne <em class="cEmphasis">LastName</em> en ajoutant <em class="cEmphasis">uc</em> devant.</li></div>
-<a name="wp2339653"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider la transformation.</li></div>
-<a name="wp2339660"> </a><div class="pSmartList2"><li>Puis double-cliquez sur le composant <b class="cBold">tMysqlOutputBulk</b>.</li></div>
-<a name="wp2339666"> </a><div class="pSmartList2"><li>Définissez le nom du fichier à produire dans le champ <b class="cBold">File Name</b>. Si les propriétés du fichier délimité sont conservées dans le <b class="cBold">Repository</b>, sélectionnez l&#39;entrée correspondante dans le champ <b class="cBold">Property type</b> afin de les récupérer. Dans cet exemple, le nom de fichier est <em class="cEmphasis">clients.txt</em>.</li></div>
-<a name="wp2339685"> </a><div class="pSmartList2"><li>Le schéma est propagé à partir du composant <b class="cBold">tMap</b>, si vous cliquez sur <b class="cBold">Yes</b> lorsque la boîte de dialogue vous demande de confirmer la propagation.</li></div>
-<a name="wp2339689"> </a><div class="pSmartList2"><li>Dans cet exemple, ignorez les informations en en-tête de colonnes car la table cible devrait déjà les contenir.</li></div>
-<a name="wp2339694"> </a><div class="pSmartList2"><li>L&#39;encodage est celui par défaut dans cet exemple.</li></div>
-<a name="wp2339701"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider la sortie.</li></div>
-<a name="wp2339707"> </a><div class="pSmartList2"><li>Puis double-cliquez sur le composant <b class="cBold">tMysqlBulkExec</b> pour paramétrer la requête INSERT à exécuter.</li></div>
-<a name="wp2339711"> </a><div class="pSmartList2"><li>Définissez les informations de connexion à la base de données. Nous vous recommandons de conserver ce type d&#39;informations dans le <b class="cBold">Repository</b>, afin de pouvoir les récupérer à tout moment et pour tous vos jobs.</li></div>
+<a name="wp2739255"> </a><div class="pSmartList1"><li>Appliquez la transformation sur la colonne <em class="cEmphasis">LastName</em> en ajoutant <em class="cEmphasis">uc</em> devant.</li></div>
+<a name="wp2739262"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b> pour valider la transformation.</li></div>
+<a name="wp2739269"> </a><div class="pSmartList1"><li>Puis double-cliquez sur le composant <b class="cBold">tMysqlOutputBulk</b>.</li></div>
+<a name="wp2739275"> </a><div class="pSmartList1"><li>Définissez le nom du fichier à produire dans le champ <b class="cBold">File Name</b>. Si les propriétés du fichier délimité sont conservées dans le <b class="cBold">Repository</b>, sélectionnez l&#39;entrée correspondante dans le champ <b class="cBold">Property type</b> afin de les récupérer. Dans cet exemple, le nom de fichier est <em class="cEmphasis">clients.txt</em>.</li></div>
+<a name="wp2739294"> </a><div class="pSmartList1"><li>Le schéma est propagé à partir du composant <b class="cBold">tMap</b>, si vous cliquez sur <b class="cBold">Yes</b> lorsque la boîte de dialogue vous demande de confirmer la propagation.</li></div>
+<a name="wp2739298"> </a><div class="pSmartList1"><li>Dans cet exemple, ignorez les informations en en-tête de colonnes car la table cible devrait déjà les contenir.</li></div>
+<a name="wp2739303"> </a><div class="pSmartList1"><li>L&#39;encodage est celui par défaut dans cet exemple.</li></div>
+<a name="wp2739310"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b> pour valider la sortie.</li></div>
+<a name="wp2739316"> </a><div class="pSmartList1"><li>Puis double-cliquez sur le composant <b class="cBold">tMysqlBulkExec</b> pour paramétrer la requête INSERT à exécuter.</li></div>
+<a name="wp2739320"> </a><div class="pSmartList1"><li>Définissez les informations de connexion à la base de données. Nous vous recommandons de conserver ce type d&#39;informations dans le <b class="cBold">Repository</b>, afin de pouvoir les récupérer à tout moment et pour tous vos Jobs.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp2339723"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2739332"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMysqlOB_BE4.png" id="wp2339720" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE4.png" id="wp2739329" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2339732"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Table</b>, définissez la table à alimenter avec les données collectées.</li></div>
-<a name="wp2339741"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Field terminated by</b> de l&#39;onglet <b class="cBold">Advanced settings</b>, renseignez le séparateur de colonnes.</li></div>
-<a name="wp2339746"> </a><div class="pSmartList2"><li>Assurez-vous que l&#39;encodage correspond à celui des données manipulées.</li></div>
-<a name="wp2339754"> </a><div class="pSmartList2"><li>Puis appuyez sur <b class="cBold">F6</b> pour exécuter le job.</li></div>
+<a name="wp2739341"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Table</b>, définissez la table à alimenter avec les données collectées.</li></div>
+<a name="wp2739350"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Field terminated by</b> de l&#39;onglet <b class="cBold">Advanced settings</b>, renseignez le séparateur de colonnes.</li></div>
+<a name="wp2739355"> </a><div class="pSmartList1"><li>Assurez-vous que l&#39;encodage correspond à celui des données manipulées.</li></div>
+<a name="wp2739363"> </a><div class="pSmartList1"><li>Puis appuyez sur <b class="cBold">F6</b> pour exécuter le Job.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp2339761"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2739370"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMysqlOB_BE5.png" id="wp2339758" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE5.png" id="wp2739367" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2339767"> </a><p class="pIndented1">
+<a name="wp2739376"> </a><p class="pIndented1">
 La table de la base <em class="cEmphasis">clients</em> est alimentée avec les données du fichier notamment les données transformées dans la colonne <em class="cEmphasis">last name</em>.
 </p>
-<a name="wp2339774"> </a><p class="pIndented1">
+<a name="wp2739383"> </a><p class="pIndented1">
 Pour une simple opération d&#39;Insert ne nécessitant pas de transformation, l&#39;utilisation du composant <b class="cBold">tMysqlOutputBulkExec</b> permet d&#39;économiser une étape dans le processus et ainsi de gagner en performance.
 </p>
-<a name="wp2339787"> </a><p class="pIndented1">
+<a name="wp2739396"> </a><p class="pIndented1">
 Voir également les <a href="tMysqlOutputBulkExec_Prop.html#wp2316711"><em class="cEmphasis">Propriétés du tMysqlOutputBulkExec</em></a>.
 </p>
     </blockquote>

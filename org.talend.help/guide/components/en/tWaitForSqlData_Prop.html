@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:54:13">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:38">
     <title>tWaitForSqlData</title>
   </head>
 
@@ -47,7 +47,7 @@ Orchestration
 </div>
 </td>
     <td><a name="wp1535385"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-13-21-09.jpg" height="59" width="112" id="wp1535380" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-13-23-09.jpg" height="59" width="112" id="wp1535380" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Orchestration
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1535396"> </a><div class="pCellBody">
-<b class="cBold">tWaitForSqlData</b>  component iterates on a given connection for insertion or deletion of rows and triggers a subjob to be executed when the condition is met.
+<b class="cBold">tWaitForSqlData</b> component iterates on a given connection for insertion or deletion of rows and triggers a subjob to be executed when the condition is met.
 </div>
 </td>
 </tr>
@@ -73,7 +73,7 @@ This component allows a subjob to be triggered given a condition linked to sql d
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1535428"> </a><div class="pCellHeading">
+    <td><a name="wp1535428"> </a><div class="pCellBody">
 <em class="cEmphasis">Wait at each iteration (in seconds)</em>
 </div>
 </td>
@@ -86,12 +86,12 @@ Set the time interval in seconds between each check for the sql data.
 &#160;
 </div>
 </td>
-    <td><a name="wp1535558"> </a><div class="pCellHeading">
+    <td><a name="wp1535558"> </a><div class="pCellBody">
 <em class="cEmphasis">Max. iterations (infinite if empty)</em>
 </div>
 </td>
     <td><a name="wp1535565"> </a><div class="pCellBody">
-Number of checks for sql data before the jobs times out.
+Number of checks for sql data before the Jobs times out.
 </div>
 </td>
 </tr>
@@ -99,7 +99,7 @@ Number of checks for sql data before the jobs times out.
 &#160;
 </div>
 </td>
-    <td><a name="wp1535572"> </a><div class="pCellHeading">
+    <td><a name="wp1535572"> </a><div class="pCellBody">
 <em class="cEmphasis">Use an existing connection/Component List</em>
 </div>
 </td>
@@ -112,12 +112,12 @@ A connection needs to be open to allow the loop to check for sql data on the def
 &#160;
 </div>
 </td>
-    <td><a name="wp1535590"> </a><div class="pCellHeading">
+    <td><a name="wp1535590"> </a><div class="pCellBody">
 <em class="cEmphasis">Table to scan</em>
 </div>
 </td>
     <td><a name="wp1535597"> </a><div class="pCellBody">
-Name of the table to be checked  for  insert or deletion
+Name of the table to be checked for insert or deletion
 </div>
 </td>
 </tr>
@@ -125,12 +125,12 @@ Name of the table to be checked  for  insert or deletion
 &#160;
 </div>
 </td>
-    <td><a name="wp1535612"> </a><div class="pCellHeading">
+    <td><a name="wp1535612"> </a><div class="pCellBody">
 <em class="cEmphasis">Trigger action when rowcount is</em>
 </div>
 </td>
     <td><a name="wp1535615"> </a><div class="pCellBody">
-Select the condition to be met for  the action to be carried out:<br /><b class="cBold">Equal to</b><br /><b class="cBold">Not Equal to</b><br /><b class="cBold">Greater than</b><br /><b class="cBold">Lower than</b><br /><b class="cBold">Greater or equal to</b><br /><b class="cBold">Lower or equal to</b>
+Select the condition to be met for the action to be carried out:<br /><b class="cBold">Equal to</b><br /><b class="cBold">Not Equal to</b><br /><b class="cBold">Greater than</b><br /><b class="cBold">Lower than</b><br /><b class="cBold">Greater or equal to</b><br /><b class="cBold">Lower or equal to</b>
 </div>
 </td>
 </tr>
@@ -138,7 +138,7 @@ Select the condition to be met for  the action to be carried out:<br /><b class=
 &#160;
 </div>
 </td>
-    <td><a name="wp1536306"> </a><div class="pCellHeading">
+    <td><a name="wp1536306"> </a><div class="pCellBody">
 <em class="cEmphasis">Then</em>
 </div>
 </td>
@@ -152,7 +152,7 @@ Select the action to be carried out: either stop the iterations when the conditi
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1535626"> </a><div class="pCellBody">
-Although this component requires a Connection component to open the DB access, it plays also the role of  the start (or trigger) component of the subjob which gets executed under the condition described. Therefore this component requires a subjob to be connected to via an Iterate link.
+Although this component requires a Connection component to open the DB access, it plays also the role of the start (or trigger) component of the subjob which gets executed under the condition described. Therefore this component requires a subjob to be connected to via an Iterate link.
 </div>
 </td>
 </tr>

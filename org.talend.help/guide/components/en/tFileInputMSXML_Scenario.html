@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/28/09 16:15:02">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:36">
     <title>Scenario: Reading a multi structure XML file</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scenario: Reading a multi structure XML file
 </h2>
 <a name="wp2084486"> </a><p class="pIndented1">
-The following scenario creates a Java job which aims at reading a multi schema XML file and displaying data structures on the <b class="cBold">Run Job </b>console.
+The following scenario creates a Java Job which aims at reading a multi schema XML file and displaying data structures on the <b class="cBold">Run Job </b>console.
 </p>
 <a name="wp2092275"> </a><p class="pIndented1">
 The XM file processed in this example looks like the following:
@@ -41,8 +41,8 @@ The XM file processed in this example looks like the following:
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2091004"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tFileInputMSXML</b> and three <b class="cBold">tLogRow </b>components from the <b class="cBold">Palette </b>onto the design workspace.</li></div>
-<a name="wp2092447"> </a><div class="pSmartList2"><li>Double_click <b class="cBold">tFileInputMSXML </b>to open the component <b class="cBold">Basic settings</b> view.</li></div>
+<a name="wp2091004"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileInputMSXML</b> and two <b class="cBold">tLogRow </b>components from the <b class="cBold">Palette </b>onto the design workspace.</li></div>
+<a name="wp2092447"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFileInputMSXML </b>to open the component <b class="cBold">Basic settings</b> view.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2092334"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -53,22 +53,22 @@ The XM file processed in this example looks like the following:
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2091842"> </a><div class="pSmartList2"><li>Browse to the XML file you want to process.</li></div>
-<a name="wp2091845"> </a><div class="pSmartList2"><li>In the <b class="cBold">Root XPath query</b> field, enter the root of the XML tree, which the query will be based on.</li></div>
-<a name="wp2091982"> </a><div class="pSmartList2"><li>Click the plus button to add lines in the <b class="cBold">Outputs</b> table where you can define the output schema.</li></div>
-<a name="wp2091970"> </a><div class="pSmartList2"><li>In the <b class="cBold">Outputs</b> table, click in the <b class="cBold">Schema</b> cell and then click a three-dot button to display a dialog box where you can define the schema name.</li></div>
+<a name="wp2106165"> </a><div class="pSmartList2"><li>In the <b class="cBold">Root XPath query</b> field, enter the root of the XML tree, which the query will be based on.</li></div>
+<a name="wp2106172"> </a><div class="pSmartList2"><li>Click the plus button to add lines in the <b class="cBold">Outputs</b> table where you can define the output schema, two lines in this scenario: <em class="cEmphasis">record</em> and <em class="cEmphasis">book</em>.</li></div>
+<a name="wp2106188"> </a><div class="pSmartList2"><li>In the <b class="cBold">Outputs</b> table, click in the <b class="cBold">Schema</b> cell and then click a three-dot button to display a dialog box where you can define the schema name.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2091877"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2106197"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tFileInputMSXML2.png" id="wp2091953" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFileInputMSXML2.png" id="wp2106194" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2091948"> </a><div class="pSmartList2"><li>Enter a name for the output schema and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tFileInputMSXML</b> schema editor displays.</li></div>
+<a name="wp2106204"> </a><div class="pSmartList2"><li>Enter a name for the output schema and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tFileInputMSXML</b> schema editor displays.</li></div>
 <a name="wp2092045"> </a><div class="pSmartList2"><li>Define the schema you previously defined in the <b class="cBold">Outputs</b> table.</li></div>
-<a name="wp2092048"> </a><div class="pSmartList2"><li>Do the same for all the output schemas you want to define. In this scenario, we want to define two output schemas: <em class="cEmphasis">record</em> and <em class="cEmphasis">book</em>.</li></div>
-<a name="wp2092199"> </a><div class="pSmartList2"><li>In the designer workspace, right-click <b class="cBold">tFileInputMSXML</b> and connect it to <b class="cBold">tLogRow1</b>, and <b class="cBold">tLogRow2</b> using the <b class="cBold">record</b> and <b class="cBold">book</b> links respectively.</li></div>
+<a name="wp2092048"> </a><div class="pSmartList2"><li>Do the same for all the output schemas you want to define.</li></div>
+<a name="wp2092199"> </a><div class="pSmartList2"><li>In the design workspace, right-click <b class="cBold">tFileInputMSXML</b> and connect it to <b class="cBold">tLogRow1</b>, and <b class="cBold">tLogRow2</b> using the <b class="cBold">record</b> and <b class="cBold">book</b> links respectively.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2092400"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -81,7 +81,7 @@ The XM file processed in this example looks like the following:
 <a name="wp2092533"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view and in the <b class="cBold">Schema XPath loop</b> cell, enter the node of the XML tree, which the loop is based on.</li></div>
 <a name="wp2092542"> </a><div class="pSmartList2"><li>In the <b class="cBold">XPath Queries </b>cell, enter the fields to be extracted from the structured XML input.</li></div>
 <a name="wp2092547"> </a><div class="pSmartList2"><li>Select the check boxes next to schemas&#39; names where you want to create empty rows.</li></div>
-<a name="wp2092563"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> execute it. The defined schemas are extracted from the multi schema XML structured file and displayed on the console.</li></div>
+<a name="wp2092563"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it. The defined schemas are extracted from the multi schema XML structured file and displayed on the console.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2091417"> </a><p class="pIndented1">

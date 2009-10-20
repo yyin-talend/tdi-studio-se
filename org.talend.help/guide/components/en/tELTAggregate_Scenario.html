@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:23:41">
+    <meta name="LASTUPDATED" content="10/19/09 18:23:03">
     <title>Scenario: Filtering and aggregating table columns directly on the DBMS</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scenario: Filtering and aggregating table columns directly on the DBMS
 </h2>
 <a name="wp1614261"> </a><p class="pIndented1">
-The following Java scenario creates a job that opens a connection to a Mysql database and:
+The following Java scenario creates a Job that opens a connection to a Mysql database and:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -43,7 +43,7 @@ To filter and aggregate database table columns:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1562134"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace: <b class="cBold">tELTMysqlconnection</b>, <b class="cBold">tELTFilterColumns</b>, <b class="cBold">tELTFilterRows</b>, <b class="cBold">tELTAggregae</b>, <b class="cBold">tELTCommit</b>, and <b class="cBold">tELTRollback</b>.</li></div>
+<a name="wp1562134"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tELTMysqlconnection</b>, <b class="cBold">tELTFilterColumns</b>, <b class="cBold">tELTFilterRows</b>, <b class="cBold">tELTAggregae</b>, <b class="cBold">tELTCommit</b>, and <b class="cBold">tELTRollback</b>.</li></div>
 <a name="wp1562069"> </a><div class="pSmartList2"><li>Connect the five first components using <b class="cBold">OnComponentOk </b>links.</li></div>
 <a name="wp1562082"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tELTAggregate</b> to <b class="cBold">tELTRollback</b> using an <b class="cBold">OnComponentError</b> link.</li></div>
 </ul></div>
@@ -55,12 +55,12 @@ To filter and aggregate database table columns:
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1612594"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tMysqlConnection</b> and click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tMysqlConnection</b>.</li></div>
+<a name="wp1612594"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tMysqlConnection</b> and click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tMysqlConnection</b>.</li></div>
 <a name="wp1609650"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view, set the database connection details manually or select them from the context variable list, through a <b class="cBold">Ctrl+Space</b> click in the corresponding field if you have stored them locally as Metadata DB connection entries. </li></div>
 </ul></div>
 </ul></div>
 <a name="wp1615140"> </a><p class="pIndented1">
-For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> of <b class="cBold">Talend Open Studio</b>.
+For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </p>
 <a name="wp1615149"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -69,7 +69,7 @@ For more information about Metadata, see <em class="cEmphasis">Defining Metadata
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1615160"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tELTFilterColumns</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+<a name="wp1615160"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tELTFilterColumns</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1615280"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -103,11 +103,11 @@ In this scenario, the <b class="cBold">tELTFilterColumns </b>component instantia
 <a name="wp1654365"> </a><p class="pBodyRelative">
 </p>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp1654343" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-In the <b class="cBold">Component </b>view, you can click the <b class="cBold">SQL Pattern</b> tab and add system SQL patterns or create your own and use them within your job to carry out the coded operation. For more information, see <a href="tELTFilterColumns_Prop.html#wp1560801"><em class="cEmphasis">tELTFilterColumns Properties</em></a>.
+In the <b class="cBold">Component </b>view, you can click the <b class="cBold">SQL Pattern</b> tab and add system SQL patterns or create your own and use them within your Job to carry out the coded operation. For more information, see <a href="tELTFilterColumns_Prop.html#wp1560801"><em class="cEmphasis">tELTFilterColumns Properties</em></a>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1616828"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tELTFilterRows</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+<a name="wp1616828"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tELTFilterRows</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1615529"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -135,7 +135,7 @@ In this scenario, the <b class="cBold">tELTFilterRows </b>component filters the 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1614476"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tELTAggregate</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+<a name="wp1614476"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tELTAggregate</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
 <a name="wp1613150"> </a><div class="pSmartList2"><li>On the <b class="cBold">Database type</b> list, select the relevant database.</li></div>
 <a name="wp1613158"> </a><div class="pSmartList2"><li>On the <b class="cBold">Component list</b>, select the relevant database connection component if more than one connection is used.</li></div>
 <a name="wp1613914"> </a><div class="pSmartList2"><li>Enter the names for the database, source table, and target table in the corresponding fields and click the three-dot buttons next to <b class="cBold">Edit schema</b> to define the data structure in the source and target tables.</li></div>
@@ -154,11 +154,11 @@ The schema for the source table consists of the three columns: <em class="cEmpha
 <a name="wp1616349"> </a><div class="pSmartList2"><li>In the <b class="cBold">Operations</b> panel, click the plus button to add one or more lines and then click in the <b class="cBold">Output column</b> line to select the output column that will hold the counted data. </li></div>
 <a name="wp1616363"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">Function</b> line and select the operation to be carried on.</li></div>
 <a name="wp1616369"> </a><div class="pSmartList2"><li>In the <b class="cBold">Group by</b> panel, click the plus button to add one or more lines and then click in the <b class="cBold">Output column </b>line to select the output column that will hold the aggregated data.</li></div>
-<a name="wp1616385"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tELTCommit</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+<a name="wp1616385"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tELTCommit</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
 <a name="wp1616393"> </a><div class="pSmartList2"><li>On the <b class="cBold">Database type</b> list, select the relevant database.</li></div>
 <a name="wp1616399"> </a><div class="pSmartList2"><li>On the <b class="cBold">Component list</b>, select the relevant database connection component if more than one connection is used.</li></div>
 <a name="wp1616407"> </a><div class="pSmartList2"><li>Do the same for <b class="cBold">tELTRollback</b>.</li></div>
-<a name="wp1616415"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp1616415"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1616421"> </a><p class="pIndented1">

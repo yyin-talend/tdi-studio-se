@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:23:55">
+    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
     <title>Scenario: Delimited file content display</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFileInputDelimited_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components09-18.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFileInputDelimited_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components08-18.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scenario: Delimited file content display
 </h2>
 <a name="wp1287607"> </a><p class="pIndented1">
-The following scenario creates a two-component job, which aims at reading each row of a file, selecting delimited data and displaying the output in the <b class="cBold">Run</b> log console.
+The following scenario creates a two-component Job, which aims at reading each row of a file, selecting delimited data and displaying the output in the <b class="cBold">Run</b> log console.
 </p>
 <a name="wp1095697"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,8 +38,8 @@ The following scenario creates a two-component job, which aims at reading each r
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1006861"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tFileInputDelimited</b> component from the Palette to the design workspace.</li></div>
-<a name="wp1006869"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tLogRow</b> component the same way.</li></div>
+<a name="wp1006861"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileInputDelimited</b> component from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp1006869"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tLogRow</b> component the same way.</li></div>
 <a name="wp1006872"> </a><div class="pSmartList2"><li>Right-click on the <b class="cBold">tFileInputDelimited</b> component and select <em class="cEmphasis">Row &gt; Main</em>. Then drag it onto the <b class="cBold">tLogRow</b> component and release when the plug symbol shows up.</li></div>
 <a name="wp1542148"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tFileInputDelimited</b> component again, and define its Basic settings:</li></div>
 </ul></div>
@@ -59,15 +59,15 @@ The following scenario creates a two-component job, which aims at reading each r
 </ul></div>
 </ul></div>
 <a name="wp1542215"> </a><p class="pIndented1">
-Related topics: <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+Related topics: <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a Repository schema</em> of Talend Open Studio User Guide.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1542220"> </a><div class="pSmartList2"><li>As selected, the empty rows will be ignored.</li></div>
 <a name="wp1007398"> </a><div class="pSmartList2"><li>Enter the encoding standard the input file is encoded in. This setting is meant to ensure encoding consistency throughout all input and output files.</li></div>
 <a name="wp1075191"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tLogRow</b> and define the <b class="cBold">Field separator </b>to use for the output display. Related topic: <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
-<a name="wp1235528"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Print schema column name in front of each value</b> box to retrieve the column labels in the output displayed.</li></div>
-<a name="wp1075206"> </a><div class="pSmartList2"><li>Go to <b class="cBold">Run</b> tab, and click on <b class="cBold">Run</b> to execute the job.</li></div>
+<a name="wp1235528"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Print schema column name in front of each value</b> check box to retrieve the column labels in the output displayed.</li></div>
+<a name="wp1075206"> </a><div class="pSmartList2"><li>Go to <b class="cBold">Run</b> tab, and click on <b class="cBold">Run</b> to execute the Job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1052377"> </a><p class="pIndented1">
@@ -79,7 +79,7 @@ The file is read row by row and the extracted fields are displayed on the Run lo
 
 </div>
 <a name="wp1052366"> </a><p class="pIndented1">
-The Log sums up all parameters in a header followed by the result of the job.
+The Log sums up all parameters in a header followed by the result of the Job.
 </p>
     </blockquote>
     <hr>
@@ -100,7 +100,7 @@ The Log sums up all parameters in a header followed by the result of the job.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFileInputDelimited_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components09-18.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFileInputDelimited_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components08-18.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

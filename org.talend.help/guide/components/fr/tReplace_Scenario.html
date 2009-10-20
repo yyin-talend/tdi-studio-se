@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:55">
+    <meta name="LASTUPDATED" content="10/19/09 17:33:38">
     <title>Scénario&#160;: Remplacement mutliple et filtrage de colonnes</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tReplace_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSortRow_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tReplace_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tRules_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scénario&#160;: Remplacement mutliple et filtrage de colonnes
 </h2>
 <a name="wp1701653"> </a><p class="pIndented1">
-Le job suivant (effectué en Perl) recherche et remplace différentes coquilles et fautes dans un fichier csv puis filtre une colonne avant de générer en sortie un nouveau fichier csv contenant les données modifiées.
+Le Job suivant (effectué en Perl) recherche et remplace différentes coquilles et fautes dans un fichier csv puis filtre une colonne avant de générer en sortie un nouveau fichier csv contenant les données modifiées.
 </p>
 <a name="wp1701661"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,11 +37,9 @@ Le job suivant (effectué en Perl) recherche et remplace différentes coquilles et
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1701674"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants dans l&#39;espace de modélisation&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tReplace</b>, <b class="cBold">tFilterColumn</b> et <b class="cBold">tFileOutputDelimited</b>.</li></div>
-<a name="wp1700776"> </a><div class="pSmartList2"><li>Connectez les composants à l&#39;aide de liens de type<b class="cBold"> Main Row</b> via un clic-droit sur chaque composant.</li></div>
-<a name="wp1700784"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tFileInputDelimited</b> et paramétrez les propriétés du flux d&#39;entrée.</li></div>
-</ul></div>
+<a name="wp1701674"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants dans l&#39;espace de modélisation&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tReplace</b>, <b class="cBold">tFilterColumn</b> et <b class="cBold">tFileOutputDelimited</b>.</li></div>
+<a name="wp1700776"> </a><div class="pSmartList1"><li>Connectez les composants à l&#39;aide de liens de type<b class="cBold"> Main Row</b> via un clic-droit sur chaque composant.</li></div>
+<a name="wp1700784"> </a><div class="pSmartList1"><li>Sélectionnez le composant <b class="cBold">tFileInputDelimited</b> et paramétrez les propriétés du flux d&#39;entrée.</li></div>
 </ul></div>
 <a name="wp1700791"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -49,11 +47,9 @@ Le job suivant (effectué en Perl) recherche et remplace différentes coquilles et
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1700802"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Property type</b>, sélectionnez l&#39;option <b class="cBold">Built-in</b>. Puis renseignez manuellement les champs suivants. Si les propriétés sont centralisées dans le Repository, choisissez l&#39;option Repository et les champs seront automatiquement remplis.</li></div>
-<a name="wp1700812"> </a><div class="pSmartList2"><li>Le <b class="cBold">Fichier</b> est un simple fichier csv stocké localement. Ainsi, dans le champ <b class="cBold">Filepath</b>, renseignez le chemin d&#39;accès au fichier. Dans le champ <b class="cBold">Row Separator</b>, renseignez le séparateur de lignes, ici le retour chariot. Dans le champ <b class="cBold">Field Separator</b>, renseignez le séparateur de champ, ici un point virgule. Dans cet exemple, il n&#39;y a pas d&#39;en-tête (<b class="cBold">Header</b>), de pied de page (<b class="cBold">Footer</b>) ou de nombre limite de lignes à traiter (<b class="cBold">Limit</b>).</li></div>
-<a name="wp1700834"> </a><div class="pSmartList2"><li>Le fichier contient des caractère tels que&#160;: <code class="cCode">\t, |||, [d]</code> ou <code class="cCode">*d</code> qui ne devraient pas être interprétés comme des caractères spéciaux ou comme des caractères génériques.</li></div>
-</ul></div>
+<a name="wp1700802"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Property type</b>, sélectionnez l&#39;option <b class="cBold">Built-in</b>. Puis renseignez manuellement les champs suivants. Si les propriétés sont centralisées dans le Repository, choisissez l&#39;option Repository et les champs seront automatiquement remplis.</li></div>
+<a name="wp1700812"> </a><div class="pSmartList1"><li>Le <b class="cBold">Fichier</b> est un simple fichier csv stocké localement. Ainsi, dans le champ <b class="cBold">Filepath</b>, renseignez le chemin d&#39;accès au fichier. Dans le champ <b class="cBold">Row Separator</b>, renseignez le séparateur de lignes, ici le retour chariot. Dans le champ <b class="cBold">Field Separator</b>, renseignez le séparateur de champ, ici un point virgule. Dans cet exemple, il n&#39;y a pas d&#39;en-tête (<b class="cBold">Header</b>), de pied de page (<b class="cBold">Footer</b>) ou de nombre limite de lignes à traiter (<b class="cBold">Limit</b>).</li></div>
+<a name="wp1700834"> </a><div class="pSmartList1"><li>Le fichier contient des caractère tels que&#160;: <code class="cCode">\t, |||, [d]</code> ou <code class="cCode">*d</code> qui ne devraient pas être interprétés comme des caractères spéciaux ou comme des caractères génériques.</li></div>
 </ul></div>
 <a name="wp1700843"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -61,10 +57,8 @@ Le job suivant (effectué en Perl) recherche et remplace différentes coquilles et
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1700848"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Schema</b>, sélectionnez aussi l&#39;option <b class="cBold">Built-in</b> . Le schéma est composé de quatre colonnes de différents types&#160;: chaînes de caractères (string) ou entier (int).</li></div>
-<a name="wp1700857"> </a><div class="pSmartList2"><li>Maintenant sélectionnez le composant <b class="cBold">tReplace</b> pour paramètrer les propriétés des Rechercher/Remplacer.</li></div>
-</ul></div>
+<a name="wp1700848"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Schema</b>, sélectionnez aussi l&#39;option <b class="cBold">Built-in</b>. Le schéma est composé de quatre colonnes de différents types&#160;: chaînes de caractères (string) ou entier (int).</li></div>
+<a name="wp1700857"> </a><div class="pSmartList1"><li>Maintenant sélectionnez le composant <b class="cBold">tReplace</b> pour paramétrer les propriétés des Rechercher/Remplacer.</li></div>
 </ul></div>
 <a name="wp1700864"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -72,19 +66,17 @@ Le job suivant (effectué en Perl) recherche et remplace différentes coquilles et
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1700870"> </a><div class="pSmartList2"><li>Le schéma peut être synchroné à partir du flux d&#39;entrée.</li></div>
-<a name="wp1700876"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Simple mode</b> car les paramètres de recherche peuvent être facilement définis sans avoir recours aux expressions régulières.</li></div>
-<a name="wp1700881"> </a><div class="pSmartList2"><li>Cliquez sur le signe (+) pour ajouter des lignes aux tableaux des paramètres.</li></div>
-<a name="wp1702692"> </a><div class="pSmartList2"><li>En premier paramètre, sélectionnez <em class="cEmphasis">amount</em> dans la colonne <b class="cBold">Input column</b>. Dans la colonne <b class="cBold">Search</b>, cherchez tous les <em class="cEmphasis">points</em> et dans la colonne <b class="cBold">Replace</b> indiquez la valeur de remplacement, ici la <em class="cEmphasis">virgule</em>. Les valeurs doivent être mises entre guillemets simples.</li></div>
-<a name="wp1700921"> </a><div class="pSmartList2"><li>En deuxième paramètre, sélectionnez <em class="cEmphasis">str</em> dans la colonne <b class="cBold">Input column</b>. Dans la colonne<b class="cBold"> Search, cherchez les chaînes de caractères </b><em class="cEmphasis">stret</em> ou <em class="cEmphasis">streat</em> ou <em class="cEmphasis">stre</em>. Notez que ces valeurs sont séparées par une barre verticale qui signifie &quot;OU&quot; et qui équivaut au <code class="cCode">or</code> en langage Perl. Dans la colonne <b class="cBold">Replace</b>, renseignez la valeur de remplacement, ici <em class="cEmphasis">Street</em>. Cochez la case <b class="cBold">whole word</b>.</li></div>
-<a name="wp1700949"> </a><div class="pSmartList2"><li>En troisième paramètre, sélectionnez à nouveau <em class="cEmphasis">str</em> dans la colonne <b class="cBold">Input column</b>. Dans la colonne <b class="cBold">Search</b>, cherchez les barres verticales en mettant une barre oblique inversée devant pour éviter de la confondre avec le &quot;or&quot; en langage Perl. Et dans la colonne <b class="cBold">Replace</b>, ne mettez rien entre deux guillemets simples (`&#39;).</li></div>
-<a name="wp1700962"> </a><div class="pSmartList2"><li>En quatrième paramètre, sélectionnez <em class="cEmphasis">firstname</em> dans la colonne <b class="cBold">Input column</b>. Dans le champ <b class="cBold">Search</b>, cherchez les caractères suivants&#160;: <code class="cCode">[, ], +, *</code>. Notez que ces valeurs sont séparées par une barre verticale qui signifie &quot;OU&quot; et qui est équivaut au <code class="cCode">or</code> en langage Perl. Et dans la colonne <b class="cBold">Replace</b>, ne mettez rien entre deux guillemets simples (`&#39;).</li></div>
-<a name="wp1700978"> </a><div class="pSmartList2"><li>En cinquième paramètre, sélectionnez <em class="cEmphasis">amount</em> dans la colonne<b class="cBold"> Input column</b>. Dans le champ <b class="cBold">Search</b>, saisissez le signe du dollar entre guillemets simples et dans le champ <b class="cBold">Replace</b>, saisissez le signe de l&#39;Euro entre guillemets simples.</li></div>
-<a name="wp1704135"> </a><div class="pSmartList2"><li>En dernier paramètre, sélectionnez <em class="cEmphasis">firstname</em> dans la colonne <b class="cBold">Input column</b>. Dans la colonne <b class="cBold">Search</b>, cherchez la chaîne <code class="cCode">\t</code>. Pour différencier cette chaîne de la tabulation, ajoutez autant de barres obliques inversées devant qu&#39;il y a de vérifications. En d&#39;autres termes, il faut ajouter deux barres obliques inversées pour que la chaîne ne soit pas confondu avec la tabulation et deux autres qui font partie du caractère recherché. En tout, il doit y avoir quatre barres obliques inversées inclue celle constituant la chaîne de caractère. Dans le champ <b class="cBold">Replace</b>, ne mettez rien entre deux guillemets simples (`&#39;). Cochez la case <b class="cBold">whole word</b>.</li></div>
-<a name="wp1700999"> </a><div class="pSmartList2"><li>L&#39;option <b class="cBold">Advanced mode</b> n&#39;est pas utilisée pour ce scénario.</li></div>
-<a name="wp1701007"> </a><div class="pSmartList2"><li>Sélectionnez le composant suivant&#160;: <b class="cBold">tFilterColumn</b>.</li></div>
-</ul></div>
+<a name="wp1700870"> </a><div class="pSmartList1"><li>Le schéma peut être synchronisé à partir du flux d&#39;entrée.</li></div>
+<a name="wp1700876"> </a><div class="pSmartList1"><li>Cochez la case <b class="cBold">Simple mode</b> car les paramètres de recherche peuvent être facilement définis sans avoir recours aux expressions régulières.</li></div>
+<a name="wp1700881"> </a><div class="pSmartList1"><li>Cliquez sur le signe (+) pour ajouter des lignes aux tableaux des paramètres.</li></div>
+<a name="wp1702692"> </a><div class="pSmartList1"><li>En premier paramètre, sélectionnez <em class="cEmphasis">amount</em> dans la colonne <b class="cBold">Input column</b>. Dans la colonne <b class="cBold">Search</b>, cherchez tous les <em class="cEmphasis">points</em> et dans la colonne <b class="cBold">Replace</b> indiquez la valeur de remplacement, ici la <em class="cEmphasis">virgule</em>. Les valeurs doivent être mises entre guillemets simples.</li></div>
+<a name="wp1700921"> </a><div class="pSmartList1"><li>En deuxième paramètre, sélectionnez <em class="cEmphasis">str</em> dans la colonne <b class="cBold">Input column</b>. Dans la colonne<b class="cBold"> Search, cherchez les chaînes de caractères </b><em class="cEmphasis">stret</em> ou <em class="cEmphasis">streat</em> ou <em class="cEmphasis">stre</em>. Notez que ces valeurs sont séparées par une barre verticale qui signifie &quot;OU&quot; et qui équivaut au <code class="cCode">or</code> en langage Perl. Dans la colonne <b class="cBold">Replace</b>, renseignez la valeur de remplacement, ici <em class="cEmphasis">Street</em>. Cochez la case <b class="cBold">whole word</b>.</li></div>
+<a name="wp1700949"> </a><div class="pSmartList1"><li>En troisième paramètre, sélectionnez à nouveau <em class="cEmphasis">str</em> dans la colonne <b class="cBold">Input column</b>. Dans la colonne <b class="cBold">Search</b>, cherchez les barres verticales en mettant une barre oblique inversée devant pour éviter de la confondre avec le &quot;or&quot; en langage Perl. Et dans la colonne <b class="cBold">Replace</b>, ne mettez rien entre deux guillemets simples (`&#39;).</li></div>
+<a name="wp1700962"> </a><div class="pSmartList1"><li>En quatrième paramètre, sélectionnez <em class="cEmphasis">firstname</em> dans la colonne <b class="cBold">Input column</b>. Dans le champ <b class="cBold">Search</b>, cherchez les caractères suivants&#160;: <code class="cCode">[, ], +, *</code>. Notez que ces valeurs sont séparées par une barre verticale qui signifie &quot;OU&quot; et qui est équivaut au <code class="cCode">or</code> en langage Perl. Et dans la colonne <b class="cBold">Replace</b>, ne mettez rien entre deux guillemets simples (`&#39;).</li></div>
+<a name="wp1700978"> </a><div class="pSmartList1"><li>En cinquième paramètre, sélectionnez <em class="cEmphasis">amount</em> dans la colonne<b class="cBold"> Input column</b>. Dans le champ <b class="cBold">Search</b>, saisissez le signe du dollar entre guillemets simples et dans le champ <b class="cBold">Replace</b>, saisissez le signe de l&#39;Euro entre guillemets simples.</li></div>
+<a name="wp1704135"> </a><div class="pSmartList1"><li>En dernier paramètre, sélectionnez <em class="cEmphasis">firstname</em> dans la colonne <b class="cBold">Input column</b>. Dans la colonne <b class="cBold">Search</b>, cherchez la chaîne <code class="cCode">\t</code>. Pour différencier cette chaîne de la tabulation, ajoutez autant de barres obliques inversées devant qu&#39;il y a de vérifications. En d&#39;autres termes, il faut ajouter deux barres obliques inversées pour que la chaîne ne soit pas confondue avec la tabulation et deux autres qui font partie du caractère recherché. En tout, il doit y avoir quatre barres obliques inversées inclue celle constituant la chaîne de caractère. Dans le champ <b class="cBold">Replace</b>, ne mettez rien entre deux guillemets simples (`&#39;). Cochez la case <b class="cBold">whole word</b>.</li></div>
+<a name="wp1700999"> </a><div class="pSmartList1"><li>L&#39;option <b class="cBold">Advanced mode</b> n&#39;est pas utilisée pour ce scénario.</li></div>
+<a name="wp1701007"> </a><div class="pSmartList1"><li>Sélectionnez le composant suivant&#160;: <b class="cBold">tFilterColumn</b>.</li></div>
 </ul></div>
 <a name="wp1701014"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -92,10 +84,8 @@ Le job suivant (effectué en Perl) recherche et remplace différentes coquilles et
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1701022"> </a><div class="pSmartList2"><li>Le composant <b class="cBold">tFilterColumn</b> contient un éditeur de schéma permettant de créer un schéma de sortie basé sur le nom des colonnes du schéma d&#39;entrée. Dans cet exemple, changez l&#39;ordre de colonnes et ajoutez trois nouvelles colonnes pour obtenir le schéma suivant&#160;: <em class="cEmphasis">empty_field, firstname, name, str, amount, filler1, filler2</em>.</li></div>
-<a name="wp1701034"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK </b>pour valider.</li></div>
-</ul></div>
+<a name="wp1701022"> </a><div class="pSmartList1"><li>Le composant <b class="cBold">tFilterColumn</b> contient un éditeur de schéma permettant de créer un schéma de sortie basé sur le nom des colonnes du schéma d&#39;entrée. Dans cet exemple, changez l&#39;ordre de colonnes et ajoutez trois nouvelles colonnes pour obtenir le schéma suivant&#160;: <em class="cEmphasis">empty_field, firstname, name, str, amount, filler1, filler2</em>.</li></div>
+<a name="wp1701034"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK </b>pour valider.</li></div>
 </ul></div>
 <a name="wp1701041"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -103,11 +93,9 @@ Le job suivant (effectué en Perl) recherche et remplace différentes coquilles et
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1701050"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Property Type</b>, sélectionnez l&#39;option <b class="cBold">Built-in</b> et paramétrez les propriétés du composant <b class="cBold">tFileOutputDelimited</b> manuellement.</li></div>
-<a name="wp1701054"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Schema</b>, sélectionnez l&#39;option <b class="cBold">Built-in</b> et cliquez sur le bouton <b class="cBold">Sync&#160;columns</b> pour récupérer le schéma du composant précédent.</li></div>
-<a name="wp1701059"> </a><div class="pSmartList2"><li>Enregistrez le job et exécutez-le.</li></div>
-</ul></div>
+<a name="wp1701050"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Property Type</b>, sélectionnez l&#39;option <b class="cBold">Built-in</b> et paramétrez les propriétés du composant <b class="cBold">tFileOutputDelimited</b> manuellement.</li></div>
+<a name="wp1701054"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Schema</b>, sélectionnez l&#39;option <b class="cBold">Built-in</b> et cliquez sur le bouton <b class="cBold">Sync&#160;columns</b> pour récupérer le schéma du composant précédent.</li></div>
+<a name="wp1701059"> </a><div class="pSmartList1"><li>Enregistrez le Job et exécutez-le.</li></div>
 </ul></div>
 <a name="wp1701066"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -115,7 +103,7 @@ Le job suivant (effectué en Perl) recherche et remplace différentes coquilles et
 
 </div>
 <a name="wp1701069"> </a><p class="pIndented1">
-La première colonne est vide et les caractères parasites ont été supprimés des autres colonnes. La colonne street a été déplacée, les décimales sont dorénavent séparées par une virgule et le symbole monétaire a été changé.
+La première colonne est vide et les caractères parasites ont été supprimés des autres colonnes. La colonne street a été déplacée, les décimales sont dorénavant séparées par une virgule et le symbole monétaire a été changé.
 </p>
     </blockquote>
     <hr>
@@ -136,7 +124,7 @@ La première colonne est vide et les caractères parasites ont été supprimés des a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tReplace_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSortRow_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tReplace_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tRules_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:24:29">
-    <title>Scenario: Catching flow metrics from a job</title>
+    <meta name="LASTUPDATED" content="10/19/09 18:24:16">
+    <title>Scenario: Catching flow metrics from a Job</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -26,10 +26,10 @@
 
 </div>
 <a name="wp1419790"> </a><h2 class="pHeading2">
-Scenario: Catching flow metrics from a job
+Scenario: Catching flow metrics from a Job
 </h2>
 <a name="wp1419782"> </a><p class="pIndented1">
-The following basic job aims at catching the number of rows being passed in the flow processed. The measures are taken twice, once after the input component, that is, before the filtering step and once right after the filtering step, that is, before the output component.
+The following basic Job aims at catching the number of rows being passed in the flow processed. The measures are taken twice, once after the input component, that is, before the filtering step and once right after the filtering step, that is, before the output component.
 </p>
 <a name="wp1417353"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,10 +38,10 @@ The following basic job aims at catching the number of rows being passed in the 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1418650"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette to the Designer workspace: <b class="cBold">tMysqlInput</b>, <b class="cBold">tFlowMeter</b> (x2), <b class="cBold">tMap</b>, <b class="cBold">tLogRow</b>, <b class="cBold">tFlowMeterCatcher</b> and <b class="cBold">tFileOutputCSV</b>.</li></div>
-<a name="wp1418672"> </a><div class="pSmartList2"><li>Link the main job using row main connections and click on the label to give consistent name throughout the job, such as <em class="cEmphasis">US_States</em> from the input component and <em class="cEmphasis">filtered_states</em> for the output from the <b class="cBold">tMap</b> component, for example.</li></div>
+<a name="wp1418650"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> to the design workspace: <b class="cBold">tMysqlInput</b>, <b class="cBold">tFlowMeter</b> (x2), <b class="cBold">tMap</b>, <b class="cBold">tLogRow</b>, <b class="cBold">tFlowMeterCatcher</b> and <b class="cBold">tFileOutputCSV</b>.</li></div>
+<a name="wp1418672"> </a><div class="pSmartList2"><li>Link components using row main connections and click on the label to give consistent name throughout the Job, such as <em class="cEmphasis">US_States</em> from the input component and <em class="cEmphasis">filtered_states</em> for the output from the <b class="cBold">tMap</b> component, for example.</li></div>
 <a name="wp1418688"> </a><div class="pSmartList2"><li>Link the <b class="cBold">tFlowMeterCatcher</b> to the <b class="cBold">tFileOutputCSV</b> component using a row main link also as data is passed.</li></div>
-<a name="wp1418698"> </a><div class="pSmartList2"><li>On the <b class="cBold">tMysqlInput</b> Component view, configure the connection properties as <b class="cBold">Repository</b>, if  the table metadata are stored in the Repository. Or else, set the Type as <b class="cBold">Built-in</b> and configure manually the connection and schema details if they are built-in for this job.</li></div>
+<a name="wp1418698"> </a><div class="pSmartList2"><li>On the <b class="cBold">tMysqlInput</b> Component view, configure the connection properties as <b class="cBold">Repository</b>, if the table metadata are stored in the Repository. Or else, set the Type as <b class="cBold">Built-in</b> and configure manually the connection and schema details if they are built-in for this Job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1418347"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -52,7 +52,7 @@ The following basic job aims at catching the number of rows being passed in the 
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1418362"> </a><div class="pSmartList2"><li>The <b class="cBold">Schema</b> is simply made of two columns: <em class="cEmphasis">idState</em> and <em class="cEmphasis">LabelState</em>.</li></div>
-<a name="wp1418369"> </a><div class="pSmartList2"><li>The <b class="cBold">Query type</b> is Built-in for this job example.</li></div>
+<a name="wp1418369"> </a><div class="pSmartList2"><li>The <b class="cBold">Query type</b> is Built-in for this Job example.</li></div>
 <a name="wp1418375"> </a><div class="pSmartList2"><li>The 50 States of the USA are recorded in the table <em class="cEmphasis">us_states</em>. In order for all 50 entries of the table to get selected, the query to run onto the Mysql database is as follows:<br /><code class="cCode">select * from us_states</code>. </li></div>
 <a name="wp1418386"> </a><div class="pSmartList2"><li>Select the relevant <b class="cBold">Encoding type</b> in the list.</li></div>
 <a name="wp1418394"> </a><div class="pSmartList2"><li>Then select the following component which is a <b class="cBold">tFlowMeter</b> and set its properties. </li></div>
@@ -65,14 +65,14 @@ The following basic job aims at catching the number of rows being passed in the 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1418580"> </a><div class="pSmartList2"><li>Check the box <b class="cBold">Use input connection name as label</b>, in order to reuse the label you chose in the log output file (<b class="cBold">tFileOutputCSV</b>). </li></div>
+<a name="wp1418580"> </a><div class="pSmartList2"><li>Select the check box <b class="cBold">Use input connection name as label</b>, in order to reuse the label you chose in the log output file (<b class="cBold">tFileOutputCSV</b>). </li></div>
 <a name="wp1418776"> </a><div class="pSmartList2"><li>The mode is <b class="cBold">Absolute</b> as there is no reference flow to meter against, also no <b class="cBold">Threshold</b> is to be set for this example.</li></div>
-<a name="wp1654492"> </a><p class="pBodyRelative">
+<a name="wp2750665"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp1654489" border="0" hspace="0" vspace="0"/><br />
-The <b class="cBold">Thresholds</b> information is of use within a supervising tool such as <b class="cBold">Talend</b>&#39;s <b class="cBold">Activity Monitoring Console</b> in order to get a proportional representation of the flow process. See <b class="cBold">Activity Monitoring Console</b> User guide for more information.
+<img src="images/bulb_small.png" align="left" id="wp2750655" border="0" hspace="0" vspace="0"/><br />
+The <b class="cBold">Thresholds</b> information is of use within a supervising tool such as Talend&#39;s Activity Monitoring Console in order to get a proportional representation of the flow process. See Activity Monitoring Console User guide for more information.
 </p>
-<a name="wp1418933"> </a><div class="pSmartList2"><li>Then launch the <b class="cBold">tMap</b> editor to set the filtering properties.</li></div>
+<a name="wp478025"> </a><div class="pSmartList2"><li>Then launch the <b class="cBold">tMap</b> editor to set the filtering properties.</li></div>
 <a name="wp1418952"> </a><div class="pSmartList2"><li>For this use case, drag and drop the ID and States columns from the Input area of the tMap towards the Output area. No variable is used in this example.</li></div>
 </ul></div>
 </ul></div>
@@ -96,11 +96,11 @@ The <b class="cBold">Thresholds</b> information is of use within a supervising t
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1419176"> </a><div class="pSmartList2"><li>Check the box <b class="cBold">Use input connection name as label</b>.</li></div>
+<a name="wp1419176"> </a><div class="pSmartList2"><li>Select the check box <b class="cBold">Use input connection name as label</b>.</li></div>
 <a name="wp1419193"> </a><div class="pSmartList2"><li>Select <b class="cBold">Relative </b>as <b class="cBold">Mode</b> and in the <b class="cBold">Reference connection</b> list, select <em class="cEmphasis">US_States</em> as reference to be measured against.</li></div>
 <a name="wp1419241"> </a><div class="pSmartList2"><li>Once again, no threshold is used for this use case.</li></div>
 <a name="wp1419258"> </a><div class="pSmartList2"><li>No particular setting is required in the <b class="cBold">tLogRow</b>. </li></div>
-<a name="wp1419290"> </a><div class="pSmartList2"><li>Neither does the <b class="cBold">tFlowMeterCatcher</b> as this component&#39;s properties are limited to a  preset schema which includes typical log information.</li></div>
+<a name="wp1419290"> </a><div class="pSmartList2"><li>Neither does the <b class="cBold">tFlowMeterCatcher</b> as this component&#39;s properties are limited to a preset schema which includes typical log information.</li></div>
 <a name="wp1419369"> </a><div class="pSmartList2"><li>So eventually set the log output component (<b class="cBold">tFileOutputCSV</b>).</li></div>
 </ul></div>
 </ul></div>
@@ -111,8 +111,8 @@ The <b class="cBold">Thresholds</b> information is of use within a supervising t
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1419410"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Append</b> box in order to log all <b class="cBold">tFlowMeter</b> measures.</li></div>
-<a name="wp1419452"> </a><div class="pSmartList2"><li>Then save your job and run it.</li></div>
+<a name="wp1419410"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Append</b> check box in order to log all <b class="cBold">tFlowMeter</b> measures.</li></div>
+<a name="wp1419452"> </a><div class="pSmartList2"><li>Then save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1419460"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -121,7 +121,7 @@ The <b class="cBold">Thresholds</b> information is of use within a supervising t
 
 </div>
 <a name="wp1419506"> </a><p class="pIndented1">
-The <b class="cBold">Run</b> view shows the filtered state labels as defined in the job.
+The <b class="cBold">Run</b> view shows the filtered state labels as defined in the Job.
 </p>
 <a name="wp1419509"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

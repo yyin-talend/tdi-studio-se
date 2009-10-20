@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:23:55">
+    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
     <title>Scenario: Regex to Positional file</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFileInputRegex_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components09-30.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFileInputRegex_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components08-34.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scenario: Regex to Positional file
 </h2>
 <a name="wp2089817"> </a><p class="pIndented1">
-The following scenario creates a two-component job, reading data from an Input file using regular expression and outputting delimited data into an XML file.
+The following scenario creates a two-component Job, reading data from an Input file using regular expression and outputting delimited data into an XML file.
 </p>
 <a name="wp2089825"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,8 +38,8 @@ The following scenario creates a two-component job, reading data from an Input f
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2089834"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tFileInputRegex</b> component from the Palette to the design workspace.</li></div>
-<a name="wp2089841"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tFileOutputPositional</b> component the same way.</li></div>
+<a name="wp2089834"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileInputRegex</b> component from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp2089841"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileOutputPositional</b> component the same way.</li></div>
 <a name="wp2089850"> </a><div class="pSmartList2"><li>Right-click on the <b class="cBold">tFileInputRegex</b> component and select <b style="font-weight: bold" class="cBold">Row</b><span style="font-weight: normal"> &gt; </span><b style="font-weight: bold" class="cBold">Main</b>. Drag this main row link onto the <b class="cBold">tFileOutputPositional</b> component and release when the plug symbol displays.</li></div>
 <a name="wp2089863"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tFileInputRegex</b> again so the <b class="cBold">Component</b> view shows up, and define the properties:</li></div>
 </ul></div>
@@ -51,28 +51,20 @@ The following scenario creates a two-component job, reading data from an Input f
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2089878"> </a><div class="pSmartList2"><li>The job is built-in for this scenario. Hence, the Properties are set for this station only. </li></div>
+<a name="wp2089878"> </a><div class="pSmartList2"><li>The Job is built-in for this scenario. Hence, the Properties are set for this station only. </li></div>
 <a name="wp2089885"> </a><div class="pSmartList2"><li>Fill in a path to the file in <b class="cBold">File Name</b> field. This field is mandatory.</li></div>
 <a name="wp2089892"> </a><div class="pSmartList2"><li>Define the <b class="cBold">Row separator</b> identifying the end of a row. </li></div>
 <a name="wp2089898"> </a><div class="pSmartList2"><li>Then define the <b class="cBold">Regular expression</b> in order to delimit fields of a row, which are to be passed on to the next component. You can type in a regular expression using Perl code, and on mutiple lines if needed. </li></div>
-</ul></div>
-</ul></div>
-<a name="wp2089907"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_icongf.gif" align="left" id="wp2089904" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp2089910"> </a><p class="pIndented1">
-Take care to use the correct Regex syntax according to the generation language in use as the syntax is different in Java/Perl, and to include the regexp in single or double quotes accordingly.
+<a name="wp2755558"> </a><p class="pBodyRelative">
+<br />
+<img src="images/warning_small.png" align="left" id="wp2755556" border="0" hspace="0" vspace="0"/><br />
+Make sure to use the correct Regex syntax according to the generation language in use as the syntax is different in Java/Perl, and include the regex in double/single quotes respectively.
 </p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2089917"> </a><div class="pSmartList2"><li>In this expression, make sure you include all subpatterns matching the fields to be extracted.</li></div>
 <a name="wp2089921"> </a><div class="pSmartList2"><li>In this scenario, ignore the header, footer and limit fields.  </li></div>
 <a name="wp2089930"> </a><div class="pSmartList2"><li>Select a local (<b class="cBold">Built-in</b>) <b class="cBold">Schema type</b> to define the data to pass on to the <b class="cBold">tFileOutputPositional</b> component. </li></div>
 <a name="wp2089941"> </a><div class="pSmartList2"><li>You can load or create the schema through the <b class="cBold">Edit Schema</b> function. </li></div>
 <a name="wp2089945"> </a><div class="pSmartList2"><li>Then define the second component properties:</li></div>
-<a name="wp2089950"> </a><div class="pSmartList2"><li></li></div>
 </ul></div>
 </ul></div>
 <a name="wp2089957"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -85,7 +77,7 @@ Take care to use the correct Regex syntax according to the generation language i
 <a name="wp2089963"> </a><div class="pSmartList2"><li>Enter the Positional file output path. </li></div>
 <a name="wp2089969"> </a><div class="pSmartList2"><li>Enter the <b class="cBold">Encoding</b> standard, the output file is encoded in. Note that, for the time being, the encoding consistency verification is not supported.</li></div>
 <a name="wp2089979"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Schema type</b>. Click on <b class="cBold">Sync columns</b> to automatically synchronize the schema with the Input file schema.</li></div>
-<a name="wp2089991"> </a><div class="pSmartList2"><li>Now go to the <b class="cBold">Run</b> tab, and click on <b class="cBold">Run</b> to execute the job.</li></div>
+<a name="wp2089991"> </a><div class="pSmartList2"><li>Now go to the <b class="cBold">Run</b> tab, and click on <b class="cBold">Run</b> to execute the Job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2196004"> </a><p class="pIndented1">
@@ -115,7 +107,7 @@ The file is read row by row and split up into fields based on the <b class="cBol
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFileInputRegex_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components09-30.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFileInputRegex_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components08-34.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

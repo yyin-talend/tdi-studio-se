@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
     <title>tJDBCCommit</title>
   </head>
 
@@ -50,7 +50,7 @@ Databases/JDBC
 </div>
 </td>
     <td><a name="wp1561016"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconi.png" id="wp1561012" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconbh.png" id="wp1561012" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -59,7 +59,7 @@ Databases/JDBC
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1560724"> </a><div class="pCellBody">
-Validates the data processed through the job into the connected DB.
+Validates the data processed through the Job into the connected DB.
 </div>
 </td>
 </tr>
@@ -67,8 +67,8 @@ Validates the data processed through the job into the connected DB.
 <b class="cBold">Purpose</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1560736"> </a><div class="pCellBody">
-Through using a unique connection, <b class="cBold">tJDBCCommit </b>commits in one go a global transaction instead of doing that on every row or every batch and thus provides high performance gain.
+    <td colspan="2" rowspan="1"><a name="wp2671305"> </a><div class="pCellBody">
+Using a unique connection, this component commits in one go a global transaction instead of doing that on every row or every batch and thus provides gain in performance.
 </div>
 </td>
 </tr>
@@ -76,16 +76,29 @@ Through using a unique connection, <b class="cBold">tJDBCCommit </b>commits in o
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1560748"> </a><div class="pCellHeading">
+    <td><a name="wp1560748"> </a><div class="pCellBody">
 <em class="cEmphasis">Component list</em>
 </div>
 </td>
     <td><a name="wp1560753"> </a><div class="pCellBody">
-Select the <b class="cBold">tJDBCConnection</b> component in the list if more than one connection are planned for the current job.
+Select the <b class="cBold">tJDBCConnection</b> component in the list if more than one connection are planned for the current Job.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1560758"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2663055"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2663062"> </a><div class="pCellBody">
+<em class="cEmphasis">Close Connection</em>
+</div>
+</td>
+    <td><a name="wp2663065"> </a><div class="pCellBody">
+Clear this check box to continue to use the selected connection once the component has performed its task.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1560758"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -94,7 +107,7 @@ This component is to be used along with JDBC components, especially with the <b 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1560773"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1560773"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

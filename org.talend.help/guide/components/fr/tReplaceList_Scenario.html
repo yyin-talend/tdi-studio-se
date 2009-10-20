@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:01">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:06">
     <title>Scénario&#160;: Remplacement à partir d&#39;un fichier de référence</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scénario&#160;: Remplacement à partir d&#39;un fichier de référence
 </h2>
 <a name="wp1687995"> </a><p class="pIndented1">
-Le job suivant (créé en Perl) effectue un rechercher/remplacer sur une liste d&#39;Etats avec leur code correspondant. Les codes correspondant sont extraits d&#39;un fichier de référence placé en flux Lookup dans le job. Le flux principal est dupliqué et les deux sorties sont affichées dans la console, pour constater l&#39;état du flux principal avant et après remplacement.
+Le Job suivant (créé en Perl) effectue un rechercher/remplacer sur une liste d&#39;Etats avec leur code correspondant. Les codes correspondant sont extraits d&#39;un fichier de référence placé en flux Lookup dans le Job. Le flux principal est dupliqué et les deux sorties sont affichées dans la console, pour constater l&#39;état du flux principal avant et après remplacement.
 </p>
 <a name="wp1688003"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,11 +37,9 @@ Le job suivant (créé en Perl) effectue un rechercher/remplacer sur une liste d&#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1688014"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants de la <b class="cBold">Palette&#160;</b>: <b class="cBold">tMysqlInput</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tReplicate</b>, <b class="cBold">tReplaceList</b> et <b class="cBold">tLogRow</b> (x2). Notez que si vos schémas d&#39;entrée sont déjà centralisés sur le Repository, vous pouvez, d&#39;un simple cliquer-déposer, les faire passer du noeud correspondant du répertoire Metadata du Repository vers l&#39;espace de modélisation. Cela permettra de récupérer automatiquement les propriétés des composants d&#39;entrée. Pour plus d&#39;informations, consultez <em class="cEmphasis">Déposer des composants du répertoire Metadata</em> du Guide utilisateur de Talend Open Studio. </li></div>
-<a name="wp1690569"> </a><div class="pSmartList2"><li>Connectez les composants à l&#39;aide de liens <b class="cBold">Main Row</b> via un clic-droit sur chaque composant. Notez que le lien de type main row provenant du flux de référence (<b class="cBold">tFileInputDelimited</b>) se nomme lookup row.</li></div>
-<a name="wp1688048"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tMysqlInput</b> et définissez les paramètres du flux d&#39;entrée.</li></div>
-</ul></div>
+<a name="wp1688014"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants de la <b class="cBold">Palette&#160;</b>: <b class="cBold">tMysqlInput</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tReplicate</b>, <b class="cBold">tReplaceList</b> et <b class="cBold">tLogRow</b> (x2). Notez que si vos schémas d&#39;entrée sont déjà centralisés sur le Repository, vous pouvez, d&#39;un simple cliquer-déposer, les faire passer du noeud correspondant du répertoire Metadata du Repository vers l&#39;espace de modélisation. Cela permettra de récupérer automatiquement les propriétés des composants d&#39;entrée. Pour plus d&#39;informations, consultez <em class="cEmphasis">Déposer des composants du répertoire Metadata</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. </li></div>
+<a name="wp1690569"> </a><div class="pSmartList1"><li>Connectez les composants à l&#39;aide de liens <b class="cBold">Main Row</b> via un clic-droit sur chaque composant. Notez que le lien de type main row provenant du flux de référence (<b class="cBold">tFileInputDelimited</b>) se nomme lookup row.</li></div>
+<a name="wp1688048"> </a><div class="pSmartList1"><li>Sélectionnez le composant <b class="cBold">tMysqlInput</b> et définissez les paramètres du flux d&#39;entrée.</li></div>
 </ul></div>
 <a name="wp1688055"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -49,12 +47,10 @@ Le job suivant (créé en Perl) effectue un rechercher/remplacer sur une liste d&#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1688066"> </a><div class="pSmartList2"><li>Le schéma d&#39;entrée est composé de deux colonnes&#160;: <em class="cEmphasis">Names</em>, <em class="cEmphasis">States</em>. La colonne States regroupe le nom des Etats des Etats-Unis qui seront remplacés par leur code respectif.</li></div>
-<a name="wp1691763"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Query</b>, assurez-vous que la colonne <em class="cEmphasis">State</em> est incluse dans la déclaration <code class="cCode">Select</code>. Dans cet exemple, toutes les colonnes sont sélectionnées.</li></div>
-<a name="wp1691773"> </a><div class="pSmartList2"><li>Vérifiez les paramètres du composant <b class="cBold">tReplicate</b>. Le schéma est simplement divisé en deux flux identiques, mais aucun changement n&#39;a été effectué sur le schéma.</li></div>
-<a name="wp1691780"> </a><div class="pSmartList2"><li>Puis double-cliquez sur le composant <b class="cBold">tFileInputDelimited</b>, pour paramétrer le fichier de référence.</li></div>
-</ul></div>
+<a name="wp1688066"> </a><div class="pSmartList1"><li>Le schéma d&#39;entrée est composé de deux colonnes&#160;: <em class="cEmphasis">Names</em>, <em class="cEmphasis">States</em>. La colonne States regroupe le nom des Etats des Etats-Unis qui seront remplacés par leur code respectif.</li></div>
+<a name="wp1691763"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Query</b>, assurez-vous que la colonne <em class="cEmphasis">State</em> est incluse dans la déclaration <code class="cCode">Select</code>. Dans cet exemple, toutes les colonnes sont sélectionnées.</li></div>
+<a name="wp1691773"> </a><div class="pSmartList1"><li>Vérifiez les paramètres du composant <b class="cBold">tReplicate</b>. Le schéma est simplement divisé en deux flux identiques, mais aucun changement n&#39;a été effectué sur le schéma.</li></div>
+<a name="wp1691780"> </a><div class="pSmartList1"><li>Puis double-cliquez sur le composant <b class="cBold">tFileInputDelimited</b>, pour paramétrer le fichier de référence.</li></div>
 </ul></div>
 <a name="wp1691789"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -62,11 +58,9 @@ Le job suivant (créé en Perl) effectue un rechercher/remplacer sur une liste d&#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1691802"> </a><div class="pSmartList2"><li>Le fichier comporte deux colonnes&#160;: <em class="cEmphasis">Postal</em> et <em class="cEmphasis">State</em>. <em class="cEmphasis">Postal</em> correspond au code postal de l&#39;Etat de la colonne <em class="cEmphasis">State</em> correspondante.</li></div>
-<a name="wp1691180"> </a><div class="pSmartList2"><li>Les champs sont délimités par des point-virgules et les lignes par des retours charriot.</li></div>
-<a name="wp1691185"> </a><div class="pSmartList2"><li>Modifiez le schéma du flux lookup.</li></div>
-</ul></div>
+<a name="wp1691802"> </a><div class="pSmartList1"><li>Le fichier comporte deux colonnes&#160;: <em class="cEmphasis">Postal</em> et <em class="cEmphasis">State</em>. <em class="cEmphasis">Postal</em> correspond au code postal de l&#39;Etat de la colonne <em class="cEmphasis">State</em> correspondante.</li></div>
+<a name="wp1691180"> </a><div class="pSmartList1"><li>Les champs sont délimités par des point-virgules et les lignes par des retours charriot.</li></div>
+<a name="wp1691185"> </a><div class="pSmartList1"><li>Modifiez le schéma du flux lookup.</li></div>
 </ul></div>
 <a name="wp1691192"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -74,11 +68,9 @@ Le job suivant (créé en Perl) effectue un rechercher/remplacer sur une liste d&#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1691199"> </a><div class="pSmartList2"><li>Assurez-vous que la colonne lookup sur laquelle est effectuée la recherche (dans cet exemple&#160;: <em class="cEmphasis">State</em>) est définie comme clé, pour s&#39;assurer que les données cherchées sont uniques.</li></div>
-<a name="wp1688152"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tReplaceList</b> et paramétrez l&#39;opération à effectuer.</li></div>
-<a name="wp1688157"> </a><div class="pSmartList2"><li>Le schéma est récupéré à partir du composant précédent dans le flux principal.</li></div>
-</ul></div>
+<a name="wp1691199"> </a><div class="pSmartList1"><li>Assurez-vous que la colonne lookup sur laquelle est effectuée la recherche (dans cet exemple&#160;: <em class="cEmphasis">State</em>) est définie comme clé, pour s&#39;assurer que les données cherchées sont uniques.</li></div>
+<a name="wp1688152"> </a><div class="pSmartList1"><li>Sélectionnez le composant <b class="cBold">tReplaceList</b> et paramétrez l&#39;opération à effectuer.</li></div>
+<a name="wp1688157"> </a><div class="pSmartList1"><li>Le schéma est récupéré à partir du composant précédent dans le flux principal.</li></div>
 </ul></div>
 <a name="wp1688164"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -86,13 +78,11 @@ Le job suivant (créé en Perl) effectue un rechercher/remplacer sur une liste d&#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1688172"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Lookup search index</b>, renseignez la position de la colonne sur laquelle est effectuée la recherche. Dans cet exemple, <em class="cEmphasis">State</em> est la deuxième colonne du fichier d&#39;entrée lookup. Ainsi, saisissez&#160;<b class="cBold">1</b> dans ce champ.</li></div>
-<a name="wp1688185"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Lookup replacement index</b>, renseignez le numéro de la colonne contenant les valeurs de remplacement, dans cet exemple&#160;: <em class="cEmphasis">Postal</em> pour le code postal de l&#39;Etat.</li></div>
-<a name="wp1688198"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Column options</b>, sélectionnez la colonne <em class="cEmphasis">States</em> puisque dans cet exemple le nom des Etats doit être remplacé par leur code correspondant.</li></div>
-<a name="wp1688208"> </a><div class="pSmartList2"><li>Pour les deux composants <b class="cBold">tLogRow</b>, cochez la case <b class="cBold">Print values in table cells</b> pour que les sorties soient plus claires.</li></div>
-<a name="wp1692450"> </a><div class="pSmartList2"><li>Enregistrez le job et exécutez-le.</li></div>
-</ul></div>
+<a name="wp1688172"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Lookup search index</b>, renseignez la position de la colonne sur laquelle est effectuée la recherche. Dans cet exemple, <em class="cEmphasis">State</em> est la deuxième colonne du fichier d&#39;entrée lookup. Ainsi, saisissez&#160;<b class="cBold">1</b> dans ce champ.</li></div>
+<a name="wp1688185"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Lookup replacement index</b>, renseignez le numéro de la colonne contenant les valeurs de remplacement, dans cet exemple&#160;: <em class="cEmphasis">Postal</em> pour le code postal de l&#39;Etat.</li></div>
+<a name="wp1688198"> </a><div class="pSmartList1"><li>Dans le tableau <b class="cBold">Column options</b>, sélectionnez la colonne <em class="cEmphasis">States</em> puisque dans cet exemple le nom des Etats doit être remplacé par leur code correspondant.</li></div>
+<a name="wp1688208"> </a><div class="pSmartList1"><li>Pour les deux composants <b class="cBold">tLogRow</b>, cochez la case <b class="cBold">Print values in table cells</b> pour que les sorties soient plus claires.</li></div>
+<a name="wp1692450"> </a><div class="pSmartList1"><li>Enregistrez le Job et exécutez-le.</li></div>
 </ul></div>
 <a name="wp1692457"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

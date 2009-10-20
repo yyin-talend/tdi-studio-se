@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:25:21">
+    <meta name="LASTUPDATED" content="10/19/09 18:25:21">
     <title>Scenario: Transforming XML to html using an XSL stylesheet</title>
   </head>
 
@@ -29,17 +29,21 @@
 Scenario: Transforming XML to html using an XSL stylesheet
 </h2>
 <a name="wp1337089"> </a><p class="pIndented1">
-This scenario describes a job applying an xsl stylesheet on an xml file and outputs an html file. 
+This Java scenario describes a two-component Job that converts xml data into an html document using an xsl stylesheet. It as well defines a transformation parameter of the xsl stylesheet to change the background color of the header of the created html document. 
 </p>
-<a name="wp1334889"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2750517"> </a><div class="pSmartList2"><li>Drop the <b class="cBold">tXSLT</b> and <b class="cBold">tMsBox</b> components from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2750502"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/Use_Case_tXSLT1.png" id="wp1337065" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1337077"> </a><div class="pSmartList2"><li>Drag and drop the <b class="cBold">tXSLT</b> component.</li></div>
-<a name="wp1337106"> </a><div class="pSmartList2"><li>On the <b class="cBold">Component </b>view, set the XML file to be transformed. In this use case, a list of MP3 titles and their corresponding artist</li></div>
+<a name="wp1337077"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tXSLT</b> to open its <b class="cBold">Basic settings</b> view where you can define the component properties.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1337130"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -49,22 +53,58 @@ This scenario describes a job applying an xsl stylesheet on an xml file and outp
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1337214"> </a><div class="pSmartList2"><li>Then set the filepath to the relevant XSL file in order to apply the wanted transformation.</li></div>
-<a name="wp1337236"> </a><div class="pSmartList2"><li>In this use case, we want to add an image and apply an stylesheet to create a table in HTML.</li></div>
+<a name="wp2750645"> </a><div class="pSmartList2"><li>In the <b class="cBold">XML file</b> field, set the path or browse to the xml file to be transformed. In this example, the xml file holds a list of MP3 song titles and related information including artist names, company etc.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1337260"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2750634"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tXSLT5.png" id="wp2750665" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2750660"> </a><div class="pSmartList2"><li>In the <b class="cBold">XSL file</b> field in the <b class="cBold">Basic settings</b> view, set the path or browse to the relevant xsl file.</li></div>
+<a name="wp1337236"> </a><div class="pSmartList2"><li>In the <b class="cBold">Output file</b> field, set the path or browse to the output html file.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1337260"> </a><p class="pIndented1">
+In this example, we want to convert the xml data into an html file holding a table heading followed by a table listing artists&#39; names next to song titles. 
+</p>
+<a name="wp2750218"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/Use_Case_tXSLT3.png" id="wp1337268" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1337296"> </a><div class="pSmartList2"><li>Eventually set the output filepath to the HTML file.</li></div>
-<a name="wp1337306"> </a><div class="pSmartList2"><li>Save the job and press F6 to run it. Open the Html file in a browser to check the output.</li></div>
+<a name="wp1337306"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameters</b> area of the <b class="cBold">Basic settings</b> view, click the plus button to add a line where you can define the name and value of the transformation parameter of the xsl file. In this example, the name of the transformation parameter we want to use is <em class="cEmphasis">bgcolor</em> and the value is <em class="cEmphasis">green. </em></li></div>
+<a name="wp2750851"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMsgBox </b>to display its <b class="cBold">Basic settings</b> view and define its display properties as needed.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1337314"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tXSLT6.png" id="wp2751171" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2751215"> </a><div class="pSmartList2"><li>Save the Job and press <b class="cBold">F6</b> to execute it. The message box displays confirming that the output html file is created and stored in the defined path.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2751193"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tXSLT7.png" id="wp2751338" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2751363"> </a><div class="pSmartList2"><li>Click <b class="cBold">Ok </b>to close the message box.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2751351"> </a><p class="pIndented1">
+You can now open the output html file to check the transformation of the xml data and that of the background color of the table heading.
+</p>
+<a name="wp2750278"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/Use_Case_tXSLT4.png" id="wp1337322" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 

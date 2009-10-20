@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:55">
+    <meta name="LASTUPDATED" content="10/19/09 17:33:38">
     <title>Scénario&#160;: Convertir des types de données Java</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scénario&#160;: Convertir des types de données Java
 </h2>
 <a name="wp1713032"> </a><p class="pIndented1">
-Le scénario Java suivant permet de créer un job à quatre composants dans lequel le <b class="cBold">tConvertType</b> est utilisé pour convertir des données de type Java stockées dans trois colonnes différentes et le <b class="cBold">tMap</b> est utilisé pour modifier le schéma&#160;: la première colonne reste intacte et les deux dernières colonnes du schéma d&#39;entrée sont fusionnées en une seule colonne dans le schéma de sortie.
+Le scénario Java suivant permet de créer un Job à quatre composants dans lequel le <b class="cBold">tConvertType</b> est utilisé pour convertir des données de type Java stockées dans trois colonnes différentes et le <b class="cBold">tMap</b> est utilisé pour modifier le schéma&#160;: la première colonne reste intacte et les deux dernières colonnes du schéma d&#39;entrée sont fusionnées en une seule colonne dans le schéma de sortie.
 </p>
 <a name="wp1719593"> </a><p class="pBodyRelative">
 </p>
@@ -37,12 +37,10 @@ Le scénario Java suivant permet de créer un job à quatre composants dans lequel 
 Dans ce scénario, le schéma du fichier délimité utilisé en entrée est stocké dans le Repository, vous pouvez donc renseigner les propriétés du composant <b class="cBold">tFileInputDelimited</b> d&#39;un simple glisser-déposer du répertoire <b class="cBold">Repository</b> &gt; <b class="cBold">Metadata</b> &gt; <b class="cBold">File delimited </b>vers l&#39;espace de modélisation. Pour plus d&#39;informations, consultez <em class="cEmphasis">Déposer des composants du répertoire Metadata</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1713060"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants dans l&#39;espace de modélisation&#160;: <b class="cBold">tConvertType</b>, <b class="cBold">tMap</b> et <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1713079"> </a><div class="pSmartList2"><li>Dans le Repository, développez les noeuds <b class="cBold">Metadata &gt; File Delimited</b> et glissez-déposez la métadonnée correspondante dans l&#39;espace de modélisation. Pour ce scénario, <em class="cEmphasis">JavaTypes</em>. <br />La boîte de dialogue <b class="cBold">Components</b> apparaît.</li></div>
-<a name="wp1713095"> </a><div class="pSmartList2"><li>Dans la boîte de dialogue, sélectionnez le <b class="cBold">tFileInputDelimited</b> dans la liste des composants et cliquez sur <b class="cBold">Ok</b>.<br />Un composant <b class="cBold">tFileInputComponent</b> appelé <em class="cEmphasis">Java types</em> apparaît dans l&#39;espace de modélisation.</li></div>
-<a name="wp1713110"> </a><div class="pSmartList2"><li>Connectez les composants à l&#39;aide de liens <b class="cBold">Row Main</b>.</li></div>
-</ul></div>
+<a name="wp1713060"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants dans l&#39;espace de modélisation&#160;: <b class="cBold">tConvertType</b>, <b class="cBold">tMap</b> et <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1713079"> </a><div class="pSmartList1"><li>Dans le Repository, développez les noeuds <b class="cBold">Metadata &gt; File Delimited</b> et glissez-déposez la métadonnée correspondante dans l&#39;espace de modélisation. Pour ce scénario, <em class="cEmphasis">JavaTypes</em>. <br />La boîte de dialogue <b class="cBold">[Components]</b> apparaît.</li></div>
+<a name="wp1713095"> </a><div class="pSmartList1"><li>Dans la boîte de dialogue, sélectionnez le <b class="cBold">tFileInputDelimited</b> dans la liste des composants et cliquez sur <b class="cBold">Ok</b>.<br />Un composant <b class="cBold">tFileInputComponent</b> appelé <em class="cEmphasis">Java types</em> apparaît dans l&#39;espace de modélisation.</li></div>
+<a name="wp1713110"> </a><div class="pSmartList1"><li>Connectez les composants à l&#39;aide de liens <b class="cBold">Row Main</b>.</li></div>
 </ul></div>
 <a name="wp1713117"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -50,10 +48,8 @@ Dans ce scénario, le schéma du fichier délimité utilisé en entrée est stocké dan
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1713128"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tFileInputDelimited</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés de base.</li></div>
-<a name="wp1713141"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b>, sélectionnez l&#39;option <b class="cBold">Repository</b> dans la liste <b class="cBold">Property Type</b> puisque les propriétés du fichier sont stockées dans le <b class="cBold">Repository</b>. Les autres champs sont alors renseignés automatiquement grâce aux données récupérées.</li></div>
-</ul></div>
+<a name="wp1713128"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tFileInputDelimited</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés de base.</li></div>
+<a name="wp1713141"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b>, sélectionnez l&#39;option <b class="cBold">Repository</b> dans la liste <b class="cBold">Property Type</b> puisque les propriétés du fichier sont stockées dans le <b class="cBold">Repository</b>. Les autres champs sont alors renseignés automatiquement grâce aux données récupérées.</li></div>
 </ul></div>
 <a name="wp1713153"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -69,10 +65,8 @@ Le fichier d&#39;entrée utilisé pour ce scénario est un fichier texte appelé <em
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1714908"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Basic settings</b>, renseignez les autres champs si nécessaire. Pour plus d&#39;informations, consultez les <a href="tFileInputDelimited_Prop.html#wp1541820"><em class="cEmphasis">Propriétés du tFileInputDelimited</em></a>. Dans ce scénario, il n&#39;y a pas d&#39;en-tête et de pied de page et il n&#39;y a pas de nombre limite de lignes à traiter.</li></div>
-<a name="wp1714918"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Edit schema</b> pour décrire la structure des données du fichier d&#39;entrée. Dans ce scénario, le schéma est composé de trois colonnes&#160;: <em class="cEmphasis">StringtoInteger, IntegerField </em>et <em class="cEmphasis">FloatToInteger</em>.</li></div>
-</ul></div>
+<a name="wp1714908"> </a><div class="pSmartList1"><li>Dans la vue <b class="cBold">Basic settings</b>, renseignez les autres champs, si nécessaire. Pour plus d&#39;informations, consultez les <a href="tFileInputDelimited_Prop.html#wp1541820"><em class="cEmphasis">Propriétés du tFileInputDelimited</em></a>. Dans ce scénario, il n&#39;y a pas d&#39;en-tête et de pied de page et il n&#39;y a pas de nombre limite de lignes à traiter.</li></div>
+<a name="wp1714918"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Edit schema</b> pour décrire la structure des données du fichier d&#39;entrée. Dans ce scénario, le schéma est composé de trois colonnes&#160;: <em class="cEmphasis">StringtoInteger, IntegerField </em>et <em class="cEmphasis">FloatToInteger</em>.</li></div>
 </ul></div>
 <a name="wp1713200"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -80,10 +74,8 @@ Le fichier d&#39;entrée utilisé pour ce scénario est un fichier texte appelé <em
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1713209"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Ok</b> pour fermer la boîte de dialogue.</li></div>
-<a name="wp1715189"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, sélectionnez le <b class="cBold">tConvertType</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés de base.</li></div>
-</ul></div>
+<a name="wp1713209"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Ok</b> pour fermer la boîte de dialogue.</li></div>
+<a name="wp1715189"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, sélectionnez le <b class="cBold">tConvertType</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés de base.</li></div>
 </ul></div>
 <a name="wp1715204"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -91,15 +83,13 @@ Le fichier d&#39;entrée utilisé pour ce scénario est un fichier texte appelé <em
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1715217"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema Type</b>, sélectionnez l&#39;option <b class="cBold">Built in</b> et cliquez sur le bouton <b class="cBold">Sync columns </b>pour récupérer automatiquement les colonnes du composant <b class="cBold">tFileInputDelimited</b>.</li></div>
-<a name="wp1715228"> </a><div class="pSmartList2"><li>Si nécessaire, cliquez sur <b class="cBold">Edit schema</b> pour décrire manuellement la structure des données de ce composant de traitement.</li></div>
+<a name="wp1715217"> </a><div class="pSmartList1"><li>Dans la liste <b class="cBold">Schema Type</b>, sélectionnez l&#39;option <b class="cBold">Built in</b> et cliquez sur le bouton <b class="cBold">Sync columns </b>pour récupérer automatiquement les colonnes du composant <b class="cBold">tFileInputDelimited</b>.</li></div>
+<a name="wp1715228"> </a><div class="pSmartList1"><li>Si nécessaire, cliquez sur <b class="cBold">Edit schema</b> pour décrire manuellement la structure des données de ce composant de traitement.</li></div>
 <a name="wp1719640"> </a><p class="pBodyRelative">
 <br />
 <img src="images/bulb_small.png" align="left" id="wp1719637" border="0" hspace="0" vspace="0"/><br />
 <br />Généralement, la case <b class="cBold">Auto Cast</b> est cochée par défaut.
 </p>
-</ul></div>
 </ul></div>
 <a name="wp1719766"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -110,10 +100,8 @@ Le fichier d&#39;entrée utilisé pour ce scénario est un fichier texte appelé <em
 Dans ce scénario, nous souhaitons convertir les données de type string (chaîne de caractères) en integer (entier) et des données de type float en integer<em class="cEmphasis">.</em>
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1713289"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue <b class="cBold">Schema of tConvertType</b>.</li></div>
-<a name="wp1713295"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, double-cliquez sur le <b class="cBold">tMap</b> pour ouvrir l&#39;éditeur du tMap.<br />L&#39;éditeur du tMap s&#39;ouvre et affiche les noms des colonnes du fichier d&#39;entrée.</li></div>
-</ul></div>
+<a name="wp1713289"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue <b class="cBold">[Schema of tConvertType]</b>.</li></div>
+<a name="wp1713295"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, double-cliquez sur le <b class="cBold">tMap</b> pour ouvrir l&#39;éditeur du tMap.<br />L&#39;éditeur du tMap s&#39;ouvre et affiche les noms des colonnes du fichier d&#39;entrée.</li></div>
 </ul></div>
 <a name="wp1713307"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -121,12 +109,10 @@ Dans ce scénario, nous souhaitons convertir les données de type string (chaîne d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1713315"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Schema editor</b> en bas de l&#39;éditeur du tMap, cliquez sur le bouton (+) de la table de sortie pour ajouter deux lignes et nommez-les <em class="cEmphasis">StringToInteger</em> et <em class="cEmphasis">Sum</em>.</li></div>
-<a name="wp1715673"> </a><div class="pSmartList2"><li>Dans l&#39;editeur du tMap, glissez la ligne <em class="cEmphasis">StringToInteger </em>de la table d&#39;entrée vers la ligne <em class="cEmphasis">StringToInteger de la table de sortie</em>.</li></div>
-<a name="wp1715686"> </a><div class="pSmartList2"><li>Dans l&#39;éditeur du tMap, glissez les lignes <em class="cEmphasis">IntegerField</em> et <em class="cEmphasis">FloatToInteger</em> de la table d&#39;entrée vers la ligne <em class="cEmphasis">Sum</em> de la table de sortie.</li></div>
-<a name="wp1715741"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer l&#39;éditeur du tMap.</li></div>
-</ul></div>
+<a name="wp1713315"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Schema editor</b> en bas de l&#39;éditeur du tMap, cliquez sur le bouton (+) de la table de sortie pour ajouter deux lignes et nommez-les <em class="cEmphasis">StringToInteger</em> et <em class="cEmphasis">Sum</em>.</li></div>
+<a name="wp1715673"> </a><div class="pSmartList1"><li>Dans l&#39;éditeur du tMap, glissez la ligne <em class="cEmphasis">StringToInteger </em>de la table d&#39;entrée vers la ligne <em class="cEmphasis">StringToInteger de la table de sortie</em>.</li></div>
+<a name="wp1715686"> </a><div class="pSmartList1"><li>Dans l&#39;éditeur du tMap, glissez les lignes <em class="cEmphasis">IntegerField</em> et <em class="cEmphasis">FloatToInteger</em> de la table d&#39;entrée vers la ligne <em class="cEmphasis">Sum</em> de la table de sortie.</li></div>
+<a name="wp1715741"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b> pour fermer l&#39;éditeur du tMap.</li></div>
 </ul></div>
 <a name="wp1713356"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -134,10 +120,8 @@ Dans ce scénario, nous souhaitons convertir les données de type string (chaîne d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1713367"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, sélectionnez le <b class="cBold">tLogRow</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés de base. Pour plus d&#39;informations, consultez le <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
-<a name="wp1713379"> </a><div class="pSmartList2"><li>Enregistrez votre job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
-</ul></div>
+<a name="wp1713367"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, sélectionnez le <b class="cBold">tLogRow</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés de base. Pour plus d&#39;informations, consultez le <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
+<a name="wp1713379"> </a><div class="pSmartList1"><li>Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
 </ul></div>
 <a name="wp1713386"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

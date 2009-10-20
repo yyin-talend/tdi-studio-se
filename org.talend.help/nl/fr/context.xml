@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <contexts>
+  <context id="tAS400CDC">
+    <description>Reads a table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/fr/tAS400CDC_Prop.html"
+      label="tAS400CDC properties description"
+    />
+    <topic
+      href="guide/components/fr/tAS400CDC_Scenario.html"
+      label="tAS400CDC scenario example"
+    />
+  </context>
   <context id="tAS400Commit">
     <description>Commits all transactions not already commited in the selected AS400 connection</description>
     <topic
@@ -119,6 +130,17 @@
     <topic
       href="guide/components/fr/tAddLocationFromIP_Scenario.html"
       label="tAddLocationFromIP scenario example"
+    />
+  </context>
+  <context id="tAddressDoctorRow">
+    <description>Adds a some address qualified / formated columns for all rows of a flow</description>
+    <topic
+      href="guide/components/fr/tAddressDoctorRow_Prop.html"
+      label="tAddressDoctorRow properties description"
+    />
+    <topic
+      href="guide/components/fr/tAddressDoctorRow_Scenario.html"
+      label="tAddressDoctorRow scenario example"
     />
   </context>
   <context id="tAdvancedFileOutputXML">
@@ -253,8 +275,30 @@
       label="tAssertCatcher scenario example"
     />
   </context>
+  <context id="tAsyncIn">
+    <description>Allow to parallelize and synchronize subjobs</description>
+    <topic
+      href="guide/components/fr/tAsyncIn_Prop.html"
+      label="tAsyncIn properties description"
+    />
+    <topic
+      href="guide/components/fr/tAsyncIn_Scenario.html"
+      label="tAsyncIn scenario example"
+    />
+  </context>
+  <context id="tAsyncOut">
+    <description>Allow to parallelize and synchronize subjobs</description>
+    <topic
+      href="guide/components/fr/tAsyncOut_Prop.html"
+      label="tAsyncOut properties description"
+    />
+    <topic
+      href="guide/components/fr/tAsyncOut_Scenario.html"
+      label="tAsyncOut scenario example"
+    />
+  </context>
   <context id="tBufferInput">
-    <description>Read the data stored by tBufferOutputs</description>
+    <description>Lit les données stockées par le tBufferOutputs</description>
     <topic
       href="guide/components/fr/tBufferInput_Prop.html"
       label="tBufferInput properties description"
@@ -405,6 +449,17 @@
     <topic
       href="guide/components/fr/tDB2BulkExec_Scenario.html"
       label="tDB2BulkExec scenario example"
+    />
+  </context>
+  <context id="tDB2CDC">
+    <description>Reads a DB2 table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/fr/tDB2CDC_Prop.html"
+      label="tDB2CDC properties description"
+    />
+    <topic
+      href="guide/components/fr/tDB2CDC_Scenario.html"
+      label="tDB2CDC scenario example"
     />
   </context>
   <context id="tDB2Commit">
@@ -661,7 +716,7 @@
     />
   </context>
   <context id="tELTMysqlInput">
-    <description>References a table to be used in tELTMysqlMap</description>
+    <description>Référence une table pour utilisation dans un tELTMysqlMap</description>
     <topic
       href="guide/components/fr/tELTMysqlInput_Prop.html"
       label="tELTMysqlInput properties description"
@@ -760,7 +815,7 @@
     />
   </context>
   <context id="tELTTeradataOutput">
-    <description>Executes an insert query from a select query built by tELTTeradataMap</description>
+    <description>Exécute une insertion à partir du résultat d'une sélection créée par tELTTeradataMap</description>
     <topic
       href="guide/components/fr/tELTTeradataOutput_Prop.html"
       label="tELTTeradataOutput properties description"
@@ -771,7 +826,7 @@
     />
   </context>
   <context id="tEmptyToNull">
-    <description>Turn the empty values into null values in the data flow</description>
+    <description>Attribuer la valeur "null" aux données vides du flux de données</description>
     <topic
       href="guide/components/fr/tEmptyToNull_Prop.html"
       label="tEmptyToNull properties description"
@@ -845,6 +900,105 @@
     <topic
       href="guide/components/fr/tExtractXMLField_Scenario.html"
       label="tExtractXMLField scenario example"
+    />
+  </context>
+  <context id="tFSAggregate">
+    <description>Aggregate records in a file based on the group keys</description>
+    <topic
+      href="guide/components/fr/tFSAggregate_Prop.html"
+      label="tFSAggregate properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSAggregate_Scenario.html"
+      label="tFSAggregate scenario example"
+    />
+  </context>
+  <context id="tFSCheck">
+    <description>Validates records against a sort type and order</description>
+    <topic
+      href="guide/components/fr/tFSCheck_Prop.html"
+      label="tFSCheck properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSCheck_Scenario.html"
+      label="tFSCheck scenario example"
+    />
+  </context>
+  <context id="tFSCode">
+    <description>tFSCode supports any FSLang customized code</description>
+    <topic
+      href="guide/components/fr/tFSCode_Prop.html"
+      label="tFSCode properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSCode_Scenario.html"
+      label="tFSCode scenario example"
+    />
+  </context>
+  <context id="tFSFilterColumns">
+    <description>Filters columns in a defined table</description>
+    <topic
+      href="guide/components/fr/tFSFilterColumns_Prop.html"
+      label="tFSFilterColumns properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSFilterColumns_Scenario.html"
+      label="tFSFilterColumns scenario example"
+    />
+  </context>
+  <context id="tFSFilterRows">
+    <description>Filters rows according to set conditions</description>
+    <topic
+      href="guide/components/fr/tFSFilterRows_Prop.html"
+      label="tFSFilterRows properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSFilterRows_Scenario.html"
+      label="tFSFilterRows scenario example"
+    />
+  </context>
+  <context id="tFSNode">
+    <description>This component can combine "tFSFilterRows -> tFSFilterColumns -> tFSSort -> tFSUnique -> tFSTransform" as one.</description>
+    <topic
+      href="guide/components/fr/tFSNode_Prop.html"
+      label="tFSNode properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSNode_Scenario.html"
+      label="tFSNode scenario example"
+    />
+  </context>
+  <context id="tFSSort">
+    <description>Sorts data by sort type and order based on one or several columns</description>
+    <topic
+      href="guide/components/fr/tFSSort_Prop.html"
+      label="tFSSort properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSSort_Scenario.html"
+      label="tFSSort scenario example"
+    />
+  </context>
+  <context id="tFSTransform">
+    <description>Modifies one or more columns when processing the file</description>
+    <topic
+      href="guide/components/fr/tFSTransform_Prop.html"
+      label="tFSTransform properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSTransform_Scenario.html"
+      label="tFSTransform scenario example"
+    />
+  </context>
+  <context id="tFSUnique">
+    <description>Recuperates one occurrence of each record to make the file records unique</description>
+    <topic
+      href="guide/components/fr/tFSUnique_Prop.html"
+      label="tFSUnique properties description"
+    />
+    <topic
+      href="guide/components/fr/tFSUnique_Scenario.html"
+      label="tFSUnique scenario example"
     />
   </context>
   <context id="tFTPConnection">
@@ -1067,6 +1221,17 @@
       label="tFileInputFullRow scenario example"
     />
   </context>
+  <context id="tFileInputJSON">
+    <description>Extracts rows broken down into fields from an JSON structured file</description>
+    <topic
+      href="guide/components/fr/tFileInputJSON_Prop.html"
+      label="tFileInputJSON properties description"
+    />
+    <topic
+      href="guide/components/fr/tFileInputJSON_Scenario.html"
+      label="tFileInputJSON scenario example"
+    />
+  </context>
   <context id="tFileInputLDIF">
     <description>Lit un fichier LDIF entrée par entrée</description>
     <topic
@@ -1232,6 +1397,17 @@
       label="tFileOutputLDIF scenario example"
     />
   </context>
+  <context id="tFileOutputMSDelimited">
+    <description>Écrit un fichier colonne par colonne en utilisant le schéma et le modèle</description>
+    <topic
+      href="guide/components/fr/tFileOutputMSDelimited_Prop.html"
+      label="tFileOutputMSDelimited properties description"
+    />
+    <topic
+      href="guide/components/fr/tFileOutputMSDelimited_Scenario.html"
+      label="tFileOutputMSDelimited scenario example"
+    />
+  </context>
   <context id="tFileOutputMSPositional">
     <description>Écrit un fichier colonne par colonne en utilisant le schéma et le modèle</description>
     <topic
@@ -1364,6 +1540,17 @@
       label="tFilterRow scenario example"
     />
   </context>
+  <context id="tFindRegexlibExpressions">
+    <description>Returns a dataset holding information about all of the regular expressions that matched the query on regexlib.com</description>
+    <topic
+      href="guide/components/fr/tFindRegexlibExpressions_Prop.html"
+      label="tFindRegexlibExpressions properties description"
+    />
+    <topic
+      href="guide/components/fr/tFindRegexlibExpressions_Scenario.html"
+      label="tFindRegexlibExpressions scenario example"
+    />
+  </context>
   <context id="tFirebirdCommit">
     <description>Commits all transactions not already commited in a selected Firebird connection</description>
     <topic
@@ -1485,6 +1672,17 @@
       label="tForeach scenario example"
     />
   </context>
+  <context id="tFuzzyJoin">
+    <description>Performs inner or outer join between the main data flow and a lookup flow</description>
+    <topic
+      href="guide/components/fr/tFuzzyJoin_Prop.html"
+      label="tFuzzyJoin properties description"
+    />
+    <topic
+      href="guide/components/fr/tFuzzyJoin_Scenario.html"
+      label="tFuzzyJoin scenario example"
+    />
+  </context>
   <context id="tFuzzyMatch">
     <description>Compares a column from the main flow with a reference column from the lookup flow for any inconsistencies</description>
     <topic
@@ -1494,6 +1692,17 @@
     <topic
       href="guide/components/fr/tFuzzyMatch_Scenario.html"
       label="tFuzzyMatch scenario example"
+    />
+  </context>
+  <context id="tFuzzyUniqRow">
+    <description>Makes a data flow unique based on the key set on the schema</description>
+    <topic
+      href="guide/components/fr/tFuzzyUniqRow_Prop.html"
+      label="tFuzzyUniqRow properties description"
+    />
+    <topic
+      href="guide/components/fr/tFuzzyUniqRow_Scenario.html"
+      label="tFuzzyUniqRow scenario example"
     />
   </context>
   <context id="tGPGDecrypt">
@@ -1793,6 +2002,17 @@
       label="tIngresOutput scenario example"
     />
   </context>
+  <context id="tIngresRollback">
+    <description>Rollbacks all transactions not already commited in a selected Ingres connection</description>
+    <topic
+      href="guide/components/fr/tIngresRollback_Prop.html"
+      label="tIngresRollback properties description"
+    />
+    <topic
+      href="guide/components/fr/tIngresRollback_Scenario.html"
+      label="tIngresRollback scenario example"
+    />
+  </context>
   <context id="tIngresRow">
     <description>Execute une requête SQL à chaque itération de flux Talend</description>
     <topic
@@ -2013,6 +2233,28 @@
       label="tJDBCTableList scenario example"
     />
   </context>
+  <context id="tJMSInput">
+    <description>Receive messages from an MQ server</description>
+    <topic
+      href="guide/components/fr/tJMSInput_Prop.html"
+      label="tJMSInput properties description"
+    />
+    <topic
+      href="guide/components/fr/tJMSInput_Scenario.html"
+      label="tJMSInput scenario example"
+    />
+  </context>
+  <context id="tJMSOutput">
+    <description>Send messages to an MQ server</description>
+    <topic
+      href="guide/components/fr/tJMSOutput_Prop.html"
+      label="tJMSOutput properties description"
+    />
+    <topic
+      href="guide/components/fr/tJMSOutput_Scenario.html"
+      label="tJMSOutput scenario example"
+    />
+  </context>
   <context id="tJasperOutput">
     <description>Produit un rapport</description>
     <topic
@@ -2134,6 +2376,39 @@
       label="tLDAPOutput scenario example"
     />
   </context>
+  <context id="tLDAPRenameEntry">
+    <description>Rename Entry(DN) in LDAP server</description>
+    <topic
+      href="guide/components/fr/tLDAPRenameEntry_Prop.html"
+      label="tLDAPRenameEntry properties description"
+    />
+    <topic
+      href="guide/components/fr/tLDAPRenameEntry_Scenario.html"
+      label="tLDAPRenameEntry scenario example"
+    />
+  </context>
+  <context id="tLastRegexlibExpressions">
+    <description>Returns N expressions in order by date added to library on regexlib.com</description>
+    <topic
+      href="guide/components/fr/tLastRegexlibExpressions_Prop.html"
+      label="tLastRegexlibExpressions properties description"
+    />
+    <topic
+      href="guide/components/fr/tLastRegexlibExpressions_Scenario.html"
+      label="tLastRegexlibExpressions scenario example"
+    />
+  </context>
+  <context id="tLaunchDQAnalyse">
+    <description>Generate a report file with tLaunchDQAnalyse</description>
+    <topic
+      href="guide/components/fr/tLaunchDQAnalyse_Prop.html"
+      label="tLaunchDQAnalyse properties description"
+    />
+    <topic
+      href="guide/components/fr/tLaunchDQAnalyse_Scenario.html"
+      label="tLaunchDQAnalyse scenario example"
+    />
+  </context>
   <context id="tLibraryLoad">
     <description>Charge les librairies</description>
     <topic
@@ -2189,6 +2464,28 @@
       label="tLoop scenario example"
     />
   </context>
+  <context id="tMDMInput">
+    <description>Output an xml structure to the web service</description>
+    <topic
+      href="guide/components/fr/tMDMInput_Prop.html"
+      label="tMDMInput properties description"
+    />
+    <topic
+      href="guide/components/fr/tMDMInput_Scenario.html"
+      label="tMDMInput scenario example"
+    />
+  </context>
+  <context id="tMDMOutput">
+    <description>Output an xml structure to the talend MDM web service</description>
+    <topic
+      href="guide/components/fr/tMDMOutput_Prop.html"
+      label="tMDMOutput properties description"
+    />
+    <topic
+      href="guide/components/fr/tMDMOutput_Scenario.html"
+      label="tMDMOutput scenario example"
+    />
+  </context>
   <context id="tMSAXInput">
     <description>Reads a Microsoft AX server based on an SQL query</description>
     <topic
@@ -2220,6 +2517,17 @@
     <topic
       href="guide/components/fr/tMSSqlBulkExec_Scenario.html"
       label="tMSSqlBulkExec scenario example"
+    />
+  </context>
+  <context id="tMSSqlCDC">
+    <description>Reads an MSSQL table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/fr/tMSSqlCDC_Prop.html"
+      label="tMSSqlCDC properties description"
+    />
+    <topic
+      href="guide/components/fr/tMSSqlCDC_Scenario.html"
+      label="tMSSqlCDC scenario example"
     />
   </context>
   <context id="tMSSqlColumnList">
@@ -2486,6 +2794,28 @@
       label="tMsgBox scenario example"
     />
   </context>
+  <context id="tMySQLInvalidRows">
+    <description>View invalid row</description>
+    <topic
+      href="guide/components/fr/tMySQLInvalidRows_Prop.html"
+      label="tMySQLInvalidRows properties description"
+    />
+    <topic
+      href="guide/components/fr/tMySQLInvalidRows_Scenario.html"
+      label="tMySQLInvalidRows scenario example"
+    />
+  </context>
+  <context id="tMySQLValidRows">
+    <description>View valid row</description>
+    <topic
+      href="guide/components/fr/tMySQLValidRows_Prop.html"
+      label="tMySQLValidRows properties description"
+    />
+    <topic
+      href="guide/components/fr/tMySQLValidRows_Scenario.html"
+      label="tMySQLValidRows scenario example"
+    />
+  </context>
   <context id="tMysqlBulkExec">
     <description>Asks a MySQL database to upload a bulk file into the database defined</description>
     <topic
@@ -2495,6 +2825,17 @@
     <topic
       href="guide/components/fr/tMysqlBulkExec_Scenario.html"
       label="tMysqlBulkExec scenario example"
+    />
+  </context>
+  <context id="tMysqlCDC">
+    <description>CDC Oracle Component</description>
+    <topic
+      href="guide/components/fr/tMysqlCDC_Prop.html"
+      label="tMysqlCDC properties description"
+    />
+    <topic
+      href="guide/components/fr/tMysqlCDC_Scenario.html"
+      label="tMysqlCDC scenario example"
     />
   </context>
   <context id="tMysqlColumnList">
@@ -2673,6 +3014,17 @@
       label="tMysqlUpdateBulkExec scenario example"
     />
   </context>
+  <context id="tNetezzaBulkExec">
+    <description>External table output to a Netezza database server.</description>
+    <topic
+      href="guide/components/fr/tNetezzaBulkExec_Prop.html"
+      label="tNetezzaBulkExec properties description"
+    />
+    <topic
+      href="guide/components/fr/tNetezzaBulkExec_Scenario.html"
+      label="tNetezzaBulkExec scenario example"
+    />
+  </context>
   <context id="tNetezzaCommit">
     <description>Commits all transactions not already commited in a selected Netezza connection</description>
     <topic
@@ -2761,6 +3113,17 @@
       label="tOracleBulkExec scenario example"
     />
   </context>
+  <context id="tOracleCDC">
+    <description>CDC Oracle Component</description>
+    <topic
+      href="guide/components/fr/tOracleCDC_Prop.html"
+      label="tOracleCDC properties description"
+    />
+    <topic
+      href="guide/components/fr/tOracleCDC_Scenario.html"
+      label="tOracleCDC scenario example"
+    />
+  </context>
   <context id="tOracleCommit">
     <description>Commits all transactions not already commited in a selected Oracle connection</description>
     <topic
@@ -2792,6 +3155,17 @@
     <topic
       href="guide/components/fr/tOracleInput_Scenario.html"
       label="tOracleInput scenario example"
+    />
+  </context>
+  <context id="tOracleInvalidRows">
+    <description>View invalid row</description>
+    <topic
+      href="guide/components/fr/tOracleInvalidRows_Prop.html"
+      label="tOracleInvalidRows properties description"
+    />
+    <topic
+      href="guide/components/fr/tOracleInvalidRows_Scenario.html"
+      label="tOracleInvalidRows scenario example"
     />
   </context>
   <context id="tOracleOutput">
@@ -2893,8 +3267,19 @@
       label="tOracleTableList scenario example"
     />
   </context>
+  <context id="tOracleValidRows">
+    <description>View valid row</description>
+    <topic
+      href="guide/components/fr/tOracleValidRows_Prop.html"
+      label="tOracleValidRows properties description"
+    />
+    <topic
+      href="guide/components/fr/tOracleValidRows_Scenario.html"
+      label="tOracleValidRows scenario example"
+    />
+  </context>
   <context id="tPOP">
-    <description>Récupère des emails depuis un serveur et les stocke dans le fichier et le répertoire spécifié</description>
+    <description>Récupère des emails depuis un serveur et les enregistre dans le fichier et le répertoire spécifié</description>
     <topic
       href="guide/components/fr/tPOP_Prop.html"
       label="tPOP properties description"
@@ -3025,6 +3410,17 @@
       label="tParAccelSCD scenario example"
     />
   </context>
+  <context id="tParallelize">
+    <description>Allow to parallelize and synchronize subjobs</description>
+    <topic
+      href="guide/components/fr/tParallelize_Prop.html"
+      label="tParallelize properties description"
+    />
+    <topic
+      href="guide/components/fr/tParallelize_Scenario.html"
+      label="tParallelize scenario example"
+    />
+  </context>
   <context id="tParseAddress">
     <description>Manipule des adresses géographiques</description>
     <topic
@@ -3067,6 +3463,17 @@
     <topic
       href="guide/components/fr/tParseXMLRow_Scenario.html"
       label="tParseXMLRow scenario example"
+    />
+  </context>
+  <context id="tPatternCheck">
+    <description>checks a string from a pattern</description>
+    <topic
+      href="guide/components/fr/tPatternCheck_Prop.html"
+      label="tPatternCheck properties description"
+    />
+    <topic
+      href="guide/components/fr/tPatternCheck_Scenario.html"
+      label="tPatternCheck scenario example"
     />
   </context>
   <context id="tPerl">
@@ -3124,15 +3531,26 @@
       label="tPipeRow scenario example"
     />
   </context>
-  <context id="tPivotOutputDelimited">
+  <context id="tPivotToColumnsDelimited">
     <description>Writes to a file an aggregated crosstable with simple separated fields</description>
     <topic
-      href="guide/components/fr/tPivotOutputDelimited_Prop.html"
-      label="tPivotOutputDelimited properties description"
+      href="guide/components/fr/tPivotToColumnsDelimited_Prop.html"
+      label="tPivotToColumnsDelimited properties description"
     />
     <topic
-      href="guide/components/fr/tPivotOutputDelimited_Scenario.html"
-      label="tPivotOutputDelimited scenario example"
+      href="guide/components/fr/tPivotToColumnsDelimited_Scenario.html"
+      label="tPivotToColumnsDelimited scenario example"
+    />
+  </context>
+  <context id="tPivotToRows">
+    <description>Transforms multiple columns into multiple key/value lines</description>
+    <topic
+      href="guide/components/fr/tPivotToRows_Prop.html"
+      label="tPivotToRows properties description"
+    />
+    <topic
+      href="guide/components/fr/tPivotToRows_Scenario.html"
+      label="tPivotToRows scenario example"
     />
   </context>
   <context id="tPostgresPlusBulkExec">
@@ -3278,6 +3696,17 @@
       label="tPostgresqlBulkExec scenario example"
     />
   </context>
+  <context id="tPostgresqlCDC">
+    <description>Reads a Postgresql table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/fr/tPostgresqlCDC_Prop.html"
+      label="tPostgresqlCDC properties description"
+    />
+    <topic
+      href="guide/components/fr/tPostgresqlCDC_Scenario.html"
+      label="tPostgresqlCDC scenario example"
+    />
+  </context>
   <context id="tPostgresqlCommit">
     <description>Commits all transactions not already commited in a selected PostgreSQL connection</description>
     <topic
@@ -3309,6 +3738,17 @@
     <topic
       href="guide/components/fr/tPostgresqlInput_Scenario.html"
       label="tPostgresqlInput scenario example"
+    />
+  </context>
+  <context id="tPostgresqlInvalidRows">
+    <description>View invalid row</description>
+    <topic
+      href="guide/components/fr/tPostgresqlInvalidRows_Prop.html"
+      label="tPostgresqlInvalidRows properties description"
+    />
+    <topic
+      href="guide/components/fr/tPostgresqlInvalidRows_Scenario.html"
+      label="tPostgresqlInvalidRows scenario example"
     />
   </context>
   <context id="tPostgresqlOutput">
@@ -3410,6 +3850,17 @@
       label="tPostgresqlUpdateBulkExec scenario example"
     />
   </context>
+  <context id="tPostgresqlValidRows">
+    <description>View valid row</description>
+    <topic
+      href="guide/components/fr/tPostgresqlValidRows_Prop.html"
+      label="tPostgresqlValidRows properties description"
+    />
+    <topic
+      href="guide/components/fr/tPostgresqlValidRows_Scenario.html"
+      label="tPostgresqlValidRows scenario example"
+    />
+  </context>
   <context id="tPostjob">
     <description>Démarre un postjob.</description>
     <topic
@@ -3430,6 +3881,50 @@
     <topic
       href="guide/components/fr/tPrejob_Scenario.html"
       label="tPrejob scenario example"
+    />
+  </context>
+  <context id="tQASAddressIncomplete">
+    <description>Adds a some address qualified / formated columns for all rows of a flow</description>
+    <topic
+      href="guide/components/fr/tQASAddressIncomplete_Prop.html"
+      label="tQASAddressIncomplete properties description"
+    />
+    <topic
+      href="guide/components/fr/tQASAddressIncomplete_Scenario.html"
+      label="tQASAddressIncomplete scenario example"
+    />
+  </context>
+  <context id="tQASAddressRow">
+    <description>Adds a some address qualified / formated columns for all rows of a flow</description>
+    <topic
+      href="guide/components/fr/tQASAddressRow_Prop.html"
+      label="tQASAddressRow properties description"
+    />
+    <topic
+      href="guide/components/fr/tQASAddressRow_Scenario.html"
+      label="tQASAddressRow scenario example"
+    />
+  </context>
+  <context id="tQASAddressUnknown">
+    <description>Adds a some address qualified / formated columns for all rows of a flow</description>
+    <topic
+      href="guide/components/fr/tQASAddressUnknown_Prop.html"
+      label="tQASAddressUnknown properties description"
+    />
+    <topic
+      href="guide/components/fr/tQASAddressUnknown_Scenario.html"
+      label="tQASAddressUnknown scenario example"
+    />
+  </context>
+  <context id="tQASAddressVerified">
+    <description>Adds a some address qualified / formated columns for all rows of a flow</description>
+    <topic
+      href="guide/components/fr/tQASAddressVerified_Prop.html"
+      label="tQASAddressVerified properties description"
+    />
+    <topic
+      href="guide/components/fr/tQASAddressVerified_Scenario.html"
+      label="tQASAddressVerified scenario example"
     />
   </context>
   <context id="tRSSInput">
@@ -3496,6 +3991,17 @@
     <topic
       href="guide/components/fr/tRowGenerator_Scenario.html"
       label="tRowGenerator scenario example"
+    />
+  </context>
+  <context id="tRules">
+    <description>Read a multi level XML file</description>
+    <topic
+      href="guide/components/fr/tRules_Prop.html"
+      label="tRules properties description"
+    />
+    <topic
+      href="guide/components/fr/tRules_Scenario.html"
+      label="tRules scenario example"
     />
   </context>
   <context id="tRunJob">
@@ -3642,7 +4148,7 @@
     />
   </context>
   <context id="tSPSSOutput">
-    <description>Sauvegarde les données dans des fichiers SAV</description>
+    <description>Enregistre les données dans des fichiers SAV</description>
     <topic
       href="guide/components/fr/tSPSSOutput_Prop.html"
       label="tSPSSOutput properties description"
@@ -3828,6 +4334,28 @@
       label="tSampleRow scenario example"
     />
   </context>
+  <context id="tSasInput">
+    <description>reads a Sas table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/fr/tSasInput_Prop.html"
+      label="tSasInput properties description"
+    />
+    <topic
+      href="guide/components/fr/tSasInput_Scenario.html"
+      label="tSasInput scenario example"
+    />
+  </context>
+  <context id="tSasOutput">
+    <description>Inserts or updates lines into a DB table</description>
+    <topic
+      href="guide/components/fr/tSasOutput_Prop.html"
+      label="tSasOutput properties description"
+    />
+    <topic
+      href="guide/components/fr/tSasOutput_Scenario.html"
+      label="tSasOutput scenario example"
+    />
+  </context>
   <context id="tSchemaComplianceCheck">
     <description>Checks columns from a schema</description>
     <topic
@@ -3881,6 +4409,17 @@
     <topic
       href="guide/components/fr/tSetGlobalVar_Scenario.html"
       label="tSetGlobalVar scenario example"
+    />
+  </context>
+  <context id="tSetProxy">
+    <description>to configure proxy in JVM parameters</description>
+    <topic
+      href="guide/components/fr/tSetProxy_Prop.html"
+      label="tSetProxy properties description"
+    />
+    <topic
+      href="guide/components/fr/tSetProxy_Scenario.html"
+      label="tSetProxy scenario example"
     />
   </context>
   <context id="tSleep">
@@ -3991,6 +4530,17 @@
     <topic
       href="guide/components/fr/tSybaseBulkExec_Scenario.html"
       label="tSybaseBulkExec scenario example"
+    />
+  </context>
+  <context id="tSybaseCDC">
+    <description>Reads a Sybase table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/fr/tSybaseCDC_Prop.html"
+      label="tSybaseCDC properties description"
+    />
+    <topic
+      href="guide/components/fr/tSybaseCDC_Scenario.html"
+      label="tSybaseCDC scenario example"
     />
   </context>
   <context id="tSybaseCommit">
@@ -4323,17 +4873,6 @@
       label="tUnite scenario example"
     />
   </context>
-  <context id="tUnpivotRow">
-    <description>Transforms multiple columns into multiple key/value lines</description>
-    <topic
-      href="guide/components/fr/tUnpivotRow_Prop.html"
-      label="tUnpivotRow properties description"
-    />
-    <topic
-      href="guide/components/fr/tUnpivotRow_Scenario.html"
-      label="tUnpivotRow scenario example"
-    />
-  </context>
   <context id="tVerticaBulkExec">
     <description>Charge efficacement les données d'un fichier</description>
     <topic
@@ -4343,6 +4882,28 @@
     <topic
       href="guide/components/fr/tVerticaBulkExec_Scenario.html"
       label="tVerticaBulkExec scenario example"
+    />
+  </context>
+  <context id="tVerticaCommit">
+    <description>Commits all transactions not already commited in a selected Vertica connection</description>
+    <topic
+      href="guide/components/fr/tVerticaCommit_Prop.html"
+      label="tVerticaCommit properties description"
+    />
+    <topic
+      href="guide/components/fr/tVerticaCommit_Scenario.html"
+      label="tVerticaCommit scenario example"
+    />
+  </context>
+  <context id="tVerticaConnection">
+    <description>Creates a connection to a Vertica database</description>
+    <topic
+      href="guide/components/fr/tVerticaConnection_Prop.html"
+      label="tVerticaConnection properties description"
+    />
+    <topic
+      href="guide/components/fr/tVerticaConnection_Scenario.html"
+      label="tVerticaConnection scenario example"
     />
   </context>
   <context id="tVerticaInput">
@@ -4387,6 +4948,17 @@
     <topic
       href="guide/components/fr/tVerticaOutputBulkExec_Scenario.html"
       label="tVerticaOutputBulkExec scenario example"
+    />
+  </context>
+  <context id="tVerticaRollback">
+    <description>Rollbacks all transactions not already commited in a selected Vertica Connection</description>
+    <topic
+      href="guide/components/fr/tVerticaRollback_Prop.html"
+      label="tVerticaRollback properties description"
+    />
+    <topic
+      href="guide/components/fr/tVerticaRollback_Scenario.html"
+      label="tVerticaRollback scenario example"
     />
   </context>
   <context id="tVerticaRow">
@@ -4464,6 +5036,17 @@
     <topic
       href="guide/components/fr/tWarn_Scenario.html"
       label="tWarn scenario example"
+    />
+  </context>
+  <context id="tWebService">
+    <description>Requests a Webservice and reads its result</description>
+    <topic
+      href="guide/components/fr/tWebService_Prop.html"
+      label="tWebService properties description"
+    />
+    <topic
+      href="guide/components/fr/tWebService_Scenario.html"
+      label="tWebService scenario example"
     />
   </context>
   <context id="tWebServiceInput">

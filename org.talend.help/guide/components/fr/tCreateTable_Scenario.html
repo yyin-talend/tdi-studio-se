@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:33">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
     <title>Scénario&#160;: Créer une nouvelle table dans une base de données Mysql</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tCreateTable_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tParseRecordSet_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tCreateTable_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tDB2BulkExec_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,59 +22,53 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1658339"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2596378"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1658346"> </a><h2 class="pHeading2">
+<a name="wp2596383"> </a><h2 class="pHeading2">
 Scénario&#160;: Créer une nouvelle table dans une base de données Mysql
 </h2>
-<a name="wp1658349"> </a><p class="pIndented1">
-Le job décrit ci-dessous a été conçu pour créer une nouvelle table dans une base de données, composée d&#39;un schéma pris à partir du schéma d&#39;un fichier délimité stocké dans le Repository. Ce job est composé d&#39;un seul composant.
+<a name="wp2596388"> </a><p class="pIndented1">
+Le Job décrit ci-dessous a été conçu pour créer une nouvelle table dans une base de données, composée d&#39;un schéma pris à partir du schéma d&#39;un fichier délimité stocké dans le Repository. Ce Job est composé d&#39;un seul composant.
 </p>
-<a name="wp1658357"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2596396"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tCreateTable1.png" id="wp1658354" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tCreateTable1.png" id="wp2596393" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1658372"> </a><div class="pSmartList2"><li>Cliquez et déposez un composant <b class="cBold">tCreateTable</b> de la famille <b class="cBold">Databases</b> de la <b class="cBold">Palette</b>.</li></div>
-<a name="wp1660567"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">DB type</b> de l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>, sélectionnez <em class="cEmphasis">MySQL</em>.</li></div>
+<a name="wp2596411"> </a><div class="pSmartList1"><li>Cliquez et déposez un composant <b class="cBold">tCreateTable</b> de la famille <b class="cBold">Databases</b> de la <b class="cBold">Palette</b>.</li></div>
+<a name="wp2596423"> </a><div class="pSmartList1"><li>Dans la liste <b class="cBold">Database type</b> de l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>, sélectionnez <em class="cEmphasis">MySQL</em>.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp1658393"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2596435"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tCreateTable2.png" id="wp1658390" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tCreateTable2.png" id="wp2596432" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1658405"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Special Action</b>, sélectionnez <b class="cBold">Create table</b>.</li></div>
-<a name="wp1658411"> </a><div class="pSmartList2"><li>Ne cochez la case <b class="cBold">Use Existing Connection</b> uniquement si vous utilisez un composant avec une connexion dédiée<a href="tMysqlConnection_Prop.html">, see&#160;<em class="cEmphasis">tMysqlConnection.</em></a> Nous n&#39;utiliserons pas cette option pour cet exemple.</li></div>
-<a name="wp1658424"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Property type</b>, sélectionnez <b class="cBold">Repository</b>, ainsi tous les champs de connexion à la base de données sont renseignés automatiquement. Si vous n&#39;avez pas configuré de connexion aux bases de données dans le dossier <b class="cBold">Metadata</b> du répertoire <b class="cBold">DB&#160;connection</b>, renseignez manuellement ces informations de connexion après avoir sélectionné <b class="cBold">Built-in</b> dans la liste déroulante <b class="cBold">Property type</b>.</li></div>
-<a name="wp1658438"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">New Table Name</b>, saisissez le nom de la nouvelle table à créer.</li></div>
-<a name="wp1660146"> </a><div class="pSmartList2"><li>Si vous souhaitez récupérer le schéma d&#39;une métadonnée (sans que celle-ci ne soit une connexion à une base de données), sélectionnez Repository puis la métadonnée souhaitée.</li></div>
-<a name="wp1660283"> </a><div class="pSmartList2"><li>Dans tous les cas (Built-in ou Repository), cliquez sur <b class="cBold">Edit Schema</b> pour vérifier le type de de données dans la colonne <b class="cBold">DB Type</b>.</li></div>
+<a name="wp2596447"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Table Action</b>, sélectionnez <b class="cBold">Create table</b>.</li></div>
+<a name="wp2596453"> </a><div class="pSmartList1"><li>Ne cochez la case <b class="cBold">Use Existing Connection</b> uniquement si vous utilisez un composant avec une connexion dédiée<a href="tMysqlConnection_Prop.html">, consultez&#160;<em class="cEmphasis">tMysqlConnection.</em></a> Nous n&#39;utiliserons pas cette option pour cet exemple.</li></div>
+<a name="wp2596466"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Property type</b>, sélectionnez <b class="cBold">Repository</b>, ainsi tous les champs de connexion à la base de données sont renseignés automatiquement. Si vous n&#39;avez pas configuré de connexion aux bases de données dans le dossier <b class="cBold">Metadata</b> du répertoire <b class="cBold">DB&#160;connection</b>, renseignez manuellement ces informations de connexion après avoir sélectionné <b class="cBold">Built-in</b> dans la liste déroulante <b class="cBold">Property type</b>.</li></div>
+<a name="wp2596486"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Table Name</b>, saisissez le nom de la nouvelle table à créer.</li></div>
+<a name="wp2596489"> </a><div class="pSmartList1"><li>Si vous souhaitez récupérer le schéma d&#39;une métadonnée (sans que celle-ci ne soit une connexion à une base de données), sélectionnez Repository puis la métadonnée souhaitée.</li></div>
+<a name="wp2596502"> </a><div class="pSmartList1"><li>Dans tous les cas (<b class="cBold">Built-in</b> ou <b class="cBold">Repository</b>), cliquez sur <b class="cBold">Edit Schema</b> pour vérifier le type de données dans la colonne <b class="cBold">DB Type</b>.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp1660292"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2596514"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tCreateTable3.png" id="wp1660289" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tCreateTable3.png" id="wp2596511" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1660300"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Reset DB Types</b> si la colonne <b class="cBold">DB type</b> est vide ou affiche des marques de différence (couleur orange). Cela permet de donner à n&#39;importe quel type de données, le type de données adéquat.</li></div>
-<a name="wp1660308"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b>.</li></div>
-<a name="wp1660316"> </a><div class="pSmartList2"><li>Puis appuyez sur <b class="cBold">F6</b> pour éxecuter le job.</li></div>
+<a name="wp2596525"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Reset DB Types</b> si la colonne <b class="cBold">DB type</b> est vide ou affiche des marques de différence (couleur orange). Cela permet de donner à n&#39;importe quel type de données, le type de données adéquat.</li></div>
+<a name="wp2596533"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp2596541"> </a><div class="pSmartList1"><li>Enregistrez votre Job appuyez sur <b class="cBold">F6</b> pour l&#39;éxecuter.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp1658488"> </a><p class="pIndented1">
+<a name="wp2596545"> </a><p class="pIndented1">
 La table créée est vide mais elle contient toutes les colonnes définies dans le Schéma.
 </p>
-<a name="wp1658497"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2596554"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tCreateTable4.png" id="wp1658492" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tCreateTable4.png" id="wp2596549" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
     </blockquote>
@@ -96,7 +90,7 @@ La table créée est vide mais elle contient toutes les colonnes définies dans le 
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tCreateTable_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tParseRecordSet_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tCreateTable_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tDB2BulkExec_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

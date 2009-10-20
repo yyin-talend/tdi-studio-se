@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:24:52">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:52">
     <title>tExtractDelimitedFields</title>
   </head>
 
@@ -47,7 +47,7 @@ Processing/Fields
 </div>
 </td>
     <td><a name="wp1605688"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-14-14-003.jpg" height="59" width="112" id="wp1605683" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-14-16-003.jpg" height="59" width="112" id="wp1605683" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -64,8 +64,8 @@ Processing/Fields
 <b class="cBold">Purpose</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1605713"> </a><div class="pCellBody">
-<b class="cBold">t</b>ExtractDelimitedFields helps to extract `fields&#39; from within a string to write them elsewhere for example.
+    <td colspan="2" rowspan="1"><a name="wp1605713"> </a><div class="pCellHeading">
+<b class="cBold">tExtractDelimitedFields</b> helps to extract `fields&#39; from within a string to write them elsewhere for example.
 </div>
 </td>
 </tr>
@@ -73,7 +73,7 @@ Processing/Fields
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1606745"> </a><div class="pCellHeading">
+    <td><a name="wp1606745"> </a><div class="pCellBody">
 <em class="cEmphasis">Field to split</em>
 </div>
 </td>
@@ -87,19 +87,24 @@ Select from the list the field to split.
 </div>
 </td>
     <td><a name="wp1606735"> </a><div class="pCellBody">
-Field separator
+<em class="cEmphasis">Field separator</em>
 </div>
 </td>
-    <td><a name="wp1606738"> </a><div class="pCellBody">
+    <td><a name="wp2750799"> </a><div class="pCellBody">
 Set field separator.
 </div>
+<a name="wp2750805"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2750803" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Since this component uses regex to split a filed and the regex syntax uses special characters as operators, make sure to precede the regex operator you use as a field separator by a double backslash. For example, you have to use &quot;\\|&quot; instead of &quot;|&quot;.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="3"><a name="wp1605724"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td colspan="1" rowspan="3"><a name="wp1605731"> </a><div class="pCellHeading">
+    <td colspan="1" rowspan="3"><a name="wp1605731"> </a><div class="pCellBody">
 <em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
@@ -108,13 +113,13 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1605752"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: You create the schema and store it locally for the component. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2514672"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create the schema and store it locally for the component. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1605773"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can use it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2514935"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can use it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>

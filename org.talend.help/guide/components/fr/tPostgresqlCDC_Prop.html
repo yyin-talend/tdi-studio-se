@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
+    <title>tPostgresqlCDC</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPostgresqlBulkExec_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPostgresqlCDC_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2787525"> </a><h2 class="pHeading1">
+tPostgresqlCDC
+</h2>
+<a name="wp2787535"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tPostgresqlCDC_white.png" id="wp2787530" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2787545"> </a><h2 class="pHeading2">
+Propriétés du tPostgresqlCDC
+</h2>
+<a name="wp2787899"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2787557table2787549">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787557"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp2787560"> </a><div class="pCellBody">
+Databases/Postgresql
+</div>
+</td>
+    <td><a name="wp2787571"> </a><div class="pCellBody">
+<img src="images/java_iconbe.png" id="wp2787567" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787579"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2787586"> </a><div class="pCellBody">
+Le composant <b class="cBold">tPostgresqlCDC </b>extrait les données modifiées d&#39;une table source à partir de la dernière extraction et migration de données vers un ou plusieurs autre(s) système(s).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787597"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2787604"> </a><div class="pCellBody">
+Le <b class="cBold">tPostgresqlCDC</b> permet l&#39;extraction et la migration de données. tPostgresqlCDC extrait uniquement les changements apportés aux données source et les met à disposition de(s) système(s) cible(s) utilisant l&#39;aperçu de base de données CDC.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787615"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2787622"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp2787625"> </a><div class="pCellBody">
+Peut-être Built-in ou Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787629"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787632"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787639"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Propriétés utilisées ponctuellement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787643"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787646"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787653"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Sélectionnez le fichier de propriétés du composant dans le <span style="font-weight: bold">Repository</span>. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+<a name="wp2787664"> </a><div class="pCellBody">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2787658" border="0" hspace="0" vspace="0"/></table></div><div class="pCellBody">
+<em style="font-style: italic" class="cEmphasis">Réinitialisez le type de base de données en cliquant sur le bouton adéquat afin de sélectionner la connexion CDC.</em>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787670"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787676"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use existing connection</em>
+</div>
+</td>
+    <td><a name="wp2787680"> </a><div class="pCellBody">
+Cochez cette case lorsque vous utilisez un composant <b class="cBold">tPostgresqlConnection</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787688"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787695"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp2787698"> </a><div class="pCellBody">
+Adresse IP du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787702"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787709"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp2787712"> </a><div class="pCellBody">
+Numéro du port d&#39;écoute du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787716"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787723"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp2787726"> </a><div class="pCellBody">
+Nom de la base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787730"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787737"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>
+</div>
+</td>
+    <td><a name="wp2787740"> </a><div class="pCellBody">
+Nom du schéma.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787744"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787751"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp2787758"> </a><div class="pCellBody">
+Informations d&#39;authentification sur l&#39;utilisateur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787762"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787769"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema using CDC</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2787776"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787780"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787783"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787790"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma sera créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Open Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787802"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787805"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787812"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisé dans divers projets et Jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> <b class="cBold">Talend Open Studio</b>.
+</div>
+<a name="wp2787829"> </a><div class="pCellBody">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_icon.gif" align="left" id="wp2787825" border="0" hspace="0" vspace="0"/></table></div><div class="pCellBody">
+
+</div>
+<a name="wp2787830"> </a><div class="pCellBody">
+Réinitialisez le type de base de données en cliquant sur le bouton adéquat afin de sélectionner la connexion CDC.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787834"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787841"> </a><div class="pCellHeading">
+<em class="cEmphasis">Table Name</em>
+</div>
+</td>
+    <td><a name="wp2787844"> </a><div class="pCellBody">
+Nom de la table source dans laquelle capturer les changements apportés aux données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787848"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787855"> </a><div class="pCellHeading">
+<em class="cEmphasis">Subscriber</em>
+</div>
+</td>
+    <td><a name="wp2787858"> </a><div class="pCellBody">
+Saisissez le nom de l&#39;application qui utilisera la table de modifications.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2787862"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2787869"> </a><div class="pCellHeading">
+<em class="cEmphasis">Events to catch</em>
+</div>
+</td>
+    <td><a name="wp2787872"> </a><div class="pCellBody">
+Insert&#160;: Cochez cette case pour capturer les données insérées dans la table de modifications depuis la dernière extraction.<br /><b class="cBold">Update&#160;</b>: Cochez cette case pour capturer les données mises à jour dans la table de modifications depuis la dernière extraction.<br /><b class="cBold">Delete</b>&#160;: Cochez cette case pour capturer les données supprimées dans la table de modifications depuis la dernière extraction.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2787888"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2787891"> </a><div class="pCellBody">
+Ce composant est généralement utilisé comme composant de début. Il nécessite un composant de sortie et une connexion de type row Main.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPostgresqlBulkExec_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPostgresqlCDC_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

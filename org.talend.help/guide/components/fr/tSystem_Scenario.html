@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:59">
+    <meta name="LASTUPDATED" content="10/19/09 17:34:03">
     <title>Scénario&#160;: Echo `Hello World!&#39;</title>
   </head>
 
@@ -29,14 +29,17 @@
 Scénario&#160;: Echo `Hello World!&#39;
 </h2>
 <a name="wp1552249"> </a><p class="pIndented1">
-Ce scénario est constitué de deux jobs affichant un message dans la console de la vue <b class="cBold">Run</b>.
+Ce scénario est constitué d&#39;un Job à deux composants permettant d&#39;afficher un message dans la console de la vue <b class="cBold">Run</b>.
 </p>
+<a name="wp2751879"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tSystem4.png" id="wp2751875" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1552261"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants <b class="cBold">tSystem</b> et <b class="cBold">tPerl</b> dans l&#39;espace de modélisation.</li></div>
-<a name="wp1552270"> </a><div class="pSmartList2"><li>Cliquez-droit sur le composant <b class="cBold">tSystem</b> et sélectionnez un lien de type <b class="cBold">ThenRun </b>pour relier ces deux composants. Lorsque vous exécutez le job, le premier composant déclenchera le deuxième.</li></div>
-<a name="wp1552282"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tSystem</b> et sélectionnez l&#39;onglet <b class="cBold">Basic settings</b>&#160;:</li></div>
-</ul></div>
+<a name="wp2751882"> </a><div class="pSmartList1"><li>A partir de la <b class="cBold">Palette</b>, déposez les composants <b class="cBold">tSystem</b> et <b class="cBold">tJava</b> dans l&#39;espace graphique.</li></div>
+<a name="wp1552270"> </a><div class="pSmartList1"><li>Cliquez-droit sur le composant <b class="cBold">tSystem</b> et sélectionnez un lien de type <b class="cBold">OnSubjobOk </b>pour relier ces deux composants. Lorsque vous exécutez le Job, le premier composant déclenchera le deuxième.</li></div>
+<a name="wp1552282"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tSystem</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> et configurer ses paramètres de base. </li></div>
 </ul></div>
 <a name="wp1552289"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -44,30 +47,27 @@ Ce scénario est constitué de deux jobs affichant un message dans la console de l
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1552295"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Command</b>, saisissez la commande echo suivie de la chaîne de caractères &quot;Hello World!&quot; à afficher.</li></div>
-<a name="wp1554158"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Output</b>, sélectionnez l&#39;option <b class="cBold">To a global variable</b> pour envoyer la sortie dans une variable globale.</li></div>
-<a name="wp1552313"> </a><div class="pSmartList2"><li>Puis sélectionnez le composant <b class="cBold">tPerl</b>.</li></div>
+<a name="wp1552295"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Command</b>, saisissez la commande <code class="cCode">echo</code> suivie de la chaîne de caractères à afficher&#160;: <code class="cCode">&quot;cmd /c echo HELLO WORLD&quot;</code></li></div>
+<a name="wp1554158"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Standard Output</b>, sélectionnez l&#39;option <b class="cBold">to a global variable</b> pour envoyer la sortie dans une variable globale.</li></div>
+<a name="wp2751984"> </a><div class="pSmartList1"><li>Laissez les autres champs par défaut. </li></div>
+<a name="wp2752054"> </a><div class="pSmartList1"><li>Sélectionnez ensuite le composant <b class="cBold">tJava</b>.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp1552320"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2752061"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tSystem2.png" id="wp1552317" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tSystem2.png" id="wp2752058" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1552329"> </a><div class="pSmartList2"><li>Saisissez la commande Perl permettant d&#39;afficher la variable de sortie du <b class="cBold">tSystem</b> dans la console.</li></div>
-<a name="wp1552337"> </a><div class="pSmartList2"><li>Cliquez sur la vue <b class="cBold">Run</b> et exécutez le job.</li></div>
+<a name="wp2752069"> </a><div class="pSmartList1"><li>Saisissez la commande Java permettant d&#39;afficher la variable de sortie du <b class="cBold">tSystem</b> dans la console&#160;: <b class="cBold">System.out.println(&quot;Hello World!&quot;);</b></li></div>
+<a name="wp2752440"> </a><div class="pSmartList1"><li>Enregistrez votre Job puis appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp1552344"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2752447"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tSystem3.png" id="wp1552341" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tSystem3.png" id="wp2752444" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp1552347"> </a><p class="pIndented1">
-Le job exécute une commande echo et affiche la sortie dans la console de la vue <b class="cBold">Run</b> grâce à la fonction Print de la commande Perl du composant tPerl.
+Le Job exécute une commande <code class="cCode">echo</code> et affiche la sortie dans la console de log de la vue <b class="cBold">Run</b> grâce à la fonction <code class="cCode">println</code> de la commande Java du composant <b class="cBold">tJava</b>.
 </p>
     </blockquote>
     <hr>

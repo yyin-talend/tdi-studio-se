@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:52:00">
+    <meta name="LASTUPDATED" content="10/19/09 17:34:08">
     <title>tFileInputXML</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tDTDValidator_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputXML_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tExtractXMLField_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputXML_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,161 +22,239 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1662794"> </a><h2 class="pHeading1">
+<a name="wp2269112"> </a><h2 class="pHeading1">
 tFileInputXML
 </h2>
-<a name="wp1664309"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2268080"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tFileInputXMLbiw.png" id="wp1550010" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tFileInputXMLcec.png" id="wp2268076" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1550025"> </a><h2 class="pHeading2">
+<a name="wp2268087"> </a><h2 class="pHeading2">
 Propriétés du tFileInputXML
 </h2>
-<a name="wp1652764"> </a><p class="pBodyRelative">
+<a name="wp2268277"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp1550037table1550029">
+<table border="1" id="wp2268095table2268090">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550037"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2268095"> </a><div class="pCellBody">
 <b class="cBold">Famille du composant</b>
 </div>
 </td>
-    <td><a name="wp1550040"> </a><div class="pCellBody">
+    <td><a name="wp2268097"> </a><div class="pCellBody">
 File/Input
 </div>
 </td>
-    <td><a name="wp1550052"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-16-06-02.jpg" height="59" width="112" id="wp1550047" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp2268106"> </a><div class="pCellBody">
+<img src="images/Components-16-08-09.jpg" height="59" width="112" id="wp2268102" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550060"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2268111"> </a><div class="pCellBody">
 <b class="cBold">Fonction</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1550063"> </a><div class="pCellBody">
-Le composant tFileInputXML lit un fichier XML structuré et extrait les données lignes par lignes.
+    <td colspan="2" rowspan="1"><a name="wp2268113"> </a><div class="pCellBody">
+Le composant <b class="cBold">tFileInputXML</b> lit un fichier XML structuré et extrait les données lignes par lignes.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550074"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2268120"> </a><div class="pCellBody">
 <b class="cBold">Objectif</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1550077"> </a><div class="pCellBody">
-Ce composant ouvre un fichier XML structuré et le lit ligne par ligne pour le scinder en champs et envoie les champs tel que définis dans le schéma au composant suivant du job via une connexion Row.
+    <td colspan="2" rowspan="1"><a name="wp2268122"> </a><div class="pCellBody">
+Ce composant ouvre un fichier XML structuré et le lit ligne par ligne pour le scinder en champs et envoie les champs tel que définis dans le schéma au composant suivant du Job via une connexion <b class="cBold">Row</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="9"><a name="wp1550088"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="9"><a name="wp2268129"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td colspan="1" rowspan="3"><a name="wp1550095"> </a><div class="pCellHeading">
+    <td colspan="1" rowspan="3"><a name="wp2268134"> </a><div class="pCellHeading">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
-    <td><a name="wp1550098"> </a><div class="pCellBody">
+    <td><a name="wp2268136"> </a><div class="pCellBody">
 Peut être Built-in ou Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550112"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2268145"> </a><div class="pCellBody">
 <b class="cBold">Built-in&#160;</b>: Propriétés utilisées ponctuellement.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550126"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2268154"> </a><div class="pCellBody">
 <b class="cBold">Repository&#160;</b>: Sélectionnez le fichier de propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550140"> </a><div class="pCellHeading">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2268163"> </a><div class="pCellHeading">
 <em class="cEmphasis">Schema type</em> et <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp1550144"> </a><div class="pCellBody">
+    <td><a name="wp2268166"> </a><div class="pCellBody">
 Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550151"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2268170"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550158"> </a><div class="pCellBody">
+    <td><a name="wp2270382"> </a><div class="pCellBody">
 <b class="cBold">Built-in&#160;</b>: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550169"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2268188"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1550176"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
+    <td><a name="wp2270499"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et Job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550191"> </a><div class="pCellHeading">
-<em class="cEmphasis">File Name</em>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2268209"> </a><div class="pCellHeading">
+<em class="cEmphasis">Filename</em>
 </div>
 </td>
-    <td><a name="wp1550194"> </a><div class="pCellBody">
+    <td><a name="wp2491564"> </a><div class="pCellBody">
 Nom du fichier à traiter.<br />Voir également&#160;:<em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550209"> </a><div class="pCellHeading">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2268227"> </a><div class="pCellHeading">
 <em class="cEmphasis">Loop XPath query</em>
 </div>
 </td>
-    <td><a name="wp1550212"> </a><div class="pCellBody">
+    <td><a name="wp2268229"> </a><div class="pCellBody">
 Noeud de l&#39;arborescence sur lequel la boucle est basée.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550222"> </a><div class="pCellHeading">
-<em class="cEmphasis">Mapping column/XPath Query</em>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2268235"> </a><div class="pCellHeading">
+<em class="cEmphasis">Mapping </em>
 </div>
 </td>
-    <td><a name="wp1550230"> </a><div class="pCellBody">
-<b class="cBold">Column</b>&#160;: Colonnes à mapper. Elles reflètent le schéma défini par le champ <b class="cBold">Schema type</b><br /><b class="cBold">XPath Query&#160;</b>: Saisissez les champs à extraire de l&#39;entrée structurée.
+    <td><a name="wp2752102"> </a><div class="pCellBody">
+<b class="cBold">Column</b>&#160;: Colonnes à mapper. Elles reflètent le schéma défini par le champ <b class="cBold">Schema type</b><br /><b class="cBold">XPath Query&#160;</b>: Saisissez les champs à extraire de l&#39;entrée structurée.<br /><b class="cBold">Get nodes</b>&#160;: Cochez cette case pour récupérer le contenu XML du noeud courant spécifié dans le champ <b class="cBold">Xpath query</b>.
 </div>
+<a name="wp2752127"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2752121" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+L&#39;option <b class="cBold">Get Nodes</b> fonctionne uniquement  en mode <b class="cBold">DOM4j</b>. Pour plus d&#39;informations  concernant le mode <b class="cBold">DOM4j</b>, consultez les propriétés de l&#39;onglet <b class="cBold">Advanced settings</b>. 
+</p>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1652721"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2268249"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1652728"> </a><div class="pCellHeading">
+    <td><a name="wp2268254"> </a><div class="pCellHeading">
 <em class="cEmphasis">Limit</em>
 </div>
 </td>
-    <td><a name="wp1652731"> </a><div class="pCellBody">
+    <td><a name="wp2268256"> </a><div class="pCellBody">
 Nombre maximum de lignes à traiter. Si Limit&#160;=&#160;0, auxune ligne n&#39;est lue ni traitée.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1652735"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2725934"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
 </div>
 </td>
-    <td><a name="wp1652742"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+    <td><a name="wp2725943"> </a><div class="pCellBody">
+<em class="cEmphasis">Advanced separator (for number)</em>
 </div>
 </td>
-    <td><a name="wp1652745"> </a><div class="pCellBody">
-Sélectionnez l&#39;encodage à partir de la liste ou sélectionnez Custom et définissez-le manuellement. Ce champ est obligatoire pour la manipulation des données de base de données.
+    <td><a name="wp2725947"> </a><div class="pCellBody">
+Cochez cette option pour modifier les séparateurs utilisés pour les nombres&#160;:<br /><b class="cBold">Thousands separator</b>&#160;: définissez le séparateur utilisé pour les milliers.<br /><b class="cBold">Decimal separator</b>&#160;: définissez le séparateur utilisé pour les décimaux. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1652753"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2726242"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2726245"> </a><div class="pCellHeading">
+<em class="cEmphasis">Ignore the namespaces</em>
+</div>
+</td>
+    <td><a name="wp2726248"> </a><div class="pCellBody">
+Cochez cette case pour ignorer les espaces de noms.<br /><b class="cBold">Generate a temporary file</b>&#160;: renseignez le chemin d&#39;accès et le nom du fichier temporaire XML. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2752668"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2752670"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use Separator for mode Xerces</em>
+</div>
+</td>
+    <td><a name="wp2752700"> </a><div class="pCellBody">
+Cochez cette case pour séparer les valeurs des noeuds fils concaténées.<br />
+</div>
+<a name="wp2752730"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2752716" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Ce champ ne peut être utilisé que si vous avez sélectionné le mode Xerces dans le champ <b class="cBold">Generation mode</b>.
+</p>
+<a name="wp2752818"> </a><div class="pCellBody">
+Le champs <b class="cBold">Field separator</b> apparaît&#160;: Définissez le séparateur à utiliser pour séparer les valeurs
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2268258"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2268263"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding Type</em>
+</div>
+</td>
+    <td><a name="wp2268265"> </a><div class="pCellBody">
+Sélectionnez l&#39;encodage à partir de la liste ou sélectionnez <b class="cBold">Custom</b> et définissez-le manuellement. Ce champ est obligatoire pour la manipulation des données de base de données. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2726323"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2726326"> </a><div class="pCellHeading">
+<em class="cEmphasis">Generation mode</em>
+</div>
+</td>
+    <td><a name="wp2726329"> </a><div class="pCellBody">
+Sélectionnez dans la liste déroulante le mode de génération du fichier XML en fonction de la disponibilité de votre mémoire et de la rapidité souhaitée&#160;: <b class="cBold">Dom4j</b>, <b class="cBold">Xerces</b>, <b class="cBold">SAX</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2726406"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2726411"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2726413"> </a><div class="pCellBody">
+Cochez cette case pour collecter les métadonnées de process du Job, aussi bien au niveau du Job qu&#39;au niveau de chaque composant. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2268270"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1652756"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2268272"> </a><div class="pCellBody">
 n/a
 </div>
 </td>
@@ -205,7 +283,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tDTDValidator_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputXML_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tExtractXMLField_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputXML_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

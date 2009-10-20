@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:54:13">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:38">
     <title>Scenario: Transforming a list of files as data flow</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scenario: Transforming a list of files as data flow
 </h2>
 <a name="wp1545856"> </a><p class="pIndented1">
-The following scenario describes a job that iterates on a list of files, picks up the filename and current date and transforms this into a flow, that gets displayed on the console.
+The following scenario describes a Job that iterates on a list of files, picks up the filename and current date and transforms this into a flow, that gets displayed on the console.
 </p>
 <a name="wp1545864"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,8 +38,8 @@ The following scenario describes a job that iterates on a list of files, picks u
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1545879"> </a><div class="pSmartList2"><li>Click and drop the following components: <b class="cBold">tFileList</b>, <b class="cBold">tIterateToFlow</b> and <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1545891"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileList</b> to the <b class="cBold">tIterateToFlow</b> using an <b class="cBold">iterate</b> link and connect the job to the <b class="cBold">tLogRow</b> using a <b class="cBold">Row main</b> connection.</li></div>
+<a name="wp1545879"> </a><div class="pSmartList2"><li>Drop the following components: <b class="cBold">tFileList</b>, <b class="cBold">tIterateToFlow</b> and <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp1545891"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileList</b> to the <b class="cBold">tIterateToFlow</b> using an <b class="cBold">iterate</b> link and connect the Job to the <b class="cBold">tLogRow</b> using a <b class="cBold">Row main</b> connection.</li></div>
 <a name="wp1545909"> </a><div class="pSmartList2"><li>In the <b class="cBold">tFileList</b> <b class="cBold">Component</b> view, set the directory where the list of files is stored.</li></div>
 </ul></div>
 </ul></div>
@@ -51,19 +51,19 @@ The following scenario describes a job that iterates on a list of files, picks u
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1545925"> </a><div class="pSmartList2"><li>In this example, the files are three simple .txt files held in one directory: <em class="cEmphasis">Countries</em>. </li></div>
-<a name="wp1545932"> </a><div class="pSmartList2"><li>No need to care about the case, hence uncheck the <b class="cBold">Case sensitive </b>checkbox.</li></div>
-<a name="wp1545939"> </a><div class="pSmartList2"><li>Leave the <b class="cBold">Include Subdirectories</b> option unchecked.</li></div>
-<a name="wp1545950"> </a><div class="pSmartList2"><li>Then select the <b class="cBold">tIterateToFlow</b> component et click <b class="cBold">Edit Schema</b> to set the new schema</li></div>
+<a name="wp2750098"> </a><div class="pSmartList2"><li>No need to care about the case, hence clear the <b class="cBold">Case sensitive </b>check box.</li></div>
+<a name="wp2750105"> </a><div class="pSmartList2"><li>Leave the <b class="cBold">Include Subdirectories</b> check box unchecked.</li></div>
+<a name="wp2750116"> </a><div class="pSmartList2"><li>Then select the <b class="cBold">tIterateToFlow</b> component et click <b class="cBold">Edit Schema</b> to set the new schema</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1545957"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2750123"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tIterateToFlow3.png" id="wp1545954" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tIterateToFlow3.png" id="wp2750120" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1545974"> </a><div class="pSmartList2"><li>Add two new columns: <em class="cEmphasis">Filename</em> of <b class="cBold">String</b> type and <em class="cEmphasis">Date</em> of <b class="cBold">date</b> type. Make sure you define the correct pattern in Java.</li></div>
+<a name="wp2750139"> </a><div class="pSmartList2"><li>Add two new columns: <em class="cEmphasis">Filename</em> of <b class="cBold">String</b> type and <em class="cEmphasis">Date</em> of <b class="cBold">date</b> type. Make sure you define the correct pattern in Java.</li></div>
 <a name="wp1545982"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK </b>to validate.</li></div>
 <a name="wp1545990"> </a><div class="pSmartList2"><li>Notice that the newly created schema shows on the <b class="cBold">Mapping </b>table.</li></div>
 </ul></div>
@@ -76,10 +76,10 @@ The following scenario describes a job that iterates on a list of files, picks u
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1546008"> </a><div class="pSmartList2"><li>In each cell of the <b class="cBold">Value</b> field, press <b class="cBold">Ctrl+Space bar </b>to access the list of global and user-specific variables.</li></div>
-<a name="wp1546015"> </a><div class="pSmartList2"><li>For the <em class="cEmphasis">Filename</em> column, use the global variable: (<code class="cCode">$_globals{tFileList_1}{CURRENT_FILEPATH</code>}. It retrieves the current filepath in order to catch the name of each file, the job iterates on. </li></div>
+<a name="wp1546015"> </a><div class="pSmartList2"><li>For the <em class="cEmphasis">Filename</em> column, use the global variable: (<code class="cCode">$_globals{tFileList_1}{CURRENT_FILEPATH</code>}. It retrieves the current filepath in order to catch the name of each file, the Job iterates on. </li></div>
 <a name="wp1546028"> </a><div class="pSmartList2"><li>For the <em class="cEmphasis">Date</em> column, use the Talend routine: <code class="cCode">Date.GetDate</code> (Perl) or <code class="cCode">TalendDate.getCurrentDate()</code> (in Java)</li></div>
-<a name="wp1546042"> </a><div class="pSmartList2"><li>Then on the <b class="cBold">tLogRow</b> component view, check the <b class="cBold">Print values in cells of a table </b>box.</li></div>
-<a name="wp1546047"> </a><div class="pSmartList2"><li>Save your job and execute it.</li></div>
+<a name="wp1546042"> </a><div class="pSmartList2"><li>Then on the <b class="cBold">tLogRow</b> component view, select the <b class="cBold">Print values in cells of a table </b>check box.</li></div>
+<a name="wp1546047"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1546054"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

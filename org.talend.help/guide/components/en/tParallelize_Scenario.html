@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:54:13">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:38">
     <title>Scenario: Parallelize/synchronize subjobs execution </title>
   </head>
 
@@ -22,60 +22,60 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1655162"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751754"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1655172"> </a><h2 class="pHeading2">
+<a name="wp2751778"> </a><h2 class="pHeading2">
 Scenario: Parallelize/synchronize subjobs execution 
 </h2>
-<a name="wp1655180"> </a><p class="pIndented1">
-The following simple scenario creates a five-component main job that uses one <b class="cBold">tParallelize</b> component with four <b class="cBold">tMsgBox</b> single-component subjobs. The <b class="cBold">tMsgBox_1</b> component is the trigger subjob. The <b class="cBold">tParallelize_1</b> component executes <b class="cBold">tMsgBox_2</b> and <b class="cBold">tMsgBox_3</b> simultaneously, and then synchronizes <b class="cBold">tMsgBox_4</b> to be executed at the end of the simultaneous execution of the subjobs.
+<a name="wp2751786"> </a><p class="pIndented1">
+The following simple scenario creates a five-component main Job that uses one <b class="cBold">tParallelize</b> component with four <b class="cBold">tMsgBox</b> single-component subjobs. The <b class="cBold">tMsgBox_1</b> component is the trigger subjob. The <b class="cBold">tParallelize_1</b> component executes <b class="cBold">tMsgBox_2</b> and <b class="cBold">tMsgBox_3</b> simultaneously, and then synchronizes <b class="cBold">tMsgBox_4</b> to be executed at the end of the simultaneous execution of the subjobs.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1655217"> </a><div class="pSmartList2"><li>Click and drop four <b class="cBold">tMsgBox</b> components from the Pallete into the workspace.</li></div>
-<a name="wp1655223"> </a><div class="pSmartList2"><li>Define their dialog boxes display properties as desired. </li></div>
+<a name="wp2751823"> </a><div class="pSmartList2"><li>Drop four <b class="cBold">tMsgBox</b> components from the Pallete to the design workspace.</li></div>
+<a name="wp2751829"> </a><div class="pSmartList2"><li>Define their dialog boxes display properties as desired. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp1655236"> </a><p class="pIndented1">
+<a name="wp2751842"> </a><p class="pIndented1">
 For more information on defining <b class="cBold">tMsgBox</b> properties, see <a href="tMsgBox_Prop.html"><em class="cEmphasis">tMsgBox</em></a>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1655244"> </a><div class="pSmartList2"><li>Click and drop a tParallelize component into the workspace. </li></div>
-<a name="wp1655260"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tMsgBox_1</b> component to <b class="cBold">tParallelize_1</b> using an <b class="cBold">OnSubjobOk</b> link, available on the right-click menu. This link will trigger the next subjob(s) on the condition that the first subjob completed without error.</li></div>
-<a name="wp1655281"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tParallelize_1</b> to <b class="cBold">tMsgBox_2</b> and <b class="cBold">tMsgBox_3</b> using for each a <b class="cBold">Parallelize</b> link, available on the right-click menu.These links will simply parallelize the execution of the two connected subjobs.</li></div>
-<a name="wp1655298"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tParallelize_1</b> to <b class="cBold">tMsgBox_4 </b>using a <b class="cBold">Synchronize</b> link to seqeunce the execution of this fourth subjob.</li></div>
+<a name="wp2751854"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tParallelize</b> component to the design workspace. </li></div>
+<a name="wp2751870"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tMsgBox_1</b> component to <b class="cBold">tParallelize_1</b> using an <b class="cBold">OnSubjobOk</b> link, available on the right-click menu. This link will trigger the next subjob(s) on the condition that the first subjob completed without error.</li></div>
+<a name="wp2751891"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tParallelize_1</b> to <b class="cBold">tMsgBox_2</b> and <b class="cBold">tMsgBox_3</b> using for each a <b class="cBold">Parallelize</b> link, available on the right-click menu.These links will simply parallelize the execution of the two connected subjobs.</li></div>
+<a name="wp2751908"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tParallelize_1</b> to <b class="cBold">tMsgBox_4 </b>using a <b class="cBold">Synchronize</b> link to seqeunce the execution of this fourth subjob.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1655309"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751919"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Component_tParallelize.png" id="wp1655305" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Component_tParallelize.png" id="wp2751915" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1655321"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tMsgBox_4</b> and set its basic settings parameters. </li></div>
-<a name="wp1655337"> </a><div class="pSmartList2"><li>On the <b class="cBold">Basic settings</b> panel of the <b class="cBold">tParallelize</b> component and from the <b class="cBold">Wait For</b>  list, select either <em class="cEmphasis">end of first subjob</em> or <em class="cEmphasis">end of all subjobs.</em> This will sequence your fourth subjob to be executed at the end of the first subjob or at the end of all subjobs respectively.</li></div>
-<a name="wp1655354"> </a><div class="pSmartList2"><li>In the <b class="cBold">Sleep Duration </b> field, set the time interval in seconds between each check of a subjob execution.</li></div>
+<a name="wp2751931"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tMsgBox_4</b> and set its basic settings parameters. </li></div>
+<a name="wp2751947"> </a><div class="pSmartList2"><li>On the <b class="cBold">Basic settings</b> panel of the <b class="cBold">tParallelize</b> component and from the <b class="cBold">Wait For</b>  list, select either <em class="cEmphasis">end of first subjob</em> or <em class="cEmphasis">end of all subjobs.</em> This will sequence your fourth subjob to be executed at the end of the first subjob or at the end of all subjobs respectively.</li></div>
+<a name="wp2751964"> </a><div class="pSmartList2"><li>In the <b class="cBold">Sleep Duration </b> field, set the time interval in seconds between each check of a subjob execution.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1655365"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751975"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Component_tParallelize_BasicSettings.png" id="wp1655361" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Component_tParallelize_BasicSettings.png" id="wp2751971" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1655373"> </a><div class="pSmartList2"><li>Save your main job.</li></div>
-<a name="wp1655383"> </a><div class="pSmartList2"><li>Click the <b class="cBold">F6</b> key to run it.</li></div>
+<a name="wp2751983"> </a><div class="pSmartList2"><li>Save your main Job.</li></div>
+<a name="wp2751993"> </a><div class="pSmartList2"><li>Click the <b class="cBold">F6</b> key to run it.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1655388"> </a><p class="pIndented1">
+<a name="wp2751998"> </a><p class="pIndented1">
 The four message boxes are displayed according to the defined sequence.
 </p>
-<a name="wp1655396"> </a><p class="pIndented1">
-The above was a very simple scenario of what the <b class="cBold">tParalelize </b>component can do for you. However, you can parallelize/synchronize much more complex job systems with this component where each of the subjobs that build the main job can execute any possible task processed in <b class="cBold">Talend Open Studio</b>.
+<a name="wp2752001"> </a><p class="pIndented1">
+The above was a very simple scenario of what the <b class="cBold">tParalelize </b>component can do for you. However, you can parallelize/synchronize much more complex job systems with this component where each of the subjobs that build the main Job can execute any possible task processed in Talend Open Studio.
 </p>
     </blockquote>
     <hr>

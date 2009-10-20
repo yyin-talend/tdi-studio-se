@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:21:17">
-    <title>Scenario 1: Reading an SAP table</title>
+    <meta name="LASTUPDATED" content="10/19/09 18:19:56">
+    <title>Scenario 1: Retrieving metadata from the SAP system</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -22,296 +22,338 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1647065"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2709990"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1647070"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1649406"> </a><h2 class="pHeading2">
-Scenario 1: Reading an SAP table
+<a name="wp2710608"> </a><h2 class="pHeading2">
+Scenario 1: Retrieving metadata from the SAP system
 </h2>
-<a name="wp1649422"> </a><p class="pIndented1">
-<b class="cBold">Talend</b> SAP components (<b class="cBold">tSAPInput</b> and <b class="cBold">tSAPOutput</b>) as well as the SAP wizard are based on a library validated and provided by SAP (JCO) that allows the user to call functions and retrieve data from the SAP system at Table, RFC or BAPI levels.
+<a name="wp2736568"> </a><p class="pIndented1">
+Talend SAP components (<b class="cBold">tSAPInput</b> and <b class="cBold">tSAPOutput</b>) as well as the SAP wizard are based on a library validated and provided by SAP (JCO) that allows the user to call functions and retrieve data from the SAP system at Table, RFC or BAPI, levels.
 </p>
-<a name="wp2188255"> </a><p class="pBodyRelative">
+<a name="wp2735668"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2188252" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-This scenario uses the SAP wizard that leads a user through dialog steps to create a SAP connection and call RFC and BAPI functions. This SAP wizard is available only for <b class="cBold">Talend Integration Suite </b>users. If you are a user of <b class="cBold">Talend Open Studio</b>, you need to set the basic settings for the <b class="cBold">tSAPInput</b> component manually.
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2710612" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This scenario uses the SAP wizard that leads a user through dialog steps to create SAP connection and call RFC and BAPI functions. This SAP wizard is available only for <b class="cBold">Talend Integration Suite </b>users. If you are a user of <b class="cBold">Talend Open Studio</b> or <b class="cBold">Talend On Demand</b>, you need to set the basic settings for the <b class="cBold">tSAPInput</b> component manually.
 </p>
-<a name="wp2188299"> </a><p class="pIndented1">
-This java scenario uses the SAP wizard to first create a connection to the SAP system, and then call an RFC function to directly read from the SAP system a table called <em class="cEmphasis">SFLIGHT</em>. It finally displays in <b class="cBold">Talend Open Studio</b> the structure of the <em class="cEmphasis">SFLIGHT </em>table stored in the SAP system.
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2188759"> </a><div class="pSmartList2"><li>Create a connection to the SAP system using the SAP connection wizard, in this scenario the SAP connection is called <b class="cBold">SAPdemo</b><em class="cEmphasis">.</em> For more information on how to set up an SAP connection using the wizard, see <em class="cEmphasis">Setting up an SAP connection</em>.</li></div>
-<a name="wp2188778"> </a><div class="pSmartList2"><li>Call the RFC function <em class="cEmphasis">RFC_READ_TABLE</em> using the SAP wizard to access the table in the SAP system and see its structure. For more information on how to call functions, see <em class="cEmphasis">Setting up an SAP connection</em>.</li></div>
-<a name="wp2188794"> </a><div class="pSmartList2"><li>In the <b class="cBold">Name filter</b> field, type in <em class="cEmphasis">RFC</em>* and click the <b class="cBold">Search</b> button to display all available RFC functions.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2188803"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput1.png" id="wp2188800" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2188813"> </a><div class="pSmartList2"><li>Select <em class="cEmphasis">RFC_READ_TABLE</em> to display the schema that describe the table structure.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1647194"> </a><p class="pIndented1">
-The three-tab view to the right of the wizard displays the metadata of the <em class="cEmphasis">RFC_READ_TABLE </em>function and allows you to set the necessary parameters.
-</p>
-<a name="wp1647211"> </a><p class="pIndented1">
-The <b class="cBold">Document</b> view displays the SAP html document about the <em class="cEmphasis">RFC_READ_TABLE </em>function.
-</p>
-<a name="wp1647220"> </a><p class="pIndented1">
-The <b class="cBold">Parameter</b> view provides information about the parameters required by the <em class="cEmphasis">RFC_READ_TABLE </em>function to return parameter values.
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647240"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameter</b> view, click the <b class="cBold">Input</b> tab to list the input parameters.In this scenario, the input parameters required by <em class="cEmphasis">RFC_READ_TABLE</em> are <em class="cEmphasis">DELIMITER</em>, <em class="cEmphasis">QUERY_TABLE</em>, and <em class="cEmphasis">ROWCOUNT</em>. You can delete the extra input parameters in the <b class="cBold">Test it</b> view.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1647271"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput3.png" id="wp1647267" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647286"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameter</b> view, click the <b class="cBold">Output</b> tab to list the parameters that will be returned by <em class="cEmphasis">RFC_READ_TABLE</em>. In this scenario, the output parameters are <em class="cEmphasis">FILENAME</em>, <em class="cEmphasis">OFFSET</em>, <em class="cEmphasis">LENGTH, TYPE, </em>and <em class="cEmphasis">FIELDTEXT.</em></li></div>
-<a name="wp1647323"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameter</b> view, click the <b class="cBold">Table</b> tab to display the structure of the <em class="cEmphasis">SFLIGHT </em>table.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1647333"> </a><p class="pIndented1">
-The <b class="cBold">Test it</b> view allows you to add or delete input parameters according to the called function. In this scenario, we want to retrieve the structure of the <em class="cEmphasis">SFLIGHT</em> table and not any data.
-</p>
-<a name="wp1647351"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput2.png" id="wp1647347" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647366"> </a><div class="pSmartList2"><li>Put the pointer in the <b class="cBold">Value</b> field and click <b class="cBold">Launch</b> at the bottom of the view to display the parameter values returned by the <em class="cEmphasis">RFC_READ_TABLE </em>function. In this scenario, the delimiter is |, the table to read is <em class="cEmphasis">SFLIGHT</em> and the row count is 20.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1647388"> </a><p class="pIndented1">
-The new schema <b class="cBold">RFC_READ_TABLE </b>displays under the <b class="cBold">SAPdemo</b> node in the <b class="cBold">Repository</b> tree view. 
-</p>
-<a name="wp1647402"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput13.png" id="wp1647398" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1647410"> </a><p class="pIndented1">
-To retrieve the table structure and display it in <b class="cBold">Talend Open Studio</b>, do the following: 
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647429"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree-view, right-click <b class="cBold">RFC_READ_TABLE </b>under <b class="cBold">SAPdemo </b>and select from the component list <b class="cBold">tSAPInput </b>and drop it onto the Workspace.</li></div>
-<a name="wp1647450"> </a><div class="pSmartList2"><li>Click and drop the <b class="cBold">tFilterColumns</b> and <b class="cBold">tLogRow</b> components from the Palette onto the workspace.</li></div>
-<a name="wp1647461"> </a><div class="pSmartList2"><li>Connect the three components using <b class="cBold">Row Main </b>links.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1647470"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput.png" id="wp1647466" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647485"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tSAPInput</b> and click the <b class="cBold">Component</b> tab to display its basic settings<b class="cBold">.</b></li></div>
-</ul></div>
-</ul></div>
-<a name="wp1647500"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput4.png" id="wp1647496" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1647508"> </a><p class="pIndented1">
-The basic setting values for the <b class="cBold">tSAPInput</b> component display automatically since the schema is stored in the <b class="cBold">Metadata</b> node and the component is initialized by the SAP wizard. In the <b class="cBold">Initialize input</b> area, we can see the three input parameters needed by the <em class="cEmphasis">RFC_READ_TABLE </em>function.
-</p>
-<a name="wp1647537"> </a><p class="pIndented1">
-In the <b class="cBold">Extract data</b> area, we can see two extra columns: <em class="cEmphasis">WA</em> and <em class="cEmphasis">TEXT</em> since we want to retrieve only the structure of the <em class="cEmphasis">SFLIGHT</em> table and not any data.
-</p>
-<a name="wp1647551"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput5.png" id="wp1647547" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647566"> </a><div class="pSmartList2"><li>At the bottom of <b class="cBold">tSAPInput</b> basic setting view and on the <b class="cBold">Type (for iterate)</b> list, select <em class="cEmphasis">table_output</em> and enter <em class="cEmphasis">&quot;FIELDS&quot;</em> in the <b class="cBold">TableName or StructureName</b> field.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1647589"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput8.png" id="wp1647585" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1647602"> </a><p class="pIndented1">
-To filter the schema of the <em class="cEmphasis">SFLIGHT</em> table, we use the <b class="cBold">tFilterColumns</b> component:
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647617"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tFilterColumns</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
-<a name="wp1647632"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema</b> to display the <b class="cBold">tFilterColumns</b> editor.</li></div>
-<a name="wp1647639"> </a><div class="pSmartList2"><li>Set the output schema based on the column names of the input schema. For this scenario, we want to delete the <em class="cEmphasis">WA</em> and <em class="cEmphasis">TEXT</em> columns to obtain an output schema as follows: <em class="cEmphasis">FIELDNAME, OFFSET, LENGTH, TYPE</em> and <em class="cEmphasis">FIELDTEXT.</em></li></div>
-<a name="wp1647666"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK </b>to validate changes.</li></div>
-<a name="wp1647681"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tLogRow</b> and click the <b class="cBold">Component</b> tab to define its basic settings as needed. For more information, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
-<a name="wp1647696"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1647705"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput7.png" id="wp1647701" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1647717"> </a><p class="pBodyRelative">
-<b class="cBold">tSAPInput </b>retrieved from the SAP system the five output columns of the <em class="cEmphasis">SFLIGHT </em>table and <b class="cBold">tLogRow</b> displayed them on the console.
-</p>
-<a name="wp1647732"> </a><h2 class="pHeading2">
-Scenario 2: Retrieving metadata from the SAP system
-</h2>
-<a name="wp2188616"> </a><p class="pBodyRelative">
-</p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2188613" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-This scenario uses the SAP wizard that leads a user through dialog steps to create SAP connection and call RFC and BAPI functions. This SAP wizard is available only for <b class="cBold">Talend Integration Suite </b>users. If you are a user of <b class="cBold">Talend Open Studio</b>, you need to set the basic settings for the <b class="cBold">tSAPInput</b> component manually.
-</p>
-<a name="wp1649005"> </a><p class="pIndented1">
+<a name="wp2710630"> </a><p class="pIndented1">
 This java scenario uses the SAP wizard to first create a connection to the SAP system, and then call a BAPI function to retrieve the details of a company from the SAP system. It finally displays in <b class="cBold">Talend Open Studio</b> the company details stored in the SAP system.
 </p>
-<a name="wp1647748"> </a><p class="pIndented1">
+<a name="wp2710640"> </a><p class="pIndented1">
 The below figure shows the company detail parameters stored in the SAP system and that we want to read in <b class="cBold">Talend Open Studio</b> using the <b class="cBold">tSAPInput</b> component.
 </p>
-<a name="wp1647765"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2710654"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_SAPInput9.png" id="wp1647761" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_SAPInput1_1.png" id="wp2710651" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647772"> </a><div class="pSmartList2"><li>Create a connection to the SAP system using the SAP connection wizard, in this scenario the SAP connection is called <b style="font-weight: bold" class="cBold">SAPdmo</b><span style="font-weight: normal">.</span> For more information on how to set up a SAP connection using the wizard, see <em class="cEmphasis">Setting up an SAP connection</em>.</li></div>
-<a name="wp1647797"> </a><div class="pSmartList2"><li>Call the BAPI function <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> using the SAP wizard to access the BAPI HTML document stored in the SAP system and see the company details. For more information on how to call functions, see <em class="cEmphasis">Setting up an SAP connection</em>.</li></div>
-<a name="wp1647818"> </a><div class="pSmartList2"><li>In the <b class="cBold">Name filter</b> field, type in <em class="cEmphasis">BAPI</em>* and click the <b class="cBold">Search</b> button to display all available BAPI functions.</li></div>
-<a name="wp1647831"> </a><div class="pSmartList2"><li>Select <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> to display the schema that describe the company details.</li></div>
+<a name="wp2710659"> </a><div class="pSmartList2"><li>Create a connection to the SAP system using the SAP connection wizard, in this scenario the SAP connection is called <em class="cEmphasis">sap</em> and is saved in the <b class="cBold">Metadata</b> node. For more information on how to set up a SAP connection using the wizard, see <em class="cEmphasis">Setting up an SAP connection</em> in Talend Open Studio User Guide.</li></div>
+<a name="wp2710678"> </a><div class="pSmartList2"><li>Call the BAPI function <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> using the SAP wizard to access the BAPI HTML document stored in the SAP system and see the company details. For more information on how to call functions, see <em class="cEmphasis">Setting up an SAP connection</em> in Talend Open Studio User Guide.</li></div>
+<a name="wp2710697"> </a><div class="pSmartList2"><li>In the <b class="cBold">Name filter</b> field, type in <em class="cEmphasis">BAPI</em>* and click the <b class="cBold">Search</b> button to display all available BAPI functions.</li></div>
+<a name="wp2710707"> </a><div class="pSmartList2"><li>Select <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> to display the schema that describe the company details.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1647837"> </a><p class="pIndented1">
+<a name="wp2710712"> </a><p class="pIndented1">
 The three-tab view to the right of the wizard displays the metadata of the <em class="cEmphasis">BAPI_COMPANY_GETDETAIL </em>function and allows you to set the necessary parameters.
 </p>
-<a name="wp1647850"> </a><p class="pIndented1">
+<a name="wp2710725"> </a><p class="pIndented1">
 The <b class="cBold">Document</b> view displays the SAP html document about the <em class="cEmphasis">BAPI_COMPANY_GETDETAIL </em>function.
 </p>
-<a name="wp1647863"> </a><p class="pIndented1">
+<a name="wp2710732"> </a><p class="pIndented1">
 The <b class="cBold">Parameter</b> view provides information about the input and output parameters required by the <em class="cEmphasis">BAPI_COMPANY_GETDETAIL </em>function to return values.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647883"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameter</b> view, click the <b class="cBold">Input</b> tab to list the input parameter(s).In this scenario, there is only one input parameter required by <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> and it is called <em class="cEmphasis">COMPANYID</em>.</li></div>
+<a name="wp2710747"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameter</b> view, click the <b class="cBold">Input</b> tab to list the input parameter(s). In this scenario, there is only one input parameter required by <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> and it is called <em class="cEmphasis">COMPANYID</em>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1647906"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2710765"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_SAPInput10.png" id="wp1647902" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_SAPInput1_2.png" id="wp2710762" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647921"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameter</b> view, click the <b class="cBold">Output</b> tab to list the output parameters returned by <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em>. In this scenario, there are two output parameters: <em class="cEmphasis">COMPANY_DETAIL </em>and <em class="cEmphasis">RETURN.</em></li></div>
+<a name="wp2710776"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameter</b> view, click the <b class="cBold">Output</b> tab to list the output parameters returned by <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em>. In this scenario, there are two output parameters: <em class="cEmphasis">COMPANY_DETAIL </em>and <em class="cEmphasis">RETURN.</em></li></div>
 </ul></div>
 </ul></div>
-<a name="wp1647948"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2710797"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_SAPInput11.png" id="wp1647944" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_SAPInput1_3.png" id="wp2710794" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1647953"> </a><p class="pIndented1">
+<a name="wp2710801"> </a><p class="pIndented1">
 Each of these two &quot;structure&quot; parameters consists of numerous &quot;single&quot; parameters.
 </p>
-<a name="wp1647961"> </a><p class="pIndented1">
+<a name="wp2710807"> </a><p class="pIndented1">
 The <b class="cBold">Test it</b> view allows you to add or delete input parameters according to the called function. In this scenario, we want to retrieve the metadata of the <em class="cEmphasis">COMPANY_DETAIL</em> &quot;structure&quot; parameter that consists of 14 &quot;single&quot; parameters.
 </p>
-<a name="wp1647975"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2710818"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_SAPInput12.png" id="wp1647971" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_SAPInput1_4.png" id="wp2710815" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1647990"> </a><div class="pSmartList2"><li>Put the pointer in the <b class="cBold">Value</b> field and click <b class="cBold">Launch</b> at the bottom of the view to display the value of each &quot;single&quot; parameter returned by the <em class="cEmphasis">BAPI_COMPANY_GETDETAIL </em>function.</li></div>
-<a name="wp1648009"> </a><div class="pSmartList2"><li>Click <b class="cBold">Next</b> to display the list of metadata for the <em class="cEmphasis">BAPI_COMPANY_GETDETAIL.</em></li></div>
+<a name="wp2733549"> </a><div class="pSmartList2"><li>In the <b class="cBold">Value</b> column of the <b class="cBold">COMPANYID</b> line in the first table, enter &quot;<em class="cEmphasis">000001</em>&quot; to send back company data corresponding to the value 000001.</li></div>
+<a name="wp2733664"> </a><div class="pSmartList2"><li>In the <b class="cBold">Output type</b> list at the bottom of the wizard, select <b class="cBold">output.table</b>.</li></div>
+<a name="wp2733671"> </a><div class="pSmartList2"><li>Click <b class="cBold">Launch</b> at the bottom of the view to display the value of each &quot;single&quot; parameter returned by the <em class="cEmphasis">BAPI_COMPANY_GETDETAIL </em>function.</li></div>
+<a name="wp2733686"> </a><div class="pSmartList2"><li>Click <b class="cBold">Finish</b> to close the wizard and create the connection.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1648018"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput19.png" id="wp1648014" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1648031"> </a><div class="pSmartList2"><li>Click <b class="cBold">Finish</b> to close the wizard.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1648043"> </a><p class="pIndented1">
-The new schema <b class="cBold">BAI_COMPANY_GETDETAIL </b>displays under the <b class="cBold">SAPdemo</b> node in the <b class="cBold">Repository</b> tree view. 
+<a name="wp2710870"> </a><p class="pIndented1">
+The <b class="cBold">sap</b> connection and the new schema <b class="cBold">BAI_COMPANY_GETDETAIL </b>display under the <b class="cBold">SAP Connections</b> node in the <b class="cBold">Repository</b> tree view. 
 </p>
-<a name="wp1648057"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_SAPInput13.png" id="wp1648053" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1648065"> </a><p class="pIndented1">
-To retrieve the metadata and display it in <b class="cBold">Talend Open Studio</b>, do the following: 
+<a name="wp2733742"> </a><p class="pIndented1">
+To retrieve the different schemas of the <b class="cBold">BAPI_COMPANY_GETDETAIL</b> function, do the following:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1648080"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree-view, right-click <b class="cBold">BAPI_COMPANY_GETDETAIL </b>under <b class="cBold">SAPdemo </b>and select from the component list <b class="cBold">tSAPInput </b>and drop it onto the Workspace.</li></div>
-<a name="wp1648105"> </a><div class="pSmartList2"><li>Click and drop the <b class="cBold">tFilterColumns</b> and <b class="cBold">tLogRow</b> components from the Palette onto the workspace.</li></div>
-<a name="wp1648116"> </a><div class="pSmartList2"><li>Connect the three components using <b class="cBold">Row Main </b>links.</li></div>
+<a name="wp2733770"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">BAPI_COMPANY_GETDETAIL</b> in the <b class="cBold">Repository</b> tree view and select <b class="cBold">Retrieve schema</b> in the contextual menu.</li></div>
+<a name="wp2733849"> </a><div class="pSmartList2"><li>In the open dialog box, select the schemas you want to retrieve, <b class="cBold">COMPANY_DETAIL</b> and <b class="cBold">RETURN</b> in this scenario.</li></div>
+<a name="wp2733864"> </a><div class="pSmartList2"><li>Click <b class="cBold">Next</b> to display the two selected schemas and then <b class="cBold">Finish</b> to close the dialog box.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1648125"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp80887"> </a><p class="pIndented1">
+For more information about retrieving schemas, see <em class="cEmphasis">Step 4: Retrieving the schemas of the called function</em> of Talend Open Studio User Guide.
+</p>
+<a name="wp80948"> </a><p class="pIndented1">
+The two schemas display under the <b class="cBold">BAPI_COMPANY_GETDETAIL</b> function in the <b class="cBold">Repository </b>tree view.
+</p>
+<a name="wp2734152"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_SAPInput14.png" id="wp1648121" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_SAPInput1_5.png" id="wp2734149" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2734156"> </a><p class="pIndented1">
+To retrieve the company metadata that corresponds to the 000001 value and display it in <b class="cBold">Talend Open Studio</b>, do the following:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2710896"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, drop the SAP connection you already created to the design workspace to open a dialog box where you can select <b class="cBold">tSAPConnection</b> from the component list and finally click <b class="cBold">OK</b> to close the dialog box. The <b class="cBold">tSAPConnection</b> component holding the SAP connection, <em class="cEmphasis">sap </em>in this example, displays on the design workspace.</li></div>
+<a name="wp2734230"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tSAPConnection</b> to display the <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2710972"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput1_6.png" id="wp2710969" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2734348"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2734345" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+If you store connection details in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view, the <b class="cBold">Repository</b> mode is selected in the <b class="cBold">Property Type</b> list and the fields that follow are pre-filled. If not, you need to select <b class="cBold">Built-in</b> as &quot;property type&quot; and fill in the connection details manually.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2734815"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree-view, expand <b class="cBold">Metadata</b> and <b class="cBold">sap</b> in succession and drop <b class="cBold">RFC_READ_TABLE</b> to the design workspace to open a component list.</li></div>
+<a name="wp2734862"> </a><div class="pSmartList2"><li>Select <b class="cBold">tSAPInput</b> from the component list and click <b class="cBold">OK</b>.</li></div>
+<a name="wp2734455"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tFilterColumns</b> and <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp2734472"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tSAPConnection</b> and <b class="cBold">tSAPInput</b> using a <b class="cBold">Trigger</b> &gt; <b class="cBold">OnSubJobOk</b> link</li></div>
+<a name="wp2734758"> </a><div class="pSmartList2"><li>To connect <b class="cBold">tSAPInput</b> and <b class="cBold">tLogRow</b>, right-click <b class="cBold">tSAPInput</b> and select <b class="cBold">Row</b> &gt; <b class="cBold">row_COMPANY_DETAIL_1</b> and then click <b class="cBold">tLogRow</b>. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2734780"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput1_7.png" id="wp2710992" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1648140"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tSAPInput</b> and click the <b class="cBold">Component</b> tab to display its basic settings<b class="cBold">.</b></li></div>
+<a name="wp2711006"> </a><div class="pSmartList2"><li>In the design workspace, double click <b class="cBold">tSAPInput</b> to display its <b class="cBold">Basic settings</b> view and define the component properties<b class="cBold">.</b></li></div>
 </ul></div>
 </ul></div>
-<a name="wp1648154"> </a><p class="pIndented1">
-The basic setting values for the <b class="cBold">tSAPInput</b> component display automatically since the schema is stored in the <b class="cBold">Metadata</b> node and the component is initialized by the SAP wizard. In the <b class="cBold">Initialize input</b> area, we can see the input parameter needed by the <em class="cEmphasis">BAPI_COMPANY_GETDETAIL </em>function.
+<a name="wp2711017"> </a><p class="pIndented1">
+The basic setting parameters for the <b class="cBold">tSAPInput</b> component display automatically since the schema is stored in the <b class="cBold">Metadata</b> node and the component is initialized by the SAP wizard. 
 </p>
-<a name="wp1648175"> </a><p class="pIndented1">
-In the <b class="cBold">Extract data</b> area, we can see all output &quot;single&quot; parameters. In this scenario, we want to read in <b class="cBold">Talend Open Studio</b> the metadata of the first 14 &quot;single&quot; parameters that come under the &quot;structure&quot; parameter <em class="cEmphasis">COMPANY_DETAIL</em>. We must then delete all &quot;single&quot; parameters that come under the other &quot;structure&quot; parameter <em class="cEmphasis">RETURN.</em> 
-</p>
-<a name="wp1648196"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2711050"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_SAPInput15.png" id="wp1648192" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_SAPInput1_8.png" id="wp2711047" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1648215"> </a><div class="pSmartList2"><li>On the <b class="cBold">Type</b> list, select <em class="cEmphasis">output_structure</em> and in the <b class="cBold">TableName or StructureName</b> enter &quot;<em class="cEmphasis">COMPANY_DEAIL</em>&quot;.</li></div>
-<a name="wp1648232"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tFilterColumns</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
-<a name="wp1648247"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema</b> to display the <b class="cBold">tFilterColumns</b> editor.</li></div>
-<a name="wp1648254"> </a><div class="pSmartList2"><li>Set the output schema based on the column names of the input schema. For this scenario, we want to delete all columns after <em class="cEmphasis">LANG_ISO</em>.</li></div>
-<a name="wp1648269"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK </b>to validate changes.</li></div>
-<a name="wp1648284"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tLogRow</b> and click the <b class="cBold">Component</b> tab to define its basic settings as needed. For more information, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
-<a name="wp1648299"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp2734991"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use an existing connection</b> check box and then in the <b class="cBold">Component List</b>, select the relevant <b class="cBold">tSAPConnection</b> component, <b class="cBold">sap</b> in this scenario.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1648308"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2735002"> </a><p class="pIndented1">
+In the <b class="cBold">Initialize input</b> area, we can see the input parameter needed by the <em class="cEmphasis">BAPI_COMPANY_GETDETAIL </em>function.
+</p>
+<a name="wp2735042"> </a><p class="pIndented1">
+In the <b class="cBold">Outputs</b> area, we can see all different schemas of the <b class="cBold">BAPI_COMPANY_GETDETAIL</b> function, in particular, <b class="cBold">COMPANY_DETAIL </b>that we want to output<em class="cEmphasis">.</em> 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2711117"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tLogRow</b> to display the <b class="cBold">Basic settings</b> view and define the component properties. For more information about this component, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
+<a name="wp2711129"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2711136"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_SAPInput18.png" id="wp1648304" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_SAPInput1_9.png" id="wp2711133" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1648320"> </a><p class="pBodyRelative">
+<a name="wp2711145"> </a><p class="pBodyRelative">
 <b class="cBold">tSAPInput </b>retrieved from the SAP system the metadata of the <em class="cEmphasis">COMPANY_DETAIL </em>&quot;structure&quot; parameter and <b class="cBold">tLogRow</b> displayed the information on the console.
+</p>
+<a name="wp2727840"> </a><h2 class="pHeading2">
+Scenario 2: Reading data in the different schemas of the RFC_READ_TABLE function
+</h2>
+<a name="wp2729983"> </a><p class="pIndented1">
+Talend SAP components (<b class="cBold">tSAPInput</b> and <b class="cBold">tSAPOutput</b>) as well as the SAP wizard are based on a library validated and provided by SAP (JCO) that allows the user to call functions and retrieve data from the SAP system at Table, RFC or BAPI, levels.
+</p>
+<a name="wp2730010"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2727855" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This scenario uses the SAP wizard that leads a user through dialog steps to create a SAP connection and call RFC and BAPI functions. This SAP wizard is available only for <b class="cBold">Talend Integration Suite</b> users. If you are a user of <b class="cBold">Talend Open Studio</b> or <b class="cBold">Talend On Demand</b>, you need to set the basic settings for the<b class="cBold"> tSAPInput</b> component manually.
+</p>
+<a name="wp2730058"> </a><p class="pIndented1">
+This java scenario uses the SAP wizard to first create a connection to the SAP system, and then call an RFC function to directly read from the SAP system a table called <em class="cEmphasis">SFLIGHT</em>. It finally displays in Talend Open Studio the structure of the <em class="cEmphasis">SFLIGHT</em> table stored in the SAP system.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2727888"> </a><div class="pSmartList2"><li>Create a connection to the SAP system using the SAP connection wizard, in this scenario the SAP connection is called <em class="cEmphasis">sap</em><em class="cEmphasis">.</em> For more information on how to set up an SAP connection using the wizard, see <em class="cEmphasis">Setting up an SAP connection</em> in Talend Open Studio User Guide.</li></div>
+<a name="wp2735991"> </a><div class="pSmartList2"><li>Call the <em class="cEmphasis">RFC_READ_TABLE</em> RFC function using the SAP wizard to access the table in the SAP system and see its structure. For more information on how to call functions, see <em class="cEmphasis">Setting up an SAP connection</em> in Talend Open Studio User Guide.</li></div>
+<a name="wp2727935"> </a><div class="pSmartList2"><li>In the <b class="cBold">Name filter</b> field, type in <em class="cEmphasis">RFC</em>* and click the <b class="cBold">Search</b> button to display all available RFC functions.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2727944"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput2_1.png" id="wp2727941" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2727954"> </a><div class="pSmartList2"><li>Select <em class="cEmphasis">RFC_READ_TABLE</em> to display the schema that describe the table structure.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2727960"> </a><p class="pIndented1">
+The three-tab view to the right of the wizard displays the metadata of the <em class="cEmphasis">RFC_READ_TABLE </em>function and allows you to set the necessary parameters.
+</p>
+<a name="wp2727971"> </a><p class="pIndented1">
+The <b class="cBold">Document</b> view displays the SAP html document about the <em class="cEmphasis">RFC_READ_TABLE </em>function.
+</p>
+<a name="wp2727977"> </a><p class="pIndented1">
+The <b class="cBold">Parameter</b> view provides information about the parameters required by the <em class="cEmphasis">RFC_READ_TABLE </em>function to return parameter values.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2727992"> </a><div class="pSmartList2"><li>In the <b class="cBold">Parameter</b> view, click the <b class="cBold">Table</b> tab to show a description of the structure of the different tables of the <em class="cEmphasis">RFC_READ_TABLE</em> function.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2728004"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput2_3.png" id="wp2728001" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2728010"> </a><p class="pIndented1">
+The <b class="cBold">Test it</b> view allows you to add or delete input parameters according to the called function. In this example, we want to retrieve the structure of the <em class="cEmphasis">SFLIGHT</em> table and not any data.
+</p>
+<a name="wp2728021"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput2_2.png" id="wp2728018" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2729254"> </a><div class="pSmartList2"><li>In the <b class="cBold">Value</b> column of the <b class="cBold">DELIMITER</b> line, enter &quot;;&quot; as field separator.</li></div>
+<a name="wp2730527"> </a><div class="pSmartList2"><li>In the <b class="cBold">Value</b> column of the <b class="cBold">QUERY_TABLE</b> line, enter <em class="cEmphasis">SFLIGHT</em> as the table to query.</li></div>
+<a name="wp2729285"> </a><div class="pSmartList2"><li>In the <b class="cBold">Output type</b> list at the bottom of the view, select <b class="cBold">output.table</b>.</li></div>
+<a name="wp2729295"> </a><div class="pSmartList2"><li>In the <b class="cBold">Constructure|Table</b> list, select <b class="cBold">DATA</b>.</li></div>
+<a name="wp2729301"> </a><div class="pSmartList2"><li>Click <b class="cBold">Launch</b> at the bottom of the view to display the parameter values returned by the <em class="cEmphasis">RFC_READ_TABLE </em>function. In this example, the delimiter is &quot;;&quot; and the table to read is <em class="cEmphasis">SFLIGHT</em>.</li></div>
+<a name="wp2729316"> </a><div class="pSmartList2"><li>Click <b class="cBold">Finish</b> to close the wizard and create the connection.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2729327"> </a><p class="pIndented1">
+The <em class="cEmphasis">sap</em> connection and the <b class="cBold">RFC_READ_TABLE </b>function display under the <b class="cBold">SAPConnections</b> node in the <b class="cBold">Repository</b> tree view.
+</p>
+<a name="wp2730816"> </a><p class="pIndented1">
+To retrieve the different schemas of the <b class="cBold">RFC_READ_TABLE</b> function, do the following:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2730830"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, right-click <b class="cBold">RFC_READ_TABLE</b> and select <b class="cBold">Retrieve schema</b> in the contextual menu. A dialog box displays.</li></div>
+<a name="wp2730843"> </a><div class="pSmartList2"><li>Select in the list the schemas you want to retrieve, <b class="cBold">DATA</b>, <b class="cBold">FIELDS</b> and <b class="cBold">OPTIONS</b> in this example.</li></div>
+<a name="wp2730851"> </a><div class="pSmartList2"><li>Click <b class="cBold">Next</b> to open a new view on the dialog box and display these different schemas.</li></div>
+<a name="wp2730859"> </a><div class="pSmartList2"><li>Click <b class="cBold">Finish</b> to validate your operation and close the dialog box.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp81121"> </a><p class="pIndented1">
+For more information about retrieving schemas, see <em class="cEmphasis">Step 4: Retrieving the schemas of the called function</em> of Talend Open Studio User Guide.
+</p>
+<a name="wp81188"> </a><p class="pIndented1">
+The three schemas display under the <b class="cBold">RFC_READ_TABLE</b> function in the <b class="cBold">Repository</b> tree view.
+</p>
+<a name="wp2729412"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput2_4.png" id="wp2729409" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2729415"> </a><p class="pIndented1">
+In this example, we want to retrieve the data and column names of the <b class="cBold">SFLIGHT</b> table and display them in <b class="cBold">Talend Open Studio</b>. To do that, proceed as the following: 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2729436"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, drop the <b class="cBold">RFC_READ_TABLE </b>function of the <em class="cEmphasis">sap</em> connection to the design workspace to open a dialog box where you can select <b class="cBold">tSAPInput</b> from the component list and then click <b class="cBold">OK</b> to close the dialog box. The <b class="cBold">tSAPInput</b> component displays on the design workspace.</li></div>
+<a name="wp2729451"> </a><div class="pSmartList2"><li>Drop two <b class="cBold">tLogRow</b> components from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2729455"> </a><p class="pIndented1">
+To connect components together: 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2729469"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tSAPInput</b> and select <b class="cBold">Row</b> &gt; <b class="cBold">row_DATA_1</b> and click the first <b class="cBold">tLogRow</b> component.</li></div>
+<a name="wp2729485"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tSAPInput</b> and select <b class="cBold">Row</b> &gt; <b class="cBold">row_FIELDS_1</b> and click the second <b class="cBold">tLogRow</b> components.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2729497"> </a><p class="pIndented1">
+In this example, we want to retrieve the <b class="cBold">FIELDS</b> and <b class="cBold">DATA</b> schemas and put them in two different output flows.
+</p>
+<a name="wp2731482"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput2_5.png" id="wp2729494" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2729505"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tSAPInput</b> to open the <b class="cBold">Basic settings</b> view and display the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2729520"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput2_6.png" id="wp2729517" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2729526"> </a><p class="pIndented1">
+The basic setting parameters for the <b class="cBold">tSAPInput</b> component display automatically since the schema is stored in the <b class="cBold">Metadata</b> node and the component is initialized by the SAP wizard.
+</p>
+<a name="wp2729536"> </a><p class="pIndented1">
+In the <b class="cBold">Initialize input</b> area, we can see the input parameters necessary for the <em class="cEmphasis">RFC_READ_TABLE </em>function, the field delimiter &quot;;&quot; and the table name &quot;<b class="cBold">SFLIGHT&quot;</b>.
+</p>
+<a name="wp2731142"> </a><p class="pIndented1">
+In the <b class="cBold">Outputs</b> area, we can see the different schemas of the <b class="cBold">SFLIGHT</b> table.
+</p>
+<a name="wp2729566"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput2_6.png" id="wp2729563" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2729574"> </a><div class="pSmartList2"><li>In the design workspace, double click each of the two <b class="cBold">tLogRow</b> components to display the Basic settings view and define the component properties. For more information on the properties of tLogRow, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
+<a name="wp2731570"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2729596"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_SAPInput2_7.png" id="wp2729593" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2729605"> </a><p class="pIndented1">
+The <b class="cBold">tSAPInput</b> component retrieves from the SAP system the column names of the <em class="cEmphasis">SFLIGHT</em> table as well as the corresponding data. The <b class="cBold">tLogRow</b> components display the information in a tabular form in the Console.
 </p>
     </blockquote>
     <hr>

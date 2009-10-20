@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
+    <title>Scénario&#160;1&#160;: Alimenter une table de données</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tOracleCDC_Propfkv.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCommit_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2786188"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2786198"> </a><h2 class="pHeading2">
+Scénario&#160;1&#160;: Alimenter une table de données
+</h2>
+<a name="wp2786202"> </a><p class="pIndented1">
+Ce scénario Java suivant permet d&#39;alimenter une table de données. Il est constitué de trois composants&#160;: le composant <b class="cBold">tOracleInput</b> correspond aux données de vos clients contenues dans la table <em class="cEmphasis">CLIENT</em>. Ces données seront modifiées par la suite à l&#39;aide d&#39;un composant <b class="cBold">tMap</b> et les modifications seront transmises à la table <em class="cEmphasis">LEADFACT</em> à l&#39;aide du composant de sortie <b class="cBold">tOracleOutput</b>.
+</p>
+<a name="wp2786232"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC1_1.png" id="wp2786228" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786239"> </a><div class="pSmartList1"><li>Cliquez et déposez ces trois composants dans l&#39;espace de modélisation et connectez-les à l&#39;aide de lien de type <b class="cBold">Row Main</b>. Appelez le lien connectant le <b class="cBold">tMap</b> au <b class="cBold">tOracleOutput</b> <em class="cEmphasis">leafact</em>.</li></div>
+<a name="wp2786264"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tOracleInput</b> pour paramétrer ses propriétés.</li></div>
+</ul></div>
+<a name="wp2786275"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC1_2.png" id="wp2786271" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786290"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Property Type</b>, sélectionnez l&#39;option <b class="cBold">Repository</b> puis la connexion à la base de données <em class="cEmphasis">TALEND</em> contenant les informations sur vos clients. Les informations de connexion seront renseignées automatiquement.</li></div>
+<a name="wp2786304"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp2786301" border="0" hspace="0" vspace="0"/><br />
+Si vous n&#39;avez pas créé de connexion à votre base de données dans les métadonnées, sélectionnez <b class="cBold">Built-in</b> dans le champ <b class="cBold">Property Type</b> et renseignez les champs manuellement.
+</p>
+<a name="wp2786328"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Schema</b>, sélectionnez l&#39;option <b class="cBold">Repository</b> puis le schéma de la table <em class="cEmphasis">CLIENT</em> stocké dans les métadonnées.<br />Le champ <b class="cBold">Table name</b>, sera automatiquement renseigné avec le nom de la table contenant les informations à modifier.</li></div>
+</ul></div>
+<a name="wp2786349"> </a><p class="pIndented1">
+Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> et <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786362"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Guess Query</b> pour récupérer toutes les données de votre table.</li></div>
+<a name="wp2786374"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tMap</b> pour accéder au <b class="cBold">Map Editor</b>. La zone de gauche est déjà renseignée avec le schéma du composant d&#39;entrée.</li></div>
+</ul></div>
+<a name="wp2786386"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC1_3.png" id="wp2786382" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786393"> </a><div class="pSmartList1"><li>Sélectionnez les champs de la zone de gauche et glissez-les jusqu&#39;à la table <em class="cEmphasis">leadfact</em> de la zone de droite. Pour plus d&#39;informations concernant le mapping de données, consultez <em class="cEmphasis">Mapping de flux de données</em> du Guide utilisateur de <b class="cBold">Talend Open Studio</b>.</li></div>
+<a name="wp2786411"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Ok</b> pour valider.</li></div>
+<a name="wp2786419"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tOracleOutput</b> pour paramétrer ses propriétés. </li></div>
+</ul></div>
+<a name="wp2786430"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC1_4.png" id="wp2786426" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786445"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Property Type</b>, sélectionnez l&#39;option <b class="cBold">Repository</b> puis la connexion <em class="cEmphasis">cdc_data</em> à la base de données.  Les informations de connexion seront renseignées automatiquement.</li></div>
+<a name="wp2786459"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp2786456" border="0" hspace="0" vspace="0"/><br />
+Si vous n&#39;avez pas créé de connexion à la base de données, sélectionnez <b class="cBold">Built-in</b> et renseignez les champs manuellement.
+</p>
+</ul></div>
+<a name="wp2786475"> </a><p class="pIndented1">
+Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> et <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> <b class="cBold">Talend Open Studio</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786488"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Table name</b>, renseignez le nom de la table à alimenter, ici <em class="cEmphasis">LEADFACT</em>.</li></div>
+<a name="wp2786505"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Action on table</b>, sélectionnez <b class="cBold">Create table</b> pour créer la table.</li></div>
+<a name="wp2786518"> </a><div class="pSmartList1"><li>Appuyez sur <b class="cBold">F6</b> pour créer et alimenter la table <em class="cEmphasis">LEADFACT</em> de la base de données.</li></div>
+</ul></div>
+<a name="wp2786623"> </a><h2 class="pHeading2">
+Scénario&#160;2&#160;: Extraire les modifications à l&#39;aide du CDC Redo log d&#39;Oracle
+</h2>
+<a name="wp2786632"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2786629" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Avant de modifier les données de la table LEADFACT et de récupérer ces changements via le composant <b class="cBold">tOracleCDC</b>, vous devez activer le mode Redo log de la base de données Oracle contenant la table à monitorer. Pour plus d&#39;informations concernant l&#39;activation du mode Redo log, consultez la section <em class="cEmphasis">Prérequis à l&#39;utilisation du mode Redo log d&#39;Oracle</em> du Guide Utilisateur de <b class="cBold">Talend Open Studio</b>.
+</p>
+<a name="wp2786645"> </a><p class="pIndented1">
+Ce scénario est basé sur le scénario précédent. Il alimente et modifie les données stockées dans la table <em class="cEmphasis">LEADFACT</em> et récupère et enregistre ces modifications à l&#39;aide de la fonction CDC dans une table dédiée. Ces modifications sont ensuite extraites.
+</p>
+<a name="wp2786665"> </a><h3 class="pHeading3">
+Etape&#160;1&#160;: Configurer le CDC
+</h3>
+<a name="wp2786673"> </a><p class="pIndented2">
+Avant d&#39;extraire les modifications apportées à votre table <em class="cEmphasis">LEADFACT</em>, vous devez&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786682"> </a><div class="pSmartList1"><li>configurer la connexion à la base de données dédiée au CDC,</li></div>
+<a name="wp2786686"> </a><div class="pSmartList1"><li>configurer la connexion à la base de données source et identifier la table à surveiller,</li></div>
+<a name="wp2786693"> </a><div class="pSmartList1"><li>configurer la connexion entre le CDC et les données.</li></div>
+</ul></div>
+<a name="wp2786698"> </a><p class="pIndented2">
+Pour cela&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786717"> </a><div class="pSmartList1"><li>Dans le <b class="cBold">Repository</b>, sous le noeud <b class="cBold">Metadata</b>, créez une connexion à votre base de données dédiée au CDC, ici <em class="cEmphasis">cdc_publisher</em>.</li></div>
+<a name="wp2786734"> </a><div class="pSmartList1"><li>Dans le <b class="cBold">Repository</b>, sous le noeud <b class="cBold">Metadata</b>, créez une connexion à la table dont vous souhaitez extraire les changements, ici <em class="cEmphasis">LEADFACT</em>.</li></div>
+<a name="wp2786773"> </a><div class="pSmartList1"><li>Cliquez-droit sur la connexion à la base de données <em class="cEmphasis">orcl</em> et sélectionnez l&#39;option <b class="cBold">Retrieve schema</b> pour récupérer le schéma de la table à surveiller.</li></div>
+<a name="wp2786799"> </a><div class="pSmartList1"><li>Cliquez-droit sur le sous-dossier <b class="cBold">CDC Foundation</b> de la connexion <em class="cEmphasis">cdc_data</em> et sélectionnez l&#39;option <b class="cBold">Create CDC</b> dans le menu contextuel.</li></div>
+</ul></div>
+<a name="wp2786808"> </a><p class="pIndented2">
+La boîte de dialogue <b class="cBold">[Create change data capture]</b> apparaît.
+</p>
+<a name="wp2786817"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC_Create_Sub2_1.png" id="wp2786813" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786832"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à coté du champ <b class="cBold">Set Link Connection</b> pour sélectionner la connexion correspondant au CDC, ici&#160;: <em class="cEmphasis">cdc_publisher</em>.</li></div>
+<a name="wp2786850"> </a><div class="pSmartList1"><li>Dans la zone <b class="cBold">Options</b>, sélectionnez le mode <b class="cBold">Log mode</b>.</li></div>
+<a name="wp2786858"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Create Subscriber</b>. La boîte de dialogue <b class="cBold">[Create subscriber and Execute SQL Script]</b> apparaît.</li></div>
+</ul></div>
+<a name="wp2786873"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC_Create_Sub2_2.png" id="wp2786869" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786888"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Execute</b>, puis sur <b class="cBold">Close</b> pour fermer la boîte de dialogie <b class="cBold">[Create Subscriber and Execute SQL Script]</b>.</li></div>
+<a name="wp2786904"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Finish</b> dans la boîte de dialogue <b class="cBold">[Create Change Data Capture]</b> pour valider la création de la table des souscripteurs.</li></div>
+</ul></div>
+<a name="wp2786915"> </a><p class="pIndented2">
+Dans le sous-dossier <b class="cBold">CDC Foundation</b>, une icône apparaît pour montrer que la capture des modifications de la table est activée.
+</p>
+<a name="wp2786920"> </a><p class="pIndented2">
+Vous devez précisez à quelle table le souscripteur doit souscrire puis activer la souscription. Pour cela&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786932"> </a><div class="pSmartList1"><li>Cliquez-droit sur le schéma de la table <em class="cEmphasis">LEADFACT</em> de la connexion <em class="cEmphasis">cdc_data</em> à surveiller et sélectionnez l&#39;option <b class="cBold">add CDC</b> dans le menu contextuel. La boîte de dialogue <b class="cBold">[Create Subscriber and Execute SQL Script]</b> apparaît.</li></div>
+</ul></div>
+<a name="wp2786955"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC_Create_Sub2_3.png" id="wp2786951" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2786966"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Execute</b> pour activer la surveillance des événements, puis sur <b class="cBold">Close</b> pour valider la souscription.</li></div>
+</ul></div>
+<a name="wp2786980"> </a><p class="pIndented2">
+Dans le dossier <b class="cBold">CDC Foundation</b>, deux nouvelles tables apparaissent et le schéma de la table surveillée est marqué d&#39;un symbole CDC vert.
+</p>
+<a name="wp2786742"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC_arbo.png" id="wp2786986" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2787035"> </a><h3 class="pHeading3">
+Etape&#160;2&#160;: Modifier les données
+</h3>
+<a name="wp2787038"> </a><p class="pIndented2">
+Modifiez les données de vos clients dans la table <em class="cEmphasis">LEADFACT</em>, par exemple, mettre tous les noms de vos clients en majuscule dans un soucis d&#39;harmonisation.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2787065"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tMap</b> et saisissez <code class="cCode">row1.LASTNAME.toUpperCase()</code>devant la colonne <b class="cBold">LASTNAME</b> pour mettre tous les noms de vos clients en majuscule.</li></div>
+<a name="wp2787083"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Ok</b>.</li></div>
+<a name="wp2787092"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tOracleOutput</b>.</li></div>
+<a name="wp2787105"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Action on table</b>, sélectionnez <b class="cBold">None</b>.</li></div>
+<a name="wp2787117"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Action on data</b>, sélectionnez <b class="cBold">Insert or update</b> pour insérer ou mettre à jour les données de la table.</li></div>
+<a name="wp2787128"> </a><div class="pSmartList1"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter le Job de modification de données.</li></div>
+</ul></div>
+<a name="wp682885"> </a><p class="pIndented2">
+Pour visualiser toutes les modifications apportées, cliquez-droit sur la table <em class="cEmphasis">LEADFACT</em> et sélectionnez l&#39;option <b class="cBold">View All Changes</b>.
+</p>
+<a name="wp2787177"> </a><h3 class="pHeading3">
+Etape&#160;3&#160;: Extraire les modifications apportées aux données
+</h3>
+<a name="wp2787182"> </a><p class="pIndented2">
+Après avoir mis en place l&#39;environnement CDC, vous pouvez créer un Job utilisant le composant Oracle CDC pour extraire les modifications apportées aux données de la table <em class="cEmphasis">LEADFACT</em>. Pour cela:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2787202"> </a><div class="pSmartList1"><li>Dans la <b class="cBold">Palette</b>, cliquez-déposez les composants <b class="cBold">tOracleCDC</b> et <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp2787214"> </a><div class="pSmartList1"><li>Reliez ces deux composants à l&#39;aide d&#39;une connexion de type <b class="cBold">Row Main</b>.</li></div>
+</ul></div>
+<a name="wp2787226"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC2_1.png" id="wp2787222" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2787237"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tOracleCDC</b> pour paramétrer ses propriétés.</li></div>
+</ul></div>
+<a name="wp2787248"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tOracleCDC2_2.png" id="wp2787244" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2787263"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Property Type</b>, sélectionnez l&#39;option <b class="cBold">Repository</b> puis la connexion <em class="cEmphasis">cdc_publisher</em> à la base de données CDC. Les informations de connexion seront renseignées automatiquement.</li></div>
+<a name="wp2787277"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp2787274" border="0" hspace="0" vspace="0"/><br />
+Si vous n&#39;avez pas créé de connexion à votre base de données de modifications dans les métadonnées, sélectionnez <b class="cBold">Built-in</b> dans le champ <b class="cBold">Property Type</b> et renseignez les champs manuellement.
+</p>
+<a name="wp2787297"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Schema using CDC</b>, sélectionnez l&#39;option <b class="cBold">Repository</b> puis le schéma de votre table <em class="cEmphasis">LEADFACT</em> stockée dans les métadonnées.</li></div>
+<a name="wp2787314"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Table using CDC</b>, renseignez le nom de la table surveillée par le CDC.</li></div>
+<a name="wp2787323"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Events to catch</b>, cochez les cases correspondant au type de modifications que le souscripteur va extraire, ici cochez les trois cases pour les trois souscripteurs.</li></div>
+<a name="wp2787332"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tLogRow</b> pour paramétrer ses propriétés.</li></div>
+</ul></div>
+<a name="wp2787343"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlCDC3.png" id="wp2787339" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<a name="wp2787354"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> pour récupérer le schéma du composant précédent.</li></div>
+<a name="wp2787363"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Edit schema</b> pour ouvrir la boîte de dialogue <b class="cBold">[Schema]</b>.</li></div>
+<a name="wp2787376"> </a><div class="pSmartList1"><li>Dans la colonne <b class="cBold">Date Pattern</b> de la ligne <b class="cBold">TALEND_CDC_CREATION_DATE</b>, saisissez le format de date souhaité entre guillemet&#160;: <code class="cCode">&quot;yyyy-MM-dd&quot;</code>.</li></div>
+<a name="wp2787395"> </a><div class="pSmartList1"><li>Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+<a name="wp2787403"> </a><p class="pIndented2">
+En mode <b class="cBold">Redo log</b>, la capture des modifications se fait de la manière suivante&#160;: la mise à jour d&#39;une donnée est considérée comme une suppression (<b class="cBold">UO</b>) puis une insertioin (<b class="cBold">UN</b>). Ainsi, les informations sur vos clients apparaissent deux fois&#160;:<br />- la première fois, elles ne sont pas modifiées et portent la mention <b class="cBold">UO</b> pour dire qu&#39;elles ont été supprimées.<br />- la deuxième fois, elles apparaissent modifiées avec la mention <b class="cBold">UN</b> pour dire qu&#39;elles ont été insérées.
+</p>
+<a name="wp2787436"> </a><p class="pIndented2">
+Une fois, ces modifications extraites, elles ne sont plus disponibles dans la table des modifications. Pour vérifier leur extraction, faites un clic-droit sur la table <em class="cEmphasis">LEADFACT</em> surveillée par le CDC et sélectionnez l&#39;option <b class="cBold">Views All Changes</b>. Les modifications extraites n&#39;y apparaissent plus.
+</p>
+<a name="wp2787505"> </a><p class="pIndented2">
+Pour un autre scénario CDC utilisant le mode <b class="cBold">Trigger</b>, consultez le <a href="tMysqlCDC_Scenario.html#wp2784762"><em class="cEmphasis">Scénario&#160;2&#160;: Extraire les modifications à l&#39;aide du CDC</em></a> du composant <b class="cBold">tMysqlCDC</b>.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tOracleCDC_Propfkv.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCommit_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

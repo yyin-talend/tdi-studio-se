@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/28/09 17:57:49">
-    <title>QuickAddress components</title>
+    <meta name="LASTUPDATED" content="10/19/09 18:20:03">
+    <title>Scenario: Editing addresses and giving the verification status</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tAddressDoctorRow_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="DataQualityComponents-1-5.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tQASAddressRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tReplaceList_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,175 +22,148 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1511853"> </a><h3 class="pHeading3">
-QuickAddress components
-</h3>
-<a name="wp1513205"> </a><p class="pIndented2">
-The QuickAddress components used in Talend Open Studio or Talend Integration Suite include: <b class="cBold">tQASAddressIncomplete</b>, <b class="cBold">tQASAddressRow</b>, <b class="cBold">tQASAddressVerified</b>, and <b class="cBold">tQASAddressUnknown</b>.
+<a name="wp2794509"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2794517"> </a><h2 class="pHeading2">
+Scenario: Editing addresses and giving the verification status
+</h2>
+<a name="wp2794524"> </a><p class="pIndented1">
+Below is a five-component java scenario created in <b class="cBold">Talend Open Studio</b>.
 </p>
-<a name="wp1521391"> </a><p class="pIndented2">
-The <b class="cBold">tQASAddressIncomplete</b> is an intermediate component that filters addresses. It can give two output flows: <b class="cBold">Incomplete</b> and <b class="cBold">Reject</b>. <b class="cBold">Incomplete</b> collects all addresses that match to a partially-complete address. <b class="cBold">Reject</b> collects all addresses that match to several possible results or do not match to deliverable results in the QuickAddress data.
-</p>
-<a name="wp1519304"> </a><p class="pIndented2">
-The <b class="cBold">tQASAddressRow</b> is an intermediate component that verifies columns in an address. It gives one output flow: <b class="cBold">Main</b>. It iterates on each row and reads the input addresses against the QuickAddress data and: 
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1519328"> </a><div class="pSmartList3"><li>corrects any formatting or spelling errors,</li></div>
-<a name="wp1519352"> </a><div class="pSmartList3"><li>gives the verification status for each row since the address may not always have enough information to be matched to a single deliverable result in the QuickAddress data.</li></div>
-</ul></div>
-</ul></div>
-</ul></div>
-<a name="wp1519340"> </a><p class="pIndented2">
- For more information about the verification status, see <a href="DataQualityComponents-1-5.html"><em class="cEmphasis">QuickAccess verification levels (verification status)</em></a>.
-</p>
-<a name="wp1514126"> </a><p class="pIndented2">
-The <b class="cBold">tQASAddressVerified</b> is an intermediate component that verifies addresses. It can give three output flows: <b class="cBold">Verified</b>, <b class="cBold">Interaction required, </b>and <b class="cBold">Reject</b>. <b class="cBold">Verified</b> collects all addresses matched to a single deliverable address in the QuickAddress data. <b class="cBold">Interaction required</b> collects all addresses that matched to a single deliverable address in the QuickAddress data, however user interaction is still recommended to confirm that it is the correct address. <b class="cBold">Reject </b>collects all addresses that do not match to deliverable results in the QuickAddress data.
-</p>
-<a name="wp1519942"> </a><p class="pIndented2">
-The <b class="cBold">tQASAddressunknown</b> is an intermediate component that fetches unknown addresses. It gives one output flow: <b class="cBold">Unknown</b>. It collects all addresses that do not match to deliverable results in the QuickAddress data.
-</p>
-<a name="wp1666481"> </a><p class="pIndented2">
-Below is an example of a five-component job created in one of <b class="cBold">Talend</b> studios. 
-</p>
-<a name="wp1517549"> </a><p class="pIndented2">
-This job:
+<a name="wp2794530"> </a><p class="pIndented1">
+This Job:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1516420"> </a><div class="pSmartList3"><li>reads an input csv file that holds some client-related information,</li></div>
-<a name="wp1516432"> </a><div class="pSmartList3"><li>uses the <b class="cBold">tMap</b> component to concatenate the three fields <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>from the incoming data flow in one output column: <em class="cEmphasis">Edit_Address</em>,</li></div>
-<a name="wp1516445"> </a><div class="pSmartList3"><li>uses the <b class="cBold">tQASAddressRow</b> component to analyze the output column <em class="cEmphasis">Edit_Address</em> and gives the verification status of all edited addresses,</li></div>
-<a name="wp1516452"> </a><div class="pSmartList3"><li>uses a <b class="cBold">tFilterRow</b> components to output only the addresses which status is not equal to <em class="cEmphasis">None</em>.</li></div>
-<a name="wp1516993"> </a><div class="pSmartList3"><li>and finally displays the correct formatted address along with their verification status on the console.</li></div>
-<a name="wp1654604"> </a><p class="pBodyRelative">
+<a name="wp2794538"> </a><div class="pSmartList2"><li>reads an input csv file that holds some client-related information,</li></div>
+<a name="wp2794549"> </a><div class="pSmartList2"><li>uses the <b class="cBold">tMap</b> component to concatenate the three fields <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>from the incoming data flow in one output column: <em class="cEmphasis">Edit_Address</em>,</li></div>
+<a name="wp2794567"> </a><div class="pSmartList2"><li>uses the <b class="cBold">tQASAddressRow</b> component to analyze the output column <em class="cEmphasis">Edit_Address</em> and gives the verification status of all edited addresses,</li></div>
+<a name="wp2794580"> </a><div class="pSmartList2"><li>uses a <b class="cBold">tFilterRow</b> components to output only the addresses which status is not equal to <em class="cEmphasis">None</em>.</li></div>
+<a name="wp2794589"> </a><div class="pSmartList2"><li>and finally displays the correct formatted address along with their verification status on the console.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2794595"> </a><p class="pIndented1">
+In this scenario, we have already stored the input schemas of the input file in the Repository. For more information about storing schema metadata in the <b class="cBold">Repository</b> tree view, see <em class="cEmphasis">Setting up a File Delimited schema</em> and <em class="cEmphasis">Drop components from the Metadata node</em> in <b class="cBold">Talend Open Studio</b> <b class="cBold">user Guide</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2794627"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and the file node where you have stored the input schemas and drop the relevant file onto the design workspace.<br />The <b class="cBold">[Component]</b> dialog box displays.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2794642"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFuzzyJoin.png" id="wp2794638" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2794657"> </a><div class="pSmartList2"><li>Select <b class="cBold">tFileInputDelimited</b>from the list and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tFileInputDelimited</b> component displays on the workspase. The input file used in this scenario is called <em class="cEmphasis">address_template</em>.</li></div>
+<a name="wp2794674"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tMap</b>, <b class="cBold">tQASAddressRow</b>, <b class="cBold">tFilterRow</b>, and <b class="cBold">tLogRow</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2794701"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow.png" id="wp2794697" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2794720"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputDelimited</b> to <b class="cBold">tMap</b> and <b class="cBold">tQASAddressRow</b> to <b class="cBold">tFilterRow</b> using <b class="cBold">Main</b> links, <b class="cBold">tMap</b> to <b class="cBold">tQASAddressRow</b> using the <b class="cBold">New Output</b> link, and <b class="cBold">tFilterRow</b> to <b class="cBold">tLogRow</b> using the <b class="cBold">Filter</b> link.</li></div>
+<a name="wp2794764"> </a><div class="pSmartList2"><li>If needed, double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> views. All its property fields are automatically filled in. If you do not define your input files locally in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Property Type</b> field.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2794784"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow1.png" id="wp2794780" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2794788"> </a><p class="pIndented1">
+The input file in this example is a csv file that holds some French client personal information.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2794800"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component to open the Map Editor and concatenate the <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>fields from the incoming data flow in one output column: <em class="cEmphasis">Edit_Address</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2794823"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow2.png" id="wp2794819" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2794835"> </a><div class="pSmartList2"><li>Click <b class="cBold">Ok</b> to validate and close the Map Editor.</li></div>
+<a name="wp2794843"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tQASAddressDoctor</b> component to display its <b class="cBold">Basic settings</b> and define its properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2794858"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow3.png" id="wp2794854" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2794869"> </a><div class="pSmartList2"><li>In the <b class="cBold">QAS WSDL url</b> field, enter the URL for the QuickAdress XML document (provided by Experian QAS).</li></div>
+<a name="wp2794878"> </a><div class="pSmartList2"><li>On the <b class="cBold">Country</b> list, select the country corresponding to your input addresses, <em class="cEmphasis">France</em> in this example.</li></div>
+<a name="wp2794895"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema set in the <b class="cBold">tMap </b>component.</li></div>
+<a name="wp2794904"> </a><div class="pSmartList2"><li>If needed, click <b class="cBold">Edit schema</b> to view the input and output data flow. The output schema should include the <em class="cEmphasis">Edi_Address </em>column that hold the <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>initial input columns.</li></div>
+<a name="wp2794926"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp1654601" border="0" hspace="0" vspace="0"/><br />
-To be able to realize such example, you must be familiar with designing jobs and using <b class="cBold">Talend</b> components. For more information, check <b class="cBold">Talend Open Studio</b> User Guide and <b class="cBold">Talend Open StudioComponents</b> Reference Guide respectively.
-</p>
-</ul></div>
-</ul></div>
-</ul></div>
-<a name="wp1517325"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/TDQ_QucikAddress.png" id="wp1516999" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1517007"> </a><div class="pSmartList3"><li>Click and drop the following components from the Palette onto the workspace: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tMap</b>, <b class="cBold">tAddressRow</b>, <b class="cBold">tFilterRow</b>, and <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1517152"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tFileInputDelimited</b> to open its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
-</ul></div>
-</ul></div>
-</ul></div>
-<a name="wp1517161"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/TDQ_QucikAddress1.png" id="wp1517158" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1517165"> </a><p class="pIndented2">
-The input file in this example is a cvs file that holds some French client personal information.
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1517476"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tMap</b> component to open the Map Editor and concatenate the <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>fields from the incoming data flow in one output column: <em class="cEmphasis">Edit_Address</em>.</li></div>
-</ul></div>
-</ul></div>
-</ul></div>
-<a name="wp1519561"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/TDQ_QucikAddress3.png" id="wp1519582" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1519577"> </a><div class="pSmartList3"><li>Click <b class="cBold">Ok</b> to validate and close the Map Editor.</li></div>
-<a name="wp1518297"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tQASAddressDoctor</b> component to display its <b class="cBold">Basic settings</b> and define its properties.</li></div>
-</ul></div>
-</ul></div>
-</ul></div>
-<a name="wp1517844"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/TDQ_QucikAddress4.png" id="wp1517841" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1517856"> </a><div class="pSmartList3"><li>In the <b class="cBold">QAS WSDL url</b> field, enter the URL for the QuickAdress XML document (provided by Experian QAS).</li></div>
-<a name="wp1520209"> </a><div class="pSmartList3"><li>On the <b class="cBold">Country</b> list, select the country corresponding to your input addresses (France in this example).</li></div>
-<a name="wp1520199"> </a><div class="pSmartList3"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema set in the <b class="cBold">tMap </b>component.</li></div>
-<a name="wp1517862"> </a><div class="pSmartList3"><li>If necessary, click <b class="cBold">Edit schema</b> to view the input and output data flow. The output schema should include the <em class="cEmphasis">Edi_Address </em>column that hold the <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>initial input columns.</li></div>
-<a name="wp1654664"> </a><p class="pBodyRelative">
-<br />
-<img src="images/bulb_small.png" align="left" id="wp1654661" border="0" hspace="0" vspace="0"/><br />
+<img src="images/bulb_small.png" align="left" id="wp2794923" border="0" hspace="0" vspace="0"/><br />
 The output schema of any of the QuickAddress components depends on the selected country since every country has different address norms.
 </p>
 </ul></div>
 </ul></div>
-</ul></div>
-<a name="wp1661980"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2794936"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/TDQ_QucikAddress5.png" id="wp1517951" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow4.png" id="wp2794932" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1521606"> </a><div class="pSmartList3"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
-<a name="wp1518002"> </a><div class="pSmartList3"><li>On the <b class="cBold">Column to analyze</b> list, select <em class="cEmphasis">Edit_Address</em>.</li></div>
-<a name="wp1518466"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tFilterRow</b> component to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+<a name="wp2794948"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp2794961"> </a><div class="pSmartList2"><li>On the <b class="cBold">Column to analyze</b> list, select <em class="cEmphasis">Edit_Address</em>.</li></div>
+<a name="wp2794972"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFilterRow</b> component to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
 </ul></div>
 </ul></div>
-</ul></div>
-<a name="wp1518475"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2794984"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/TDQ_QucikAddress6.png" id="wp1518472" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow5.png" id="wp2794980" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1518594"> </a><div class="pSmartList3"><li>In the <b class="cBold">Conditions</b> area, click the plus button to add one condition to the output flow and in the corresponding fields:<br />-select the input column you want to operate on, <br />-select the needed function on the list,<br />-select the operator to bind the input column with the value,<br />-type in between the quotes the address value to be filtered.</li></div>
+<a name="wp2794995"> </a><div class="pSmartList2"><li>In the <b class="cBold">Conditions</b> area, click the plus button to add one condition to the output flow and in the corresponding table cells:<br />-select the input column you want to operate on, <br />-select the needed function on the list,<br />-select the operator to bind the input column with the value,<br />-type in between the quotes the address value to be filtered.</li></div>
 </ul></div>
 </ul></div>
-</ul></div>
-<a name="wp1518689"> </a><p class="pIndented2">
+<a name="wp2795001"> </a><p class="pIndented1">
 In this example, we want to exclude the addresses which status is equal to <em class="cEmphasis">None</em>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1518812"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tLogRow</b> component to display its <b class="cBold">Basic settings</b> and define its properties.</li></div>
+<a name="wp2795021"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tLogRow</b> component to display its <b class="cBold">Basic settings</b> and define its properties.</li></div>
 </ul></div>
 </ul></div>
-</ul></div>
-<a name="wp1518832"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2795032"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/TDQ_QucikAddress7.png" id="wp1518837" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow6.png" id="wp2795028" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1518845"> </a><p class="pIndented2">
+<a name="wp2795036"> </a><p class="pIndented1">
 In this example, and for clarity purposes, we want the result to display on the console in a separate key/value tabular list for each row.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp1518859"> </a><div class="pSmartList3"><li>Save your job an press <b class="cBold">F6</b> to execute the job and display the result on the console.</li></div>
+<a name="wp2795048"> </a><div class="pSmartList2"><li>Save your Job an press <b class="cBold">F6</b> to execute it and display the result on the console.</li></div>
 </ul></div>
 </ul></div>
-</ul></div>
-<a name="wp1518964"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2795061"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/DataQualityComponents-1-4-16.jpg" height="559" width="599" id="wp1518969" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Components-04-45-150.jpg" height="559" width="599" id="wp2795055" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1518977"> </a><p class="pIndented2">
+<a name="wp2795069"> </a><p class="pIndented1">
 In the above result samples, the <b class="cBold">tQASAddressRow</b> reads the input rows, corrects and formats the addresses, gives the result in the <em class="cEmphasis">Edit_Address</em> row, and gives the verification status in the <em class="cEmphasis">Status</em> row.
 </p>
     </blockquote>
@@ -212,7 +185,7 @@ In the above result samples, the <b class="cBold">tQASAddressRow</b> reads the i
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tAddressDoctorRow_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="DataQualityComponents-1-5.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tQASAddressRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tReplaceList_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

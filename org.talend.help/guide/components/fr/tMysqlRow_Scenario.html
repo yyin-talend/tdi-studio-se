@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:03">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
     <title>Scénario&#160;: Supprimer et re-générer un index de table MySQL</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMysqlRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components06-134.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMysqlRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components05-151.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scénario&#160;: Supprimer et re-générer un index de table MySQL
 </h2>
 <a name="wp2317432"> </a><p class="pIndented1">
-Le scénario suivant crée un job à quatre composants permettant de supprimer un index de table, effectuer un Insert dans cette table avant de re-générer l&#39;index.
+Le scénario suivant crée un Job à quatre composants permettant de supprimer un index de table, effectuer un Insert dans cette table avant de re-générer l&#39;index.
 </p>
 <a name="wp2317440"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,29 +37,27 @@ Le scénario suivant crée un job à quatre composants permettant de supprimer un i
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2317445"> </a><div class="pSmartList2"><li>Sélectionnez les composants suivants dans la Palette et déposez-le dans l&#39;espace de modélisation&#160;: <b class="cBold">tMysqlRow</b> (x2), <b class="cBold">tRowGenerator</b>, <b class="cBold">tMysqlOutput</b>.</li></div>
-<a name="wp2317465"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tMysqlIntput</b> au <b class="cBold">tRowGenerator</b>.</li></div>
-<a name="wp2317474"> </a><div class="pSmartList2"><li>Puis à l&#39;aide d&#39;une connexion <b class="cBold">ThenRun</b>, connectez le premier composant <b class="cBold">tMysqlRow</b> au <b class="cBold">tMysqlInput</b>.</li></div>
-<a name="wp2317487"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tRowGenerator</b> au second composant <b class="cBold">tMysqlRow</b> à l&#39;aide d&#39;une connexion <b class="cBold">ThenRun</b> à nouveau.</li></div>
-<a name="wp2317497"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tMysqlRow</b> et renseignez les propriétés de la base de données dans l&#39;onglet <b class="cBold">Basic settings</b>.</li></div>
-<a name="wp2317510"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Property type </b>et <b class="cBold">Schema type</b>, sélectionnez la base de données appropriée dans la liste.</li></div>
-<a name="wp2317514"> </a><div class="pSmartList2"><li>Les détails de connexion à la base de données ainsi que le schéma de la table sont renseignés automatiquement.</li></div>
-<a name="wp2317519"> </a><div class="pSmartList2"><li>Propagez les informations de propriétés et de schéma aux autres composants du job.</li></div>
-<a name="wp2317525"> </a><div class="pSmartList2"><li>La requête étant conservée dans les <b class="cBold">Metadata</b> du <span style="font-weight: bold">Repository</span>, vous pouvez également sélectionner <b class="cBold">Repository</b> dans le champ <b class="cBold">Query type</b> et cliquer sur la requête correspondante.</li></div>
-<a name="wp2317538"> </a><div class="pSmartList2"><li>Si vous ne conservez pas vos requêtes dans le <b class="cBold">Repository</b>, saisissez la déclaration SQL suivante&#160;: <em class="cEmphasis">drop index &lt;index_name&gt; on &lt;table_name&gt;</em> </li></div>
-<a name="wp2317548"> </a><div class="pSmartList2"><li>Puis séléctionnez le deuxième composant <b class="cBold">tMysqlRow</b>, vérifiez les propriétés et le schéma de base de données.</li></div>
-<a name="wp2317552"> </a><div class="pSmartList2"><li>Puis saisissez la déclaration SQL permettant de recréer un index à l&#39;aide de la formulation suivante&#160;: <em class="cEmphasis">create index &lt;index_name&gt; on &lt;table_name&gt; (&lt;column_name&gt;); </em></li></div>
-<a name="wp2317562"> </a><div class="pSmartList2"><li>Le composant <b class="cBold">tRowGenerator</b> permet de générer automatiquement les colonnes à ajouter à la table de sortie définie.</li></div>
-<a name="wp2317569"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tMysqlOutput</b> et renseignez les propriétés de connexion à la base de données soit à partir du <span style="font-weight: bold">Repository</span> ou manuellement si les informations de connexion ne sont utilisées que pour ce job. La table à alimenter a pour nom&#160;: <em class="cEmphasis">comprehensive</em>.</li></div>
-<a name="wp2317579"> </a><div class="pSmartList2"><li>Le schéma est automatiquement hérité du flux de données du <b class="cBold">tLogRow</b>. Editez le schéma et vérifiez que sa structure correspond au schéma attendu par la table de base de données spécifiée.</li></div>
-<a name="wp2317592"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Action on table</b>, sélectionnez <em class="cEmphasis">None</em> et dans le champ <b class="cBold">Action on data</b>, sélectionnez <em class="cEmphasis">Insert</em>.</li></div>
-<a name="wp2317600"> </a><div class="pSmartList2"><li>Aucune colonne supplémentaire n&#39;est requise pour ce job.</li></div>
-<a name="wp2317608"> </a><div class="pSmartList2"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter ce job.</li></div>
+<a name="wp2317445"> </a><div class="pSmartList1"><li>Sélectionnez les composants suivants dans la Palette et déposez-le dans l&#39;espace de modélisation&#160;: <b class="cBold">tMysqlRow</b> (x2), <b class="cBold">tRowGenerator</b>, <b class="cBold">tMysqlOutput</b>.</li></div>
+<a name="wp2317465"> </a><div class="pSmartList1"><li>Connectez le composant <b class="cBold">tMysqlIntput</b> au <b class="cBold">tRowGenerator</b>.</li></div>
+<a name="wp2317474"> </a><div class="pSmartList1"><li>Puis à l&#39;aide d&#39;une connexion <b class="cBold">ThenRun</b>, connectez le premier composant <b class="cBold">tMysqlRow</b> au <b class="cBold">tMysqlInput</b>.</li></div>
+<a name="wp2317487"> </a><div class="pSmartList1"><li>Connectez le composant <b class="cBold">tRowGenerator</b> au second composant <b class="cBold">tMysqlRow</b> à l&#39;aide d&#39;une connexion <b class="cBold">ThenRun</b> à nouveau.</li></div>
+<a name="wp2317497"> </a><div class="pSmartList1"><li>Sélectionnez le composant <b class="cBold">tMysqlRow</b> et renseignez les propriétés de la base de données dans l&#39;onglet <b class="cBold">Basic settings</b>.</li></div>
+<a name="wp2317510"> </a><div class="pSmartList1"><li>Dans les champs <b class="cBold">Property type </b>et <b class="cBold">Schema type</b>, sélectionnez la base de données appropriée dans la liste.</li></div>
+<a name="wp2317514"> </a><div class="pSmartList1"><li>Les détails de connexion à la base de données ainsi que le schéma de la table sont renseignés automatiquement.</li></div>
+<a name="wp2317519"> </a><div class="pSmartList1"><li>Propagez les informations de propriétés et de schéma aux autres composants du Job.</li></div>
+<a name="wp2317525"> </a><div class="pSmartList1"><li>La requête étant conservée dans les <b class="cBold">Metadata</b> du <span style="font-weight: bold">Repository</span>, vous pouvez également sélectionner <b class="cBold">Repository</b> dans le champ <b class="cBold">Query type</b> et cliquer sur la requête correspondante.</li></div>
+<a name="wp2317538"> </a><div class="pSmartList1"><li>Si vous ne conservez pas vos requêtes dans le <b class="cBold">Repository</b>, saisissez la déclaration SQL suivante&#160;: <em class="cEmphasis">drop index &lt;index_name&gt; on &lt;table_name&gt;</em> </li></div>
+<a name="wp2317548"> </a><div class="pSmartList1"><li>Puis séléctionnez le deuxième composant <b class="cBold">tMysqlRow</b>, vérifiez les propriétés et le schéma de base de données.</li></div>
+<a name="wp2317552"> </a><div class="pSmartList1"><li>Puis saisissez la déclaration SQL permettant de recréer un index à l&#39;aide de la formulation suivante&#160;: <em class="cEmphasis">create index &lt;index_name&gt; on &lt;table_name&gt; (&lt;column_name&gt;); </em></li></div>
+<a name="wp2317562"> </a><div class="pSmartList1"><li>Le composant <b class="cBold">tRowGenerator</b> permet de générer automatiquement les colonnes à ajouter à la table de sortie définie.</li></div>
+<a name="wp2317569"> </a><div class="pSmartList1"><li>Sélectionnez le composant <b class="cBold">tMysqlOutput</b> et renseignez les propriétés de connexion à la base de données soit à partir du <span style="font-weight: bold">Repository</span> ou manuellement si les informations de connexion ne sont utilisées que pour ce Job. La table à alimenter a pour nom&#160;: <em class="cEmphasis">comprehensive</em>.</li></div>
+<a name="wp2317579"> </a><div class="pSmartList1"><li>Le schéma est automatiquement hérité du flux de données du <b class="cBold">tLogRow</b>. Editez le schéma et vérifiez que sa structure correspond au schéma attendu par la table de base de données spécifiée.</li></div>
+<a name="wp2748485"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Action on table</b>, sélectionnez <em class="cEmphasis">None</em> et dans le champ <b class="cBold">Action on data</b>, sélectionnez <em class="cEmphasis">Insert</em>.</li></div>
+<a name="wp2317600"> </a><div class="pSmartList1"><li>Aucune colonne supplémentaire n&#39;est requise pour ce Job.</li></div>
+<a name="wp2317608"> </a><div class="pSmartList1"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter ce Job.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp2460317"> </a><p class="pIndented1">
-Si vous avez la possibilité d&#39;observer l&#39;action sur la base de données, remarquez que l&#39;index a été supprimé en début de job puis recréé à la fin de l&#39;action d&#39;Insert.
+<a name="wp2588129"> </a><p class="pIndented1">
+Si vous avez la possibilité d&#39;observer l&#39;action sur la base de données, remarquez que l&#39;index a été supprimé en début de Job puis recréé à la fin de l&#39;action d&#39;Insert.
 </p>
     </blockquote>
     <hr>
@@ -80,7 +78,7 @@ Si vous avez la possibilité d&#39;observer l&#39;action sur la base de données, 
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMysqlRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components06-134.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMysqlRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components05-151.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

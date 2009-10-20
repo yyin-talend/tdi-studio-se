@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:23:55">
+    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
     <title>tFileList </title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components09-31.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileList_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components08-35.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileList_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -27,7 +27,7 @@ tFileList
 </h2>
 <a name="wp1405531"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tFileListalk.png" id="wp1405528" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tFileListchw.png" id="wp1405528" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp1447623"> </a><h2 class="pHeading2">
@@ -47,7 +47,7 @@ File/Management
 </div>
 </td>
     <td><a name="wp1298598"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-09-32-008.jpg" height="59" width="112" id="wp1298593" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-08-36-008.jpg" height="59" width="112" id="wp1298593" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ File/Management
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1185579"> </a><div class="pCellBody">
-iterates on files of a set directory.
+<b class="cBold">tFileList</b> iterates on files or folders of a set directory.
 </div>
 </td>
 </tr>
@@ -65,15 +65,15 @@ iterates on files of a set directory.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1185585"> </a><div class="pCellBody">
-tFileList takes out a set of files based on a filemask pattern and iterates on each file.
+<b class="cBold">tFileList</b> retrieves a set of files or folders based on a filemask pattern and iterates on each unity.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="3"><a name="wp1185589"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="7"><a name="wp1185589"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1185594"> </a><div class="pCellHeading">
+    <td><a name="wp1185594"> </a><div class="pCellBody">
 <em class="cEmphasis">Directory</em>
 </div>
 </td>
@@ -82,21 +82,57 @@ Path to the directory where files are stored
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1185603"> </a><div class="pCellHeading">
-<em class="cEmphasis">Filemask</em>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2753055"> </a><div class="pCellBody">
+<em class="cEmphasis">FileList Type</em>
 </div>
 </td>
-    <td><a name="wp1185605"> </a><div class="pCellBody">
-Filename or filemask using wildcharacter (*) .
+    <td><a name="wp2753057"> </a><div class="pCellBody">
+Select in the list the type of the input you want to iterate on:<br /><b style="font-weight: bold" class="cBold">Files</b> if the input is a set of files, <br /><b class="cBold">Directories</b> if the input is a set of directories,<br /><b class="cBold">Both</b> if the input is a set of the above two types. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1185612"> </a><div class="pCellHeading">
-<em class="cEmphasis">Case sensitive</em>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2753073"> </a><div class="pCellBody">
+<em class="cEmphasis">Include subdirectories</em>
 </div>
 </td>
-    <td><a name="wp1185614"> </a><div class="pCellBody">
-Create case sensitive filter on filenames.
+    <td><a name="wp2753075"> </a><div class="pCellBody">
+Select this check box if the selected input source type include sub-directories. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2753083"> </a><div class="pCellBody">
+<em class="cEmphasis">Case Sensitive</em>
+</div>
+</td>
+    <td><a name="wp2753346"> </a><div class="pCellBody">
+Set the case mode from the list to either create or not create case sensitive filter on filenames.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2753089"> </a><div class="pCellBody">
+<em class="cEmphasis">Generate Error if no file found</em>
+</div>
+</td>
+    <td><a name="wp2753091"> </a><div class="pCellBody">
+Select this check box to generate an error message if no files or directories are found. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2753099"> </a><div class="pCellBody">
+<em class="cEmphasis">Use Glob Expressions as Filemask (Unchecked means Perl5 Regex Expressions)</em>
+</div>
+</td>
+    <td><a name="wp2753103"> </a><div class="pCellBody">
+This check box is selected by default. It allows to filter the results using a Global Expression (<b class="cBold">Glob Expressions</b>). <br />Clear this check box to filter results using a Regex Expression of the type <b class="cBold">Perl5</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2753115"> </a><div class="pCellBody">
+<em class="cEmphasis">Files</em>
+</div>
+</td>
+    <td><a name="wp2753120"> </a><div class="pCellBody">
+Click the plus button to add as many filter lines as needed: <br /><b class="cBold">Filemask</b>: in the added filter lines, type in a filename or a filemask using special characters or regular expressions. 
 </div>
 </td>
 </tr>
@@ -105,7 +141,7 @@ Create case sensitive filter on filenames.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1185618"> </a><div class="pCellBody">
-tFilelist  provides a list of files from a defined directory on which to iterate 
+<b class="cBold">tFilelist</b> provides a list of files or folders from a defined directory on which it iterates 
 </div>
 </td>
 </tr>
@@ -133,7 +169,7 @@ tFilelist  provides a list of files from a defined directory on which to iterate
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components09-31.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileList_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components08-35.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileList_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

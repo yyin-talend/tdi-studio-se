@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:21:12">
+    <meta name="LASTUPDATED" content="10/19/09 18:19:50">
     <title>Scenario: Tracking changes using Slowly Changing Dimensions (type 0 through type 3) </title>
   </head>
 
@@ -29,7 +29,7 @@
 Scenario: Tracking changes using Slowly Changing Dimensions (type 0 through type 3) 
 </h2>
 <a name="wp2066607"> </a><p class="pIndented1">
-This five-component Java scenario describes a job that tracks changes in four of the columns in a source delimited file and writes changes and the history of changes in an SCD table.
+This five-component Java scenario describes a Job that tracks changes in four of the columns in a source delimited file and writes changes and the history of changes in an SCD table.
 </p>
 <a name="wp2067016"> </a><p class="pIndented1">
 The source delimited file contains various personal details including <em class="cEmphasis">firstname, lastname,address, city, company, age, </em>and <em class="cEmphasis">status</em>. An <em class="cEmphasis">id</em> column helps ensuring the unicity of the data. 
@@ -49,15 +49,15 @@ We want to insert a new record in the dimensional table with a separate key each
 We want to track only the previous city and previous address of a person. This type of change is equivalent to an SCD <b class="cBold">Type 3</b>.
 </p>
 <a name="wp2066829"> </a><p class="pIndented1">
-To realize this kind of scenario, it is better to divide it into three main steps: defining the main flow of the job, setting up the SCD editor, and finally creating the relevant SCD table in the database.
+To realize this kind of scenario, it is better to divide it into three main steps: defining the main flow of the Job, setting up the SCD editor, and finally creating the relevant SCD table in the database.
 </p>
 <a name="wp2067587"> </a><p class="pBodyRelative">
 <b class="cBold">Step 1: Defining the main flow of the job:</b>
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2067576"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace: <b class="cBold">tMysqlConnection</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tLogRow</b>, <b class="cBold">tMysqlSCD</b>, <b class="cBold">tMysqlCommit</b>.</li></div>
-<a name="wp2061566"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tLogRow</b>, and <b class="cBold">tMysqlSCD</b> using the <b class="cBold">Row Main</b> link. This is the main flow of your job.</li></div>
+<a name="wp2067576"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tMysqlConnection</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tLogRow</b>, <b class="cBold">tMysqlSCD</b>, <b class="cBold">tMysqlCommit</b>.</li></div>
+<a name="wp2061566"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tLogRow</b>, and <b class="cBold">tMysqlSCD</b> using the <b class="cBold">Row Main</b> link. This is the main flow of your Job.</li></div>
 <a name="wp2061582"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tMysqlConnection</b> to <b class="cBold">tFileInputDelimited</b> and <b class="cBold">tMysqlSCD</b> to <b class="cBold">tMysqlCommit</b> using the <b class="cBold">OnComponntOk</b> trigger.</li></div>
 </ul></div>
 </ul></div>
@@ -68,11 +68,11 @@ To realize this kind of scenario, it is better to divide it into three main step
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2061608"> </a><div class="pSmartList2"><li>In the workspace, double-click <b class="cBold">tMysqlConnection</b> to display its <b class="cBold">Basic settings</b> view and set the database connection details manually. The <b class="cBold">tMysqlConnection</b> component should be used to avoid setting several times the same DB connection when multiple DB components are used.</li></div>
+<a name="wp2061608"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tMysqlConnection</b> to display its <b class="cBold">Basic settings</b> view and set the database connection details manually. The <b class="cBold">tMysqlConnection</b> component should be used to avoid setting several times the same DB connection when multiple DB components are used.</li></div>
 <a name="wp2075522"> </a><p class="pBodyRelative">
 <br />
 <img src="images/bulb_small.png" align="left" id="wp2075520" border="0" hspace="0" vspace="0"/><br />
-If you have already stored the connection details locally in the <b class="cBold">Repository</b>, drop the needed metadata item to the workspace and the database connection detail will automatically display in the relevant fields. For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> of <b class="cBold">Talend Open Studio</b>.
+If you have already stored the connection details locally in the <b class="cBold">Repository</b>, drop the needed metadata item to the design workspace and the database connection detail will automatically display in the relevant fields. For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> of Talend Open Studio User Guide.
 </p>
 </ul></div>
 </ul></div>
@@ -86,7 +86,7 @@ In this scenario, we want to connect to the SCD table where all changes in the s
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2062248"> </a><div class="pSmartList2"><li>In the workspace, double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view.</li></div>
+<a name="wp2062248"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2062255"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -103,7 +103,7 @@ In this scenario, we want to connect to the SCD table where all changes in the s
 <img src="images/bulb_small.png" align="left" id="wp2075567" border="0" hspace="0" vspace="0"/><br />
 <br />The <b class="cBold">File Name</b>, <b class="cBold">Row separator</b>, and <b class="cBold">Field separators</b> are mandatory.
 </p>
-<a name="wp2062494"> </a><div class="pSmartList2"><li>If necessary, set <b class="cBold">Header</b>, <b class="cBold">Footer</b>, and <b class="cBold">Limit</b>.<br />In this scenario, set <b class="cBold">Header</b> to 1. Footer and limit for the number of processed rows are not set.</li></div>
+<a name="wp2062494"> </a><div class="pSmartList2"><li>If needed, set <b class="cBold">Header</b>, <b class="cBold">Footer</b>, and <b class="cBold">Limit</b>.<br />In this scenario, set <b class="cBold">Header</b> to 1. Footer and limit for the number of processed rows are not set.</li></div>
 <a name="wp2062501"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema </b>to describe the data structure of the source delimited file.</li></div>
 </ul></div>
 </ul></div>
@@ -118,7 +118,7 @@ In this scenario, the source schema is made of eight columns: <em class="cEmphas
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2062609"> </a><div class="pSmartList2"><li>Set the basic settings for <b class="cBold">tLogRow</b> in order for the content of the source file with varying attributes to display in cells of a table on the console before being processed through the SCD component.</li></div>
-<a name="wp2067289"> </a><div class="pSmartList2"><li>In the workspace, double-click <b class="cBold">tMysqlSCD</b> to define its basic settings.</li></div>
+<a name="wp2067289"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tMysqlSCD</b> to define its basic settings.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2067296"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -131,7 +131,7 @@ In this scenario, the source schema is made of eight columns: <em class="cEmphas
 <a name="wp2067307"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view, select the <b class="cBold">Use an existing connection</b> check box to reuse the connection details defined on the <b class="cBold">tMysqlConnection</b> properties.</li></div>
 <a name="wp2067318"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table </b>field, enter the table name to be used to track changes.</li></div>
 <a name="wp2067326"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to auto propagate all the columns of the delimited file.</li></div>
-<a name="wp2067480"> </a><div class="pSmartList2"><li>If necessary, click <b class="cBold">Edit schema </b>to view the output data structure of <b class="cBold">tMysqlSCD</b>.</li></div>
+<a name="wp2067480"> </a><div class="pSmartList2"><li>If needed, click <b class="cBold">Edit schema </b>to view the output data structure of <b class="cBold">tMysqlSCD</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2067341"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -141,7 +141,7 @@ In this scenario, the source schema is made of eight columns: <em class="cEmphas
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2067378"> </a><div class="pSmartList2"><li>In the workspace, double-click <b class="cBold">tMysqlCommit</b> to define its basic settings.</li></div>
+<a name="wp2067378"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tMysqlCommit</b> to define its basic settings.</li></div>
 <a name="wp2067878"> </a><div class="pSmartList2"><li>Select the relevant connection on the <b class="cBold">Component list</b> if more than one connection exists.</li></div>
 <a name="wp2067793"> </a><p class="pBodyRelative">
 <b class="cBold">Step 2: Setting up the SCD editor:</b>
@@ -197,7 +197,7 @@ You must create in the database the SCD table you defined in the <b class="cBold
 In this scenario, the SCD table has the following schema:  <em class="cEmphasis">firstname, lastname,address, city, company, age status, id, SK1, previous_address, previuos city, scd_active, scd_end, scd version, ,</em> and <em class="cEmphasis">scd_date</em>.
 </p>
 <a name="wp2070261"> </a><p class="pIndented1">
-To write changes and the history of changes in the defined SCD table, save your job and press <b class="cBold">F6</b> to execute it. 
+To write changes and the history of changes in the defined SCD table, save your Job and press <b class="cBold">F6</b> to execute it. 
 </p>
 <a name="wp2070266"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -214,7 +214,7 @@ The console shows the content of the input delimited file.
 Adam gets married and moves to <em class="cEmphasis">Belmont</em> at <em class="cEmphasis">2505 Alisson ct.</em>He works at <em class="cEmphasis">Scoop.</em>
 </p>
 <a name="wp2072226"> </a><p class="pIndented1">
-Update the delimited file with the above information and press <b class="cBold">F6</b> to run your job.
+Update the delimited file with the above information and press <b class="cBold">F6</b> to run your Job.
 </p>
 <a name="wp2072233"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

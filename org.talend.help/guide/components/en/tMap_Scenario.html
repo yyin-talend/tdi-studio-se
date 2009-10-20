@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:24:52">
-    <title>Scenario 1: Mapping with filter and simple explicit join (Perl) </title>
+    <meta name="LASTUPDATED" content="10/19/09 18:24:52">
+    <title>tMap </title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMap_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNormalize_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFilterRows_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNormalize_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,23 +22,134 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1706650"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1701680"> </a><h2 class="pHeading1">
+tMap 
+</h2>
+<a name="wp1701689"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tMap.png" id="wp1701684" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
+<a name="wp1701696"> </a><h2 class="pHeading2">
+tMap properties
+</h2>
+<a name="wp1701798"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp1701704table1701699">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1701704"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp1701706"> </a><div class="pCellBody">
+Processing
+</div>
+</td>
+    <td><a name="wp1701715"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Components-14-26-008.jpg" height="59" width="112" id="wp1701711" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1701720"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1701722"> </a><div class="pCellBody">
+<b class="cBold">tMap</b> is an advanced component, which integrates itself as plugin to <b class="cBold">Talend Open Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1701732"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1701737"> </a><div class="pCellBody">
+<b class="cBold">tMap</b> transforms and routes data from single or multiple sources to single or multiple destinations. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1701744"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp1701746"> </a><div class="pCellBody">
+Preview
+</div>
+</td>
+    <td><a name="wp1701748"> </a><div class="pCellBody">
+The preview is an instant shot of the Mapper data. It becomes available when Mapper properties have been filled in with data. The preview synchronization takes effect only after saving changes.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1701750"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1701752"> </a><div class="pCellBody">
+Mapping links display as
+</div>
+</td>
+    <td><a name="wp1701757"> </a><div class="pCellBody">
+<b class="cBold">Auto</b>: the default setting is curves links<br /><b class="cBold">Curves</b>: the mapping display as curves <br /><b class="cBold">Lines</b>: the mapping displays as straight lines. This last option allows to slightly enhance performance. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1701765"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1701767"> </a><div class="pCellBody">
+Map editor
+</div>
+</td>
+    <td><a name="wp1701772"> </a><div class="pCellBody">
+It allows you to define the <b class="cBold">tMap</b> routing and transformation properties.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1701780"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1701782"> </a><div class="pCellBody">
+Possible uses are from a simple reorganization of fields to the most complex jobs of data multiplexing or demultiplexing transformation, concatenation, inversion, filtering and more...
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1701789"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1701794"> </a><div class="pCellBody">
+The use of <b class="cBold">tMap</b> supposes minimum Perl or Java knowledge in order to fully exploit its functionalities.<br />This component is a junction step, and for this reason cannot be a start nor end component in the Job
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp1701804"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp1701802" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<br />For further information, see <em class="cEmphasis">Mapping data flows</em> in <b class="cBold">Talend Open Studio</b> User Guide.
+</p>
 <a name="wp1706653"> </a><h2 class="pHeading2">
 Scenario 1: Mapping with filter and simple explicit join (Perl) 
 </h2>
 <a name="wp1701822"> </a><p class="pIndented1">
-The job described below aims at reading data from a csv file stored in the Repository, looking up at a reference file also stored remotely, then extracting data from these two files based on defined filters to an output file or a reject file. 
+The Job described below aims at reading data from a csv file stored in the Repository, looking up at a reference file also stored remotely, then extracting data from these two files based on defined filters to an output file or a reject file. 
 </p>
 <a name="wp1701827"> </a><p class="pIndented1">
-This job is presented in Perl but could also be carried out in Java.
+This Job is presented in Perl but could also be carried out in Java.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1701838"> </a><div class="pSmartList2"><li>Click on <b class="cBold">File</b> in the Palette of components, select <b class="cBold">tFileInputCSV</b> and drop it on the design area. Rename the Label to <em class="cEmphasis">Cars</em>, either by double-clicking on the label in the workspace or via the <b class="cBold">View</b> tab of the Component view.</li></div>
+<a name="wp1701838"> </a><div class="pSmartList2"><li>Click on <b class="cBold">File</b> in the <b class="cBold">Palette</b> of components, select <b class="cBold">tFileInputCSV</b> and drop it on the design area. Rename the Label to <em class="cEmphasis">Cars</em>, either by double-clicking on the label in the design workspace or via the <b class="cBold">View</b> tab of the Component view.</li></div>
 <a name="wp1701852"> </a><div class="pSmartList2"><li>Repeat this operation, and rename this second input component: <em class="cEmphasis">Owners</em>. </li></div>
-<a name="wp1701862"> </a><div class="pSmartList2"><li>Click on <b class="cBold">Processing</b> in the Palette of components, select <b class="cBold">tMap</b> and drop it on the design area. </li></div>
+<a name="wp1701862"> </a><div class="pSmartList2"><li>Click on <b class="cBold">Processing</b> in the <b class="cBold">Palette</b> of components, select <b class="cBold">tMap</b> and drop it on the design area. </li></div>
 <a name="wp1701865"> </a><div class="pSmartList2"><li>Connect the two Input components to the mapping component and customize the row connection labels.</li></div>
 </ul></div>
 </ul></div>
@@ -65,7 +176,7 @@ This job is presented in Perl but could also be carried out in Java.
 </ul></div>
 </ul></div>
 <a name="wp1701921"> </a><p class="pIndented1">
-For further information regarding Metadata creation in the Repository, see <em class="cEmphasis">Defining Metadata items</em> on  .
+For further information regarding Metadata creation in the Repository, see <em class="cEmphasis">Defining Metadata items</em> in <b class="cBold">Talend Open Studio</b> User Guide.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -81,7 +192,7 @@ For further information regarding Metadata creation in the Repository, see <em c
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1701962"> </a><div class="pSmartList2"><li>Define this link as an Inner Join by checking the box.</li></div>
+<a name="wp1701962"> </a><div class="pSmartList2"><li>Define this link as an inner join by selecting the corresponding check box.</li></div>
 <a name="wp1701970"> </a><div class="pSmartList2"><li>Click on the <b class="cBold">Plus</b> button on the Output area of the Mapper to add three Output tables</li></div>
 </ul></div>
 </ul></div>
@@ -92,7 +203,7 @@ For further information regarding Metadata creation in the Repository, see <em c
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1701982"> </a><div class="pSmartList2"><li>Drag and drop Input content to fill in the first output schema. For more information regarding data mapping, see&#160;<em class="cEmphasis">Mapping data flows.</em></li></div>
+<a name="wp1701982"> </a><div class="pSmartList2"><li>Drag and drop Input content to fill in the first output schema. For more information regarding data mapping, see <em class="cEmphasis">Mapping data flows</em> in <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
 <a name="wp1701992"> </a><div class="pSmartList2"><li>Click on the plus arrow button to add a filter row. In the <em class="cEmphasis">Insured</em> table, will be gathered cars and owners data which include an <em class="cEmphasis">Insurance ID</em>.</li></div>
 </ul></div>
 </ul></div>
@@ -116,8 +227,8 @@ For further information regarding Metadata creation in the Repository, see <em c
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1702033"> </a><div class="pSmartList2"><li>The third and last table gathers the schema entries whose Inner Join could not be established. One <em class="cEmphasis">Owners_ID</em> from the <em class="cEmphasis">Car</em> database does not match any <em class="cEmphasis">Owner_ID</em> from the <em class="cEmphasis">Owner</em> file.</li></div>
 <a name="wp1702050"> </a><div class="pSmartList2"><li>Click the violet arrow button to set the last table as the Inner Join Reject output flow. </li></div>
-<a name="wp1702054"> </a><div class="pSmartList2"><li>Click OK to validate and come back to the design area.</li></div>
-<a name="wp1702063"> </a><div class="pSmartList2"><li>Add three <b class="cBold">tFileOutputDelimited</b> components to the workspace and right-click on the <b class="cBold">tMap</b> to connect the Mapper with all three output components, using the relevant Row connection. </li></div>
+<a name="wp1702054"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate and come back to the design area.</li></div>
+<a name="wp1702063"> </a><div class="pSmartList2"><li>Add three <b class="cBold">tFileOutputDelimited</b> components to the design workspace and right-click on the <b class="cBold">tMap</b> to connect the Mapper with all three output components, using the relevant Row connection. </li></div>
 <a name="wp1702069"> </a><div class="pSmartList2"><li>Relabel the three output components accordingly.</li></div>
 </ul></div>
 </ul></div>
@@ -129,7 +240,7 @@ For further information regarding Metadata creation in the Repository, see <em c
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1702081"> </a><div class="pSmartList2"><li>Then double-click on each of them, one after the other, in order to define their respective output filepath. If you want a new file to be created, browse to the destination output folder, and type in a file name including the extension.</li></div>
-<a name="wp1702088"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Include header</b> box to reuse the column labels from the schema as header row in the output file.</li></div>
+<a name="wp1702088"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Include header</b> check box to reuse the column labels from the schema as header row in the output file.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1702097"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -139,7 +250,7 @@ For further information regarding Metadata creation in the Repository, see <em c
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1702106"> </a><div class="pSmartList2"><li>Run the Job using the F6 keystroke or via the <b class="cBold">Run</b> panel.</li></div>
+<a name="wp1702106"> </a><div class="pSmartList2"><li>Run the Job using the <b class="cBold">F6</b> keystroke or via the <b class="cBold">Run</b> panel.</li></div>
 <a name="wp1702111"> </a><div class="pSmartList2"><li>Output files have been created if need be.</li></div>
 </ul></div>
 </ul></div>
@@ -156,7 +267,7 @@ This scenario, based on scenario 1, adds one input file containing Resellers det
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1702140"> </a><div class="pSmartList2"><li>Click on <b class="cBold">File</b> in the Palette of Components, and drop a <b class="cBold">tFileInputCSV</b> component on the workspace. </li></div>
+<a name="wp1702140"> </a><div class="pSmartList2"><li>Click on <b class="cBold">File</b> in the <b class="cBold">Palette</b> of Components, and drop a <b class="cBold">tFileInputCSV</b> component to the design workspace. </li></div>
 <a name="wp1702146"> </a><div class="pSmartList2"><li>Connect it to the Mapper and put a label on the component and the connection.</li></div>
 </ul></div>
 </ul></div>
@@ -178,7 +289,7 @@ This scenario, based on scenario 1, adds one input file containing Resellers det
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1702185"> </a><div class="pSmartList2"><li>You could also create a metadata entry for this file description and select Repository as properties and schema type. For further information, see&#160;<em class="cEmphasis">Setting up a File Delimited schema.</em></li></div>
+<a name="wp1702185"> </a><div class="pSmartList2"><li>You could also create a metadata entry for this file description and select Repository as properties and schema type. For further information, see <em class="cEmphasis">Setting up a File Delimited schema</em> in <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
 <a name="wp1702197"> </a><div class="pSmartList2"><li> Double-click on the <b class="cBold">tMap</b> component and notice that the schema is added on the Input area.</li></div>
 </ul></div>
 </ul></div>
@@ -189,8 +300,8 @@ This scenario, based on scenario 1, adds one input file containing Resellers det
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1702209"> </a><div class="pSmartList2"><li>Create a join between the main input flow and the resellers input. Check the Inner Join box to define that an Inner Join Reject output is to be created.</li></div>
-<a name="wp1702215"> </a><div class="pSmartList2"><li>Drag &amp; drop the fields from the Resellers table to the main Output table.</li></div>
+<a name="wp1702209"> </a><div class="pSmartList2"><li>Create a join between the main input flow and the resellers input. Select the <b class="cBold">Inner Join</b> check box to define that an Inner Join Reject output is to be created.</li></div>
+<a name="wp1702215"> </a><div class="pSmartList2"><li>Drag the fields from the <em class="cEmphasis">Resellers</em> table to the main Output table.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1702222"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -243,7 +354,7 @@ When two inner joins are defined, you either need to define two different inner 
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1702337"> </a><div class="pSmartList2"><li>For this scenario, remove from the Resellers.csv the rows corresponding to Reseller ID 5 and 8.</li></div>
-<a name="wp1702346"> </a><div class="pSmartList2"><li>Then run the job through a F6 key stroke or from the <b class="cBold">Run</b> panel. </li></div>
+<a name="wp1702346"> </a><div class="pSmartList2"><li>Then run the Job by pressing <b class="cBold">F6</b> or from the <b class="cBold">Run</b> panel. </li></div>
 </ul></div>
 </ul></div>
 <a name="wp1702353"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -270,7 +381,7 @@ Set up an Inner Join between two lookup input tables (Owners and Insurance) in t
 Scenario 4: Advanced mapping with filters, explicit joins and Inner join rejection
 </h2>
 <a name="wp1702396"> </a><p class="pIndented1">
-This scenario introduces a job (in Java) <b class="cBold">tMap</b> which allows to find the reseller&#39;s customer leads who are owners of a defined make, and have between 2 and 6 children (inclusive), for upsale purpose for example.
+This scenario introduces a Job (in Java) <b class="cBold">tMap</b> which allows to find the reseller&#39;s customer leads who are owners of a defined make, and have between 2 and 6 children (inclusive), for upsale purpose for example.
 </p>
 <a name="wp1702404"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -279,9 +390,9 @@ This scenario introduces a job (in Java) <b class="cBold">tMap</b> which allows 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1702415"> </a><div class="pSmartList2"><li>Drag and drop the following components from the Palette: <b class="cBold">tFileInputDelimited</b> (x3), <b class="cBold">tMap</b>, <b class="cBold">tFileOutputDelimited</b> (x2)</li></div>
+<a name="wp1702415"> </a><div class="pSmartList2"><li>Drag and drop the following components from the <b class="cBold">Palette</b>: <b class="cBold">tFileInputDelimited</b> (x3), <b class="cBold">tMap</b>, <b class="cBold">tFileOutputDelimited</b> (x2)</li></div>
 <a name="wp1702428"> </a><div class="pSmartList2"><li>Connect the input flow components to the <b class="cBold">tMap</b> using a <b class="cBold">Main row</b> connection. Pay attention to the file you connect first as it will automatically be set as <b class="cBold">Main</b> flow. And all other connections will thus become <b class="cBold">Lookup</b> flows.</li></div>
-<a name="wp1702444"> </a><div class="pSmartList2"><li>Define the <b class="cBold">Basic settings</b> of each of the Input components. For example, define the <em class="cEmphasis">Resellers</em> file path used as <b class="cBold">Main </b>flow in the job.</li></div>
+<a name="wp1702444"> </a><div class="pSmartList2"><li>Define the <b class="cBold">Basic settings</b> of each of the Input components. For example, define the <em class="cEmphasis">Resellers</em> file path used as <b class="cBold">Main </b>flow in the Job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1702456"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -292,7 +403,9 @@ This scenario introduces a job (in Java) <b class="cBold">tMap</b> which allows 
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1702461"> </a><div class="pSmartList2"><li>Define the delimited file to be used, the Row and the Field Separator, the Header and Footer rows if any.</li></div>
-<a name="wp1702471"> </a><div class="pSmartList2"><li><b class="cBold">Edit the Schema</b> if it hasn&#39;t been stored in the <b class="cBold">Repository</b>. You will retrieve this schema in the <b class="cBold">Main</b> table at the top of the <b class="cBold">Input</b> area of the mapper.</li></div>
+</ul></div>
+<a name="wp1702471"> </a><div class="pSmartList1"><li><b class="cBold">Edit the Schema</b> if it hasn&#39;t been stored in the <b class="cBold">Repository</b>. You will retrieve this schema in the <b class="cBold">Main</b> table at the top of the <b class="cBold">Input</b> area of the mapper.</li></div>
+<div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1702487"> </a><div class="pSmartList2"><li>Carry out these previous steps for the other Input components: <em class="cEmphasis">Cars</em> and <em class="cEmphasis">Owners</em>. These two <b class="cBold">Lookup</b> flows will fill in secondary (lookup) tables in the Input area of the Mapper.</li></div>
 <a name="wp1702497"> </a><div class="pSmartList2"><li>Then double-click on the <b class="cBold">tMap</b> component to launch the Mapper and define the mapping and filters.</li></div>
 </ul></div>
@@ -330,7 +443,7 @@ This scenario introduces a job (in Java) <b class="cBold">tMap</b> which allows 
 <a name="wp1702593"> </a><div class="pSmartList2"><li>Simply drag and drop the <em class="cEmphasis">ID_Owners</em> column from the <em class="cEmphasis">Cars</em> table towards the <b class="cBold">Expr. Key</b> field of the <em class="cEmphasis">id_owner</em> column from the <em class="cEmphasis">Owners</em> table.</li></div>
 <a name="wp1702613"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Filter</b> button next to the <b class="cBold">Inner Join</b> button to display the <b class="cBold">Filter</b> expression area.</li></div>
 <a name="wp1702622"> </a><div class="pSmartList2"><li>Type in the <b class="cBold">Filter</b> statement to narrow down the number of rows loaded in the <b class="cBold">Lookup</b> flows. In this use case, the statement reads: <code class="cCode">Owners.Children_Nr &gt; 1 &amp;&amp; Owners.Children_Nr &lt; 6</code> </li></div>
-<a name="wp1702629"> </a><div class="pSmartList2"><li>Then, as you want to reject the null values into a separate table and exclude them from the standard output, check the <b class="cBold">Inner Join</b> box for each of the filtered <b class="cBold">Lookup</b> tables.</li></div>
+<a name="wp1702629"> </a><div class="pSmartList2"><li>Then, as you want to reject the null values into a separate table and exclude them from the standard output, select the <b class="cBold">Inner Join</b> check box for each of the filtered <b class="cBold">Lookup</b> tables.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1702644"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -354,7 +467,7 @@ This scenario introduces a job (in Java) <b class="cBold">tMap</b> which allows 
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1702689"> </a><div class="pSmartList2"><li>Drag and drop data from the <b class="cBold">Main</b> and <b class="cBold">Lookup</b> tables in the Input area, towards the respective output tables, following the type of information you want to fetch.</li></div>
 <a name="wp1702693"> </a><div class="pSmartList2"><li>In the rejection table used to direct the non-matches from the external join or the filter, click the <b class="cBold">Inner Join Reject </b>button (violet arrow) to activate it.</li></div>
-<a name="wp1702706"> </a><div class="pSmartList2"><li>On the <b class="cBold">Designer</b> space, right-click on the <b class="cBold">tMap</b> and pull the respective output link to the relevant components.</li></div>
+<a name="wp1702706"> </a><div class="pSmartList2"><li>On the <b class="cBold">design</b> space, right-click on the <b class="cBold">tMap</b> and pull the respective output link to the relevant components.</li></div>
 <a name="wp1702718"> </a><div class="pSmartList2"><li>Define the <b class="cBold">Basic settings</b> of the <b class="cBold">Output</b> components. </li></div>
 </ul></div>
 </ul></div>
@@ -365,9 +478,9 @@ This scenario introduces a job (in Java) <b class="cBold">tMap</b> which allows 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1702730"> </a><div class="pSmartList2"><li>Define the filepath, the expected Row and Field separator. And for this use case, check the Include Header box.</li></div>
+<a name="wp1702730"> </a><div class="pSmartList2"><li>Define the filepath, the expected Row and Field separator. And for this use case, select the <b class="cBold">Include Header</b> check box.</li></div>
 <a name="wp1702741"> </a><div class="pSmartList2"><li>The <b class="cBold">Schema</b> should be automatically propagated from the <b class="cBold">Mapper</b>.</li></div>
-<a name="wp1702750"> </a><div class="pSmartList2"><li>Save you job, then go to the <b class="cBold">Run</b> tab and check the <b class="cBold">Statistics</b> box to follow the processing thread.</li></div>
+<a name="wp1702750"> </a><div class="pSmartList2"><li>Save you Job, then go to the <b class="cBold">Run</b> tab and select the <b class="cBold">Statistics</b> check box to follow the processing thread.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1702759"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -382,7 +495,7 @@ The statistics show that several matches were found and therefore the sum of the
 Scenario 5: Advanced mapping with filters and a check of all rows  
 </h2>
 <a name="wp1702776"> </a><p class="pIndented1">
-This scenario is a modified version of the preceding scenario. It describes a job that applies filters and then checks each row of loaded lookup rows. 
+This scenario is a modified version of the preceding scenario. It describes a Job that applies filters and then checks each row of loaded lookup rows. 
 </p>
 <a name="wp1702784"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -391,7 +504,7 @@ This scenario is a modified version of the preceding scenario. It describes a jo
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1702791"> </a><div class="pSmartList2"><li>Take the same job as in <a href="tMap_Scenario.html#wp1702389"><em class="cEmphasis">Scenario 4: Advanced mapping with filters, explicit joins and Inner join rejection</em></a>.</li></div>
+<a name="wp1702791"> </a><div class="pSmartList2"><li>Take the same Job as in <a href="tMap_Scenario.html#wp1702389"><em class="cEmphasis">Scenario 4: Advanced mapping with filters, explicit joins and Inner join rejection</em></a>.</li></div>
 <a name="wp1702797"> </a><div class="pSmartList2"><li>No changes are required in the Input delimited files.</li></div>
 <a name="wp1702802"> </a><div class="pSmartList2"><li>Launch the Mapper to change the mapping and the filters.</li></div>
 </ul></div>
@@ -418,7 +531,7 @@ This scenario is a modified version of the preceding scenario. It describes a jo
 <a name="wp1702866"> </a><div class="pSmartList2"><li>And click the <b class="cBold">Filters</b> button to display the <b class="cBold">Filter</b> area. Then type in the new filter to narrow down the search to <em class="cEmphasis">BMW</em> or <em class="cEmphasis">Mercedes</em> car makes. The statement reads as follows: <code class="cCode">Cars.Make.equals(&quot;BMW&quot;) ||  Cars.Make.equals(&quot;Mercedes&quot;)</code>  </li></div>
 <a name="wp1702886"> </a><div class="pSmartList2"><li>The filter on the <em class="cEmphasis">Owners</em> <b class="cBold">Lookup</b> table doesn&#39;t change from the previous scenario.</li></div>
 <a name="wp1702890"> </a><div class="pSmartList2"><li>Define new file paths for the respective outputs.</li></div>
-<a name="wp1702901"> </a><div class="pSmartList2"><li>Save the job and enable the <b class="cBold">Statistics</b> on the <b class="cBold">Run</b> tab before executing the job.</li></div>
+<a name="wp1702901"> </a><div class="pSmartList2"><li>Save the Job and enable the <b class="cBold">Statistics</b> on the <b class="cBold">Run</b> tab before executing the Job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1702908"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -449,13 +562,16 @@ Whereas, the Reject result clearly shows the rows that didn&#39;t match one of t
 Scenario 6: Advanced mapping with lookup reload at each row (java)
 </h2>
 <a name="wp1702944"> </a><p class="pIndented1">
-The following scenario describes a Job that retrieves people details in a lookup database, based on a join on the age. The main flow source data is read from a MySQL database table called <em class="cEmphasis">people_age</em> that contains people details such as a numeric id, alphanumeric first name and  last name and a numeric age. The people age is either 40 or 60. The number of records in this table is intentionally restricted.
+The following scenario describes a Job that retrieves people details from a lookup database, based on a join on the age. The main flow source data is read from a MySQL database table called <em class="cEmphasis">people_age</em> that contains people details such as numeric id, alphanumeric first name and last name and numeric age. The people age is either 40 or 60. The number of records in this table is intentionally restricted.
 </p>
 <a name="wp1704549"> </a><p class="pIndented1">
-The reference or lookup information is also stored in a MySQL database table called <em class="cEmphasis">large_data_volume</em>. This lookup table contains a number of records including the city where people from the main flow have been. For the sake of clarity, the number of records is restricted but, in a normal use, the usefulness of the feature described in the example below is more obvious for very large reference data volume.
+The reference or lookup information is also stored in a MySQL database table called <em class="cEmphasis">large_data_volume</em>. This lookup table contains a number of records including the city where people from the main flow have been to. For the sake of clarity, the number of records is restricted but, in a normal use, the usefulness of the feature described in the example below is more obvious for very large reference data volume.
+</p>
+<a name="wp1720062"> </a><p class="pIndented1">
+To optimize performance, a database connection component is used in the beginning of the Job to open the connection to the lookup database table in order not to do that every time we want to load a row from the lookup table.
 </p>
 <a name="wp1704689"> </a><p class="pIndented1">
-An Expression Filter is applied to this lookup source flow, in order to select only data from people whose age is equal to 60 or 40. This way only the relevant rows from the lookup database table is loaded for each row from the main flow.
+An Expression Filter is applied to this lookup source flow, in order to select only data from people whose age is equal to 60 or 40. This way only the relevant rows from the lookup database table are loaded for each row from the main flow.
 </p>
 <a name="wp1704647"> </a><p class="pIndented1">
 Therefore this Job shows how, from a limited number of main flow rows, the lookup join can be optimized to load only results matching the expression key.
@@ -463,7 +579,7 @@ Therefore this Job shows how, from a limited number of main flow rows, the looku
 <a name="wp1704883"> </a><p class="pBodyRelative">
 </p>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp1704881" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-Generally speaking, as the lookup loading is performed for each main flow row, this option is mainly interesting when  a limited number of rows is processed in the main flow while a large number of reference rows are to be looked up to.
+Generally speaking, as the lookup loading is performed for each main flow row, this option is mainly interesting when a limited number of rows is processed in the main flow while a large number of reference rows are to be looked up to.
 </p>
 <a name="wp1704887"> </a><p class="pIndented1">
 The join is solved on the <em class="cEmphasis">age</em> field. Then, using the relevant loading option in the <b class="cBold">tMap</b> component editor, the lookup database information is loaded for each main flow incoming row. 
@@ -474,14 +590,14 @@ The join is solved on the <em class="cEmphasis">age</em> field. Then, using the 
 
 </div>
 <a name="wp1702971"> </a><p class="pIndented1">
-For this Job, the metadata has been prepared for the source components. For more information on how to set up the DB connection schema metadata, see the relevant section in the <b class="cBold">Talend Open Studio</b> User Guide.
+For this Job, the metadata has been prepared for the source and connection components. For more information on how to set up the DB connection schema metadata, see the relevant section in the <b class="cBold">Talend Open Studio</b> User Guide.
 </p>
 <a name="wp1702979"> </a><p class="pIndented1">
-The Job is formed with four components, three database components and a mapping component.
+This Java Job is formed with five components, four database components and a mapping component.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1702990"> </a><div class="pSmartList2"><li>Drag and drop the DB Connection under the <b class="cBold">Metadata</b> node of the <b class="cBold">Repository</b> to the workspace. In this example, the source table is called <em class="cEmphasis">people_age</em>.</li></div>
+<a name="wp1702990"> </a><div class="pSmartList2"><li>Drop the DB Connection under the <b class="cBold">Metadata</b> node of the <b class="cBold">Repository</b> to the design workspace. In this example, the source table is called <em class="cEmphasis">people_age</em>.</li></div>
 <a name="wp1702999"> </a><div class="pSmartList2"><li>Select <b class="cBold">tMySQLInput</b> in the list that pops up when dropping the component. </li></div>
 </ul></div>
 </ul></div>
@@ -492,14 +608,16 @@ The Job is formed with four components, three database components and a mapping 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1703011"> </a><div class="pSmartList2"><li>The same way drag and drop the lookup DB connection table from the Metadata. In this Job, the lookup is called <em class="cEmphasis">large_data_volume</em>. </li></div>
-<a name="wp1703027"> </a><div class="pSmartList2"><li>Then pick the <b class="cBold">tMap</b> connector from the <b class="cBold">Processing</b> family and the <b class="cBold">tMySQLOutput</b> connector from the <b class="cBold">Database</b> family in the Palette to the right hand side of the editor. </li></div>
-<a name="wp1703037"> </a><div class="pSmartList2"><li>Now connect all the components together. To do so, right-click on the <b class="cBold">tMySQLInput</b> component corresponding to the  <em class="cEmphasis">people</em> table and drag the link towards the tMap.</li></div>
+<a name="wp1703011"> </a><div class="pSmartList2"><li>Drop the lookup DB connection table from the <b class="cBold">Metadata</b> node to the design workspace selecting <b class="cBold">tMysqlInput</b> from the list that pops up. In this Job, the lookup is called <em class="cEmphasis">large_data_volume</em>. </li></div>
+<a name="wp1720109"> </a><div class="pSmartList2"><li>The same way, drop the DB connection from the <b class="cBold">Metadata</b> node to the design workspace selecting <b class="cBold">tMysqlConnection</b> from the list that pops up. This component creates a permanent connection to the lookup database table in order not to do that every time we want to load a row from the lookup table.</li></div>
+<a name="wp1703027"> </a><div class="pSmartList2"><li>Then pick the <b class="cBold">tMap</b> connector from the <b class="cBold">Processing</b> family and the <b class="cBold">tMySQLOutput</b> connector from the <b class="cBold">Database</b> family in the <b class="cBold">Palette </b>to the right hand side of the editor. </li></div>
+<a name="wp1703037"> </a><div class="pSmartList2"><li>Now connect all the components together. To do so, right-click on the <b class="cBold">tMySQLInput</b> component corresponding to the <em class="cEmphasis">people</em> table and drag the link towards <b class="cBold">tMap</b>.</li></div>
 <a name="wp1703048"> </a><div class="pSmartList2"><li>Release the link over the <b class="cBold">tMap</b> component, the main row flow is automatically set up.</li></div>
 <a name="wp1703058"> </a><div class="pSmartList2"><li>Rename the <b class="cBold">Main</b> row link to <em class="cEmphasis">people</em>, to identify more easily the main flow data.</li></div>
 <a name="wp1703067"> </a><div class="pSmartList2"><li>Perform the same operation to connect the lookup table (<em class="cEmphasis">large_data_volume</em>) to the <b class="cBold">tMap</b> component and the <b class="cBold">tMap</b> to the <b class="cBold">tMySQLOutput</b> component.</li></div>
 <a name="wp1703078"> </a><div class="pSmartList2"><li>A dialog box prompts for a name to the output link. In this example, the output flow is named: <em class="cEmphasis">people_mixandmatch</em></li></div>
 <a name="wp1703084"> </a><div class="pSmartList2"><li>Rename also the lookup row connection link to <em class="cEmphasis">large_volume,</em> to help identify the reference data flow.</li></div>
+<a name="wp1720229"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tMysqlConnection</b> to <b class="cBold">tMysqlInput</b> using the trigger link <b class="cBold">OnSubjobOk</b>.</li></div>
 <a name="wp1705519"> </a><div class="pSmartList2"><li>Then double-click the <b class="cBold">tMap</b> component to open the graphical mapping editor.</li></div>
 </ul></div>
 </ul></div>
@@ -515,7 +633,7 @@ The Job is formed with four components, three database components and a mapping 
 <a name="wp1705584"> </a><div class="pSmartList2"><li>In this example, the selection from the main flow include the following fields: <em class="cEmphasis">id</em>, <em class="cEmphasis">first_name</em>, <em class="cEmphasis">last_Name</em> and <em class="cEmphasis">age</em>. </li></div>
 <a name="wp1705459"> </a><div class="pSmartList2"><li>From the lookup table, the following column is selected: <em class="cEmphasis">city</em>. </li></div>
 <a name="wp1703200"> </a><div class="pSmartList2"><li>Drop the selected columns from the input tables (<em class="cEmphasis">people</em> and <em class="cEmphasis">large_volume</em>) to the output table.</li></div>
-<a name="wp1703208"> </a><div class="pSmartList2"><li>Now set up the join between the main and lookup flows</li></div>
+<a name="wp1703208"> </a><div class="pSmartList2"><li>Now set up the join between the main and lookup flows.</li></div>
 <a name="wp1703217"> </a><div class="pSmartList2"><li>Select the <em class="cEmphasis">age</em> column of the main flow table (on top) and drag it towards the <em class="cEmphasis">age</em> column of the lookup flow table (<em class="cEmphasis">large_volume</em> in this example).</li></div>
 <a name="wp1703221"> </a><div class="pSmartList2"><li>A key icon appears next to the linked expression on the lookup table. The join is now established.</li></div>
 <a name="wp1703228"> </a><div class="pSmartList2"><li>Now select the <b class="cBold">Reload at each row</b> option in order for the lookup to be reloaded for each row being processed.</li></div>
@@ -528,23 +646,25 @@ The Job is formed with four components, three database components and a mapping 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1705866"> </a><div class="pSmartList2"><li>Click on the green arrow to display the pop-up menu and select the relevant option.</li></div>
+<a name="wp1705866"> </a><div class="pSmartList2"><li>Click the green arrow to display the pop-up menu and select the relevant option.</li></div>
 <a name="wp1705872"> </a><div class="pSmartList2"><li>In this use case you also need to select the <b class="cBold">All matches</b> option in the Lookup table, in order to gather all instances of <em class="cEmphasis">age</em> matches in the output flow.</li></div>
 <a name="wp1705880"> </a><div class="pSmartList2"><li>Now implement the filtering, based on the <em class="cEmphasis">age</em> column, in the Lookup table. The <b class="cBold">GlobalMapKey</b> field is automatically created when you selected the <b class="cBold">Reload at each row</b> option. Indeed you can use this expression to dynamically filter the reference data in order to load only the relevant information when joining with the main flow.</li></div>
-<a name="wp1705955"> </a><div class="pSmartList2"><li>As mentioned in the introduction of the scenario, the main flow data contains only people whose age is either 40 or 60. To avoid the pain of loading all lookup rows, including ages that are different from 40 and 60, you can use the main flow age as global variable to feed the lookup filtering.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1706059"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1706059"> </a><p class="pIndented1">
+As mentioned in the introduction of the scenario, the main flow data contains only people whose age is either 40 or 60. To avoid the pain of loading all lookup rows, including ages that are different from 40 and 60, you can use the main flow age as global variable to feed the lookup filtering.
+</p>
+<a name="wp1720313"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/UseCase_tMap6-5.png" id="wp1706102" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1706097"> </a><div class="pSmartList2"><li>Drag and drop the <em class="cEmphasis">Age</em> column from the main flow table to the <b class="cBold">Expr.</b> field of the lookup table.</li></div>
+<a name="wp1720379"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">Age</em> column from the main flow table to the <b class="cBold">Expr.</b> field of the lookup table.</li></div>
 <a name="wp1706113"> </a><div class="pSmartList2"><li>Then in the <b class="cBold">globalMap Key </b>field, put in the variable name, using the expression. In this example, it reads: <code class="cCode">&quot;people.Age&quot;</code></li></div>
-<a name="wp1706100"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to save the mapping setting and go back to the Job Designer.</li></div>
-<a name="wp1706163"> </a><div class="pSmartList2"><li>To finalize the implementation of the dynamic filtering of the lookup flow, you need now to add a where clause in the query of the database input.</li></div>
+<a name="wp1706100"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to save the mapping setting and go back to the design workspace.</li></div>
+<a name="wp1706163"> </a><div class="pSmartList2"><li>To finalize the implementation of the dynamic filtering of the lookup flow, you need now to add a WHERE clause in the query of the database input.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1706200"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -556,9 +676,8 @@ The Job is formed with four components, three database components and a mapping 
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1706211"> </a><div class="pSmartList2"><li>At the end of the Query field, following the Select statement, type in the following where clause: <code class="cCode">WHERE AGE = &quot; + ((Integer)globalMap.get(&quot;people.Age&quot;))</code></li></div>
 <a name="wp1706249"> </a><div class="pSmartList2"><li>Make sure that the type corresponds to the column used as variable. In this use case, <em class="cEmphasis">Age</em> is of <code class="cCode">Integer</code> type. And use the variable the way you set in the <b class="cBold">globalMap key</b> field of the map editor.</li></div>
-<a name="wp1706397"> </a><div class="pSmartList2"><li>Then double-click on the <b class="cBold">tMySQLoutput</b> component and check that the schema corresponds to the mapping setting. </li></div>
-<a name="wp1706401"> </a><div class="pSmartList2"><li>You are now ready to execute the Job.</li></div>
-<a name="wp1706338"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Run</b> view of the tab system located at the bottom of the Job Designer, to display the Job execution tab.</li></div>
+<a name="wp1706397"> </a><div class="pSmartList2"><li>Then double-click on the <b class="cBold">tMySQLoutput</b> component and check that the schema corresponds to the mapping setting. You are now ready to execute the Job.</li></div>
+<a name="wp1706338"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Run</b> view of the tab system located at the bottom of the design workspace, to display the Job execution tab.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1706183"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -568,13 +687,15 @@ The Job is formed with four components, three database components and a mapping 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1706378"> </a><div class="pSmartList2"><li>Before running the Job, select the <b class="cBold">Traces</b> option to view the data processing progress.</li></div>
-<a name="wp1703320"> </a><div class="pSmartList2"><li>Make sure that the database types are respected (string, integer...) to avoid execution errors to occur. </li></div>
+<a name="wp1706378"> </a><div class="pSmartList2"><li>Before running the Job, select the <b class="cBold">Traces</b> check box to view the data processing progress.</li></div>
+<a name="wp1703320"> </a><div class="pSmartList2"><li>Make sure that the database types are respected (string, integer...) to avoid execution errors. </li></div>
 <a name="wp1703331"> </a><div class="pSmartList2"><li>Then press <b class="cBold">F6</b> or click the <b class="cBold">Run</b> button to execute the Job.</li></div>
-<a name="wp1703334"> </a><div class="pSmartList2"><li>For more comfort, you can maximize the Job design view while executing by simply double-clicking on the Job name tab.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1703343"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1703343"> </a><p class="pIndented1">
+For more comfort, you can maximize the Job design view while executing by simply double-clicking on the Job name tab.
+</p>
+<a name="wp1720428"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/UseCase_tMap6-9.png" id="wp1703340" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
@@ -609,7 +730,7 @@ Therefore if you check out the data contained in the newly created <em class="cE
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMap_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNormalize_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFilterRows_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNormalize_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

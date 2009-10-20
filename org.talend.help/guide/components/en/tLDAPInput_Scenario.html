@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
     <title>Scenario: Displaying LDAP directory&#39;s filtered content</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scenario: Displaying LDAP directory&#39;s filtered content
 </h2>
 <a name="wp1431021"> </a><p class="pIndented1">
-The job described below simply filters the LDAP directory and displays the result on the console.
+The Job described below simply filters the LDAP directory and displays the result on the console.
 </p>
 <a name="wp1427133"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,7 +38,7 @@ The job described below simply filters the LDAP directory and displays the resul
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1427150"> </a><div class="pSmartList2"><li>Click and drop the <b class="cBold">tLDAPInput</b> component along with a <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1427150"> </a><div class="pSmartList2"><li>Drop the <b class="cBold">tLDAPInput</b> component along with a <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b> to the design workspace.</li></div>
 <a name="wp1427174"> </a><div class="pSmartList2"><li>Set the <b class="cBold">tLDAPInput</b> properties.</li></div>
 <a name="wp1429122"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Property type </b>on <b class="cBold">Repository</b> if you stored the LDAP connection details in the <b class="cBold">Metadata Manager </b>in the <b class="cBold">Repository</b>. Then select the relevant entry on the list. </li></div>
 <a name="wp1429167"> </a><div class="pSmartList2"><li>In <b class="cBold">Built-In</b> mode, fill in the <b class="cBold">Host</b> and <b class="cBold">Port</b> information manually. Host can be the IP address of the LDAP directory server or its DNS name.</li></div>
@@ -53,7 +53,7 @@ The job described below simply filters the LDAP directory and displays the resul
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1427257"> </a><div class="pSmartList2"><li>Then select the relevant <b class="cBold">Protocol</b> on the list. In this example: a simple <b class="cBold">LDAP</b> protocol is used.</li></div>
-<a name="wp1427311"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Authentication</b> box and fill in the login information if required to read the directory. In this use case, no authentication is needed.</li></div>
+<a name="wp1427311"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Authentication</b> check box and fill in the login information if required to read the directory. In this use case, no authentication is needed.</li></div>
 <a name="wp1427395"> </a><div class="pSmartList2"><li>In the <b class="cBold">Filter</b> area, type in the command, the data selection is based on. In this example, the filter is: <code class="cCode">(&amp;(objectClass=inetorgperson)&amp;(uid=PIERRE DUPONT))</code>. </li></div>
 <a name="wp1427459"> </a><div class="pSmartList2"><li>Fill in <b class="cBold">Multi-valued field separator </b>with a comma as some fields may hold more than one value, separated by a comma. </li></div>
 <a name="wp1429204"> </a><div class="pSmartList2"><li>As we don&#39;t know if some aliases are used in the LDAP directory, select <b class="cBold">Always </b>on the list.</li></div>

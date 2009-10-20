@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/28/09 17:57:49">
-    <title>An AddressDoctor component</title>
+    <meta name="LASTUPDATED" content="10/19/09 18:20:03">
+    <title>Scenario: Reading, correcting, and formatting an address</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="DataQualityComponents-1-2.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tQASAddressRow_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tAddressDoctorRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFindRegexlibExpressions_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,272 +22,99 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1666140"> </a><h3 class="pHeading3">
-An AddressDoctor component
-</h3>
-<a name="wp1666463"> </a><p class="pIndented2">
-The AddressDoctor component used with Talend Open Studio or Talend Integration Suite is <b class="cBold">tAddressDoctorRow</b>. It detects spelling and formatting errors and do all necessary corrections.
-</p>
-<a name="wp1512679"> </a><p class="pIndented2">
-Below is an example of a three-component job created in one of <b class="cBold">Talend</b> studios. This job reads an address from an input file, uses the <b class="cBold">tAddressDoctorRow</b> component to correct the address and apply some formatting on it, and finally writes the correct formatted address in the relevant database.
-</p>
-<a name="wp1654500"> </a><p class="pBodyRelative">
-</p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp1654497" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-To be able to realize such example, you must be familiar with designing jobs and using <b class="cBold">Talend</b> components. For more information, check <b class="cBold">Talend Open Studio</b> User Guide and <b class="cBold">Talend Open StudioComponents</b> Reference Guide respectively.
-</p>
-<a name="wp1522650"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/DataQualityComponents-1-3-05.jpg" height="689" width="651" id="wp1522646" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2785962"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1523427"> </a><p class="pIndented2">
-After defining the properties of the <b class="cBold">tFileInputDelimited</b> and <b class="cBold">tMysqlOutput</b> components, double-click tAddressDoctorRow to open its Basic settings view and define its properties.
+<a name="wp2785969"> </a><h2 class="pHeading2">
+Scenario: Reading, correcting, and formatting an address
+</h2>
+<a name="wp2785980"> </a><p class="pIndented1">
+The <b class="cBold">tAddressDoctorRow</b> component is used to detect spelling and formatting errors and do all necessary corrections.
 </p>
-<a name="wp1523540"> </a><p class="pIndented2">
-To get a <b class="cBold">User Id</b> and <b class="cBold">Password</b>, you need first to sign up for an AddressDoctor Data Quality Center account at <em class="cEmphasis"><a href="https://www.addressdoctor.com/AcctMngr/newaccount.aspx?lang=en"></a></em>https://www.addressdoctor.com/AcctMngr/newaccount.aspx?lang=en. Then you will receive your <b class="cBold">User Id</b> and <b class="cBold">Password</b> by email. With this register-for-free operation, you can process limited number of addresses. If you need to process a higher number of addresses, you can purchase transactions online at <em class="cEmphasis"><a href="http.//www.addressdoctor.com">http://www.addressdoctor.com</a></em>.
+<a name="wp2785985"> </a><p class="pIndented1">
+This Java scenario is a three-component Job created in <b class="cBold">Talend Open Studio</b>. It reads an address from an input file, uses <b class="cBold">tAddressDoctorRow</b> to correct the address and applies some formatting on it, and finally writes the correct formatted address in the relevant database.
 </p>
-<a name="wp1523582"> </a><p class="pIndented2">
-The <b class="cBold">Origin Country</b> option controls the output of the formatted address. Whenever mail or other items are sent cross border, it is necessary to place the country of destination in the address.
+<a name="wp2785994"> </a><p class="pIndented1">
+In this example, we have already stored the input schemas of the input file and the output schemas of the database table in the Repository. For more information about storing schema metadata in the <b class="cBold">Repository</b> tree view, see <em class="cEmphasis">Setting up a File Delimited schema</em>, <em class="cEmphasis">Setting up a DB connection</em>, and <em class="cEmphasis">Drop components from the Metadata node</em> in <b class="cBold">Talend Open Studio</b> <b class="cBold">User Guide</b>.
 </p>
-<a name="wp1523678"> </a><p class="pIndented2">
-The below table describes the parameters for this option.
-</p>
-<a name="wp1523706"> </a><p class="pIndented3">
-</p>
-<div align="center">
-<table border="1" id="wp1523690table1523685">
-  <caption></caption>
-  <tr align="center">    <th><a name="wp1523690"> </a><p class="pBodyRelative">
-Parameter
-</p>
-</th>
-    <th><a name="wp1523692"> </a><div class="pCellBody">
-Description
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2786030"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and the file node where you have stored the input schemas and drop the relevant file onto the design workspace.<br />The <b class="cBold">[Component]</b> dialog box displays.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2786045"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-</th>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1523694"> </a><p class="pBodyRelative">
-<code class="cCode">COO_ALWAYS_USE_DESTINATION_COUNTRY</code> (by default)
-</p>
-</td>
-    <td><a name="wp1523985"> </a><div class="pCellBody">
-The destination country will always be used in the formatted address
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1523698"> </a><p class="pBodyRelative">
-<code class="cCode">COO_NEVER_USE_DESTINATION_COUNTRY</code> 
-</p>
-</td>
-    <td><a name="wp1524004"> </a><div class="pCellBody">
-The country of destination will never be used in the formatted address
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1523702"> </a><p class="pBodyRelative">
-<code class="cCode">COO_ABW</code>                                      
-</p>
-</td>
-    <td><a name="wp1523704"> </a><div class="pCellBody">
-The country of origin is Aruba
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1523743"> </a><div class="pCellBody">
-...
-</div>
-</td>
-    <td><a name="wp1523746"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1523736"> </a><p class="pBodyRelative">
-<code class="cCode">COO_XXX  </code>                                    
-</p>
-</td>
-    <td><a name="wp1524057"> </a><div class="pCellBody">
-The country of origin is XXX where XXX is equal to the ISO3 country code
-</div>
-</td>
-</tr>
-</table>
-</div>
-<p class="pIndented3">
-
-</p>
-<a name="wp1523709"> </a><p class="pIndented2">
-The <b class="cBold">Country Type</b> option controls the way the country name is returned in the formatted address.
-</p>
-<a name="wp1524134"> </a><p class="pIndented2">
-The below table describes the parameters for this option.
-</p>
-<a name="wp1524211"> </a><p class="pIndented3">
-</p>
-<div align="center">
-<table border="1" id="wp1524152table1524144">
-  <caption></caption>
-  <tr align="center">    <th><a name="wp1524152"> </a><p class="pBodyRelative">
-Parameter
-</p>
-</th>
-    <th><a name="wp1524155"> </a><div class="pCellBody">
-Description
-</div>
-</th>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1524162"> </a><p class="pBodyRelative">
-<code class="cCode">ISO_2</code>
-</p>
-</td>
-    <td><a name="wp1524307"> </a><div class="pCellBody">
-Returns the country as the ISO2 country code
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1524173"> </a><div class="pCellBody">
-ISO_3
-</div>
-</td>
-    <td><a name="wp1524325"> </a><div class="pCellBody">
-Returns the country as the ISO3 country code
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1524185"> </a><p class="pBodyRelative">
-<code class="cCode">ISO_NUMBER</code>
-</p>
-</td>
-    <td><a name="wp1524339"> </a><div class="pCellBody">
-Returns the country as the numeric ISO code
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1524192"> </a><p class="pBodyRelative">
-<code class="cCode">ABBREVIATION</code>
-</p>
-</td>
-    <td><a name="wp1524353"> </a><div class="pCellBody">
-Returns the country abbreviation as often used in car license plates
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1524203"> </a><p class="pBodyRelative">
-<code class="cCode">NAME_CN</code>
-</p>
-</td>
-    <td><a name="wp1524206"> </a><div class="pCellBody">
-Returns the name in Chinese
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1524283"> </a><p class="pBodyRelative">
-<code class="cCode">NAME_DA</code>
-</p>
-</td>
-    <td><a name="wp1524286"> </a><div class="pCellBody">
-Returns the name in Danish
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1524295"> </a><div class="pCellBody">
-... 
-</div>
-</td>
-    <td><a name="wp1524298"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-</tr>
-</table>
-</div>
-<p class="pIndented3">
-
-</p>
-<a name="wp1524402"> </a><p class="pIndented2">
-The line separation character must be set when passing or retrieving data that contain multiple lines.
-</p>
-<a name="wp1524443"> </a><p class="pIndented2">
-The below table describes the parameters for the <b class="cBold">Line Separator </b>option.
-</p>
-<a name="wp1524538"> </a><p class="pIndented3">
-</p>
-<div align="center">
-<table border="1" id="wp1524461table1524453">
-  <caption></caption>
-  <tr align="center">    <th><a name="wp1524461"> </a><p class="pBodyRelative">
-Parameter
-</p>
-</th>
-    <th><a name="wp1524464"> </a><div class="pCellBody">
-Description
-</div>
-</th>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1524472"> </a><p class="pBodyRelative">
-<code class="cCode">LF</code>
-</p>
-</td>
-    <td><a name="wp1524560"> </a><div class="pCellBody">
-Uses a linefeed as the line separation character. <br />You can also use this value when you would prefer a carriage return linefeed.The carriage return linefeed is not supported for technical reasons
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1524479"> </a><div class="pCellBody">
-SEMICOLON
-</div>
-</td>
-    <td><a name="wp1524590"> </a><div class="pCellBody">
-Uses a semicolon as the line separation character
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1524490"> </a><p class="pBodyRelative">
-<code class="cCode">COMMA</code>
-</p>
-</td>
-    <td><a name="wp1524604"> </a><div class="pCellBody">
-Uses a comma as the line separation character
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1524501"> </a><p class="pBodyRelative">
-<code class="cCode">TAB</code>
-</p>
-</td>
-    <td><a name="wp1524622"> </a><div class="pCellBody">
-Uses a TAB character as the line separation character
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1524512"> </a><p class="pBodyRelative">
-<code class="cCode">NO_SEPARATOR</code>
-</p>
-</td>
-    <td><a name="wp1524636"> </a><div class="pCellBody">
-Uses no special line separation character. Fields will only be separated by a space
-</div>
-</td>
-</tr>
-</table>
-</div>
-<p class="pIndented3">
-
-</p>
-<a name="wp1524541"> </a><p class="pIndented2">
-Press <b class="cBold">F6</b> to execute the job.
-</p>
-<a name="wp1524692"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/TDQ_AddressCorrect_Result.png" id="wp1523446" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFuzzyJoin.png" id="wp2786041" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1523452"> </a><p class="pIndented2">
-As you see in the above capture, the old address has two typos, one in the street name (paggess&gt;pages) and the second in the city name (Suresne&gt;Suresnes).
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2786060"> </a><div class="pSmartList2"><li>Select <b class="cBold">tFileInputDelimited</b>from the list and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tFileInputDelimited</b> component displays in the workspase. The input file used in this example is called <em class="cEmphasis">Address</em>.</li></div>
+<a name="wp2786084"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and the <b class="cBold">Db Connections</b> node where you have stored the output schemas and drop the relevant database connection onto the design workspace.</li></div>
+<a name="wp2786098"> </a><div class="pSmartList2"><li>Select <b class="cBold">tMySQLOutput</b> from the list in the <b class="cBold">[Components]</b> dialog box and click <b class="cBold">OK</b> to close the dialog box. The output database connection used in this example is called <em class="cEmphasis">data_quality.</em></li></div>
+<a name="wp2786119"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tAddressDoctorRow</b> from the <b class="cBold">Palette</b> onto the design workspace.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2786130"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tAddressDoctorRow.png" id="wp2786126" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2786142"> </a><div class="pSmartList2"><li>Connect the components together using <b class="cBold">Main</b> links.</li></div>
+<a name="wp2786153"> </a><div class="pSmartList2"><li>If needed, double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view. All its property fields are automatically filled in. If you do not define your input files locally in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Property Type</b> field.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2786173"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tAddressDoctorRow2.png" id="wp2786169" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2786188"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tAddressDoctorRow</b> to open its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2786199"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tAddressDoctorRow3.png" id="wp2786195" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2786215"> </a><p class="pBodyRelative">
 </p>
-<a name="wp1511920"> </a><p class="pIndented2">
-The <b class="cBold">tAddressDoctorRow</b> component does not only correct your address, it also applies address normalization (as in the row <code class="cCode">ADDRESSDOCTOR_FORMATTED_ADDRESS</code>) and address formatting (splitting the old address only row to many rows each representing a unit in the address, for example, <code class="cCode">STREET</code>, <code class="cCode">POSTAL_CODE</code>, <code class="cCode">LOCALITY</code> and so on).
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2786204" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+To get a <b class="cBold">User Id</b> and <b class="cBold">Password</b>, you need first to sign up for an AddressDoctor Data Quality Center account at <span style="font-style: italic"><a href="https://www.addressdoctor.com/AcctMngr/newaccount.aspx?lang=en">https://www.addressdoctor.com/AcctMngr/newaccount.aspx?lang=en</a></span>. Then you will receive your <b class="cBold">User Id</b> and <b class="cBold">Password</b><a href="http://www.addressdoctor.com "> by email. With this register-for-free operation, you can process limited number of addresses. If you need to process a higher number of addresses, you can purchase transactions online at</a><span style="font-style: normal"> </span><span style="font-style: italic"><a href="http.//www.addressdoctor.com">http://www.addressdoctor.com</a></span>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2786249"> </a><div class="pSmartList2"><li>On the <b class="cBold">Address Column</b> list, select the column you want to analyze, <em class="cEmphasis">old-address</em> in this example.</li></div>
+<a name="wp2786262"> </a><div class="pSmartList2"><li>On the <b class="cBold">Origin Country</b> list, select the country of the input data, <b class="cBold">FRA</b> in this example. This option controls the output of the formatted address.</li></div>
+<a name="wp2786275"> </a><div class="pSmartList2"><li>On the <b class="cBold">Country Type</b> list, select the desired option. This option controls the way the country name is returned in the formatted address.</li></div>
+<a name="wp2786284"> </a><div class="pSmartList2"><li>On the <b class="cBold">Line Separator</b> list, select the desired character. You must set a line separation character when you edit data that contain multiple lines.</li></div>
+<a name="wp2786297"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tMySQLOutput</b> to display its <b class="cBold">Basic settings</b> view. All database connection fields are automatically filled in. If you do not define your output connection locally in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Property Type</b> field.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2786316"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tAddressDoctorRow5.png" id="wp2786312" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2786327"> </a><div class="pSmartList2"><li>Click the three-dot button next to the <b class="cBold">Table </b>field and browse to the table where you want to write the formatted address.</li></div>
+<a name="wp2786344"> </a><div class="pSmartList2"><li>On the <b class="cBold">Action on table</b> list, select <b class="cBold">Create table</b>, select <b class="cBold">Insert</b> on the <b class="cBold">Action on data</b> list.</li></div>
+<a name="wp2786357"> </a><div class="pSmartList2"><li>If needed, click <b class="cBold">Sync columns</b> to synchronize with the columns coming from the <b class="cBold">tAddressDoctor</b> component.</li></div>
+<a name="wp2786372"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2786381"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tAddressDoctorRow_Result.png" id="wp2786377" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2786385"> </a><p class="pIndented1">
+As you see in the above capture, the old address has two typos, one in the street name (paggess&gt;pages) and the second in the city name (Suresne&gt;Suresnes).The <b class="cBold">tAddressDoctorRow</b> component does not only correct the address, it also applies address normalization (as in the row <em style="font-style: italic" class="cEmphasis">ADDRESSDOCTOR_FORMATTED_ADDRESS</em>) and address formatting (splitting the old address only row to many rows each representing a unit in the address, for example, <code class="cCode">STREET</code>, <code class="cCode">POSTAL_CODE</code>, <code class="cCode">LOCALITY</code> and so on).
 </p>
     </blockquote>
     <hr>
@@ -308,7 +135,7 @@ The <b class="cBold">tAddressDoctorRow</b> component does not only correct your 
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="DataQualityComponents-1-2.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tQASAddressRow_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tAddressDoctorRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFindRegexlibExpressions_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

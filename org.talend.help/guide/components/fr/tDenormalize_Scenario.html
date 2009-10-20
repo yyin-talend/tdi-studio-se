@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:55">
+    <meta name="LASTUPDATED" content="10/19/09 17:33:38">
     <title>Scénario&#160;1&#160;: Dénormaliser une colonne en Perl</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tDenormalize_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMap_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tDenormalize_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tDenormalizeSortedRow_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scénario&#160;1&#160;: Dénormaliser une colonne en Perl
 </h2>
 <a name="wp1707071"> </a><p class="pIndented1">
-Ce scénario illustre un job Perl dénormalisant une colonne dans un fichier délimité.
+Ce scénario illustre un Job Perl dénormalisant une colonne dans un fichier délimité.
 </p>
 <a name="wp1707078"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,11 +37,9 @@ Ce scénario illustre un job Perl dénormalisant une colonne dans un fichier délim
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1707092"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tDenormalize</b>, <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1705574"> </a><div class="pSmartList2"><li>Connectez ces composants à l&#39;aide d&#39;un lien <b class="cBold">Row main</b>.</li></div>
-<a name="wp1705582"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tFileInputDelimited</b>, renseignez le chemin d&#39;accès au fichier à dénormaliser.</li></div>
-</ul></div>
+<a name="wp1707092"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tDenormalize</b>, <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1705574"> </a><div class="pSmartList1"><li>Connectez ces composants à l&#39;aide d&#39;un lien <b class="cBold">Row main</b>.</li></div>
+<a name="wp1705582"> </a><div class="pSmartList1"><li>Dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tFileInputDelimited</b>, renseignez le chemin d&#39;accès au fichier à dénormaliser.</li></div>
 </ul></div>
 <a name="wp1705589"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -49,10 +47,8 @@ Ce scénario illustre un job Perl dénormalisant une colonne dans un fichier délim
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1705604"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Header</b>, <b class="cBold">Row Separator</b> et <b class="cBold">Field Separator</b>, renseignez respectivement le nombre de ligne d&#39;en-tête, le type de séparateur de lignes et de champs.</li></div>
-<a name="wp1705615"> </a><div class="pSmartList2"><li>Le fichier d&#39;entrée est composé de deux colonnes&#160;: <em class="cEmphasis">Fathers</em> et <em class="cEmphasis">Children</em>.</li></div>
-</ul></div>
+<a name="wp1705604"> </a><div class="pSmartList1"><li>Dans les champs <b class="cBold">Header</b>, <b class="cBold">Row Separator</b> et <b class="cBold">Field Separator</b>, renseignez respectivement le nombre de ligne d&#39;en-tête, le type de séparateur de lignes et de champs.</li></div>
+<a name="wp1705615"> </a><div class="pSmartList1"><li>Le fichier d&#39;entrée est composé de deux colonnes&#160;: <em class="cEmphasis">Fathers</em> et <em class="cEmphasis">Children</em>.</li></div>
 </ul></div>
 <a name="wp1705622"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -60,10 +56,8 @@ Ce scénario illustre un job Perl dénormalisant une colonne dans un fichier délim
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1705633"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du <b class="cBold">tDenormalize</b>, paramétrez la colonne contenant des valeurs multiples à regrouper.</li></div>
-<a name="wp1707450"> </a><div class="pSmartList2"><li>Dans cet exemple, la colonne <em class="cEmphasis">Children</em> est celle à dénormaliser.</li></div>
-</ul></div>
+<a name="wp1705633"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du <b class="cBold">tDenormalize</b>, paramétrez la colonne contenant des valeurs multiples à regrouper.</li></div>
+<a name="wp1707450"> </a><div class="pSmartList1"><li>Dans cet exemple, la colonne <em class="cEmphasis">Children</em> est celle à dénormaliser.</li></div>
 </ul></div>
 <a name="wp1707457"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -71,11 +65,9 @@ Ce scénario illustre un job Perl dénormalisant une colonne dans un fichier délim
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1707464"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Item Separator</b>, paramétrez le séparateur des valeurs regroupées. Méfiez-vous car une seule colonne peut être dénormalisée.</li></div>
-<a name="wp1705664"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Deduplicate items</b>, si vous souhaitez supprimer les éventuels doublons.</li></div>
-<a name="wp1705670"> </a><div class="pSmartList2"><li>Enregistrez le job et exécutez-le.</li></div>
-</ul></div>
+<a name="wp1707464"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Item Separator</b>, paramétrez le séparateur des valeurs regroupées. Méfiez-vous car une seule colonne peut être dénormalisée.</li></div>
+<a name="wp1705664"> </a><div class="pSmartList1"><li>Cochez la case <b class="cBold">Deduplicate items</b>, si vous souhaitez supprimer les éventuels doublons.</li></div>
+<a name="wp1705670"> </a><div class="pSmartList1"><li>Enregistrez le Job et exécutez-le.</li></div>
 </ul></div>
 <a name="wp1705677"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -89,7 +81,7 @@ Toutes les valeurs de la colonne <em class="cEmphasis">Children</em> (définie co
 Scénario&#160;2&#160;: Dénormaliser plusieurs colonnes en Java
 </h2>
 <a name="wp1705698"> </a><p class="pIndented1">
-Ce scénario illustre un job Java dénormalisant deux colonnes d&#39;un fichier délimité.
+Ce scénario illustre un Job Java dénormalisant deux colonnes d&#39;un fichier délimité.
 </p>
 <a name="wp1705705"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -97,11 +89,9 @@ Ce scénario illustre un job Java dénormalisant deux colonnes d&#39;un fichier dé
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1705720"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tDenormalize</b>, <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1705727"> </a><div class="pSmartList2"><li>Connectez tous les composants à l&#39;aide d&#39;une connexion <b class="cBold">Row main</b>.</li></div>
-<a name="wp1705736"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileInputDelimited</b>, renseignez le chemin d&#39;accès au fichier à dénormaliser.</li></div>
-</ul></div>
+<a name="wp1705720"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tDenormalize</b>, <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1705727"> </a><div class="pSmartList1"><li>Connectez tous les composants à l&#39;aide d&#39;une connexion <b class="cBold">Row main</b>.</li></div>
+<a name="wp1705736"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileInputDelimited</b>, renseignez le chemin d&#39;accès au fichier à dénormaliser.</li></div>
 </ul></div>
 <a name="wp1705745"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -109,10 +99,8 @@ Ce scénario illustre un job Java dénormalisant deux colonnes d&#39;un fichier dé
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1707897"> </a><div class="pSmartList2"><li>Renseignez les autres champs dont les champs <b class="cBold">Row</b> et <b class="cBold">Field </b><b class="cBold">separators</b> et <b class="cBold">Header </b>contenant respectivement les séparateurs de lignes et de champs et le nombre de lignes d&#39;en-tête.</li></div>
-<a name="wp1708099"> </a><div class="pSmartList2"><li>Le schéma du fichier est composé de quatre colonnes&#160;: <b class="cBold">Name</b>, <b class="cBold">FirstName</b>, <b class="cBold">HomeTown</b>, <b class="cBold">WorkTown</b>.</li></div>
-</ul></div>
+<a name="wp1707897"> </a><div class="pSmartList1"><li>Renseignez les autres champs dont les champs <b class="cBold">Row</b> et <b class="cBold">Field </b><b class="cBold">separators</b> et <b class="cBold">Header </b>contenant respectivement les séparateurs de lignes et de champs et le nombre de lignes d&#39;en-tête.</li></div>
+<a name="wp1708099"> </a><div class="pSmartList1"><li>Le schéma du fichier est composé de quatre colonnes&#160;: <b class="cBold">Name</b>, <b class="cBold">FirstName</b>, <b class="cBold">HomeTown</b>, <b class="cBold">WorkTown</b>.</li></div>
 </ul></div>
 <a name="wp1708111"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -120,10 +108,8 @@ Ce scénario illustre un job Java dénormalisant deux colonnes d&#39;un fichier dé
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1708122"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tDenormalize</b>, sélectionnez les colonnes contenant les répétitions. Elles correspondent aux colonnes apparaissant plusieurs fois dans le document. Dans cet exemple, <em class="cEmphasis">FirstName</em> et <em class="cEmphasis">Name</em> sont les colonnes à partir desquelles la dénormalisation est effectuée.</li></div>
-<a name="wp1708132"> </a><div class="pSmartList2"><li>Ajoutez autant de lignes à la table que vous le souhaitez en cliquant sur le bouton (+). Puis sélectionnez les colonnes adéquates dans le liste déroulante.</li></div>
-</ul></div>
+<a name="wp1708122"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tDenormalize</b>, sélectionnez les colonnes contenant les répétitions. Elles correspondent aux colonnes apparaissant plusieurs fois dans le document. Dans cet exemple, <em class="cEmphasis">FirstName</em> et <em class="cEmphasis">Name</em> sont les colonnes à partir desquelles la dénormalisation est effectuée.</li></div>
+<a name="wp1708132"> </a><div class="pSmartList1"><li>Ajoutez autant de lignes à la table que vous le souhaitez en cliquant sur le bouton (+). Puis sélectionnez les colonnes adéquates dans la liste déroulante.</li></div>
 </ul></div>
 <a name="wp1708141"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -131,10 +117,8 @@ Ce scénario illustre un job Java dénormalisant deux colonnes d&#39;un fichier dé
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1708146"> </a><div class="pSmartList2"><li>Paramétrez le délimiteur séparant les valeurs concaténées, ici, la virgule.</li></div>
-<a name="wp1705825"> </a><div class="pSmartList2"><li>Enregistrez le job et exécutez-le.</li></div>
-</ul></div>
+<a name="wp1708146"> </a><div class="pSmartList1"><li>Paramétrez le délimiteur séparant les valeurs concaténées, ici, la virgule.</li></div>
+<a name="wp1705825"> </a><div class="pSmartList1"><li>Enregistrez le Job et exécutez-le.</li></div>
 </ul></div>
 <a name="wp1705832"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -142,11 +126,9 @@ Ce scénario illustre un job Java dénormalisant deux colonnes d&#39;un fichier dé
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1705838"> </a><div class="pSmartList2"><li>Le résultat affiche les valeurs dénormalisées concaténées à l&#39;aide de virgules.</li></div>
-<a name="wp1705844"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant tDenormalize, cochez la case <b class="cBold">Deduplicate</b> pour supprimer les doublons.</li></div>
-<a name="wp1705850"> </a><div class="pSmartList2"><li>Enregistrez le job et exécutez-le.</li></div>
-</ul></div>
+<a name="wp1705838"> </a><div class="pSmartList1"><li>Le résultat affiche les valeurs dénormalisées concaténées à l&#39;aide de virgules.</li></div>
+<a name="wp1705844"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant tDenormalize, cochez la case <b class="cBold">Deduplicate</b> pour supprimer les doublons.</li></div>
+<a name="wp1705850"> </a><div class="pSmartList1"><li>Enregistrez le Job et exécutez-le.</li></div>
 </ul></div>
 <a name="wp1705857"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -175,7 +157,7 @@ Cette fois-ci, la console affiche les résultats sans les doublons.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tDenormalize_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMap_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tDenormalize_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tDenormalizeSortedRow_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:52">
+    <meta name="LASTUPDATED" content="10/19/09 17:33:24">
     <title>Scénario&#160;: Attendre la suppression d&#39;un fichier </title>
   </head>
 
@@ -29,7 +29,7 @@
 Scénario&#160;: Attendre la suppression d&#39;un fichier 
 </h2>
 <a name="wp1575122"> </a><p class="pIndented1">
-Ce scénario décrit un job permettant de scanner un répertoire à la recherche d&#39;un fichier qui sera supprimé de ce répertoire, pour ensuite lancer un sous-job. Ainsi, lorsqu&#39;un fichier est supprimé, le sous-job affiche un message indiquant cette suppression.
+Ce scénario décrit un Job permettant de scanner un répertoire à la recherche d&#39;un fichier qui sera supprimé de ce répertoire, pour ensuite lancer un sous-Job. Ainsi, lorsqu&#39;un fichier est supprimé, le sous-Job affiche un message indiquant cette suppression.
 </p>
 <a name="wp1575130"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,11 +37,9 @@ Ce scénario décrit un job permettant de scanner un répertoire à la recherche d&#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1575142"> </a><div class="pSmartList2"><li>Ce job est constitué de deux composants&#160;: le <b class="cBold">tWaitForFile</b> et le <b class="cBold">tMsgbox</b></li></div>
-<a name="wp1578067"> </a><div class="pSmartList2"><li>Cliquez et déposez ces composants dans l&#39;espace de modélisation et connectez-les à l&#39;aide d&#39;un lien <b class="cBold">Iterate</b> pour effectuer la boucle.</li></div>
-<a name="wp1578077"> </a><div class="pSmartList2"><li>Puis sélectionnez le composant <b class="cBold">tWaitForFile</b>, et dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>, paramétrez les propriétés de la condition et de la boucle&#160;:</li></div>
-</ul></div>
+<a name="wp1575142"> </a><div class="pSmartList1"><li>Ce Job est constitué de deux composants&#160;: le <b class="cBold">tWaitForFile</b> et le <b class="cBold">tMsgbox</b></li></div>
+<a name="wp1578067"> </a><div class="pSmartList1"><li>Cliquez et déposez ces composants dans l&#39;espace de modélisation et connectez-les à l&#39;aide d&#39;un lien <b class="cBold">Iterate</b> pour effectuer la boucle.</li></div>
+<a name="wp1578077"> </a><div class="pSmartList1"><li>Puis sélectionnez le composant <b class="cBold">tWaitForFile</b>, et dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>, paramétrez les propriétés de la condition et de la boucle&#160;:</li></div>
 </ul></div>
 <a name="wp1578086"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -49,17 +47,15 @@ Ce scénario décrit un job permettant de scanner un répertoire à la recherche d&#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1578093"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Time (in seconds) between iterations</b>, paramétrez la durée en seconde entre chaque itération. Dans cet exemple, le répertoire sera scanné toutes les <em class="cEmphasis">5&#160;</em>secondes.</li></div>
-<a name="wp1575185"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Max. number of iterations (infinite loop if empty)</b>, saisissez le nombre d&#39;itération à effectuer avant que le job ne soit arrêté. Dans cet exemple, le répertoire est scanné <em class="cEmphasis">5</em>&#160;fois maximum.</li></div>
-<a name="wp1575193"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Directory to scan</b>, renseignez le chemin d&#39;accès au répertoire devant être scanné.</li></div>
-<a name="wp1575199"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Trigger action when</b>, sélectionnez la condition à rencontrer pour que le sous-job soit lancé. Dans cet exemple, la condition est la suppression (ou le déplacement) d&#39;un fichier du répertoire.</li></div>
-<a name="wp1575206"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Then</b>, sélectionnez l&#39;action à effectuer lorsque la condition est rencontrée avant que le nombre d&#39;itération défini ne soit atteint. Dans cet exemple, la boucle s&#39;arrête dès que la condition est rencontrée.</li></div>
-<a name="wp1578586"> </a><div class="pSmartList2"><li>Puis définissez le sous-job à effectuer lorsque la condition est rencontrée. Dans cet exemple, le sous-job affiche une boîte de dialogue.</li></div>
-<a name="wp1578599"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tMsgBox</b>, et dans l&#39;onglet <b class="cBold">Basic Setting</b> de la vue <b class="cBold">Component</b>, saisissez le message à afficher.</li></div>
-<a name="wp1578610"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Title</b> et <b class="cBold">Message</b>, renseignez le titre et le message.</li></div>
-<a name="wp1578621"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Buttons</b> et <b class="cBold">Icon</b>, renseignez le type de boutons et d&#39;icônes à utiliser.</li></div>
-</ul></div>
+<a name="wp1578093"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Time (in seconds) between iterations</b>, paramétrez la durée en seconde entre chaque itération. Dans cet exemple, le répertoire sera scanné toutes les <em class="cEmphasis">5&#160;</em>secondes.</li></div>
+<a name="wp1575185"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Max. number of iterations (infinite loop if empty)</b>, saisissez le nombre d&#39;itération à effectuer avant que le Job ne soit arrêté. Dans cet exemple, le répertoire est scanné <em class="cEmphasis">5</em>&#160;fois maximum.</li></div>
+<a name="wp1575193"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Directory to scan</b>, renseignez le chemin d&#39;accès au répertoire devant être scanné.</li></div>
+<a name="wp1575199"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Trigger action when</b>, sélectionnez la condition à rencontrer pour que le sous-Job soit lancé. Dans cet exemple, la condition est la suppression (ou le déplacement) d&#39;un fichier du répertoire.</li></div>
+<a name="wp1575206"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Then</b>, sélectionnez l&#39;action à effectuer lorsque la condition est rencontrée avant que le nombre d&#39;itération défini ne soit atteint. Dans cet exemple, la boucle s&#39;arrête dès que la condition est rencontrée.</li></div>
+<a name="wp1578586"> </a><div class="pSmartList1"><li>Puis définissez le sous-Job à effectuer lorsque la condition est rencontrée. Dans cet exemple, le sous-Job affiche une boîte de dialogue.</li></div>
+<a name="wp1578599"> </a><div class="pSmartList1"><li>Sélectionnez le composant <b class="cBold">tMsgBox</b>, et dans l&#39;onglet <b class="cBold">Basic Setting</b> de la vue <b class="cBold">Component</b>, saisissez le message à afficher.</li></div>
+<a name="wp1578610"> </a><div class="pSmartList1"><li>Dans les champs <b class="cBold">Title</b> et <b class="cBold">Message</b>, renseignez le titre et le message.</li></div>
+<a name="wp1578621"> </a><div class="pSmartList1"><li>Dans les champs <b class="cBold">Buttons</b> et <b class="cBold">Icon</b>, renseignez le type de boutons et d&#39;icônes à utiliser.</li></div>
 </ul></div>
 <a name="wp1575252"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -67,11 +63,9 @@ Ce scénario décrit un job permettant de scanner un répertoire à la recherche d&#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1578792"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Message</b>, vous pouvez saisir n&#39;importe quel type de message que vous souhaitez faire apparaître et utiliser des variables globales disponibles dans la liste d&#39;auto-complétion via le raccourci <b class="cBold">Ctrl+Espace</b>.</li></div>
-<a name="wp1578798"> </a><div class="pSmartList2"><li>Par exemple, en Perl, le message utilisé pour ce job est&#160;: <code class="cCode">&quot;Deleted File: $_globals{tWaitForFile_1}{DELETED_FILE}, on Iteration : $_globals{tWaitForFile_1}{CURRENT_ITERATION}\n&quot;</code> </li></div>
-<a name="wp1578805"> </a><div class="pSmartList2"><li>Le message en Java est&#160;: <code class="cCode">&quot;Deleted file: &quot;+((String)globalMap.get(&quot;tWaitForFile_1_DELETED_FILE&quot;))+&quot; on iteration Nr:&quot;+((Integer)globalMap.get(&quot;tWaitForFile_1_CURRENT_ITERATION&quot;))</code></li></div>
-</ul></div>
+<a name="wp1578792"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Message</b>, vous pouvez saisir n&#39;importe quel type de message que vous souhaitez faire apparaître et utiliser des variables globales disponibles dans la liste d&#39;auto-complétion via le raccourci <b class="cBold">Ctrl+Espace</b>.</li></div>
+<a name="wp1578798"> </a><div class="pSmartList1"><li>Par exemple, en Perl, le message utilisé pour ce Job est&#160;: <code class="cCode">&quot;Deleted File: $_globals{tWaitForFile_1}{DELETED_FILE}, on Iteration : $_globals{tWaitForFile_1}{CURRENT_ITERATION}\n&quot;</code> </li></div>
+<a name="wp1578805"> </a><div class="pSmartList1"><li>Le message en Java est&#160;: <code class="cCode">&quot;Deleted file: &quot;+((String)globalMap.get(&quot;tWaitForFile_1_DELETED_FILE&quot;))+&quot; on iteration Nr:&quot;+((Integer)globalMap.get(&quot;tWaitForFile_1_CURRENT_ITERATION&quot;))</code></li></div>
 </ul></div>
 <a name="wp1578815"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -79,7 +73,7 @@ Ce scénario décrit un job permettant de scanner un répertoire à la recherche d&#
 
 </div>
 <a name="wp1578821"> </a><p class="pIndented1">
-Puis exécutez le job via la raccourci <b class="cBold">F6</b>. Pendant que la boucle s&#39;effectue, supprimer un fichier du répertoire défini et la boîte de dialogue contenant le message défini apparaît.
+Puis exécutez le Job via la raccourci <b class="cBold">F6</b>. Pendant que la boucle s&#39;effectue, supprimer un fichier du répertoire défini et la boîte de dialogue contenant le message défini apparaît.
 </p>
 <a name="wp1575299"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

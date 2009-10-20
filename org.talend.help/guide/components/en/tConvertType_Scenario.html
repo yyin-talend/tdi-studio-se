@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:24:52">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:52">
     <title>Scenario: Converting java types</title>
   </head>
 
@@ -29,18 +29,18 @@
 Scenario: Converting java types
 </h2>
 <a name="wp1616923"> </a><p class="pIndented1">
-This Java scenario describes a four-component job where the <b class="cBold">tConvertType</b> component is used to convert Java types in three columns, and a <b class="cBold">tMap</b> is used to adapt the schema and have as an output the first of the three columns and the sum of the two others after conversion.
+This Java scenario describes a four-component Job where the <b class="cBold">tConvertType</b> component is used to convert Java types in three columns, and a <b class="cBold">tMap</b> is used to adapt the schema and have as an output the first of the three columns and the sum of the two others after conversion.
 </p>
 <a name="wp1654315"> </a><p class="pBodyRelative">
 </p>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp1654304" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-In this scenario, the input schemas for the input delimited file are stored in the repository, you can simply drag and drop the relevant file node from <b class="cBold">Repository</b> - <b class="cBold">Metadata</b> - <b class="cBold">File delimited </b>onto the workspace to automatically retrieve the <b class="cBold">tFileInputDelimited </b>component&#39;s setting. For more information, see <em class="cEmphasis">Drag &amp; Drop components from the Metadata node</em>.
+In this scenario, the input schemas for the input delimited file are stored in the repository, you can simply drag and drop the relevant file node from <b class="cBold">Repository</b> - <b class="cBold">Metadata</b> - <b class="cBold">File delimited </b>onto the design workspace to automatically retrieve the <b class="cBold">tFileInputDelimited </b>component&#39;s setting. For more information, see <em class="cEmphasis">Drop components from the Metadata node</em> in Talend Open Studio User Guide.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1617120"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace: <b class="cBold">tConvertType</b>, <b class="cBold">tMap</b>, and <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1617344"> </a><div class="pSmartList2"><li>In the Repository tree view, expand <b class="cBold">Metadata</b> and from <b class="cBold">File delimited </b>drag the relevant node, <em class="cEmphasis">JavaTypes</em> in this scenario, to the workspace.<br />The <b class="cBold">[Components]</b> dialog box displays.</li></div>
-<a name="wp1617256"> </a><div class="pSmartList2"><li>From the component list, select <b class="cBold">tFileInputDelimited</b> and click <b class="cBold">Ok</b>.<br />A <b class="cBold">tFileInputComponent</b> called <em class="cEmphasis">Java types</em> displays in the workspace.</li></div>
+<a name="wp1617120"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tConvertType</b>, <b class="cBold">tMap</b>, and <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1617344"> </a><div class="pSmartList2"><li>In the Repository tree view, expand <b class="cBold">Metadata</b> and from <b class="cBold">File delimited </b>drag the relevant node, <em class="cEmphasis">JavaTypes</em> in this scenario, to the design workspace.<br />The <b class="cBold">[Components]</b> dialog box displays.</li></div>
+<a name="wp1617256"> </a><div class="pSmartList2"><li>From the component list, select <b class="cBold">tFileInputDelimited</b> and click <b class="cBold">Ok</b>.<br />A <b class="cBold">tFileInputComponent</b> called <em class="cEmphasis">Java types</em> displays in the design workspace.</li></div>
 <a name="wp1616947"> </a><div class="pSmartList2"><li>Connect the components using <b class="cBold">Row Main</b> links.</li></div>
 </ul></div>
 </ul></div>
@@ -51,7 +51,7 @@ In this scenario, the input schemas for the input delimited file are stored in t
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1617089"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tFileInputDelimited</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+<a name="wp1617089"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tFileInputDelimited</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
 <a name="wp1616341"> </a><div class="pSmartList2"><li> In the <b class="cBold">Basic settings </b>view, set <b class="cBold">Property Type</b> to <b class="cBold">Repository</b> since the file details are stored in the repository. The fields to follow are pre-defined using the fetched data.</li></div>
 </ul></div>
 </ul></div>
@@ -82,7 +82,7 @@ The input file used in this scenario is called <em class="cEmphasis">input.</em>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1617431"> </a><div class="pSmartList2"><li>Click <b class="cBold">Ok</b> to close the dialog box.</li></div>
-<a name="wp1617483"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tConvertType</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+<a name="wp1617483"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tConvertType</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1616477"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -93,7 +93,7 @@ The input file used in this scenario is called <em class="cEmphasis">input.</em>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1617508"> </a><div class="pSmartList2"><li> Set <b class="cBold">Schema Type </b>to <b class="cBold">Built in</b>, and click <b class="cBold">Sync columns </b>to automatically retrieve the columns from the <b class="cBold">tFileInputDelimited </b>component.</li></div>
-<a name="wp1616495"> </a><div class="pSmartList2"><li>If necessary, click <b class="cBold">Edit schema </b>to describe manually the data structure of this processing component.</li></div>
+<a name="wp1616495"> </a><div class="pSmartList2"><li>If needed, click <b class="cBold">Edit schema </b>to describe manually the data structure of this processing component.</li></div>
 <a name="wp1654371"> </a><p class="pBodyRelative">
 <br />
 <img src="images/bulb_small.png" align="left" id="wp1654368" border="0" hspace="0" vspace="0"/><br />
@@ -112,7 +112,7 @@ In this scenario, we want to convert a string type data into an integer type and
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1618063"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the <b class="cBold">[Schema of tConvertType]</b> dialog box.</li></div>
-<a name="wp1618071"> </a><div class="pSmartList2"><li>In the workspace, double-click <b class="cBold">tMap</b> to open the Map editor.<br /> The Map editor opens displaying the input metadata of the<b class="cBold"> tFileInputDelimited </b>component</li></div>
+<a name="wp1618071"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tMap</b> to open the Map editor.<br /> The Map editor opens displaying the input metadata of the<b class="cBold"> tFileInputDelimited </b>component</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1618078"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -134,8 +134,8 @@ In this scenario, we want to convert a string type data into an integer type and
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1618418"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tLogRow</b> and click the <b class="cBold">Component</b> tab to define its basic settings. For more information, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
-<a name="wp1617722"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp1618418"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tLogRow</b> and click the <b class="cBold">Component</b> tab to define its basic settings. For more information, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
+<a name="wp1617722"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1616595"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -144,7 +144,7 @@ In this scenario, we want to convert a string type data into an integer type and
 
 </div>
 <a name="wp1618781"> </a><p class="pIndented1">
-The string type data is converted into an integer type and displayed in the <em class="cEmphasis">StringToInteger </em>column on the console. The float type data is coverted into an integer and added to the <em class="cEmphasis">IntegerField </em>value to give the addition result in the <em class="cEmphasis">Sum </em>column on the console.
+The string type data is converted into an integer type and displayed in the <em class="cEmphasis">StringToInteger </em>column on the console. The float type data is converted into an integer and added to the <em class="cEmphasis">IntegerField </em>value to give the addition result in the <em class="cEmphasis">Sum </em>column on the console.
 </p>
     </blockquote>
     <hr>

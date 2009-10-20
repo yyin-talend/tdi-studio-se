@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
     <title>tSybaseOutputBulkExec</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/Sybase
 </div>
 </td>
     <td><a name="wp1484363"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconi.png" id="wp1484359" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconbh.png" id="wp1484359" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -73,7 +73,7 @@ As a dedicated component, it allows gains in performance during Insert operation
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1484391"> </a><div class="pCellHeading">
+    <td><a name="wp1484391"> </a><div class="pCellBody">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
@@ -108,16 +108,16 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1485012"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2487914"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1485019"> </a><div class="pCellHeading">
-<em class="cEmphasis">Bcp utility</em>
+    <td><a name="wp2487920"> </a><div class="pCellBody">
+<em class="cEmphasis">Use an existing connection</em>
 </div>
 </td>
-    <td><a name="wp1485022"> </a><div class="pCellBody">
-Name of the utility to be used to copy data over.on the Sybase server.
+    <td><a name="wp2487924"> </a><div class="pCellBody">
+Select this check box and click the relevant <b class="cBold">tSybaseConnection </b>component on the Component list to reuse the connection details you already defined.
 </div>
 </td>
 </tr>
@@ -125,7 +125,7 @@ Name of the utility to be used to copy data over.on the Sybase server.
 &#160;
 </div>
 </td>
-    <td><a name="wp1484418"> </a><div class="pCellHeading">
+    <td><a name="wp1484418"> </a><div class="pCellBody">
 <em class="cEmphasis">Server</em>
 </div>
 </td>
@@ -138,7 +138,7 @@ Database server IP address
 &#160;
 </div>
 </td>
-    <td><a name="wp1484427"> </a><div class="pCellHeading">
+    <td><a name="wp1484427"> </a><div class="pCellBody">
 <em class="cEmphasis">Port</em>
 </div>
 </td>
@@ -151,7 +151,7 @@ Listening port number of DB server.
 &#160;
 </div>
 </td>
-    <td><a name="wp1484436"> </a><div class="pCellHeading">
+    <td><a name="wp1484436"> </a><div class="pCellBody">
 <em class="cEmphasis">Database</em>
 </div>
 </td>
@@ -164,7 +164,7 @@ Name of the database
 &#160;
 </div>
 </td>
-    <td><a name="wp1484445"> </a><div class="pCellHeading">
+    <td><a name="wp1484445"> </a><div class="pCellBody">
 <em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
 </div>
 </td>
@@ -173,29 +173,133 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1484452"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2489583"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1484457"> </a><div class="pCellHeading">
+    <td><a name="wp2489588"> </a><div class="pCellBody">
+<em class="cEmphasis">Bcp utility</em>
+</div>
+</td>
+    <td><a name="wp2489590"> </a><div class="pCellBody">
+Name of the utility to be used to copy data over to the Sybase server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2489595"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489598"> </a><div class="pCellBody">
+Batch row number
+</div>
+</td>
+    <td><a name="wp2489601"> </a><div class="pCellBody">
+Number of lines in each processed batch.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2489605"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489612"> </a><div class="pCellBody">
 <em class="cEmphasis">Table</em>
 </div>
 </td>
-    <td><a name="wp1484459"> </a><div class="pCellBody">
+    <td><a name="wp2489615"> </a><div class="pCellBody">
 Name of the table to be written. Note that only one table can be written at a time and that the table must exist for the insert operation to succeed.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1484461"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2489619"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1484466"> </a><div class="pCellHeading">
+    <td><a name="wp2489626"> </a><div class="pCellBody">
+<em class="cEmphasis">Action on table</em>
+</div>
+</td>
+    <td><a name="wp2489629"> </a><div class="pCellBody">
+On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation is carried out.<br /><b class="cBold">Drop and create a table</b>: The table is removed and created again.<br /><b class="cBold">Create a table</b>: The table does not exist and gets created.<br /><b class="cBold">Create a table if not exists</b>: The table is created if it does not exist.<br /><b class="cBold">Clear a table</b>: The table content is deleted.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1484461"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1484466"> </a><div class="pCellBody">
 <em class="cEmphasis">File Name</em>
 </div>
 </td>
-    <td><a name="wp1484468"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp2658016"> </a><div class="pCellBody">
+Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2489799"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489804"> </a><div class="pCellBody">
+<em class="cEmphasis">Append</em>
+</div>
+</td>
+    <td><a name="wp2489806"> </a><div class="pCellBody">
+Select this check box to add the new rows at the end of the records.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2489672"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489682"> </a><div class="pCellBody">
+<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2489686"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2489690"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489693"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2655688"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2489711"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489714"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2657074"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created and stored the schema in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2489809"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2489811"> </a><div class="pCellBody">
+<em class="cEmphasis">Action on data</em>
+</div>
+</td>
+    <td><a name="wp2489850"> </a><div class="pCellBody">
+On the data of the table defined, you can perform:<br /><b class="cBold">Bulk Insert</b>: Add multiple entries to the table. If duplicates are found, job stops.<br /><b class="cBold">Bulk Update</b>: Make simultaneous changes to multiple entries.
 </div>
 </td>
 </tr>
@@ -203,7 +307,7 @@ Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defi
 &#160;
 </div>
 </td>
-    <td><a name="wp1484478"> </a><div class="pCellHeading">
+    <td><a name="wp1484478"> </a><div class="pCellBody">
 <em class="cEmphasis">Field terminator</em>
 </div>
 </td>
@@ -216,12 +320,12 @@ Character, string or regular expression to separate fields.
 &#160;
 </div>
 </td>
-    <td><a name="wp1484487"> </a><div class="pCellHeading">
+    <td><a name="wp1484487"> </a><div class="pCellBody">
 <em class="cEmphasis">DB Row terminator</em>
 </div>
 </td>
     <td><a name="wp1484489"> </a><div class="pCellBody">
-String (ex: &quot;\n&quot;on Unix)  to distinguish rows in the DB.
+String (ex: &quot;\n&quot;on Unix) to distinguish rows in the DB.
 </div>
 </td>
 </tr>
@@ -229,12 +333,12 @@ String (ex: &quot;\n&quot;on Unix)  to distinguish rows in the DB.
 &#160;
 </div>
 </td>
-    <td><a name="wp1485067"> </a><div class="pCellHeading">
+    <td><a name="wp1485067"> </a><div class="pCellBody">
 <em class="cEmphasis">First row</em>
 </div>
 </td>
     <td><a name="wp1485070"> </a><div class="pCellBody">
-Type in the number of the file row where the action should start from.
+Type in the number of the file row where the action should start at.
 </div>
 </td>
 </tr>
@@ -242,12 +346,70 @@ Type in the number of the file row where the action should start from.
 &#160;
 </div>
 </td>
-    <td><a name="wp1485077"> </a><div class="pCellHeading">
+    <td><a name="wp1485077"> </a><div class="pCellBody">
 <em class="cEmphasis">FILE Row terminator</em>
 </div>
 </td>
     <td><a name="wp1485080"> </a><div class="pCellBody">
-Character, string or regular expression to separate fields in file.
+Character, string or regular expression to separate fields in a file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2489871"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489878"> </a><div class="pCellBody">
+<em class="cEmphasis">Include Head</em>
+</div>
+</td>
+    <td><a name="wp2489881"> </a><div class="pCellBody">
+Select this heck box to include the column header.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2489885"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489892"> </a><div class="pCellBody">
+<em class="cEmphasis">Encoding Type</em>
+</div>
+</td>
+    <td><a name="wp2489936"> </a><div class="pCellBody">
+Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2489899"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489906"> </a><div class="pCellBody">
+<em class="cEmphasis">Output</em>
+</div>
+</td>
+    <td><a name="wp2737340"> </a><div class="pCellBody">
+Select the type of output for the standard output of the Sybase database:
+</div>
+<a name="wp2737341"> </a><div class="pCellBody">
+<b class="cBold">to console,</b>
+</div>
+<a name="wp2489981"> </a><div class="pCellBody">
+<b class="cBold">to global variable.</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2489913"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2489920"> </a><div class="pCellBody">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2489952"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
 </div>
 </td>
 </tr>
@@ -256,7 +418,7 @@ Character, string or regular expression to separate fields in file.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1484505"> </a><div class="pCellBody">
-This component is mainly used when no particular tranformation is required on the data to be loaded onto the database. 
+This component is mainly used when no particular transformation is required on the data to be loaded onto the database. 
 </div>
 </td>
 </tr>

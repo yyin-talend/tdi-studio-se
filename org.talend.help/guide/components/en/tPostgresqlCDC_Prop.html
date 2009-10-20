@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
     <title>tPostgresqlCDC</title>
   </head>
 
@@ -22,282 +22,276 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2380795"> </a><h2 class="pHeading1">
+<a name="wp2822736"> </a><h2 class="pHeading1">
 tPostgresqlCDC
 </h2>
-<a name="wp2380807"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2822748"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tOracleCDC.png" id="wp2380800" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tOracleCDC.png" id="wp2822741" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2380817"> </a><h2 class="pHeading2">
+<a name="wp2822758"> </a><h2 class="pHeading2">
 tPostgresqlCDC properties
 </h2>
-<a name="wp2381158"> </a><p class="pBodyRelative">
+<a name="wp2823101"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp2380829table2380821">
+<table border="1" id="wp2822770table2822762">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2380829"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2822770"> </a><div class="pCellBody">
 <b class="cBold">Component family</b>
 </div>
 </td>
-    <td><a name="wp2380832"> </a><div class="pCellBody">
+    <td><a name="wp2822773"> </a><div class="pCellBody">
 Databases/Postgresql
 </div>
 </td>
-    <td><a name="wp2380843"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconi.png" id="wp2380839" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp2822784"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_iconbh.png" id="wp2822780" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2380851"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2822792"> </a><div class="pCellBody">
 <b class="cBold">Function</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2380858"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2822799"> </a><div class="pCellBody">
 <b class="cBold">tPostgresqlCDC </b>extracts from a source system the data that has changed since the last extraction and transports it to another/other system(s). 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2380869"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2822810"> </a><div class="pCellBody">
 <b class="cBold">Purpose</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2380876"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2822817"> </a><div class="pCellBody">
 <b class="cBold">tPostgresqlCDC</b> addresses data extraction and transportation needs. tPostgresqlCDC extracts only the changes done to the source operational data and makes them available to the target system(s) using database CDC views. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2380887"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2822828"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2380894"> </a><div class="pCellHeading">
+    <td><a name="wp2822835"> </a><div class="pCellBody">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
-    <td><a name="wp2380897"> </a><div class="pCellBody">
+    <td><a name="wp2822838"> </a><div class="pCellBody">
 Either Built-in or Repository
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2380901"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2822842"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2380904"> </a><div class="pCellBody">
+    <td><a name="wp2822845"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2380911"> </a><div class="pCellBody">
+    <td><a name="wp2822852"> </a><div class="pCellBody">
 <b class="cBold">Built-in</b>: No property data stored centrally.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2380915"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2822856"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2380918"> </a><div class="pCellBody">
+    <td><a name="wp2822859"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2380925"> </a><div class="pCellBody">
+    <td><a name="wp2822866"> </a><div class="pCellBody">
 <b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
-<a name="wp2380934"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2822874"> </a><div class="pCellBody">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_icongf.gif" align="left" id="wp2380930" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp2380935"> </a><div class="pCellBody">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2822871" border="0" hspace="0" vspace="0"/></table></div><div class="pCellBody">
 Reset the DB type by clicking the relevant button to select the CDC connection.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2380939"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2822879"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2380945"> </a><div class="pCellHeading">
+    <td><a name="wp2822885"> </a><div class="pCellBody">
 <em class="cEmphasis">Use an existing connection</em>
 </div>
 </td>
-    <td><a name="wp2380953"> </a><div class="pCellBody">
-Check this box when using a <b class="cBold">tPostgresqlConnection</b>
+    <td><a name="wp2822893"> </a><div class="pCellBody">
+Select this box when using a <b class="cBold">tPostgresqlConnection</b> component.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2380957"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2822897"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2380964"> </a><div class="pCellHeading">
+    <td><a name="wp2822904"> </a><div class="pCellBody">
 <em class="cEmphasis">Host</em>
 </div>
 </td>
-    <td><a name="wp2380967"> </a><div class="pCellBody">
+    <td><a name="wp2822907"> </a><div class="pCellBody">
 Database server IP address.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2380971"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2822911"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2380978"> </a><div class="pCellHeading">
+    <td><a name="wp2822918"> </a><div class="pCellBody">
 <em class="cEmphasis">Port</em>
 </div>
 </td>
-    <td><a name="wp2380981"> </a><div class="pCellBody">
+    <td><a name="wp2822921"> </a><div class="pCellBody">
 Listening port number of DB server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2380985"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2822925"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2380992"> </a><div class="pCellHeading">
+    <td><a name="wp2822932"> </a><div class="pCellBody">
 <em class="cEmphasis">Database</em>
 </div>
 </td>
-    <td><a name="wp2380995"> </a><div class="pCellBody">
+    <td><a name="wp2822935"> </a><div class="pCellBody">
 Name of the database.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2380999"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2822939"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381006"> </a><div class="pCellHeading">
+    <td><a name="wp2822946"> </a><div class="pCellBody">
 <em class="cEmphasis">Schema</em>
 </div>
 </td>
-    <td><a name="wp2381009"> </a><div class="pCellBody">
+    <td><a name="wp2822949"> </a><div class="pCellBody">
 Name of the schema.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2381013"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2822953"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381020"> </a><div class="pCellHeading">
+    <td><a name="wp2822960"> </a><div class="pCellBody">
 <em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
 </div>
 </td>
-    <td><a name="wp2381027"> </a><div class="pCellBody">
+    <td><a name="wp2822967"> </a><div class="pCellBody">
 DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2381031"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2822971"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381041"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2822978"> </a><div class="pCellBody">
+<em class="cEmphasis">Schema using CDC</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp2381045"> </a><div class="pCellBody">
+    <td><a name="wp2822985"> </a><div class="pCellBody">
 A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2381049"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2822989"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381052"> </a><div class="pCellBody">
+    <td><a name="wp2822992"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381059"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp2822999"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2381067"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2823007"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381070"> </a><div class="pCellBody">
+    <td><a name="wp2823010"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381077"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp2823017"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
-<a name="wp2381090"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2823029"> </a><div class="pCellBody">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_icongf.gif" align="left" id="wp2381086" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp2381091"> </a><div class="pCellBody">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2823026" border="0" hspace="0" vspace="0"/></table></div><div class="pCellBody">
 Reset the DB type by clicking the relevant button to select the schema of the CDC connection.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2381095"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2823034"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381098"> </a><div class="pCellBody">
+    <td><a name="wp2823037"> </a><div class="pCellBody">
 Table name
 </div>
 </td>
-    <td><a name="wp2381101"> </a><div class="pCellBody">
+    <td><a name="wp2823040"> </a><div class="pCellBody">
 Select the source table where to capture any changes made on data. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2381105"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2823044"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381108"> </a><div class="pCellBody">
+    <td><a name="wp2823047"> </a><div class="pCellBody">
 Subscriber
 </div>
 </td>
-    <td><a name="wp2381111"> </a><div class="pCellBody">
+    <td><a name="wp2823050"> </a><div class="pCellBody">
 Enter the name of the application that will use the change table.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2381115"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2823054"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381118"> </a><div class="pCellBody">
+    <td><a name="wp2823057"> </a><div class="pCellBody">
 Events to catch
 </div>
 </td>
-    <td><a name="wp2381121"> </a><div class="pCellBody">
-Insert: Check this box to catch the data inserted in the change table since the last extracion.<br /><b class="cBold">Update</b>: Check this box to catch the data updated in the change table since the last extracion.<br /><b class="cBold">Delete</b>: Check this box to catch the data deleted in the change table since the last extracion.
+    <td><a name="wp2823064"> </a><div class="pCellBody">
+<b class="cBold">Insert</b>: Select this check box to catch the data inserted in the change table since the last extracion.<br /><b class="cBold">Update</b>: Select this check box to catch the data updated in the change table since the last extracion.<br /><b class="cBold">Delete</b>: Select this check box to catch the data deleted in the change table since the last extracion.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2381133"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2823076"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2381136"> </a><div class="pCellBody">
+    <td><a name="wp2823079"> </a><div class="pCellBody">
 Limit
 </div>
 </td>
-    <td><a name="wp2381139"> </a><div class="pCellBody">
+    <td><a name="wp2823082"> </a><div class="pCellBody">
 Maximum number of rows a subscriber can recover from the change table.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2381147"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2823090"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2381150"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2823093"> </a><div class="pCellBody">
 This component is used as a start component. It requires an output component and row Main link.
 </div>
 </td>

@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
-    <title>Scenario: Adding a new column and altering data in a DB table</title>
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <title>Scenario 1: Adding a new column and altering data in a DB table</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -22,144 +22,232 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1606130"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751090"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1606138"> </a><h2 class="pHeading2">
-Scenario: Adding a new column and altering data in a DB table
+<a name="wp2751098"> </a><h2 class="pHeading2">
+Scenario 1: Adding a new column and altering data in a DB table
 </h2>
-<a name="wp2165463"> </a><p class="pIndented1">
+<a name="wp2751101"> </a><p class="pIndented1">
 This Java scenario is a three-component job that aims at creating random data using a <b class="cBold">tRowGenerator</b>, duplicating a column to be altered using the <b class="cBold">tMap</b> component, and eventually altering the data to be inserted based on an SQL expression using the <b class="cBold">tMysqlOutput</b> component.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2175618"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace: <b class="cBold">tRowGenerator</b>, <b class="cBold">tMap</b> and <b class="cBold">tMySQLOutput</b>.</li></div>
-<a name="wp2175639"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tRowGenerator</b>, <b class="cBold">tMap</b>, and <b class="cBold">tMysqlOutput</b> using the <b class="cBold">Row Main</b> link.</li></div>
+<a name="wp2751119"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tRowGenerator</b>, <b class="cBold">tMap</b> and <b class="cBold">tMySQLOutput</b>.</li></div>
+<a name="wp2751146"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tRowGenerator</b>, <b class="cBold">tMap</b>, and <b class="cBold">tMysqlOutput</b> using the <b class="cBold">Row Main</b> link.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1606189"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751153"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput1.png" id="wp2175724" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput1.png" id="wp2751150" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2177973"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tRowGenerator</b> to display its <b class="cBold">Basic settings</b> view.</li></div>
+<a name="wp2751166"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tRowGenerator</b> to display its <b class="cBold">Basic settings</b> view.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2177980"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751173"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput2.png" id="wp2177977" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput2.png" id="wp2751170" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2177992"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Schema Type</b> to <b class="cBold">Built-In</b>.</li></div>
-<a name="wp2178001"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> three-dot button to define the data to pass on to the <b class="cBold">tMap</b> component, two columns in this scenario, <em class="cEmphasis">name</em> and <em class="cEmphasis">random_date</em>.</li></div>
+<a name="wp2751185"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Schema Type</b> to <b class="cBold">Built-In</b>.</li></div>
+<a name="wp2751194"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> three-dot button to define the data to pass on to the <b class="cBold">tMap</b> component, two columns in this scenario, <em class="cEmphasis">name</em> and <em class="cEmphasis">random_date</em>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2178024"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751209"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput3.png" id="wp2178061" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput3.png" id="wp2751206" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2178106"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
-<a name="wp2178245"> </a><div class="pSmartList2"><li>Click the <b class="cBold">RowGenerator Editor</b> three-dot button to open the editor and define the data to be generated.</li></div>
+<a name="wp2751218"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp2751224"> </a><div class="pSmartList2"><li>Click the <b class="cBold">RowGenerator Editor</b> three-dot button to open the editor and define the data to be generated.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2178254"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751233"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput4.png" id="wp2178251" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput4.png" id="wp2751230" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2179093"> </a><div class="pSmartList2"><li>Click in the corresponding <b class="cBold">Functions</b> fields and select a function for each of the two columns, <code class="cCode">getFirstName</code> for the first column and <code class="cCode">getrandomDate</code> for the second column.</li></div>
-<a name="wp2178479"> </a><div class="pSmartList2"><li>In the <b class="cBold">Number of Rows for Rowgenerator</b> field, enter 10 to generate ten first name rows and click <b class="cBold">Ok</b> to close the editor.</li></div>
-<a name="wp2178715"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component to open the Map editor. The Map editor opens displaying the input metadata of the<b class="cBold"> tRowGenerator</b> component.</li></div>
+<a name="wp2751241"> </a><div class="pSmartList2"><li>Click in the corresponding <b class="cBold">Functions</b> fields and select a function for each of the two columns, <code class="cCode">getFirstName</code> for the first column and <code class="cCode">getrandomDate</code> for the second column.</li></div>
+<a name="wp2751254"> </a><div class="pSmartList2"><li>In the <b class="cBold">Number of Rows for Rowgenerator</b> field, enter 10 to generate ten first name rows and click <b class="cBold">Ok</b> to close the editor.</li></div>
+<a name="wp2751264"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component to open the Map editor. The Map editor opens displaying the input metadata of the<b class="cBold"> tRowGenerator</b> component.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2178727"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751276"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput5.png" id="wp2178724" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput5.png" id="wp2751273" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2178735"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema editor</b> panel of the Map editor, click the plus button of the output table to add two rows and define the first as <em class="cEmphasis">random_date</em> and the second as <em class="cEmphasis">random_date1</em>.</li></div>
+<a name="wp2751284"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema editor</b> panel of the Map editor, click the plus button of the output table to add two rows and define the first as <em class="cEmphasis">random_date</em> and the second as <em class="cEmphasis">random_date1</em>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2178747"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751299"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput6.png" id="wp2178791" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput6.png" id="wp2751296" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2178879"> </a><p class="pIndented1">
+<a name="wp2751305"> </a><p class="pIndented1">
 In this scenario, we want to duplicate the <em class="cEmphasis">random_date</em> column and adapt the schema in order to alter the data in the output component.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2178891"> </a><div class="pSmartList2"><li>In the Map editor, drag the <em class="cEmphasis">random_date </em>row from the input table to the <em class="cEmphasis">random_date</em> and <em class="cEmphasis">random_date1 </em>rows in the output table.</li></div>
+<a name="wp2751317"> </a><div class="pSmartList2"><li>In the Map editor, drag the <em class="cEmphasis">random_date </em>row from the input table to the <em class="cEmphasis">random_date</em> and <em class="cEmphasis">random_date1 </em>rows in the output table.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2178907"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751329"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput7.png" id="wp2178967" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput7.png" id="wp2751326" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2179229"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the editor.</li></div>
-<a name="wp2179247"> </a><div class="pSmartList2"><li>In the workspace, double-click the <b class="cBold">tMysqlOutput</b> component to display its <b class="cBold">Basic settings</b> view and set its parameters.</li></div>
+<a name="wp2751338"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the editor.</li></div>
+<a name="wp2751346"> </a><div class="pSmartList2"><li>In the design workspace, double-click the <b class="cBold">tMysqlOutput</b> component to display its <b class="cBold">Basic settings</b> view and set its parameters.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1606249"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751356"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput8.png" id="wp2179266" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput8.png" id="wp2751353" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2179409"> </a><div class="pSmartList2"><li>Set <b class="cBold">Property Type </b>to <b class="cBold">Repository</b> and then click the three-dot button to open the <b class="cBold">[Repository content] </b>dialog box and select the correct DB connection. The connection details display automatically in the corresponding fields.</li></div>
-<a name="wp2251784"> </a><p class="pBodyRelative">
+<a name="wp2751367"> </a><div class="pSmartList2"><li>Set <b class="cBold">Property Type </b>to <b class="cBold">Repository</b> and then click the three-dot button to open the <b class="cBold">[Repository content] </b>dialog box and select the correct DB connection. The connection details display automatically in the corresponding fields.</li></div>
+<a name="wp2751381"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp2251781" border="0" hspace="0" vspace="0"/><br />
+<img src="images/bulb_small.png" align="left" id="wp2751376" border="0" hspace="0" vspace="0"/><br />
 If you have not stored the DB connection details in the <b class="cBold">Metadata</b> entry in the <b class="cBold">Repository</b>, select <b class="cBold">Built-in</b> on the property type list and set the connection detail manually.
 </p>
-<a name="wp2180159"> </a><div class="pSmartList2"><li>Click the three-dot button next to the <b class="cBold">Table</b> field and select the table to be altered, <em class="cEmphasis">Dates</em> in this scenario. </li></div>
-<a name="wp2180175"> </a><div class="pSmartList2"><li>On the <b class="cBold">Action on table </b>list, select <b class="cBold">Drop table if exists and create</b>, select <em class="cEmphasis">Insert</em> on the <b class="cBold">Action on data</b> list. </li></div>
-<a name="wp2180191"> </a><div class="pSmartList2"><li>If necessary, click <b class="cBold">Sync columns</b> to synchronize with the columns coming from the <b class="cBold">tMap</b> component.</li></div>
-<a name="wp2180203"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the corresponding view and set the advanced parameters. </li></div>
+<a name="wp2751399"> </a><div class="pSmartList2"><li>Click the three-dot button next to the <b class="cBold">Table</b> field and select the table to be altered, <em class="cEmphasis">Dates</em> in this scenario. </li></div>
+<a name="wp2751415"> </a><div class="pSmartList2"><li>On the <b class="cBold">Action on table </b>list, select <b class="cBold">Drop table if exists and create</b>, select <em class="cEmphasis">Insert</em> on the <b class="cBold">Action on data</b> list. </li></div>
+<a name="wp2751431"> </a><div class="pSmartList2"><li>If needed, click <b class="cBold">Sync columns</b> to synchronize with the columns coming from the <b class="cBold">tMap</b> component.</li></div>
+<a name="wp2751438"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the corresponding view and set the advanced parameters. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2180207"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751447"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput10.png" id="wp2180270" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput10.png" id="wp2751444" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2180517"> </a><div class="pSmartList2"><li>In the <b class="cBold">Additional Columns</b> area, set the alteration to be performed on columns.<br />In this scenario, the <em class="cEmphasis">One_month_later</em> column replaces <em class="cEmphasis">random_date_1</em>. Also, the data itself gets altered using an SQL expression that adds one month to the randomly picked-up date of the <em class="cEmphasis">random_date_1</em> column. ex: 2007-08-12 becomes 2007-09-12.<br /><br />-Enter <em class="cEmphasis">One_Month_Later</em> in the <b class="cBold">Name</b> cell.<br />-In the <b class="cBold">SQL expression</b> cell, enter the relevant addition script to be performed, <code class="cCode">&quot;adddate(Random_date, interval 1 month)&quot;</code> in this scenario.<br />-Select <b class="cBold">Replace</b> on the <b class="cBold">Position</b> list.<br />-Enter <em class="cEmphasis">Random_date1</em> on the <b class="cBold">Reference column </b>list.</li></div>
-<a name="wp2251835"> </a><p class="pBodyRelative">
+<a name="wp2751455"> </a><div class="pSmartList2"><li>In the <b class="cBold">Additional Columns</b> area, set the alteration to be performed on columns.<br />In this scenario, the <em class="cEmphasis">One_month_later</em> column replaces <em class="cEmphasis">random_date_1</em>. Also, the data itself gets altered using an SQL expression that adds one month to the randomly picked-up date of the <em class="cEmphasis">random_date_1</em> column. ex: 2007-08-12 becomes 2007-09-12.<br /><br />-Enter <em class="cEmphasis">One_Month_Later</em> in the <b class="cBold">Name</b> cell.<br />-In the <b class="cBold">SQL expression</b> cell, enter the relevant addition script to be performed, <code class="cCode">&quot;adddate(Random_date, interval 1 month)&quot;</code> in this scenario.<br />-Select <b class="cBold">Replace</b> on the <b class="cBold">Position</b> list.<br />-Enter <em class="cEmphasis">Random_date1</em> on the <b class="cBold">Reference column </b>list.</li></div>
+<a name="wp2751502"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp2251832" border="0" hspace="0" vspace="0"/><br />
+<img src="images/bulb_small.png" align="left" id="wp2751497" border="0" hspace="0" vspace="0"/><br />
 For this job we duplicated the <em class="cEmphasis">random_date_1</em> column in the DB table before replacing one instance of it with the <em class="cEmphasis">One_Month_Later</em> column. The aim of this workaround was to be able to view upfront the modification performed.
 </p>
-<a name="wp2180688"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6 </b>to execute it.</li></div>
+<a name="wp2751516"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6 </b>to execute it.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2180722"> </a><p class="pIndented1">
+<a name="wp2751525"> </a><p class="pIndented1">
 The new <em class="cEmphasis">One_month_later</em> column replaces the <em class="cEmphasis">random_date1</em> column in the DB table and adds one month to each of the randomly generated dates.
 </p>
-<a name="wp1606377"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2751536"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput9.png" id="wp2180773" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMySQLOutput9.png" id="wp2751533" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2180768"> </a><p class="pIndented1">
+<a name="wp2751544"> </a><p class="pIndented1">
 Related topic: <a href="tDBOutput_Prop.html#wp1447242"><em class="cEmphasis">tDBOutput properties</em></a>.
+</p>
+<a name="wp2751550"> </a><h2 class="pHeading2">
+Scenario 2: Updating data in a database table
+</h2>
+<a name="wp2751553"> </a><p class="pIndented1">
+This Java scenario describes a two-component Job that updates data in a MySQL table according to that in a delimited file.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2751571"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tFileInputDelimited</b> and <b class="cBold">tMySQLOutput</b> from the <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp2751580"> </a><div class="pSmartList2"><li>Connect the two components together using a <b class="cBold">Row Main</b> link.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2751587"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput11.png" id="wp2751584" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2751598"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+<a name="wp2751611"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b>  if you have already stored the metadata of the delimited file in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view. Otherwise, select <b class="cBold">Built-In</b> to define manually the metadata of the delimited file. <br />For more information about storing metadata, see <em class="cEmphasis">Setting up a File Delimited schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2751635"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput12.png" id="wp2751632" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2751643"> </a><div class="pSmartList2"><li>In the <b class="cBold">File Name </b>field, click the three-dot button and browse to the source delimited file that contains the modifications to propagate in the MySQL table. <br />In this example, we use the <em class="cEmphasis">customer_update</em> file that holds four columns: <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">CustomerAddress </em>and <em class="cEmphasis">idState</em>. Some of the data in these four columns is different from that in the MySQL table.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2751670"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlOutput16.png" id="wp2751667" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2751676"> </a><div class="pSmartList2"><li>Define the row and field separators used in the source file in the corresponding fields.</li></div>
+<a name="wp2751688"> </a><div class="pSmartList2"><li>If needed, set <b class="cBold">Header</b>, <b class="cBold">Footer</b> and <b class="cBold">Limit</b>. <br />In this example, <b class="cBold">Header</b> is set to 1 since the first row holds the names of columns, therefore it should be ignored. Also, the number of processed lines is limited to 2000.</li></div>
+<a name="wp2751704"> </a><div class="pSmartList2"><li>Select <b class="cBold">Built in</b> from the <b class="cBold">Schema</b> list then click the three-dot button next to <b class="cBold">Edit Schema </b>to open a dialog box where you can describe the data structure of the source delimited file that you want to pass to the component that follows. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2751713"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput13.png" id="wp2751710" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2751721"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Key</b> check box(es) next to the column name(s) you want to define as key column(s).</li></div>
+<a name="wp2751729"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp2751727" border="0" hspace="0" vspace="0"/><br />
+It is necessary to define at least one column as a key column for the Job to be executed correctly. Otherwise, the Job is automatically interrupted and an error message displays on the console. 
+</p>
+<a name="wp2751741"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tMysqlOutput</b> to open its <b class="cBold">Basic settings</b> view where you can define its properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2751750"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlOutput15.png" id="wp2751747" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2751758"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema of the preceding component. If needed, click the three-dot button next to <b class="cBold">Edit schema</b> to open a dialog box where you can check the retrieved schema. </li></div>
+<a name="wp2751771"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b> if you have already stored the connection metadata in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view. Otherwise, select <b class="cBold">Built-In</b> to define manually the connection information. <br />For more information about storing metadata, see <em class="cEmphasis">Setting up a DB connection</em> of <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
+<a name="wp2751791"> </a><div class="pSmartList2"><li>Fill in the database connection information in the corresponding fields.</li></div>
+<a name="wp2751798"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table </b>field, enter the name of the table to update.</li></div>
+<a name="wp2751807"> </a><div class="pSmartList2"><li>From the <b class="cBold">Action on table</b> list, select the operation you want to perform, <b class="cBold">None</b> in this example since the table already exists.</li></div>
+<a name="wp2751817"> </a><div class="pSmartList2"><li>From the <b class="cBold">Action on data </b>list, select the operation you want to perform on the data, <b class="cBold">Update</b> in this example.</li></div>
+<a name="wp2751826"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2751833"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput20.png" id="wp2751830" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2752883"> </a><p class="pIndented1">
+Using you DB browser, you can verify if the MySQL table, <em class="cEmphasis">customers, </em>has been modified according to the delimited file. 
+</p>
+<a name="wp2752910"> </a><p class="pIndented1">
+In the above example, the database table has always the four columns <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">CustomerAddress</em> and <em class="cEmphasis">idState</em>, but certain fields have been modified according to the data in the delimited file used.
 </p>
     </blockquote>
     <hr>

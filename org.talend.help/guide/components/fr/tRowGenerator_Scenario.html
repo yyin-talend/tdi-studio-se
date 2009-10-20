@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:51">
+    <meta name="LASTUPDATED" content="10/19/09 17:33:12">
     <title>Scénario&#160;: Génération aléatoire de fichiers de test</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tRowGenerator_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Orchestration_group_intro.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tRowGenerator_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="MultiSchema_group_intro.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scénario&#160;: Génération aléatoire de fichiers de test
 </h2>
 <a name="wp1562217"> </a><p class="pIndented1">
-Le scénario suivant décrit un job de deux composants, générant 50&#160;lignes composées de la manière suivante&#160;: un ID aléatoire compris entre 1 et 3, un nom et un prénom pris de manière aléatoire dans une liste de chaînes de caractères et le champ Date définie dans une période données.
+Le scénario suivant décrit un Job de deux composants, générant 50&#160;lignes composées de la manière suivante&#160;: un ID aléatoire compris entre 1 et 3, un nom et un prénom pris de manière aléatoire dans une liste de chaînes de caractères et le champ Date définie dans une période données.
 </p>
 <a name="wp1562225"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,12 +37,10 @@ Le scénario suivant décrit un job de deux composants, générant 50&#160;lignes co
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1562235"> </a><div class="pSmartList2"><li>Cliquez et déposez un composant <b class="cBold">tRowGenerator</b> et un composant <b class="cBold">tLogRow</b> dans l&#39;espace de modélisation.</li></div>
-<a name="wp1555284"> </a><div class="pSmartList2"><li>Cliquez-droit sur le composant <b class="cBold">tRowGenerator</b> et sélectionnez le lien <em class="cEmphasis">Row &gt; Main</em>. Faites glisser ce lien jusqu&#39;au composant <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1555295"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tRowGenerator</b> pour ouvrir l&#39;éditeur.</li></div>
-<a name="wp1555300"> </a><div class="pSmartList2"><li>Définissez les champs à générer.</li></div>
-</ul></div>
+<a name="wp1562235"> </a><div class="pSmartList1"><li>Cliquez et déposez un composant <b class="cBold">tRowGenerator</b> et un composant <b class="cBold">tLogRow</b> dans l&#39;espace de modélisation.</li></div>
+<a name="wp1555284"> </a><div class="pSmartList1"><li>Cliquez-droit sur le composant <b class="cBold">tRowGenerator</b> et sélectionnez le lien <em class="cEmphasis">Row &gt; Main</em>. Faites glisser ce lien jusqu&#39;au composant <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1555295"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tRowGenerator</b> pour ouvrir l&#39;éditeur.</li></div>
+<a name="wp1555300"> </a><div class="pSmartList1"><li>Définissez les champs à générer.</li></div>
 </ul></div>
 <a name="wp1555307"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -50,11 +48,9 @@ Le scénario suivant décrit un job de deux composants, générant 50&#160;lignes co
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1555312"> </a><div class="pSmartList2"><li>La colonne ID (<em class="cEmphasis">random_ID</em>) est de type entier (<b class="cBold">integer</b>), les noms et prénoms sont de type chaîne de caractère (<b class="cBold">string</b>) et la <em class="cEmphasis">Date</em> est de type <b class="cBold">date</b>.</li></div>
-<a name="wp1555320"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Function</b>, sélectionnez la fonction adaptée dans la liste ou les trois points [...] pour la fonction personnalisée.</li></div>
-<a name="wp1563227"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Function parameters</b>, définissez les valeurs à prendre de façon aléatoire.</li></div>
-</ul></div>
+<a name="wp1555312"> </a><div class="pSmartList1"><li>La colonne ID (<em class="cEmphasis">random_ID</em>) est de type entier (<b class="cBold">integer</b>), les noms et prénoms sont de type chaîne de caractère (<b class="cBold">string</b>) et la <em class="cEmphasis">Date</em> est de type <b class="cBold">date</b>.</li></div>
+<a name="wp1555320"> </a><div class="pSmartList1"><li>Dans la colonne <b class="cBold">Function</b>, sélectionnez la fonction adaptée dans la liste ou les trois points [...] pour la fonction personnalisée.</li></div>
+<a name="wp1563227"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Function parameters</b>, définissez les valeurs à prendre de façon aléatoire.</li></div>
 </ul></div>
 <a name="wp1563234"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -62,14 +58,12 @@ Le scénario suivant décrit un job de deux composants, générant 50&#160;lignes co
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1563244"> </a><div class="pSmartList2"><li>Les colonnes <em class="cEmphasis">First_Name</em> et <em class="cEmphasis">Last_Name</em> sont à générer à l&#39;aide d&#39;une fonction <code class="cCode">getAsciiRandomString</code> prédéfinie dans les routines système. Par défaut, la longueur définie est de 6&#160;caractères, mais vous pouvez le changer.</li></div>
-<a name="wp1563251"> </a><div class="pSmartList2"><li>La colonne <em class="cEmphasis">Date</em> appelle également une fonction prédéfinie <code class="cCode">getRandomDate</code>. Vous pouvez éditer les valeurs de paramètre dans l&#39;onglet <b class="cBold">Function parameters</b>.</li></div>
-<a name="wp1563353"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Number of Rows</b>, paramétrez le nombre de lignes à 50.</li></div>
-<a name="wp1555368"> </a><div class="pSmartList2"><li>Cliquez sur OK pour valider les paramètres.</li></div>
-<a name="wp1555371"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant tLogRow pour visulaliser les paramètres dans l&#39;onglet <b class="cBold">Basic settings</b>. Retenez les paramètres par défaut.</li></div>
-<a name="wp1564213"> </a><div class="pSmartList2"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter le job.</li></div>
-</ul></div>
+<a name="wp1563244"> </a><div class="pSmartList1"><li>Les colonnes <em class="cEmphasis">First_Name</em> et <em class="cEmphasis">Last_Name</em> sont à générer à l&#39;aide d&#39;une fonction <code class="cCode">getAsciiRandomString</code> prédéfinie dans les routines système. Par défaut, la longueur définie est de 6&#160;caractères, mais vous pouvez le changer.</li></div>
+<a name="wp1563251"> </a><div class="pSmartList1"><li>La colonne <em class="cEmphasis">Date</em> appelle également une fonction prédéfinie <code class="cCode">getRandomDate</code>. Vous pouvez éditer les valeurs de paramètre dans l&#39;onglet <b class="cBold">Function parameters</b>.</li></div>
+<a name="wp1563353"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Number of Rows</b>, paramétrez le nombre de lignes à 50.</li></div>
+<a name="wp1555368"> </a><div class="pSmartList1"><li>Cliquez sur OK pour valider les paramètres.</li></div>
+<a name="wp1555371"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant tLogRow pour visulaliser les paramètres dans l&#39;onglet <b class="cBold">Basic settings</b>. Retenez les paramètres par défaut.</li></div>
+<a name="wp1564213"> </a><div class="pSmartList1"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter le Job.</li></div>
 </ul></div>
 <a name="wp1564220"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -98,7 +92,7 @@ Les 50&#160;lignes sont générées selon les paramètres définis dans l&#39;éditeur
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tRowGenerator_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Orchestration_group_intro.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tRowGenerator_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="MultiSchema_group_intro.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

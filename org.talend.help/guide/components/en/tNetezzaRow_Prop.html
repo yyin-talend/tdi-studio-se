@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <title>tNetezzaRow</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tNetezzaRollback_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNetezzaRow_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2667923"> </a><h2 class="pHeading1">
+tNetezzaRow
+</h2>
+<a name="wp2667935"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tNetezzaRow_icon32_white.png" id="wp2667928" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2667946"> </a><h2 class="pHeading2">
+tNetezzaRow properties
+</h2>
+<a name="wp2668360"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2667958table2667950">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2667958"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp2667961"> </a><div class="pCellBody">
+Databases/Netezza
+</div>
+</td>
+    <td><a name="wp2667973"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_iconbh.png" id="wp2667968" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2667981"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2667988"> </a><div class="pCellBody">
+<b class="cBold">tNetezzaRow</b> is the specific component for this database query. It executes the SQL query stated onto the specified database. The row suffix means that the component implements a flow in the job design although it does not provide output. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2667999"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2668006"> </a><div class="pCellBody">
+Depending on the nature of the query and the database, <b class="cBold">tNetezzaRow</b> acts on the actual DB structure or on the data (although without handling data). The SQLBuilder tool helps you write easily your SQL statements.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668017"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2668024"> </a><div class="pCellBody">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp2668027"> </a><div class="pCellBody">
+Either Built-in or Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668031"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668034"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668041"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: No property data stored centrally.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668045"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668048"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668055"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668059"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668065"> </a><div class="pCellBody">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp2668069"> </a><div class="pCellBody">
+Select this check box and click the relevant <b class="cBold">tNetezzaConnection </b>component on the <b class="cBold">Component list</b> to reuse the connection details you already defined.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668077"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668084"> </a><div class="pCellBody">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp2668087"> </a><div class="pCellBody">
+Database server IP address
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668091"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668098"> </a><div class="pCellBody">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp2668101"> </a><div class="pCellBody">
+Listening port number of DB server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668105"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668112"> </a><div class="pCellBody">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp2668115"> </a><div class="pCellBody">
+Name of the database
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668119"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668126"> </a><div class="pCellBody">
+<em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp2668133"> </a><div class="pCellBody">
+DB user authentication data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668137"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668147"> </a><div class="pCellBody">
+<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2668151"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668155"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668158"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668165"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668176"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668179"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668186"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2674076"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2674078"> </a><div class="pCellBody">
+<em class="cEmphasis">Table Name</em>
+</div>
+</td>
+    <td><a name="wp2674080"> </a><div class="pCellBody">
+Enter the name of the table to be processed.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668197"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668204"> </a><div class="pCellBody">
+<em class="cEmphasis">Query type</em>
+</div>
+</td>
+    <td><a name="wp2668207"> </a><div class="pCellBody">
+Either Built-in or Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668211"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668214"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668221"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: Fill in manually the query statement or build it graphically using SQLBuilder
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668225"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668228"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668235"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the relevant query stored in the Repository. The Query field gets accordingly filled in.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668239"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668246"> </a><div class="pCellBody">
+<em class="cEmphasis">Query</em>
+</div>
+</td>
+    <td><a name="wp2668249"> </a><div class="pCellBody">
+Enter your DB query paying particularly attention to properly sequence the fields in order to match the schema definition. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668253"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668260"> </a><div class="pCellBody">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp2668263"> </a><div class="pCellBody">
+Clear this check box to skip the row on error and complete the process for error-free rows. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668271"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2668277"> </a><div class="pCellBody">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+</td>
+    <td><a name="wp2668281"> </a><div class="pCellBody">
+Specify additional connection properties in the existing DB connection
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668285"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668291"> </a><div class="pCellBody">
+<em class="cEmphasis">Propagate QUERY&#39;s recordset</em>
+</div>
+</td>
+    <td><a name="wp2668295"> </a><div class="pCellBody">
+Select this check box to insert the result of the query into a COLUMN of the current flow
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668299"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668306"> </a><div class="pCellBody">
+<em class="cEmphasis">Encoding Type</em>
+</div>
+</td>
+    <td><a name="wp2668313"> </a><div class="pCellBody">
+Select the encoding from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668317"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668324"> </a><div class="pCellBody">
+<em class="cEmphasis">Commit every</em>
+</div>
+</td>
+    <td><a name="wp2668327"> </a><div class="pCellBody">
+Number of rows to be completed before committing batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2668331"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2668338"> </a><div class="pCellBody">
+<em class="cEmphasis">tState</em>Catcher Statistics
+</div>
+</td>
+    <td><a name="wp2668341"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2668349"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2668352"> </a><div class="pCellBody">
+This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tNetezzaRollback_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNetezzaRow_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

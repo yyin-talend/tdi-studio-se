@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
+    <title>tDB2CDC</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tDB2BulkExec_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCDC_Scenariofgz.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2783025"> </a><h2 class="pHeading1">
+tDB2CDC
+</h2>
+<a name="wp2783035"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tdb2cdc_white.png" id="wp2783030" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2783045"> </a><h2 class="pHeading2">
+Propriétés du tDB2CDC
+</h2>
+<a name="wp2783407"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2783057table2783049">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783057"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp2783060"> </a><div class="pCellBody">
+Databases/DB2
+</div>
+</td>
+    <td><a name="wp2783071"> </a><div class="pCellBody">
+<img src="images/java_iconbe.png" id="wp2783067" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783079"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2783086"> </a><div class="pCellBody">
+Le composant <b class="cBold">tDB2CDC </b>extrait les données modifiées d&#39;une table source à partir de la dernière extraction et migration de données vers un ou plusieurs autre(s) système(s).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783097"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2783108"> </a><div class="pCellBody">
+Le <b class="cBold">tDB2CDC</b> permet l&#39;extraction et la migration de données. <b class="cBold">tDB2CDC</b> extrait uniquement les changements apportés aux données source et les met à disposition de(s) système(s) cible(s) utilisant l&#39;aperçu de base de données CDC.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783119"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2783126"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp2783129"> </a><div class="pCellBody">
+Peut-être Built-in ou Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783133"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783136"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783143"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Propriétés utilisées ponctuellement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783147"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783150"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783157"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Sélectionnez le fichier de propriétés du composant dans le Repository. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+<a name="wp2783165"> </a><div class="pCellBody">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2783162" border="0" hspace="0" vspace="0"/></table></div><div class="pCellBody">
+<span style="font-style: normal">Réinitialisez le type de base de données en cliquant sur le bouton adéquat afin de sélectionner la connexion CDC. </span>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783170"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783176"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use existing connection</em>
+</div>
+</td>
+    <td><a name="wp2783180"> </a><div class="pCellBody">
+Cochez cette case lorsque vous utilisez un composant <b class="cBold">tDB2Connection</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783188"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783195"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp2783198"> </a><div class="pCellBody">
+Adresse IP du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783202"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783209"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp2783212"> </a><div class="pCellBody">
+Numéro du port d&#39;écoute du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783216"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783223"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp2783226"> </a><div class="pCellBody">
+Nom de la base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783230"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783237"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>
+</div>
+</td>
+    <td><a name="wp2783240"> </a><div class="pCellBody">
+Nom du schéma.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783244"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783251"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp2783258"> </a><div class="pCellBody">
+Informations d&#39;authentification sur l&#39;utilisateur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783262"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783269"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema using CDC</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2783276"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le <b class="cBold">Repository</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783284"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783287"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783294"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma sera créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> <b class="cBold">Talend Open Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783306"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783309"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783316"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et Jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> <b class="cBold">Talend Open Studio</b>.
+</div>
+<a name="wp2783333"> </a><div class="pCellBody">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_icon.gif" align="left" id="wp2783329" border="0" hspace="0" vspace="0"/></table></div><div class="pCellBody">
+
+</div>
+<a name="wp2783334"> </a><div class="pCellBody">
+Réinitialisez le type de base de données en cliquant sur le bouton adéquat afin de sélectionner la connexion CDC.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783338"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783345"> </a><div class="pCellHeading">
+<em class="cEmphasis">Table Name</em>
+</div>
+</td>
+    <td><a name="wp2783348"> </a><div class="pCellBody">
+Nom de la table source dans laquelle capturer les changements apportés aux données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783352"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783359"> </a><div class="pCellHeading">
+<em class="cEmphasis">Subscriber</em>
+</div>
+</td>
+    <td><a name="wp2783362"> </a><div class="pCellBody">
+Saisissez le nom de l&#39;application qui utilisera la table de modifications.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2783366"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2783373"> </a><div class="pCellHeading">
+<em class="cEmphasis">Events to catch</em>
+</div>
+</td>
+    <td><a name="wp2783380"> </a><div class="pCellBody">
+<b class="cBold">Insert</b>&#160;: Cochez cette case pour capturer les données insérées dans la table de modifications depuis la dernière extraction.<br /><b class="cBold">Update&#160;</b>: Cochez cette case pour capturer les données mises à jour dans la table de modifications depuis la dernière extraction.<br /><b class="cBold">Delete</b>&#160;: Cochez cette case pour capturer les données supprimées dans la table de modifications depuis la dernière extraction.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2783396"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2783399"> </a><div class="pCellBody">
+Ce composant est généralement utilisé comme composant de début. Il nécessite un composant de sortie et une connexion de type row Main.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tDB2BulkExec_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tOracleCDC_Scenariofgz.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

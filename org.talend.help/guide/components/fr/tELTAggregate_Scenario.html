@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:34">
+    <meta name="LASTUPDATED" content="10/19/09 17:31:48">
     <title>Scénario&#160;: Filtrer et agréger les colonnes d&#39;une table directement dans le SGBD</title>
   </head>
 
@@ -29,48 +29,40 @@
 Scénario&#160;: Filtrer et agréger les colonnes d&#39;une table directement dans le SGBD
 </h2>
 <a name="wp1614261"> </a><p class="pIndented1">
-Le scénario Java suivant crée un job qui ouvre une connexion à une base de données Mysql et&#160;:
+Le scénario Java suivant crée un Job qui ouvre une connexion à une base de données Mysql et&#160;:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1614266"> </a><div class="pSmartList2"><li>crée un schéma à partir de la table d&#39;une base de données, les lignes de ce schéma correspondent aux noms des colonnes spécifiées dans le filtre,</li></div>
-<a name="wp1614270"> </a><div class="pSmartList2"><li>filtre les colonnes de cette même table afin de n&#39;obtenir que les données correspondant aux colonnes filtrées,</li></div>
-<a name="wp1614274"> </a><div class="pSmartList2"><li>collecte les données de la colonne filtrée, regroupées en fonction d&#39;une valeur spécifique et écrit les données agrégées dans la table de cible.</li></div>
-</ul></div>
+<a name="wp1614266"> </a><div class="pSmartList1"><li>crée un schéma à partir de la table d&#39;une base de données, les lignes de ce schéma correspondent aux noms des colonnes spécifiées dans le filtre,</li></div>
+<a name="wp1614270"> </a><div class="pSmartList1"><li>filtre les colonnes de cette même table afin de n&#39;obtenir que les données correspondant aux colonnes filtrées,</li></div>
+<a name="wp1614274"> </a><div class="pSmartList1"><li>collecte les données de la colonne filtrée, regroupées en fonction d&#39;une valeur spécifique et écrit les données agrégées dans la table de cible.</li></div>
 </ul></div>
 <a name="wp1614280"> </a><p class="pIndented1">
 Pour filtrer et agréger les colonnes de la table de votre base de données&#160;:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1562134"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants dans l&#39;espace de modélisation&#160;: <b class="cBold">tELTMysqlconnection</b>, <b class="cBold">tELTFilterColumns</b>, <b class="cBold">tELTFilterRows</b>, <b class="cBold">tELTAggregate</b>, <b class="cBold">tELTCommit</b> et <b class="cBold">tELTRollback</b>.</li></div>
-<a name="wp1562069"> </a><div class="pSmartList2"><li>Connectez les cinq composants à l&#39;aide de liens de type <b class="cBold">OnComponentOk</b>.</li></div>
-<a name="wp1562082"> </a><div class="pSmartList2"><li>Connectez les composants <b class="cBold">tELTAggregate</b> et <b class="cBold">tELTRollback</b> à l&#39;aide d&#39;un lien de type <b class="cBold">OnComponentError</b>.</li></div>
+<a name="wp1562134"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants dans l&#39;espace de modélisation&#160;: <b class="cBold">tELTMysqlconnection</b>, <b class="cBold">tELTFilterColumns</b>, <b class="cBold">tELTFilterRows</b>, <b class="cBold">tELTAggregate</b>, <b class="cBold">tELTCommit</b> et <b class="cBold">tELTRollback</b>.</li></div>
+<a name="wp1562069"> </a><div class="pSmartList1"><li>Connectez les cinq composants à l&#39;aide de liens de type <b class="cBold">OnComponentOk</b>.</li></div>
+<a name="wp1728924"> </a><div class="pSmartList1"><li>Connectez les composants <b class="cBold">tELTAggregate</b> et <b class="cBold">tELTRollback</b> à l&#39;aide d&#39;un lien de type <b class="cBold">OnComponentError</b>.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp1562101"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1728936"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/ELT_aggregate.png" id="wp1562125" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/ELT_aggregate.png" id="wp1728933" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1612594"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, sélectionnez le <b class="cBold">tMysqlConnection</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
-<a name="wp1609650"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b>, renseignez manuellement les informations de connexion ou sélectionnez-les à partir des variables de contexte, via la raccourci <b class="cBold">Ctrl+Space</b> cliquez sur le champ correspondant si les vous avez stocké sous le noeud <b class="cBold">DB connection</b> du répertoire <b class="cBold">Metadata</b> du <b class="cBold">Repository</b>.</li></div>
+<a name="wp1728944"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, sélectionnez le <b class="cBold">tMysqlConnection</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
+<a name="wp1728954"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b>, renseignez manuellement les informations de connexion ou sélectionnez-les à partir des variables de contexte, via la raccourci <b class="cBold">Ctrl+Space</b> cliquez sur le champ correspondant si les vous avez stocké sous le noeud <b class="cBold">DB connection</b> du répertoire <b class="cBold">Metadata</b> du <b class="cBold">Repository</b>.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp1615140"> </a><p class="pIndented1">
+<a name="wp1728974"> </a><p class="pIndented1">
 Pour plus d&#39;informations sur les métadonnées, consultez <em class="cEmphasis">Définition des schémas de métadonnées</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </p>
-<a name="wp1615149"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp1728988"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Aggregate_Job1.png" id="wp1615146" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Aggregate_Job1.png" id="wp1728985" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1615160"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tELTFilterColumns</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
-</ul></div>
+<a name="wp1728996"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tELTFilterColumns</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
 </ul></div>
 <a name="wp1615280"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -78,26 +70,22 @@ Pour plus d&#39;informations sur les métadonnées, consultez <em class="cEmphasis
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1615168"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Database type</b>, sélectionnez la base de données adéquate.</li></div>
-<a name="wp1615174"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Component list</b>, sélectionnez le composant de connexion à la base de données si plusieurs composants de connexion sont utilisés dans votre job.</li></div>
-<a name="wp1615178"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Database name</b>, saisissez le nom de la base de données à laquelle vous vous êtes connecté.</li></div>
-<a name="wp1620066"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Source table name</b>, saisissez le nom de votre table source contenant les données que vous souhaitez traiter et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure des données de votre table source.</li></div>
-<a name="wp1620057"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Target table name</b>, saisissez le nom de la table cible contenant vos nouvelles données traitées et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure de la table cible.</li></div>
+<a name="wp1615168"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Database type</b>, sélectionnez la base de données adéquate.</li></div>
+<a name="wp1615174"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Component list</b>, sélectionnez le composant de connexion à la base de données si plusieurs composants de connexion sont utilisés dans votre Job.</li></div>
+<a name="wp1615178"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Database name</b>, saisissez le nom de la base de données à laquelle vous vous êtes connecté.</li></div>
+<a name="wp1620066"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Source table name</b>, saisissez le nom de votre table source contenant les données que vous souhaitez traiter et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure des données de votre table source.</li></div>
+<a name="wp1620057"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Target table name</b>, saisissez le nom de la table cible contenant vos nouvelles données traitées et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure de la table cible.</li></div>
 <a name="wp1636305"> </a><p class="pBodyRelative">
 <br />
 <img src="images/bulb_small.png" align="left" id="wp1636303" border="0" hspace="0" vspace="0"/><br />
 Lorsque vous définissez la structure des données de la table source, le nom des colonnes apparaît automatiquement dans la colonne <b class="cBold">Column</b> du tableau <b class="cBold">Column filters</b>.
 </p>
 </ul></div>
-</ul></div>
 <a name="wp1615294"> </a><p class="pIndented1">
 Dans ce scénario, la table source contient les cinq colonnes&#160;: <em class="cEmphasis">id, First_Name, Last_Name, Address </em>et <em class="cEmphasis">id_State</em>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1620187"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Column filters</b>, filtrez les colonnes en cochant la case des colonnes que vous souhaitez écrire dans votre table cible.</li></div>
-</ul></div>
+<a name="wp1620187"> </a><div class="pSmartList1"><li>Dans le tableau <b class="cBold">Column filters</b>, filtrez les colonnes en cochant la case des colonnes que vous souhaitez écrire dans votre table cible.</li></div>
 </ul></div>
 <a name="wp1620195"> </a><p class="pIndented1">
 Dans ce scénario, le composant <b class="cBold">tELTFilterColumns </b>ne garde que les colonnes <em class="cEmphasis">id, First_Name </em>et <em class="cEmphasis">id_State </em>de la table source.
@@ -105,12 +93,10 @@ Dans ce scénario, le composant <b class="cBold">tELTFilterColumns </b>ne garde q
 <a name="wp1636343"> </a><p class="pBodyRelative">
 </p>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp1636340" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-Dans la vue <b class="cBold">Component</b>, vous pouvez cliquer sur l&#39;onglet <b class="cBold">SQL Pattern</b> et ajouter des modèles SQL du système ou créer vos propres modèles SQL et les utilisez dans votre job afin d&#39;effectuer les opérations que vous souhaitez. Pour plus d&#39;informations<a href="tELTFilterColumns_Prop.html#wp1560801">, see&#160;<em class="cEmphasis">Propriétés du tELTFilterColumns.</em></a>.
+Dans la vue <b class="cBold">Component</b>, vous pouvez cliquer sur l&#39;onglet <b class="cBold">SQL Pattern</b> et ajouter des modèles SQL du système ou créer vos propres modèles SQL et les utilisez dans votre Job afin d&#39;effectuer les opérations que vous souhaitez. Pour plus d&#39;informations<a href="tELTFilterColumns_Prop.html#wp1560801">, consultez&#160;<em class="cEmphasis">Propriétés du tELTFilterColumns.</em></a>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1616828"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tELTFilterRows</b> et cliquez sur l&#39;onglet <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
-</ul></div>
+<a name="wp1616828"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tELTFilterRows</b> et cliquez sur l&#39;onglet <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
 </ul></div>
 <a name="wp1615529"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -118,34 +104,28 @@ Dans la vue <b class="cBold">Component</b>, vous pouvez cliquer sur l&#39;onglet
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1615388"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Database type</b>, sélectionnez la base de données adéquate.</li></div>
-<a name="wp1615005"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Component list</b>, sélectionnez le composant de connexion à la base de données si plusieurs composants de connexion sont utilisés dans votre job.</li></div>
-<a name="wp1620572"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Database name</b>, saisissez le nom de la base de données à laquelle vous vous êtes connecté.</li></div>
-<a name="wp1620579"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Source table name</b>, saisissez le nom de votre table source contenant les données que vous souhaitez traiter et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure des données de votre table source.</li></div>
-<a name="wp1620589"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Target table name</b>, saisissez le nom de la table cible contenant vos nouvelles données traitées et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure de la table cible.</li></div>
-</ul></div>
+<a name="wp1615388"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Database type</b>, sélectionnez la base de données adéquate.</li></div>
+<a name="wp1615005"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Component list</b>, sélectionnez le composant de connexion à la base de données si plusieurs composants de connexion sont utilisés dans votre Job.</li></div>
+<a name="wp1620572"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Database name</b>, saisissez le nom de la base de données à laquelle vous vous êtes connecté.</li></div>
+<a name="wp1620579"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Source table name</b>, saisissez le nom de votre table source contenant les données que vous souhaitez traiter et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure des données de votre table source.</li></div>
+<a name="wp1620589"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Target table name</b>, saisissez le nom de la table cible contenant vos nouvelles données traitées et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure de la table cible.</li></div>
 </ul></div>
 <a name="wp1620724"> </a><p class="pIndented1">
 Dans ce scénario, la table source et la table cible contiennent les trois colonnes <em class="cEmphasis">filtrées id, First_Name </em>et <em class="cEmphasis">id_State</em>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1620796"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Where condition</b>, saisissez la commande WHERE vous permettant de n&#39;extraire que les champs correspondant à vos critères.</li></div>
-</ul></div>
+<a name="wp1620796"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Where condition</b>, saisissez la commande WHERE vous permettant de n&#39;extraire que les champs correspondant à vos critères.</li></div>
 </ul></div>
 <a name="wp1620807"> </a><p class="pIndented1">
 Dans ce scénario, le composant <b class="cBold">tELTFilterRows</b> filtre la colonne <em class="cEmphasis">First_Name </em>de la table source pour n&#39;obtenir que les prénoms commencent par la lettre &quot;a&quot;.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1620759"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tELTAggregate</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
-<a name="wp1613150"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Database type</b>, sélectionez la base de données adéquate.</li></div>
-<a name="wp1613158"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Component list</b>, sélectionnez le composant de connexion à la base de données si plusieurs composants de connexion sont utilisés dans votre job.</li></div>
-<a name="wp1621031"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Database name</b>, saisissez le nom de la base de données à laquelle vous vous êtes connecté.</li></div>
-<a name="wp1621038"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Source table name</b>, saisissez le nom de votre table source contenant les données que vous souhaitez traiter et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure des données de votre table source.</li></div>
-<a name="wp1621048"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Target table name</b>, saisissez le nom de la table cible contenant vos nouvelles données traitées et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure de la table cible.</li></div>
-</ul></div>
+<a name="wp1620759"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tELTAggregate</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
+<a name="wp1613150"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Database type</b>, sélectionez la base de données adéquate.</li></div>
+<a name="wp1613158"> </a><div class="pSmartList1"><li>Dans la liste <b class="cBold">Component list</b>, sélectionnez le composant de connexion à la base de données si plusieurs composants de connexion sont utilisés dans votre Job.</li></div>
+<a name="wp1621031"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Database name</b>, saisissez le nom de la base de données à laquelle vous vous êtes connecté.</li></div>
+<a name="wp1621038"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Source table name</b>, saisissez le nom de votre table source contenant les données que vous souhaitez traiter et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure des données de votre table source.</li></div>
+<a name="wp1621048"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Target table name</b>, saisissez le nom de la table cible contenant vos nouvelles données traitées et cliquez sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour définir la structure de la table cible.</li></div>
 </ul></div>
 <a name="wp1616321"> </a><p class="pIndented1">
 Le schéma de la table source est composé de trois colonnes&#160;: <em class="cEmphasis">id, First_Name </em>et <em class="cEmphasis">id_State.</em> Le schéma de la table cible est composé de deux colonnes&#160;: <em class="cEmphasis">customers_status</em> et <em class="cEmphasis">customers_number.</em> Dans ce scénario, nous souhaitons regrouper les clients par statut marital et compter le nombre de client pour chaque groupe marital. Pour cela, définissez les tableaux <b class="cBold">Operations</b> et <b class="cBold">Grouped by</b>.
@@ -156,16 +136,14 @@ Le schéma de la table source est composé de trois colonnes&#160;: <em class="cEm
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1616349"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Operations</b>, cliquez sur le bouton (+) pour ajouter une ou plusieurs lignes et cliquez dans la cellule de la colonne <b class="cBold">Output column</b> et sélectionnez la colonne de sortie qui contiendra les données à compter.</li></div>
-<a name="wp1616363"> </a><div class="pSmartList2"><li>Cliquez dans la cellule de la colonne <b class="cBold">Function</b> et sélectionnez l&#39;opération à effectuer.</li></div>
-<a name="wp1616369"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Group by</b>, cliquez sur le bouton (+) pour ajouter une ou plusieurs lignes et cliquez dans la cellule de la colonne <b class="cBold">Output column </b>pour sélectionner la colonne de sortie qui contiendra les données agrégées.</li></div>
-<a name="wp1616385"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tELTCommit</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
-<a name="wp1616393"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Database type</b>, sélectionnez la base de données adéquate.</li></div>
-<a name="wp1616399"> </a><div class="pSmartList2"><li>Dans la liste déroulante <b class="cBold">Component list</b>, sélectionnez le composant de connexion à la base de données si plusieurs composants de connexion sont utilisés dans votre job.</li></div>
-<a name="wp1616407"> </a><div class="pSmartList2"><li>Effectuez la même procédure pour le composant <b class="cBold">tELTRollback</b>.</li></div>
-<a name="wp1616415"> </a><div class="pSmartList2"><li>Enregistrez le job et appuyez sur  <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
-</ul></div>
+<a name="wp1616349"> </a><div class="pSmartList1"><li>Dans le tableau <b class="cBold">Operations</b>, cliquez sur le bouton (+) pour ajouter une ou plusieurs lignes et cliquez dans la cellule de la colonne <b class="cBold">Output column</b> et sélectionnez la colonne de sortie qui contiendra les données à compter.</li></div>
+<a name="wp1616363"> </a><div class="pSmartList1"><li>Cliquez dans la cellule de la colonne <b class="cBold">Function</b> et sélectionnez l&#39;opération à effectuer.</li></div>
+<a name="wp1616369"> </a><div class="pSmartList1"><li>Dans le tableau <b class="cBold">Group by</b>, cliquez sur le bouton (+) pour ajouter une ou plusieurs lignes et cliquez dans la cellule de la colonne <b class="cBold">Output column </b>pour sélectionner la colonne de sortie qui contiendra les données agrégées.</li></div>
+<a name="wp1616385"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, sélectionnez le composant <b class="cBold">tELTCommit</b> et cliquez sur la vue <b class="cBold">Component</b> pour paramétrer ses propriétés.</li></div>
+<a name="wp1616393"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Database type</b>, sélectionnez la base de données adéquate.</li></div>
+<a name="wp1616399"> </a><div class="pSmartList1"><li>Dans la liste déroulante <b class="cBold">Component list</b>, sélectionnez le composant de connexion à la base de données si plusieurs composants de connexion sont utilisés dans votre Job.</li></div>
+<a name="wp1616407"> </a><div class="pSmartList1"><li>Effectuez la même procédure pour le composant <b class="cBold">tELTRollback</b>.</li></div>
+<a name="wp1616415"> </a><div class="pSmartList1"><li>Enregistrez le Job et appuyez sur  <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
 </ul></div>
 <a name="wp1616421"> </a><p class="pIndented1">
 La table <em class="cEmphasis">aggregate_customers</em> composée de deux colonnes est créée dans la base de données. Elle regroupe les clients en fonction de leur statut marital et compte le nombre de client pour chaque statut marital.

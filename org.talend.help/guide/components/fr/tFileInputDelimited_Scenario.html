@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:38">
+    <meta name="LASTUPDATED" content="10/19/09 17:32:02">
     <title>Scénario&#160;: Afficher le contenu d&#39;un fichier délimité</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFileInputDelimited_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputEBCDIC_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFileInputDelimited_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components07-18.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scénario&#160;: Afficher le contenu d&#39;un fichier délimité
 </h2>
 <a name="wp1542032"> </a><p class="pIndented1">
-Le scénario suivant est un job de deux composants ayant pour objectif de lire les lignes d&#39;un fichier, de sélectionner des données délimitées et d&#39;afficher la sortie dans la console de la vue <b class="cBold">Run</b>.
+Le scénario suivant est un Job de deux composants ayant pour objectif de lire les lignes d&#39;un fichier, de sélectionner des données délimitées et d&#39;afficher la sortie dans la console de la vue <b class="cBold">Run</b>.
 </p>
 <a name="wp1542043"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,12 +37,10 @@ Le scénario suivant est un job de deux composants ayant pour objectif de lire le
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1542051"> </a><div class="pSmartList2"><li>Cliquez et déposez un composant <b class="cBold">tFileInputDelimited</b> de la Palette dans l&#39;espace de modélisation.</li></div>
-<a name="wp1542059"> </a><div class="pSmartList2"><li>De la même manière, cliquez et déposez un composant <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1542068"> </a><div class="pSmartList2"><li>Cliquez-droit sur le composant <b class="cBold">tFileInputDelimited</b> et sélectionnez <em class="cEmphasis">Row &gt; Main</em> dans le menu contextuel. Puis glissez ce lien vers le <b class="cBold">tLogRow</b> et relâchez lorsque le symbole de prise de courant apparaît.</li></div>
-<a name="wp1542078"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tFileInputDelimited</b> à nouveau et définissez ses propriétés dans l&#39;onglet <b class="cBold">Basic Settings</b>&#160;:</li></div>
-</ul></div>
+<a name="wp1542051"> </a><div class="pSmartList1"><li>Cliquez et déposez un composant <b class="cBold">tFileInputDelimited</b> de la Palette dans l&#39;espace de modélisation.</li></div>
+<a name="wp1542059"> </a><div class="pSmartList1"><li>De la même manière, cliquez et déposez un composant <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1542068"> </a><div class="pSmartList1"><li>Cliquez-droit sur le composant <b class="cBold">tFileInputDelimited</b> et sélectionnez <em class="cEmphasis">Row &gt; Main</em> dans le menu contextuel. Puis glissez ce lien vers le <b class="cBold">tLogRow</b> et relâchez lorsque le symbole de prise de courant apparaît.</li></div>
+<a name="wp1542078"> </a><div class="pSmartList1"><li>Sélectionnez le composant <b class="cBold">tFileInputDelimited</b> à nouveau et définissez ses propriétés dans l&#39;onglet <b class="cBold">Basic Settings</b>&#160;:</li></div>
 </ul></div>
 <a name="wp1551771"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -50,25 +48,21 @@ Le scénario suivant est un job de deux composants ayant pour objectif de lire le
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1551780"> </a><div class="pSmartList2"><li>Renseignez le chemin d&#39;accès au fichier dans le champ <b class="cBold">File Name</b>. Ce champ est obligatoire.</li></div>
-<a name="wp1551786"> </a><div class="pSmartList2"><li>Définissez le séparateur de lignes dans le champ <b class="cBold">Row separator</b> afin d&#39;identifier la fin d&#39;une ligne. Puis définissez le séparateur de champs dans <b class="cBold">Field separator</b> pour délimiter les champs composant une ligne.</li></div>
-<a name="wp1551971"> </a><div class="pSmartList2"><li>Dans ce scénario, l&#39;en-tête (<b class="cBold">Header</b>) et le pied de page (<b class="cBold">Footer</b>) n&#39;ont pas besoin d&#39;être définis. Et la limite de lignes lues (<b class="cBold">Limit</b> ) est de 50 pour cet exemple.</li></div>
-<a name="wp1551987"> </a><div class="pSmartList2"><li>Sélectionnez soit local (<b class="cBold">Built-in</b>) soit distant (<b class="cBold">Repository</b>) comme <b class="cBold">Schema type</b> pour définir les données qui passent par le composant <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1551999"> </a><div class="pSmartList2"><li>Vous pouvez charger et/ou éditer le schéma à l&#39;aide de la fonction <b class="cBold">Edit Schema</b>.</li></div>
+<a name="wp1551780"> </a><div class="pSmartList1"><li>Renseignez le chemin d&#39;accès au fichier dans le champ <b class="cBold">File Name</b>. Ce champ est obligatoire.</li></div>
+<a name="wp1551786"> </a><div class="pSmartList1"><li>Définissez le séparateur de lignes dans le champ <b class="cBold">Row separator</b> afin d&#39;identifier la fin d&#39;une ligne. Puis définissez le séparateur de champs dans <b class="cBold">Field separator</b> pour délimiter les champs composant une ligne.</li></div>
+<a name="wp1551971"> </a><div class="pSmartList1"><li>Dans ce scénario, l&#39;en-tête (<b class="cBold">Header</b>) et le pied de page (<b class="cBold">Footer</b>) n&#39;ont pas besoin d&#39;être définis. Et la limite de lignes lues (<b class="cBold">Limit</b> ) est de 50 pour cet exemple.</li></div>
+<a name="wp1551987"> </a><div class="pSmartList1"><li>Sélectionnez soit local (<b class="cBold">Built-in</b>) soit distant (<b class="cBold">Repository</b>) comme <b class="cBold">Schema type</b> pour définir les données qui passent par le composant <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1551999"> </a><div class="pSmartList1"><li>Vous pouvez charger et/ou éditer le schéma à l&#39;aide de la fonction <b class="cBold">Edit Schema</b>.</li></div>
 </ul></div>
-</ul></div>
-<a name="wp1552007"> </a><p class="pIndented1">
+<a name="wp2508628"> </a><p class="pIndented1">
 Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> et <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1552145"> </a><div class="pSmartList2"><li>Assurez-vous que la case <b class="cBold">Skip empty rows</b> est cochée afin d&#39;ignorer les lignes vierges.</li></div>
-<a name="wp1552148"> </a><div class="pSmartList2"><li>Saisissez l&#39;encodage utilisé dans le fichier d&#39;entrée. Ce paramètre permet d&#39;assurer l&#39;homogénéité de l&#39;encodage dans tous les fichiers d&#39;entrée et de sortie.</li></div>
-<a name="wp1552155"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tLogRow</b> et définissez le séparateur de champs de la sortie affichée. Voir également&#160;: <a href="tLogRow_Prop.html#wp1552782"><em class="cEmphasis">Propriétés du tLogRow</em></a>.</li></div>
-<a name="wp1552165"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Print schema column name in front of each value</b> pour récupérer le libellé des colonnes dans la sortie affichée.</li></div>
-<a name="wp1552177"> </a><div class="pSmartList2"><li>Cliquez sur la vue <b class="cBold">Run</b>, puis cliquez sur <b class="cBold">Run</b> pour exécuter le job.</li></div>
-</ul></div>
+<a name="wp1552145"> </a><div class="pSmartList1"><li>Assurez-vous que la case <b class="cBold">Skip empty rows</b> est cochée afin d&#39;ignorer les lignes vierges.</li></div>
+<a name="wp1552148"> </a><div class="pSmartList1"><li>Saisissez l&#39;encodage utilisé dans le fichier d&#39;entrée. Ce paramètre permet d&#39;assurer l&#39;homogénéité de l&#39;encodage dans tous les fichiers d&#39;entrée et de sortie.</li></div>
+<a name="wp1552155"> </a><div class="pSmartList1"><li>Sélectionnez le composant <b class="cBold">tLogRow</b> et définissez le séparateur de champs de la sortie affichée. Voir également&#160;: <a href="tLogRow_Prop.html#wp1552782"><em class="cEmphasis">Propriétés du tLogRow</em></a>.</li></div>
+<a name="wp1552165"> </a><div class="pSmartList1"><li>Cochez la case <b class="cBold">Print schema column name in front of each value</b> pour récupérer le libellé des colonnes dans la sortie affichée.</li></div>
+<a name="wp1552177"> </a><div class="pSmartList1"><li>Cliquez sur la vue <b class="cBold">Run</b>, puis cliquez sur <b class="cBold">Run</b> pour exécuter le Job.</li></div>
 </ul></div>
 <a name="wp1552180"> </a><p class="pIndented1">
 Le fichier est lu ligne par ligne et les champs extraits sont affichés dans la console, tel que défini dans les propriétés du composant (dans l&#39;onglet <b class="cBold">Basic settings</b>).
@@ -79,7 +73,7 @@ Le fichier est lu ligne par ligne et les champs extraits sont affichés dans la c
 
 </div>
 <a name="wp1552356"> </a><p class="pIndented1">
-La console affiche l&#39;en-tête suivi des données lues par le job.
+La console affiche l&#39;en-tête suivi des données lues par le Job.
 </p>
     </blockquote>
     <hr>
@@ -100,7 +94,7 @@ La console affiche l&#39;en-tête suivi des données lues par le job.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFileInputDelimited_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputEBCDIC_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFileInputDelimited_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components07-18.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

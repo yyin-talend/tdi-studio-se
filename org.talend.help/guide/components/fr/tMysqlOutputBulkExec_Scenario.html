@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:03">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
     <title>Scénario&#160;: Insérer des données dans une base MySQL</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scénario&#160;: Insérer des données dans une base MySQL
 </h2>
 <a name="wp2316904"> </a><p class="pIndented1">
-Ce scénario est un job à deux composants qui effectue le même type d&#39;opération d&#39;alimentation que les composants <a href="tMysqlOutputBulk_Prop.html"><em class="cEmphasis">tMysqlOutputBulk</em></a> et <a href="tMysqlBulkExec_Prop.html"><em class="cEmphasis">tMysqlBulkExec</em></a>, mais sans transformation de données.
+Ce scénario est un Job à deux composants qui effectue le même type d&#39;opération d&#39;alimentation que les composants <a href="tMysqlOutputBulk_Prop.html"><em class="cEmphasis">tMysqlOutputBulk</em></a> et <a href="tMysqlBulkExec_Prop.html"><em class="cEmphasis">tMysqlBulkExec</em></a>, mais sans transformation de données.
 </p>
 <a name="wp2316918"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,13 +37,11 @@ Ce scénario est un job à deux composants qui effectue le même type d&#39;opérati
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2316930"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tRowGenerator</b> et <b class="cBold">tMysqlOutputBulkExec</b>.</li></div>
-<a name="wp2316935"> </a><div class="pSmartList2"><li>Le tRowGenerator est paramétré de la même manière que dans le <a href="tMysqlOutputBulk_Scenario.html#wp2339494"><em class="cEmphasis">Scénario&#160;: Insérer des données transformées dans une base MySQL</em></a>. Le schéma est consitué de plusieurs colonnes notamment&#160;: <em class="cEmphasis">ID</em>, <em class="cEmphasis">First Name</em>, <em class="cEmphasis">Last Name</em>, <em class="cEmphasis">Address</em> et <em class="cEmphasis">City</em>.</li></div>
-<a name="wp2316955"> </a><div class="pSmartList2"><li>Puis paramétrez la connexion à la base de données si nécessaire, en suivant les recommandations précédentes concernant la conservation des informations de connexion dans la partie <b class="cBold">Metadata</b> du <b class="cBold">Repository</b>.</li></div>
-<a name="wp2316969"> </a><div class="pSmartList2"><li>Puis nommez la table à alimenter dans le champ <b class="cBold">Table</b>.</li></div>
-<a name="wp2316977"> </a><div class="pSmartList2"><li>Et renseignez le nom du fichier à utiliser dans le champ <b class="cBold">File Name</b>.</li></div>
-</ul></div>
+<a name="wp2316930"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tRowGenerator</b> et <b class="cBold">tMysqlOutputBulkExec</b>.</li></div>
+<a name="wp2316935"> </a><div class="pSmartList1"><li>Le tRowGenerator est paramétré de la même manière que dans le <a href="tMysqlOutputBulk_Scenario.html#wp2739103"><em class="cEmphasis">Scénario&#160;: Insérer des données transformées dans une base MySQL</em></a>. Le schéma est consitué de plusieurs colonnes notamment&#160;: <em class="cEmphasis">ID</em>, <em class="cEmphasis">First Name</em>, <em class="cEmphasis">Last Name</em>, <em class="cEmphasis">Address</em> et <em class="cEmphasis">City</em>.</li></div>
+<a name="wp2316955"> </a><div class="pSmartList1"><li>Puis paramétrez la connexion à la base de données si nécessaire, en suivant les recommandations précédentes concernant la conservation des informations de connexion dans la partie <b class="cBold">Metadata</b> du <b class="cBold">Repository</b>.</li></div>
+<a name="wp2316969"> </a><div class="pSmartList1"><li>Puis nommez la table à alimenter dans le champ <b class="cBold">Table</b>.</li></div>
+<a name="wp2316977"> </a><div class="pSmartList1"><li>Et renseignez le nom du fichier à utiliser dans le champ <b class="cBold">File Name</b>.</li></div>
 </ul></div>
 <a name="wp2316984"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -51,10 +49,10 @@ Ce scénario est un job à deux composants qui effectue le même type d&#39;opérati
 
 </div>
 <a name="wp2316991"> </a><p class="pIndented1">
-Puis appuyez sur <b class="cBold">F6</b> pour exécuter le job.
+Puis appuyez sur <b class="cBold">F6</b> pour exécuter le Job.
 </p>
 <a name="wp2316996"> </a><p class="pIndented1">
-Le résultat devrait être relativement identique à celui obtenu dans le <a href="tMysqlOutputBulk_Scenario.html#wp2339494"><em class="cEmphasis">Scénario&#160;: Insérer des données transformées dans une base MySQL</em></a>. Cependant les données elles-mêmes peuvent différer légèrement puisque les données sont regénérées de façon aléatoire à chaque exécution.
+Le résultat devrait être relativement identique à celui obtenu dans le <a href="tMysqlOutputBulk_Scenario.html#wp2739103"><em class="cEmphasis">Scénario&#160;: Insérer des données transformées dans une base MySQL</em></a>. Cependant les données elles-mêmes peuvent différer légèrement puisque les données sont regénérées de façon aléatoire à chaque exécution.
 </p>
     </blockquote>
     <hr>

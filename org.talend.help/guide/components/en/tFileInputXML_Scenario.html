@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:25:21">
+    <meta name="LASTUPDATED" content="10/19/09 18:25:21">
     <title>Scenario: XML street finder</title>
   </head>
 
@@ -33,13 +33,14 @@ This very basic scenario is made of two components. A <b class="cBold">tFileInpu
 </p>
 <a name="wp1188517"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tFileInputXML1.png" id="wp1188514" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFileInputXML.png" id="wp1188514" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1188531"> </a><div class="pSmartList2"><li>Select a <b class="cBold">tFileInputXML</b> file from the <b class="cBold">File</b> folder in the <b class="cBold">Palette</b>. Click and drop also a <b class="cBold">tLogRow</b> component and connect both components.</li></div>
-<a name="wp1188543"> </a><div class="pSmartList2"><li>On the <b class="cBold">Basic settings</b> panel of the tFileInputXML, define the properties:</li></div>
+<a name="wp1188531"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tFileInputXML</b> and <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b> to the design workspace</li></div>
+<a name="wp2749484"> </a><div class="pSmartList2"><li>Connect both components together using a <b class="cBold">Main</b> link.</li></div>
+<a name="wp1188543"> </a><div class="pSmartList2"><li>On the <b class="cBold">Basic settings</b> panel of the <b class="cBold">tFileInputXML</b>, define the properties:</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1188550"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -49,14 +50,14 @@ This very basic scenario is made of two components. A <b class="cBold">tFileInpu
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1235875"> </a><div class="pSmartList2"><li>As the street dir file used as input file has been previously defined in the Metadata area, select <b class="cBold">Repository</b> as <b class="cBold">Property type</b>. This way, the properties are automatically leveraged and the rest of the properties fields are filled in (apart from Schema). For more information regarding the metadata creation wizards, see&#160;<em class="cEmphasis">Defining Metadata items.</em></li></div>
+<a name="wp1235875"> </a><div class="pSmartList2"><li>As the street dir file used as input file has been previously defined in the Metadata area, select <b class="cBold">Repository</b> as <b class="cBold">Property type</b>. This way, the properties are automatically leveraged and the rest of the properties fields are filled in (apart from Schema). For more information regarding the metadata creation wizards<em class="cEmphasis">Defining Metadata items</em> in <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
 <a name="wp1188575"> </a><div class="pSmartList2"><li>Select the same way the relevant schema in the Repository metadata list. <b class="cBold">Edit schema</b> if you want to make any change to the schema loaded. </li></div>
 <a name="wp1188583"> </a><div class="pSmartList2"><li>The <b class="cBold">Filename</b> shows the structured file to be used as input</li></div>
 <a name="wp1188590"> </a><div class="pSmartList2"><li>In<b class="cBold"> Loop XPath query</b>, change if needed the node of the structure where the loop is based.</li></div>
 <a name="wp1188597"> </a><div class="pSmartList2"><li>On the <b class="cBold">Mapping</b> table, fill the fields to be extracted and displayed in the output.</li></div>
 <a name="wp1188604"> </a><div class="pSmartList2"><li>If the file size is consequent, fill in a <b class="cBold">Limit</b> of rows to be read.</li></div>
-<a name="wp1188608"> </a><div class="pSmartList2"><li>Enter the encoding if needed then double-click on tLogRow to define the separator character.</li></div>
-<a name="wp1188620"> </a><div class="pSmartList2"><li>At last, press <b class="cBold">F6</b> or go to the <b class="cBold">Run</b> view and click <b class="cBold">Run</b> to execute the job. On the console, the fields defined in the input properties are extracted from the XML structured and displayed.</li></div>
+<a name="wp1188608"> </a><div class="pSmartList2"><li>Enter the encoding if needed then double-click on <b class="cBold">tLogRow</b> to define the separator character.</li></div>
+<a name="wp1188620"> </a><div class="pSmartList2"><li>At last, press <b class="cBold">F6</b> or go to the <b class="cBold">Run</b> view and click <b class="cBold">Run</b> to execute the Job. On the console, the fields defined in the input properties are extracted from the XML structured and displayed.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1188631"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

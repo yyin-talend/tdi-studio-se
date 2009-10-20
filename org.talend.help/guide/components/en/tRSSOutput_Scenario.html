@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:24:23">
+    <meta name="LASTUPDATED" content="10/19/09 18:23:51">
     <title>Scenario: Creating an RSS flow.</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tRSSOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSCPDelete_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tRSSOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSCPConnection_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -42,7 +42,7 @@ This scenario writes an RSS feed XML file about a Mysql table holding informatio
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1590917"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace:<b class="cBold"> tMysqlInput</b>, <b class="cBold">tRSSOutput</b>, and <b class="cBold">tFTPPut</b>.</li></div>
+<a name="wp1590917"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace:<b class="cBold"> tMysqlInput</b>, <b class="cBold">tRSSOutput</b>, and <b class="cBold">tFTPPut</b>.</li></div>
 <a name="wp1590965"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tMysqlInput</b> and connect it to <b class="cBold">tRSSOutpu</b> using a <b class="cBold">Row Main </b>link.</li></div>
 <a name="wp1591071"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tMysqlInput</b> and connect it to <b class="cBold">tFTPPut</b> using an <b class="cBold">OnSubjobOk </b>link.</li></div>
 </ul></div>
@@ -54,7 +54,7 @@ This scenario writes an RSS feed XML file about a Mysql table holding informatio
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1591728"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tMysqlInput</b>.</li></div>
+<a name="wp1591728"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tMysqlInput</b>.</li></div>
 <a name="wp1591098"> </a><div class="pSmartList2"><li>click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tMysqlInput</b>.</li></div>
 </ul></div>
 </ul></div>
@@ -68,7 +68,7 @@ This scenario writes an RSS feed XML file about a Mysql table holding informatio
 <a name="wp1591177"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Property type </b>to <b class="cBold">Repository</b> and click the three-dots button [...] to select the relevant DB entry from the list. The connection details along with the schema get filled in automatically.</li></div>
 <a name="wp1591189"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table Name </b>field, either type your table name or click the three dots button [...] and select your table name from the list. In this scenario, the Mysql input table is called &quot;rss_talend&quot; and the schema is made up of four columns, <em class="cEmphasis">TITLE</em>, <em class="cEmphasis">Description</em>, <em class="cEmphasis">PUBDATE</em>, and LINK.</li></div>
 <a name="wp1591195"> </a><div class="pSmartList2"><li>In the <b class="cBold">Query</b> field, enter your DB query paying particular attention to properly sequence the fields in order to match the schema definition, or click <b class="cBold">Guess Query</b>.</li></div>
-<a name="wp1591627"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tRSSOutput</b>.</li></div>
+<a name="wp1591627"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tRSSOutput</b>.</li></div>
 <a name="wp1593264"> </a><div class="pSmartList2"><li>click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tRSSOutput</b>.</li></div>
 </ul></div>
 </ul></div>
@@ -88,7 +88,7 @@ This scenario writes an RSS feed XML file about a Mysql table holding informatio
 <img src="images/bulb_small.png" align="left" id="wp1654445" border="0" hspace="0" vspace="0"/><br />
 You can click <b class="cBold">Sync Column</b> to retrieve the generated schema from the preceding component.
 </p>
-<a name="wp1593320"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F5</b> to execute this first part.</li></div>
+<a name="wp1593320"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F5</b> to execute this first part.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1593368"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -104,8 +104,8 @@ To store the complete files on an FTP server:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1593421"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">FTPPut</b>.</li></div>
-<a name="wp1593092"> </a><div class="pSmartList2"><li>click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tFTPPut</b>.</li></div>
+<a name="wp1593421"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">FTPPut</b>.</li></div>
+<a name="wp1593092"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tFTPPut</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1593107"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -121,7 +121,7 @@ To store the complete files on an FTP server:
 <a name="wp1592386"> </a><div class="pSmartList2"><li>Enter the details of the remote server directory.</li></div>
 <a name="wp1592273"> </a><div class="pSmartList2"><li>Select the transfer mode from the <b class="cBold">Transfer mode</b> list.</li></div>
 <a name="wp1592281"> </a><div class="pSmartList2"><li>On the <b class="cBold">Files </b>panel, click on the plus button to add new lines and fill in the filemasks of all files to be copied onto the remote directory. In this scenario, the files to be saved on the FTP server are all text files.</li></div>
-<a name="wp1592292"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp1592292"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1590445"> </a><p class="pIndented1">
@@ -146,7 +146,7 @@ Files defined in the Filemask are copied on the remote server.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tRSSOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSCPDelete_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tRSSOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSCPConnection_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

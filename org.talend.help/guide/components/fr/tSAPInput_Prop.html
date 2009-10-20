@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:50:58">
+    <meta name="LASTUPDATED" content="10/19/09 17:28:57">
     <title>tSAPInput</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tAlfrescoOutput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSAPInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tSAPConnection_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSAPInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,12 +22,12 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2186347"> </a><h2 class="pHeading1">
+<a name="wp2508585"> </a><h2 class="pHeading1">
 tSAPInput
 </h2>
 <a name="wp1646763"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tSalesForceInput.png" id="wp1646758" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tSAPInput_icon32_white.png" id="wp1646758" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp1651588"> </a><h2 class="pHeading2">
@@ -46,8 +46,8 @@ Propriétés du tSAPInput
 Business 
 </div>
 </td>
-    <td><a name="wp1651606"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconai.png" id="wp1651603" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp1651606"> </a><div class="pCellBody">
+<img src="images/java_iconbe.png" id="wp1651603" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Business
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1651613"> </a><div class="pCellBody">
-Le composant tSAPInput se connecte à un système SAP via l&#39;adresse IP du système.
+Le composant <b class="cBold">tSAPInput</b> se connecte à un système SAP via l&#39;adresse IP du système.
 </div>
 </td>
 </tr>
@@ -65,7 +65,7 @@ Le composant tSAPInput se connecte à un système SAP via l&#39;adresse IP du syst
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1651622"> </a><div class="pCellBody">
-Il permet d&#39;extraire des données d&#39;un système SAP à n&#39;importe quel niveau en faisnant appel àdes fonctions RFC ou BAPI.
+Il permet d&#39;extraire des données d&#39;un système SAP à n&#39;importe quel niveau en faisant appel à des fonctions RFC ou BAPI.
 </div>
 </td>
 </tr>
@@ -108,7 +108,20 @@ Peut être Built-in ou Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1651668"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2722000"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2722003"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp2722024"> </a><div class="pCellBody">
+Cochez la case et cliquez sur le composant de connexion adéquat dans la liste <b class="cBold">Component list</b><span style="font-weight: bold"> </span>pour réutiliser les informations de connexion que vous avez déjà définies. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1651668"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -117,20 +130,7 @@ Peut être Built-in ou Repository.
 </div>
 </td>
     <td><a name="wp1651681"> </a><div class="pCellBody">
-<b class="cBold">Client type</b>&#160;: Saisissez votre cde de connexion SAP habituel.<br /><b class="cBold">Userid&#160;:</b> Saisissez l&#39;identifiant de connexion utilisateur.<br /><b class="cBold">Password</b>&#160;: Saisissez le mot de passe.<br /><b class="cBold">Language&#160;</b>: Spécifiez la langue.<br /><b class="cBold">Host name&#160;</b>: Saisissez l&#39;adresse I¨P du système SAP.<br /><b class="cBold">System number&#160;:</b> Saisissez le numéro du système.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1651698"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1651705"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
-</div>
-</td>
-    <td><a name="wp1651708"> </a><div class="pCellBody">
-Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.<br />Cliquez sur <b class="cBold">Edit Schema</b> pour modifier le schéma. Notez que si vous effectuez des modifications, le schéma passera automatiquement en built-in.
+<b class="cBold">Client</b>&#160;: Saisissez votre code de connexion SAP habituel.<br /><b class="cBold">Userid&#160;:</b> Saisissez l&#39;identifiant de connexion utilisateur.<br /><b class="cBold">Password</b>&#160;: Saisissez le mot de passe.<br /><b class="cBold">Language&#160;</b>: Spécifiez la langue.<br /><b class="cBold">Host name&#160;</b>: Saisissez l&#39;adresse IP du système SAP.<br /><b class="cBold">System number&#160;:</b> Saisissez le numéro du système.
 </div>
 </td>
 </tr>
@@ -155,8 +155,8 @@ Saisissez le nom de la fonction que vous souhaitez utiliser pour récupérer les d
 <em class="cEmphasis">Initialize input</em>
 </div>
 </td>
-    <td><a name="wp1651732"> </a><div class="pCellBody">
-Configurez les paramètres d&#39;entrée.
+    <td><a name="wp2722853"> </a><div class="pCellBody">
+Configurez les paramètres d&#39;entrée.<br /><b class="cBold">Parameter Value</b>&#160;: Saisissez entre guillemets les valeurs correspondant au paramètre défini dans la colonne <b class="cBold">Parameter Name</b>.<br /><b class="cBold">Type</b>&#160;: Sélectionnez le type d&#39;entrée à récupérer.<br /><b class="cBold">Table Name (Structure Name)</b>&#160;: Saisissez entre guillemets le nom de la table.<br /><b class="cBold">Parameter Name</b>&#160;: Saisissez entre guillemets le nom du champ correspondant à la table définie dans la colonne <b class="cBold">Table Name</b>.
 </div>
 </td>
 </tr>
@@ -165,37 +165,11 @@ Configurez les paramètres d&#39;entrée.
 </div>
 </td>
     <td><a name="wp1651739"> </a><div class="pCellHeading">
-<em class="cEmphasis">Extract data</em>
+<em class="cEmphasis">Outputs</em>
 </div>
 </td>
     <td><a name="wp1651741"> </a><div class="pCellBody">
-Configurez les paramètres de sortie afin de sélectionnez les données à extraire.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1651743"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1651748"> </a><div class="pCellHeading">
-<em class="cEmphasis">Type (for iterate)</em>
-</div>
-</td>
-    <td><a name="wp1651750"> </a><div class="pCellBody">
-Sélectionnez le type de sortie que vous souhaitez obtenir.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1651752"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1651754"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1651759"> </a><div class="pCellBody">
-<b class="cBold">TableName or StructureName</b>&#160;: Saisissez le nom du paramètre.
+Configurez les paramètres des schémas à transmettre en sortie.<br /><b class="cBold">Schema</b>&#160;: Saisissez le nom du schéma à transmettre en sortie.<br /><b class="cBold">Type (for iterate)</b>&#160;: Sélectionnez le type de sortie que vous souhaitez obtenir.<br /><b class="cBold">Table Name (Structure Name)</b>&#160;: Saisissez entre guillemets le nom de la table.<br /><b class="cBold">Mapping</b>&#160;: Saisissez entre guillemets le nom des champs dont vous souhaitez récupérer les données.
 </div>
 </td>
 </tr>
@@ -241,7 +215,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tAlfrescoOutput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSAPInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tSAPConnection_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSAPInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

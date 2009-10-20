@@ -13,6 +13,10 @@
     </topic>
 
     <topic label="Components">
+        <topic label="tAS400CDC">
+            <topic label="Properties" href="guide/components/en/tAS400CDC_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tAS400CDC_Scenario.html"/>
+        </topic>
         <topic label="tAS400Commit">
             <topic label="Properties" href="guide/components/en/tAS400Commit_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tAS400Commit_Scenario.html"/>
@@ -337,6 +341,42 @@
             <topic label="Properties" href="guide/components/en/tExtractXMLField_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tExtractXMLField_Scenario.html"/>
         </topic>
+        <topic label="tFSAggregate">
+            <topic label="Properties" href="guide/components/en/tFSAggregate_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSAggregate_Scenario.html"/>
+        </topic>
+        <topic label="tFSCheck">
+            <topic label="Properties" href="guide/components/en/tFSCheck_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSCheck_Scenario.html"/>
+        </topic>
+        <topic label="tFSCode">
+            <topic label="Properties" href="guide/components/en/tFSCode_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSCode_Scenario.html"/>
+        </topic>
+        <topic label="tFSFilterColumns">
+            <topic label="Properties" href="guide/components/en/tFSFilterColumns_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSFilterColumns_Scenario.html"/>
+        </topic>
+        <topic label="tFSFilterRows">
+            <topic label="Properties" href="guide/components/en/tFSFilterRows_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSFilterRows_Scenario.html"/>
+        </topic>
+        <topic label="tFSNode">
+            <topic label="Properties" href="guide/components/en/tFSNode_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSNode_Scenario.html"/>
+        </topic>
+        <topic label="tFSSort">
+            <topic label="Properties" href="guide/components/en/tFSSort_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSSort_Scenario.html"/>
+        </topic>
+        <topic label="tFSTransform">
+            <topic label="Properties" href="guide/components/en/tFSTransform_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSTransform_Scenario.html"/>
+        </topic>
+        <topic label="tFSUnique">
+            <topic label="Properties" href="guide/components/en/tFSUnique_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFSUnique_Scenario.html"/>
+        </topic>
         <topic label="tFTPConnection">
             <topic label="Properties" href="guide/components/en/tFTPConnection_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tFTPConnection_Scenario.html"/>
@@ -417,6 +457,10 @@
             <topic label="Properties" href="guide/components/en/tFileInputFullRow_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tFileInputFullRow_Scenario.html"/>
         </topic>
+        <topic label="tFileInputJSON">
+            <topic label="Properties" href="guide/components/en/tFileInputJSON_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFileInputJSON_Scenario.html"/>
+        </topic>
         <topic label="tFileInputLDIF">
             <topic label="Properties" href="guide/components/en/tFileInputLDIF_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tFileInputLDIF_Scenario.html"/>
@@ -453,10 +497,6 @@
             <topic label="Properties" href="guide/components/en/tFileInputXML_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tFileInputXML_Scenario.html"/>
         </topic>
-        <topic label="tFileInputXbase">
-            <topic label="Properties" href="guide/components/en/tFileInputXbase_Prop.html"/>
-            <topic label="Scenario" href="guide/components/en/tFileInputXbase_Scenario.html"/>
-        </topic>
         <topic label="tFileList">
             <topic label="Properties" href="guide/components/en/tFileList_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tFileList_Scenario.html"/>
@@ -480,6 +520,10 @@
         <topic label="tFileOutputLDIF">
             <topic label="Properties" href="guide/components/en/tFileOutputLDIF_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tFileOutputLDIF_Scenario.html"/>
+        </topic>
+        <topic label="tFileOutputMSDelimited">
+            <topic label="Properties" href="guide/components/en/tFileOutputMSDelimited_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFileOutputMSDelimited_Scenario.html"/>
         </topic>
         <topic label="tFileOutputMSPositional">
             <topic label="Properties" href="guide/components/en/tFileOutputMSPositional_Prop.html"/>
@@ -576,6 +620,10 @@
         <topic label="tForeach">
             <topic label="Properties" href="guide/components/en/tForeach_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tForeach_Scenario.html"/>
+        </topic>
+        <topic label="tFuzzyJoin">
+            <topic label="Properties" href="guide/components/en/tFuzzyJoin_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tFuzzyJoin_Scenario.html"/>
         </topic>
         <topic label="tFuzzyMatch">
             <topic label="Properties" href="guide/components/en/tFuzzyMatch_Prop.html"/>
@@ -777,6 +825,14 @@
             <topic label="Properties" href="guide/components/en/tJDBCTableList_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tJDBCTableList_Scenario.html"/>
         </topic>
+        <topic label="tJMSInput">
+            <topic label="Properties" href="guide/components/en/tJMSInput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tJMSInput_Scenario.html"/>
+        </topic>
+        <topic label="tJMSOutput">
+            <topic label="Properties" href="guide/components/en/tJMSOutput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tJMSOutput_Scenario.html"/>
+        </topic>
         <topic label="tJasperOutputExec">
             <topic label="Properties" href="guide/components/en/tJasperOutputExec_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tJasperOutputExec_Scenario.html"/>
@@ -821,6 +877,10 @@
             <topic label="Properties" href="guide/components/en/tLDAPOutput_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tLDAPOutput_Scenario.html"/>
         </topic>
+        <topic label="tLDAPRenameEntry">
+            <topic label="Properties" href="guide/components/en/tLDAPRenameEntry_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tLDAPRenameEntry_Scenario.html"/>
+        </topic>
         <topic label="tLastRegexlibExpressions">
             <topic label="Properties" href="guide/components/en/tLastRegexlibExpressions_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tLastRegexlibExpressions_Scenario.html"/>
@@ -848,6 +908,14 @@
         <topic label="tLoop">
             <topic label="Properties" href="guide/components/en/tLoop_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tLoop_Scenario.html"/>
+        </topic>
+        <topic label="tMDMInput">
+            <topic label="Properties" href="guide/components/en/tMDMInput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tMDMInput_Scenario.html"/>
+        </topic>
+        <topic label="tMDMOutput">
+            <topic label="Properties" href="guide/components/en/tMDMOutput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tMDMOutput_Scenario.html"/>
         </topic>
         <topic label="tMSAXInput">
             <topic label="Properties" href="guide/components/en/tMSAXInput_Prop.html"/>
@@ -940,6 +1008,14 @@
         <topic label="tMaxDBRow">
             <topic label="Properties" href="guide/components/en/tMaxDBRow_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tMaxDBRow_Scenario.html"/>
+        </topic>
+        <topic label="tMicrosoftCrmInput">
+            <topic label="Properties" href="guide/components/en/tMicrosoftCrmInput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tMicrosoftCrmInput_Scenario.html"/>
+        </topic>
+        <topic label="tMicrosoftCrmOutput">
+            <topic label="Properties" href="guide/components/en/tMicrosoftCrmOutput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tMicrosoftCrmOutput_Scenario.html"/>
         </topic>
         <topic label="tMomInput">
             <topic label="Properties" href="guide/components/en/tMomInput_Prop.html"/>
@@ -1229,9 +1305,13 @@
             <topic label="Properties" href="guide/components/en/tPipeRow_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tPipeRow_Scenario.html"/>
         </topic>
-        <topic label="tPivotOutputDelimited">
-            <topic label="Properties" href="guide/components/en/tPivotOutputDelimited_Prop.html"/>
-            <topic label="Scenario" href="guide/components/en/tPivotOutputDelimited_Scenario.html"/>
+        <topic label="tPivotToColumnsDelimited">
+            <topic label="Properties" href="guide/components/en/tPivotToColumnsDelimited_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tPivotToColumnsDelimited_Scenario.html"/>
+        </topic>
+        <topic label="tPivotToRows">
+            <topic label="Properties" href="guide/components/en/tPivotToRows_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tPivotToRows_Scenario.html"/>
         </topic>
         <topic label="tPostgresPlusBulkExec">
             <topic label="Properties" href="guide/components/en/tPostgresPlusBulkExec_Prop.html"/>
@@ -1393,6 +1473,10 @@
             <topic label="Properties" href="guide/components/en/tRowGenerator_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tRowGenerator_Scenario.html"/>
         </topic>
+        <topic label="tRules">
+            <topic label="Properties" href="guide/components/en/tRules_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tRules_Scenario.html"/>
+        </topic>
         <topic label="tRunJob">
             <topic label="Properties" href="guide/components/en/tRunJob_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tRunJob_Scenario.html"/>
@@ -1513,6 +1597,14 @@
             <topic label="Properties" href="guide/components/en/tSampleRow_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tSampleRow_Scenario.html"/>
         </topic>
+        <topic label="tSasInput">
+            <topic label="Properties" href="guide/components/en/tSasInput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tSasInput_Scenario.html"/>
+        </topic>
+        <topic label="tSasOutput">
+            <topic label="Properties" href="guide/components/en/tSasOutput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tSasOutput_Scenario.html"/>
+        </topic>
         <topic label="tSchemaComplianceCheck">
             <topic label="Properties" href="guide/components/en/tSchemaComplianceCheck_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tSchemaComplianceCheck_Scenario.html"/>
@@ -1532,6 +1624,10 @@
         <topic label="tSetGlobalVar">
             <topic label="Properties" href="guide/components/en/tSetGlobalVar_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tSetGlobalVar_Scenario.html"/>
+        </topic>
+        <topic label="tSetProxy">
+            <topic label="Properties" href="guide/components/en/tSetProxy_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tSetProxy_Scenario.html"/>
         </topic>
         <topic label="tSleep">
             <topic label="Properties" href="guide/components/en/tSleep_Prop.html"/>
@@ -1629,10 +1725,6 @@
             <topic label="Properties" href="guide/components/en/tSybaseSP_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tSybaseSP_Scenario.html"/>
         </topic>
-        <topic label="tSyslogInput">
-            <topic label="Properties" href="guide/components/en/tSyslogInput_Prop.html"/>
-            <topic label="Scenario" href="guide/components/en/tSyslogInput_Scenario.html"/>
-        </topic>
         <topic label="tSystemInput">
             <topic label="Properties" href="guide/components/en/tSystemInput_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tSystemInput_Scenario.html"/>
@@ -1701,13 +1793,17 @@
             <topic label="Properties" href="guide/components/en/tUnite_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tUnite_Scenario.html"/>
         </topic>
-        <topic label="tUnpivotRow">
-            <topic label="Properties" href="guide/components/en/tUnpivotRow_Prop.html"/>
-            <topic label="Scenario" href="guide/components/en/tUnpivotRow_Scenario.html"/>
-        </topic>
         <topic label="tVerticaBulkExec">
             <topic label="Properties" href="guide/components/en/tVerticaBulkExec_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tVerticaBulkExec_Scenario.html"/>
+        </topic>
+        <topic label="tVerticaCommit">
+            <topic label="Properties" href="guide/components/en/tVerticaCommit_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tVerticaCommit_Scenario.html"/>
+        </topic>
+        <topic label="tVerticaConnection">
+            <topic label="Properties" href="guide/components/en/tVerticaConnection_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tVerticaConnection_Scenario.html"/>
         </topic>
         <topic label="tVerticaInput">
             <topic label="Properties" href="guide/components/en/tVerticaInput_Prop.html"/>
@@ -1724,6 +1820,10 @@
         <topic label="tVerticaOutput">
             <topic label="Properties" href="guide/components/en/tVerticaOutput_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tVerticaOutput_Scenario.html"/>
+        </topic>
+        <topic label="tVerticaRollback">
+            <topic label="Properties" href="guide/components/en/tVerticaRollback_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tVerticaRollback_Scenario.html"/>
         </topic>
         <topic label="tVerticaRow">
             <topic label="Properties" href="guide/components/en/tVerticaRow_Prop.html"/>
@@ -1756,6 +1856,10 @@
         <topic label="tWebServiceInput">
             <topic label="Properties" href="guide/components/en/tWebServiceInput_Prop.html"/>
             <topic label="Scenario" href="guide/components/en/tWebServiceInput_Scenario.html"/>
+        </topic>
+        <topic label="tWebService">
+            <topic label="Properties" href="guide/components/en/tWebService_Prop.html"/>
+            <topic label="Scenario" href="guide/components/en/tWebService_Scenario.html"/>
         </topic>
         <topic label="tWriteXMLFieldIn">
             <topic label="Properties" href="guide/components/en/tWriteXMLFieldIn_Prop.html"/>

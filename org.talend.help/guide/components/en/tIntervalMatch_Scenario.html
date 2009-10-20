@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:21:21">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:03">
     <title>Scenario: identifying Ip country (Perl and Java)</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tIntervalMatch_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tReplaceList_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tIntervalMatch_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tLaunchDQReports_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scenario: identifying Ip country (Perl and Java)
 </h2>
 <a name="wp1526222"> </a><p class="pIndented1">
-The following scenario describes a job designed in parallel in both languages, Perl and Java. In this job, a incoming main flow provides 2 columns: <em class="cEmphasis">Documents</em> and <em class="cEmphasis">IP</em> dummy values. A second file used as lookup flow in Java and reference range file in Perl contains a list of sorted IP ranges and their corresponding country. This job aims at retrieving each document&#39;s country from their IP value, in other words, creating a Join between the main flow and the lookup flow.
+The following scenario describes a Job designed in parallel in both languages, Perl and Java. In this Job, a incoming main flow provides 2 columns: <em class="cEmphasis">Documents</em> and <em class="cEmphasis">IP</em> dummy values. A second file used as lookup flow in Java and reference range file in Perl contains a list of sorted IP ranges and their corresponding country. This Job aims at retrieving each document&#39;s country from their IP value, in other words, creating a Join between the main flow and the lookup flow.
 </p>
 <a name="wp1524263"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -49,7 +49,7 @@ In <b class="cBold">Java</b>, the Job requires one extra <b class="cBold">tFileI
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1524778"> </a><div class="pSmartList2"><li>Click and drop the components onto the design editor.</li></div>
+<a name="wp1524778"> </a><div class="pSmartList2"><li>Drop the components onto the design workspace.</li></div>
 <a name="wp1524547"> </a><div class="pSmartList2"><li>Set the basic settings of the <b class="cBold">tFileInputDelimited</b> component. </li></div>
 </ul></div>
 </ul></div>
@@ -96,7 +96,7 @@ In <b class="cBold">Java</b>, the Job requires one extra <b class="cBold">tFileI
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1525151"> </a><div class="pSmartList2"><li>(Perl only) In <b class="cBold">File Name </b>field, set the path to the lookup file. Set the Row and Field separator of the lookup file.</li></div>
-<a name="wp1525221"> </a><div class="pSmartList2"><li>(Perl only) In <b class="cBold">Lookup column index</b> field, set the inferior bound of the data range. This coresponds to the position of the column containing the min value of the range (0 for the first column).</li></div>
+<a name="wp1525221"> </a><div class="pSmartList2"><li>(Perl only) In <b class="cBold">Lookup column index</b> field, set the inferior bound of the data range. This corresponds to the position of the column containing the min value of the range (0 for the first column).</li></div>
 <a name="wp1525452"> </a><div class="pSmartList2"><li>(Perl only) No need to set the lookup values to be returned as all values from the lookup will be outputted.</li></div>
 <a name="wp1525323"> </a><div class="pSmartList2"><li>(Java only) Set the tIntervalMatch other properties such as the min and max column corresponding to the range bounds.</li></div>
 </ul></div>
@@ -110,15 +110,15 @@ In <b class="cBold">Java</b>, the Job requires one extra <b class="cBold">tFileI
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1525413"> </a><div class="pSmartList2"><li>(Java only) In the <b class="cBold">Column Lookup</b> field, select the column where are the values to be returned. </li></div>
 <a name="wp1525416"> </a><div class="pSmartList2"><li>(Both Java and Perl) In the <b class="cBold">Search column</b> field, select the main flow column containing the values to be matched to the range values.</li></div>
-<a name="wp1525484"> </a><div class="pSmartList2"><li>(Both Java and Perl) The tLogRow component does not require any specific setting for this job.</li></div>
+<a name="wp1525484"> </a><div class="pSmartList2"><li>(Both Java and Perl) The <b class="cBold">tLogRow</b> component does not require any specific setting for this Job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1525507"> </a><p class="pIndented1">
-Both Perl and Java jobs output the same result with slight differences in the way they display. 
+Both Perl and Java Jobs output the same result with slight differences in the way they display. 
 </p>
 <a name="wp1525515"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Components-05-07-38.jpg" height="206" width="674" id="wp1525520" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Components-04-17-095.jpg" height="206" width="674" id="wp1525520" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp1525539"> </a><p class="pIndented1">
@@ -143,7 +143,7 @@ The Perl results include the range values whereas the Java output only includes 
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tIntervalMatch_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tReplaceList_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tIntervalMatch_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tLaunchDQReports_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

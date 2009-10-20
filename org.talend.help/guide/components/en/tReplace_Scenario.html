@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:24:52">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:52">
     <title>Scenario: multiple replacements and column filtering</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tReplace_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSampleRow_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tReplace_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tRules_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scenario: multiple replacements and column filtering
 </h2>
 <a name="wp1438084"> </a><p class="pIndented1">
-This following job (made in Perl) searches and replaces various typos and defects in a csv file then operates a column filtering before producing a new csv file with the final output.
+This following Job (made in Perl) searches and replaces various typos and defects in a csv file then operates a column filtering before producing a new csv file with the final output.
 </p>
 <a name="wp1435854"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -74,16 +74,16 @@ This following job (made in Perl) searches and replaces various typos and defect
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1436603"> </a><div class="pSmartList2"><li>The schema can be synchronized with the incoming flow.</li></div>
-<a name="wp1436622"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Simple mode</b> box as the search parameters can be easily set without requiring the use of regexp. </li></div>
+<a name="wp1436622"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Simple mode</b> check box as the search parameters can be easily set without requiring the use of regexp. </li></div>
 <a name="wp1436649"> </a><div class="pSmartList2"><li>Click the plus sign to add some lines to the parameters table. </li></div>
 <a name="wp1436671"> </a><div class="pSmartList2"><li>On the first parameter line, select <em class="cEmphasis">amount</em> as <b class="cBold">input column</b>. In the <b class="cBold">search</b> field look for the decimal <em class="cEmphasis">dot</em> separator and <b class="cBold">replace</b> it with a <em class="cEmphasis">comma</em>, in between single quotes.</li></div>
-<a name="wp1436989"> </a><div class="pSmartList2"><li>On the second parameter line, select <em class="cEmphasis">str</em> as <b class="cBold">input column</b>. I<b class="cBold">n the search field, look for </b><em class="cEmphasis">stret</em> or <em class="cEmphasis">streat</em> or <em class="cEmphasis">stre</em>. Note that these values are separated by a pipe that means <code class="cCode">or</code> in Perl  language. Replace them by <em class="cEmphasis">Street</em>. Check the <b class="cBold">whole word </b>box. </li></div>
-<a name="wp1437178"> </a><div class="pSmartList2"><li>On the third parameter line, select again <em class="cEmphasis">str</em> as <b class="cBold">input column</b>, <b class="cBold">search</b> the pipe character using a backslash in front, to differenciate it from the &quot;or&quot; in Perl language. and replace it with nothing between single quotes (`&#39;).</li></div>
-<a name="wp1437188"> </a><div class="pSmartList2"><li>On the fourth parameter line, select <em class="cEmphasis">firstname</em> as <b class="cBold">input column</b>. In the <b class="cBold">Search </b>field, look for the following characters: <code class="cCode">[, ], +, *</code>. Note that these values are separated by a pipe that means <code class="cCode">or</code>  in Perl  language. Replace them with nothing between single quotes (`&#39;).</li></div>
+<a name="wp1436989"> </a><div class="pSmartList2"><li>On the second parameter line, select <em class="cEmphasis">str</em> as <b class="cBold">input column</b>. I<b class="cBold">n the search field, look for </b><em class="cEmphasis">stret</em> or <em class="cEmphasis">streat</em> or <em class="cEmphasis">stre</em>. Note that these values are separated by a pipe that means <code class="cCode">or</code> in Perl  language. Replace them by <em class="cEmphasis">Street</em>. Select the <b class="cBold">whole word </b>check box. </li></div>
+<a name="wp1437178"> </a><div class="pSmartList2"><li>On the third parameter line, select again <em class="cEmphasis">str</em> as <b class="cBold">input column</b>, <b class="cBold">search</b> the pipe character using a backslash in front, to differentiate it from the &quot;or&quot; in Perl language. and replace it with nothing between single quotes (`&#39;).</li></div>
+<a name="wp1437188"> </a><div class="pSmartList2"><li>On the fourth parameter line, select <em class="cEmphasis">firstname</em> as <b class="cBold">input column</b>. In the <b class="cBold">Search </b>field, look for the following characters: <code class="cCode">[, ], +, *</code>. Note that these values are separated by a pipe that means <code class="cCode">or</code>  in Perl language. Replace them with nothing between single quotes (`&#39;).</li></div>
 <a name="wp1437416"> </a><div class="pSmartList2"><li>On the fifth parameter line, select <em class="cEmphasis">amount</em> as<b class="cBold"> input column</b>. In the Search field, type in the dollar sign between single quotes and In the Replace field, type in the Euro sign.</li></div>
-<a name="wp1437564"> </a><div class="pSmartList2"><li>On the last parameter line, select <em class="cEmphasis">firstname</em> as <b class="cBold">input column</b>. Search the string: <code class="cCode">\t</code>. To differenciate it from the tabulation, add as many backslashes in front of it as there are parsing, in other words, two backlashes are used to avoid misinterpreting and two extra backslashes constitute part of the character being looked for. In total four backslahes including the one in the character it self are being searched. Replace them with nothing between single quotes (`&#39;). And check the <b class="cBold">whole word </b>box.</li></div>
+<a name="wp1437564"> </a><div class="pSmartList2"><li>On the last parameter line, select <em class="cEmphasis">firstname</em> as <b class="cBold">input column</b>. Search the string: <code class="cCode">\t</code>. To differenciate it from the tabulation, add as many backslashes in front of it as there are parsing, in other words, two backlashes are used to avoid misinterpreting and two extra backslashes constitute part of the character being looked for. In total four backslahes including the one in the character it self are being searched. Replace them with nothing between single quotes (`&#39;). And select the <b class="cBold">whole word </b>check box.</li></div>
 <a name="wp1437721"> </a><div class="pSmartList2"><li>The advanced mode isn&#39;t used in this scenario. </li></div>
-<a name="wp1437736"> </a><div class="pSmartList2"><li>Select the next component in the job, <b class="cBold">tFilterColumn</b>.</li></div>
+<a name="wp1437736"> </a><div class="pSmartList2"><li>Select the next component in the Job, <b class="cBold">tFilterColumn</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1437753"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -105,8 +105,8 @@ This following job (made in Perl) searches and replaces various typos and defect
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1437902"> </a><div class="pSmartList2"><li>Set the <b class="cBold">tFileOutputDelimited</b> properties manually.</li></div>
-<a name="wp1437921"> </a><div class="pSmartList2"><li>The schema is built-in for this scenario, and comes from the preceding component in the job.</li></div>
-<a name="wp1437960"> </a><div class="pSmartList2"><li>Save the job and execute it.</li></div>
+<a name="wp1437921"> </a><div class="pSmartList2"><li>The schema is built-in for this scenario, and comes from the preceding component in the Job.</li></div>
+<a name="wp1437960"> </a><div class="pSmartList2"><li>Save the Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1437971"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -136,7 +136,7 @@ The first column is empty and the rest of the columns have been cleaned up from 
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tReplace_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSampleRow_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tReplace_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tRules_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

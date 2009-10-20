@@ -1,0 +1,233 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:03">
+    <title>tFuzzyUniqRow</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFuzzyMatch_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFuzzyUniqRow_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2788406"> </a><h2 class="pHeading1">
+tFuzzyUniqRow
+</h2>
+<a name="wp2788418"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tFuzzyUniqRow_icon32_white.png" id="wp2788411" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2788426"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2788423" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This component does not appear in the Palette of the studio unless you have the right subscription to the right edition of <b class="cBold">Talend Data Quality</b>.
+</p>
+<a name="wp2788437"> </a><h2 class="pHeading2">
+tFuzzyUniqRow properties
+</h2>
+<a name="wp2788698"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2788449table2788441">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2788449"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp2788452"> </a><div class="pCellBody">
+Data quality
+</div>
+</td>
+    <td><a name="wp2788463"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_iconbh.png" id="wp2788459" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2788471"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2788478"> </a><div class="pCellBody">
+<b class="cBold">tFuzzyUniqRow </b>compares columns in the input flow by using a defined matching method and collects the encountered duplicates.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2788489"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2788492"> </a><div class="pCellBody">
+Helps ensuring the data quality of any source data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2788503"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td colspan="1" rowspan="3"><a name="wp2788510"> </a><div class="pCellBody">
+<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2788517"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2788521"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2788531"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2788539"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2788549"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. Thus, you can reuse it in various projects and job designs. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2788557"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2788564"> </a><div class="pCellBody">
+<em class="cEmphasis">Column</em>
+</div>
+</td>
+    <td><a name="wp2788567"> </a><div class="pCellBody">
+List of all columns in the input flow.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2788571"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2788578"> </a><div class="pCellBody">
+<em class="cEmphasis">Key attribute</em>
+</div>
+</td>
+    <td><a name="wp2788581"> </a><div class="pCellBody">
+Select the check boxes next to the columns you want to check.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2788585"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2788592"> </a><div class="pCellBody">
+<em class="cEmphasis">Matching type</em>
+</div>
+</td>
+    <td><a name="wp2788595"> </a><div class="pCellBody">
+Select the relevant matching algorithm from the list:<br /><b class="cBold">Exact Match</b>: matches each processed entry to all possible reference entries with exactly the same value.<br /><b class="cBold">Levenshtein</b>: Based on the edit distance theory. It calculates the number of insertion, deletion or substitution required for an entry to match the reference entry. <br /><b class="cBold">Metaphone</b>: Based on a phonetic algorithm for indexing entries by their pronunciation. It first loads the phonetics of all entries of the lookup reference and checks all entries of the main flow against the entries of the reference flow.<br /><b class="cBold">Double Metaphone</b>: a new version of the Metaphone phonetic algorithm that produces more accurate results than the original algorithm. It can return both a primary and a secondary code for a string. This accounts for some ambiguous cases as well as for multiple variants of surnames with common ancestry.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2788615"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2788622"> </a><div class="pCellBody">
+<em class="cEmphasis">Case sensitive</em>
+</div>
+</td>
+    <td><a name="wp2788625"> </a><div class="pCellBody">
+Select this check box to consider the letter case.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2788629"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2788636"> </a><div class="pCellBody">
+<em class="cEmphasis">Min. Distance</em>
+</div>
+</td>
+    <td><a name="wp2788643"> </a><div class="pCellBody">
+Only for <b class="cBold">Levenshtein</b>. Set the minimum number of changes allowed to match the reference. If set to 0, only perfect matches(<b class="cBold">Exact Match</b>) are returned.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2788651"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2788658"> </a><div class="pCellBody">
+<em class="cEmphasis">Max. Distance</em>
+</div>
+</td>
+    <td><a name="wp2788665"> </a><div class="pCellBody">
+Only for <b class="cBold">Levenshtein</b>. Set the maximum number of changes allowed to match the reference.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2788673"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2788676"> </a><div class="pCellBody">
+This component is not startable (green background) and it requires an input component and two output components.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2788687"> </a><div class="pCellBody">
+<b class="cBold">Limitation/prerequisite</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2788690"> </a><div class="pCellBody">
+n/a
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFuzzyMatch_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFuzzyUniqRow_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

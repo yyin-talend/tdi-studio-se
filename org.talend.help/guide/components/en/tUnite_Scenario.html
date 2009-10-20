@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:54:13">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:38">
     <title>Scenario: Iterate on files and merge the content</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scenario: Iterate on files and merge the content
 </h2>
 <a name="wp1654425"> </a><p class="pIndented1">
-The following job iterates on a list of files then merges their  content and diplays the final 2-column content on the console.
+The following Job iterates on a list of files then merges their content and diplays the final 2-column content on the console.
 </p>
 <a name="wp1544237"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,7 +38,7 @@ The following job iterates on a list of files then merges their  content and dip
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1544245"> </a><div class="pSmartList2"><li>Click and drop the following components onto the design workspace: <b class="cBold">tFileList</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tUnite</b> and <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1544245"> </a><div class="pSmartList2"><li>Drop the following components onto the design workspace: <b class="cBold">tFileList</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tUnite</b> and <b class="cBold">tLogRow</b>.</li></div>
 <a name="wp1544267"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileList</b> to the <b class="cBold">tFileInputDelimited</b> using an <b class="cBold">iterate</b> connection and connect the other component using a <b class="cBold">row main</b> link.</li></div>
 <a name="wp1544280"> </a><div class="pSmartList2"><li>In the <b class="cBold">tFileList</b> <b class="cBold">Basic settings</b> view, browse to the directory, where the files to merge are stored.</li></div>
 </ul></div>
@@ -51,7 +51,7 @@ The following job iterates on a list of files then merges their  content and dip
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1544301"> </a><div class="pSmartList2"><li>As <b class="cBold">Filemask</b>, type in <code class="cCode">*.txt</code> as all files to be merged are of this type.</li></div>
-<a name="wp1544308"> </a><div class="pSmartList2"><li>The <b class="cBold">Case Sensitive</b> box is checked by default. No need to uncheck it. </li></div>
+<a name="wp1544308"> </a><div class="pSmartList2"><li>The <b class="cBold">Case Sensitive</b> box is selected by default. No need to clear it. </li></div>
 <a name="wp1544313"> </a><div class="pSmartList2"><li>The files are pretty basic and contain a list of countries and their respective score.</li></div>
 </ul></div>
 </ul></div>
@@ -86,10 +86,10 @@ The following job iterates on a list of files then merges their  content and dip
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1544411"> </a><div class="pSmartList2"><li>For this example, the 2 columns are <em class="cEmphasis">Country</em> and <em class="cEmphasis">Points</em> .They are both <b class="cBold">nullable</b>. </li></div>
-<a name="wp1544418"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the setting and accept to propagate the schema throughout the job.</li></div>
-<a name="wp1544427"> </a><div class="pSmartList2"><li>Then select the <b class="cBold">tUnite</b> component and display the <b class="cBold">Component</b> view.  Notice that the output schema strictly reflects the input schema and is read-only. </li></div>
-<a name="wp1544437"> </a><div class="pSmartList2"><li>In the <b class="cBold">tLogRow</b> Component view, check the <b class="cBold">Print values in cells of the table</b> box to display properly the output values.</li></div>
-<a name="wp1544443"> </a><div class="pSmartList2"><li>Save the job and execute it.</li></div>
+<a name="wp1544418"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the setting and accept to propagate the schema throughout the Job.</li></div>
+<a name="wp1544427"> </a><div class="pSmartList2"><li>Then select the <b class="cBold">tUnite</b> component and display the <b class="cBold">Component</b> view. Notice that the output schema strictly reflects the input schema and is read-only. </li></div>
+<a name="wp1544437"> </a><div class="pSmartList2"><li>In the <b class="cBold">tLogRow</b> Component view, select the <b class="cBold">Print values in cells of the table</b> check box to display properly the output values.</li></div>
+<a name="wp1544443"> </a><div class="pSmartList2"><li>Save the Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1544450"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

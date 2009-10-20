@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:34">
+    <meta name="LASTUPDATED" content="10/19/09 17:31:48">
     <title>Scénario&#160;1&#160;: Aggréger les colonnes d&#39;une table et appliquer un filtre</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scénario&#160;1&#160;: Aggréger les colonnes d&#39;une table et appliquer un filtre
 </h2>
 <a name="wp1287557"> </a><p class="pIndented1">
-Le scénario suivant décrit un job rassemblant plusieurs schémas d&#39;une table en entrée puis utilise une clause dans la requête SQL afin de filtrer les données en sortie.
+Le scénario suivant décrit un Job rassemblant plusieurs schémas d&#39;une table en entrée puis utilise une clause dans la requête SQL afin de filtrer les données en sortie.
 </p>
 <a name="wp1226140"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,13 +37,11 @@ Le scénario suivant décrit un job rassemblant plusieurs schémas d&#39;une table 
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1226157"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tELTMysqlIntput</b>, <b class="cBold">tELTMysqlMap</b>, <b class="cBold">tELTMysqlOutput</b>.</li></div>
-<a name="wp1226170"> </a><div class="pSmartList2"><li>Trois composants sont requis en entrée pour ce job.</li></div>
-<a name="wp1226179"> </a><div class="pSmartList2"><li>Connectez les trois composants ELT d&#39;entrée au  mapper ELT à l&#39;aide de liens dont le nom doit suivre strictement la nomenclature des tables de la base de données, dans cet exemple&#160;: <em class="cEmphasis">owners</em>, <em class="cEmphasis">cars</em> et <em class="cEmphasis">resellers</em>.</li></div>
-<a name="wp1226246"> </a><div class="pSmartList2"><li>Puis connectez le mapper ELT au composant de sortie ELT à l&#39;aide d&#39;un nouveau lien appelé  <em class="cEmphasis">results</em> dans cet exemple.</li></div>
-<a name="wp1226269"> </a><div class="pSmartList2"><li>Les trois schémas d&#39;entrée sont stockés dans les métadonnées (<b class="cBold">Metadata</b>) du <b class="cBold">Repository</b>. Ils peuvent donc facilement être réutilisés.</li></div>
-</ul></div>
+<a name="wp1226157"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tELTMysqlIntput</b>, <b class="cBold">tELTMysqlMap</b>, <b class="cBold">tELTMysqlOutput</b>.</li></div>
+<a name="wp1226170"> </a><div class="pSmartList1"><li>Trois composants sont requis en entrée pour ce Job.</li></div>
+<a name="wp1226179"> </a><div class="pSmartList1"><li>Connectez les trois composants ELT d&#39;entrée au  mapper ELT à l&#39;aide de liens dont le nom doit suivre strictement la nomenclature des tables de la base de données, dans cet exemple&#160;: <em class="cEmphasis">owners</em>, <em class="cEmphasis">cars</em> et <em class="cEmphasis">resellers</em>.</li></div>
+<a name="wp1226246"> </a><div class="pSmartList1"><li>Puis connectez le mapper ELT au composant de sortie ELT à l&#39;aide d&#39;un nouveau lien appelé  <em class="cEmphasis">results</em> dans cet exemple.</li></div>
+<a name="wp1226269"> </a><div class="pSmartList1"><li>Les trois schémas d&#39;entrée sont stockés dans les métadonnées (<b class="cBold">Metadata</b>) du <b class="cBold">Repository</b>. Ils peuvent donc facilement être réutilisés.</li></div>
 </ul></div>
 <a name="wp1226288"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -51,10 +49,8 @@ Le scénario suivant décrit un job rassemblant plusieurs schémas d&#39;une table 
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1226330"> </a><div class="pSmartList2"><li>Cliquez sur le mapper ELT pour définir les informations de connexion à la base de données.</li></div>
-<a name="wp1226345"> </a><div class="pSmartList2"><li>Les informations de connexion à la base de données sont là encore stockées dans le Repository.</li></div>
-</ul></div>
+<a name="wp1226330"> </a><div class="pSmartList1"><li>Cliquez sur le mapper ELT pour définir les informations de connexion à la base de données.</li></div>
+<a name="wp1226345"> </a><div class="pSmartList1"><li>Les informations de connexion à la base de données sont là encore stockées dans le Repository.</li></div>
 </ul></div>
 <a name="wp1226353"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -62,18 +58,16 @@ Le scénario suivant décrit un job rassemblant plusieurs schémas d&#39;une table 
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1226377"> </a><div class="pSmartList2"><li>L&#39;encodage par défaut est utilisé pour la base de données MySql.</li></div>
-<a name="wp1226389"> </a><div class="pSmartList2"><li>Ouvrez l&#39;éditeur ELT Map pour mettre en place les jointures entre les tables d&#39;entrée (Input).</li></div>
-<a name="wp1226516"> </a><div class="pSmartList2"><li>Glissez-déposez la colonne <em class="cEmphasis">ID_Owner</em> à partir de la table <em class="cEmphasis">Owners</em> vers la colonne correspondante dans la table <em class="cEmphasis">cars</em>. </li></div>
-<a name="wp1226687"> </a><div class="pSmartList2"><li>Sélectionnez l&#39;option de jointure  <b class="cBold">INNER JOIN</b> dans la table <em class="cEmphasis">Cars</em>, puis cochez la case <b class="cBold">Explicit Join</b> en face de <em class="cEmphasis">ID_Owners</em>.</li></div>
-<a name="wp1226703"> </a><div class="pSmartList2"><li>Glissez la colonne <em class="cEmphasis">ID_Resellers</em> à partir de la table <em class="cEmphasis">Cars</em> vers la table <em class="cEmphasis">Resellers</em> pour mettre en place la seconde jointure. Sélectionnez à nouveau l&#39;option de jointure <b class="cBold">INNER JOIN</b> dans la table <em class="cEmphasis">Resellers</em> et cochez la case <b class="cBold">Explicit Join</b> face à la colonne correspondante. </li></div>
-<a name="wp1226834"> </a><div class="pSmartList2"><li>Puis sélectionnez les colonnes à aggréger en sortie.</li></div>
-<a name="wp1226879"> </a><div class="pSmartList2"><li>Sélectionnez toutes les colonnes des tables <em class="cEmphasis">Cars</em> et <em class="cEmphasis">Owners</em> et uniquement les colonnes <em class="cEmphasis">Reseller_Name</em> et <em class="cEmphasis">City</em> à partir de la table<em class="cEmphasis"> Resellers</em>.</li></div>
-<a name="wp1226897"> </a><div class="pSmartList2"><li>Glissez et déposez ces colonnes dans la table de sortie <em class="cEmphasis">Results</em>.</li></div>
-<a name="wp1226925"> </a><div class="pSmartList2"><li>La mise en correspondance apparaît en jaune et les jointures en violet.</li></div>
-<a name="wp1227067"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Generated SQL Select query</b> pour afficher la requête SQL correspondante.</li></div>
-</ul></div>
+<a name="wp1226377"> </a><div class="pSmartList1"><li>L&#39;encodage par défaut est utilisé pour la base de données MySql.</li></div>
+<a name="wp1226389"> </a><div class="pSmartList1"><li>Ouvrez l&#39;éditeur ELT Map pour mettre en place les jointures entre les tables d&#39;entrée (Input).</li></div>
+<a name="wp1226516"> </a><div class="pSmartList1"><li>Glissez-déposez la colonne <em class="cEmphasis">ID_Owner</em> à partir de la table <em class="cEmphasis">Owners</em> vers la colonne correspondante dans la table <em class="cEmphasis">cars</em>. </li></div>
+<a name="wp1226687"> </a><div class="pSmartList1"><li>Sélectionnez l&#39;option de jointure  <b class="cBold">INNER JOIN</b> dans la table <em class="cEmphasis">Cars</em>, puis cochez la case <b class="cBold">Explicit Join</b> en face de <em class="cEmphasis">ID_Owners</em>.</li></div>
+<a name="wp1226703"> </a><div class="pSmartList1"><li>Glissez la colonne <em class="cEmphasis">ID_Resellers</em> à partir de la table <em class="cEmphasis">Cars</em> vers la table <em class="cEmphasis">Resellers</em> pour mettre en place la seconde jointure. Sélectionnez à nouveau l&#39;option de jointure <b class="cBold">INNER JOIN</b> dans la table <em class="cEmphasis">Resellers</em> et cochez la case <b class="cBold">Explicit Join</b> face à la colonne correspondante. </li></div>
+<a name="wp1226834"> </a><div class="pSmartList1"><li>Puis sélectionnez les colonnes à aggréger en sortie.</li></div>
+<a name="wp1226879"> </a><div class="pSmartList1"><li>Sélectionnez toutes les colonnes des tables <em class="cEmphasis">Cars</em> et <em class="cEmphasis">Owners</em> et uniquement les colonnes <em class="cEmphasis">Reseller_Name</em> et <em class="cEmphasis">City</em> à partir de la table<em class="cEmphasis"> Resellers</em>.</li></div>
+<a name="wp1226897"> </a><div class="pSmartList1"><li>Glissez et déposez ces colonnes dans la table de sortie <em class="cEmphasis">Results</em>.</li></div>
+<a name="wp1226925"> </a><div class="pSmartList1"><li>La mise en correspondance apparaît en jaune et les jointures en violet.</li></div>
+<a name="wp1227067"> </a><div class="pSmartList1"><li>Cliquez sur l&#39;onglet <b class="cBold">Generated SQL Select query</b> pour afficher la requête SQL correspondante.</li></div>
 </ul></div>
 <a name="wp1226939"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -81,10 +75,8 @@ Le scénario suivant décrit un job rassemblant plusieurs schémas d&#39;une table 
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1226972"> </a><div class="pSmartList2"><li>Puis appliquez un filtre sur la table de sortie.</li></div>
-<a name="wp1227111"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Add filter row</b> de la table de sortie (output).</li></div>
-</ul></div>
+<a name="wp1226972"> </a><div class="pSmartList1"><li>Puis appliquez un filtre sur la table de sortie.</li></div>
+<a name="wp1227111"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Add filter row</b> de la table de sortie (output).</li></div>
 </ul></div>
 <a name="wp1227133"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -92,10 +84,8 @@ Le scénario suivant décrit un job rassemblant plusieurs schémas d&#39;une table 
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1227156"> </a><div class="pSmartList2"><li>Conditionnez le Select à l&#39;aide d&#39;une clause Where comme suit&#160;: resellers.City =&#39;West Coast City&#39;</li></div>
-<a name="wp1227191"> </a><div class="pSmartList2"><li>Notez que la clause Where apparaît dans l&#39;onglet d&#39;aperçu de la requête SQL générée.</li></div>
-</ul></div>
+<a name="wp1227156"> </a><div class="pSmartList1"><li>Conditionnez le Select à l&#39;aide d&#39;une clause Where comme suit&#160;: resellers.City =&#39;West Coast City&#39;</li></div>
+<a name="wp1227191"> </a><div class="pSmartList1"><li>Notez que la clause Where apparaît dans l&#39;onglet d&#39;aperçu de la requête SQL générée.</li></div>
 </ul></div>
 <a name="wp1227209"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -103,12 +93,10 @@ Le scénario suivant décrit un job rassemblant plusieurs schémas d&#39;une table 
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1227258"> </a><div class="pSmartList2"><li>Cliquez <b class="cBold">OK</b> pour enregistrer le paramétrage de l&#39;ELT Map.</li></div>
-<a name="wp1227270"> </a><div class="pSmartList2"><li>Configurez le composant de sortie ELT Output dans la vue Component du composant <b class="cBold">tELTMysqlOutput</b>.</li></div>
-<a name="wp1227320"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Action on table</b> sélectionnez <b class="cBold">Drop and create table</b> pour l&#39;exemple donné ci-dessous et dans ce cas, la seule action disponible sur les données est l&#39;insertion, donc sélectionnez <b class="cBold">Insert</b>.</li></div>
-<a name="wp1227346"> </a><div class="pSmartList2"><li>Le schéma doit être synchronisé avec le composant <b class="cBold">tELTMysqlMap</b> pour que les divers schémas source puissent être aggrégés.</li></div>
-</ul></div>
+<a name="wp1227258"> </a><div class="pSmartList1"><li>Cliquez <b class="cBold">OK</b> pour enregistrer le paramétrage de l&#39;ELT Map.</li></div>
+<a name="wp1227270"> </a><div class="pSmartList1"><li>Configurez le composant de sortie ELT Output dans la vue Component du composant <b class="cBold">tELTMysqlOutput</b>.</li></div>
+<a name="wp1227320"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Action on table</b> sélectionnez <b class="cBold">Drop and create table</b> pour l&#39;exemple donné ci-dessous et dans ce cas, la seule action disponible sur les données est l&#39;insertion, donc sélectionnez <b class="cBold">Insert</b>.</li></div>
+<a name="wp1227346"> </a><div class="pSmartList1"><li>Le schéma doit être synchronisé avec le composant <b class="cBold">tELTMysqlMap</b> pour que les divers schémas source puissent être aggrégés.</li></div>
 </ul></div>
 <a name="wp1227371"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -122,7 +110,7 @@ Toutes les données sélectionnées sont insérées dans la table <em class="cEmphasi
 Scénario&#160;2&#160;: ELT utilisant une table Alias
 </h2>
 <a name="wp1294770"> </a><p class="pIndented1">
-Le scénario suivant décrit un job utilisant une table Alias. La table <em class="cEmphasis">employees</em> contient toutes les informations concernant les employées ainsi qu&#39;un ID de leur responsable respectif, qui sont également considérés comme des employés et par conséquent inclus dans la table <em class="cEmphasis">employees</em>. La table <em class="cEmphasis">dept </em>contient les informations de lieu et de département des employés de la base.
+Le scénario suivant décrit un Job utilisant une table Alias. La table <em class="cEmphasis">employees</em> contient toutes les informations concernant les employées ainsi qu&#39;un ID de leur responsable respectif, qui sont également considérés comme des employés et par conséquent inclus dans la table <em class="cEmphasis">employees</em>. La table <em class="cEmphasis">dept </em>contient les informations de lieu et de département des employés de la base.
 </p>
 <a name="wp1232441"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -130,10 +118,8 @@ Le scénario suivant décrit un job utilisant une table Alias. La table <em class=
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1232460"> </a><div class="pSmartList2"><li>Glissez et déposez les composants <b class="cBold">tELTMysqlInput</b> afin de collecter les schémas respectifs des tables <em class="cEmphasis">employees</em> et <em class="cEmphasis">dept</em> .</li></div>
-<a name="wp1232501"> </a><div class="pSmartList2"><li>Dans cet exemple, les deux schémas sont stockés dans le <b class="cBold">Repository</b> et peuvent ainsi être facilement réutilisés.</li></div>
-</ul></div>
+<a name="wp1232460"> </a><div class="pSmartList1"><li>Glissez et déposez les composants <b class="cBold">tELTMysqlInput</b> afin de collecter les schémas respectifs des tables <em class="cEmphasis">employees</em> et <em class="cEmphasis">dept</em> .</li></div>
+<a name="wp1232501"> </a><div class="pSmartList1"><li>Dans cet exemple, les deux schémas sont stockés dans le <b class="cBold">Repository</b> et peuvent ainsi être facilement réutilisés.</li></div>
 </ul></div>
 <a name="wp1232509"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -141,10 +127,8 @@ Le scénario suivant décrit un job utilisant une table Alias. La table <em class=
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1232530"> </a><div class="pSmartList2"><li>Puis sélectionnez le composant <b class="cBold">tELTMysqlMap</b>  et configurez les informations de connexion à la base Mysql. </li></div>
-<a name="wp1232546"> </a><div class="pSmartList2"><li>Ces informations de connexion sont là encore stockées dans la partie Metadata du Repository.</li></div>
-</ul></div>
+<a name="wp1232530"> </a><div class="pSmartList1"><li>Puis sélectionnez le composant <b class="cBold">tELTMysqlMap</b>  et configurez les informations de connexion à la base Mysql. </li></div>
+<a name="wp1232546"> </a><div class="pSmartList1"><li>Ces informations de connexion sont là encore stockées dans la partie Metadata du Repository.</li></div>
 </ul></div>
 <a name="wp1232559"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -152,11 +136,9 @@ Le scénario suivant décrit un job utilisant une table Alias. La table <em class=
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1232580"> </a><div class="pSmartList2"><li>Cliquez sur le bouton [...] pour lancer l&#39;éditeur ELT Map.</li></div>
-<a name="wp1232589"> </a><div class="pSmartList2"><li>Vérifiez d&#39;abord que la première table d&#39;entrée de la zone Input correspond à votre flux principal car la réussite des jointures en dépend.</li></div>
-<a name="wp1232608"> </a><div class="pSmartList2"><li>Dans cet exemple, la table <em class="cEmphasis">employees</em> devrait donc se trouver en première position.</li></div>
-</ul></div>
+<a name="wp1232580"> </a><div class="pSmartList1"><li>Cliquez sur le bouton [...] pour lancer l&#39;éditeur ELT Map.</li></div>
+<a name="wp1232589"> </a><div class="pSmartList1"><li>Vérifiez d&#39;abord que la première table d&#39;entrée de la zone Input correspond à votre flux principal car la réussite des jointures en dépend.</li></div>
+<a name="wp1232608"> </a><div class="pSmartList1"><li>Dans cet exemple, la table <em class="cEmphasis">employees</em> devrait donc se trouver en première position.</li></div>
 </ul></div>
 <a name="wp1232654"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -164,11 +146,9 @@ Le scénario suivant décrit un job utilisant une table Alias. La table <em class=
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1232743"> </a><div class="pSmartList2"><li>Glissez-déposez la colonne <em class="cEmphasis">DeptNo</em> à partir de la table <em class="cEmphasis">employees</em> vers la table <em class="cEmphasis">dept</em> afin de mettre en place la jointure <b class="cBold">join</b> entre les deux tables d&#39;entrée.</li></div>
-<a name="wp1232790"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Explicit Join</b> et définissez cette jointure comme <b class="cBold">Inner Join</b>.</li></div>
-<a name="wp1232746"> </a><div class="pSmartList2"><li>Puis créez la table <b class="cBold">Alias</b> basée sur la table <em class="cEmphasis">employees</em></li></div>
-</ul></div>
+<a name="wp1232743"> </a><div class="pSmartList1"><li>Glissez-déposez la colonne <em class="cEmphasis">DeptNo</em> à partir de la table <em class="cEmphasis">employees</em> vers la table <em class="cEmphasis">dept</em> afin de mettre en place la jointure <b class="cBold">join</b> entre les deux tables d&#39;entrée.</li></div>
+<a name="wp1232790"> </a><div class="pSmartList1"><li>Cochez la case <b class="cBold">Explicit Join</b> et définissez cette jointure comme <b class="cBold">Inner Join</b>.</li></div>
+<a name="wp1232746"> </a><div class="pSmartList1"><li>Puis créez la table <b class="cBold">Alias</b> basée sur la table <em class="cEmphasis">employees</em></li></div>
 </ul></div>
 <a name="wp1232811"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -176,11 +156,9 @@ Le scénario suivant décrit un job utilisant une table Alias. La table <em class=
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1232899"> </a><div class="pSmartList2"><li>Appelez cet alias <em class="cEmphasis">Managers</em> et cliquez OK pour l&#39;afficher comme nouvelle table d&#39;entrée (Input) dans le mapper ELT.</li></div>
-<a name="wp1232909"> </a><div class="pSmartList2"><li>Glissez-déposez la colonne <em class="cEmphasis">ID</em> column à partir de la table <em class="cEmphasis">employees</em> vers la colonne <em class="cEmphasis">ID_Manager</em> de la table alias <em class="cEmphasis">Managers</em> nouvellement créée .</li></div>
-<a name="wp1233128"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Explicit Join</b> et définissez la comme <b class="cBold">Left Outer Join</b>,  afin que les résultats de ce filtre soient récupérés même en cas de valeur <b class="cBold">Null</b>.</li></div>
-</ul></div>
+<a name="wp1232899"> </a><div class="pSmartList1"><li>Appelez cet alias <em class="cEmphasis">Managers</em> et cliquez OK pour l&#39;afficher comme nouvelle table d&#39;entrée (Input) dans le mapper ELT.</li></div>
+<a name="wp1232909"> </a><div class="pSmartList1"><li>Glissez-déposez la colonne <em class="cEmphasis">ID</em> column à partir de la table <em class="cEmphasis">employees</em> vers la colonne <em class="cEmphasis">ID_Manager</em> de la table alias <em class="cEmphasis">Managers</em> nouvellement créée .</li></div>
+<a name="wp1233128"> </a><div class="pSmartList1"><li>Cochez la case <b class="cBold">Explicit Join</b> et définissez la comme <b class="cBold">Left Outer Join</b>,  afin que les résultats de ce filtre soient récupérés même en cas de valeur <b class="cBold">Null</b>.</li></div>
 </ul></div>
 <a name="wp1233170"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -188,10 +166,8 @@ Le scénario suivant décrit un job utilisant une table Alias. La table <em class=
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1233210"> </a><div class="pSmartList2"><li>Glissez-déposez le contenu des deux tables d&#39;entrée, <em class="cEmphasis">employees</em> et <em class="cEmphasis">dept</em>, ainsi que la colonne <em class="cEmphasis">Name</em> à partir de la table <em class="cEmphasis">Manager</em> vers la table de sortie (Output).</li></div>
-<a name="wp1233295"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Generated SQL Select query</b> pour afficher la requête à exécuter.</li></div>
-</ul></div>
+<a name="wp1233210"> </a><div class="pSmartList1"><li>Glissez-déposez le contenu des deux tables d&#39;entrée, <em class="cEmphasis">employees</em> et <em class="cEmphasis">dept</em>, ainsi que la colonne <em class="cEmphasis">Name</em> à partir de la table <em class="cEmphasis">Manager</em> vers la table de sortie (Output).</li></div>
+<a name="wp1233295"> </a><div class="pSmartList1"><li>Cliquez sur l&#39;onglet <b class="cBold">Generated SQL Select query</b> pour afficher la requête à exécuter.</li></div>
 </ul></div>
 <a name="wp1233328"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -199,10 +175,8 @@ Le scénario suivant décrit un job utilisant une table Alias. La table <em class=
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1233356"> </a><div class="pSmartList2"><li>Puis cliquez sur le composant de sortie et configurez le champ <b class="cBold">Action on data</b> sur <b class="cBold">Insert</b>.</li></div>
-<a name="wp1233411"> </a><div class="pSmartList2"><li>Assurez-vous que le schéma est synchronisé avec la table de sortie du mapper ELT avant d&#39;exécuter le job via la touche <b class="cBold">F6</b> ou via la barre d&#39;outils.</li></div>
-</ul></div>
+<a name="wp1233356"> </a><div class="pSmartList1"><li>Puis cliquez sur le composant de sortie et configurez le champ <b class="cBold">Action on data</b> sur <b class="cBold">Insert</b>.</li></div>
+<a name="wp1233411"> </a><div class="pSmartList1"><li>Assurez-vous que le schéma est synchronisé avec la table de sortie du mapper ELT avant d&#39;exécuter le Job via la touche <b class="cBold">F6</b> ou via la barre d&#39;outils.</li></div>
 </ul></div>
 <a name="wp1233479"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
     <title>Scenario 1: Displaying selected data from DB table</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scenario 1: Displaying selected data from DB table
 </h2>
 <a name="wp2199013"> </a><p class="pIndented1">
-The following scenario creates a two-component job, reading data from a database using a DB query and outputting delimited data into the standard output (console).
+The following scenario creates a two-component Job, reading data from a database using a DB query and outputting delimited data into the standard output (console).
 </p>
 <a name="wp2199021"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,7 +38,7 @@ The following scenario creates a two-component job, reading data from a database
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2199032"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tDBInput</b> and <b class="cBold">tLogRow</b> component from the Palette to the design workspace.</li></div>
+<a name="wp2199032"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tDBInput</b> and <b class="cBold">tLogRow</b> component from the <b class="cBold">Palette</b> to the design workspace.</li></div>
 <a name="wp2199042"> </a><div class="pSmartList2"><li>Right-click on the <b class="cBold">tDBInput</b> component and select <em class="cEmphasis">Row &gt; Main</em>. Drag this main row link onto the <b class="cBold">tLogRow</b> component and release when the plug symbol displays.</li></div>
 <a name="wp2199057"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tDBInput</b> so the <b class="cBold">Component</b> view shows up, and define the properties:</li></div>
 </ul></div>
@@ -52,17 +52,17 @@ The following scenario creates a two-component job, reading data from a database
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2199069"> </a><div class="pSmartList2"><li>The component property data are <b class="cBold">Built-In</b> for this scenario.</li></div>
 <a name="wp1187811"> </a><div class="pSmartList2"><li>Fill in the database name, the username and password in the corresponding fields.</li></div>
-<a name="wp1187818"> </a><div class="pSmartList2"><li>The schema is <b class="cBold">Built-In</b>.This means that it is available for this job and on this station only. </li></div>
+<a name="wp1187818"> </a><div class="pSmartList2"><li>The schema is <b class="cBold">Built-In</b>.This means that it is available for this Job and on this station only. </li></div>
 <a name="wp1187825"> </a><div class="pSmartList2"><li>Click on <b class="cBold">Edit Schema</b> and create a 2-column description including shop code and sales.</li></div>
 <a name="wp2199109"> </a><div class="pSmartList2"><li>Enter the table name in the corresponding field.</li></div>
 <a name="wp1187828"> </a><div class="pSmartList2"><li>Type in the query making sure it includes all columns in the same order as defined in the Schema. In this case, as we&#39;ll select all columns of the schema, the asterisk symbol makes sense.</li></div>
 <a name="wp1187834"> </a><div class="pSmartList2"><li>Click on the second component to define it.</li></div>
 <a name="wp1187840"> </a><div class="pSmartList2"><li>Enter the fields separator. In this case, a pipe separator. </li></div>
-<a name="wp1187851"> </a><div class="pSmartList2"><li>Now go to the <b class="cBold">Run </b>tab, and click on <b class="cBold">Run</b> to execute the job.</li></div>
+<a name="wp1187851"> </a><div class="pSmartList2"><li>Now go to the <b class="cBold">Run </b>tab, and click on <b class="cBold">Run</b> to execute the Job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1187854"> </a><p class="pIndented1">
-The DB is parsed and queried data is extracted from the specified table and passed on to the Job log console. You can view the output file straight on the console.  
+The DB is parsed and queried data is extracted from the specified table and passed on to the job log console. You can view the output file straight on the console.  
 </p>
 <a name="wp1187863"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -73,7 +73,7 @@ The DB is parsed and queried data is extracted from the specified table and pass
 Scenario 2: Using StoreSQLQuery variable
 </h2>
 <a name="wp1294636"> </a><p class="pIndented1">
-StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which does not operate correctly. It allows you to dynamically feed the SQL query set in your tDBInput component. 
+StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which does not operate correctly. It allows you to dynamically feed the SQL query set in your <b class="cBold">tDBInput</b> component. 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -106,7 +106,7 @@ StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1187936"> </a><div class="pSmartList2"><li>Go to your <b class="cBold">Run tab</b> and execute the job. </li></div>
+<a name="wp1187936"> </a><div class="pSmartList2"><li>Go to your <b class="cBold">Run tab</b> and execute the Job. </li></div>
 <a name="wp1187941"> </a><div class="pSmartList2"><li>The query entered in the <b class="cBold">tDBInput</b> component shows at the end of the job results, on the log:</li></div>
 </ul></div>
 </ul></div>

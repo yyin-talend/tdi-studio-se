@@ -1,0 +1,425 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <title>tSASOutput</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSASInput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSASOutput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2758940"> </a><h2 class="pHeading1">
+tSASOutput
+</h2>
+<a name="wp2758949"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tSasOutput_icon32_white.png" id="wp2758944" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2762199"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2762196" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Before being able to benefit from all functional objectives of the SAS components, make sure to install the following three modules: sas.core.jar, sas.intrnet.javatools.jar and sas.svc.connection.jar in the path lib &gt; java in your <b class="cBold">Talend Open Studio</b> directory. You can later verify, if needed whether the modules are successfully installed through the Modules view of the Studio.
+</p>
+<a name="wp2762206"> </a><h2 class="pHeading2">
+tSASOutput properties
+</h2>
+<a name="wp2759331"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2758964table2758959">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2758964"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp2758966"> </a><div class="pCellBody">
+Databases/SAS
+</div>
+</td>
+    <td><a name="wp2759968"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_iconbh.png" id="wp2759961" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2758980"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2761600"> </a><div class="pCellBody">
+<b class="cBold">tSASOutput</b> writes, updates, makes changes or suppresses entries in a database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2758996"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2761610"> </a><div class="pCellBody">
+<b class="cBold">tSASOutput</b> executes the action defined on the table and/or on the data contained in the table, based on the incoming flow from the preceding component in the Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759009"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2759013"> </a><div class="pCellBody">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp2761629"> </a><div class="pCellBody">
+Select this check box and click the relevant <b class="cBold">tSASConnection</b> component on the <b class="cBold">Component</b> list to reuse the connection details you already defined.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759024"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759029"> </a><div class="pCellBody">
+<em class="cEmphasis">SAS URL</em>
+</div>
+</td>
+    <td><a name="wp2761666"> </a><div class="pCellBody">
+Enter the URL to connect to the desired DB.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759033"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759038"> </a><div class="pCellBody">
+<em class="cEmphasis">Driver JAR</em>
+</div>
+</td>
+    <td><a name="wp2761682"> </a><div class="pCellBody">
+In the drop down list, select a desired available driver, or download one from a local directory through clicking the three-dot button.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759045"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759050"> </a><div class="pCellBody">
+<em class="cEmphasis">Class Name</em>
+</div>
+</td>
+    <td><a name="wp2761701"> </a><div class="pCellBody">
+Type in the Class name to be pointed to in the driver.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759057"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759062"> </a><div class="pCellBody">
+<em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp2759067"> </a><div class="pCellBody">
+DB user authentication data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759069"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759074"> </a><div class="pCellBody">
+<em class="cEmphasis">Table</em>
+</div>
+</td>
+    <td><a name="wp2759076"> </a><div class="pCellBody">
+Name of the table to read. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759078"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759083"> </a><div class="pCellBody">
+<em class="cEmphasis">Action on data</em>
+</div>
+</td>
+    <td><a name="wp2761731"> </a><div class="pCellBody">
+On the data of the table defined, you can perform:<br /><b class="cBold">Insert</b>: Add new entries to the table. If duplicates are found, job stops.<br /><b class="cBold">Update</b>: Make changes to existing entries<br /><b class="cBold">Insert or update</b>: Add entries or update existing ones.<br /><b class="cBold">Update or insert</b>: Update existing entries or create it if non existing<br /><b class="cBold">Delete</b>: Remove entries corresponding to the input flow.
+</div>
+<a name="wp2761759"> </a><div class="pCellBody">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallbeo.png" align="left" id="wp2761756" border="0" hspace="0" vspace="0"/></table></div><div class="pCellBody">
+It is necessary to specify at least one column as a primary key on which the Update and Delete operations are based. You can do that by clicking Edit Schema and selecting the check box(es) next to the column(s) you want to set as primary key(s). For an advanced use, click the Advanced settings view where you can define primary keys simultaneously for the Update and Delete operations. To do that: Select the Use field options check box and then in the &quot;Key in update&quot; column, select the check boxes next to the column names you want to use as a base for the Update operation. Do the same in the &quot;Key in delete&quot; column for the Delete operation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759109"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759114"> </a><div class="pCellBody">
+<em class="cEmphasis">Clear data in table</em>
+</div>
+</td>
+    <td><a name="wp2759116"> </a><div class="pCellBody">
+Select this check box to delete data in the selected table before any operation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2761800"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2761810"> </a><div class="pCellBody">
+<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2761814"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2761818"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2761821"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2761828"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2761839"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2761842"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2761849"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759160"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759165"> </a><div class="pCellBody">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp2761789"> </a><div class="pCellBody">
+Clear this check box to skip the row on error and complete the process for error-free rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759173"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2759178"> </a><div class="pCellBody">
+<em class="cEmphasis">Encoding Type</em>
+</div>
+</td>
+    <td><a name="wp2761871"> </a><div class="pCellBody">
+Select the encoding type from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759185"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759190"> </a><div class="pCellBody">
+<em class="cEmphasis">Commit every</em>
+</div>
+</td>
+    <td><a name="wp2761896"> </a><div class="pCellBody">
+Enter the number of rows to be completed before committing batches of rows together into the DB. This option ensures transaction quality (but not rollback) and, above all, better performance at execution.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759195"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759200"> </a><div class="pCellBody">
+<em class="cEmphasis">Additional Columns</em>
+</div>
+</td>
+    <td><a name="wp2761929"> </a><div class="pCellBody">
+This option is not offered if you create (with or without drop) the DB table. This option allows you to call SQL functions to perform actions on columns, which are not insert, nor update or delete actions, or action that require particular preprocessing.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759204"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759207"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2761958"> </a><div class="pCellBody">
+<b class="cBold">Name:</b> Type in the name of the schema column to be altered or inserted as a new column.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759216"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759218"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2761968"> </a><div class="pCellBody">
+<b class="cBold">SQL expression:</b> Type in the SQL statement to be executed in order to alter or insert the relevant column data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759228"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759230"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2761982"> </a><div class="pCellBody">
+<b class="cBold">Position:</b> Select <b class="cBold">Before</b>, <b class="cBold">Replace</b> or <b class="cBold">After</b> following the action to be performed on the reference column.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759247"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759249"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2762010"> </a><div class="pCellBody">
+<b class="cBold">Reference column:</b> Type in a column of reference that the <b class="cBold">tSASOutput </b>can use to place or replace the new or altered column.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759259"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759264"> </a><div class="pCellBody">
+<em class="cEmphasis">Use field option</em>s
+</div>
+</td>
+    <td><a name="wp2762036"> </a><div class="pCellBody">
+Select this check box to customize a request, especially when there is double action on data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2759268"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759273"> </a><div class="pCellBody">
+<em class="cEmphasis">Enable debug mode</em>
+</div>
+</td>
+    <td><a name="wp2762051"> </a><div class="pCellBody">
+Select this check box to display each step during processing entries in a database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759277"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2759282"> </a><div class="pCellBody">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2762064"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2762077"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2806341"> </a><div class="pCellBody">
+&#160;
+</div>
+<a name="wp2823805"> </a><div class="pCellBody">
+<em class="cEmphasis">Enable parallel execution</em>
+</div>
+<a name="wp2823808"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2762087"> </a><div class="pCellBody">
+Select this check box to perform high-speed data processing, that is treating multiple data flows simultaneously. <br />For more information, see <em class="cEmphasis">Parallelizing data flows</em>of <b class="cBold">Talend Open Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2759307"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2762103"> </a><div class="pCellBody">
+This component offers the flexibility benefit of a connection to any type of DB and covers all possibilities of SQL queries.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSASInput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSASOutput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

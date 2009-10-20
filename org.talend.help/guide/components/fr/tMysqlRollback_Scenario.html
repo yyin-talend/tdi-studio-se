@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:03">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
     <title>Scénario&#160;: Annuler l&#39;insertion de données dans des tables mère/fille</title>
   </head>
 
@@ -28,8 +28,8 @@
 <a name="wp2317122"> </a><h2 class="pHeading2">
 Scénario&#160;: Annuler l&#39;insertion de données dans des tables mère/fille
 </h2>
-<a name="wp2317127"> </a><p class="pIndented1">
-Basé sur le composant tMysqlConnection, <a href="tMysqlConnection_Scenario.html#wp2313955"><em class="cEmphasis">Scénario&#160;: Insérer des données dans des tables mère/fille</em></a>, insérez une opération de rollback (annulation) afin d&#39;éviter un commit inutile.
+<a name="wp2505283"> </a><p class="pIndented1">
+En vous basant sur le <a href="tMysqlConnection_Scenario.html#wp2313955"><em class="cEmphasis">Scénario&#160;: Insérer des données dans des tables mère/fille</em></a> du composant <b class="cBold">tMysqlConnection</b>, insérez une opération de rollback (annulation) afin d&#39;éviter un commit inutile.
 </p>
 <a name="wp2317136"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,13 +37,11 @@ Basé sur le composant tMysqlConnection, <a href="tMysqlConnection_Scenario.html#
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2317145"> </a><div class="pSmartList2"><li>Cliquez et déposez un composant <b class="cBold">tMysqlRollback</b> et connectez-le au composant de début.</li></div>
-<a name="wp2317150"> </a><div class="pSmartList2"><li>Paramétrez l&#39;unique champ du Rollback avec la connexion à la base de données adéquate.</li></div>
-</ul></div>
+<a name="wp2317145"> </a><div class="pSmartList1"><li>Cliquez et déposez un composant <b class="cBold">tMysqlRollback</b> et connectez-le au composant de début.</li></div>
+<a name="wp2317150"> </a><div class="pSmartList1"><li>Paramétrez l&#39;unique champ du Rollback avec la connexion à la base de données adéquate.</li></div>
 </ul></div>
 <a name="wp2317156"> </a><p class="pIndented1">
-Ce nouvel élément ajouté au job assure que la transaction ne sera pas commitée partiellement.
+Ce nouvel élément ajouté au Job assure que la transaction ne sera pas commitée partiellement.
 </p>
     </blockquote>
     <hr>

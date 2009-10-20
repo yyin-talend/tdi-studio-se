@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:25:21">
+    <meta name="LASTUPDATED" content="10/19/09 18:25:21">
     <title>Scenario: Creating an XML file using a loop</title>
   </head>
 
@@ -38,7 +38,7 @@ The following scenario describes the creation of an XML file from a sorted flat 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1543727"> </a><div class="pSmartList2"><li>On the palette of components, click and drop a <b class="cBold">tFileInputDelimited</b> and a <b class="cBold">tAdvancedFileOutputXML</b> onto the design area.</li></div>
+<a name="wp1543727"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileInputDelimited</b> and a <b class="cBold">tAdvancedFileOutputXML</b> from the <b class="cBold">Palette</b> to the design workspace.</li></div>
 <a name="wp1543909"> </a><div class="pSmartList2"><li>Alternatively, if you configured a description for the input delimited file in the <b class="cBold">Metadata</b> area of the <b class="cBold">Repository</b>, then you can directly drag &amp; drop the metadata entry onto the editor, to set up automatically the input flow.</li></div>
 <a name="wp1543806"> </a><div class="pSmartList2"><li> Right-click on the input component and drag a row main link towards the <b class="cBold">tAdvancedFileOutputXML</b> component to implement a connection.</li></div>
 <a name="wp1543878"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tFileInputDelimited</b> component and display the <b class="cBold">Component settings</b> tab located in the tab system at the bottom of the Studio.</li></div>
@@ -52,7 +52,7 @@ The following scenario describes the creation of an XML file from a sorted flat 
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1544074"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Property type</b>, according to whether you stored the file description in the Repository or not. If you dragged &amp; dropped the component directly from the Metadata, no changes to the setting should be needed.</li></div>
-<a name="wp1544121"> </a><div class="pSmartList2"><li>If you didn&#39;t setup the file desciption in the <b class="cBold">Repository</b>, then select <b class="cBold">Built-in</b> and manually fill out the fields displayed on the <b class="cBold">Basic settings</b> vertical tab. </li></div>
+<a name="wp1544121"> </a><div class="pSmartList2"><li>If you didn&#39;t setup the file description in the <b class="cBold">Repository</b>, then select <b class="cBold">Built-in</b> and manually fill out the fields displayed on the <b class="cBold">Basic settings</b> vertical tab. </li></div>
 <a name="wp1544098"> </a><div class="pSmartList2"><li>The input file contains the following type of columns separated by semi-colons: <em class="cEmphasis">id</em>, <em class="cEmphasis">name</em>, <em class="cEmphasis">category</em>, <em class="cEmphasis">year</em>, <em class="cEmphasis">language</em>, <em class="cEmphasis">director</em> and <em class="cEmphasis">cast</em>.</li></div>
 </ul></div>
 </ul></div>
@@ -87,7 +87,7 @@ The following scenario describes the creation of an XML file from a sorted flat 
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1544434"> </a><div class="pSmartList2"><li>In the <b class="cBold">File Name</b> field, browse to the file to be written if it exists or type in the path and file name that needs to be created for the output.</li></div>
 <a name="wp1544447"> </a><div class="pSmartList2"><li>By default, the schema (file description) is automatically propagated from the input flow. But you can edit it if you need. </li></div>
-<a name="wp1544476"> </a><div class="pSmartList2"><li>Then click on the three-dot button or double-click on the <b class="cBold">tAdvancedFileOutputXML</b> component on the workspace to open the dedicated mapping editor. </li></div>
+<a name="wp1544476"> </a><div class="pSmartList2"><li>Then click on the three-dot button or double-click on the <b class="cBold">tAdvancedFileOutputXML</b> component on the design workspace to open the dedicated mapping editor. </li></div>
 <a name="wp1544496"> </a><div class="pSmartList2"><li>To the left of the interface, are listed the columns from the input file description.</li></div>
 <a name="wp1544631"> </a><div class="pSmartList2"><li>To the right of the interface, set the XML tree panel to reflect the expected XML structure output.</li></div>
 <a name="wp1544635"> </a><div class="pSmartList2"><li>Either create node by node the structure. For more information about the manual creation of an XML tree<a href="tAdvancedFileOutputXML_Prop.html#wp1542108">, see&#160;<em class="cEmphasis">Defining the XML tree.</em></a> </li></div>
@@ -111,11 +111,9 @@ The following scenario describes the creation of an XML file from a sorted flat 
 <a name="wp1545088"> </a><div class="pSmartList2"><li>Right-click on the Movie parent node of the XML tree, and select <b class="cBold">Set as group element</b>.</li></div>
 <a name="wp1545112"> </a><div class="pSmartList2"><li>The newly defined node status show on the corresponding element lines.</li></div>
 <a name="wp1545133"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the configuration.</li></div>
+<a name="wp2749533"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to execute the Job.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1545152"> </a><p class="pIndented1">
-Then press <b class="cBold">F6</b> to execute the job.
-</p>
 <a name="wp1545169"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/Use_Case_tAdvancedFileOutputXML7.png" id="wp1545174" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:21:21">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:03">
     <title>Scenario: Replacement from a reference file</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scenario: Replacement from a reference file
 </h2>
 <a name="wp1499454"> </a><p class="pIndented1">
-The following job (created in Perl) searches and replaces a list of countries with their corresponding codes. The relevant codes are taken from a reference file placed as lookup flow in the job. The main flow is replicated and both outputs are displayed on the console, in order to show the main flow before and after replacement. 
+The following Job (created in Perl) searches and replaces a list of countries with their corresponding codes. The relevant codes are taken from a reference file placed as lookup flow in the Job. The main flow is replicated and both outputs are displayed on the console, in order to show the main flow before and after replacement. 
 </p>
 <a name="wp1496931"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -38,7 +38,7 @@ The following job (created in Perl) searches and replaces a list of countries wi
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1496950"> </a><div class="pSmartList2"><li>Click &amp; drop the following components from the <b class="cBold">Palette</b>: <b class="cBold">tMysqlInput</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tReplicate</b>, <b class="cBold">tReplaceList</b> and <b class="cBold">tLogRow</b> (x2). Note that if your input schemas are stored in the repository, you can simply drag and drop the relevant node from the repository&#39;s Metadata Manager onto the designer to retrieve automatically the input components&#39; setting. For more information, see <em class="cEmphasis">Drag &amp; Drop components from the Metadata node</em></li></div>
+<a name="wp2508844"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette </b>to the design workspace: <b class="cBold">tMysqlInput</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tReplicate</b>, <b class="cBold">tReplaceList</b> and <b class="cBold">tLogRow</b> (x2). Note that if your input schemas are stored in the Repository, you can simply drag and drop the relevant node from the Repository&#39;s Metadata Manager onto the design workspace to retrieve automatically the input components&#39; setting. For more information, see <em class="cEmphasis">Drop components from the Metadata node</em> in <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
 <a name="wp1496968"> </a><div class="pSmartList2"><li>Connect the components using<b class="cBold"> Main Row</b> connections via a right-click on each component. Notice that the main row coming from the reference flow (<b class="cBold">tFileInputDelimited</b>) is called a lookup row.</li></div>
 <a name="wp1496978"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tMysqlInput</b> component and set the input flow parameters.</li></div>
 </ul></div>
@@ -53,7 +53,7 @@ The following job (created in Perl) searches and replaces a list of countries wi
 <a name="wp1497880"> </a><div class="pSmartList2"><li>The input schema is made of two columns: <em class="cEmphasis">Names</em>, <em class="cEmphasis">States</em>. The column States gathered the name of the United States of America which are to be replaced by their respective code. </li></div>
 <a name="wp1497894"> </a><div class="pSmartList2"><li>In the <b class="cBold">Query</b> field, make sure the <em class="cEmphasis">State</em> column is included in the <code class="cCode">Select </code>statement. In this use case, all columns are selected.</li></div>
 <a name="wp1498193"> </a><div class="pSmartList2"><li>Check the <b class="cBold">tReplicate</b> component setting. The schema is simply duplicated into two identical flows, but no change to the schema can be made.</li></div>
-<a name="wp1498006"> </a><div class="pSmartList2"><li>Then double-click on the <b class="cBold">tFileInputDelimited</b> component,  to set the reference file.</li></div>
+<a name="wp1498006"> </a><div class="pSmartList2"><li>Then double-click on the <b class="cBold">tFileInputDelimited</b> component, to set the reference file.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1498029"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -64,7 +64,7 @@ The following job (created in Perl) searches and replaces a list of countries wi
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1498053"> </a><div class="pSmartList2"><li>The file includes two columns: <em class="cEmphasis">Postal</em>, <em class="cEmphasis">State</em> where <em class="cEmphasis">Postal</em> provides the zipcode corresponding to the name given in the respective row of the <em class="cEmphasis">State </em>column.</li></div>
-<a name="wp1498548"> </a><div class="pSmartList2"><li>The fields are delimited by semicolons and  rows are separated by carriage returns.</li></div>
+<a name="wp1498548"> </a><div class="pSmartList2"><li>The fields are delimited by semicolons and rows are separated by carriage returns.</li></div>
 <a name="wp1498551"> </a><div class="pSmartList2"><li>Edit the lookup flow schema.</li></div>
 </ul></div>
 </ul></div>
@@ -90,8 +90,8 @@ The following job (created in Perl) searches and replaces a list of countries wi
 <a name="wp1499209"> </a><div class="pSmartList2"><li>In <b class="cBold">Lookup search index</b> field, type in the position index of the column being searched. In this use case, <em class="cEmphasis">State</em> is the second column of the lookup input file, therefore type in <b class="cBold">1</b> in this field. </li></div>
 <a name="wp1499222"> </a><div class="pSmartList2"><li>In <b class="cBold">Lookup replacement index</b> field, fill in the position number of the column containing the replacement values, in this example: <em class="cEmphasis">Postal</em> for the State codes.</li></div>
 <a name="wp1499235"> </a><div class="pSmartList2"><li>In the <b class="cBold">Column options</b> table, select the <em class="cEmphasis">States</em> column as in this use case, the State names are to be replaced with their corresponding code.</li></div>
-<a name="wp1499245"> </a><div class="pSmartList2"><li>In both <b class="cBold">tLogRow</b> components, check the <b class="cBold">Print values in table cells</b> checkbox for a better readability of the outputs.</li></div>
-<a name="wp1499251"> </a><div class="pSmartList2"><li>Save the job and run it.</li></div>
+<a name="wp1499245"> </a><div class="pSmartList2"><li>In both <b class="cBold">tLogRow</b> components, select the <b class="cBold">Print values in table cells</b> check box for a better readability of the outputs.</li></div>
+<a name="wp1499251"> </a><div class="pSmartList2"><li>Save the Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1499257"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

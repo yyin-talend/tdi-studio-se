@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:24:29">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:16">
     <title>tLogCatcher</title>
   </head>
 
@@ -59,7 +59,7 @@ Log &amp; Error
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1204833"> </a><div class="pCellBody">
-Fetches set fields and messages from Java Exception/PerlDie, tDie and/or tWarn and passes them on to the next component.
+Fetches set fields and messages from Java Exception/PerlDie, <b class="cBold">tDie</b> and/or <b class="cBold">tWarn</b> and passes them on to the next component.
 </div>
 </td>
 </tr>
@@ -68,7 +68,7 @@ Fetches set fields and messages from Java Exception/PerlDie, tDie and/or tWarn a
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1204839"> </a><div class="pCellBody">
-Operates as a log function triggered  by one of the three: Java exception/PerlDie, tDie or tWarn, to collect and transfer log data.
+Operates as a log function triggered by one of the three: Java exception/PerlDie, <b class="cBold">tDie</b> or <b class="cBold">tWarn</b>, to collect and transfer log data.
 </div>
 </td>
 </tr>
@@ -76,12 +76,12 @@ Operates as a log function triggered  by one of the three: Java exception/PerlDi
 Basic settings
 </div>
 </td>
-    <td><a name="wp1204850"> </a><div class="pCellHeading">
+    <td><a name="wp1204850"> </a><div class="pCellBody">
 <em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp1204853"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. 
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. 
 </div>
 </td>
 </tr>
@@ -93,8 +93,8 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
-    <td><a name="wp1204862"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp2082593"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
@@ -106,8 +106,8 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
-    <td><a name="wp1204874"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused in various  projets and job flowcharts. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp2082690"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
 </div>
 </td>
 </tr>
@@ -115,12 +115,12 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
-    <td><a name="wp1204884"> </a><div class="pCellHeading">
+    <td><a name="wp1204884"> </a><div class="pCellBody">
 <em class="cEmphasis">Catch PerlDie</em><br /><em class="cEmphasis">Catch Java Exception</em>
 </div>
 </td>
     <td><a name="wp1204886"> </a><div class="pCellBody">
-Check this box to trigger the tCatch function when a PerlDie/Java Exception occurs in the job
+Select this check box to trigger the <b class="cBold">tCatch</b> function when a PerlDie/Java Exception occurs in the Job
 </div>
 </td>
 </tr>
@@ -128,12 +128,12 @@ Check this box to trigger the tCatch function when a PerlDie/Java Exception occu
 &#160;
 </div>
 </td>
-    <td><a name="wp1204893"> </a><div class="pCellHeading">
+    <td><a name="wp1204893"> </a><div class="pCellBody">
 <em class="cEmphasis">Catch tDie</em>
 </div>
 </td>
     <td><a name="wp1204895"> </a><div class="pCellBody">
-Check this box to trigger the tCatch function when a tDie is called in a job
+Select this check box to trigger the <b class="cBold">tCatch</b> function when a <b class="cBold">tDie</b> is called in a Job
 </div>
 </td>
 </tr>
@@ -141,12 +141,12 @@ Check this box to trigger the tCatch function when a tDie is called in a job
 &#160;
 </div>
 </td>
-    <td><a name="wp1204902"> </a><div class="pCellHeading">
+    <td><a name="wp1204902"> </a><div class="pCellBody">
 <em class="cEmphasis">Catch tWarn</em>
 </div>
 </td>
     <td><a name="wp1204904"> </a><div class="pCellBody">
-Check this box to trigger the tCatch function when a tWarn is called in a job
+Select this check box to trigger the tCatch function when a tWarn is called in a Job
 </div>
 </td>
 </tr>
@@ -155,7 +155,7 @@ Check this box to trigger the tCatch function when a tWarn is called in a job
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1204908"> </a><div class="pCellBody">
-This component is the start component of a secondary job which automatically triggers at the end of the main job
+This component is the start component of a secondary Job which automatically triggers at the end of the main Job
 </div>
 </td>
 </tr>

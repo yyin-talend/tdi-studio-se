@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/19/09 17:34:08">
+    <title>tExtractXMLField</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tDTDValidator_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tExtractXMLField_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2267734"> </a><h2 class="pHeading1">
+tExtractXMLField
+</h2>
+<a name="wp2267743"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tExtractXMLField_icon32.png" id="wp2267738" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2267750"> </a><h2 class="pHeading2">
+Propriétés du tExtractXMLField
+</h2>
+<a name="wp2267940"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2267758table2267753">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2267758"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp2267760"> </a><div class="pCellBody">
+XML
+</div>
+</td>
+    <td><a name="wp2267769"> </a><div class="pCellBody">
+<img src="images/Components-16-06-02.jpg" height="59" width="112" id="wp2267765" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2267774"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2267779"> </a><div class="pCellBody">
+Le composant <b class="cBold">tExtractXMLField</b> lit la structure XML contenue dans les champs d&#39;un fichier ou d&#39;une table et en extrait les données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2267786"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2267791"> </a><div class="pCellBody">
+Le <b class="cBold">tExtractXMLField</b> lit la structure XML contenue dans les champs d&#39;un fichier ou d&#39;une table, récupère les données contenues dans cette structure et les envoit au composant suivant via un lien Row.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="9"><a name="wp2267798"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td colspan="1" rowspan="3"><a name="wp2267803"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp2267805"> </a><div class="pCellBody">
+Peut être Built-in ou Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2267814"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Propriétés utilisées ponctuellement..
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2267823"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Sélectionnez le fichier de propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2267832"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema type</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2267835"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2267839"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2270361"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2267857"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2270478"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et Job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2267878"> </a><div class="pCellHeading">
+<em class="cEmphasis">XML field</em>
+</div>
+</td>
+    <td><a name="wp2491545"> </a><div class="pCellBody">
+Nom du champ XML à traiter. <br />Voir également&#160;: <em class="cEmphasis">Définir les variables à partir de la vue Component</em> du Guide utilisateur de <b class="cBold">Talend Open Studio</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2267893"> </a><div class="pCellHeading">
+<em class="cEmphasis">Loop XPath query</em>
+</div>
+</td>
+    <td><a name="wp2267895"> </a><div class="pCellBody">
+Noeud de l&#39;arborescence XML sur lequel est basé la boucle.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2267901"> </a><div class="pCellHeading">
+<em class="cEmphasis">Mapping </em>
+</div>
+</td>
+    <td><a name="wp2752192"> </a><div class="pCellBody">
+<b class="cBold">Column</b>&#160;: reflète le schéma tel qu&#39;il est défini dans l&#39;éditeur Edit Schema.<br /><b class="cBold">XPath Query&#160;</b>: Saisissez les champs à extraire de la structure Xml d&#39;entrée.<br /><b class="cBold">Get nodes</b>&#160;: Cochez cette case pour récupérer le contenu XML du noeud courant spécifié dans le champ <b class="cBold">Xpath query</b>.
+</div>
+<a name="wp2752208"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2752201" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+L&#39;option <b class="cBold">Get Nodes</b> fonctionne uniquement  en mode <b class="cBold">DOM4j</b>. 
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2267912"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2267917"> </a><div class="pCellHeading">
+<em class="cEmphasis">Limit</em>
+</div>
+</td>
+    <td><a name="wp2267919"> </a><div class="pCellBody">
+Nombre maximum de lignes à traiter. Si Limit = 0, aucune ligne n&#39;est lue ou traitée.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2267924"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2267926"> </a><div class="pCellBody">
+Ce composant doit être utiliser en composant intermédiaire. Il nécessite donc un composant d&#39;entrée et de sortie.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2267933"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2267935"> </a><div class="pCellBody">
+n/a
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tDTDValidator_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tExtractXMLField_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

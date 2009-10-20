@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:38">
+    <meta name="LASTUPDATED" content="10/19/09 17:32:02">
     <title>tFileInputDelimited</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components09-09.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputDelimited_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components07-15.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputDelimited_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -46,8 +46,8 @@ Propriétés du tFileInputDelimited
 File/Input
 </div>
 </td>
-    <td><a name="wp1700473"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-09-10-02.jpg" height="59" width="112" id="wp1700469" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp1700473"> </a><div class="pCellBody">
+<img src="images/Components-07-16-002.jpg" height="59" width="112" id="wp1700469" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ File/Input
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1700689"> </a><div class="pCellBody">
-Le composant tFileInputDelimited lit un fichier ligne par ligne et sépare des champs simples.
+Le composant <b class="cBold">tFileInputDelimited</b> lit un fichier ligne par ligne et sépare des champs simples.
 </div>
 </td>
 </tr>
@@ -116,12 +116,25 @@ Peut être Built-in ou Repository.
 <em class="cEmphasis">File Name</em>
 </div>
 </td>
-    <td><a name="wp1700531"> </a><div class="pCellBody">
+    <td><a name="wp2508830"> </a><div class="pCellBody">
 Nom du fichier à traiter. <br />Voir également&#160;: <em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700536"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2507263"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2507268"> </a><div class="pCellHeading">
+<em class="cEmphasis">Row separator</em>
+</div>
+</td>
+    <td><a name="wp2507270"> </a><div class="pCellBody">
+Chaîne (ex&#160;: &quot;\n&quot;sous Unix) séparant les lignes.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700536"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -134,20 +147,20 @@ Caractère, chaîne ou expression régulière séparant les champs.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700545"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2507279"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1700550"> </a><div class="pCellHeading">
-<em class="cEmphasis">Row separator</em>
+    <td><a name="wp2507283"> </a><div class="pCellHeading">
+<em class="cEmphasis">CSV options</em>
 </div>
 </td>
-    <td><a name="wp1700552"> </a><div class="pCellBody">
-Chaîne (ex&#160;: &quot;\n&quot;sous Unix) séparant les lignes.
+    <td><a name="wp2507286"> </a><div class="pCellBody">
+Cochez cette case pour prendre en compte les paramètres spécifiques aux fichiers CSV, notamment la manière de protéger les caractères dans le champ <b class="cBold">Escape char</b> et le type de guillemet dans le champ <b class="cBold">Enclosure</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700554"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700554"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -160,7 +173,7 @@ Nombre de lignes à ignorer au début d&#39;un fichier.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700563"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700563"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -173,7 +186,7 @@ Nombre de lignes à ignorer à la fin d&#39;un fichier.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700572"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700572"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -186,7 +199,7 @@ Nombre maximum de lignes à traiter. Si Limit = 0, aucune ligne n&#39;est lue ni 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700581"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700581"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -195,11 +208,11 @@ Nombre maximum de lignes à traiter. Si Limit = 0, aucune ligne n&#39;est lue ni 
 </div>
 </td>
     <td><a name="wp1700591"> </a><div class="pCellBody">
-Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.<br />Cliquez sur Edit Schema pour modifier le schéma. Notez que si vous modifiez le schéma, il devient automatiquement built-in.<br />Cliquez sur Sync columns pour récupérer le schéma du composant précédent.
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le <b class="cBold">Repository</b>.<br />Cliquez sur <b class="cBold">Edit Schema</b> pour modifier le schéma. Notez que si vous modifiez le schéma, il devient automatiquement built-in.<br />Cliquez sur <b class="cBold">Sync columns</b> pour récupérer le schéma du composant précédent.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700593"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700593"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -207,12 +220,12 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 &#160;
 </div>
 </td>
-    <td><a name="wp1700600"> </a><div class="pCellBody">
+    <td><a name="wp2508301"> </a><div class="pCellBody">
 <b class="cBold">Built-in&#160;</b>: Le schéma sera créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700605"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700605"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -220,12 +233,12 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 &#160;
 </div>
 </td>
-    <td><a name="wp1700612"> </a><div class="pCellBody">
-<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
+    <td><a name="wp2508607"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et Jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700617"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700617"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -238,29 +251,120 @@ Cochez cette case pour ignorer les lignes vides.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1700626"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2507319"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1700628"> </a><div class="pCellBody">
-Extract lines at random/ Number of lines
+    <td><a name="wp2507326"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
 </div>
 </td>
-    <td><a name="wp1700630"> </a><div class="pCellBody">
+    <td><a name="wp2507329"> </a><div class="pCellBody">
+Décochez cette case pour passer les lignes contenant des erreurs et terminer le traitement avec les lignes sans erreurs.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2725934"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2725943"> </a><div class="pCellBody">
+<em class="cEmphasis">Advanced separator (for number)</em>
+</div>
+</td>
+    <td><a name="wp2725947"> </a><div class="pCellBody">
+Cochez cette option pour modifier les séparateurs utilisés pour les nombres&#160;:<br /><b class="cBold">Thousands separator</b>&#160;: définissez le séparateur utilisé pour les milliers.<br /><b class="cBold">Decimal separator</b>&#160;: définissez le séparateur utilisé pour les décimaux. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2507648"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2507650"> </a><div class="pCellHeading">
+<em class="cEmphasis">Extract lines at random</em>
+</div>
+</td>
+    <td><a name="wp2507652"> </a><div class="pCellBody">
 Cochez cette case pour définir le nombre de lignes à extraire de façon aléatoire.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1700632"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2507388"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1700637"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+    <td><a name="wp2507393"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding type</em>
 </div>
 </td>
-    <td><a name="wp1700639"> </a><div class="pCellBody">
+    <td><a name="wp2507395"> </a><div class="pCellBody">
 Sélectionnez l&#39;encodage à partir de la liste ou sélectionnez Custom et définissez-le manuellement. Ce champ est obligatoire pour la manipulation des données de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2507397"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2507401"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trim all columns</em>
+</div>
+</td>
+    <td><a name="wp2507404"> </a><div class="pCellBody">
+Cochez cette case pour supprimer  les espaces en début et en fin de champ dans toutes les colonnes. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2507424"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2507431"> </a><div class="pCellBody">
+<em class="cEmphasis">Check each row structure against schema</em>
+</div>
+</td>
+    <td><a name="wp2507434"> </a><div class="pCellBody">
+Cochez cette case pour synchroniser chaque ligne avec le schéma d&#39;entrée.  
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2507460"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2507463"> </a><div class="pCellBody">
+<em class="cEmphasis">Check columns to trim</em>
+</div>
+</td>
+    <td><a name="wp2507466"> </a><div class="pCellBody">
+Cochez la case devant le nom de chacune des colonnes dont vous voulez supprimer  les espaces de début et de fin de champ.  
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2507678"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2507685"> </a><div class="pCellBody">
+<em class="cEmphasis">Split row before field</em>
+</div>
+</td>
+    <td><a name="wp2507688"> </a><div class="pCellBody">
+Cochez cette case pour séparer les lignes avant de séparer les champs. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2507485"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2507489"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2507492"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
 </div>
 </td>
 </tr>
@@ -297,7 +401,7 @@ Utilisez ce composant pour lire un fichier et séparer les champs à l&#39;aide du
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components09-09.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputDelimited_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components07-15.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputDelimited_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

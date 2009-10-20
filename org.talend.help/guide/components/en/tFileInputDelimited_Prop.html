@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:23:55">
+    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
     <title>tFileInputDelimited  </title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components09-15.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputDelimited_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components08-15.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputDelimited_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -47,7 +47,7 @@ File/Input
 </div>
 </td>
     <td><a name="wp1298130"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-09-16-002.jpg" height="59" width="112" id="wp1298125" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-08-16-002.jpg" height="59" width="112" id="wp1298125" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ File/Input
 </div>
 </td>
     <td colspan="2" rowspan="2"><a name="wp1297897"> </a><div class="pCellBody">
-tFileInputDelimited reads a given file row by row with simple separated fields.
+<b class="cBold">tFileInputDelimited</b> reads a given file row by row with simple separated fields.
 </div>
 <a name="wp1297898"> </a><div class="pCellBody">
 Opens a file and reads it row by row to split them up into fields then sends fields as defined in the Schema to the next job component, via a Row link.
@@ -72,7 +72,7 @@ Opens a file and reads it row by row to split them up into fields then sends fie
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1297913"> </a><div class="pCellHeading">
+    <td><a name="wp1297913"> </a><div class="pCellBody">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
@@ -111,20 +111,33 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp1297940"> </a><div class="pCellHeading">
+    <td><a name="wp1297940"> </a><div class="pCellBody">
 <em class="cEmphasis">File Name</em>
 </div>
 </td>
     <td><a name="wp1297942"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide
+Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of Talend Open Studio User Guide
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1297947"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2647307"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1297952"> </a><div class="pCellHeading">
+    <td><a name="wp2647312"> </a><div class="pCellBody">
+<em class="cEmphasis">Row separator</em>
+</div>
+</td>
+    <td><a name="wp2647314"> </a><div class="pCellBody">
+String (ex: &quot;\n&quot;on Unix) to distinguish rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1297947"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1297952"> </a><div class="pCellBody">
 <em class="cEmphasis">Field separator</em>
 </div>
 </td>
@@ -133,24 +146,24 @@ Character, string or regular expression to separate fields.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1297956"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2647316"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1297961"> </a><div class="pCellHeading">
-<em class="cEmphasis">Row separator</em>
+    <td><a name="wp2647321"> </a><div class="pCellBody">
+<em class="cEmphasis">CSV options</em>
 </div>
 </td>
-    <td><a name="wp1297963"> </a><div class="pCellBody">
-String (ex: &quot;\n&quot;on Unix)  to distinguish rows.
+    <td><a name="wp2647422"> </a><div class="pCellBody">
+Select this check box to include CSV specific parameters such as <b class="cBold">Escape char</b> and <b class="cBold">Text enclosure</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1297965"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1297965"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1297970"> </a><div class="pCellHeading">
+    <td><a name="wp1297970"> </a><div class="pCellBody">
 <em class="cEmphasis">Header</em>
 </div>
 </td>
@@ -159,11 +172,11 @@ Number of rows to be skipped in the beginning of file
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1297974"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1297974"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1297979"> </a><div class="pCellHeading">
+    <td><a name="wp1297979"> </a><div class="pCellBody">
 <em class="cEmphasis">Footer</em>
 </div>
 </td>
@@ -172,11 +185,11 @@ Number of rows to be skipped at the end of the file.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1297983"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1297983"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1297988"> </a><div class="pCellHeading">
+    <td><a name="wp1297988"> </a><div class="pCellBody">
 <em class="cEmphasis">Limit</em>
 </div>
 </td>
@@ -185,20 +198,20 @@ Maximum number of rows to be processed. If Limit = 0, no row is read or processe
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1297992"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1297992"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1297999"> </a><div class="pCellHeading">
+    <td><a name="wp1297999"> </a><div class="pCellBody">
 <em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp1298002"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. <br />Click Edit Schema to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click Sync columns to retrieve the schema from the previous component connected in the job.
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click <b class="cBold">Sync columns</b> to retrieve the schema from the previous component connected in the Job.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1298004"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1298004"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -206,12 +219,12 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
-    <td><a name="wp1298011"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp2650760"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1298016"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1298016"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -219,47 +232,138 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
-    <td><a name="wp1298023"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused in various  projets and job flowcharts. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+    <td><a name="wp2650864"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1298028"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1298028"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1298033"> </a><div class="pCellHeading">
+    <td><a name="wp1298033"> </a><div class="pCellBody">
 <em class="cEmphasis">Skip empty rows</em>
 </div>
 </td>
     <td><a name="wp1298035"> </a><div class="pCellBody">
-Check this box to skip empty rows.
+Select this check box to skip empty rows.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1298037"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2647336"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2647341"> </a><div class="pCellBody">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp2647441"> </a><div class="pCellBody">
+Clear this check box to skip the row on error and complete the process for error-free rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2647357"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2647360"> </a><div class="pCellBody">
+<em class="cEmphasis">Advanced separator (for number)</em>
+</div>
+</td>
+    <td><a name="wp2647451"> </a><div class="pCellBody">
+Select this check box to modify the separators used for numbers.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1298037"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
     <td><a name="wp1298039"> </a><div class="pCellBody">
-Extract lines at random/ Number of lines
+<em class="cEmphasis">Extract lines at random</em>
 </div>
 </td>
     <td><a name="wp1298041"> </a><div class="pCellBody">
-Check this box to set the number of lines to be extracted randomly.
+Select this check box to set the number of lines to be extracted randomly.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1298043"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1298043"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1298048"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+    <td><a name="wp1298048"> </a><div class="pCellBody">
+<em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
     <td><a name="wp1298050"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.  
+Select the encoding type from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2647386"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2647391"> </a><div class="pCellBody">
+<em class="cEmphasis">Trim all columns</em>
+</div>
+</td>
+    <td><a name="wp2647467"> </a><div class="pCellBody">
+Select this check box to remove leading and trailing whitespace from all columns.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2647395"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2647397"> </a><div class="pCellBody">
+<em class="cEmphasis">Check each row structure against schema</em>
+</div>
+</td>
+    <td><a name="wp2647399"> </a><div class="pCellBody">
+Select this check box to synchronize every row against the input schema.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2647401"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2647403"> </a><div class="pCellBody">
+<em class="cEmphasis">Check columns to trim</em>
+</div>
+</td>
+    <td><a name="wp2647405"> </a><div class="pCellBody">
+Select the check box next to the column name you want to remove leading and trailing whitespace from.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2647407"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2647409"> </a><div class="pCellBody">
+<em class="cEmphasis">Split row before field</em>
+</div>
+</td>
+    <td><a name="wp2647411"> </a><div class="pCellBody">
+Select this check box to split rows before splitting fields.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2647413"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2647418"> </a><div class="pCellBody">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2647504"> </a><div class="pCellBody">
+Select this check box to gather the processing metadata at the Job level as well as at each component level.
 </div>
 </td>
 </tr>
@@ -296,7 +400,7 @@ Use this component to read a file and separate fields contained in this file usi
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components09-15.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputDelimited_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components08-15.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputDelimited_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

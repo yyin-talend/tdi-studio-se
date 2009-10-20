@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:34">
-    <title>Scénario 1: Mettre à jour les lignes d&#39;une base Oracle</title>
+    <meta name="LASTUPDATED" content="10/19/09 17:31:48">
+    <title>Scénario&#160;: Mettre à jour les lignes d&#39;une base Oracle</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -26,10 +26,10 @@
 
 </div>
 <a name="wp1487820"> </a><h2 class="pHeading2">
-Scénario 1: Mettre à jour les lignes d&#39;une base Oracle
+Scénario&#160;: Mettre à jour les lignes d&#39;une base Oracle
 </h2>
 <a name="wp1487825"> </a><p class="pIndented1">
-Le scénario suivant est basé sur le job décrit dans la section des composants ELT MySQL, <a href="tELTMysqlMap_Scenario.html#wp1294755"><em class="cEmphasis">Scénario&#160;1&#160;: Aggréger les colonnes d&#39;une table et appliquer un filtre</em></a>. L&#39;action sur les données Update étant disponible en base Oracle, le scénario suivant décrit un job qui met à jour une sélection de lignes provenant de la table <em class="cEmphasis">results</em>, puis ajoute l&#39;information <em class="cEmphasis">model</em> (modèle) à la colonne <em class="cEmphasis">make</em> (marque) de la table <em class="cEmphasis">cars</em> (véhicules).
+Le scénario suivant est basé sur le Job décrit dans la section des composants ELT MySQL, <a href="tELTMysqlMap_Scenario.html#wp1294755"><em class="cEmphasis">Scénario&#160;1&#160;: Aggréger les colonnes d&#39;une table et appliquer un filtre</em></a>. L&#39;action sur les données Update étant disponible en base Oracle, le scénario suivant décrit un Job qui met à jour une sélection de lignes provenant de la table <em class="cEmphasis">results</em>, puis ajoute l&#39;information <em class="cEmphasis">model</em> (modèle) à la colonne <em class="cEmphasis">make</em> (marque) de la table <em class="cEmphasis">cars</em> (véhicules).
 </p>
 <a name="wp1487846"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,12 +37,10 @@ Le scénario suivant est basé sur le job décrit dans la section des composants EL
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1487853"> </a><div class="pSmartList2"><li>Configurez les trois composants d&#39;entrée tel que décrit dans <a href="tELTMysqlMap_Scenario.html#wp1294755"><em class="cEmphasis">Scénario&#160;1&#160;: Aggréger les colonnes d&#39;une table et appliquer un filtre</em></a>. </li></div>
-<a name="wp1487858"> </a><div class="pSmartList2"><li>Lors de cette étape de connexion des composants d&#39;entrée ELT, assurez-vous que le nom des liens correspond exactement aux noms des tables de la base de données car ils seront utilisés comme paramètres dans la requête SQL générée grâce au mapper ELT.</li></div>
-<a name="wp1487863"> </a><div class="pSmartList2"><li>Enlevez la clause utilisée pour filtrer les colonnes de sortie (si vous partez du scénario MySql indiqué en introduction).</li></div>
-<a name="wp1487866"> </a><div class="pSmartList2"><li>Ajoutez une nouvelle ligne de filtre à la table de sortie pour établir une relation entre tables d&#39;entrée (<em class="cEmphasis">owners</em>) et de sortie (<em class="cEmphasis">results</em>)&#160;: owners.ID_OWNER=results.ID_OWNER </li></div>
-</ul></div>
+<a name="wp1487853"> </a><div class="pSmartList1"><li>Configurez les trois composants d&#39;entrée tel que décrit dans <a href="tELTMysqlMap_Scenario.html#wp1294755"><em class="cEmphasis">Scénario&#160;1&#160;: Aggréger les colonnes d&#39;une table et appliquer un filtre</em></a>. </li></div>
+<a name="wp1487858"> </a><div class="pSmartList1"><li>Lors de cette étape de connexion des composants d&#39;entrée ELT, assurez-vous que le nom des liens correspond exactement aux noms des tables de la base de données car ils seront utilisés comme paramètres dans la requête SQL générée grâce au mapper ELT.</li></div>
+<a name="wp1487863"> </a><div class="pSmartList1"><li>Enlevez la clause utilisée pour filtrer les colonnes de sortie (si vous partez du scénario MySql indiqué en introduction).</li></div>
+<a name="wp1487866"> </a><div class="pSmartList1"><li>Ajoutez une nouvelle ligne de filtre à la table de sortie pour établir une relation entre tables d&#39;entrée (<em class="cEmphasis">owners</em>) et de sortie (<em class="cEmphasis">results</em>)&#160;: owners.ID_OWNER=results.ID_OWNER </li></div>
 </ul></div>
 <a name="wp1487875"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -50,12 +48,10 @@ Le scénario suivant est basé sur le job décrit dans la section des composants EL
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1487884"> </a><div class="pSmartList2"><li>Puisque notre but est de mettre à jour la table, enlevez toutes les colonnes de la table de sortie qui ne sont pas concernées par cette mise à jour (<b class="cBold">Update</b>).</li></div>
-<a name="wp1487893"> </a><div class="pSmartList2"><li>Puis mettez à jour la colonne <em class="cEmphasis">Make</em> (marque) en ajoutant la mention <em class="cEmphasis">C-Class</em> précédée d&#39;une double barre verticale.</li></div>
-<a name="wp1487906"> </a><div class="pSmartList2"><li>Ajoutez également la mention  <em class="cEmphasis">Sold by</em> (Vendu par) devant le le nom du revendeur dans la colonne <em class="cEmphasis">reseller name</em> (nom revendeur) de la table <em class="cEmphasis">resellers</em>.</li></div>
-<a name="wp1487915"> </a><div class="pSmartList2"><li>Vérifiez la requête Select générée dans l&#39;onglet <b class="cBold">Generated SQL select query</b>.</li></div>
-</ul></div>
+<a name="wp1487884"> </a><div class="pSmartList1"><li>Puisque notre but est de mettre à jour la table, enlevez toutes les colonnes de la table de sortie qui ne sont pas concernées par cette mise à jour (<b class="cBold">Update</b>).</li></div>
+<a name="wp1487893"> </a><div class="pSmartList1"><li>Puis mettez à jour la colonne <em class="cEmphasis">Make</em> (marque) en ajoutant la mention <em class="cEmphasis">C-Class</em> précédée d&#39;une double barre verticale.</li></div>
+<a name="wp1487906"> </a><div class="pSmartList1"><li>Ajoutez également la mention  <em class="cEmphasis">Sold by</em> (Vendu par) devant le le nom du revendeur dans la colonne <em class="cEmphasis">reseller name</em> (nom revendeur) de la table <em class="cEmphasis">resellers</em>.</li></div>
+<a name="wp1487915"> </a><div class="pSmartList1"><li>Vérifiez la requête Select générée dans l&#39;onglet <b class="cBold">Generated SQL select query</b>.</li></div>
 </ul></div>
 <a name="wp1487922"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -63,10 +59,8 @@ Le scénario suivant est basé sur le job décrit dans la section des composants EL
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1487930"> </a><div class="pSmartList2"><li>Cliquez <b class="cBold">OK</b> pour valider la configuration et fermer le mapper ELT. Veillez à ce que les informations de connexion à la base Oracle sont correctes dans l&#39;onglet <b class="cBold">Basic Settings</b> du composant <b class="cBold">tELTOracleMap</b>.</li></div>
-<a name="wp1487942"> </a><div class="pSmartList2"><li>Puis sélectionnez le composant <b class="cBold">tELTOracleOutput</b> afin de définir les actions à effectuer sur les données dans le champ <b class="cBold">Action on data</b>.</li></div>
-</ul></div>
+<a name="wp1487930"> </a><div class="pSmartList1"><li>Cliquez <b class="cBold">OK</b> pour valider la configuration et fermer le mapper ELT. Veillez à ce que les informations de connexion à la base Oracle sont correctes dans l&#39;onglet <b class="cBold">Basic Settings</b> du composant <b class="cBold">tELTOracleMap</b>.</li></div>
+<a name="wp1487942"> </a><div class="pSmartList1"><li>Puis sélectionnez le composant <b class="cBold">tELTOracleOutput</b> afin de définir les actions à effectuer sur les données dans le champ <b class="cBold">Action on data</b>.</li></div>
 </ul></div>
 <a name="wp1487949"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -74,12 +68,10 @@ Le scénario suivant est basé sur le job décrit dans la section des composants EL
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1629471"> </a><div class="pSmartList2"><li>Aucune action n&#39;est requise sur la table, mais par contre sélectionnez  <b class="cBold">Update</b> dans le champ <b class="cBold">Action on data</b>.</li></div>
-<a name="wp1487965"> </a><div class="pSmartList2"><li>Cliquez <b class="cBold">Edit schema</b> pour vérifier que le schéma correspond à celui de la table de sortie configuré dans le Mapper ELT.</li></div>
-<a name="wp1487972"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Where clause</b>, entrez la clause supplémentaire suivante&#160;: results.MAKE= `Mercedes&#39;.</li></div>
-<a name="wp1487980"> </a><div class="pSmartList2"><li>Puis appuyez sur <b class="cBold">F6</b> pour exécuter le job puis vérifiez la table <em class="cEmphasis">results</em> dans un client de base de données.</li></div>
-</ul></div>
+<a name="wp1629471"> </a><div class="pSmartList1"><li>Aucune action n&#39;est requise sur la table, mais par contre sélectionnez  <b class="cBold">Update</b> dans le champ <b class="cBold">Action on data</b>.</li></div>
+<a name="wp1487965"> </a><div class="pSmartList1"><li>Cliquez <b class="cBold">Edit schema</b> pour vérifier que le schéma correspond à celui de la table de sortie configuré dans le Mapper ELT.</li></div>
+<a name="wp1487972"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">Where clause</b>, entrez la clause supplémentaire suivante&#160;: results.MAKE= `Mercedes&#39;.</li></div>
+<a name="wp1487980"> </a><div class="pSmartList1"><li>Puis appuyez sur <b class="cBold">F6</b> pour exécuter le Job puis vérifiez la table <em class="cEmphasis">results</em> dans un client de base de données.</li></div>
 </ul></div>
 <a name="wp1487987"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -87,7 +79,7 @@ Le scénario suivant est basé sur le job décrit dans la section des composants EL
 
 </div>
 <a name="wp1487991"> </a><p class="pIndented1">
-Le job a donc exécuter la requête  SQL générée et effectuer les mises à jour des lignes concernées.
+Le Job a donc exécuter la requête  SQL générée et effectuer les mises à jour des lignes concernées.
 </p>
 <a name="wp1488000"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:01">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:04">
     <title>Scénario&#160;: Imprimer le contenu d&#39;une variable</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tJava_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="DataQuality_group_intro.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tJava_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tJavaFlex_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -29,7 +29,7 @@
 Scénario&#160;: Imprimer le contenu d&#39;une variable
 </h2>
 <a name="wp1409299"> </a><p class="pIndented1">
-Le scénario suivant est une simple démonstration de l&#39;application possible du composant tJava. L&#39;objectif de ce job est d&#39;imprimer les lignes traitées à l&#39;aide d&#39;une commande Java et des variables globales fournies dans <b class="cBold">Talend Open Studio</b>.
+Le scénario suivant est une simple démonstration de l&#39;application possible du composant tJava. L&#39;objectif de ce Job est d&#39;imprimer les lignes traitées à l&#39;aide d&#39;une commande Java et des variables globales fournies dans <b class="cBold">Talend Open Studio</b>.
 </p>
 <a name="wp1408590"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,12 +37,10 @@ Le scénario suivant est une simple démonstration de l&#39;application possible d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1408607"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants dans l&#39;espace de modélisation&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tFileOutputExcel</b>, <b class="cBold">tJava</b>.</li></div>
-<a name="wp1408651"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tFileInputDelimited</b> au <b class="cBold">tFileOutputExcel</b> à l&#39;aide d&#39;une connexion de type <b class="cBold">Row Main</b>. Le contenu du fichier TXT délimité sera transmis à un fichier de type XSL via cette connexion sans subir de transformation.</li></div>
-<a name="wp1551682"> </a><div class="pSmartList2"><li>Ensuite, connectez le composant <b class="cBold">tFileInputDelimited</b> au composant <b class="cBold">tJava</b> à l&#39;aide d&#39;un lien de type <b class="cBold">Then Run</b>. Ce lien met en place un séquençage ordonnant au tJava de se lancer à la fin du processus principal.</li></div>
-<a name="wp1551695"> </a><div class="pSmartList2"><li>Définissez les paramètres du composant <b class="cBold">tFileInputDelimited</b> dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>. Le fichier d&#39;entrée utilisé en exemple est un simple fichier texte à deux colonnes&#160;: Name (des noms de personnes) et leur Emails respectifs.</li></div>
-</ul></div>
+<a name="wp1408607"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants dans l&#39;espace de modélisation&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tFileOutputExcel</b>, <b class="cBold">tJava</b>.</li></div>
+<a name="wp1408651"> </a><div class="pSmartList1"><li>Connectez le composant <b class="cBold">tFileInputDelimited</b> au <b class="cBold">tFileOutputExcel</b> à l&#39;aide d&#39;une connexion de type <b class="cBold">Row Main</b>. Le contenu du fichier TXT délimité sera transmis à un fichier de type XSL via cette connexion sans subir de transformation.</li></div>
+<a name="wp1551682"> </a><div class="pSmartList1"><li>Ensuite, connectez le composant <b class="cBold">tFileInputDelimited</b> au composant <b class="cBold">tJava</b> à l&#39;aide d&#39;un lien de type <b class="cBold">Then Run</b>. Ce lien met en place un séquençage ordonnant au tJava de se lancer à la fin du processus principal.</li></div>
+<a name="wp1551695"> </a><div class="pSmartList1"><li>Définissez les paramètres du composant <b class="cBold">tFileInputDelimited</b> dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>. Le fichier d&#39;entrée utilisé en exemple est un simple fichier texte à deux colonnes&#160;: Name (des noms de personnes) et leur Emails respectifs.</li></div>
 </ul></div>
 <a name="wp1551704"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -50,10 +48,8 @@ Le scénario suivant est une simple démonstration de l&#39;application possible d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1551708"> </a><div class="pSmartList2"><li>Pour cet exemple, le schéma n&#39;a pas été centralisé dans le référentiel, vous devez donc configurer manuellement le schéma de ces deux colonnes.</li></div>
-<a name="wp1408841"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Edit Schema</b>.</li></div>
-</ul></div>
+<a name="wp1551708"> </a><div class="pSmartList1"><li>Pour cet exemple, le schéma n&#39;a pas été centralisé dans le référentiel, vous devez donc configurer manuellement le schéma de ces deux colonnes.</li></div>
+<a name="wp1408841"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Edit Schema</b>.</li></div>
 </ul></div>
 <a name="wp1408850"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -61,10 +57,8 @@ Le scénario suivant est une simple démonstration de l&#39;application possible d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1408872"> </a><div class="pSmartList2"><li>Une boîte de dialogue vous demandant si vous souhaitez propager les modifications apportées apparaît, cliquez sur OK pour accepter la propagation. Ainsi, le schéma du composant <b class="cBold">tFileOutputExcel</b> est automatiquement renseigné à partir du schéma du composant précédent. Vous n&#39;aurez donc pas à définir le schéma de nouveau.</li></div>
-<a name="wp1408892"> </a><div class="pSmartList2"><li>Paramétrez le fichier de sortie afin qu&#39;il reçoive le contenu du fichier d&#39;entrée sans modifications. Si le fichier n&#39;existe pas déjà, il sera créé.</li></div>
-</ul></div>
+<a name="wp1408872"> </a><div class="pSmartList1"><li>Une boîte de dialogue vous demandant si vous souhaitez propager les modifications apportées apparaît, cliquez sur OK pour accepter la propagation. Ainsi, le schéma du composant <b class="cBold">tFileOutputExcel</b> est automatiquement renseigné à partir du schéma du composant précédent. Vous n&#39;aurez donc pas à définir le schéma de nouveau.</li></div>
+<a name="wp1408892"> </a><div class="pSmartList1"><li>Paramétrez le fichier de sortie afin qu&#39;il reçoive le contenu du fichier d&#39;entrée sans modifications. Si le fichier n&#39;existe pas déjà, il sera créé.</li></div>
 </ul></div>
 <a name="wp1408905"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -72,10 +66,8 @@ Le scénario suivant est une simple démonstration de l&#39;application possible d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1408934"> </a><div class="pSmartList2"><li>Dans cet exemple, dans le champ <b class="cBold">Sheet name</b>, indiquez le nom de la feuille Excel, ici Email et la case <b class="cBold">Header</b> est cochée pour indiquer que le fichier contient un en-tête.</li></div>
-<a name="wp1551371"> </a><div class="pSmartList2"><li>Puis sélectionnez le composant <b class="cBold">tJava</b> pour définir la commande Java à exécuter.</li></div>
-</ul></div>
+<a name="wp1408934"> </a><div class="pSmartList1"><li>Dans cet exemple, dans le champ <b class="cBold">Sheet name</b>, indiquez le nom de la feuille Excel, ici Email et la case <b class="cBold">Header</b> est cochée pour indiquer que le fichier contient un en-tête.</li></div>
+<a name="wp1551371"> </a><div class="pSmartList1"><li>Puis sélectionnez le composant <b class="cBold">tJava</b> pour définir la commande Java à exécuter.</li></div>
 </ul></div>
 <a name="wp1551378"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -83,18 +75,16 @@ Le scénario suivant est une simple démonstration de l&#39;application possible d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1551386"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Code</b>, saisissez la commande suivante&#160;:<br /><code class="cCode">String var = &quot;Nb of line processed: &quot;;<br />var = var + globalMap.get(&quot;tFileInputDelimited_1_NB_LINE&quot;);<br />System.out.println(var);</code></li></div>
-<a name="wp1551393"> </a><div class="pSmartList2"><li>Dans cet exemple précis, nous utilisons la variable <b class="cBold">NB_Line</b>. Pour accéder à la liste des variables globales, appuyez sur <b class="cBold">Ctrl&#160;+&#160;Espace</b> de votre clavier et sélectionnez la variable globale correspondante.</li></div>
-<a name="wp1551399"> </a><div class="pSmartList2"><li>Enregistrez le job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
-</ul></div>
+<a name="wp1551386"> </a><div class="pSmartList1"><li>Dans la zone <b class="cBold">Code</b>, saisissez la commande suivante&#160;:<br /><code class="cCode">String var = &quot;Nb of line processed: &quot;;<br />var = var + globalMap.get(&quot;tFileInputDelimited_1_NB_LINE&quot;);<br />System.out.println(var);</code></li></div>
+<a name="wp1551393"> </a><div class="pSmartList1"><li>Dans cet exemple précis, nous utilisons la variable <b class="cBold">NB_Line</b>. Pour accéder à la liste des variables globales, appuyez sur <b class="cBold">Ctrl&#160;+&#160;Espace</b> de votre clavier et sélectionnez la variable globale correspondante.</li></div>
+<a name="wp1551399"> </a><div class="pSmartList1"><li>Enregistrez le Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
 </ul></div>
 <a name="wp1409123"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/Use_Case_tJava6.png" id="wp1409148" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1409143"> </a><p class="pIndented1">
+<a name="wp1565467"> </a><p class="pIndented1">
 Le contenu est donc transmis au fichier Excel spécifié et le nombre de lignes traitées est affiché dans la console <b class="cBold">Run</b>.
 </p>
     </blockquote>
@@ -116,7 +106,7 @@ Le contenu est donc transmis au fichier Excel spécifié et le nombre de lignes tr
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tJava_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="DataQuality_group_intro.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tJava_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tJavaFlex_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

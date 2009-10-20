@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:52">
+    <meta name="LASTUPDATED" content="10/19/09 17:33:24">
     <title>Scénario&#160;: Transformer une liste de fichiers en flux de données</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scénario&#160;: Transformer une liste de fichiers en flux de données
 </h2>
 <a name="wp1576956"> </a><p class="pIndented1">
-Le scénario suivant décrit un job permettant de faire une boucle sur une liste de fichiers, de récupérer leur nom, ainsi que la date en cours pour ensuite transformer ces données en un flux qui sera affiché dans la console.
+Le scénario suivant décrit un Job permettant de faire une boucle sur une liste de fichiers, de récupérer leur nom, ainsi que la date en cours pour ensuite transformer ces données en un flux qui sera affiché dans la console.
 </p>
 <a name="wp1576964"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,11 +37,9 @@ Le scénario suivant décrit un job permettant de faire une boucle sur une liste d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1576979"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tFileList</b>, <b class="cBold">tIterateToFlow</b> et <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1576991"> </a><div class="pSmartList2"><li>Connectez le <b class="cBold">tFileList</b> au <b class="cBold">tIterateToFlow</b> à l&#39;aide d&#39;un lien <b class="cBold">iterate</b> et connectez le job au composant <b class="cBold">tLogRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Row main</b>.</li></div>
-<a name="wp1577007"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tFileList</b>, donnez le chemin d&#39;accès au répertoire contenant la liste de fichiers.</li></div>
-</ul></div>
+<a name="wp1576979"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants suivants&#160;: <b class="cBold">tFileList</b>, <b class="cBold">tIterateToFlow</b> et <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1576991"> </a><div class="pSmartList1"><li>Connectez le <b class="cBold">tFileList</b> au <b class="cBold">tIterateToFlow</b> à l&#39;aide d&#39;un lien <b class="cBold">iterate</b> et connectez le Job au composant <b class="cBold">tLogRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Row main</b>.</li></div>
+<a name="wp1577007"> </a><div class="pSmartList1"><li>Dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tFileList</b>, donnez le chemin d&#39;accès au répertoire contenant la liste de fichiers.</li></div>
 </ul></div>
 <a name="wp1577016"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -49,12 +47,10 @@ Le scénario suivant décrit un job permettant de faire une boucle sur une liste d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1577024"> </a><div class="pSmartList2"><li>Dans cet exemple, les fichiers sont trois fichiers .txt simples stockés dans le répertoire <em class="cEmphasis">Countries</em>. </li></div>
-<a name="wp1574745"> </a><div class="pSmartList2"><li>Décochez la case <b class="cBold">Case sensitive </b>pour ne pas tenir compte de la casse.</li></div>
-<a name="wp1574752"> </a><div class="pSmartList2"><li>Décochez la case <b class="cBold">Include Subdirectories</b> pour ne pas tenir compte des sous-répertoires.</li></div>
-<a name="wp1574763"> </a><div class="pSmartList2"><li>Puis sélectionnez le composant <b class="cBold">tIterateToFlow</b> et cliquez sur <b class="cBold">Edit Schema</b> pour modifier le nouveau schéma.</li></div>
-</ul></div>
+<a name="wp1577024"> </a><div class="pSmartList1"><li>Dans cet exemple, les fichiers sont trois fichiers .txt simples stockés dans le répertoire <em class="cEmphasis">Countries</em>. </li></div>
+<a name="wp1574745"> </a><div class="pSmartList1"><li>Décochez la case <b class="cBold">Case sensitive </b>pour ne pas tenir compte de la casse.</li></div>
+<a name="wp1574752"> </a><div class="pSmartList1"><li>Décochez la case <b class="cBold">Include Subdirectories</b> pour ne pas tenir compte des sous-répertoires.</li></div>
+<a name="wp1574763"> </a><div class="pSmartList1"><li>Puis sélectionnez le composant <b class="cBold">tIterateToFlow</b> et cliquez sur <b class="cBold">Edit Schema</b> pour modifier le nouveau schéma.</li></div>
 </ul></div>
 <a name="wp1574770"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -62,11 +58,9 @@ Le scénario suivant décrit un job permettant de faire une boucle sur une liste d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1574787"> </a><div class="pSmartList2"><li>Ajoutez deux nouvelles colonnes&#160;: <em class="cEmphasis">Filename</em> de type <b class="cBold">String</b> et <em class="cEmphasis">Date</em> de type <b class="cBold">date</b>. Assurez-vous d&#39;avoir paramétrer le bon modèle en Java.</li></div>
-<a name="wp1574795"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider.</li></div>
-<a name="wp1574803"> </a><div class="pSmartList2"><li>Notez que ce nouveau schéma apparaît dans le tableau <b class="cBold">Mapping</b>.</li></div>
-</ul></div>
+<a name="wp1574787"> </a><div class="pSmartList1"><li>Ajoutez deux nouvelles colonnes&#160;: <em class="cEmphasis">Filename</em> de type <b class="cBold">String</b> et <em class="cEmphasis">Date</em> de type <b class="cBold">date</b>. Assurez-vous d&#39;avoir paramétrer le bon modèle en Java.</li></div>
+<a name="wp1574795"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b> pour valider.</li></div>
+<a name="wp1574803"> </a><div class="pSmartList1"><li>Notez que ce nouveau schéma apparaît dans le tableau <b class="cBold">Mapping</b>.</li></div>
 </ul></div>
 <a name="wp1574810"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -74,13 +68,11 @@ Le scénario suivant décrit un job permettant de faire une boucle sur une liste d
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1577474"> </a><div class="pSmartList2"><li>Dans chaque cellule de la colonne <b class="cBold">Value</b>, appuyez sur <b class="cBold">Ctrl+Espace</b> pour accéder à la liste des variables globales et à celles que vous avez définies.</li></div>
-<a name="wp1574828"> </a><div class="pSmartList2"><li>Pour la colonne <em class="cEmphasis">Filename</em>, utilisez la variable globale&#160;: (<code class="cCode">$_globals{tFileList_1}{CURRENT_FILEPATH</code>}. Elle reprend le chemin d&#39;accès courant pour recueillir le nom de chaque fichier, le job fait une boucle sur ce répertoire.</li></div>
-<a name="wp1577671"> </a><div class="pSmartList2"><li>Pour le colonne <em class="cEmphasis">Date</em>, utilisez la routine Talend&#160;: <code class="cCode">Date.GetDate</code> (en Perl) ou <code class="cCode">TalendDate.getCurrentDate()</code> (en Java)</li></div>
-<a name="wp1577686"> </a><div class="pSmartList2"><li>Puis dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tLogRow</b>, cochez la case <b class="cBold">Print values in cells of a table</b>.</li></div>
-<a name="wp1577693"> </a><div class="pSmartList2"><li>Enregistrez votre job et exécutez-le.</li></div>
-</ul></div>
+<a name="wp1577474"> </a><div class="pSmartList1"><li>Dans chaque cellule de la colonne <b class="cBold">Value</b>, appuyez sur <b class="cBold">Ctrl+Espace</b> pour accéder à la liste des variables globales et à celles que vous avez définies.</li></div>
+<a name="wp1574828"> </a><div class="pSmartList1"><li>Pour la colonne <em class="cEmphasis">Filename</em>, utilisez la variable globale&#160;: (<code class="cCode">$_globals{tFileList_1}{CURRENT_FILEPATH</code>}. Elle reprend le chemin d&#39;accès courant pour recueillir le nom de chaque fichier, le Job fait une boucle sur ce répertoire.</li></div>
+<a name="wp1577671"> </a><div class="pSmartList1"><li>Pour le colonne <em class="cEmphasis">Date</em>, utilisez la routine Talend&#160;: <code class="cCode">Date.GetDate</code> (en Perl) ou <code class="cCode">TalendDate.getCurrentDate()</code> (en Java)</li></div>
+<a name="wp1577686"> </a><div class="pSmartList1"><li>Puis dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tLogRow</b>, cochez la case <b class="cBold">Print values in cells of a table</b>.</li></div>
+<a name="wp1577693"> </a><div class="pSmartList1"><li>Enregistrez votre Job et exécutez-le.</li></div>
 </ul></div>
 <a name="wp1577700"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

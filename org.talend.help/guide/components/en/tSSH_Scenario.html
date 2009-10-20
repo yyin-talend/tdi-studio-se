@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:25:15">
+    <meta name="LASTUPDATED" content="10/19/09 18:25:15">
     <title>Scenario: Remote system information display via SSH </title>
   </head>
 
@@ -29,10 +29,10 @@
 Scenario: Remote system information display via SSH 
 </h2>
 <a name="wp1450612"> </a><p class="pIndented1">
-The following use case describes a basic job that uses SSH command to display the hostname of the distant server being connected to, and the current date on this remote system. 
+The following use case describes a basic Job that uses SSH command to display the hostname of the distant server being connected to, and the current date on this remote system. 
 </p>
 <a name="wp1450710"> </a><p class="pIndented1">
-The <b class="cBold">tSSH</b> component is sufficient for this job. It can be clicked &amp; droped from the <b class="cBold">System</b> family of the palette.
+The <b class="cBold">tSSH</b> component is sufficient for this Job. Drop it from the <b class="cBold">Palette</b> to the desihn workspace.
 </p>
 <a name="wp1450734"> </a><p class="pIndented1">
 Double-click on the <b class="cBold">tSSH</b> component and select the <b class="cBold">Basic settings </b>view tab.
@@ -48,8 +48,8 @@ Double-click on the <b class="cBold">tSSH</b> component and select the <b class=
 <a name="wp1450790"> </a><div class="pSmartList2"><li>Fill in the <b class="cBold">User</b> identification name on the remote machine.  </li></div>
 <a name="wp1450804"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Authentication method</b> on the list. For this use case, the authentication method used is the public key. </li></div>
 <a name="wp1450874"> </a><div class="pSmartList2"><li>Thus fill in the corresponding <b class="cBold">Private key</b>.</li></div>
-<a name="wp1450897"> </a><div class="pSmartList2"><li>On the Command field, type in the following command. For this use case, type in  <code class="cCode">hostname; date</code> between single quotes (as the job is generated in Perl.). </li></div>
-<a name="wp1450947"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Use timeout</b> box and set the time before falling in error to 5 seconds.</li></div>
+<a name="wp1450897"> </a><div class="pSmartList2"><li>On the Command field, type in the following command. For this use case, type in  <code class="cCode">hostname; date</code> between single quotes (as the Job is generated in Perl.). </li></div>
+<a name="wp1450947"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use timeout</b> check box and set the time before falling in error to 5 seconds.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1450773"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

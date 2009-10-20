@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:51">
+    <meta name="LASTUPDATED" content="10/19/09 17:33:12">
     <title>Scénario&#160;: Utiliser un contexte dynamique lors d&#39;un insert dans une base de données MySQL</title>
   </head>
 
@@ -29,7 +29,7 @@
 Scénario&#160;: Utiliser un contexte dynamique lors d&#39;un insert dans une base de données MySQL
 </h2>
 <a name="wp1558895"> </a><p class="pIndented1">
-Ce scénario est composé de deux sous-jobs. Le premier permet de charger dynamiquement des paramètres de contexte et le deuxième utilise ces paramètres chargés pour afficher le contenu d&#39;une base de données.
+Ce scénario est composé de deux sous-Jobs. Le premier permet de charger dynamiquement des paramètres de contexte et le deuxième utilise ces paramètres chargés pour afficher le contenu d&#39;une base de données.
 </p>
 <a name="wp1554560"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -37,13 +37,11 @@ Ce scénario est composé de deux sous-jobs. Le premier permet de charger dynamiqu
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1554575"> </a><div class="pSmartList2"><li>Cliquez et déposez les composants&#160;: <b class="cBold">tFilelist</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tContextLoad</b> pour le premier sous-job.</li></div>
-<a name="wp1554585"> </a><div class="pSmartList2"><li>Et cliquez et déposez les composants <b class="cBold">tMysqlInput</b> et <b class="cBold">tLogRow</b> pour le deuxième.</li></div>
-<a name="wp1559130"> </a><div class="pSmartList2"><li>Connectez-les comme indiqué sur le schéma ci-dessus.</li></div>
-<a name="wp1559133"> </a><div class="pSmartList2"><li>Créez autant de fichiers délimités qu&#39;il y a de contextes différents et conservez-les dans un répertoire spécifique appelé <em class="cEmphasis">Contexts</em>. Dans ce scénario, <em class="cEmphasis">test.txt</em> contient les informations de connexion à la base de données locale de test et <em class="cEmphasis">prod.txt</em> contient les informations de connexion de la base de données distante de production.</li></div>
-<a name="wp1559146"> </a><div class="pSmartList2"><li>Chaque fichier est constitué de deux champs contenant le nom du paramètre et sa valeur correspondante, en fonction du contexte.</li></div>
-</ul></div>
+<a name="wp1554575"> </a><div class="pSmartList1"><li>Cliquez et déposez les composants&#160;: <b class="cBold">tFilelist</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tContextLoad</b> pour le premier sous-Job.</li></div>
+<a name="wp1554585"> </a><div class="pSmartList1"><li>Et cliquez et déposez les composants <b class="cBold">tMysqlInput</b> et <b class="cBold">tLogRow</b> pour le deuxième.</li></div>
+<a name="wp1559130"> </a><div class="pSmartList1"><li>Connectez-les comme indiqué sur le schéma ci-dessus.</li></div>
+<a name="wp1559133"> </a><div class="pSmartList1"><li>Créez autant de fichiers délimités qu&#39;il y a de contextes différents et conservez-les dans un répertoire spécifique appelé <em class="cEmphasis">Contexts</em>. Dans ce scénario, <em class="cEmphasis">test.txt</em> contient les informations de connexion à la base de données locale de test et <em class="cEmphasis">prod.txt</em> contient les informations de connexion de la base de données distante de production.</li></div>
+<a name="wp1559146"> </a><div class="pSmartList1"><li>Chaque fichier est constitué de deux champs contenant le nom du paramètre et sa valeur correspondante, en fonction du contexte.</li></div>
 </ul></div>
 <a name="wp1559155"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -51,15 +49,13 @@ Ce scénario est composé de deux sous-jobs. Le premier permet de charger dynamiqu
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1559165"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileList</b>, sélectionnez le répertoire <em class="cEmphasis">contexts</em> dans lequel les deux fichiers <em class="cEmphasis">test</em> et <em class="cEmphasis">prod</em> seront stockés.</li></div>
-<a name="wp1557004"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileInputDelimited</b>, appuyez sur <b class="cBold">Ctrl+Espace</b> pour accéder à la liste des variables globale. Sélectionnez <code class="cCode">$_globals{tFileList_1}{CURRENT_FILEPATH}</code> qui permet de faire une boucle sur le répertoire contenant les fichiers de contexte.</li></div>
-<a name="wp1554656"> </a><div class="pSmartList2"><li>Définissez le schéma manuellement (Built-in) en cliquant sur le bouton <b class="cBold">Edit schema</b>. Il contient deux colonnes&#160;: <em class="cEmphasis">Key</em> et <em class="cEmphasis">Value</em>, correspondant respectivement au paramètre et sa valeur.</li></div>
-<a name="wp1557463"> </a><div class="pSmartList2"><li>Acceptez la propagation du schéma défini au composant suivant (<b class="cBold">tContextLoad</b>).</li></div>
-<a name="wp1557469"> </a><div class="pSmartList2"><li>Pour ce scénario, cochez la case <b class="cBold">Print operations</b> pour afficher les paramètres de contexte utilisés dans la vue <b class="cBold">Run</b>.</li></div>
-<a name="wp1557481"> </a><div class="pSmartList2"><li>Puis double-cliquez sur le composant <b class="cBold">tMySQLInput</b> pour accéder à ses propriétés dans l&#39;onget <b class="cBold">Basic settings</b>.</li></div>
-<a name="wp1564780"> </a><div class="pSmartList2"><li>Pour chacune des valeurs stockées dans le fichier de contexte, appuyez sur F5 et définissez le paramètre de contexte devant être défini par l&#39;utilisateur. Par exemple, le champ <b class="cBold">Host</b> a pour valeur de paramètre <em class="cEmphasis">$_context{host}</em> (en Perl), dont le nom de paramètre est <em class="cEmphasis">host</em> dans le fichier de contexte. Sa valeur actuelle est <em class="cEmphasis">talend-dbms</em>.</li></div>
-</ul></div>
+<a name="wp1559165"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileList</b>, sélectionnez le répertoire <em class="cEmphasis">contexts</em> dans lequel les deux fichiers <em class="cEmphasis">test</em> et <em class="cEmphasis">prod</em> seront stockés.</li></div>
+<a name="wp1557004"> </a><div class="pSmartList1"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileInputDelimited</b>, appuyez sur <b class="cBold">Ctrl+Espace</b> pour accéder à la liste des variables globale. Sélectionnez <code class="cCode">$_globals{tFileList_1}{CURRENT_FILEPATH}</code> qui permet de faire une boucle sur le répertoire contenant les fichiers de contexte.</li></div>
+<a name="wp1554656"> </a><div class="pSmartList1"><li>Définissez le schéma manuellement (Built-in) en cliquant sur le bouton <b class="cBold">Edit schema</b>. Il contient deux colonnes&#160;: <em class="cEmphasis">Key</em> et <em class="cEmphasis">Value</em>, correspondant respectivement au paramètre et sa valeur.</li></div>
+<a name="wp1557463"> </a><div class="pSmartList1"><li>Acceptez la propagation du schéma défini au composant suivant (<b class="cBold">tContextLoad</b>).</li></div>
+<a name="wp1557469"> </a><div class="pSmartList1"><li>Pour ce scénario, cochez la case <b class="cBold">Print operations</b> pour afficher les paramètres de contexte utilisés dans la vue <b class="cBold">Run</b>.</li></div>
+<a name="wp1557481"> </a><div class="pSmartList1"><li>Puis double-cliquez sur le composant <b class="cBold">tMySQLInput</b> pour accéder à ses propriétés dans l&#39;onget <b class="cBold">Basic settings</b>.</li></div>
+<a name="wp1564780"> </a><div class="pSmartList1"><li>Pour chacune des valeurs stockées dans le fichier de contexte, appuyez sur F5 et définissez le paramètre de contexte devant être défini par l&#39;utilisateur. Par exemple, le champ <b class="cBold">Host</b> a pour valeur de paramètre <em class="cEmphasis">$_context{host}</em> (en Perl), dont le nom de paramètre est <em class="cEmphasis">host</em> dans le fichier de contexte. Sa valeur actuelle est <em class="cEmphasis">talend-dbms</em>.</li></div>
 </ul></div>
 <a name="wp1554709"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -67,11 +63,9 @@ Ce scénario est composé de deux sous-jobs. Le premier permet de charger dynamiqu
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1554714"> </a><div class="pSmartList2"><li>Puis dans le champ <b class="cBold">Schema Type</b>, renseignez les informations sur le schéma. Si le schéma est stocké dans les Metadata du Repository sous forme de métadonnée, sélectionnez-le après avoir sélectionné l&#39;option <b class="cBold">Repository</b>.</li></div>
-<a name="wp1554724"> </a><div class="pSmartList2"><li>Et dans le champ <b class="cBold">Query</b> saisissez la requête SQL devant être exécutée sur la table spécifié. Dans ce job, effectuez un simple SELECT de trois colonnes de la table, qui seront ensuite affichée dans l&#39;onglet <b class="cBold">Run</b> grâce au composant <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1554739"> </a><div class="pSmartList2"><li>Enfin, appuyez sur <b class="cBold">F6</b> pour exécuter le job.</li></div>
-</ul></div>
+<a name="wp1554714"> </a><div class="pSmartList1"><li>Puis dans le champ <b class="cBold">Schema Type</b>, renseignez les informations sur le schéma. Si le schéma est stocké dans les Metadata du Repository sous forme de métadonnée, sélectionnez-le après avoir sélectionné l&#39;option <b class="cBold">Repository</b>.</li></div>
+<a name="wp1554724"> </a><div class="pSmartList1"><li>Et dans le champ <b class="cBold">Query</b> saisissez la requête SQL devant être exécutée sur la table spécifié. Dans ce Job, effectuez un simple SELECT de trois colonnes de la table, qui seront ensuite affichée dans l&#39;onglet <b class="cBold">Run</b> grâce au composant <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1554739"> </a><div class="pSmartList1"><li>Enfin, appuyez sur <b class="cBold">F6</b> pour exécuter le Job.</li></div>
 </ul></div>
 <a name="wp1554746"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

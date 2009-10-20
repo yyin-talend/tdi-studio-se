@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:03">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
     <title>tMysqlOutputBulk </title>
   </head>
 
@@ -22,217 +22,217 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2339269"> </a><h2 class="pHeading1">
+<a name="wp2738878"> </a><h2 class="pHeading1">
 tMysqlOutputBulk 
 </h2>
-<a name="wp2339277"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2738886"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tMysqlOutputBulk_icon32_white.png" id="wp2339273" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tMysqlOutputBulk_icon32_white.png" id="wp2738882" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2339285"> </a><h2 class="pHeading2">
+<a name="wp2738894"> </a><h2 class="pHeading2">
 Propriétés du tMysqlOutputBulk
 </h2>
-<a name="wp2339294"> </a><p class="pIndented1">
+<a name="wp2738903"> </a><p class="pIndented1">
 Les composants <b class="cBold">tMysqlOutputBulk</b> et <b class="cBold">tMysqlBulkExec</b> sont généralement utilisés ensemble pour d&#39;une part générer en sortie le fichier qui sera d&#39;autre part utilisé comme paramètre dans l&#39;exécution de la requête SQL énoncée. Cette exécution en deux étapes est unifiée dans le composant <b class="cBold">tMysqlOutputBulkExec</b>, détaillé dans une section séparée. L&#39;intérêt de proposer deux composants séparés réside dans le fait que cela permet de procéder à des transformations avant le chargement des données dans la base de données.
 </p>
-<a name="wp2339482"> </a><p class="pBodyRelative">
+<a name="wp2739091"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp2339306table2339301">
+<table border="1" id="wp2738915table2738910">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2339306"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738915"> </a><div class="pCellBody">
 <b class="cBold">Famille de composant</b>
 </div>
 </td>
-    <td><a name="wp2339308"> </a><div class="pCellBody">
+    <td><a name="wp2738917"> </a><div class="pCellBody">
 Databases/MySQL
 </div>
 </td>
-    <td><a name="wp2339317"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-06-126-086.jpg" height="59" width="112" id="wp2339313" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp2738926"> </a><div class="pCellBody">
+<img src="images/Components-05-143-112.jpg" height="59" width="112" id="wp2738922" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2339322"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738931"> </a><div class="pCellBody">
 <b class="cBold">Fonction</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2339324"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2738933"> </a><div class="pCellBody">
 Ecrit un fichier composé de colonnes et basé sur le délimiteur défini et sur les standards MySql.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2339331"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738940"> </a><div class="pCellBody">
 <b class="cBold">Objectif</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2339333"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2738942"> </a><div class="pCellBody">
 Prépare le fichier à utiliser comme paramètre dans la requête INSERT servant à alimenter une base de données MySQL.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2339340"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738949"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2339345"> </a><div class="pCellHeading">
+    <td><a name="wp2738954"> </a><div class="pCellHeading">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
-    <td><a name="wp2339347"> </a><div class="pCellBody">
+    <td><a name="wp2738956"> </a><div class="pCellBody">
 Peut être Built-in ou Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2339349"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738958"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339351"> </a><div class="pCellBody">
+    <td><a name="wp2738960"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339356"> </a><div class="pCellBody">
+    <td><a name="wp2738965"> </a><div class="pCellBody">
 <b class="cBold">Built-in&#160;</b>: Propriétés utilisées ponctuellement.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2339358"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738967"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339360"> </a><div class="pCellBody">
+    <td><a name="wp2738969"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339365"> </a><div class="pCellBody">
+    <td><a name="wp2738974"> </a><div class="pCellBody">
 <b class="cBold">Repository&#160;</b>: Sélectionnez le fichier de propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2339367"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738976"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339372"> </a><div class="pCellHeading">
+    <td><a name="wp2738981"> </a><div class="pCellHeading">
 <em class="cEmphasis">File Name</em>
 </div>
 </td>
-    <td><a name="wp2339374"> </a><div class="pCellBody">
+    <td><a name="wp2738983"> </a><div class="pCellBody">
 Nom du fichier à traiter. <br />Voir également&#160;: <em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2339382"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738991"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339387"> </a><div class="pCellHeading">
+    <td><a name="wp2738996"> </a><div class="pCellHeading">
 <em class="cEmphasis">Field separator</em>
 </div>
 </td>
-    <td><a name="wp2339389"> </a><div class="pCellBody">
+    <td><a name="wp2738998"> </a><div class="pCellBody">
 Caractère, chaîne ou expression régulière séparant les champs.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2339391"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2739000"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339396"> </a><div class="pCellHeading">
+    <td><a name="wp2739005"> </a><div class="pCellHeading">
 <em class="cEmphasis">Row separator</em>
 </div>
 </td>
-    <td><a name="wp2339398"> </a><div class="pCellBody">
+    <td><a name="wp2739007"> </a><div class="pCellBody">
 Chaîne (ex&#160;: &quot;\n&quot; sous Unix) séparant les lignes.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2339400"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2739009"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339405"> </a><div class="pCellHeading">
+    <td><a name="wp2739014"> </a><div class="pCellHeading">
 <em class="cEmphasis">Append</em>
 </div>
 </td>
-    <td><a name="wp2339407"> </a><div class="pCellBody">
+    <td><a name="wp2739016"> </a><div class="pCellBody">
 Cochez cette option pour ajouter des nouvelles lignes à la fin du fichier.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2339409"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2739018"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339414"> </a><div class="pCellHeading">
+    <td><a name="wp2739023"> </a><div class="pCellHeading">
 <em class="cEmphasis">Include header</em>
 </div>
 </td>
-    <td><a name="wp2339416"> </a><div class="pCellBody">
+    <td><a name="wp2739025"> </a><div class="pCellBody">
 Cochez cette case pour inclure l&#39;en-tête des colonnes dans le fichier.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2339418"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2739027"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339425"> </a><div class="pCellHeading">
+    <td><a name="wp2739034"> </a><div class="pCellHeading">
 <em class="cEmphasis">Schema type</em> et <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp2339428"> </a><div class="pCellBody">
+    <td><a name="wp2739037"> </a><div class="pCellBody">
 Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le <span style="font-weight: bold">Repository</span>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2339430"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2739039"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339432"> </a><div class="pCellBody">
+    <td><a name="wp2739041"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339437"> </a><div class="pCellBody">
+    <td><a name="wp2739046"> </a><div class="pCellBody">
 <b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2339445"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2739054"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339447"> </a><div class="pCellBody">
+    <td><a name="wp2739056"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339452"> </a><div class="pCellBody">
-<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisable dans divers projets et job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
+    <td><a name="wp2739061"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisable dans divers projets et Job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2339460"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2739069"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2339465"> </a><div class="pCellHeading">
+    <td><a name="wp2739074"> </a><div class="pCellHeading">
 <em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
-    <td><a name="wp2339467"> </a><div class="pCellBody">
+    <td><a name="wp2739076"> </a><div class="pCellBody">
 Sélectionnez l&#39;encodage à partir de la liste ou sélectionnez Custom et définissez-le manuellement. Ce champ est obligatoire pour la manipulation des données de base de données.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2339472"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2739081"> </a><div class="pCellBody">
 <b class="cBold">Utilisation</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2339477"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2739086"> </a><div class="pCellBody">
 Ce composant est généralement utilisé avec le composant <b class="cBold">tMySQlBulkExec</b>. Ensemble, ils offrent un gain de performance important pour l&#39;alimentation d&#39;une base de données MySQL.
 </div>
 </td>

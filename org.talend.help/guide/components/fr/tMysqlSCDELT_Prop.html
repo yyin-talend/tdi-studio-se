@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/22/09 11:51:03">
+    <meta name="LASTUPDATED" content="10/19/09 17:29:12">
     <title>tMysqlSCDELT</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components06-134.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlSCDELT_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components05-151.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlSCDELT_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -46,8 +46,8 @@ Famille du composant
 Databases/MySQL
 </div>
 </td>
-    <td><a name="wp2317680"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-06-135-090.jpg" height="59" width="116" id="wp2317676" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp2317680"> </a><div class="pCellBody">
+<img src="images/Components-05-152-116.jpg" height="59" width="116" id="wp2317676" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Databases/MySQL
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2317693"> </a><div class="pCellBody">
-Le composant<b class="cBold"> tMysqlSCD</b> reflète et traque les modifications d&#39;une table Mysql SCD dédiée.
+Le composant<b class="cBold"> tMysqlSCDELT</b> reflète et traque les modifications d&#39;une table Mysql SCD dédiée.
 </div>
 </td>
 </tr>
@@ -65,7 +65,7 @@ Le composant<b class="cBold"> tMysqlSCD</b> reflète et traque les modifications 
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2317705"> </a><div class="pCellBody">
-Le <b class="cBold">tMysqlSCD</b> adresse des besoins en transformation Slowly Changing Dimension, en lisant régulièrement une source de données et en répertoriant les modifications dans une table Mysql SCD dédiée. 
+Le <b class="cBold">tMysqlSCDELT</b> adresse des besoins en transformation Slowly Changing Dimension, en lisant régulièrement une source de données et en répertoriant les modifications dans une table Mysql SCD dédiée. 
 </div>
 </td>
 </tr>
@@ -117,7 +117,7 @@ Peut être Built-in ou Repository.
 </div>
 </td>
     <td><a name="wp2317746"> </a><div class="pCellBody">
-Cochez cette case lorsque vous utilisez le composant <b class="cBold">tMSSqlConnection</b>. 
+Cochez cette case lorsque vous utilisez le composant <b class="cBold">tMysqlConnection</b>. 
 </div>
 </td>
 </tr>
@@ -208,7 +208,7 @@ Nom de la table à écrire. Notez qu&#39;une seule table peut être écrire à la foi
 </div>
 </td>
     <td><a name="wp2317812"> </a><div class="pCellBody">
-Vous pouvez effectuer l&#39;une des opérations suivantes sur les données de la table sélectionnée&#160;: <br /><b class="cBold">None</b>: n&#39;effectuer aucune opération de table. <br /><b class="cBold">Drop and create the table</b>: supprimer la table puis en créer une nouvelle. <br /><b class="cBold">Create a table</b>: créer une table qui n&#39;existe pas encore. <br /><b class="cBold">Create table if doesn&#39;t exist</b>: créer la table si nécessaire. <br /><b class="cBold">Drop a table if exists and create</b>: supprimer la table si elle existe déjà, puis en créer une nouvelle. <br /><b class="cBold">Clear a table</b>: supprimer le contenu de la table. <b class="cBold"><br />Truncate table&#160;</b>: supprimer rapidement le contenu de la table, mais sans possibilité de Rollback. 
+Vous pouvez effectuer l&#39;une des opérations suivantes sur les données de la table sélectionnée&#160;: <br /><b class="cBold">None&#160;</b>: n&#39;effectuer aucune opération de table. <br /><b class="cBold">Drop and create the table</b>&#160;: supprimer la table puis en créer une nouvelle. <br /><b class="cBold">Create a table&#160;</b>: créer une table qui n&#39;existe pas encore. <br /><b class="cBold">Create table if doesn&#39;t exist&#160;</b>: créer la table si nécessaire. <br /><b class="cBold">Drop a table if exists and create</b>&#160;: supprimer la table si elle existe déjà, puis en créer une nouvelle. <br /><b class="cBold">Clear a table&#160;</b>: supprimer le contenu de la table. <b class="cBold"><br />Truncate table&#160;</b>: supprimer rapidement le contenu de la table, mais sans possibilité de Rollback. 
 </div>
 </td>
 </tr>
@@ -233,7 +233,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 &#160;
 </div>
 </td>
-    <td><a name="wp2317857"> </a><div class="pCellBody">
+    <td><a name="wp2591167"> </a><div class="pCellBody">
 <b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
@@ -246,7 +246,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 &#160;
 </div>
 </td>
-    <td><a name="wp2317872"> </a><div class="pCellBody">
+    <td><a name="wp2592646"> </a><div class="pCellBody">
 <b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
@@ -286,7 +286,7 @@ Utilisez le type 1 si vous n&#39;avez pas besoin de traquer les modifications, p
 </div>
 </td>
     <td><a name="wp2317902"> </a><div class="pCellBody">
-Utilisez le type 2 si vous avez besoin de traquer les modifications, pour garder une trace des mises à jour effectuées par exemple. Sélectionnez les colonnes du schéma qui servira de référence pour les modifications. <br /><b class="cBold">Start date: Ajoute une colonne à votre schéma SCD pour déterminer la valeur de la date de départ. Vous pouvez sélectionner l&#39;une des colonnes d&#39;entrée du schéma comme date de départ (Start Date) dans la table SCD. <br />End Date</b>: Ajoute une colonne à votre schéma SCD pour déterminer la valeur de la date de fin pour le journal. Lorsque le journal est en mode actif, la colonne End Date a une valeur nulle&#160;; pour éviter cela, vous pouvez sélectionner l&#39;option <b class="cBold">Fixed Year value</b> et saisir une année fictive. <br /><b class="cBold">Log Active Status</b>: Ajoute une colonne à votre schéma SCD pour renseigner les valeurs de statut <b class="cBold">true</b> et <b class="cBold">false</b>. Cette colonne permet de repérer facilement le journal actif. <br /><b class="cBold">Log versions</b>: Ajoute une colonne à votre schéma SCD pour renseigner le numéro de version du journal. 
+Utilisez le type 2 si vous avez besoin de traquer les modifications, pour garder une trace des mises à jour effectuées par exemple. Sélectionnez les colonnes du schéma qui servira de référence pour les modifications. <br /><b style="font-weight: bold" class="cBold">Start date&#160;:</b><b style="font-weight: normal" class="cBold"> Ajoute une colonne à votre schéma SCD pour déterminer la valeur de la date de départ. Vous pouvez sélectionner l&#39;une des colonnes d&#39;entrée du schéma comme date de départ (Start Date) dans la table SCD</b><b class="cBold">. <br />End Date&#160;</b>: Ajoute une colonne à votre schéma SCD pour déterminer la valeur de la date de fin pour le journal. Lorsque le journal est en mode actif, la colonne End Date a une valeur nulle&#160;; pour éviter cela, vous pouvez sélectionner l&#39;option <b class="cBold">Fixed Year value</b> et saisir une année fictive. <br /><b class="cBold">Log Active Status</b>&#160;: Ajoute une colonne à votre schéma SCD pour renseigner les valeurs de statut <b class="cBold">true</b> et <b class="cBold">false&#160;</b>. Cette colonne permet de repérer facilement le journal actif. <br /><b class="cBold">Log versions&#160;</b>: Ajoute une colonne à votre schéma SCD pour renseigner le numéro de version du journal. 
 </div>
 </td>
 </tr>
@@ -295,7 +295,7 @@ Utilisation
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2317924"> </a><div class="pCellBody">
-Ce composant est généralement utilisé comme composant de début. Il nécessite un composant de sortie et une connexion de type row Main.
+Ce composant est généralement utilisé comme composant de début. Il nécessite un composant de sortie et une connexion de type <b class="cBold">Row Main</b>.
 </div>
 </td>
 </tr>
@@ -323,7 +323,7 @@ Ce composant est généralement utilisé comme composant de début. Il nécessite un 
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components06-134.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlSCDELT_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components05-151.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlSCDELT_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

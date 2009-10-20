@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:35:01">
+    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
     <title>Scenario: Get the ID for the last inserted record</title>
   </head>
 
@@ -33,7 +33,7 @@ The following Java scenario creates a job that opens a connection to Mysql datab
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1606589"> </a><div class="pSmartList2"><li>Click and drop the following components from the Palette onto the workspace: <b class="cBold">tMySqlConnection</b>, <b class="cBold">tMySqlCommit</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tMySqlOutput</b>, <b class="cBold">tMysqlLastInsertId</b>, and <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1606589"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tMySqlConnection</b>, <b class="cBold">tMySqlCommit</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tMySqlOutput</b>, <b class="cBold">tMysqlLastInsertId</b>, and <b class="cBold">tLogRow</b>.</li></div>
 <a name="wp1606616"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tMySqlConnection</b> to <b class="cBold">tFileInputDelimited </b>using an <b class="cBold">OnSubjobOk </b>link.</li></div>
 <a name="wp1609527"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputDelimited </b>to <b class="cBold">tMySqlCommit</b> using an <b class="cBold">OnSubjobOk </b>link.</li></div>
 <a name="wp1606993"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputdelimited </b>to the three other components using <b class="cBold">Row Main </b>links.</li></div>
@@ -46,9 +46,9 @@ The following Java scenario creates a job that opens a connection to Mysql datab
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1609614"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tMysqlConnection</b>.</li></div>
+<a name="wp1609614"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tMysqlConnection</b>.</li></div>
 <a name="wp1607790"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tMysqlConnection</b>.</li></div>
-<a name="wp1607796"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view, set the connection details manually or select them from the context variable list, through a <b class="cBold">Ctrl+Space</b> click in the corresponding field if you stored them locally as Metadata DB connection entries. For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> of <b class="cBold">Talend Open Studio</b>.</li></div>
+<a name="wp1607796"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view, set the connection details manually or select them from the context variable list, through a <b class="cBold">Ctrl+Space</b> click in the corresponding field if you stored them locally as Metadata DB connection entries. For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> of <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1607979"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -58,9 +58,9 @@ The following Java scenario creates a job that opens a connection to Mysql datab
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1607988"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tMysqlCommit</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+<a name="wp1607988"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tMysqlCommit</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
 <a name="wp1607998"> </a><div class="pSmartList2"><li>On the <b class="cBold">Component List</b>, select the relevant <b class="cBold">tMysqlConnection</b> if more than one connection is used.</li></div>
-<a name="wp1609750"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tFileInputDelimited</b>.</li></div>
+<a name="wp1609750"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tFileInputDelimited</b>.</li></div>
 <a name="wp1609790"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings of <b class="cBold">tFileInputDelimited</b>.</li></div>
 </ul></div>
 </ul></div>
@@ -79,7 +79,7 @@ The following Java scenario creates a job that opens a connection to Mysql datab
 </ul></div>
 </ul></div>
 <a name="wp1610034"> </a><p class="pIndented1">
-Related topics: <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+Related topics: <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
 </p>
 <a name="wp1610230"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -91,7 +91,7 @@ In this scenario, the schema consists of two columns, <em class="cEmphasis">name
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1610391"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tMySqlOutput</b>.</li></div>
+<a name="wp1610391"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tMySqlOutput</b>.</li></div>
 <a name="wp1610405"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings of <b class="cBold">tMySqlOuptput</b>.</li></div>
 </ul></div>
 </ul></div>
@@ -102,7 +102,7 @@ In this scenario, the schema consists of two columns, <em class="cEmphasis">name
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2216484"> </a><div class="pSmartList2"><li>Check the <b class="cBold">Use an existing connection</b> check box.</li></div>
+<a name="wp2216484"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use an existing connection</b> check box.</li></div>
 <a name="wp1610699"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table</b> field, enter the name of the table where to write the employees&#39; list, in this example: <em class="cEmphasis">employee</em>. </li></div>
 <a name="wp1610716"> </a><div class="pSmartList2"><li>Select relevant actions on the <b class="cBold">Action on table </b>and <b class="cBold">Action on data</b> lists. In this example, no action is carried out on table, and the action carried out on data is <em class="cEmphasis">Insert</em>. </li></div>
 <a name="wp1610741"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Built-In</b> and click <b class="cBold">Sync columns</b> to synchronize columns with the previous component. In this example, the schema to be inserted into the MySql database table consists of the two columns<em class="cEmphasis"> name</em> and<em class="cEmphasis"> age</em>.</li></div>
@@ -115,7 +115,7 @@ In this scenario, the schema consists of two columns, <em class="cEmphasis">name
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1611082"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tMySqlLastInsertId</b>.</li></div>
+<a name="wp1611082"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tMySqlLastInsertId</b>.</li></div>
 <a name="wp1611096"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings of <b class="cBold">tMySqlLastInserId</b>.</li></div>
 </ul></div>
 </ul></div>
@@ -137,7 +137,7 @@ In this scenario, the schema consists of two columns, <em class="cEmphasis">name
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1608479"> </a><div class="pSmartList2"><li>In the workspace, select <b class="cBold">tLogRow</b> and click the <b class="cBold">Component</b> tab to define its basic settings. For more information, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
+<a name="wp1608479"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tLogRow</b> and click the <b class="cBold">Component</b> tab to define its basic settings. For more information, see <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
 <a name="wp1608526"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
@@ -146,7 +146,7 @@ In this scenario, the schema consists of two columns, <em class="cEmphasis">name
 <div align="center"><img src="images/Use_Case_tMysqlLastInsertId8.png" id="wp1611840" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1611835"> </a><p class="pBodyRelative">
+<a name="wp2750644"> </a><p class="pBodyRelative">
 <b class="cBold">tMysqlLastInsertId </b>fetched the last inserted ID for each line on the existing connection.
 </p>
     </blockquote>

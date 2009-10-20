@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/30/09 15:24:41">
+    <meta name="LASTUPDATED" content="10/19/09 18:24:28">
     <title>Scenario: Dynamic context use in MySQL DB insert</title>
   </head>
 
@@ -38,10 +38,10 @@ This scenario is made of two subjobs. The first subjob aims at dynamically load 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1355107"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tFilelist</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tContextLoad</b> for the first subjob.</li></div>
-<a name="wp1355117"> </a><div class="pSmartList2"><li>And click and drop the <b class="cBold">tMysqlInput</b> and a <b class="cBold">tLogRow</b> for the second subjob.</li></div>
+<a name="wp1355107"> </a><div class="pSmartList2"><li>For the first subjob, drop a <b class="cBold">tFilelist</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tContextLoad</b> from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp1355117"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tMysqlInput</b> and a <b class="cBold">tLogRow</b> the same way for the second subjob.</li></div>
 <a name="wp1355121"> </a><div class="pSmartList2"><li>Connect all the components together.</li></div>
-<a name="wp1355124"> </a><div class="pSmartList2"><li>Create as many delimited files as there are different contexts and store them in a specific directory, named <em class="cEmphasis">Contexts</em>. In this scenario, <em class="cEmphasis">test.txt</em> contains the local database connection details for testing purpose. And  <em class="cEmphasis">prod.txt</em> holds the actual production db details.</li></div>
+<a name="wp1355124"> </a><div class="pSmartList2"><li>Create as many delimited files as there are different contexts and store them in a specific directory, named <em class="cEmphasis">Contexts</em>. In this scenario, <em class="cEmphasis">test.txt</em> contains the local database connection details for testing purpose. And <em class="cEmphasis">prod.txt</em> holds the actual production db details.</li></div>
 <a name="wp1355137"> </a><div class="pSmartList2"><li>Each file is made of two fields, contain the parameter name and the corresponding value, according to the context.</li></div>
 </ul></div>
 </ul></div>
@@ -56,7 +56,7 @@ This scenario is made of two subjobs. The first subjob aims at dynamically load 
 <a name="wp1355176"> </a><div class="pSmartList2"><li>In the <b class="cBold">tFileInputDelimited</b> component <b class="cBold">Basic settings</b> panel, press <b class="cBold">Ctrl+Space bar</b> to access the global variable list. Select $_globals{tFileList_1}{CURRENT_FILEPATH} to loop on the context files&#39; directory.</li></div>
 <a name="wp1355188"> </a><div class="pSmartList2"><li>Define the schema manually (Built-in). It contains two columns defined as: <em class="cEmphasis">Key</em> and <em class="cEmphasis">Value</em>.</li></div>
 <a name="wp1355197"> </a><div class="pSmartList2"><li>Accept the defined schema to be propagated to the next component (<b class="cBold">tContextLoad</b>).</li></div>
-<a name="wp1355203"> </a><div class="pSmartList2"><li>For this scenario, check the <b class="cBold">Print operations</b> box in order for the context parameters in use to be displayed on the <b class="cBold">Run </b>panel.  </li></div>
+<a name="wp1355203"> </a><div class="pSmartList2"><li>For this scenario, select the <b class="cBold">Print operations</b> check box in order for the context parameters in use to be displayed on the <b class="cBold">Run </b>panel.  </li></div>
 <a name="wp1355217"> </a><div class="pSmartList2"><li>Then double-click to open the <b class="cBold">tMySQLInput</b> component <b class="cBold">Basic settings</b>.</li></div>
 <a name="wp1355220"> </a><div class="pSmartList2"><li>For each of the field values being stored in a context file, press F5 and define the user-defined context parameter. For example: The <b class="cBold">Host</b> field has for value parameter <em class="cEmphasis">$_context{host}</em> (in Perl), as the parameter name is <em class="cEmphasis">host</em> in the context file. Its actual value being <em class="cEmphasis">talend-dbms</em>.</li></div>
 </ul></div>
@@ -70,7 +70,7 @@ This scenario is made of two subjobs. The first subjob aims at dynamically load 
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1355246"> </a><div class="pSmartList2"><li>Then fill in the Schema information. If you store the schema in the Repository Metadata, then you can retrieve by selecting <b class="cBold">Repository</b> and the relevant entry in the list.</li></div>
 <a name="wp1355256"> </a><div class="pSmartList2"><li>And type in the SQL <b class="cBold">Query</b> to be executed on the DB table specified. In this case, a simple select of three columns of the table, which will be displayed on the <b class="cBold">Run </b>tab, through the <b class="cBold">tLogRow</b> component.</li></div>
-<a name="wp1355271"> </a><div class="pSmartList2"><li>Eventually, press <b class="cBold">F6</b> to run the job.</li></div>
+<a name="wp1355271"> </a><div class="pSmartList2"><li>Eventually, press <b class="cBold">F6</b> to run the Job.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1355278"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -78,7 +78,7 @@ This scenario is made of two subjobs. The first subjob aims at dynamically load 
 <div align="center"><img src="images/Use_Case_tContextLoad5.png" id="wp1355275" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1358310"> </a><p class="pIndented1">
+<a name="wp1741004"> </a><p class="pIndented1">
 The context parameters as well as the select values from the DB table are all displayed on the <b class="cBold">Run </b>view.
 </p>
     </blockquote>
