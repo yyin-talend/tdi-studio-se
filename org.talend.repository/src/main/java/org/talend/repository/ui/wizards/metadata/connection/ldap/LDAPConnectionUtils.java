@@ -21,6 +21,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 
 import org.eclipse.emf.common.util.EList;
@@ -67,6 +68,7 @@ public class LDAPConnectionUtils {
     public static Object[] getAttributes(SchemaOps schema, LDAPSchemaConnection talendLDAPConnection) {
 
         Set<String> attributeSet = new TreeSet<String>();
+        List<DXEntry> allEntrys = new ArrayList<DXEntry>();
         if (schema == null) {
             return null;
         }
@@ -74,23 +76,79 @@ public class LDAPConnectionUtils {
         DXAttributes dx = null;
         DXEntry entry = null;
         DN dn = null;
+        final String selectedDN = talendLDAPConnection.getSelectedDN();
         try {
             final EList baseDNs = talendLDAPConnection.getBaseDNs();
-            for (int i = 0; i < baseDNs.size(); i++) {
-                dn = new DN((String) baseDNs.get(i));
+            if (selectedDN == null || "".equals(selectedDN)) {
                 dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(dn, null));
                 oc = dx.getAllObjectClasses();
                 if (oc != null) {
                     entry = new DXEntry(dx, dn);
-                    break;
+                    allEntrys.add(entry);
+                }
+            } else {
+                NamingEnumeration searchSubTree = LDAPSchemaStep3Form.dirOps.searchSubTree(selectedDN, "(objectClass=*)", 100, 1);
+                while (searchSubTree.hasMore()) {
+                    SearchResult next = (SearchResult) searchSubTree.next();
+                    dn = new DN(next.getName());
+                    dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(dn, null));
+                    oc = dx.getAllObjectClasses();
+                    if (oc != null) {
+                        entry = new DXEntry(dx, dn);
+                        allEntrys.add(entry);
+                    }
+
                 }
             }
+
         } catch (NamingException e1) {
-            e1.printStackTrace();
+            try {
+                if ("CN=SCHEMA".equals(selectedDN)) {
+                    dn = new DN("CN=SCHEMA");
+                    dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(dn, null));
+                    oc = dx.getAllObjectClasses();
+                    if (oc != null) {
+                        entry = new DXEntry(dx, dn);
+                        allEntrys.add(entry);
+                    }
+                } else {
+                    ExceptionHandler.process(e1);
+                }
+            } catch (NamingException e) {
+                ExceptionHandler.process(e1);
+            }
+
         }
+        for (DXEntry oneEntry : allEntrys) {
+            Attribute allObjectClasses = oneEntry.getAllObjectClasses();
+            if (allObjectClasses != null) {
+                featchAttributes(allObjectClasses, attributeSet, schema);
+            }
+        }
+
+        // qli modification to fix the bug 7545.
+        for (DXEntry oneEntry : allEntrys) {
+            DXNamingEnumeration possible = (DXNamingEnumeration) oneEntry.getAll();
+            possible.sort();
+
+            while (possible.hasMore()) {
+                DXAttribute temp = (DXAttribute) possible.next();
+                String ldapName = temp.getID();
+                if (!attributeSet.contains(ldapName)) {
+                    attributeSet.add(ldapName);
+                }
+            }
+        }
+
+        Object[] array = (Object[]) attributeSet.toArray();
+
+        return array;
+    }
+
+    private static void featchAttributes(Attribute oc, Set<String> attributeSet, SchemaOps schema) {
         try {
             if (oc.contains(SchemaOps.SCHEMA_FAKE_OBJECT_CLASS_NAME))
-                return null;
+                return;
             NamingEnumeration ocs = oc.getAll();
             while (ocs.hasMore()) {
                 final Object next = ocs.next();
@@ -144,23 +202,6 @@ public class LDAPConnectionUtils {
             e.printStackTrace();
         }
 
-        // qli modification to fix the bug 7545.
-        if (entry != null) {
-            DXNamingEnumeration possible = (DXNamingEnumeration) entry.getAll();
-            possible.sort();
-
-            while (possible.hasMore()) {
-                DXAttribute temp = (DXAttribute) possible.next();
-                String ldapName = temp.getID();
-                if (!attributeSet.contains(ldapName)) {
-                    attributeSet.add(ldapName);
-                }
-            }
-        }
-
-        Object[] array = (Object[]) attributeSet.toArray();
-
-        return array;
     }
 
     /**

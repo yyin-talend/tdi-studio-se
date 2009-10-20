@@ -560,9 +560,9 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if ((tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
-                runShadowProcess();
-            }
+            // if ((tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
+            runShadowProcess();
+            // }
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
