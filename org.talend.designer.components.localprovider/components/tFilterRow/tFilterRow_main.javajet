@@ -77,8 +77,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	IMetadataColumn rightColumn = metadata.getColumn(keyColumn.get("INPUT_COLUMN"));
         	JavaType javaType = JavaTypesManager.getJavaTypeFromId(rightColumn.getTalendType()); 
         	if (!javaType.isPrimitive()) {	
-%>	
+%>
+	
+<%
+//this is only for bug:8133, when "Oject" type, and "Empty" function, and compare with "null"
+if(keyColumn.get("RVALUE")!=null && keyColumn.get("RVALUE").equals("null")){%>	
+	<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+<%}else{%>
 	<%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+<%}%>
+
 <%
 			} else {
 %>	
