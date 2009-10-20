@@ -34,6 +34,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage.EPosition;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.model.components.EParameterName;
@@ -174,11 +175,15 @@ public class ConnectionTraceFigure extends Figure {
                 lineInfo = "";
                 for (Object o : columnValueList) {
                     for (Object o1 : (ArrayList) value) {
-                        if (((HashMap) o1).get("TRACE_COLUMN").toString().equals(
-                                o.toString().substring(0, o.toString().indexOf("=")).trim())
-                                && ((HashMap) o1).get("TRACE_COLUMN_CHECKED").toString().equals("true")) {
-                            lineInfo += o.toString();
-                            break;
+                        if (o1 instanceof HashMap) {
+                            String columnValue = o.toString();
+                            if (((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN).toString().equals(
+                                    columnValue.substring(0, columnValue.indexOf("=")).trim())
+                                    && Boolean.TRUE.toString().equals(
+                                            ((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN_CHECKED).toString())) {
+                                lineInfo += columnValue;
+                                break;
+                            }
                         }
                     }
                 }
@@ -192,9 +197,10 @@ public class ConnectionTraceFigure extends Figure {
                         lineInfo += o.toString();
                     else {
                         for (Object o1 : (ArrayList) value) {
-                            if (((HashMap) o1).get("TRACE_COLUMN").toString().equals(
+                            if (((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN).toString().equals(
                                     o.toString().substring(0, o.toString().indexOf("=")).trim())
-                                    && ((HashMap) o1).get("TRACE_COLUMN_CHECKED").toString().equals("true")) {
+                                    && Boolean.TRUE.toString().equals(
+                                            ((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN_CHECKED).toString())) {
                                 lineInfo += o.toString();
                                 break;
                             }

@@ -166,7 +166,11 @@ public class ExternalNodeChangeCommand extends Command {
                             metadataInputWasRepository.put(connection, Boolean.TRUE);
                         }
                     }
+                    boolean empty = connection.getMetadataTable().getListColumns().isEmpty(); // before is empty
                     connection.getMetadataTable().setListColumns(metadata.getListColumns());
+                    if (empty) { // trace init
+                        connection.initTraceParamters();
+                    }
                 }
             }
         }
@@ -177,10 +181,15 @@ public class ExternalNodeChangeCommand extends Command {
         propagateInput();
 
         metadataOutputChanges.clear();
+        List<IConnection> initTraceList = new ArrayList<IConnection>();
         for (IConnection connection : node.getOutgoingConnections()) {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 IODataComponent dataComponent = inAndOut.getDataComponent(connection);
                 if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
+                    IMetadataTable table = connection.getMetadataTable();
+                    if (table == null || table.getListColumns().isEmpty()) {
+                        initTraceList.add(connection);
+                    }
                     boolean openDialog = false;
                     if (isForTemlate()) {
                         openDialog = true;
@@ -204,6 +213,7 @@ public class ExternalNodeChangeCommand extends Command {
                 }
                 if (connection instanceof Connection) {
                     ((Connection) connection).updateName();
+
                 }
             }
         }
@@ -213,6 +223,13 @@ public class ExternalNodeChangeCommand extends Command {
         }
         node.setExternalData(newExternalData);
         node.setMetadataList(newMetaDataList);
+        // init trace
+        for (IConnection conn : initTraceList) {
+            if (conn instanceof Connection) {
+                ((Connection) conn).initTraceParamters();
+            }
+        }
+
         for (Connection connection : connectionsToDelete) {
             connection.disconnect();
             Node prevNode = connection.getSource();

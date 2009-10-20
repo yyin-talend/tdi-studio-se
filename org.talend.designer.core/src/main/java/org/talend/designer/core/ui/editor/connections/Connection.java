@@ -357,7 +357,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         addElementParameter(param);
     }
 
-    private void initTraceParamters() {
+    public void initTraceParamters() {
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         IMetadataTable metadataTable = this.getMetadataTable();
         if (metadataTable != null) {
