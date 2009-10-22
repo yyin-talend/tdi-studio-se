@@ -155,28 +155,39 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 boolean isCompact = ("true").equals(ElementParameterParser.getValue(node, "__PRETTY_COMPACT__"));
 
+//*****************add for the feature:8873 to support output steam *****************
+boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
+//*******************add for feature:8873 end ****************
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
 	String split = ElementParameterParser.getValue(node, "__SPLIT__");
-	if(("true").equals(split)){
+	if(!useStream && ("true").equals(split)){
 %>
 if(currentRowCount_<%=cid %> > 0){
 <%
 	}
 	if(("Dom4j").equals(mode)){
-		if(("true").equals(split)){
+		if(useStream){
+%>
+	java.io.OutputStream stream_<%=cid%> = <%=outStream %>;
+<%
+		}else{
+			if(("true").equals(split)){
 %>
 	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(file_<%=cid%> + currentFileCount_<%=cid %> + suffix_<%=cid %>);
 <%
-		}else{
+			}else{
 %>
 	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
 <%
+			}
 		}
 %>    
 	org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
 <%
-		if(("true").equals(outputAsXSD)){
+		if(!useStream && ("true").equals(outputAsXSD)){
 %>
 	doc_<%=cid%>.getRootElement().addAttribute("xsi:noNamespaceSchemaLocation", file_<%=cid%>.substring(file_<%=cid%>.lastIndexOf("/")+1)+".xsd");
     doc_<%=cid%>.getRootElement().addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -233,7 +244,7 @@ if(currentRowCount_<%=cid %> > 0){
 	out_<%=cid%>.close();
 <%
 	}
-	if(("true").equals(split)){
+	if(!useStream && ("true").equals(split)){
 %>
 }
 <%
@@ -243,7 +254,7 @@ globalMap.put("<%=cid_original %>_NB_LINE",nb_line_<%=cid %>);
 <%
 
 // ------------------- *** xsd output code start *** ------------------- //
-	if(("true").equals(outputAsXSD)){
+	if(!useStream && ("true").equals(outputAsXSD)){ // add a new prerequisite:useStream to ignore generating the xsd file
 
         // change tables to a tree 
 		Object[] treeObjs = getTree(rootTable, groupTable, loopTable, metadatas.get(0).getListColumns());
@@ -289,7 +300,7 @@ globalMap.put("<%=cid_original %>_NB_LINE",nb_line_<%=cid %>);
 }
 %>
 
-<%if(isDeleteEmptyFile){%>
+<%if(!useStream && isDeleteEmptyFile){%>
 	if(nb_line_<%=cid %> == 0){
 		new java.io.File(<%=filename %>).delete();
 	}		

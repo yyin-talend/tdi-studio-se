@@ -507,6 +507,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		boolean isMerge= ("true").equals(ElementParameterParser.getValue(node, "__MERGE__"));        		
         		boolean isCompact = ("true").equals(ElementParameterParser.getValue(node, "__PRETTY_COMPACT__"));
         		
+        		//*****************add for the feature:8873 to support output steam *****************
+        		boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+				String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
+				//*******************add for feature:8873 end ****************
+        		
         		// init tool
                 XMLTool tool = new XMLTool();
                 tool.connName = conn.getName();
@@ -551,7 +556,7 @@ if(("Dom4j").equals(mode)){
 
 	//init the generate tool.
 	GenerateToolByDom4j generateToolByDom4j = new GenerateToolByDom4j();
-    if(("true").equals(outputAsXSD)){
+    if(!useStream && ("true").equals(outputAsXSD)){ // add a new prerequisite:useStream to ignore generating the xsd file
     	generateToolByDom4j.outputAsXSD = true;
     }
     if(("true").equals(allowEmpty)){
@@ -569,7 +574,7 @@ if(("Dom4j").equals(mode)){
 		needRoot_<%=cid%>=false;
 <% 
 	generateToolByDom4j.generateCode(root,"root","doc");
-	if(isMerge==false){
+	if(isMerge==false || useStream){ // add a prerequisite useStream to ignore the append mode
 %>
 		root4Group_<%=cid%> = subTreeRootParent_<%=cid%>;
 	}else{
@@ -584,7 +589,7 @@ if(("Dom4j").equals(mode)){
 	}
 
 if(groupTable.size()>0){					//init the generate tool.
-	if(isMerge==true){//merge into the file
+	if(!useStream && isMerge==true){//merge into the file and add a prerequisite:useStream to ignore the append mode
 	    String firstGroupPath = groupList.get(0).path;
 %>
 		
@@ -692,7 +697,7 @@ if(groupTable.size()>0){					//init the generate tool.
 		generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
 	}
 	//file split
-	if(("true").equals(split)){
+	if(!useStream && ("true").equals(split)){ //add a prerequisite:useStream to ignore the append mode
 %>
     currentRowCount_<%=cid %>++;
     if(currentRowCount_<%=cid %> == <%= splitEvery%>){
@@ -728,7 +733,7 @@ else if(("Null").equals(mode)){
 
 	//init the generate tool.
 	GenerateToolByNull generateToolByNull = new GenerateToolByNull();
-    if(("true").equals(outputAsXSD)){
+    if(!useStream && ("true").equals(outputAsXSD)){ // add a new prerequisite:useStream to ignore generating the xsd file
     	generateToolByNull.outputAsXSD = true;
     }
     if(("true").equals(allowEmpty)){
@@ -990,7 +995,7 @@ else if(("Null").equals(mode)){
 	}
 	
 	//file split 
-	if(("true").equals(split)){
+	if(!useStream && ("true").equals(split)){ // add a new prerequisite:useStream to ignore the split condition
 %>
     currentRowCount_<%=cid %>++;
     if(currentRowCount_<%=cid %> == <%= splitEvery%>){

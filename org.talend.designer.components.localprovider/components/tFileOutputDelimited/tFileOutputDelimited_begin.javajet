@@ -13,7 +13,11 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
+if(!useStream){
 %>
 String fileName_<%=cid%> = (new java.io.File(<%=fileName%>)).getAbsolutePath().replace("\\","/");
 String fullName_<%=cid%> = null;
@@ -39,6 +43,7 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
     directory_<%=cid%> = "";
 }
 <%
+}
 if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     %>
@@ -88,9 +93,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
     		
     		final String OUT_DELIM_ROWSEP_<%=cid %> = <%=rowSeparator %>;
-    		<%
-    		if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
-                %>         
+
+<%
+			if(!useStream){
+			//**************************** the following is the part of file Path***************************************
+			
+    			if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
+%>         
                 //create directory only if not exists
                 if(directory_<%=cid%> != null && directory_<%=cid%>.trim().length() != 0) {
                     java.io.File dir_<%=cid%> = new java.io.File(directory_<%=cid%>);
@@ -98,39 +107,70 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                         dir_<%=cid%>.mkdirs();
                     }
                 }
-                <%
-    		}
-    		%>
+<%
+    			}
+%>
     
-    		<% 	
-    		String writerClass = null;
-    		if(isInRowMode){
-    			writerClass = "routines.system.BufferedOutput";
-    		}else{
-    			writerClass = "java.io.BufferedWriter";
-    		}
-    		if(!split){
-    		    %>		
+<% 	
+    			String writerClass = null;
+    			if(isInRowMode){
+    				writerClass = "routines.system.BufferedOutput";
+    			}else{
+    				writerClass = "java.io.BufferedWriter";
+    			}
+    			if(!split){
+%>		
     		    //routines.system.Row
     		    java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(
             		new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>),<%=encoding%>));
     		    java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
-    		    <% 
-    		} else {
-    		    %>
+<% 
+    			} else {
+%>
                 java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(
                         new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
                 java.io.File file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
-                <%
-    		}
-    		%>
-            		
-    		<%
-    		if(isIncludeHeader){
+<%
+    			}
+    			
+    			if(isIncludeHeader){
     		    %>
     		    if(file<%=cid%>.length()==0)  
     		    {
     		        <%		
+	    		        List<IMetadataColumn> columns = metadata.getListColumns();
+	    		        int sizeColumns = columns.size();
+	    		        for (int i = 0; i < sizeColumns; i++) {
+	    		            IMetadataColumn column = columns.get(i);
+	    		            %>
+	    		            out<%=cid %>.write("<%=column.getLabel() %>");
+	    		            <%
+	    		            if(i != sizeColumns - 1) {
+	    		                %>
+	    		                out<%=cid %>.write(OUT_DELIM_<%=cid %>);
+	    		                <%
+	    		            }
+	    		        }
+    		        %>
+    		        out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+    		    }
+<%
+    			}
+
+    		}else{
+    		//***********************the following is the part of output Stream**************************************
+    		
+    			String writerClass = null;
+    			if(isInRowMode){
+    				writerClass = "routines.system.BufferedOutput";
+    			}else{
+    				writerClass = "java.io.BufferedWriter";
+    			}
+ %>
+    		    //routines.system.Row
+    		    java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(<%=outStream %>,<%=encoding%>));
+<%
+    			if(isIncludeHeader){
     		        List<IMetadataColumn> columns = metadata.getListColumns();
     		        int sizeColumns = columns.size();
     		        for (int i = 0; i < sizeColumns; i++) {
@@ -146,9 +186,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		        }
     		        %>
     		        out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
-    		    }	
-    		    <%
-    		}
+<%
+    		    }
+    		}// ****************************output Stream end*************************************
         }
     }
     %>
@@ -188,7 +228,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		}
 		
             <%
-            if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
+			if(!useStream){
+			//**************************** the following is the part of file Path***************************************
+            	if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
                 %>         
                 //create directory only if not exists
                 if(directory_<%=cid%> != null && directory_<%=cid%>.trim().length() != 0) {
@@ -198,27 +240,27 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                     }
                 }
                 <%
-            }
+            	}
     	
-            if(!split){
-            	if(isInRowMode){
+	            if(!split){
+	            	if(isInRowMode){
                 %>
                 java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
                     new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>));
 				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]);  
                 <%
-                }else{
+                	}else{
 				%>
 				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                     new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)), field_Delim_<%=cid %>[0]);  
 				<%
-                }
+                	}
                 %>      
                             java.io.File file_<%=cid%>=new java.io.File(fileName_<%=cid%>);   
                 <%
-            }else{
-            	if(isInRowMode){
+	            }else{
+	            	if(isInRowMode){
                 %>
                 java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
                         new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
@@ -226,61 +268,96 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                   
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]);
                 <%
-                }else{
+                	}else{
                 %>
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                         new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), field_Delim_<%=cid %>[0]);
                 <%
-                }
+                	}
                 %>
                 java.io.File file_<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
                 <%
-            }
-            List<IMetadataColumn> columns = metadata.getListColumns();
-    	    int sizeColumns = columns.size();
+	            }
+	            List<IMetadataColumn> columns = metadata.getListColumns();
+	    	    int sizeColumns = columns.size();
     	    %>
     	    String[] headColu<%=cid%> = new String[<%=sizeColumns%>];
     	    <% 		
-    	    if(isIncludeHeader && !isAppend)
-    	    {
-    	        for(int i = 0; i < sizeColumns; i++)
-        		{
-        			IMetadataColumn column = columns.get(i);
+	    	    if(isIncludeHeader && !isAppend)
+	    	    {
+	    	        for(int i = 0; i < sizeColumns; i++)
+	        		{
+	        			IMetadataColumn column = columns.get(i);
         			%>
        				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
        				<%
-        		}
+	        		}
     	        %>
         		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
-        		<%if(isInRowMode){%>
+        			<%if(isInRowMode){%>
         		out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                 strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
-        		<%}
-    	    }
-    	    if(isIncludeHeader && isAppend)
-    	    {
-     		   
+        			<%}
+	    	    }
+	    	    if(isIncludeHeader && isAppend)
+	    	    {
     	        %>		   
     	        if(file_<%=cid%>.length()==0)  
     	        {
     	            <%			
-         			for(int i = 0 ; i < sizeColumns ; i++)
-        			{
-        				IMetadataColumn column = columns.get(i);
+	         			for(int i = 0 ; i < sizeColumns ; i++)
+	        			{
+	        				IMetadataColumn column = columns.get(i);
         				%>	      	
         				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
         				<%
-         			}
+         				}
     	            %>	 
     	            CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);
-    	            <%if(isInRowMode){%>
+    	            	<%if(isInRowMode){%>
     	            out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                 	strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length()); 	
-                	<%}%>
+                		<%}%>
     	        }
      
-    	        <%		  
-    	    } 
+<%		  
+	    	    }
+	    	}else{
+    		//***********************the following is the part of output Stream**************************************
+	            if(isInRowMode){
+%>
+                java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>));
+				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
+                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]);  
+<%
+                }else{
+%>
+				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                    <%=outStream %>, <%=encoding%>)), field_Delim_<%=cid %>[0]);  
+<%
+                }
+	            List<IMetadataColumn> columns = metadata.getListColumns();
+	    	    int sizeColumns = columns.size();
+    	    %>
+    	    	String[] headColu<%=cid%> = new String[<%=sizeColumns%>];
+    	    <% 		
+	    	    if(isIncludeHeader)
+	    	    {
+	    	        for(int i = 0; i < sizeColumns; i++)
+	        		{
+	        			IMetadataColumn column = columns.get(i);
+        			%>
+       				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
+       				<%
+	        		}
+    	        %>
+        		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
+        			<%if(isInRowMode){%>
+        		out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+                strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
+        			<%}
+	    	    }
+	    	}//*****************************csv mode under output stream end********************************************************
 	    }
     }
     %>

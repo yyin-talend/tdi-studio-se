@@ -17,7 +17,10 @@ imports="
 <% 
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();	
+String cid = node.getUniqueName();
+
+boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+
 if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     %>
@@ -148,7 +151,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						}
     		        %>
     		        <%
-    		        if(split){ 
+    		        // add a prerequisite useStream to support output stream feature:8873
+    		        if(!useStream && split){ 
     		            %>
     		            if(currentRow_<%=cid%> % splitEvery_<%=cid%>==0 && currentRow_<%=cid%>!=0){
     		                splitedFileNo_<%=cid%>++;
@@ -439,7 +443,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						}
 %>
 <%
-            			if(split){
+            			if(!useStream && split){
             			    %>
             			    if(currentRow_<%=cid%> % splitEvery_<%=cid%>==0 && currentRow_<%=cid%>!=0){
             			        splitedFileNo_<%=cid%>++;

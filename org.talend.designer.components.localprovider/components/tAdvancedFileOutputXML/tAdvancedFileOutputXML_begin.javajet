@@ -19,6 +19,9 @@ String cid = node.getUniqueName();
 String cid_original = cid;
 cid = cid_original.replace("tAdvancedFileOutputXML","tAFOX");
 
+boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -39,6 +42,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUP__");
                 List<Map<String, String>> loopTable = 
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
+                
+                if(!useStream){
+                //*********************************the part of file path----the old one****************************************
 %>
 int nb_line_<%=cid%> = 0;
 <%if(isMerge==true){%>
@@ -54,24 +60,24 @@ if(fileName_<%=cid %>.substring(fileName_<%=cid %>.lastIndexOf("/")).lastIndexOf
 	file_<%=cid %> = fileName_<%=cid %>;
 }
 <%
-				if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
+					if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
 java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
 if(!createFile<%=cid%>.exists()){ 
 	(new java.io.File(fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("/")))).mkdirs(); 
 	needRoot_<%=cid%>=true;
-}<%					if(isMerge==true){%>else{
+}<%						if(isMerge==true){%>else{
 				if(createFile<%=cid %>.isFile()){
 					if(createFile<%=cid %>.length()<1){
 						needRoot_<%=cid %> = true;
 					}
 				}
 			}
-				 <%}%>
+				 	<%}%>
 
 <%
-				}
-				if(("true").equals(split)){
+					}
+					if(("true").equals(split)){
 %>
 int currentRowCount_<%=cid%> = 0;
 int currentFileCount_<%=cid%> = 0;
@@ -81,7 +87,14 @@ if(fileName_<%=cid %>.substring(fileName_<%=cid %>.lastIndexOf("/")).lastIndexOf
 }
 fileName_<%=cid%> = file_<%=cid%>+"0" + suffix_<%=cid %>;
 <%
-				}
+					}
+				}else{
+				//******************the part of the output stream-----the new one feature:8873**********************************
+%>
+int nb_line_<%=cid%> = 0;
+boolean	needRoot_<%=cid%> = true;
+<%
+				}//***************************the part of the output stream end************************************************
 %>
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
@@ -89,7 +102,6 @@ java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,St
 // *** generation mode init ***
 				if(("Dom4j").equals(mode)){
 %>
-
 class NestXMLTool_<%=cid%>{
 	public void parseAndAdd(org.dom4j.Element nestRoot, String value){
 		try {
@@ -145,7 +157,7 @@ org.dom4j.Element root4Group_<%=cid%> = null;
 
 org.dom4j.Document doc_<%=cid %>=null;
 <%
-					if(isMerge==true){//append mode
+					if(!useStream && isMerge==true){//append mode and the code of file path
 %>
 if(needRoot_<%=cid %> ==false){
 	try{
@@ -197,8 +209,13 @@ startTabStrs_<%=cid%>.add("<%=isCompact?"":"\\n"%><%=emptyspace%><<%=endTabs[len
 int preUnNullMaxIndex_<%=cid%> = -1;
 int preNewTabIndex_<%=cid%> = -1;
 String[] startTabs_<%=cid%> = new String[endTabStrs_<%=cid%>.size()];
+<%if(!useStream){// the part of file path---the old code%>
 java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
 	new java.io.OutputStreamWriter(new java.io.FileOutputStream(fileName_<%=cid%>), <%=encoding%>));
+<%}else{// the part of output stream%>
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
+	new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>));
+<%}%>
 out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
 out_<%=cid%>.newLine();
 <%
