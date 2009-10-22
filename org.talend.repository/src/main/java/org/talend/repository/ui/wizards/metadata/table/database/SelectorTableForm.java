@@ -61,6 +61,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.text.IndiceHelper;
 import org.talend.commons.utils.threading.TalendCustomThreadPoolExecutor;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -653,7 +654,11 @@ public class SelectorTableForm extends AbstractForm {
             metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
 
             initExistingNames();
-            metadataTable.setLabel(IndiceHelper.getIndexedLabel(tableString, existingNames));
+            String labelName = IndiceHelper.getIndexedLabel(tableString, existingNames);
+            if (forTemplate) {
+                labelName = MetadataTool.validateValue(labelName);
+            }
+            metadataTable.setLabel(labelName);
             metadataTable.setSourceName(tableItem.getText(0));
             metadataTable.setId(factory.getNextId());
             metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
@@ -830,7 +835,11 @@ public class SelectorTableForm extends AbstractForm {
 
             metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             initExistingNames();
-            metadataTable.setLabel(IndiceHelper.getIndexedLabel(tableString, existingNames));
+            String lableName = IndiceHelper.getIndexedLabel(tableString, existingNames);
+            if (forTemplate) {
+                lableName = MetadataTool.validateValue(lableName);
+            }
+            metadataTable.setLabel(lableName);
             metadataTable.setSourceName(tableString);
             metadataTable.setId(factory.getNextId());
             metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
