@@ -900,6 +900,36 @@ public class CLASS {
                 
         }
         
+        public String retrieveSQL(String generatedType, Column column, String incomingConnName, String cid, String stmt, int index, String sqlSplit) {
+            String replaceStr = null;
+            if(generatedType.equals("char") || generatedType.equals("Character")) {
+                replaceStr = "\"'\" + String.valueOf(" + incomingConnName + "." + column.getName() + ") + \"'\"";
+            } else if(generatedType.equals("String")) {
+                replaceStr = "\"'\" + " + incomingConnName + "." + column.getName() + " + \"'\"";
+            } else if(generatedType.equals("java.util.Date")) {
+                replaceStr = "\"'\" + new java.text.SimpleDateFormat(" + column.getColumn().getPattern() + ").format(" + incomingConnName + "." + column.getName() + ") + \"'\"";
+                
+            } else {
+                replaceStr = "String.valueOf(" + incomingConnName + "." + column.getName() + ")";
+            }
+            
+            if (generatedType.equals("int") || generatedType.equals("float") || generatedType.equals("double") ||generatedType.equals("long") 
+                    || generatedType.equals("short") || generatedType.equals("boolean") || generatedType.equals("byte") || generatedType.equals("char")) {
+            		if (index == 1) {
+            			return  stmt + cid + ".append("+sqlSplit+cid+"[0]).append(" +  replaceStr + ").append("+sqlSplit+cid+"["+index+"])";
+            		} else {
+            			return  stmt + cid + ".append(" +  replaceStr + ").append("+sqlSplit+cid+"["+index+"])";
+            		}
+            }else {
+            	if (index == 1) {
+            		return stmt + cid + ".append("+sqlSplit+cid+"[0]).append(" + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ").append("+sqlSplit+cid+"["+index+"])";
+            	} else {
+            		return stmt + cid + ".append(" + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ").append("+sqlSplit+cid+"["+index+"])";
+            	}
+            }
+            
+                
+        }
         
         //extract a method for feature:2880, it is a default implement, need every tDBOutput to implement it, if it really want to support the "whereNULL" issue
         //@see: the implement of MSSQLManager
