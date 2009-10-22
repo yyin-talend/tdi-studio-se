@@ -102,7 +102,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 
     }
     
-
+	if(isEnableDebug) {
+%>
+		query_<%=cid%> = new StringBuffer("");
+<%
+	}
+	
     if(incomingConnName != null && columnList != null){
     	if(("true").equals(identityInsert) && useExistingConnection ) {
         %>
@@ -113,11 +118,6 @@ skeleton="../templates/db_output_bulk.skeleton"
         whetherReject_<%=cid%> = false;
         <%    
         if(("INSERT").equals(dataAction)) {
-            if(isEnableDebug) {
-                %>
-                query_<%=cid%> = new String(insert_<%=cid%>);
-                <%
-            }        
             int counter = 1;            
             for(Column column : colStruct) {
                 if(column.isInsertable()) {
@@ -127,7 +127,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_")%>;
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
                         <%
                     }                    
                     counter++;                        
@@ -135,7 +135,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             if(isEnableDebug) {
                 %>
-                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
             }            
             %>
@@ -189,11 +189,6 @@ skeleton="../templates/db_output_bulk.skeleton"
            <%}///end use batch%>
             <%
         } else if(("UPDATE").equals(dataAction)) {
-            if(isEnableDebug) {
-                %>
-                query_<%=cid%> = new String(update_<%=cid%>);
-                <%
-            }        
             int counterCol = 1;
             for(Column column : colStruct) {
                 if(column.isUpdatable()) {
@@ -203,7 +198,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_")%>;
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                         <%
                     }                    
                     counterCol++;                   
@@ -229,7 +224,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_")%>;
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                         <%
                     }                    
                     counterCol++;
@@ -237,7 +232,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             if(isEnableDebug) {
                 %>
-                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
             }            
             %>
@@ -289,8 +284,6 @@ skeleton="../templates/db_output_bulk.skeleton"
           <%}%>
             <%
         } else if (("INSERT_OR_UPDATE").equals(dataAction)) {
-            %>
-            <%
             int columnIndex = 1;
             for(Column column : colStruct) {
                 if(column.isUpdateKey()) {
@@ -321,11 +314,6 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             if(checkCount_<%=cid%> > 0) {
                 <%
-                if(isEnableDebug) {
-                    %>
-                    query_<%=cid%> = new String(update_<%=cid%>);
-                    <%
-                }            
                 int counterCol = 1;
                 for(Column column : colStruct) {
                     if(column.isUpdatable()) {
@@ -335,7 +323,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                         if(isEnableDebug) {
                             %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_")%>;
+                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                             <%
                         }                        
                         counterCol++;
@@ -360,7 +348,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                         if(isEnableDebug) {
                             %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_")%>;
+                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                             <%
                         }                        
                         counterCol++;                   
@@ -368,7 +356,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
                 if(isEnableDebug) {
                     %>
-                    globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                    globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                     <%
                 }                
                 %>
@@ -403,11 +391,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
             } else {
                 <%
-                if(isEnableDebug) {
-                    %>
-                    query_<%=cid%> = new String(insert_<%=cid%>);
-                    <%
-                }            
                 int counterInsert = 1;
                 for(Column columnInsert : colStruct) {
                     if(columnInsert.isInsertable()) {
@@ -417,7 +400,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                         if(isEnableDebug) {
                             %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_")%>;
+                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
                             <%
                         }                        
                         counterInsert++;
@@ -425,7 +408,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
                 if(isEnableDebug) {
                     %>
-                    globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                    globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                     <%
                 }                
                 %>
@@ -463,11 +446,6 @@ skeleton="../templates/db_output_bulk.skeleton"
             nb_line_<%=cid%>++;
             <%
         } else if (("UPDATE_OR_INSERT").equals(dataAction)) {
-            if(isEnableDebug) {
-                %>
-                query_<%=cid%> = new String(update_<%=cid%>);
-                <%
-            }        
             %>
             int updateFlag_<%=cid%>=0;
             <%
@@ -480,7 +458,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_")%>;
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
                         <%
                     }                    
                     counterColUpdate++;
@@ -505,7 +483,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_")%>;
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
                         <%
                     }                    
                     counterColUpdate++;
@@ -513,7 +491,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             if(isEnableDebug) {
                 %>
-                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
             }            
             %>
@@ -549,14 +527,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } 
                 %>
             }
-            if(updateFlag_<%=cid%> == 0)
-            {
+            if(updateFlag_<%=cid%> == 0) {
+            	query_<%=cid%> = new StringBuffer("");
                 <%
-                if(isEnableDebug) {
-                    %>
-                    query_<%=cid%> = new String(insert_<%=cid%>);
-                    <%
-                }            
                 int counter = 1;
                 for(Column column : colStruct) {
                     if(column.isInsertable()) {
@@ -566,7 +539,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%
                         if(isEnableDebug) {
                             %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_")%>;
+                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
                             <%
                         }                        
                         counter++;
@@ -574,7 +547,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
                 if(isEnableDebug) {
                     %>
-                    globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                    globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                     <%
                 }                
                 %>
@@ -614,11 +587,6 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
         
         } else if (("DELETE").equals(dataAction)) {
-            if(isEnableDebug) {
-                %>
-                query_<%=cid%> = new String(delete_<%=cid%>);
-                <%
-            }        
             int keyCounter = 1;
             for(Column column : colStruct) {
                 if(column.isDeleteKey()) {
@@ -638,7 +606,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_")%>;
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_")%>;
                         <%
                     }                    
                     keyCounter++;
@@ -646,7 +614,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             if(isEnableDebug) {
                 %>
-                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
             }            
             %>
@@ -696,8 +664,6 @@ skeleton="../templates/db_output_bulk.skeleton"
             nb_line_<%=cid%>++;
         <%
         } else if (("INSERT_IF_NOT_EXIST").equals(dataAction)) { 
-        %>
-        <%
         int columnIndex = 1;
         for(Column column : colStruct) {
             if(column.isUpdateKey()) {
@@ -728,11 +694,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                 
         if (checkCount_<%=cid%> < 1) {
              <%
-            if(isEnableDebug) {
-                %>
-                query_<%=cid%> = new String(insert_<%=cid%>);
-                <%
-            } 
             int counterInsert = 1;
             for(Column columnInsert : colStruct) {
                 if(columnInsert.isInsertable()) {
@@ -742,14 +703,14 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_")%>;
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
                         <%
                     }                        
                     counterInsert++;
                 }
             }
             if(isEnableDebug) {%>
-                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
             }%>
 	        try {

@@ -221,7 +221,8 @@ if(columnList != null && columnList.size()>0) {
     }
     if(isEnableDebug) {
         %>
-        String query_<%=cid%> = null;
+        StringBuffer query_<%=cid%> = null;
+       	<%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
         <%
     }
     if(("true").equals(identityInsert) ) {
