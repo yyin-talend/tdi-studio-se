@@ -489,6 +489,23 @@ public class FlowSorterIterator<V extends ILightSerializable> implements IMapHas
         }
     }
 
+    /**
+     * DOC amaumont Comment method "deleteFileOnDie".
+     * 
+     * @throws IOException
+     */
+    public void deleteFileOnDie() throws IOException {
+
+        if (files != null && files.size() > 0) {
+            for (File file : files) {
+                if (file != null && file.exists()) {
+                    file.delete();
+                }
+            }
+        }
+
+    }
+
     /*
      * (non-Javadoc)
      * 
