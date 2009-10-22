@@ -370,6 +370,7 @@ java.util.List<Comparable<%=rowName %>Struct> list_<%=cid %> = new java.util.Arr
 		//sort out of memory begin
 			String tempDirectory = ElementParameterParser.getValue(node, "__TEMPFILE__");
 			String bufferSize = ElementParameterParser.getValue(node, "__EXTERNAL_SORT_BUFFERSIZE__");
+			boolean bCreateDir = "true".equals(ElementParameterParser.getValue(node, "__CREATEDIR__"));
 %>
 ////////////////////////////////////
 class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implements
@@ -816,7 +817,17 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 
 }
 // /////////////////////////////////
-
+<%
+if (bCreateDir){
+%>
+  java.io.File dir_<%=cid%> = new java.io.File(<%=tempDirectory %>);
+  if (!dir_<%=cid%>.exists()){
+    dir_<%=cid%>.mkdirs();
+  }
+  dir_<%=cid%> = null;
+<%
+}
+%>
 org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator<<%=rowName %>StructILightSerializable> iterator_<%=cid %> = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator<<%=rowName %>StructILightSerializable>();
 iterator_<%=cid %>.setBufferSize(<%=bufferSize %>);
 iterator_<%=cid %>.setILightSerializable(new <%=rowName %>StructILightSerializable());
