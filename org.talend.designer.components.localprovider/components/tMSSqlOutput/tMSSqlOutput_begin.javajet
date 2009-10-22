@@ -185,7 +185,25 @@ if(columnList != null && columnList.size()>0) {
     if(("INSERT").equals(dataAction)) {
         %>  
         String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+<%
+//to fixed: bug8842
+if(!cid.equals("talendLogs_DB")){%>
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+<%}%>
+        
+<%
+//to fixed: bug8842
+if(cid.equals("talendLogs_DB")){ %>
+		java.sql.PreparedStatement pstmt_<%=cid %> = null;         
+        // [%connection%][psmt]
+        String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]";
+		if(GlobalResource.resourceMap.get(keyPsmt_<%=cid %>)== null){
+			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
+			GlobalResource.resourceMap.put(keyPsmt_<%=cid %>, pstmt_<%=cid %>);
+		}else{
+			pstmt_<%=cid %> = (java.sql.PreparedStatement)GlobalResource.resourceMap.get(keyPsmt_<%=cid %>);				
+		}
+<%}%>
         <%
     } else if (("UPDATE").equals(dataAction)) {
         %>

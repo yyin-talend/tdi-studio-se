@@ -26,6 +26,13 @@ if(!("NONE").equals(tableAction)) {
             <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
             %>
+<%
+//to fixed: bug8842
+if(cid.equals("talendLogs_DB")){%>	         
+    // [%connection%][checktable]
+    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]";
+	if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
+<%}%>            
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
             java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
             boolean whetherExist_<%=cid%> = false;
@@ -58,6 +65,14 @@ if(!("NONE").equals(tableAction)) {
                 stmtCreate_<%=cid%>.close();
             <%
             }
+            %>
+<%
+//to fixed: bug8842
+if(cid.equals("talendLogs_DB")){%>
+		GlobalResource.resourceMap.put(keyCheckTable_<%=cid %>, true);
+	}
+<%}%>            
+            <%
         } else if(("CLEAR").equals(tableAction)) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
