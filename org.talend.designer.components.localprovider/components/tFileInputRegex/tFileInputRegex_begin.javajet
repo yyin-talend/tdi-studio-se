@@ -39,8 +39,14 @@
         
         int footer_<%=cid %>  = <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (("").equals(myFooter)) myFooter = "0"; %><%=myFooter%>;
         boolean removeEmptyRow<%=cid %> = <%= ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__") %>;
+        Object source_<%=cid %> = <%=filename %>;
+        
         org.talend.fileprocess.TOSDelimitedReader in<%=cid%>=null;
+        if(source_<%=cid %> instanceof String || source_<%=cid %> instanceof java.io.InputStream){
         	in<%=cid %> = new org.talend.fileprocess.TOSDelimitedReader(<%=filename %>, <%= encoding%>, "", <%=row_separator%>, removeEmptyRow<%=cid %>);
+        }else{
+        	throw new Exception("The source data should be specified as File Path or InputStream or java.io.Reader!");
+        }
         String str<%=cid %>;
         int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1,validRowCount<%=cid %>=0;
         int limit<%=cid %>=<%if (("").equals(myLimit)) {myLimit = "-1";}%><%=myLimit %>;

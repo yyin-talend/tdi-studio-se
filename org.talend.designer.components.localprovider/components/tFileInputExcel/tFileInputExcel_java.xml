@@ -144,8 +144,8 @@
 			<IMPORT NAME="jsr173" MODULE="jsr173_1.0_api.jar" REQUIRED="true" />
 			<IMPORT NAME="log4j" MODULE="log4j-1.2.9.jar" REQUIRED="true" />
 			<IMPORT NAME="ooxml-schemas" MODULE="ooxml-schemas-1.0.jar" REQUIRED="true" />
-			<IMPORT NAME="poi" MODULE="poi-3.5-beta5-20090219.jar" REQUIRED="true" />
-			<IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.5-beta5-20090219.jar" REQUIRED="true" />
+			<IMPORT NAME="poi" MODULE="poi-3.5-FINAL-20090928.jar" REQUIRED="true" />
+			<IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.5-FINAL-20090928.jar" REQUIRED="true" />
 			<IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>

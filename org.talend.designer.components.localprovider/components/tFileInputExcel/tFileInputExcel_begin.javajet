@@ -112,8 +112,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 %>		
         workbookSettings_<%= cid %>.setEncoding(<%=encoding %>);
-        final jxl.Workbook workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(new java.io.FileInputStream(
-        						<%=fileName%>)), workbookSettings_<%= cid %>);
+        
+        Object source_<%=cid %> =<%=fileName%>;
+        final jxl.Workbook workbook_<%= cid %>;
+        
+        if(source_<%=cid %> instanceof java.io.InputStream){
+        	workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream((java.io.InputStream)source_<%=cid %>), workbookSettings_<%= cid %>);
+        }else if(source_<%=cid %> instanceof String){
+        	workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(new java.io.FileInputStream(
+        							source_<%=cid %>.toString())), workbookSettings_<%= cid %>);
+        }else{
+        	workbook_<%= cid %> = null;
+        	throw new Exception("The data source should be specified as Inputstream or File Path!");
+        }
 <%
 		if(isAllSheets){
 %>
@@ -448,7 +459,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 		RegexUtil_<%=cid %> regexUtil_<%=cid %> = new RegexUtil_<%=cid %>();
 		
-		org.apache.poi.xssf.usermodel.XSSFWorkbook workbook_<%=cid%> = new org.apache.poi.xssf.usermodel.XSSFWorkbook(<%=fileName%>);
+		Object source_<%=cid %> = <%=fileName%>;
+		org.apache.poi.xssf.usermodel.XSSFWorkbook workbook_<%=cid%> = null;
+		
+		if(source_<%=cid %> instanceof java.io.InputStream || source_<%=cid %> instanceof String){
+			workbook_<%=cid%> = new org.apache.poi.xssf.usermodel.XSSFWorkbook(<%=fileName%>);
+		}else{
+			workbook_<%=cid%> = null;
+			throw new Exception("The data source should be specified as Inputstream or File Path!");
+		}
 		org.apache.poi.ss.usermodel.FormulaEvaluator evaluator_<%=cid%> = workbook_<%=cid%>.getCreationHelper().createFormulaEvaluator();
 <%
 		if(isAllSheets){
