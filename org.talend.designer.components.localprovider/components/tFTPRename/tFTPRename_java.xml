@@ -70,7 +70,7 @@ COMPATIBILITY="ALL"
       NAME="PRIVATEKEY"
       FIELD="FILE"
       NUM_ROW="21"
-      SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')"
+      SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')  AND (USE_EXISTING_CONNECTION == 'false')"
     >
       <DEFAULT>"/.ssh/id_dsa"</DEFAULT>
     </PARAMETER>
@@ -79,7 +79,7 @@ COMPATIBILITY="ALL"
       NAME="PASSPHRASE"
       FIELD="TEXT"
       NUM_ROW="22"
-      SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')"
+      SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')  AND (USE_EXISTING_CONNECTION == 'false')"
     >
       <DEFAULT>"secret"</DEFAULT>
     </PARAMETER>    
@@ -99,7 +99,7 @@ COMPATIBILITY="ALL"
       </ITEMS>
     </PARAMETER>
          
-    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="40">
+    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="40" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
@@ -132,7 +132,8 @@ COMPATIBILITY="ALL"
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="110"
-      REQUIRED="true">
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
        <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
   </PARAMETERS>

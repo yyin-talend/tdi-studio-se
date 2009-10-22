@@ -13,10 +13,20 @@
 	String cid = node.getUniqueName();
 	String remoteDir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String filename = ElementParameterParser.getValue(node, "__FILENAME__");
-	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
-	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	String ignoreFailureAtQuit= ElementParameterParser.getValue(node,"__IGNORE_FAILURE_AT_QUIT__");
-	
+	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	boolean sftp = false;
+	if(("true").equals(useExistingConn)){
+		List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
+		for(INode n : nodeList){
+			if(n.getUniqueName().equals(connection)){
+				sftp = ("true").equals(ElementParameterParser.getValue(n, "__SFTP__"));
+			}
+		}
+	}else{
+		sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
+	}
 	if(sftp){
 %>
 

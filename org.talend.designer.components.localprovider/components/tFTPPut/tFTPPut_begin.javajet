@@ -19,7 +19,6 @@
 	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");	
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
 	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
 	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");
@@ -31,8 +30,20 @@
     String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
     String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
     String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");	
-    String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");	
+    String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");
+    String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	boolean sftp = false;
+	if(("true").equals(useExistingConn)){
+		List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
+		for(INode n : nodeList){
+			if(n.getUniqueName().equals(connection)){
+				sftp = ("true").equals(ElementParameterParser.getValue(n, "__SFTP__"));
+			}
+		}
+	}else{
+		sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
+	}	
 %>
 
 <%
@@ -91,7 +102,6 @@ if(sftp){
     
 <%
 	if(("true").equals(useExistingConn)){
-		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 		String conn= "conn_" + connection;
 %>
 		com.jcraft.jsch.Session session_<%=cid%> = (com.jcraft.jsch.Session)globalMap.get("<%=conn %>");
@@ -149,7 +159,6 @@ if(sftp){
 	
 	<%
 	if(("true").equals(useExistingConn)){
-		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 		String conn= "conn_" + connection;
 	%>
 	
