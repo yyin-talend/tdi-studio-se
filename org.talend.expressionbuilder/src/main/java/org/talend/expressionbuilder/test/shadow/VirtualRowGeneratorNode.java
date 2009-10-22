@@ -100,7 +100,9 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
             // modify for bug 9471
             try {
                 for (Variable varible : variables) {
-                    Integer.parseInt(varible.getValue());
+                    if (valueContains(expression, varible.getName())) {
+                        Integer.parseInt(varible.getValue());
+                    }
                 }
                 for (Variable var : variables) {
                     expression = renameValues(expression, var.getName(), var.getValue());
@@ -146,5 +148,24 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
         }
         return value; // keep original value
 
+    }
+
+    // add for bug 9471
+    private boolean valueContains(String value, String toTest) {
+        if (value.contains(toTest)) {
+            Perl5Matcher matcher = new Perl5Matcher();
+            Perl5Compiler compiler = new Perl5Compiler();
+            Pattern pattern;
+
+            try {
+                pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(toTest) + ")(\\b|\\_)"); //$NON-NLS-1$ //$NON-NLS-2$
+                if (matcher.contains(value, pattern)) {
+                    return true;
+                }
+            } catch (MalformedPatternException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
     }
 }
