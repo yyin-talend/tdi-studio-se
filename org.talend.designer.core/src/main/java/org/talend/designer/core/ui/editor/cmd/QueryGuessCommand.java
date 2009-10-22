@@ -109,7 +109,7 @@ public class QueryGuessCommand extends Command {
         }
 
         // hywang add for bug 7575
-        if (dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
+        if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
             String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
             driverClassName = TalendTextUtils.removeQuotes(driverClassName);
             dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
@@ -119,7 +119,10 @@ public class QueryGuessCommand extends Command {
             schema = this.dbNameAndSchemaMap.get(this.realTableId);
         }
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
-        boolean isTeradata = dbType.equals(EDatabaseTypeName.TERADATA.getDisplayName());
+        boolean isTeradata = false;
+        if (dbType != null) {
+            isTeradata = dbType.equals(EDatabaseTypeName.TERADATA.getDisplayName());
+        }
         if (propertyType != null && !propertyType.equals(EmfComponent.REPOSITORY)) {
             for (IElementParameter param : this.node.getElementParameters()) {
                 if (param.getRepositoryValue() != null) {
@@ -163,7 +166,7 @@ public class QueryGuessCommand extends Command {
         }
         // about AS400 generation sql query
         String newQuery = null;
-        if (dbType.equals("AS400")) { //$NON-NLS-1$
+        if (dbType != null && dbType.equals("AS400")) { //$NON-NLS-1$
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                 List<ConnectionItem> metadataConnectionsItem = null;
