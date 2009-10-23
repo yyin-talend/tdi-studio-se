@@ -833,7 +833,7 @@ iterator_<%=cid %>.setBufferSize(<%=bufferSize %>);
 iterator_<%=cid %>.setILightSerializable(new <%=rowName %>StructILightSerializable());
 iterator_<%=cid %>.workDirectory = <%=tempDirectory %> + "/" + jobName + "<%=cid %> _" + pid;
 iterator_<%=cid %>.initPut("");
-
+try{
 <%
 		//sort out of memory end
 		}
