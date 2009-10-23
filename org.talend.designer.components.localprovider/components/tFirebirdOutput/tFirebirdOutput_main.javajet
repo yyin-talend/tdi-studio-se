@@ -429,8 +429,12 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             
             if(updateFlag_<%=cid%> == 0) {
-            	query_<%=cid%> = new StringBuffer("");
+            	<%
+            	if(isEnableDebug) {
+            	%>
+				query_<%=cid%> = new StringBuffer("");
         		<%
+        		}
         		int counter = 1;
                 for(Column column : colStruct) {
                     if(column.isInsertable()) {
