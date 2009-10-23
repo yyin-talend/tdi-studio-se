@@ -42,16 +42,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         
+		boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+		String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
+
         List<Map<String, String>> formats =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,
                 "__FORMATS__"
             );
 %>
+		int nb_line_<%=cid%> = 0;
+		
+<%
+		if(!useStream){// the part of file path
+%>
 		String fileNewName_<%=cid%> = <%=filename%>;
 		java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
 <%
-		if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
+			if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
         //create directory only if not exists
         java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();
@@ -59,19 +67,26 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             parentFile_<%=cid%>.mkdirs();
         }
 <%
-		}
+			}
 %>
-  
-		int nb_line_<%=cid%> = 0;
 		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
-        
+<%
+		}else{ //the part of the output stream
+%>
+		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		<%=outStream %>,<%= encoding%>));  
         
 <%
+		}
+		
 		if(isIncludeHeader){      	
+			if(!useStream){
 %>
 		if(createFile<%=cid%>.length()==0){
 <%
+			}
+			
     		List<IMetadataColumn> columns = metadata.getListColumns();
     		int sizeColumns = columns.size();
 %>
@@ -148,8 +163,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		}
 %>
     		out<%=cid %>.write(<%=separator%>);
+<%
+			if(!useStream){
+%>
     	}
 <%
+			}
 		}
     }
 }

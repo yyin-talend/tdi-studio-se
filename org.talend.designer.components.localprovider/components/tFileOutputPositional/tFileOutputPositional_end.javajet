@@ -15,6 +15,8 @@
     String filename = ElementParameterParser.getValue(node, "__FILENAME__");
     boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
+	
+	boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
 
 	String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 	boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
@@ -66,7 +68,7 @@
 	}
 %>
 
-<%if(!isAppend && isDeleteEmptyFile){%>
+<%if(!useStream && !isAppend && isDeleteEmptyFile){%>
 	if(nb_line_<%=cid %> == 0){
 		new java.io.File(<%=filename %>).delete();
 	}		
