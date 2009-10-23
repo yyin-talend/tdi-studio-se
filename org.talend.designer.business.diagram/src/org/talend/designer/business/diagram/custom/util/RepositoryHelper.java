@@ -100,9 +100,11 @@ public class RepositoryHelper {
 
     public void unassignTalendItemsFromBusinessAssignment(BusinessAssignment businessAssignment) {
         TalendItem talendItem = businessAssignment.getTalendItem();
-        talendItem.getAssignments().remove(businessAssignment);
-        if (talendItem.getAssignments().size() == 0) {
-            talendItem.getRepository().getTalenditems().remove(talendItem);
+        if (talendItem != null && talendItem.getAssignments() != null) {
+            talendItem.getAssignments().remove(businessAssignment);
+            if (talendItem.getAssignments().size() == 0) {
+                talendItem.getRepository().getTalenditems().remove(talendItem);
+            }
         }
     }
 

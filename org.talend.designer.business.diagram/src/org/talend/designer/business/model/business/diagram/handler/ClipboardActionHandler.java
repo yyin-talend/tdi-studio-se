@@ -24,6 +24,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.dnd.TemplateTransfer;
+import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gmf.runtime.common.core.command.ICommand;
 import org.eclipse.gmf.runtime.common.ui.action.global.GlobalActionId;
 import org.eclipse.gmf.runtime.common.ui.services.action.global.IGlobalActionContext;
@@ -33,14 +34,13 @@ import org.eclipse.gmf.runtime.diagram.ui.parts.IDiagramWorkbenchPart;
 import org.eclipse.gmf.runtime.diagram.ui.providers.DiagramGlobalActionHandler;
 import org.eclipse.gmf.runtime.diagram.ui.requests.PasteViewRequest;
 import org.eclipse.gmf.runtime.notation.Diagram;
-import org.eclipse.gmf.runtime.notation.Node;
+import org.eclipse.gmf.runtime.notation.View;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.business.diagram.custom.commands.GmfPastCommand;
-import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.BusinessProcess;
@@ -58,6 +58,9 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
 
     private static Map cutItemIds;
 
+    // save source process items list for cut and in case of pasting in editors
+    private static List<BusinessItem> clonedSourceProcessItemsList;
+
     @Override
     public ICommand getCommand(IGlobalActionContext cntxt) {
 
@@ -66,23 +69,26 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
             return null;
         }
 
-        IDiagramWorkbenchPart diagramPart = (IDiagramWorkbenchPart) part;
+        IDiagramWorkbenchPart workbenchPart = (IDiagramWorkbenchPart) part;
+        DiagramEditPart diagramEditPart = workbenchPart.getDiagramEditPart();
         ICommand command = null;
 
         String actionId = cntxt.getActionId();
         if (actionId.equals(GlobalActionId.COPY)) {
-            command = getCopyCommand(cntxt, diagramPart, false);
+            command = getCopyCommand(cntxt, workbenchPart, false);
             transfer(cntxt.getSelection());
             isCut = false;
-            older = diagramPart;
-
+            older = workbenchPart;
+            clonedSourceProcessItemsList = new ArrayList<BusinessItem>(((BusinessProcess) ((Diagram) diagramEditPart.getModel())
+                    .getElement()).getBusinessItems());
         } else if (actionId.equals(GlobalActionId.CUT) && cntxt.getSelection() != null) {
             saveCut(cntxt.getSelection());
-            command = getCutCommand(cntxt, diagramPart);
+            command = getCutCommand(cntxt, workbenchPart);
             transfer(cntxt.getSelection());
             isCut = true;
-            older = diagramPart;
-
+            older = workbenchPart;
+            clonedSourceProcessItemsList = new ArrayList<BusinessItem>(((BusinessProcess) ((Diagram) diagramEditPart.getModel())
+                    .getElement()).getBusinessItems());
         }
         if (actionId.equals(GlobalActionId.PASTE)) {
 
@@ -90,12 +96,12 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
             // StructuredSelection(diagramPart.getDiagramEditPart()));
 
             PasteViewRequest pasteReq = createPasteViewRequest();
-            CommandStack cs = diagramPart.getDiagramEditDomain().getDiagramCommandStack();
+            CommandStack cs = workbenchPart.getDiagramEditDomain().getDiagramCommandStack();
 
             IStructuredSelection selection = (IStructuredSelection) cntxt.getSelection();
             if (!(selection.getFirstElement() instanceof BusinessProcessEditPart)) {
 
-                selection = new StructuredSelection(diagramPart.getDiagramEditPart());
+                selection = new StructuredSelection(workbenchPart.getDiagramEditPart());
             }
 
             Object[] objects = selection.toArray();
@@ -105,8 +111,8 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
                 if (paste != null) {
 
                     cs.execute(paste);
-                    diagramPart.getDiagramEditPart().getFigure().invalidate();
-                    diagramPart.getDiagramEditPart().getFigure().validate();
+                    workbenchPart.getDiagramEditPart().getFigure().invalidate();
+                    workbenchPart.getDiagramEditPart().getFigure().validate();
                     returnValues = DiagramCommandStack.getReturnValues(paste);
                     // selectAddedObject(diagramPart.getDiagramGraphicalViewer(), returnValues);
 
@@ -117,15 +123,16 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
 
             if (elements instanceof List) {
                 List<BusinessItem> list = (List<BusinessItem>) elements;
-                DiagramEditPart dp = diagramPart.getDiagramEditPart();
+
                 boolean inEditors = false;
-                if (older != diagramPart) {
+                if (older != workbenchPart) {
                     inEditors = true;
-                    older = diagramPart;
+                    older = workbenchPart;
                 }
 
-                GmfPastCommand pastBusiness = new GmfPastCommand((BusinessProcess) ((Diagram) dp.getModel()).getElement(), list,
-                        dp, this.cutItemIds, this.isCut | inEditors);
+                GmfPastCommand pastBusiness = new GmfPastCommand((BusinessProcess) ((Diagram) diagramEditPart.getModel())
+                        .getElement(), list, diagramEditPart, this.cutItemIds, this.isCut | inEditors);
+                pastBusiness.setClonedSourceProcessItemsList(clonedSourceProcessItemsList);
                 try {
                     pastBusiness.execute(null, null);
                 } catch (ExecutionException e) {
@@ -134,7 +141,7 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
 
             }
             if (returnValues != null) {
-                selectAddedObject(diagramPart.getDiagramGraphicalViewer(), returnValues);
+                selectAddedObject(workbenchPart.getDiagramGraphicalViewer(), returnValues);
             }
             return null;
         }
@@ -147,9 +154,9 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
             List<BusinessItem> selections = new ArrayList();
             for (Object obj : ((IStructuredSelection) object).toList()) {
 
-                if (obj instanceof BusinessItemShapeEditPart) {
-                    BusinessItemShapeEditPart editPart = (BusinessItemShapeEditPart) obj;
-                    EObject element = ((Node) editPart.getModel()).getElement();
+                if (obj instanceof AbstractEditPart) {
+                    AbstractEditPart editPart = (AbstractEditPart) obj;
+                    EObject element = ((View) editPart.getModel()).getElement();
                     if (element instanceof BusinessItem) {
                         selections.add((BusinessItem) element);
                     }
@@ -164,9 +171,9 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
         if (object instanceof IStructuredSelection) {
 
             for (Object obj : ((IStructuredSelection) object).toList()) {
-                if (obj instanceof BusinessItemShapeEditPart) {
-                    BusinessItemShapeEditPart editPart = (BusinessItemShapeEditPart) obj;
-                    EObject element = ((Node) editPart.getModel()).getElement();
+                if (obj instanceof AbstractEditPart) {
+                    AbstractEditPart editPart = (AbstractEditPart) obj;
+                    EObject element = ((View) editPart.getModel()).getElement();
                     if (element instanceof BusinessItem) {
                         BusinessItem businessItem = (BusinessItem) element;
                         List assignments = new ArrayList();

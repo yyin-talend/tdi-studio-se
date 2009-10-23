@@ -137,7 +137,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
         BusinessType type = CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(
                 ((IStructuredSelection) selection).getFirstElement());
-        if (BusinessType.SHAP == type) {
+        if (BusinessType.SHAP == type || BusinessType.CONNECTION == type) {
             createControls(composite);
             setInput(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor(), selection);
 

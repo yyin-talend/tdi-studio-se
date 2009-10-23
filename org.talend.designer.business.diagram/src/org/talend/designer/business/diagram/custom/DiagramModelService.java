@@ -22,6 +22,7 @@ import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.NoteEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.NoteAttachmentEditPart;
 import org.eclipse.gmf.runtime.notation.Node;
+import org.eclipse.gmf.runtime.notation.impl.EdgeImpl;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -116,8 +117,14 @@ public class DiagramModelService implements IDiagramModelService {
 
     public EObject getEObject(ISelection selection) {
         if (selection instanceof IStructuredSelection) {
-            return ((Node) ((BusinessItemShapeEditPart) ((IStructuredSelection) selection).getFirstElement()).getModel())
-                    .getElement();
+            Object obj = ((IStructuredSelection) selection).getFirstElement();
+            if (obj instanceof BusinessItemShapeEditPart) {
+                return ((Node) ((BusinessItemShapeEditPart) obj).getModel()).getElement();
+            } else if (obj instanceof BaseBusinessItemRelationShipEditPart) {
+                Object model = ((BaseBusinessItemRelationShipEditPart) obj).getModel();
+                return ((EdgeImpl) model).getElement();
+            }
+
         }
         return null;
     }

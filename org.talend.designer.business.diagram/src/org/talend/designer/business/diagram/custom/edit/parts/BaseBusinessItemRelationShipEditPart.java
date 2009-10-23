@@ -13,10 +13,15 @@
 package org.talend.designer.business.diagram.custom.edit.parts;
 
 import org.eclipse.draw2d.Connection;
+import org.eclipse.draw2d.Figure;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.ConnectionNodeEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
 import org.eclipse.gmf.runtime.notation.View;
+import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDragDropEditPolicy;
+import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure;
+import org.talend.designer.business.diagram.custom.util.ElementHelper;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -26,6 +31,10 @@ import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDra
  */
 public abstract class BaseBusinessItemRelationShipEditPart extends ConnectionNodeEditPart {
 
+    private BusinessTooltipFigure tooltipFigure;
+
+    private ElementHelper elementHelper;
+
     /**
      * DOC mhelleboid BusinessItemShapeEditPart constructor comment.
      * 
@@ -33,6 +42,8 @@ public abstract class BaseBusinessItemRelationShipEditPart extends ConnectionNod
      */
     public BaseBusinessItemRelationShipEditPart(View view) {
         super(view);
+        tooltipFigure = new BusinessTooltipFigure();
+        elementHelper = new ElementHelper();
     }
 
     /*
@@ -52,4 +63,32 @@ public abstract class BaseBusinessItemRelationShipEditPart extends ConnectionNod
         return null;
     }
 
+    @Override
+    public void deactivate() {
+        if (this.tooltipFigure != null) {
+            ResourceDisposeUtil.disposeColor(this.tooltipFigure.getBackgroundColor());
+        }
+        super.deactivate();
+    }
+
+    @Override
+    protected void handleNotificationEvent(Notification notification) {
+        super.handleNotificationEvent(notification);
+        getFigure();
+        getConnectionFigure();
+        if (getConnectionFigure() instanceof Figure) {
+            elementHelper.updateTooltipFigure((Figure) getConnectionFigure(), tooltipFigure, this);
+        }
+
+    }
+
+    @Override
+    public void refreshVisuals() {
+        super.refreshVisuals();
+        getFigure();
+        getConnectionFigure();
+        if (getConnectionFigure() instanceof Figure) {
+            elementHelper.updateTooltipFigure((Figure) getConnectionFigure(), tooltipFigure, this);
+        }
+    }
 }

@@ -13,8 +13,11 @@
 package org.talend.designer.business.diagram.custom.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -25,17 +28,22 @@ import org.eclipse.gmf.runtime.common.core.command.CommandResult;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramEditPart;
 import org.eclipse.gmf.runtime.emf.commands.core.command.AbstractTransactionalCommand;
 import org.eclipse.gmf.runtime.notation.Diagram;
-import org.eclipse.gmf.runtime.notation.Node;
+import org.eclipse.gmf.runtime.notation.View;
 import org.talend.designer.business.diagram.custom.util.RepositoryHelper;
 import org.talend.designer.business.model.business.ActionBusinessItem;
 import org.talend.designer.business.model.business.ActorBusinessItem;
+import org.talend.designer.business.model.business.BaseBusinessItemRelationship;
+import org.talend.designer.business.model.business.BidirectionalBusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessItem;
+import org.talend.designer.business.model.business.BusinessItemRelationship;
+import org.talend.designer.business.model.business.BusinessItemShape;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.DataBusinessItem;
 import org.talend.designer.business.model.business.DatabaseBusinessItem;
 import org.talend.designer.business.model.business.DecisionBusinessItem;
+import org.talend.designer.business.model.business.DirectionalBusinessItemRelationship;
 import org.talend.designer.business.model.business.DocumentBusinessItem;
 import org.talend.designer.business.model.business.EllipseBusinessItem;
 import org.talend.designer.business.model.business.GearBusinessItem;
@@ -53,13 +61,17 @@ import org.talend.repository.model.RepositoryNodeUtilities;
  */
 public class GmfPastCommand extends AbstractTransactionalCommand {
 
-    List<BusinessItem> businessItems;
+    private List<BusinessItem> nodes = new ArrayList<BusinessItem>();
 
-    DiagramEditPart part;
+    private List<BusinessItem> edges = new ArrayList<BusinessItem>();
 
-    BusinessProcess process;
+    private DiagramEditPart part;
 
-    Map itemIds;
+    private BusinessProcess process;
+
+    private List<BusinessItem> clonedSourceProcessItemsList;
+
+    private Map itemIds;
 
     boolean addNew;
 
@@ -73,11 +85,11 @@ public class GmfPastCommand extends AbstractTransactionalCommand {
     public GmfPastCommand(BusinessProcess process, List<BusinessItem> businessItems, DiagramEditPart part, Map itemIds,
             boolean addNew) {
         super(TransactionUtil.getEditingDomain(process), null, null);
-        this.businessItems = businessItems;
         this.part = part;
         this.process = process;
         this.addNew = addNew;
         this.itemIds = itemIds;
+        configNodesAndEdgesList(businessItems);
     }
 
     /*
@@ -90,8 +102,18 @@ public class GmfPastCommand extends AbstractTransactionalCommand {
     @Override
     protected CommandResult doExecuteWithResult(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
         List pChildren = ((Diagram) part.getModel()).getPersistedChildren();
-        int i = 1;
-        for (BusinessItem businessItem : this.businessItems) {
+        cloneAssignmentForModel(nodes, pChildren);
+        cloneAssignmentForModel(edges, ((Diagram) part.getModel()).getPersistedEdges());
+
+        return CommandResult.newOKCommandResult();
+    }
+
+    private void cloneAssignmentForModel(List<BusinessItem> nodes, List pChildren) {
+        if (nodes == null || pChildren == null) {
+            return;
+        }
+        int i = nodes.size();
+        for (BusinessItem businessItem : getSortedBusinessItems(nodes)) {
 
             BusinessItem newItem = (BusinessItem) getEObject(businessItem);
             if (!addNew) {
@@ -150,18 +172,31 @@ public class GmfPastCommand extends AbstractTransactionalCommand {
                 newItem.getAssignments().addAll(assignments);
             }
 
-            Node node = (Node) pChildren.get(pChildren.size() - i);
-            // if (node.getElement() instanceof BusinessProcess) {
-            node.setElement(newItem);
-            i++;
-            // }
-
+            if (i <= pChildren.size()) {
+                View node = (View) pChildren.get(pChildren.size() - i);
+                node.setElement(newItem);
+                i--;
+            }
             if (addNew) {
                 this.process.getBusinessItems().add(newItem);
             }
         }
+    }
 
-        return CommandResult.newOKCommandResult();
+    private Collection<BusinessItem> getSortedBusinessItems(List<BusinessItem> items) {
+
+        List allBusinessItems = getClonedSourceProcessItemsList();
+        SortedMap<Integer, BusinessItem> sortedMap = new TreeMap<Integer, BusinessItem>();
+        if (allBusinessItems != null) {
+            for (BusinessItem item : items) {
+                int indexOf = allBusinessItems.indexOf(item);
+                if (indexOf != -1) {
+                    sortedMap.put(indexOf, item);
+                }
+            }
+        }
+        return sortedMap.values();
+
     }
 
     private EObject getEObject(EObject object) {
@@ -227,12 +262,41 @@ public class GmfPastCommand extends AbstractTransactionalCommand {
                 return BusinessFactory.eINSTANCE.createBusinessAssignment();
             }
 
-            // @Override
-            // public Object caseTalendItem(TalendItem object) {
-            // return BusinessFactory.eINSTANCE.create();
-            // }
+            @Override
+            public Object caseBidirectionalBusinessItemRelationship(BidirectionalBusinessItemRelationship object) {
+                return BusinessFactory.eINSTANCE.createBidirectionalBusinessItemRelationship();
+            }
+
+            @Override
+            public Object caseBusinessItemRelationship(BusinessItemRelationship object) {
+                return BusinessFactory.eINSTANCE.createBusinessItemRelationship();
+            }
+
+            @Override
+            public Object caseDirectionalBusinessItemRelationship(DirectionalBusinessItemRelationship object) {
+                return BusinessFactory.eINSTANCE.createDirectionalBusinessItemRelationship();
+            }
 
         }.doSwitch(object);
+    }
+
+    private void configNodesAndEdgesList(List<BusinessItem> businessItems) {
+        for (BusinessItem item : businessItems) {
+            if (item instanceof BusinessItemShape) {
+                nodes.add(item);
+            } else if (item instanceof BaseBusinessItemRelationship) {
+                edges.add(item);
+            }
+        }
+
+    }
+
+    public List<BusinessItem> getClonedSourceProcessItemsList() {
+        return this.clonedSourceProcessItemsList;
+    }
+
+    public void setClonedSourceProcessItemsList(List<BusinessItem> clonedSourceProcessItemsList) {
+        this.clonedSourceProcessItemsList = clonedSourceProcessItemsList;
     }
 
 }
