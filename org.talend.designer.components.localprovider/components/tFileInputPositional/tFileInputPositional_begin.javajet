@@ -38,7 +38,7 @@
                 "__TRIMSELECT__"
             );
             
-            String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
+            String pattern1 = ElementParameterParser.getValue(node, "__PATTERN__");
             
             boolean advanced = ("true").equals(ElementParameterParser.getValue(node, "__ADVANCED_OPTION__"));
             
@@ -82,7 +82,7 @@
     		
     		boolean useStar = false;
     		
-    		pattern=TalendTextUtils.removeQuotes(pattern);
+    		String pattern=TalendTextUtils.removeQuotes(pattern1);
     		String[] positions=(pattern.trim()).split(",");
     		for(int i=0;i<positions.length;i++){
             	if(("").equals(positions[i])){
@@ -385,9 +385,16 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
 				
 	///////////////
 	} else{
+		if(pattern1.startsWith("\"")){
+%>
+		String arrFieldSeparator<%=cid%>[] = "<%=positions[0] %>".split(",");
+<%
+		}else{
 	%>		
 		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");
-		
+<%
+		}
+%>
 		for (int i = 0; i < <%=metadata.getListColumns().size()%>; i++) {
 			if (i >= arrFieldSeparator<%=cid%>.length ){
 				columnValue<%=cid %>[i]="";
