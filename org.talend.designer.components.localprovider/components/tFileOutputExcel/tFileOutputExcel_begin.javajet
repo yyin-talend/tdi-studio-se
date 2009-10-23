@@ -16,6 +16,10 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
+
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String sheetname = ElementParameterParser.getValue(node, "__SHEETNAME__");
 boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
@@ -33,25 +37,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	List<IMetadataColumn> columns = metadata.getListColumns();
     	
 %>
-
 		int nb_line_<%=cid%> = 0;
+
+<%
+		if(!useStream){ // the part of the file path
+%>		
 		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
 		
-<%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
+<%
+			if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
+%>
 //create directory only if not exists		  
           java.io.File parentFile_<%=cid %> = file_<%=cid %>.getParentFile();
           if (parentFile_<%=cid %> != null && !parentFile_<%=cid %>.exists()) {
              parentFile_<%=cid %>.mkdirs();
           }
-<%}%>		
+<%
+			}
+		}
+%>		
 		
 		jxl.write.WritableWorkbook writeableWorkbook_<%=cid %> = null;
 		jxl.write.WritableSheet writableSheet_<%=cid %> = null;
 		
 		jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
         workbookSettings_<%= cid %>.setEncoding(<%=ElementParameterParser.getValue(node,"__ENCODING__") %>);
-        
-<%if(isAppendFile){%>  
+<%
+		if(useStream){ // the part of the output stream support
+%>
+		writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
+            		new java.io.BufferedOutputStream(<%=outStream %>), 
+            		true, workbookSettings_<%=cid %>);
+<%
+		}else{
+			if(isAppendFile){
+%>  
         if (file_<%=cid %>.exists()) {
         jxl.Workbook workbook_<%=cid %> = jxl.Workbook.getWorkbook(file_<%=cid %>);
         writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
@@ -65,19 +85,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             		true, 
             		workbookSettings_<%= cid %>);        
         }     
-<%} else {%>
+<%
+			} else {
+%>
 		writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
             		new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>)), 
             		true, 
             		workbookSettings_<%= cid %>);
-<%}%>       
+<%
+			}
+		}
+%>       
 
         writableSheet_<%=cid %> = writeableWorkbook_<%=cid %>.getSheet(<%=sheetname %>);
         if(writableSheet_<%=cid %> == null){
         	writableSheet_<%=cid %> = writeableWorkbook_<%=cid %>.createSheet(<%=sheetname %>, writeableWorkbook_<%=cid %>.getNumberOfSheets());
 		}
 		
-<%if(isAppendFile && !isAppendSheet){%>
+<%if(!useStream && isAppendFile && !isAppendSheet){%>
         else {
 
             String[] sheetNames_<%=cid %> = writeableWorkbook_<%=cid %>.getSheetNames();

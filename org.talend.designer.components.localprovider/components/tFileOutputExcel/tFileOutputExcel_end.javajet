@@ -13,7 +13,9 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
+
+	boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+
 	String filename = ElementParameterParser.getValue(node, "__FILENAME__");	
 	boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));	
 	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND_FILE__"));
@@ -65,7 +67,7 @@
 	writeableWorkbook_<%=cid %>.close();
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 	
-<%if(!isAppend && isDeleteEmptyFile){%>
+<%if(!useStream && !isAppend && isDeleteEmptyFile){%>
 	if(nb_line_<%=cid %> == 0){
 		new java.io.File(<%=filename %>).delete();
 	}		

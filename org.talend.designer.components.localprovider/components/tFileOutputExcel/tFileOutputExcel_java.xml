@@ -32,12 +32,21 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
+  
+	<PARAMETER NAME="USESTREAM" FIELD="CHECK" NUM_ROW="10">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER NAME="STREAMNAME" FIELD="TEXT" NUM_ROW="20" SHOW_IF="USESTREAM=='true'">
+		<DEFAULT>outputStream</DEFAULT>
+	</PARAMETER>
+		
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
       NUM_ROW="20"
       REQUIRED="true"
+      NOT_SHOW_IF="USESTREAM=='true'"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.xls"</DEFAULT>
     </PARAMETER>
@@ -62,6 +71,7 @@
       NAME="APPEND_FILE"
       FIELD="CHECK"
       NUM_ROW="45"
+      NOT_SHOW_IF="USESTREAM=='true'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -71,7 +81,7 @@
       FIELD="CHECK"
       REQUIRED="true"
       NUM_ROW="45"
-      SHOW_IF="APPEND_FILE == 'true'"
+      SHOW_IF="(APPEND_FILE == 'true') AND (USESTREAM=='false')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -147,6 +157,7 @@
       FIELD="CHECK"
       REQUIRED="true"
       NUM_ROW="40"
+      NOT_SHOW_IF="USESTREAM=='true'"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -174,7 +185,7 @@
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
     
-  	<PARAMETER NAME="DELETE_EMPTYFILE" FIELD="CHECK" REQUIRED="true" NUM_ROW="70" SHOW_IF="APPEND_FILE == 'false'">
+  	<PARAMETER NAME="DELETE_EMPTYFILE" FIELD="CHECK" REQUIRED="true" NUM_ROW="70" SHOW_IF="(APPEND_FILE == 'false') AND (USESTREAM=='false')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>    
   </ADVANCED_PARAMETERS>
