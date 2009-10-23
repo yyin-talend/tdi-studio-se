@@ -353,10 +353,18 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             ldapSchemaWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage3);
 
+            ldapSchemaWizardPage4 = new LDAPSchemaWizardPage(4, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
+            ldapSchemaWizardPage4.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 5 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
+            ldapSchemaWizardPage4.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
+            addPage(ldapSchemaWizardPage4);
+
             ldapSchemaWizardPage0.setPageComplete(true);
             ldapSchemaWizardPage1.setPageComplete(true);
             ldapSchemaWizardPage2.setPageComplete(true);
             ldapSchemaWizardPage3.setPageComplete(true);
+            ldapSchemaWizardPage4.setPageComplete(true);
         }
     }
 

@@ -17,11 +17,14 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
@@ -70,30 +73,36 @@ public class LDAPSchemaWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
         currentComposite = null;
-        EList tables = ((LDAPSchemaConnection) connectionItem.getConnection()).getTables();
-        if (tables.size() > 0) {
-            metadataTable = (MetadataTable) tables.get(0);
-
-        }
-        if (metadataTable == null) {
-            metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-        }
+        Connection connection = connectionItem.getConnection();
+        LDAPSchemaConnection ldapConnection = (LDAPSchemaConnection) connection;
+        EList tables = ldapConnection.getTables();
         switch (step) {
         case 1:
+            // add for bug 7914
+            if (tables.size() == 0) {
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                metadataTable.setId(factory.getNextId());
+                connection.getTables().add(metadataTable);
+            } else {
+                metadataTable = (MetadataTable) tables.get(0);
+            }
+
             currentComposite = new LDAPSchemaStep1Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((LDAPSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
+                    (ldapConnection), metadataTable.getLabel()), contextModeManager);
             break;
+
         case 2:
-            // metadataTable = (MetadataTable) tables.get(0);
+            metadataTable = (MetadataTable) tables.get(0);
             currentComposite = new LDAPSchemaStep2Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((LDAPSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
+                    (ldapConnection), metadataTable.getLabel()), contextModeManager);
             break;
         case 3:
-            // metadataTable = (MetadataTable) tables.get(0);
+            metadataTable = (MetadataTable) tables.get(0);
             currentComposite = new LDAPSchemaStep3Form(parent, connectionItem, contextModeManager);
             break;
         case 4:
-            // metadataTable = (MetadataTable) tables.get(0);
+            metadataTable = (MetadataTable) tables.get(0);
             currentComposite = new LDAPSchemaStep4Form(parent, connectionItem, contextModeManager);
             break;
         default:
