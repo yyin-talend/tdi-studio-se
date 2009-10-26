@@ -91,7 +91,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
         RepositoryNode dbConnectionNode = getCurrentRepositoryNode();
-
+        ISelection selection = getSelection();
         if (isToolbar()) {
             if (dbConnectionNode != null && dbConnectionNode.getContentType() != ERepositoryObjectType.METADATA_CONNECTIONS) {
                 dbConnectionNode = null;
@@ -99,6 +99,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
             if (dbConnectionNode == null) {
                 dbConnectionNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_CONNECTIONS);
             }
+            selection = null;
         }
         RepositoryNode metadataNode = dbConnectionNode.getParent();
         if (metadataNode != null) {
@@ -113,7 +114,6 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
         // Define the RepositoryNode, by default Metadata/DbConnection
         RepositoryNode node = dbConnectionNode;
-        ISelection selection = null;
         // When the userSelection is an element of metadataNode, use it !
         if (!isToolbar()) {
             Object userSelection = ((IStructuredSelection) getSelection()).getFirstElement();
@@ -126,7 +126,6 @@ public class CreateConnectionAction extends AbstractCreateAction {
                     break;
                 }
             }
-            selection = getSelection();
         }
         boolean creation = false;
         // Define the repositoryObject DatabaseConnection and his pathToSave
