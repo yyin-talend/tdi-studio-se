@@ -99,7 +99,6 @@ public class CreateConnectionAction extends AbstractCreateAction {
             if (dbConnectionNode == null) {
                 dbConnectionNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_CONNECTIONS);
             }
-            selection = null;
         }
         RepositoryNode metadataNode = dbConnectionNode.getParent();
         if (metadataNode != null) {
