@@ -600,6 +600,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
             exportChoiceMap.put(ExportChoice.needMetaInfo, true);
+            exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
             exportChoiceMap.put(ExportChoice.esbQueueMessageName, esbQueueMessageName.getText());
             exportChoiceMap.put(ExportChoice.esbServiceName, esbServiceName.getText());
             exportChoiceMap.put(ExportChoice.esbCategory, esbCategory.getText());
