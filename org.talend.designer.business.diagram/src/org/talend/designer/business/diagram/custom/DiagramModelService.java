@@ -36,6 +36,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.business.BusinessType;
+import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.designer.business.diagram.custom.actions.CreateDiagramAction;
 import org.talend.designer.business.diagram.custom.actions.DeleteAssignmentAction;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
@@ -206,5 +207,19 @@ public class DiagramModelService implements IDiagramModelService {
 
         DeleteAssignmentAction action = new DeleteAssignmentAction(selection);
         mgr.add(action);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.designer.business.diagram.custom.IDiagramModelService#updateProcessFromResource(org.talend.core.model
+     * .properties.BusinessProcessItem)
+     */
+    public void updateProcessFromResource(BusinessProcessItem processItem) {
+        DiagramResourceManager diagramResourceManager = new DiagramResourceManager(PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage(), new NullProgressMonitor());
+        IFile file = diagramResourceManager.createDiagramFile();
+        diagramResourceManager.updateFromResource(processItem, file);
     }
 }

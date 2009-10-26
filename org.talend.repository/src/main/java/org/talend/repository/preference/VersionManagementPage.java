@@ -66,6 +66,7 @@ import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -780,6 +781,10 @@ public class VersionManagementPage extends ProjectSettingPage {
                     if (!object.getOldVersion().equals(object.getNewVersion())) {
                         final Item item = object.getItem();
                         item.getProperty().setVersion(object.getNewVersion());
+                        if (item instanceof BusinessProcessItem) {
+                            CorePlugin.getDefault().getDiagramModelService()
+                                    .updateProcessFromResource((BusinessProcessItem) item);
+                        }
                         types.add(object.getRepositoryNode().getObjectType());
 
                         try {
