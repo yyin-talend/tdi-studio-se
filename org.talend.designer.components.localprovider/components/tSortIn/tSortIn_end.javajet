@@ -10,11 +10,13 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+	String origin = ElementParameterParser.getValue(node, "__ORIGIN__");	
+	boolean bIsExternalSort = "true".equals(ElementParameterParser.getValue(node, "__EXTERNAL__"));	
 %>
   }
   globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-
+  
+<%if(bIsExternalSort){%>
 }catch(Exception e){
   try{
     org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator fsi = (org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator)globalMap.get("<%=origin %>");
@@ -26,3 +28,4 @@
   }
   throw new TalendException(e, currentComponent, globalMap);
 }
+<%}%>
