@@ -1094,7 +1094,7 @@ public class ProcessComposite extends Composite {
      * DOC chuang Comment method "setConsoleFont".
      */
     private boolean setConsoleFont() {
-        IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
         String fontType = preferenceStore.getString(RunProcessPrefsConstants.CONSOLE_FONT);
         if (StringUtils.isNotEmpty(fontType)) {
             FontData fontData = new FontData(fontType);
