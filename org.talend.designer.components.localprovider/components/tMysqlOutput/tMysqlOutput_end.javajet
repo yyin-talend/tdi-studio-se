@@ -45,6 +45,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	if ("INSERT".equalsIgnoreCase(dataAction)) {
 		extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
+       
+        //to fixed: bug8842
+        if(cid.equals("talendLogs_DB")){
+        	extendedInsert = false;
+        }
+        		
 	}else {
 		extendedInsert = false;
 	}	
@@ -314,9 +320,11 @@ skeleton="../templates/db_output_bulk.skeleton"
     } else {
         %>
         if(pstmt_<%=cid %> != null) {
-
-            pstmt_<%=cid %>.close();
-            
+<%
+//to fixed: bug8842
+if(!cid.equals("talendLogs_DB")){%>
+        pstmt_<%=cid %>.close();
+<%}%>            
         }        
         <%
     }   

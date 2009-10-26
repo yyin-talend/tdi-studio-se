@@ -61,7 +61,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	
 	if ("INSERT".equalsIgnoreCase(dataAction)) {
-		extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
+		extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));	
+
+        //to fixed: bug8842
+        if(cid.equals("talendLogs_DB")){
+        	extendedInsert = false;
+        }
+		
 	}else {
 		extendedInsert = false;
 	}
@@ -231,7 +237,27 @@ if(columnList != null && columnList.size() > 0) {
 	        %>
 	        String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 	        <%@ include file="../templates/_hintInsert.javajet" %>
-	        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);	        
+
+                <%
+                //to fixed: bug8842
+                if(!cid.equals("talendLogs_DB")){%>
+                        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+                <%}%>
+                        
+                <%
+                //to fixed: bug8842
+                if(cid.equals("talendLogs_DB")){ %>
+                		java.sql.PreparedStatement pstmt_<%=cid %> = null;         
+                        // [%connection%][psmt]
+                        String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]";
+                		if(GlobalResource.resourceMap.get(keyPsmt_<%=cid %>)== null){
+                			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
+                			GlobalResource.resourceMap.put(keyPsmt_<%=cid %>, pstmt_<%=cid %>);
+                		}else{
+                			pstmt_<%=cid %> = (java.sql.PreparedStatement)GlobalResource.resourceMap.get(keyPsmt_<%=cid %>);				
+                		}
+                <%}%>
+	        	        
 	        <%
 	    } else {//extended-insert mode(begin)
 	            %>	            
