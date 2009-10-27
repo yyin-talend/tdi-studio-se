@@ -188,6 +188,7 @@
       	<ITEM NAME="INSERT" VALUE="INSERT" />
         <ITEM NAME="REPLACE" VALUE="REPLACE" />
         <ITEM NAME="UPDATE" VALUE="UPDATE" />
+        <ITEM NAME="IGNORE" VALUE="IGNORE" />
       </ITEMS>
     </PARAMETER>
     

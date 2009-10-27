@@ -180,13 +180,17 @@ if(("UPDATE").equals(dataAction)) {
     }
 } else {
     if(("REPLACE").equals(dataAction)) {
-        %>
+%>
         replace_<%=cid%> = "REPLACE";
-        <%
+<%
+    } else if (("IGNORE").equals(dataAction)) {
+%>
+        replace_<%=cid%> = "IGNORE";
+<%
     } else {
-        %>
+%>
         replace_<%=cid%> = "";
-        <%
+<%
     }
     %>
     java.sql.Statement stmt_<%=cid %>=conn_<%=cid %>.createStatement();
