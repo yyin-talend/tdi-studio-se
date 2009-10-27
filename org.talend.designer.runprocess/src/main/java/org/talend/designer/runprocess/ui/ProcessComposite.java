@@ -350,9 +350,6 @@ public class ProcessComposite extends Composite {
                     ToolItem item = (ToolItem) event.widget;
                     errorMessMap.clear();
                     if (item.getData().equals(ProcessView.DEBUG_ID)) {
-                        ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-                        ILaunch[] launches = manager.getLaunches();
-                        manager.removeLaunches(launches);
                         debug();
                     } else {
                         execButtonPressed();
@@ -1176,6 +1173,10 @@ public class ProcessComposite extends Composite {
 
         processContext.setSelectedContext(contextComposite.getSelectedContext());
         processContext.exec(getShell());
+
+        ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+        ILaunch[] launches = manager.getLaunches();
+        manager.removeLaunches(launches);
     }
 
     public void kill() {
