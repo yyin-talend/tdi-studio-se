@@ -912,10 +912,14 @@ public class SelectorTableForm extends AbstractForm {
         if (threadExecutor == null) {
             return;
         }
+
         if (!threadExecutor.isThreadRunning(tableItem)) {
             if (managerConnection.check(getIMetadataConnection(), true)) {
                 RetrieveColumnRunnable runnable = new RetrieveColumnRunnable(tableItem);
-                threadExecutor.execute(runnable);
+                // wzhang modified to fix bug 9066. if table exist, don't run thread.
+                if (!(isExistingNames(tableItem.getText(0)))) {
+                    threadExecutor.execute(runnable);
+                }
             }
         } else {
             RetrieveColumnRunnable runnable = threadExecutor.getRunnable(tableItem);
@@ -1020,6 +1024,27 @@ public class SelectorTableForm extends AbstractForm {
                 }
             }
         }
+    }
+
+    /**
+     * wzhang Comment method "isExistingNames".
+     */
+    private boolean isExistingNames(String name) {
+        if (name == null) {
+            return false;
+        }
+        String[] existedNames;
+        if (metadataTable != null) {
+            existedNames = TableHelper.getTableNames(getConnection(), metadataTable.getLabel());
+        } else {
+            existedNames = TableHelper.getTableNames(getConnection());
+        }
+        if (existedNames.length > 0) {
+            if (Arrays.asList(existedNames).contains(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
