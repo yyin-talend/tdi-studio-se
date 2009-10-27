@@ -31,4 +31,25 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
         String path = prefStore.getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
         return (path == null || path.length() == 0 ? null : new File(path));
     }
+
+    public void setUserComponentPath(String path) {
+        if (path == null) {
+            path = ""; //$NON-NLS-1$
+        }
+        IPreferenceStore prefStore = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
+        File userPath = new File(path.trim());
+        if (userPath.exists()) {
+            prefStore.setValue(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, path);
+        } else {
+            prefStore.setValue(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, ""); //$NON-NLS-1$
+        }
+    }
+
+    public String getUserComponentPath() {
+        File path = getExternalComponentsLocation();
+        if (path == null) {
+            return ""; //$NON-NLS-1$
+        }
+        return path.toString();
+    }
 }

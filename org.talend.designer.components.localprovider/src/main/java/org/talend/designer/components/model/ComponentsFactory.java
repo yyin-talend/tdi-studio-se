@@ -41,6 +41,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.AbstractComponentsProvider;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.ui.branding.IBrandingService;
@@ -156,7 +157,8 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void removeOldComponentsUserFolder() {
-        String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar + OLD_COMPONENTS_USER_INNER_FOLDER;
+        String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
+                + ComponentUtilities.getExtFolder(OLD_COMPONENTS_USER_INNER_FOLDER);
         File componentsLocation = getComponentsLocation(userPath);
         if (componentsLocation != null && componentsLocation.exists()) {
             FilesUtils.removeFolder(componentsLocation, true);
@@ -189,7 +191,8 @@ public class ComponentsFactory implements IComponentsFactory {
         if (pathSource != null) {
             Path userComponent = new Path(pathSource);
             Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
-                    + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar + OLD_COMPONENTS_USER_INNER_FOLDER);
+                    + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar
+                    + ComponentUtilities.getExtFolder(OLD_COMPONENTS_USER_INNER_FOLDER));
             if (userComponent.equals(templatePath)) {
                 this.userComponentList = new ArrayList<IComponent>();
             }
@@ -276,7 +279,7 @@ public class ComponentsFactory implements IComponentsFactory {
                             Path userComponent = new Path(pathSource);
                             Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
                                     + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar
-                                    + OLD_COMPONENTS_USER_INNER_FOLDER);
+                                    + ComponentUtilities.getExtFolder(OLD_COMPONENTS_USER_INNER_FOLDER));
                             if (userComponent.equals(templatePath)) {
                                 userComponentList.add(currentComp);
                             }
