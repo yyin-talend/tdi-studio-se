@@ -30,6 +30,7 @@
         default="true"
         class="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor"
         matchingStrategy="org.talend.designer.business.model.business.diagram.part.BusinessMatchingStrategy"
+        contributorClass="org.talend.designer.business.model.business.diagram.part.BusinessDiagramActionBarContributor"
         >
      </editor>
    </extension>
