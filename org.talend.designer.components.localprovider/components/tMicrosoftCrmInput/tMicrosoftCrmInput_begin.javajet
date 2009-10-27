@@ -186,7 +186,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     		propertyMap_<%=cid%>.put(tempProperty_<%=cid%>.getName(),propertyValue_<%=cid%>[j_<%=cid%>]);
                     	}else if("CrmDateTimeProperty".equals(propertyType_<%=cid%>)){
                     		com.microsoft.schemas.crm._2006.webservices.CrmDateTimeProperty tempProperty_<%=cid%> = (com.microsoft.schemas.crm._2006.webservices.CrmDateTimeProperty)propertyArray_<%=cid%>[j_<%=cid%>];
-							propertyValue_<%=cid%>[j_<%=cid%>] = tempProperty_<%=cid%>.getValue().getStringValue();
+							String tempDateString_<%=cid%> = tempProperty_<%=cid%>.getValue().getStringValue();
+							tempDateString_<%=cid%> = tempDateString_<%=cid%>.substring(0, tempDateString_<%=cid%>.lastIndexOf(":")) + tempDateString_<%=cid%>.substring(tempDateString_<%=cid%>.lastIndexOf(":") + 1);
+							propertyValue_<%=cid%>[j_<%=cid%>] = tempDateString_<%=cid%>;
 							propertyMap_<%=cid%>.put(tempProperty_<%=cid%>.getName(),propertyValue_<%=cid%>[j_<%=cid%>]);
                     	}else if("CrmDecimalProperty".equals(propertyType_<%=cid%>)){
                     		com.microsoft.schemas.crm._2006.webservices.CrmDecimalProperty tempProperty_<%=cid%> = (com.microsoft.schemas.crm._2006.webservices.CrmDecimalProperty)propertyArray_<%=cid%>[j_<%=cid%>];
