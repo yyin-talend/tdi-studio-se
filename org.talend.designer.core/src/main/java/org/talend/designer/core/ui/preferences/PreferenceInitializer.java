@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
@@ -123,14 +123,17 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
 
         if (!CommonsPlugin.isHeadless()) {
-            Display display = PlatformUI.getWorkbench().getDisplay();
+            Display display = Display.getCurrent();
+            if (display == null) {
+                display = Display.getDefault();
+            }
             if (display != null) {
                 display.syncExec(new Runnable() {
 
                     public void run() {
                         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
                         Font font = new Font(null, "courier", 10, SWT.NONE); //$NON-NLS-1$
-                        store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData()[0].toString());
+                        PreferenceConverter.setValue(store, TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData());
                     }
                 });
             }
