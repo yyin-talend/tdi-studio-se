@@ -237,7 +237,13 @@ public class PropertiesWizard extends Wizard {
 
     private void reloadProperty() throws PersistenceException {
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-        Property property = repositoryFactory.reload(object.getProperty());
+        if (object.getProperty() == null || object.getProperty().getItem() == null
+                || object.getProperty().getItem().getProperty() == null) {
+            return;
+        }
+        // for bug 7915
+        Property property = repositoryFactory.reload(object.getProperty().getItem().getProperty());
+        // Property property = repositoryFactory.reload(object.getProperty());
         object.setProperty(property);
     }
 
