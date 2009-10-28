@@ -23,7 +23,16 @@
 	<PARAMETERS>
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
 			NUM_ROW="10">
-			<TABLE READONLY="true">
+			<TABLE READONLY="true" IF="MD5=='true'">
+				<COLUMN NAME="abs_path" TYPE="id_String" LENGTH="255" />
+				<COLUMN NAME="dirname" TYPE="id_String" LENGTH="255" />
+				<COLUMN NAME="basename" TYPE="id_String" LENGTH="255" />
+				<COLUMN NAME="size" TYPE="id_Long" LENGTH="20" />
+				<COLUMN NAME="mtime" TYPE="id_Long" LENGTH="20" />
+				<COLUMN NAME="mtime_string" TYPE="id_String" LENGTH="20" />
+				<COLUMN NAME="md5" TYPE="id_String" LENGTH="32"/>
+			</TABLE>
+			<TABLE READONLY="true" IF="MD5=='false'">
 				<COLUMN NAME="abs_path" TYPE="id_String" LENGTH="255" />
 				<COLUMN NAME="dirname" TYPE="id_String" LENGTH="255" />
 				<COLUMN NAME="basename" TYPE="id_String" LENGTH="255" />
@@ -122,7 +131,10 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
        <DEFAULT>"ISO-8859-15"</DEFAULT>
-    </PARAMETER>     
+    </PARAMETER>
+    <PARAMETER NAME="MD5" FIELD="CHECK" REQUIRED="true" NUM_ROW="150">
+			<DEFAULT>false</DEFAULT>
+	</PARAMETER>
 	</PARAMETERS>
 	
 	<ADVANCED_PARAMETERS>
