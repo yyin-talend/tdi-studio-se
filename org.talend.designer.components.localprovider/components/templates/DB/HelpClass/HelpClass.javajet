@@ -29,6 +29,12 @@ imports="
 			return "";
 		}
 		
+		public void classForName(INode node){
+%>
+		java.lang.Class.forName("<%=this.getDirverClassName(node)%>");
+<%
+		}
+		
 		public void afterComponentProcess(INode node){
 	    }
 	}//end DefaultUtil class

@@ -45,7 +45,7 @@ imports="
 <%
 	}else {
 %>
-	java.lang.Class.forName("<%=connUtil.getDirverClassName(node)%>");
+		<%connUtil.classForName(node);%>
 <%
 		if ((dbuser != null && dbuser.trim().length() == 0) 
 			&& (dbpass != null && dbpass.trim().length() == 0)) {

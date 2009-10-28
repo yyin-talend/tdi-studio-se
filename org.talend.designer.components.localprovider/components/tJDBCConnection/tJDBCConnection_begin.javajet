@@ -26,7 +26,13 @@ imports="
 		
 		public String getDirverClassName(INode node){
 			String dirverClass = ElementParameterParser.getValue(node, "__DRIVER_CLASS__");
-			return dirverClass.substring(1,dirverClass.length()-1);
+			return dirverClass;
+		}
+		
+		public void classForName(INode node){
+%>
+		java.lang.Class.forName(<%=this.getDirverClassName(node)%>);
+<%
 		}
 		
 	}//end class
