@@ -31,7 +31,15 @@ imports="
 		
 		public void classForName(INode node){
 %>
-		java.lang.Class.forName("<%=this.getDirverClassName(node)%>");
+			java.lang.Class.forName("<%=this.getDirverClassName(node)%>");
+<%
+		}
+		
+		public void useShareConnection(INode node) {
+			String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+%>
+			String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
+			conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=this.getDirverClassName(node)%>",url_<%=cid%>,userName_<%=cid%> , password_<%=cid%> , sharedConnectionName_<%=cid%>);
 <%
 		}
 		

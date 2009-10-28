@@ -22,7 +22,6 @@ imports="
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
     
 	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
-	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
 	boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
 %>
 <%
@@ -40,8 +39,7 @@ imports="
 <%
 	if(isUseSharedConnection){
 %>
-	String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
-	conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=connUtil.getDirverClassName(node)%>",url_<%=cid%>,userName_<%=cid%> , password_<%=cid%> , sharedConnectionName_<%=cid%>);
+	<%connUtil.useShareConnection(node);%>
 <%
 	}else {
 %>
