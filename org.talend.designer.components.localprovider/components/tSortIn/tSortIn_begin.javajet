@@ -73,7 +73,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 }
 }else{
 %>
-try{
 java.util.Iterator<<%=rowName %>Struct> iterator_<%=cid %> = (java.util.Iterator<<%=rowName %>Struct>) globalMap.get("<%=origin %>");
 int nb_line_<%=cid %> = 0;
 <%=rowName %>Struct current_<%=cid %> = null;

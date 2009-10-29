@@ -33,17 +33,9 @@ globalMap.put("<%=destination %>",array_<%=cid %>);
 <%
 }else{
 %>
-  iterator_<%=cid %>.endPut();
+iterator_<%=cid %>.endPut();
 
-  globalMap.put("<%=destination %>", iterator_<%=cid %>);
-}catch(Exception e){
-  try{
-    iterator_<%=cid %>.deleteFileOnDie();
-  }catch(IOException ioe){
-    throw new TalendException(ioe, currentComponent, globalMap);
-  }
-  throw new TalendException(e, currentComponent, globalMap);
-}
+globalMap.put("<%=destination %>", iterator_<%=cid %>);
 <%
 }
 %>
