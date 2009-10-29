@@ -116,17 +116,7 @@
 	        </ITEM>
 	        
 	      </ITEMS>
-		</PARAMETER>
-		
-
-		<PARAMETER NAME="SKIP" FIELD="TEXT" NUM_ROW="70" SHOW_IF="USE_ITEMS=='true'" >
-			<DEFAULT>0</DEFAULT>
-		</PARAMETER>
-		
-		<PARAMETER NAME="MAXVALUE" FIELD="TEXT" NUM_ROW="70" SHOW_IF="USE_ITEMS=='true'" >
-			<DEFAULT>0</DEFAULT>
-		</PARAMETER>
-		
+		</PARAMETER>		
 		
 	</PARAMETERS>
 	
