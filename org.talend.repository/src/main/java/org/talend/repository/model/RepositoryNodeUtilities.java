@@ -524,6 +524,13 @@ public class RepositoryNodeUtilities {
      * 
      */
     public static RepositoryNode getParentRepositoryNodeFromSelection(IRepositoryObject object) {
+        if (object.getRepositoryNode() != null && object.getRepositoryNode().getParent() != null) {
+            return object.getRepositoryNode().getParent();
+        }
+
+        // "old" code bellow should never be called, unless the repository object is a new created and not from the
+        // repository.
+
         IRepositoryView viewPart = RepositoryView.show();
         ISelection repositoryViewSelection = viewPart.getViewer().getSelection();
 
