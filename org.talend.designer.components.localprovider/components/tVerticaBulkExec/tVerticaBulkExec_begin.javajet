@@ -25,6 +25,7 @@ String file = ElementParameterParser.getValue(node, "__REMOTE_FILENAME__");
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String db = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String user = ElementParameterParser.getValue(node, "__USER__");
 String pas = ElementParameterParser.getValue(node, "__PASS__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
@@ -35,13 +36,16 @@ boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = getColumnList(node);    
 %>
-String tableName_<%=cid%> = <%=table%>;
+String tableName_<%=cid%> = null;
+String dbschema_<%=cid %> = null;
 
 java.sql.Connection conn_<%=cid%> = null;
 	<%
 	if(useExistingConnection) {
     		String conn = "conn_" + ElementParameterParser.getValue(node,"__CONNECTION__");
+    		String existDbSchema = "dbschema_" + conn;
 	%>
+		dbschema_<%=cid%> = (String)globalMap.get("<%=existDbSchema%>");
 	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	 <%
 	 } else {
@@ -49,6 +53,7 @@ java.sql.Connection conn_<%=cid%> = null;
 		java.lang.Class.forName("com.vertica.Driver").newInstance();
 		String url_<%=cid %> = "jdbc:vertica://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;
 		conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+		dbschema_<%=cid%> = <%=dbschema%>;
 	<%
 	}
 	%>
@@ -62,6 +67,12 @@ Manager manager = null;
 if(columnList != null && columnList.size()>0) {
 	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
 %>
+	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+	    tableName_<%=cid%> = <%=table%>;
+	} else {
+	    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%>;
+	}
+	
 	<%@ include file="../templates/_tableAction.javajet"%>
 <%    
 }
