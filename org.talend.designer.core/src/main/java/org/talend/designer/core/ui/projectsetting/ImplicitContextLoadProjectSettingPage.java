@@ -107,9 +107,9 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
             }
             ProjectSettingManager.saveProject();
         }
-        if (parameters != null) {
-            ElementParameter2ParameterType.loadProjectsettingsParameters(parameters);
-        }
+        // if (parameters != null) {
+        // ElementParameter2ParameterType.loadProjectsettingsParameters(parameters);
+        // }
         return super.performOk();
     }
 

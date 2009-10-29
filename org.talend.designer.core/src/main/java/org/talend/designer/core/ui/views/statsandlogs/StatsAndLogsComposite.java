@@ -25,6 +25,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
@@ -85,7 +86,8 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
                     return;
                 }
                 // achen modify to fix 0005991& 0005993
-                onReloadPreference();
+                ProjectSettingManager.reloadStatsAndLogFromProjectSettings(elem,
+                        ProjectManager.getInstance().getCurrentProject(), StatsAndLogsComposite.this);
                 refresh();
             }
 
@@ -139,8 +141,16 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
     protected void onReloadPreference() {
         // StatsAndLogsViewHelper.reloadValuesFromPreferencePage(elem, StatsAndLogsComposite.this);
         // achen modify to fix 0005991
-        ProjectSettingManager.reloadStatsAndLogFromProjectSettings(elem, ProjectManager.getInstance().getCurrentProject(),
-                StatsAndLogsComposite.this);
+        // ProjectSettingManager.reloadStatsAndLogFromProjectSettings(elem,
+        // ProjectManager.getInstance().getCurrentProject(),
+        // StatsAndLogsComposite.this);
+        if (elem instanceof Process) {
+            Process process = (Process) elem;
+            LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process,
+                    EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), Boolean.TRUE);
+
+            process.getCommandStack().execute(command);
+        }
     }
 
     @Override

@@ -21,6 +21,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
+import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
@@ -81,7 +82,8 @@ public class ExtraComposite extends AbstractPreferenceComposite {
                     return;
                 }
                 // achen modify to fix 0005991& 0005993
-                onReloadPreference();
+                ProjectSettingManager.reloadImplicitValuesFromProjectSettings(elem, ProjectManager.getInstance()
+                        .getCurrentProject(), ExtraComposite.this);
                 refresh();
             }
         }
@@ -123,8 +125,16 @@ public class ExtraComposite extends AbstractPreferenceComposite {
     protected void onReloadPreference() {
         // ImplicitContextLoadHelper.reloadValuesFromPreferencePage(elem, ExtraComposite.this);
         // achen modify to fix 0005993
-        ProjectSettingManager.reloadImplicitValuesFromProjectSettings(elem, ProjectManager.getInstance().getCurrentProject(),
-                ExtraComposite.this);
+        // ProjectSettingManager.reloadImplicitValuesFromProjectSettings(elem,
+        // ProjectManager.getInstance().getCurrentProject(),
+        // ExtraComposite.this);
+        if (elem instanceof Process) {
+            Process process = (Process) elem;
+            LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process,
+                    EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), Boolean.TRUE);
+
+            process.getCommandStack().execute(command);
+        }
     }
 
     @Override

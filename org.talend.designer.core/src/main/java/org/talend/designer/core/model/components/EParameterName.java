@@ -247,10 +247,10 @@ public enum EParameterName {
     PARALLELIZE_NUMBER(Messages.getString("EParameterName.parallelizeNumber")), //$NON-NLS-1$
     PARALLELIZE_UNIT_SIZE(Messages.getString("EParameterName.parallelizeUnitSize")), //$NON-NLS-1$
 
-    // use project setting for process
+    // for process
     IMPLICITCONTEXT_USE_PROJECT_SETTINGS(Messages.getString("Extra.UseProjectSettings")), //$NON-NLS-1$
     STATANDLOG_USE_PROJECT_SETTINGS(Messages.getString("StatsAndLogs.UseProjectSettings")), //$NON-NLS-1$
-    // use project setting for project
+    // for project
     STATS_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.StatDefaultProjectsetting")), //$NON-NLS-1$
     IMPLICT_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.ImplictDefaultProjectsetting")), //$NON-NLS-1$
 

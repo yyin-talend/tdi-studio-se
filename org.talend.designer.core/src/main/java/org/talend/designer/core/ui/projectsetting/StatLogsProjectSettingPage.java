@@ -121,9 +121,9 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
                     ProjectSettingManager.saveProject();
                 }
                 monitorWrap.worked(20);
-                if (parameters != null) {
-                    ElementParameter2ParameterType.loadProjectsettingsParameters(parameters);
-                }
+                // if (parameters != null) {
+                // ElementParameter2ParameterType.loadProjectsettingsParameters(parameters);
+                // }
 
             }
 

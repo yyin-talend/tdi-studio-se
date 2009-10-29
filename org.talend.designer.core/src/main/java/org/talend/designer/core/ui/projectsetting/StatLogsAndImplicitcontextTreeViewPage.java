@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.projectsetting;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +31,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -49,8 +51,9 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.AbstractTalendEditor;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -83,10 +86,6 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     private List<RepositoryNode> checkedObjects = new ArrayList<RepositoryNode>();
 
-    private List<RepositoryNode> initcheckedObjects = new ArrayList<RepositoryNode>();
-
-    private List<RepositoryNode> inituncheckedObjects = new ArrayList<RepositoryNode>();
-
     private List<RepositoryNode> uncheckedObjects = new ArrayList<RepositoryNode>();
 
     // stats and log tree
@@ -95,10 +94,6 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
     private AllJobContentProvider statContentProvider;
 
     private List<RepositoryNode> statCheckedObjects = new ArrayList<RepositoryNode>();
-
-    private List<RepositoryNode> statInitcheckedObjects = new ArrayList<RepositoryNode>();
-
-    private List<RepositoryNode> statInituncheckedObjects = new ArrayList<RepositoryNode>();
 
     private List<RepositoryNode> statUncheckedObjects = new ArrayList<RepositoryNode>();
 
@@ -195,8 +190,6 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         });
 
         init();
-        initcheckedObjects.addAll(checkedObjects);
-        inituncheckedObjects.addAll(uncheckedObjects);
 
         viewer.setCheckedElements(checkedObjects.toArray());
         viewer.setExpandedElements(contentProvider.getContents());
@@ -281,8 +274,6 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         });
 
         initstat();
-        statInitcheckedObjects.addAll(statCheckedObjects);
-        statInituncheckedObjects.addAll(statUncheckedObjects);
 
         statViewer.setCheckedElements(statCheckedObjects.toArray());
         statViewer.setExpandedElements(statContentProvider.getContents());
@@ -435,76 +426,57 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         return super.performOk();
     }
 
-    private void saveProcess(RepositoryNode node, Boolean value, IProgressMonitor monitor) {
+    private void saveProcess(RepositoryNode node, String paramName, Boolean isUseProjectSettings, IProgressMonitor monitor) {
         Property property = node.getObject().getProperty();
         ProcessItem pItem = (ProcessItem) property.getItem();
         ParametersType pType = pItem.getProcess().getParameters();
 
         if (isOpenProcess(node)) {
-            org.talend.designer.core.ui.editor.process.Process process = getProcess(opendProcess, node);
-            // PropertyChangeCommand cmd = new PropertyChangeCommand(process,
-            // EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS
-            // .getName(), value);
-            // exeCommand(cmd);
-            ElementParameter2ParameterType.setParameterValue(process, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS
-                    .getName(), value);
+            Process process = getProcess(opendProcess, node);
+
+            ElementParameter2ParameterType.setParameterValue(process, paramName, isUseProjectSettings);
+            if (isUseProjectSettings) {
+                LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
+                exeCommand(process, command);
+            }
+            monitor.worked(100);
+        } else {
+
+            ElementParameter2ParameterType.setParameterValue(pType, paramName, isUseProjectSettings);
+            if (isUseProjectSettings) {
+                try {
+                    Process process = (Process) CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(pItem);
+                    LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
+                    exeCommand(process, command);
+                    ProcessType processType = process.saveXmlFile();
+                    pItem.setProcess(processType);
+                    factory.save(pItem);
+                    monitor.worked(100);
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                } catch (IOException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
         }
-        ElementParameter2ParameterType.setParameterValue(pType, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(),
-                value);
-        try {
-            factory.save(pItem);
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        }
-        monitor.worked(100);
+
     }
 
-    private void saveProcessStat(RepositoryNode node, Boolean value, IProgressMonitor monitor) {
-        Property property = node.getObject().getProperty();
-        ProcessItem pItem = (ProcessItem) property.getItem();
-        ParametersType pType = pItem.getProcess().getParameters();
-
-        if (isOpenProcess(node)) {
-            org.talend.designer.core.ui.editor.process.Process process = getProcess(opendProcess, node);
-            // PropertyChangeCommand cmd1 = new PropertyChangeCommand(process,
-            // EParameterName.STATANDLOG_USE_PROJECT_SETTINGS
-            // .getName(), value);
-            // exeCommand(cmd1);
-            ElementParameter2ParameterType.setParameterValue(process, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
-                    value);
+    private void saveChangedNode(String paramName, IProgressMonitor monitor) {
+        List<RepositoryNode> checked = new ArrayList<RepositoryNode>();
+        List<RepositoryNode> unChecked = new ArrayList<RepositoryNode>();
+        if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+            checked = checkedObjects;
+            unChecked = uncheckedObjects;
+        } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+            checked = statCheckedObjects;
+            unChecked = statUncheckedObjects;
         }
-        ElementParameter2ParameterType.setParameterValue(pType, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), value);
-        try {
-            factory.save(pItem);
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
+        for (RepositoryNode node : checked) {
+            saveProcess(node, paramName, Boolean.TRUE, monitor);
         }
-        monitor.worked(100);
-    }
-
-    private void saveChangedNode(IProgressMonitor monitor) {
-        for (RepositoryNode node : initcheckedObjects) {
-            if (uncheckedObjects.contains(node)) {
-                saveProcess(node, Boolean.FALSE, monitor);
-            }
-        }
-        for (RepositoryNode node : inituncheckedObjects) {
-            if (checkedObjects.contains(node)) {
-                saveProcess(node, Boolean.TRUE, monitor);
-            }
-        }
-    }
-
-    private void saveChangedNodeStat(IProgressMonitor monitor) {
-        for (RepositoryNode node : statInitcheckedObjects) {
-            if (statUncheckedObjects.contains(node)) {
-                saveProcessStat(node, Boolean.FALSE, monitor);
-            }
-        }
-        for (RepositoryNode node : statInituncheckedObjects) {
-            if (statCheckedObjects.contains(node)) {
-                saveProcessStat(node, Boolean.TRUE, monitor);
-            }
+        for (RepositoryNode node : unChecked) {
+            saveProcess(node, paramName, Boolean.FALSE, monitor);
         }
     }
 
@@ -512,14 +484,17 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         if (viewer == null) {
             return;
         }
+
         final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor
                         .beginTask(
                                 Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (checkedObjects.size() + statCheckedObjects.size()) * 100); //$NON-NLS-1$                
-                saveChangedNode(monitor);
-                saveChangedNodeStat(monitor);
+
+                saveChangedNode(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), monitor);
+                saveChangedNode(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), monitor);
+
                 monitor.done();
             }
         };
@@ -544,19 +519,20 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         return null;
     }
 
-    private void exeCommand(Command... cmd) {
-        if (editors == null)
-            return;
-        for (IEditorReference activeEditor : editors) {
-            if (activeEditor != null) {
-                IEditorPart editp = activeEditor.getEditor(false);
-                if (editp instanceof AbstractMultiPageTalendEditor) {
-                    AbstractTalendEditor workbenchPart = ((AbstractMultiPageTalendEditor) editp).getTalendEditor();
-                    for (Command c : cmd) {
-                        workbenchPart.getCommandStack().execute(c);
-                    }
+    private void exeCommand(final Process process, final Command cmd) {
+        Display display = Display.getCurrent();
+        if (display == null) {
+            display = Display.getDefault();
+        }
+        if (display != null) {
+            display.asyncExec(new Runnable() {
+
+                public void run() {
+                    process.getCommandStack().execute(cmd);
                 }
-            }
+            });
+        } else {
+            cmd.execute();
         }
     }
 

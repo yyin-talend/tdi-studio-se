@@ -81,15 +81,12 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
-import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
-import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
@@ -984,9 +981,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             process = (Process) elem;
         }
         // added by achen fix 0005991 & 0005993
-        if (elem instanceof StatsAndLogsElement || elem instanceof ImplicitContextLoadElement) {
-            process = ActiveProcessTracker.getCurrentProcess();
-        }
+        // if (elem instanceof StatsAndLogsElement || elem instanceof ImplicitContextLoadElement) {
+        // process = ActiveProcessTracker.getCurrentProcess();
+        // }
         // end
         if (process != null) {
             part = process.getEditor();
