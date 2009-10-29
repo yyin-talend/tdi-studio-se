@@ -76,7 +76,7 @@ imports="
     		}
     		entry_<%=cid%>.put(attr_<%=cid%>);
     	}else{
-    		entry_<%=cid%>.put("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
+    		entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
     	}
     }
 <%
