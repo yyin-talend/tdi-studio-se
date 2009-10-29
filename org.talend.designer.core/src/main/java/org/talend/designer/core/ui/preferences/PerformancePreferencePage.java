@@ -151,7 +151,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
 
         addField(dbConnTimeoutActive);
         addField(dbConnTimeout);
-        if (false) { // disable it. will check it later
+        if (true) { // disable it. will check it later
             CheckBoxFieldEditor itemIndex = new CheckBoxFieldEditor(ITalendCorePrefConstants.ITEM_INDEX, Messages
                     .getString("PerformancePreferencePage.itemsRelationsCheckbox"), getFieldEditorParent()); //$NON-NLS-1$
 
@@ -162,8 +162,17 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                     Button sourceCheckBox = ((Button) e.getSource());
                     if (sourceCheckBox.getSelection()) {
                         // need to update to ask question about use or not
-                        if (!RelationshipItemBuilder.getInstance().isAlreadyBuilt(
-                                ProjectManager.getInstance().getCurrentProject())) {
+                        boolean needBuild = false;
+                        needBuild = !RelationshipItemBuilder.getInstance().isAlreadyBuilt(
+                                ProjectManager.getInstance().getCurrentProject());
+                        if (!needBuild) {
+                            if (MessageDialog.openQuestion(sourceCheckBox.getShell(), Messages
+                                    .getString("PerformancePreferencePage.itemsRelationDialogTitle"), //$NON-NLS-1$
+                                    "Do you want to force to rebuild all the relations in the project ?")) {
+                                needBuild = true;
+                            }
+                        }
+                        if (needBuild) {
                             if (MessageDialog.openQuestion(sourceCheckBox.getShell(), Messages
                                     .getString("PerformancePreferencePage.itemsRelationDialogTitle"), //$NON-NLS-1$
                                     Messages.getString("PerformancePreferencePage.itemsRelationDialogMessage"))) { //$NON-NLS-1$

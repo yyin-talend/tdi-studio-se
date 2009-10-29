@@ -49,6 +49,7 @@ import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.branding.IBrandingService;
@@ -679,5 +680,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             }
         }
         return null;
+    }
+
+    public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete) throws PersistenceException {
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET) {
+            RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
+            if (builder.isAlreadyBuilt(project)) {
+                builder.removeItemRelations(objToDelete.getProperty().getItem());
+            }
+        }
     }
 }
