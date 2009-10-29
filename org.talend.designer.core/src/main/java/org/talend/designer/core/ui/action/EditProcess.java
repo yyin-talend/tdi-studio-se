@@ -64,6 +64,8 @@ public class EditProcess extends AContextualAction implements IIntroAction {
 
     private static final String OPEN_LABEL = Messages.getString("EditProcess.openJob"); //$NON-NLS-1$
 
+    private static final String DBPROJECT_LABEL = "teneo";
+
     private Properties params;
 
     public EditProcess() {
@@ -111,7 +113,16 @@ public class EditProcess extends AContextualAction implements IIntroAction {
         }
         // update the property of the node repository object
         node.getObject().setProperty(updatedProperty);
-        processItem = (ProcessItem) updatedProperty.getItem();
+        // added by nma, to avoid lazy exceptions, order 9556.
+        if (ProjectManager.getInstance().getCurrentProject().getEmfProject().getUrl() != null
+                && ProjectManager.getInstance().getCurrentProject().getEmfProject().getUrl().startsWith(DBPROJECT_LABEL)) {
+            try {
+                processItem = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(updatedProperty).getItem();
+            } catch (PersistenceException e1) {
+                e1.printStackTrace();
+            }
+        } else
+            processItem = (ProcessItem) updatedProperty.getItem();
 
         IWorkbenchPage page = getActivePage();
 
