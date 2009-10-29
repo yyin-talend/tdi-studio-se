@@ -70,7 +70,7 @@ imports="
 %>
 	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
     	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(<%=separatorText%>)>0){
-    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getLabel()%>");
+    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getOriginalDbColumnName()%>");
     		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(<%=separator%>)){
     			attr_<%=cid%>.add(value_<%=cid%>);    		
     		}
