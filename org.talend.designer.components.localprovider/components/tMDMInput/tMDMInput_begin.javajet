@@ -46,16 +46,16 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	
 	String spellThrehold = ElementParameterParser.getValue(node, "__SPELLTHREHOLD__");
 	String skip = ElementParameterParser.getValue(node, "__SKIP__");
-	String maxValue = ElementParameterParser.getValue(node, "__MAXVALUE__");
+	String bufferSize = ElementParameterParser.getValue(node, "__FETCHSIZE__");
+	String limit = ElementParameterParser.getValue(node, "__MAXVALUE__");
 	if(spellThrehold==null || ("").equals(spellThrehold)){
 		spellThrehold = "0";
 	}
 	if(skip==null || ("").equals(skip)){
 		skip = "0";
 	}
-	
-	if(maxValue==null || ("").equals(maxValue)){
-		maxValue = "0";
+	if(limit==null || ("").equals(limit)){
+		limit = "0";
 	}
 %>       
 int nb_line_<%=cid %> = 0;
@@ -117,14 +117,33 @@ org.talend.mdm.webservice.WSWhereItem wsItem_<%=cid %> = null;
 if(conditions_<%=cid %>.size() > 0){
 	wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(null,conditions_<%=cid %>.toArray(new org.talend.mdm.webservice.WSWhereItem[conditions_<%=cid %>.size()]),null);
 }
-org.talend.mdm.webservice.WSGetItems getitems_<%=cid %>=new org.talend.mdm.webservice.WSGetItems(dataCluster_<%=cid %>, <%=concept %>, wsItem_<%=cid %>,
-				    <%=spellThrehold %>,		//spell Threshold
-					<%=skip %>,		//start
-					<%=(("0").equals(maxValue)? "Integer.MAX_VALUE":maxValue)%>);
-String[] items_<%=cid %> = xtentisWS_<%=cid %>.getItems(getitems_<%=cid %>);
-for(String item_<%=cid %> : items_<%=cid %>){
-	nb_line_<%=cid %> ++;
-	<%=outgoingConn.getName() %>.<%=xmlField %> = item_<%=cid %>;	
+org.talend.mdm.webservice.WSString wsCount_<%=cid %> = xtentisWS_<%=cid %>.count(new org.talend.mdm.webservice.WSCount());
+int wsNum_<%=cid %> = Integer.parseInt(wsCount_<%=cid %>.getValue());
+int limit_<%=cid %> = <%=limit %>;
+if(limit_<%=cid %> > 0 && wsNum_<%=cid %> > limit_<%=cid %>){
+	wsNum_<%=cid %> = limit_<%=cid %>;
+}
+
+org.talend.mdm.webservice.WSGetItems getitems_<%=cid %>=null;
+int loop_<%=cid %> = (int)(wsNum_<%=cid %>+<%=bufferSize%>-1)/<%=bufferSize%>;
+
+for(int i_<%=cid %>=0;i_<%=cid %> <loop_<%=cid %>; i_<%=cid %>++){
+	
+	if(i_<%=cid %> !=loop_<%=cid %>-1){
+		getitems_<%=cid %>=new org.talend.mdm.webservice.WSGetItems(dataCluster_<%=cid %>, <%=concept %>, wsItem_<%=cid %>,
+				    	<%=spellThrehold %>,  //spell Threshold
+						<%=skip%> + i_<%=cid %> * <%=bufferSize %>,		//start
+						<%=bufferSize %>);
+	}else{
+		getitems_<%=cid %>=new org.talend.mdm.webservice.WSGetItems(dataCluster_<%=cid %>, <%=concept %>, wsItem_<%=cid %>,
+				    	<%=spellThrehold %>,  //spell Threshold
+						<%=skip%> + i_<%=cid %> * <%=bufferSize %>,		//start
+						wsNum_<%=cid %> - i_<%=cid %> * <%=bufferSize %>);
+	}
+	String[] items_<%=cid %> = xtentisWS_<%=cid %>.getItems(getitems_<%=cid %>);
+	for(String item_<%=cid %> : items_<%=cid %>){
+		nb_line_<%=cid %> ++;
+		<%=outgoingConn.getName() %>.<%=xmlField %> = item_<%=cid %>;	
 <%
 }
 %>

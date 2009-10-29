@@ -30,7 +30,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 				boolean useWhere = ("true").equals(ElementParameterParser.getValue(node, "__USE_ITEMS__"));
-				if(useWhere){%> } <%}%>
+				if(useWhere){
+%>
+	}
+} 
+<%
+				}
+%>
 
 stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
  	
