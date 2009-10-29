@@ -89,6 +89,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.GuessSchemaUtil;
+import org.talend.repository.utils.DatabaseConnectionParameterUtil;
 
 /**
  * @author ocarbone
@@ -446,9 +447,10 @@ public class DatabaseTableForm extends AbstractForm {
         tableEditorView.setShowDbTypeColumn(true, true, false);
         tableEditorView.setShowDbColumnName(true, false);
         final DatabaseConnection databaseConnection = (DatabaseConnection) connectionItem.getConnection();
-        tableEditorView.setCurrentDbms(databaseConnection.getDbmsId());
+        String trueDbmsID = DatabaseConnectionParameterUtil.getTrueParamValue(databaseConnection, databaseConnection.getDbmsId());// hywang
+        // 9846
+        tableEditorView.setCurrentDbms(trueDbmsID);
         tableEditorView.initGraphicComponents();
-
         metadataEditor.setDefaultLabel(Messages.getString("DatabaseTableForm.metadataDefaultNewLabel")); //$NON-NLS-1$
         addUtilsButtonListeners();
     }
