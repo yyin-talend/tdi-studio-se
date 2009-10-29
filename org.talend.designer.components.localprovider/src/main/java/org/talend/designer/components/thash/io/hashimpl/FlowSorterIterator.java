@@ -22,11 +22,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Random;
 
 import org.talend.designer.components.thash.io.IMapHashFile;
 import org.talend.designer.components.thash.io.beans.ILightSerializable;
@@ -265,90 +263,89 @@ public class FlowSorterIterator<V extends ILightSerializable> implements IMapHas
      * @throws IOException
      * @throws ClassNotFoundException
      */
-//    public static void main(String[] args) throws IOException, ClassNotFoundException {
-//        ExternalSortIterator esort = new ExternalSortIterator();
-//
-//        NumberFormat numberFormat = NumberFormat.getInstance();
-//
-//        // int nbItems = 60000000;
-//        // int bufferSize = 2000000;
-//        // int nbItems = 60000000;
-//        // int bufferSize = 4000000;
-//        // int nbItems = 60000000;
-//        // int bufferSize = 10000000;
-//        // int nbItems = 10000000;
-//        // int bufferSize = 1000000;
-//        // int nbItems = 1000000;
-//        // int bufferSize = 100000;
-//        // int nbItems = 20;
-//        // int bufferSize = 2;
-//        int nbItems = 100;
-//        int bufferSize = 20;
-//
-//        Random rand = new Random(System.currentTimeMillis());
-//
-//        long start = System.currentTimeMillis();
-//
-//        Data[] arrayData = new Data[bufferSize];
-//
-//        int nbItemsProcessed = 0;
-//
-//        for (int i = 0; nbItemsProcessed < nbItems; i++) {
-//            int v = rand.nextInt(nbItems);
-//
-//            arrayData[i] = new Data("test" + v, v, 0);
-//
-//            if (i == bufferSize - 1) {
-//
-//                // esort.writeBuffer(arrayData);
-//                esort.writeBuffer(arrayData);
-//
-//                long time1 = System.currentTimeMillis();
-//
-//                Arrays.fill(arrayData, null);
-//
-//                long time2 = System.currentTimeMillis();
-//                long deltaTimeNull = (time2 - time1);
-//                System.out.println(deltaTimeNull + " milliseconds for " + bufferSize
-//                        + " objects to set buffer as null. ");
-//
-//                nbItemsProcessed += i + 1;
-//                System.out.println(numberFormat.format(nbItemsProcessed) + " / " + numberFormat.format(nbItems)
-//                        + " processed.");
-//                i = -1;
-//            }
-//
-//        }
-//        System.out.println("Final process : merging file...");
-//        long time1 = System.currentTimeMillis();
-//
-//        // esort.sort();
-//        // esort.mergeFiles();
-//        // esort.mergeFiles2();
-//        // esort.eMergeFiles2();
-//
-//        for (; esort.hasNext();) {
-//            System.out.println(esort.next());
-//            ;
-//        }
-//
-//        long time2 = System.currentTimeMillis();
-//        long deltaTimeMerge = (time2 - time1);
-//        int itemsPerSecMerge = (int) ((float) nbItems / (float) deltaTimeMerge * 1000f);
-//        System.out.println(deltaTimeMerge + " milliseconds for " + nbItems + " ordered objects to merge. "
-//                + itemsPerSecMerge + "  items/s ");
-//
-//        long end = System.currentTimeMillis();
-//
-//        long deltaTime = (end - start);
-//
-//        int itemsPerSec = (int) ((float) nbItems / (float) deltaTime * 1000f);
-//
-//        System.out.println(deltaTime + " milliseconds for " + nbItems + " objects all sort process. " + itemsPerSec
-//                + "  items/s ");
-//
-//    }
-
+    // public static void main(String[] args) throws IOException, ClassNotFoundException {
+    // ExternalSortIterator esort = new ExternalSortIterator();
+    //
+    // NumberFormat numberFormat = NumberFormat.getInstance();
+    //
+    // // int nbItems = 60000000;
+    // // int bufferSize = 2000000;
+    // // int nbItems = 60000000;
+    // // int bufferSize = 4000000;
+    // // int nbItems = 60000000;
+    // // int bufferSize = 10000000;
+    // // int nbItems = 10000000;
+    // // int bufferSize = 1000000;
+    // // int nbItems = 1000000;
+    // // int bufferSize = 100000;
+    // // int nbItems = 20;
+    // // int bufferSize = 2;
+    // int nbItems = 100;
+    // int bufferSize = 20;
+    //
+    // Random rand = new Random(System.currentTimeMillis());
+    //
+    // long start = System.currentTimeMillis();
+    //
+    // Data[] arrayData = new Data[bufferSize];
+    //
+    // int nbItemsProcessed = 0;
+    //
+    // for (int i = 0; nbItemsProcessed < nbItems; i++) {
+    // int v = rand.nextInt(nbItems);
+    //
+    // arrayData[i] = new Data("test" + v, v, 0);
+    //
+    // if (i == bufferSize - 1) {
+    //
+    // // esort.writeBuffer(arrayData);
+    // esort.writeBuffer(arrayData);
+    //
+    // long time1 = System.currentTimeMillis();
+    //
+    // Arrays.fill(arrayData, null);
+    //
+    // long time2 = System.currentTimeMillis();
+    // long deltaTimeNull = (time2 - time1);
+    // System.out.println(deltaTimeNull + " milliseconds for " + bufferSize
+    // + " objects to set buffer as null. ");
+    //
+    // nbItemsProcessed += i + 1;
+    // System.out.println(numberFormat.format(nbItemsProcessed) + " / " + numberFormat.format(nbItems)
+    // + " processed.");
+    // i = -1;
+    // }
+    //
+    // }
+    // System.out.println("Final process : merging file...");
+    // long time1 = System.currentTimeMillis();
+    //
+    // // esort.sort();
+    // // esort.mergeFiles();
+    // // esort.mergeFiles2();
+    // // esort.eMergeFiles2();
+    //
+    // for (; esort.hasNext();) {
+    // System.out.println(esort.next());
+    // ;
+    // }
+    //
+    // long time2 = System.currentTimeMillis();
+    // long deltaTimeMerge = (time2 - time1);
+    // int itemsPerSecMerge = (int) ((float) nbItems / (float) deltaTimeMerge * 1000f);
+    // System.out.println(deltaTimeMerge + " milliseconds for " + nbItems + " ordered objects to merge. "
+    // + itemsPerSecMerge + "  items/s ");
+    //
+    // long end = System.currentTimeMillis();
+    //
+    // long deltaTime = (end - start);
+    //
+    // int itemsPerSec = (int) ((float) nbItems / (float) deltaTime * 1000f);
+    //
+    // System.out.println(deltaTime + " milliseconds for " + nbItems + " objects all sort process. " + itemsPerSec
+    // + "  items/s ");
+    //
+    // }
     public boolean hasNext() {
         return someFileStillHasRows;
     }
@@ -490,11 +487,14 @@ public class FlowSorterIterator<V extends ILightSerializable> implements IMapHas
     }
 
     /**
-     * DOC amaumont Comment method "deleteFileOnDie".
+     * DOC wyang Comment method "deleteFileOnDie".
      * 
      * @throws IOException
      */
-    public void deleteFileOnDie() throws IOException {
+    public void deleteFileOnError() throws IOException {
+        for (int i = 0; i < diss.size(); i++) {
+            diss.get(i).close();
+        }
 
         if (files != null && files.size() > 0) {
             for (File file : files) {
