@@ -117,7 +117,8 @@ org.talend.mdm.webservice.WSWhereItem wsItem_<%=cid %> = null;
 if(conditions_<%=cid %>.size() > 0){
 	wsItem_<%=cid %> =new org.talend.mdm.webservice.WSWhereItem(null,conditions_<%=cid %>.toArray(new org.talend.mdm.webservice.WSWhereItem[conditions_<%=cid %>.size()]),null);
 }
-org.talend.mdm.webservice.WSString wsCount_<%=cid %> = xtentisWS_<%=cid %>.count(new org.talend.mdm.webservice.WSCount());
+org.talend.mdm.webservice.WSString wsCount_<%=cid %> = xtentisWS_<%=cid %>.count(
+		new org.talend.mdm.webservice.WSCount(dataCluster_<%=cid %>,"/"+<%=concept %>,wsItem_<%=cid %>,<%=spellThrehold %>));
 int wsNum_<%=cid %> = Integer.parseInt(wsCount_<%=cid %>.getValue());
 int limit_<%=cid %> = <%=limit %>;
 if(limit_<%=cid %> > 0 && wsNum_<%=cid %> > limit_<%=cid %>){
