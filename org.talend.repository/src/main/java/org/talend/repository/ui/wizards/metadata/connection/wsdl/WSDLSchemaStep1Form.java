@@ -127,6 +127,10 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
 
     private Label passwordProLabel;
 
+    private Text timeOut;
+
+    private Label timeOutLabel;
+
     SWTUIThreadProcessor processor = new PreviewProcessor();
 
     private static Logger log = Logger.getLogger(WSDLSchemaStep1Form.class);
@@ -203,6 +207,8 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
         }
         BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.MethodName"), 1); //$NON-NLS-1$
         methodText = BaseWidgetUtils.createText(groupComposite, "", 3); //$NON-NLS-1$
+        timeOutLabel = BaseWidgetUtils.createLabel(groupComposite, "TimeOut", 1); //$NON-NLS-1$
+        timeOut = BaseWidgetUtils.createText(groupComposite, "20", 1); //$NON-NLS-1$
         BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.Parameters"), 4); //$NON-NLS-1$
         valueTableViewer = new TableViewer(groupComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         TableViewerContentProvider provider = new TableViewerContentProvider();
@@ -439,6 +445,25 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             }
 
         });
+        timeOut.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    if (timeOut.getText() != null && !"".equals(timeOut.getText()) && !"0".equals(timeOut)) {
+                        try {
+                            int timeInt = Integer.valueOf(timeOut.getText());
+                            getConnection().setTimeOut(timeInt);
+                        } catch (Exception e1) {
+                            getConnection().setTimeOut(20);
+                        }
+                    } else {
+                        getConnection().setTimeOut(20);
+                    }
+                }
+            }
+
+        });
     }
 
     private void addPerlFieldsListeners() {
@@ -608,6 +633,8 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             this.proxyUser.setText(proxyUser == null ? "" : proxyUser); //$NON-NLS-1$
             String proxyPass = getConnection().getProxyPassword();
             this.proxyPassword.setText(proxyPass == null ? "" : proxyPass); //$NON-NLS-1$
+            int timeOut = getConnection().getTimeOut();
+            this.timeOut.setText(timeOut == 0 ? "20" : Integer.valueOf(timeOut).toString()); //$NON-NLS-1$
 
             setUseProxyEnable(useproxy);
         } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {

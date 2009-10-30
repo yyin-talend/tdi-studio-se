@@ -44,8 +44,8 @@ public class WSDLSchemaInputNode extends FileInputNode {
      * @param schemaBean
      * @param string
      */
-    public WSDLSchemaInputNode(String fileName, String encoding, List<IMetadataTable> metadatas,
-            WSDLSchemaBean schemaBean, ArrayList parameters) {
+    public WSDLSchemaInputNode(String fileName, String encoding, List<IMetadataTable> metadatas, WSDLSchemaBean schemaBean,
+            ArrayList parameters) {
         super("tWebServiceInput"); //$NON-NLS-1$
         this.encoding = encoding;
         addParameters(schemaBean, parameters);
@@ -67,9 +67,9 @@ public class WSDLSchemaInputNode extends FileInputNode {
             addPerlParameters(schemaBean);
         }
         param = new TextElementParameter("METHOD", schemaBean.getMethod()); //$NON-NLS-1$
-        addParameter(param);        
-        
-     // fix preview
+        addParameter(param);
+
+        // fix preview
         param = new TextElementParameter("ADVANCED_USE", Boolean.toString(false)); //$NON-NLS-1$
         addParameter(param);
 
@@ -108,6 +108,9 @@ public class WSDLSchemaInputNode extends FileInputNode {
         addParameter(param);
 
         param = new TextElementParameter("PROXY_PASSWORD", schemaBean.getProxyPassword()); //$NON-NLS-1$
+        addParameter(param);
+
+        param = new TextElementParameter("TIMEOUT", "" + schemaBean.getTimeOut()); //$NON-NLS-1$
         addParameter(param);
     }
 

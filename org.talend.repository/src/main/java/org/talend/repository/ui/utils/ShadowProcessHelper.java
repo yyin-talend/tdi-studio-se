@@ -504,6 +504,7 @@ public class ShadowProcessHelper {
         bean.setProxyPort(TalendTextUtils.addQuotes(connection.getProxyPort()));
         bean.setProxyUser(TalendTextUtils.addQuotes(connection.getProxyUser()));
         bean.setProxyPassword(TalendTextUtils.addQuotes(connection.getProxyPassword()));
+        bean.setTimeOut(connection.getTimeOut());
         processDescription.setWsdlSchemaBean(bean);
         if (connection.getEncoding() != null && !connection.getEncoding().equals("")) { //$NON-NLS-1$
             processDescription.setEncoding(connection.getEncoding());
