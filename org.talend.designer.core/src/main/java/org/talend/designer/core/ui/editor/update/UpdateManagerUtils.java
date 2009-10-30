@@ -362,6 +362,9 @@ public final class UpdateManagerUtils {
             case CONTEXT:
                 command = executeContextUpdates(result);
                 break;
+            case CONTEXT_GROUP:
+                command = executeContextGroupUpdates(result);
+                break;
             case JOBLET_RENAMED:
             case JOBLET_SCHEMA:
             case RELOAD:
@@ -423,6 +426,21 @@ public final class UpdateManagerUtils {
         }
         Object object = result.getUpdateObject();
         if (object instanceof Set) {
+            return new UpdateContextParameterCommand(result);
+        }
+        return null;
+    }
+
+    /*
+     * contextGroup
+     */
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private static Command executeContextGroupUpdates(UpdateResult result) {
+        if (result == null) {
+            return null;
+        }
+        Object object = result.getUpdateObject();
+        if (object instanceof List) {
             return new UpdateContextParameterCommand(result);
         }
         return null;

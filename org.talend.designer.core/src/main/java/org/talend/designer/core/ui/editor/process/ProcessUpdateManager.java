@@ -133,6 +133,40 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     /*
+     * zli check context group
+     */
+
+    private List<UpdateResult> checkGroupContext(boolean onlySimpleShow) {
+        List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
+        final IContextManager contextManager = getProcess().getContextManager();
+        List<IContext> addGroupContext2 = ((JobContextManager) contextManager).getAddGroupContext();
+        List<IContext> addGroupContext = new ArrayList<IContext>(addGroupContext2);
+        List<IContext> listContext = contextManager.getListContext();
+
+        List<IContext> existedContextGroup = new ArrayList<IContext>();
+        if (addGroupContext.size() > 0) {
+            for (int i = 0; i < addGroupContext.size(); i++) {
+                IContext context = addGroupContext.get(i);
+                for (int j = 0; j < listContext.size(); j++) {
+                    if (context.getName().equals(listContext.get(j).getName())) {
+                        existedContextGroup.add(context);
+                        break;
+                    }
+                }
+            }
+            addGroupContext.removeAll(existedContextGroup);
+        }
+        if (addGroupContext.size() > 0) {
+            UpdateCheckResult result = new UpdateCheckResult(addGroupContext);
+            result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.ADD);
+            result.setJob(getProcess());
+            setConfigrationForReadOnlyJob(result);
+            contextResults.add(result);
+        }
+        return contextResults;
+    }
+
+    /*
      * check context.
      */
     private List<UpdateResult> checkContext(boolean onlySimpleShow) {
@@ -1400,6 +1434,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             break;
         case CONTEXT:
             tmpResults = checkContext(onlySimpleShow);
+            break;
+        case CONTEXT_GROUP:
+            tmpResults = checkGroupContext(onlySimpleShow);
             break;
         case JOBLET_SCHEMA:
             tmpResults = checkJobletNodeSchema();

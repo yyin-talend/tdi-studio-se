@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.update.cmd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,12 +26,15 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.context.ContextUtils;
+import org.talend.core.model.context.JobContext;
+import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.ui.context.ContextManagerHelper;
@@ -74,62 +78,93 @@ public class UpdateContextParameterCommand extends Command {
             IProcess2 process = (IProcess2) job;
 
             ContextParameterMap deleteParameters = new ContextParameterMap();
-            Set<String> names = (Set<String>) result.getUpdateObject();
+            Object updateObject = result.getUpdateObject();
+            List<IContext> listContext = process.getContextManager().getListContext();
+            if (updateObject instanceof Set) {
+                Set<String> names = (Set<String>) updateObject;
 
-            if (result.getResultType() == EUpdateResult.ADD && result.isChecked()) {
-                // check parameters that have been added to repository context group
-                checkNewRepositoryParameters(process, names);
-                return;
-            }
+                if (result.getResultType() == EUpdateResult.ADD && result.isChecked()) {
+                    // check parameters that have been added to repository context group
+                    checkNewRepositoryParameters(process, names);
+                    return;
+                }
+                for (IContext context : listContext) {
+                    for (IContextParameter param : context.getContextParameterList()) {
+                        ContextItem item = null;
+                        if (names != null && names.contains(param.getName())) {
+                            switch (result.getResultType()) {
+                            case DELETE:
+                                item = (ContextItem) result.getParameter();
 
-            for (IContext context : process.getContextManager().getListContext()) {
-                for (IContextParameter param : context.getContextParameterList()) {
-                    ContextItem item = null;
-                    if (names != null && names.contains(param.getName())) {
-                        switch (result.getResultType()) {
-                        case DELETE:
-                            item = (ContextItem) result.getParameter();
-
-                            if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
-                                // delete it later
-                                deleteParameters.addParameter(context, param);
-                            } else {
-                                param.setSource(IContextParameter.BUILT_IN);
-                            }
-                            break;
-                        case UPDATE:
-                            item = (ContextItem) result.getParameter();
-
-                            if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
-
-                                ContextUtils.updateParameterFromRepository(item, param, context.getName());
-                            } else {
-                                param.setSource(IContextParameter.BUILT_IN);
-                            }
-                            break;
-                        case RENAME:
-                            List<Object> parameter = (List<Object>) result.getParameter();
-                            if (parameter.size() >= 3) {
-                                item = (ContextItem) parameter.get(0);
-                                String oldName = (String) parameter.get(1);
-                                String newName = (String) parameter.get(2);
-                                if (oldName.equals(param.getName())) {
-                                    if (newName != null) {
-                                        param.setName(newName);
-                                        ContextUtils.updateParameterFromRepository(item, param, context.getName());
-                                    }
+                                if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
+                                    // delete it later
+                                    deleteParameters.addParameter(context, param);
+                                } else {
+                                    param.setSource(IContextParameter.BUILT_IN);
                                 }
+                                break;
+                            case UPDATE:
+                                item = (ContextItem) result.getParameter();
 
+                                if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
+
+                                    ContextUtils.updateParameterFromRepository(item, param, context.getName());
+                                } else {
+                                    param.setSource(IContextParameter.BUILT_IN);
+                                }
+                                break;
+                            case RENAME:
+                                List<Object> parameter = (List<Object>) result.getParameter();
+                                if (parameter.size() >= 3) {
+                                    item = (ContextItem) parameter.get(0);
+                                    String oldName = (String) parameter.get(1);
+                                    String newName = (String) parameter.get(2);
+                                    if (oldName.equals(param.getName())) {
+                                        if (newName != null) {
+                                            param.setName(newName);
+                                            ContextUtils.updateParameterFromRepository(item, param, context.getName());
+                                        }
+                                    }
+
+                                }
+                                break;
+                            case BUIL_IN: // built-in
+                            default:
+                                param.setSource(IContextParameter.BUILT_IN);
+                                break;
                             }
-                            break;
-                        case BUIL_IN: // built-in
-                        default:
-                            param.setSource(IContextParameter.BUILT_IN);
-                            break;
                         }
                     }
-                }
 
+                }
+            }
+            if (updateObject instanceof List) {
+                if (result.getResultType() == EUpdateResult.ADD && result.getUpdateType() == EUpdateItemType.CONTEXT_GROUP
+                        && result.isChecked()) {
+                    List<IContext> list = (List<IContext>) updateObject;
+                    String name = null;
+                    if (list.size() > 0) {
+                        IContext context = list.get(0);
+                        name = context.getName();
+
+                        if (!listContext.contains(context)) {
+                            JobContext newContext = new JobContext(name);
+                            List<IContextParameter> newParamList = new ArrayList<IContextParameter>();
+                            newContext.setContextParameterList(newParamList);
+                            JobContextParameter param;
+
+                            for (int i = 0; i < context.getContextParameterList().size(); i++) {
+                                param = (JobContextParameter) context.getContextParameterList().get(i).clone();
+                                param.setContext(newContext);
+                                newParamList.add(param);
+                            }
+                            listContext.add(newContext);
+
+                        }
+                        process.getContextManager().getListContext();
+                    }
+                }
+                return;
             }
 
             // delete parameters
@@ -162,6 +197,7 @@ public class UpdateContextParameterCommand extends Command {
                 }
             }
         }
+
     }
 
     /**
