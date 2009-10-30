@@ -412,7 +412,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         }
 
-        if (process.length > 0) {
+        if (process.length > 0 && contextCombo != null) {
             try {
                 process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
                         process[0].getItem().getProperty()).getItem());
@@ -467,7 +467,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         }
 
-        if (process.length > 0) {
+        if (process.length > 0 && contextCombo != null) {
             try {
                 process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
                         process[0].getItem().getProperty()).getItem());
@@ -522,7 +522,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (manager.getLauncher().length > 0) {
             launcherCombo.select(0);
         }
-        if (process.length > 0) {
+        if (process.length > 0 && contextCombo != null) {
             try {
                 process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
                         process[0].getItem().getProperty()).getItem());
@@ -560,12 +560,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
             directoryNames = addToHistory(directoryNames, getDestinationValue());
 
-            settings.put(STORE_EXPORTTYPE_ID, exportTypeCombo.getText());
+            settings.put(STORE_EXPORTTYPE_ID, getCurrentExportType());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
-
-            settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
-            settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
-            if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
+            if (contextButton != null) {
+                settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
+            }
+            if (applyToChildrenButton != null) {
+                settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
+            }
+            if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
                 settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
                 settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
                 settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
@@ -575,7 +578,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
                 return;
-            } else if (exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
+            } else if (getCurrentExportType().equals(EXPORTTYPE_WSZIP)) {
                 settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
                 settings.put(STORE_WEBXML_ID, webXMLButton.getSelection());
                 settings.put(STORE_CONFIGFILE_ID, configFileButton.getSelection());
@@ -847,11 +850,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     @Override
     public List<ExportFileResource> getExportResources() {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
-        if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
+        if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
             return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                     IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
         } else {
-            return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "all", //$NON-NLS-1$
+            return manager.getExportResources(process, exportChoiceMap,
+                    contextCombo == null ? "Default" : contextCombo.getText(), "all", //$NON-NLS-1$  //$NON-NLS-2$
                     IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
         }
     }
@@ -932,7 +936,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     @Override
     public boolean finish() {
-        if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
+        if (exportTypeCombo != null && exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
             if (getDialogSettings() != null) {
                 IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$ 
                 if (section == null) {
