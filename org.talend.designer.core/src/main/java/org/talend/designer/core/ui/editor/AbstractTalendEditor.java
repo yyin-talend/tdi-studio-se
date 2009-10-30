@@ -1973,6 +1973,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             showOutlineAction = new Action() {
 
                 @Override
+                public String getId() {
+                    return "ID_OUTLINE"; //$NON-NLS-1$
+                }
+
+                @Override
                 public void run() {
                     showPage(ID_OUTLINE);
                 }
@@ -1982,12 +1987,19 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             showOverviewAction = new Action() {
 
                 @Override
+                public String getId() {
+                    return "ID_OUTLINE"; //$NON-NLS-1$
+                }
+
+                @Override
                 public void run() {
                     showPage(ID_OVERVIEW);
                 }
             };
             showOverviewAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/overview.gif")); //$NON-NLS-1$
             tbm.add(showOverviewAction);
+            getSite().getActionBars().updateActionBars();
+
             showPage(ID_OUTLINE);
         }
 
@@ -2071,7 +2083,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 showOverviewAction.setChecked(false);
                 pageBook.showPage(outline);
                 if (thumbnail != null) {
-                    thumbnail.setVisible(true);
+                    thumbnail.setVisible(false);
                 }
             } else if (id == ID_OVERVIEW) {
                 if (thumbnail == null) {
