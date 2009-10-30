@@ -656,7 +656,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         queryGuessCommand = new QueryGuessCommand(node, null, schema, dbType);
                     } else {
                         // modified by hyWang for bug 7190
-                        queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType);
+                        queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType, connection);
                     }
                     if (queryGuessCommand != null) {
                         list.add(queryGuessCommand);

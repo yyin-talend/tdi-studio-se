@@ -23,6 +23,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
@@ -40,6 +41,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.utils.DatabaseConnectionParameterUtil;
 
 /**
  * This class is used for generating new query when "Guess Query" button is selected. <br/>
@@ -69,6 +71,8 @@ public class QueryGuessCommand extends Command {
 
     private String dbType;
 
+    private Connection conn; // hywang add for 9594
+
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -95,6 +99,13 @@ public class QueryGuessCommand extends Command {
         this.dbType = dbType;
     }
 
+    public QueryGuessCommand(Node node2, IMetadataTable metadataTable, String schema, String dbType, Connection conn) {// 9594
+        this(node2, metadataTable);
+        this.schema = schema;
+        this.dbType = dbType;
+        this.conn = conn;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute() {
@@ -113,6 +124,16 @@ public class QueryGuessCommand extends Command {
             String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
             driverClassName = TalendTextUtils.removeQuotes(driverClassName);
             dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
+            DatabaseConnection dbConn = null;
+            if (dbType == null) { // handle context mode
+                if (conn != null) {
+                    if (conn instanceof DatabaseConnection) {
+                        dbConn = (DatabaseConnection) conn;
+                    }
+                    driverClassName = DatabaseConnectionParameterUtil.getTrueParamValue(dbConn, driverClassName);
+                    dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
+                }
+            }
         }
 
         if (dbNameAndSchemaMap != null) {

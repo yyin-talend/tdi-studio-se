@@ -41,6 +41,8 @@ public class DbInfo {
 
     private String dbVersion = null;
 
+    private String trueDBTypeForJDBC = null;
+
     private Connection conn = null;
 
     public DbInfo(String dbType, String username, String pwd, String dbVersion, String url) {
@@ -52,6 +54,7 @@ public class DbInfo {
         generateDriverName();
         genarateDriverJarPath();
         getConnFromNode();
+        this.trueDBTypeForJDBC = getTrueDBType(driverClassName);
     }
 
     public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String driverJarPath) {
@@ -62,9 +65,13 @@ public class DbInfo {
         this.url = url;
         this.driverJarPath = driverJarPath;
         generateDriverName();
-
         getConnFromNode();
         genarateDriverJarPath();
+        this.trueDBTypeForJDBC = getTrueDBType(driverClassName);
+    }
+
+    public String getTrueDBTypeForJDBC() {
+        return this.trueDBTypeForJDBC;
     }
 
     // hywang add constructor for bug 9594
@@ -77,6 +84,7 @@ public class DbInfo {
         this.url = url;
         this.driverClassName = driverClassName;
         this.driverJarPath = driverJarPath;
+        this.trueDBTypeForJDBC = getTrueDBType(driverClassName);
     }
 
     public String getUrl() {
@@ -184,6 +192,10 @@ public class DbInfo {
         } else {
             driverJarPath = null;
         }
+    }
+
+    private String getTrueDBType(String className) {
+        return ExtractMetaDataUtils.getDbTypeByClassName(className);
     }
 
 }

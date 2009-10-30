@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
@@ -24,6 +25,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
@@ -106,13 +108,27 @@ public class GuessSchemaProcess {
 
         // create the tLibraryLoad for the input node
 
-        for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
-            if (module.isRequired()) {
+        if (node.getComponent().getModulesNeeded().size() > 0) {
+            for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
+                if (module.isRequired()) {
+                    Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
+                    libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    process.addNodeContainer(new NodeContainer(libNode1));
+                }
+            }
+        } else { // hywang add for 9594
+            if (node.getComponent().getName().equals("tJDBCInput")) { //$NON-NLS-N$
+                List<String> drivers = EDatabaseVersion4Drivers.getDrivers(info.getTrueDBTypeForJDBC(), info.getDbVersion());
+                String moduleNeedName = "";
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
-                libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                for (int i = 0; i < drivers.size(); i++) {
+                    moduleNeedName = drivers.get(i).toString();
+                    libNode1.setPropertyValue("LIBRARY", "\"" + moduleNeedName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
                 process.addNodeContainer(new NodeContainer(libNode1));
             }
         }
+
         for (IElementParameter param : node.getElementParameters()) {
             Set<String> neededLibraries = new HashSet<String>();
             JavaProcessUtil.findMoreLibraries(neededLibraries, param, true); // add by hywang

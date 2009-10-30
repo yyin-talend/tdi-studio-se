@@ -110,7 +110,8 @@ public class ConvertRepositoryNodeToProcessNode {
         cc.add(changeMetadataCommand);
 
         // guess query command
-        QueryGuessCommand queryGuessCommand = new QueryGuessCommand((Node) node, node.getMetadataList().get(0), schema, dbType);
+        QueryGuessCommand queryGuessCommand = new QueryGuessCommand((Node) node, node.getMetadataList().get(0), schema, dbType,
+                databaseConnection);
         cc.add(queryGuessCommand);
 
         // execute the commands
