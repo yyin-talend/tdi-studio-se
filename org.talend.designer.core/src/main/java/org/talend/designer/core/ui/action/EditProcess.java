@@ -119,7 +119,7 @@ public class EditProcess extends AContextualAction implements IIntroAction {
             try {
                 processItem = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(updatedProperty).getItem();
             } catch (PersistenceException e1) {
-                e1.printStackTrace();
+                ExceptionHandler.process(e1);
             }
         } else
             processItem = (ProcessItem) updatedProperty.getItem();
