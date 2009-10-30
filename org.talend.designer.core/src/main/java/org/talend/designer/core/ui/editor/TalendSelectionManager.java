@@ -26,6 +26,7 @@ import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
@@ -120,6 +121,8 @@ public class TalendSelectionManager extends SelectionManager {
                         }
                     }
                 }
+            } else if (element instanceof NoteEditPart) {
+                newSelection.add(element);
             } else if (!(element instanceof NodePart)) {
                 newSelection.remove(element);
             }
