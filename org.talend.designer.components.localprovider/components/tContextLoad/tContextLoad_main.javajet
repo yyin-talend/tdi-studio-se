@@ -41,8 +41,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
 					%>
-					String <%=i==0?"key":"value" %>_<%=cid %> = null;				
-					<%
+					String <%=i==0?"key":"value" %>_<%=cid %> = null;	
+<%
+                    // allow to add comment start with '#'
+					if (i > 0){
+%>                
+                      if (<%=conn.getName() %>.<%=column.getLabel() %> != null){
+                        String tmp_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>;
+                        int tmp_loc_<%=cid%> = tmp_<%=cid%>.indexOf("#");
+                        tmp_<%=cid%> = tmp_loc_<%=cid%> < 0 ? tmp_<%=cid%> : tmp_<%=cid%>.substring(0, tmp_loc_<%=cid%>);
+                        <%=conn.getName() %>.<%=column.getLabel() %> = tmp_<%=cid%>.trim();
+                      }
+<%
+                    }
 					if(!isPrimitive) {
 					    %>   				
 					    if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
