@@ -14,10 +14,10 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
@@ -85,6 +85,7 @@ public class DbInfo {
         this.driverClassName = driverClassName;
         this.driverJarPath = driverJarPath;
         this.trueDBTypeForJDBC = getTrueDBType(driverClassName);
+        getConnFromNode();
     }
 
     public String getUrl() {
@@ -150,8 +151,13 @@ public class DbInfo {
     private void getConnFromNode() {
         DriverShim wapperDriver = null;
         try {
-            List list = new ArrayList();
-            list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion);
+            List list = null;
+            if (dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
+                list = ExtractMetaDataUtils.connect(trueDBTypeForJDBC, url, username, pwd, driverClassName, driverJarPath,
+                        dbVersion);
+            } else {
+                list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion);
+            }
             if (list != null && list.size() > 0) {
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i) instanceof Connection) {
