@@ -1161,7 +1161,19 @@ public class Node extends Element implements INode {
                 return;
             }
         }
-        this.outputs.add(conn);
+        List<IConnection> listNm = (List<IConnection>) conn.getSource().getOutgoingConnections(conn.getLineStyle());
+        int deactiveNum = 0;
+        for (int i = 0; i < outputs.size(); i++) {
+            if (!outputs.get(i).isActivate()) {
+                deactiveNum = deactiveNum + 1;
+            }
+        }
+        if (outputs != null && outputs.size() > 0) {
+            this.outputs.add(outputs.size() - deactiveNum, conn);
+        } else {
+            this.outputs.add(conn);
+        }
+
         // achen add to fix 6601 add schema when connection
         Node target = (Node) conn.getTarget();
         if (isBasedOnInputSchemas(target)) {

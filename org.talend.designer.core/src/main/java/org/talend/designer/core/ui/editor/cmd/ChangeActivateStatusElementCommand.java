@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -34,9 +35,21 @@ public class ChangeActivateStatusElementCommand extends Command {
 
     private final List<Node> nodeList;
 
-    private final List<Connection> connectionList;
+    private List<Connection> connectionList;
 
     private boolean value;
+
+    private int connIndex = 0;
+
+    private List<IConnection> listNm = null;
+
+    private Object object = null;
+
+    private Connection curConn = null;
+
+    private int deactiveNum = 0;
+
+    private List<Connection> outputs = null;
 
     /**
      * Gives the node where the status will be set or removed.
@@ -70,11 +83,35 @@ public class ChangeActivateStatusElementCommand extends Command {
 
     @Override
     public void execute() {
+
+        curConn = connectionList.get(0);
+        listNm = (List<IConnection>) curConn.getSource().getOutgoingConnections(curConn.getLineStyle());
+        outputs = (List<Connection>) curConn.getSource().getOutgoingConnections();
+        connIndex = outputs.indexOf(curConn);
+        System.out.println(connIndex);
+        deactiveNum = 0;
+        object = outputs.get(connIndex);
+        if (listNm.size() > 1) {
+            for (int i = 0; i < listNm.size(); i++) {
+                if (!listNm.get(i).isActivate()) {
+                    deactiveNum = deactiveNum + 1;
+                }
+            }
+            if (!value) {
+                outputs.remove(curConn);
+                outputs.add(curConn);
+            }
+            if (value) {
+                outputs.add(outputs.size() - deactiveNum, (Connection) object);
+            }
+            curConn.updateAllId();
+        }
+
         Process process;
         if (nodeList.size() > 0) {
             process = (Process) nodeList.get(0).getProcess();
         } else {
-            process = (Process) connectionList.get(0).getSource().getProcess();
+            process = (Process) curConn.getSource().getProcess();
         }
         process.setActivate(false);
         for (Connection connection : connectionList) {
@@ -89,6 +126,7 @@ public class ChangeActivateStatusElementCommand extends Command {
         process.setActivate(true);
         process.checkStartNodes();
         process.checkProcess();
+
         refreshPropertyView();
     }
 
@@ -144,6 +182,15 @@ public class ChangeActivateStatusElementCommand extends Command {
         for (Connection connection : connectionList) {
             connection.setPropertyValue(EParameterName.ACTIVATE.getName(), !value);
         }
+
+        if (connIndex < outputs.size()) {
+            outputs.remove(this.curConn);
+            outputs.add(outputs.size() - deactiveNum, (Connection) object);
+        }
+        if (connIndex >= outputs.size()) {
+            outputs.add(curConn);
+        }
+        curConn.updateAllId();
         process.setActivate(true);
         process.checkStartNodes();
         process.checkProcess();
