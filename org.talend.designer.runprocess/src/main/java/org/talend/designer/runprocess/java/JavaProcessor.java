@@ -990,11 +990,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         String portableCommand = new Path(command).toPortableString();
         String portableProjectPath = new Path(projectPath).toPortableString();
 
-        if (exportingJob) {
-            portableProjectPath = unixRootPathVar + classPathSeparator + portableProjectPath;
-        }
-
         if (!win32 && exportingJob) {
+            portableProjectPath = unixRootPathVar + classPathSeparator + portableProjectPath;
+
             String libraryPath = ProcessorUtilities.getLibraryPath();
             if (libraryPath != null) {
                 portableProjectPath = portableProjectPath.replace(libraryPath, unixRootPath + libraryPath);
