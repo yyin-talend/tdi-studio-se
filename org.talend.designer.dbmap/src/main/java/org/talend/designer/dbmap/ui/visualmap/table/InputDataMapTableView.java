@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.dbmap.ui.visualmap.table;
 
+import java.util.Iterator;
+
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -43,6 +45,7 @@ import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.IDbOperator;
 import org.talend.designer.dbmap.language.IDbOperatorManager;
 import org.talend.designer.dbmap.language.IJoinType;
+import org.talend.designer.dbmap.language.AbstractDbLanguage.JOIN;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.ProblemsManager;
 import org.talend.designer.dbmap.model.table.InputTable;
@@ -65,6 +68,8 @@ public class InputDataMapTableView extends DataMapTableView {
 
     private InputTableCellModifier cellModifier;
 
+    private Menu menu = null;
+
     public InputDataMapTableView(Composite parent, int style, InputTable inputTable, MapperManager mapperManager) {
         super(parent, style, inputTable, mapperManager);
     }
@@ -85,6 +90,16 @@ public class InputDataMapTableView extends DataMapTableView {
 
             public void set(InputColumnTableEntry bean, Boolean value) {
                 bean.setJoin(value);
+                if (value && getInputTable().getJoinType().getLabel().equals("(IMPLICIT JOIN)")) {
+                    if (menu != null) {
+                        MenuItem[] menuItems = menu.getItems();
+                        menuItems[0].setImage(null);
+                        menuItems[1].setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
+                    }
+                    getInputTable().setJoinType(JOIN.INNER_JOIN);
+                    refreshLabelForJoinDropDown();
+                    mapperManager.getUiManager().refreshSqlExpression();
+                }
             }
 
         });
@@ -139,14 +154,13 @@ public class InputDataMapTableView extends DataMapTableView {
         for (int i = 0; i < operators.length; i++) {
             arrayOperators[i + 1] = operators[i].getOperator();
         }
-        final ComboxCellEditorImproved typeComboEditor = new ComboxCellEditorImproved(tableViewerCreatorForColumns
-                .getTable(), arrayOperators, SWT.NONE);
+        final ComboxCellEditorImproved typeComboEditor = new ComboxCellEditorImproved(tableViewerCreatorForColumns.getTable(),
+                arrayOperators, SWT.NONE);
         typeComboEditor.addListener(new ICellEditorListener() {
 
             public void applyEditorValue() {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo
-                        .getCurrentModifiedBean();
+                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo.getCurrentModifiedBean();
                 currentInputEntry.setOriginalExpression(null);
                 CCombo combo = (CCombo) typeComboEditor.getControl();
                 String selectedText = combo.getText();
@@ -158,15 +172,13 @@ public class InputDataMapTableView extends DataMapTableView {
 
             public void cancelEditor() {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo
-                        .getCurrentModifiedBean();
+                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo.getCurrentModifiedBean();
                 // currentInputEntry.setExpression(currentInputEntry.getOriginalExpression());
             }
 
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo
-                        .getCurrentModifiedBean();
+                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo.getCurrentModifiedBean();
                 if (modifiedObjectInfo.getCurrentModifiedColumn() == columnOperator) {
 
                     if (currentInputEntry != modifiedObjectInfo.getPreviousModifiedBean()) {
@@ -175,8 +187,7 @@ public class InputDataMapTableView extends DataMapTableView {
                     CCombo combo = (CCombo) typeComboEditor.getControl();
                     String selectedText = combo.getText();
                     if (!selectedText.equals("") //$NON-NLS-1$
-                            && (currentInputEntry.getExpression() == null || currentInputEntry.getExpression().trim()
-                                    .length() == 0)) {
+                            && (currentInputEntry.getExpression() == null || currentInputEntry.getExpression().trim().length() == 0)) {
                         IDbOperator operatorFromValue = operatorsManager.getOperatorFromValue(selectedText);
                         if (operatorFromValue.getAssociatedExpression() != null) {
                             currentInputEntry.setExpression(operatorFromValue.getAssociatedExpression());
@@ -189,8 +200,7 @@ public class InputDataMapTableView extends DataMapTableView {
         });
         CCombo typeCombo = (CCombo) typeComboEditor.getControl();
         typeCombo.setEditable(true);
-        columnOperator.setCellEditor(typeComboEditor, CellEditorValueAdapterFactory
-                .getComboAdapterForComboCellEditorImproved());
+        columnOperator.setCellEditor(typeComboEditor, CellEditorValueAdapterFactory.getComboAdapterForComboCellEditorImproved());
         columnOperator.setAlignment(ALIGNMENT.CENTER);
 
         final TableViewerCreatorColumn columnExpression = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
@@ -287,8 +297,6 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     class DropDownSelectionListener extends SelectionAdapter {
 
-        private Menu menu = null;
-
         private boolean visible = false;
 
         public void widgetSelected(SelectionEvent event) {
@@ -323,6 +331,19 @@ public class InputDataMapTableView extends DataMapTableView {
                                 }
                                 menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
                                 IJoinType joinType = (IJoinType) menuItem.getData();
+                                if (joinType.equals(JOIN.NO_JOIN)) {
+                                    if (getInputTable().getColumnEntries() != null
+                                            && !getInputTable().getColumnEntries().isEmpty()) {
+                                        Iterator iterator = getInputTable().getColumnEntries().iterator();
+                                        while (iterator.hasNext()) {
+                                            InputColumnTableEntry inputColumnJoin = (InputColumnTableEntry) iterator.next();
+                                            if (inputColumnJoin.isJoin()) {
+                                                inputColumnJoin.setJoin(false);
+                                            }
+                                        }
+                                        getTableViewerCreatorForColumns().getTableEditorManager().refresh();
+                                    }
+                                }
                                 getInputTable().setJoinType(joinType);
                                 setMenuVisible(false);
                                 refreshLabelForJoinDropDown();
@@ -445,8 +466,9 @@ public class InputDataMapTableView extends DataMapTableView {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#getBackgroundCellColor(org.talend.commons.ui.swt.tableviewer.TableViewerCreator,
-     * java.lang.Object, int)
+     * @see
+     * org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#getBackgroundCellColor(org.talend.commons.ui.swt
+     * .tableviewer.TableViewerCreator, java.lang.Object, int)
      */
     @Override
     protected Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
@@ -462,17 +484,14 @@ public class InputDataMapTableView extends DataMapTableView {
      * @param isBackground TODO
      * @return
      */
-    protected Color getCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex,
-            boolean isBackground) {
+    protected Color getCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex, boolean isBackground) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_OPERATOR)) {
-            return getExpressionColorProvider().getColor(isBackground, entry.getProblems(),
-                    ProblemsManager.KEY_OPERATOR_EMPTY);
+            return getExpressionColorProvider().getColor(isBackground, entry.getProblems(), ProblemsManager.KEY_OPERATOR_EMPTY);
         }
         if (column.getId().equals(ID_NAME_COLUMN)) {
-            return getExpressionColorProvider().getColor(isBackground, entry.getProblems(),
-                    ProblemsManager.KEY_NO_MATCHING);
+            return getExpressionColorProvider().getColor(isBackground, entry.getProblems(), ProblemsManager.KEY_NO_MATCHING);
         }
         return super.getCellColor(tableViewerCreator, element, columnIndex, isBackground);
     }
