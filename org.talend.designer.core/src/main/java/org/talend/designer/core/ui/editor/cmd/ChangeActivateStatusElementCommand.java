@@ -88,7 +88,6 @@ public class ChangeActivateStatusElementCommand extends Command {
         listNm = (List<IConnection>) curConn.getSource().getOutgoingConnections(curConn.getLineStyle());
         outputs = (List<Connection>) curConn.getSource().getOutgoingConnections();
         connIndex = outputs.indexOf(curConn);
-        System.out.println(connIndex);
         deactiveNum = 0;
         object = outputs.get(connIndex);
         if (listNm.size() > 1) {
