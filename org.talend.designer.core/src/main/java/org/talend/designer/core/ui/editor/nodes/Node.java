@@ -1326,6 +1326,8 @@ public class Node extends Element implements INode {
             }
         }
         this.outputs.remove(connection);
+        // update the order wehn remove the connection
+        ((Connection) connection).updateAllId();
         removeTargetMetaData(connection);
         fireStructureChange(OUTPUTS, connection);
     }
