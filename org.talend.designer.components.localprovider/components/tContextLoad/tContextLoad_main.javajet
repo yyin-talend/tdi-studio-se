@@ -28,6 +28,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = node.getUniqueName();
 %>
 		//////////////////////////
+		String tmp_key_<%=cid%> = null;
 <%
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
@@ -43,14 +44,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					%>
 					String <%=i==0?"key":"value" %>_<%=cid %> = null;	
 <%
-                    // allow to add comment start with '#'
-					if (i > 0){
+                    // allow to add comment line start with '#' or '!'                                      
+					if (i == 0){
 %>                
                       if (<%=conn.getName() %>.<%=column.getLabel() %> != null){
-                        String tmp_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>;
-                        int tmp_loc_<%=cid%> = tmp_<%=cid%>.indexOf("#");
-                        tmp_<%=cid%> = tmp_loc_<%=cid%> < 0 ? tmp_<%=cid%> : tmp_<%=cid%>.substring(0, tmp_loc_<%=cid%>);
-                        <%=conn.getName() %>.<%=column.getLabel() %> = tmp_<%=cid%>.trim();
+                          tmp_key_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>.trim();                        
+                        if ((tmp_key_<%=cid%>.startsWith("#") || tmp_key_<%=cid%>.startsWith("!") )){
+                          tmp_key_<%=cid%> = null;
+                        } else {
+                          <%=conn.getName() %>.<%=column.getLabel() %> = tmp_key_<%=cid%>;
+                        }
                       }
 <%
                     }
@@ -99,6 +102,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     }
                 }
 %>
+  if (tmp_key_<%=cid%> != null){
   try{
     	if (context.getProperty(key_<%=cid %>)!=null)
     	{
@@ -190,6 +194,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	System.err.println("Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
     }
     	nb_line_<%=cid %>++;
+    }
 <%
         	}
         }//here end the first for, the List "conns"
