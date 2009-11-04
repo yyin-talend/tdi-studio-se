@@ -434,7 +434,9 @@ public class CLASS {
                                     sqlSentence = sqlSentence.substring(0, sqlSentence.length() - 2);
                                     sqlSentence += "\"";
                                 }
-                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(").append(sqlSentence).append(");\n");
+                                codeStringBuilder.append("String tempSQLSentence_").append(cid).append(" = ").append(sqlSentence).append(";\n");
+                                codeStringBuilder.append("globalMap.put(\"").append(cid).append("_QUERY\", tempSQLSentence_").append(cid).append(");\n");
+                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(tempSQLSentence_").append(cid).append(");\n");
                                 sqlQueryBuilder.delete(0, sqlQueryBuilder.length()).append("\"");
                             } else {
                                 sqlQueryBuilder.append(" ");
