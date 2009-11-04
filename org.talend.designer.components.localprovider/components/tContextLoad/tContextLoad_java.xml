@@ -102,20 +102,8 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    
    </PARAMETERS>
-   
-   <ADVANCED_PARAMETERS>
-    
-      <PARAMETER NAME="SPECIFY_DATA_PATTERN" FIELD="CHECK" REQUIRED="true" NUM_ROW="1">
-        <DEFAULT>false</DEFAULT>      
-      </PARAMETER>
-      
-      <PARAMETER NAME="DATA_PATTERN" FIELD="TEXT" REQUIRED="true" SHOW_IF="(SPECIFY_DATA_PATTERN == 'true')" NUM_ROW="2">
-        <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>      
-      </PARAMETER>
-      
-    </ADVANCED_PARAMETERS>
-    
    <CODEGENERATION/>
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>

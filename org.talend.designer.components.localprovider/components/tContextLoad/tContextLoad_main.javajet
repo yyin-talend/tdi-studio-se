@@ -104,7 +104,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
   if (tmp_key_<%=cid%> != null){
   try{
-  
   <%
             for (IContextParameter ctxParam :params)
              {
@@ -115,14 +114,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 }
         %>  
         if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>))
-        {               
+        {                
            <% if(typeToGenerate.equals("java.util.Date"))
-            {
-           %>
-           context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(<%=ElementParameterParser.getValue(node, "__DATA_PATTERN__")%>).parse(value_<%=cid %>));
-           <%}else if(typeToGenerate.equals("Integer")){%>
+            {%>            
+                String context_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
+				int context_<%=ctxParam.getName()%>_pos = context_<%=ctxParam.getName()%>_value.indexOf(";");
+				String context_<%=ctxParam.getName()%>_pattern =  "yyyy-MM-dd HH:mm:ss";
+				if(context_<%=ctxParam.getName()%>_pos > -1){
+					context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);					
+				}
+			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(value_<%=cid %>));
+			    
+            <%}else if(typeToGenerate.equals("Integer")){%>
 
-               context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
+                context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
 
            <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")){%>
            context.<%=ctxParam.getName()%>=value_<%=cid %>;
@@ -130,17 +135,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
            <%}else if(typeToGenerate.equals("BigDecimal")){%>
            context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
-           <%}else{%>
+           <%}
+           else{%>
 
                context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
 
-           <%}%> 
-           
+           <%}%>             
         }
        
          <%               
              }
-        %>  
+        %>	
         
     	if (context.getProperty(key_<%=cid %>)!=null)
     	{    	
