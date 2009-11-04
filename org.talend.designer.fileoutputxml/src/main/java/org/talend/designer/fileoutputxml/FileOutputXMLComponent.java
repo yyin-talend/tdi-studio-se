@@ -62,6 +62,8 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
 
     public static final String ATTRIBUTE = "ATTRIBUTE"; //$NON-NLS-1$s
 
+    public static final String ORDER = "ORDER"; //$NON-NLS-1$
+
     private FOXMain foxmain;
 
     public FileOutputXMLComponent() {
@@ -366,7 +368,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      * @return
      */
     public boolean istFileOutputMSXML() {
-        return getComponent().getName().equals("tFileOutputMSXML") || getComponent().getName().equals("tInGESTCoreXMLOutput"); //$NON-NLS-1$
+        return getComponent().getName().equals("tFileOutputMSXML") || getComponent().getName().equals("tInGESTCoreXMLOutput"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

@@ -13,6 +13,7 @@
 package org.talend.designer.fileoutputxml.managers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -278,6 +279,38 @@ public class MultiFOXManager extends FOXManager {
             tableLoader((Element) rootNode, "", result, rootNode.getDefaultValue()); //$NON-NLS-1$
         }
         return result;
+    }
+
+    protected void tableLoader(Element element, String parentPath, List<Map<String, String>> table, String defaultValue) {
+        Map<String, String> newMap = new HashMap<String, String>();
+        String currentPath = parentPath + "/" + element.getLabel(); //$NON-NLS-1$
+        newMap.put(FileOutputXMLComponent.PATH, currentPath);
+        newMap.put(FileOutputXMLComponent.COLUMN, element.getColumnLabel());
+        newMap.put(FileOutputXMLComponent.ATTRIBUTE, element.isMain() ? "main" : "branch"); //$NON-NLS-1$ //$NON-NLS-2$
+        newMap.put(FileOutputXMLComponent.VALUE, defaultValue); //$NON-NLS-1$
+        table.add(newMap);
+        for (FOXTreeNode att : element.getAttributeChildren()) {
+            newMap = new HashMap<String, String>();
+            newMap.put(FileOutputXMLComponent.PATH, att.getLabel());
+            newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
+            newMap.put(FileOutputXMLComponent.ATTRIBUTE, "attri"); //$NON-NLS-1$
+            newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
+            table.add(newMap);
+        }
+        for (FOXTreeNode att : element.getNameSpaceChildren()) {
+            newMap = new HashMap<String, String>();
+            newMap.put(FileOutputXMLComponent.PATH, att.getLabel());
+            newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
+            newMap.put(FileOutputXMLComponent.ATTRIBUTE, "ns"); //$NON-NLS-1$
+            newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
+            table.add(newMap);
+        }
+        List<FOXTreeNode> children = element.getElementChildren();
+        for (FOXTreeNode child : children) {
+            if (!child.isGroup() && !child.isLoop()) {
+                tableLoader((Element) child, currentPath, table, child.getDefaultValue());
+            }
+        }
     }
 
 }

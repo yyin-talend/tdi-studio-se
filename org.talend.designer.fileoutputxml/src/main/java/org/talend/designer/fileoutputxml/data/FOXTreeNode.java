@@ -46,6 +46,8 @@ public abstract class FOXTreeNode {
 
     private boolean isMainNode = false;
 
+    private int order;
+
     public boolean hasLink() {
         return column != null;
     }
@@ -64,9 +66,10 @@ public abstract class FOXTreeNode {
         children = new ArrayList<FOXTreeNode>();
         this.label = label;
     }
-  /**
+
+    /**
      * FOXTreeNode constructor comment.
-   */
+     */
     public FOXTreeNode(String label, String defaultValue) {
         children = new ArrayList<FOXTreeNode>();
         this.label = label;
@@ -194,6 +197,23 @@ public abstract class FOXTreeNode {
     }
 
     /**
+     * 
+     * wzhang Comment method "addChild".
+     * 
+     * @param index
+     * @param child
+     */
+    public void addChild(int index, FOXTreeNode child) {
+        if (index < children.size()) {
+            children.add(index, child);
+        } else {
+            children.add(child);
+        }
+        child.setParent(this);
+
+    }
+
+    /**
      * DOC ke Comment method "removeChild".
      * 
      * @param child
@@ -304,6 +324,24 @@ public abstract class FOXTreeNode {
      */
     public void setRow(String row) {
         this.row = row;
+    }
+
+    /**
+     * wzhang Comment method "getOrder".
+     * 
+     * @return
+     */
+    public int getOrder() {
+        return this.order;
+    }
+
+    /**
+     * wzhang Comment method "setOrder".
+     * 
+     * @param order
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 
 }
