@@ -37,6 +37,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -79,7 +80,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            IContext context, String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
             throws ProcessorException {
 
         ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME); //$NON-NLS-1$ //$NON-NLS-2$
@@ -95,9 +96,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                         .subTask(Messages.getString("JobPerlScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + selectedJobVersion); //$NON-NLS-1$
             }
             if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
-                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice.get(ExportChoice.applyToChildren),
-                        progressMonitor);
+                generateJobFiles(processItem, context, contextName, selectedJobVersion,
+                        statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice
+                                .get(ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher((Boolean) exportChoice.get(ExportChoice.needLauncher), processItem,

@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -112,8 +113,7 @@ public abstract class JobScriptsManager {
 
     /**
      * 
-     * DOC Represent exportchoice <br/>
-     * .
+     * DOC Represent exportchoice <br/> .
      * 
      * $Id: JobScriptsExportWizardPage.java 1 2007-1-31下�?�06:14:19 +0000 ylv $
      * 
@@ -157,8 +157,8 @@ public abstract class JobScriptsManager {
      */
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
-            String... codeOptions) throws ProcessorException;
+            Map<ExportChoice, Object> exportChoiceMap, IContext context, String contextName, String launcher, int statisticPort,
+            int tracePort, String... codeOptions) throws ProcessorException;
 
     protected String getTmpFolder() {
         String tmpFold = getTmpFolderPath();
@@ -371,9 +371,11 @@ public abstract class JobScriptsManager {
      * @param process
      * @throws ProcessorException
      */
-    protected void generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics, boolean trace,
-            boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
-        ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
+    protected void generateJobFiles(ProcessItem process, IContext context, String contextName, String version,
+            boolean statistics, boolean trace, boolean applyContextToChildren, IProgressMonitor monitor)
+            throws ProcessorException {
+        ProcessorUtilities.generateCode(process, context, contextName, version, statistics, trace, applyContextToChildren,
+                monitor);
     }
 
     protected IResource[] sourceResouces = null;

@@ -89,7 +89,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
     // }
     protected List<ExportFileResource> getExportResources() throws ProcessorException {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
-        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "all", //$NON-NLS-1$
+        return manager.getExportResources(process, exportChoiceMap, null, contextCombo.getText(), "all", //$NON-NLS-1$
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
     }
 

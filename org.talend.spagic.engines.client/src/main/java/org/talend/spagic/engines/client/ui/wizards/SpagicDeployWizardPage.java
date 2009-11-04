@@ -523,7 +523,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      */
     protected List<ExportFileResource> getExportResources() throws ProcessorException {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
-        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
+        return manager.getExportResources(process, exportChoiceMap, null, contextCombo.getText(), launcherCombo.getText(),
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
 
     }

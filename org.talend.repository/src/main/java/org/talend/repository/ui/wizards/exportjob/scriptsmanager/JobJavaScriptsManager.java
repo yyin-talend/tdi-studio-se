@@ -46,6 +46,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -101,7 +102,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            IContext context, String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
             throws ProcessorException {
 
         for (int i = 0; i < process.length; i++) {
@@ -121,9 +122,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
-                        progressMonitor);
+                generateJobFiles(processItem, context, contextName, selectedJobVersion,
+                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES, isOptionChoosed(
+                                exportChoice, ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), processItem,
