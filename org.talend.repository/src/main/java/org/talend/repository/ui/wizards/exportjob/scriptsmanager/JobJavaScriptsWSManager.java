@@ -54,6 +54,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobInfo;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
@@ -89,7 +90,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            throws ProcessorException {
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 

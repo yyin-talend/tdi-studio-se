@@ -17,8 +17,10 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
@@ -88,13 +90,17 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExportResources()
      */
     @Override
-    public List<ExportFileResource> getExportResources() {
+    public List<ExportFileResource> getExportResources() throws ProcessorException {
         final List<ExportFileResource>[] resourcesToExportxx = new List[1];
 
         BusyIndicator.showWhile(this.getShell().getDisplay(), new Runnable() {
 
             public void run() {
-                resourcesToExportxx[0] = JavaJobScriptsExportWizardPage.super.getExportResources();
+                try {
+                    resourcesToExportxx[0] = JavaJobScriptsExportWizardPage.super.getExportResources();
+                } catch (ProcessorException e) {
+                    ExceptionHandler.process(e);
+                }
             }
         });
         return resourcesToExportxx[0];

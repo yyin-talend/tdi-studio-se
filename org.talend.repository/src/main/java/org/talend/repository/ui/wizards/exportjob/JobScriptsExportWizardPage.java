@@ -55,6 +55,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -695,6 +696,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     monitor.subTask(Messages.getString(
                             "JobScriptsExportWizardPage.exportJob1", nodes[0].getLabel(), selectedJobVersion)); //$NON-NLS-1$
                     ok = exportJobScript(selectedJobVersion, progressMonitor);
+                    if (!ok) {
+                        return;
+                    }
                 }
                 monitor.subTask(Messages.getString(
                         "JobScriptsExportWizardPage.exportJobSucessful", nodes[0].getLabel(), selectedJobVersion)); //$NON-NLS-1$
@@ -764,7 +768,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
 
         manager.setProgressMonitor(monitor);
-        List<ExportFileResource> resourcesToExport = getExportResources();
+        List<ExportFileResource> resourcesToExport = null;
+        try {
+            resourcesToExport = getExportResources();
+        } catch (ProcessorException e) {
+            MessageBoxExceptionHandler.process(e);
+            return false;
+        }
 
         if (isNotFirstTime) {
             setTopFolder(resourcesToExport, this.originalRootFolderName);
@@ -795,7 +805,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 process[i].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
                         process[i].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                MessageBoxExceptionHandler.process(e);
+                return false;
             }
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             JobInfo jobInfo = new JobInfo(processItem, processItem.getProcess().getDefaultContext(), version);
@@ -814,7 +825,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     ProcessorUtilities.generateCode(r.getJobInfo().getJobId(), r.getJobInfo().getContextName(), r.getJobInfo()
                             .getJobVersion(), false, false, monitor);
                 } catch (ProcessorException e) {
-                    ExceptionHandler.process(e);
+                    MessageBoxExceptionHandler.process(e);
+                    return false;
                 }
             }
             // else {
@@ -839,8 +851,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 String zipFile = getDestinationValue();
                 ZipToFile.unZipFile(getDestinationValue(), new File(zipFile).getParentFile().getAbsolutePath());
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                MessageBoxExceptionHandler.process(e);
+                return false;
             }
         }
         return ok;
@@ -959,8 +971,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
      * 
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
+     * @throws ProcessorException
      */
-    public List<ExportFileResource> getExportResources() {
+    public List<ExportFileResource> getExportResources() throws ProcessorException {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);

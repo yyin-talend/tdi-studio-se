@@ -112,7 +112,8 @@ public abstract class JobScriptsManager {
 
     /**
      * 
-     * DOC Represent exportchoice <br/> .
+     * DOC Represent exportchoice <br/>
+     * .
      * 
      * $Id: JobScriptsExportWizardPage.java 1 2007-1-31下�?�06:14:19 +0000 ylv $
      * 
@@ -157,7 +158,7 @@ public abstract class JobScriptsManager {
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
             Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
-            String... codeOptions);
+            String... codeOptions) throws ProcessorException;
 
     protected String getTmpFolder() {
         String tmpFold = getTmpFolderPath();
@@ -355,14 +356,11 @@ public abstract class JobScriptsManager {
      * @param needGenerateCode
      * @param contextName
      * @param process
+     * @throws ProcessorException
      */
     protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,
-            boolean applyContextToChildren) {
-        try {
-            ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren);
-        } catch (ProcessorException e) {
-            ExceptionHandler.process(e);
-        }
+            boolean applyContextToChildren) throws ProcessorException {
+        ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren);
     }
 
     /**
@@ -371,14 +369,11 @@ public abstract class JobScriptsManager {
      * @param needGenerateCode
      * @param contextName
      * @param process
+     * @throws ProcessorException
      */
     protected void generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics, boolean trace,
-            boolean applyContextToChildren, IProgressMonitor monitor) {
-        try {
-            ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
-        } catch (ProcessorException e) {
-            ExceptionHandler.process(e);
-        }
+            boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
+        ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
     }
 
     protected IResource[] sourceResouces = null;

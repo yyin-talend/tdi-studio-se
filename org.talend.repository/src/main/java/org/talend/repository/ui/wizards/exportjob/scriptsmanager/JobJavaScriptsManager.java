@@ -65,6 +65,7 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.ProjectManager;
@@ -100,7 +101,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            throws ProcessorException {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();

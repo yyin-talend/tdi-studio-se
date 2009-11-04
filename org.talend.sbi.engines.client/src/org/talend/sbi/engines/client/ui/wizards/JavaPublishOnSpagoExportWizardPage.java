@@ -17,8 +17,10 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -71,7 +73,11 @@ public class JavaPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWiza
         BusyIndicator.showWhile(this.getShell().getDisplay(), new Runnable() {
 
             public void run() {
-                resourcesToExportxx[0] = JavaPublishOnSpagoExportWizardPage.super.getExportResources();
+                try {
+                    resourcesToExportxx[0] = JavaPublishOnSpagoExportWizardPage.super.getExportResources();
+                } catch (ProcessorException e) {
+                    ExceptionHandler.process(e);
+                }
             }
         });
         return resourcesToExportxx[0];

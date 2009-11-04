@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
@@ -73,6 +74,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
      * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
      * 
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
+     * @throws ProcessorException
      */
     // protected List<ExportFileResource> getExportResources() {
     // final List<ExportFileResource>[] resourcesToExportxx = new List[1];
@@ -85,7 +87,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
     // });
     // return resourcesToExportxx[0];
     // }
-    protected List<ExportFileResource> getExportResources() {
+    protected List<ExportFileResource> getExportResources() throws ProcessorException {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "all", //$NON-NLS-1$
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);

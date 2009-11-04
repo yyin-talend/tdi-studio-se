@@ -46,6 +46,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
@@ -848,7 +849,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * @see org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWizardPage#getExportResources()
      */
     @Override
-    public List<ExportFileResource> getExportResources() {
+    public List<ExportFileResource> getExportResources() throws ProcessorException {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
             return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),

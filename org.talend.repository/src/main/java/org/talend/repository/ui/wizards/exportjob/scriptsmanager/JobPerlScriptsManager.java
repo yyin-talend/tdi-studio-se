@@ -46,6 +46,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.FileConstants;
@@ -78,7 +79,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            throws ProcessorException {
 
         ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME); //$NON-NLS-1$ //$NON-NLS-2$
 

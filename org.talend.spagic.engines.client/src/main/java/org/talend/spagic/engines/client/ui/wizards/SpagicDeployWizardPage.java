@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -401,7 +402,13 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         }
         String topFolder = getRootFolderName();
 
-        List<ExportFileResource> resourcesToExport = getExportResources();
+        List<ExportFileResource> resourcesToExport = null;
+        try {
+            resourcesToExport = getExportResources();
+        } catch (ProcessorException e) {
+            MessageBoxExceptionHandler.process(e);
+            return false;
+        }
 
         setTopFolder(resourcesToExport, topFolder);
 
@@ -512,8 +519,9 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
      * 
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
+     * @throws ProcessorException
      */
-    protected List<ExportFileResource> getExportResources() {
+    protected List<ExportFileResource> getExportResources() throws ProcessorException {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
