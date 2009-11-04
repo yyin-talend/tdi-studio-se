@@ -104,7 +104,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
   if (tmp_key_<%=cid%> != null){
   try{
-  <%
+    	if (context.getProperty(key_<%=cid %>)!=null)
+    	{
+    	<%
             for (IContextParameter ctxParam :params)
              {
                 String typeToGenerate ="String";
@@ -121,9 +123,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				int context_<%=ctxParam.getName()%>_pos = context_<%=ctxParam.getName()%>_value.indexOf(";");
 				String context_<%=ctxParam.getName()%>_pattern =  "yyyy-MM-dd HH:mm:ss";
 				if(context_<%=ctxParam.getName()%>_pos > -1){
-					context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);					
+					context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);
+					context_<%=ctxParam.getName()%>_value = context_<%=ctxParam.getName()%>_value.substring(context_<%=ctxParam.getName()%>_pos + 1);
 				}
-			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(value_<%=cid %>));
+			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value));
 			    
             <%}else if(typeToGenerate.equals("Integer")){%>
 
@@ -146,11 +149,44 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          <%               
              }
         %>	
-        
-    	if (context.getProperty(key_<%=cid %>)!=null)
-    	{    	
     		assignList_<%=cid %>.add(key_<%=cid %>);
-    	}else  {    		
+    	}else  {
+    		<%
+            for (IContextParameter ctxParam :params)
+             {
+                String typeToGenerate ="String";
+                if( !(ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") ||ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_Password")))
+                {
+                   typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
+                }
+        %>  
+        if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>))
+        {               
+           <% if(typeToGenerate.equals("java.util.Date"))
+            {
+           %>
+           context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
+           <%}else if(typeToGenerate.equals("Integer")){%>
+
+               context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
+
+           <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")){%>
+           context.<%=ctxParam.getName()%>=value_<%=cid %>;
+           <%}else if(typeToGenerate.equals("Character")){%>
+           context.<%=ctxParam.getName()%>=new java.text.StringCharacterIterator(value_<%=cid %>).first();
+           <%}else if(typeToGenerate.equals("BigDecimal")){%>
+           context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
+           <%}else{%>
+
+               context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
+
+           <%}%> 
+           
+        }
+       
+         <%               
+             }
+        %>  
     		newPropertyList_<%=cid %>.add(key_<%=cid %>);
     	}
 	    context.setProperty(key_<%=cid %>,value_<%=cid %>);
