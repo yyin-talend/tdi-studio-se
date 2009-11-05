@@ -30,31 +30,50 @@ String rowSeparator = ElementParameterParser.getValue(
         String rowSeparator_<%=cid %> = <%=rowSeparator %>;
         byte[] bytes_<%=cid %> = rowSeparator_<%=cid %>.getBytes();
         int index_<%=cid %> = 0;
-
-        int oneChar_<%=cid %> = 0;
-        boolean eol_<%=cid %>=false;
-        int emptyLineCount_<%=cid %>=1;
+        
+		int oneChar_<%=cid%> = 0;
+		int emptyLineCount_<%=cid%> = 0;
+		int rowSeparator_count_<%=cid%> = 0;
+		boolean ready_eof_<%=cid%> = false;
+		boolean bFirstRowIsEmpty_<%=cid%> = true;
 		
-		if(bytes_<%=cid %>.length > 0) {
-            while ((oneChar_<%=cid %> = br_<%=cid %>.read()) != -1) {
-            	
-    			if(lineCount_<%=cid%>==0) lineCount_<%=cid%> = 1;
-                if (oneChar_<%=cid %> == bytes_<%=cid %>[index_<%=cid %>]) {
-                    if (index_<%=cid %> == bytes_<%=cid %>.length - 1) {
-                        lineCount_<%=cid %>++;
-                        if(eol_<%=cid%>) emptyLineCount_<%=cid %>++;
-                        eol_<%=cid %>=true;
-                        index_<%=cid %> = 0;
-                    } else {
-                        index_<%=cid %>++;
-                    }
-                }else{
-                	eol_<%=cid %> = false;
-                	emptyLineCount_<%=cid %>=1;
-                	index_<%=cid %>= 0;
-                }
-            }
-            if(eol_<%=cid %> && index_<%=cid %> == 0) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
-        }
+		if (bytes_<%=cid%>.length > 0) {
+			while ((oneChar_<%=cid%> = br_<%=cid%>.read()) != -1) {
+
+				if (oneChar_<%=cid%> == bytes_<%=cid%>[index_<%=cid%>]) {
+
+					if (index_<%=cid%> == bytes_<%=cid%>.length - 1) {
+						lineCount_<%=cid%> ++;
+						
+						if (bFirstRowIsEmpty_<%=cid%>){
+						  emptyLineCount_<%=cid%> ++;
+						  bFirstRowIsEmpty_<%=cid%> = false; // only one time
+						}
+						
+						if ( ++ rowSeparator_count_<%=cid%> == 2){
+							emptyLineCount_<%=cid%> ++;
+							rowSeparator_count_<%=cid%> = 1;
+						}
+						
+						index_<%=cid%> = 0;
+						ready_eof_<%=cid%> = false;
+					} else {
+						index_<%=cid%> ++;
+						continue;
+					}
+				} else {
+				    if (bFirstRowIsEmpty_<%=cid%>)
+				      bFirstRowIsEmpty_<%=cid%> = false;
+				    
+					index_<%=cid%> = 0;
+					rowSeparator_count_<%=cid%> = 0;
+					ready_eof_<%=cid%> = true;
+				}
+			}
+			// add last line not end with row separator
+			if (ready_eof_<%=cid%>)
+				lineCount_<%=cid%> ++;
+		}
+
         globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>); 
         br_<%=cid %>.close();
