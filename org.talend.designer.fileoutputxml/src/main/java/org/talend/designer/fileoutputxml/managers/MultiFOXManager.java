@@ -70,6 +70,7 @@ public class MultiFOXManager extends FOXManager {
             String mainPath = null;
             String currentPath = null;
             String defaultValue = null;
+            int nodeOrder;
 
             String schemaId = metadataTable.getLabel() + ":"; //$NON-NLS-1$
 
@@ -81,6 +82,7 @@ public class MultiFOXManager extends FOXManager {
                     String newPath = rootMap.get(FileOutputXMLComponent.PATH);
                     String columnName = rootMap.get(FileOutputXMLComponent.COLUMN);
                     defaultValue = rootMap.get(FileOutputXMLComponent.VALUE);
+                    nodeOrder = Integer.valueOf(rootMap.get(FileOutputXMLComponent.ORDER)).intValue();
                     String flag = columnName + ":"; //$NON-NLS-1$
                     if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
@@ -106,6 +108,7 @@ public class MultiFOXManager extends FOXManager {
                         current = temp;
                         currentPath = newPath;
                     }
+                    temp.setOrder(nodeOrder);
                     temp.setRow(metadataTable.getLabel());
                     if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
                         columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
@@ -126,6 +129,7 @@ public class MultiFOXManager extends FOXManager {
                     String newPath = groupMap.get(FileOutputXMLComponent.PATH);
                     String columnName = groupMap.get(FileOutputXMLComponent.COLUMN);
                     defaultValue = groupMap.get(FileOutputXMLComponent.VALUE);
+                    nodeOrder = Integer.valueOf(groupMap.get(FileOutputXMLComponent.ORDER)).intValue();
                     String flag = columnName + ":"; //$NON-NLS-1$
                     if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
@@ -152,6 +156,7 @@ public class MultiFOXManager extends FOXManager {
                         current = temp;
                         currentPath = newPath;
                     }
+                    temp.setOrder(nodeOrder);
                     temp.setRow(metadataTable.getLabel());
                     if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
                         columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
@@ -172,6 +177,7 @@ public class MultiFOXManager extends FOXManager {
                     String newPath = loopMap.get(FileOutputXMLComponent.PATH);
                     String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
                     defaultValue = loopMap.get(FileOutputXMLComponent.VALUE);
+                    nodeOrder = Integer.valueOf(loopMap.get(FileOutputXMLComponent.ORDER)).intValue();
                     String flag = columnName + ":"; //$NON-NLS-1$
                     if (columnName != null && columnName.length() > 0 && !flag.startsWith(metadataTable.getLabel() + ":")) { //$NON-NLS-1$
                         continue;
@@ -196,6 +202,7 @@ public class MultiFOXManager extends FOXManager {
                         current = temp;
                         currentPath = newPath;
                     }
+                    temp.setOrder(nodeOrder);
                     temp.setRow(metadataTable.getLabel());
                     if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
                         columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
@@ -209,6 +216,7 @@ public class MultiFOXManager extends FOXManager {
                 }
 
                 rootNode.setParent(null);
+                orderNode(rootNode);
                 treeData.add(rootNode);
                 rootNode.setRow(metadataTable.getLabel());
                 contents.put(metadataTable.getLabel(), treeData);
@@ -276,6 +284,8 @@ public class MultiFOXManager extends FOXManager {
     public List<Map<String, String>> getRootTable() {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         for (FOXTreeNode rootNode : this.getOriginalNodes()) {
+            initNodeOrder(rootNode);
+            order = 1;
             tableLoader((Element) rootNode, "", result, rootNode.getDefaultValue()); //$NON-NLS-1$
         }
         return result;
@@ -288,6 +298,7 @@ public class MultiFOXManager extends FOXManager {
         newMap.put(FileOutputXMLComponent.COLUMN, element.getColumnLabel());
         newMap.put(FileOutputXMLComponent.ATTRIBUTE, element.isMain() ? "main" : "branch"); //$NON-NLS-1$ //$NON-NLS-2$
         newMap.put(FileOutputXMLComponent.VALUE, defaultValue); //$NON-NLS-1$
+
         table.add(newMap);
         for (FOXTreeNode att : element.getAttributeChildren()) {
             newMap = new HashMap<String, String>();
@@ -295,6 +306,7 @@ public class MultiFOXManager extends FOXManager {
             newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
             newMap.put(FileOutputXMLComponent.ATTRIBUTE, "attri"); //$NON-NLS-1$
             newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
+            newMap.put(FileOutputXMLComponent.ORDER, String.valueOf(getNodeOrder(att)));
             table.add(newMap);
         }
         for (FOXTreeNode att : element.getNameSpaceChildren()) {
@@ -303,6 +315,7 @@ public class MultiFOXManager extends FOXManager {
             newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
             newMap.put(FileOutputXMLComponent.ATTRIBUTE, "ns"); //$NON-NLS-1$
             newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
+            newMap.put(FileOutputXMLComponent.ORDER, String.valueOf(getNodeOrder(att)));
             table.add(newMap);
         }
         List<FOXTreeNode> children = element.getElementChildren();
