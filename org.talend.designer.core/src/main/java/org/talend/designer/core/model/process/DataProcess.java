@@ -1195,10 +1195,6 @@ public class DataProcess {
 
         // calculate the merge info for every node
         for (INode node : dataNodeList) {
-            if (node.getComponent().getName().indexOf("Informix") != -1) {//$NON-NLS-1$
-                IElementParameter elementParameter = node.getElementParameter("USE_TRANSACTION");//$NON-NLS-1$
-                elementParameter.setValue(Boolean.FALSE);
-            }
             Map<INode, Integer> mergeInfo = duplicatedProcess.getLinkedMergeInfo(node);
             if (!mergeInfo.isEmpty()) {
                 ((AbstractNode) node).setThereLinkWithMerge(true);
