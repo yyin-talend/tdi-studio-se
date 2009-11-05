@@ -84,26 +84,29 @@ public class ChangeActivateStatusElementCommand extends Command {
     @Override
     public void execute() {
 
-        curConn = connectionList.get(0);
-        listNm = (List<IConnection>) curConn.getSource().getOutgoingConnections(curConn.getLineStyle());
-        outputs = (List<Connection>) curConn.getSource().getOutgoingConnections();
-        connIndex = outputs.indexOf(curConn);
-        deactiveNum = 0;
-        object = outputs.get(connIndex);
-        if (listNm.size() > 1) {
-            for (int i = 0; i < listNm.size(); i++) {
-                if (!listNm.get(i).isActivate()) {
-                    deactiveNum = deactiveNum + 1;
+        if (connectionList != null && connectionList.size() != 0) {
+            curConn = connectionList.get(0);
+            listNm = (List<IConnection>) curConn.getSource().getOutgoingConnections(curConn.getLineStyle());
+            outputs = (List<Connection>) curConn.getSource().getOutgoingConnections();
+            connIndex = outputs.indexOf(curConn);
+            deactiveNum = 0;
+            object = outputs.get(connIndex);
+            if (listNm.size() > 1) {
+                for (int i = 0; i < listNm.size(); i++) {
+                    if (!listNm.get(i).isActivate()) {
+                        deactiveNum = deactiveNum + 1;
+                    }
                 }
+                if (!value) {
+                    outputs.remove(curConn);
+                    outputs.add(curConn);
+
+                }
+                if (value) {
+                    outputs.add(outputs.size() - deactiveNum, (Connection) object);
+                }
+                curConn.updateAllId();
             }
-            if (!value) {
-                outputs.remove(curConn);
-                outputs.add(curConn);
-            }
-            if (value) {
-                outputs.add(outputs.size() - deactiveNum, (Connection) object);
-            }
-            curConn.updateAllId();
         }
 
         Process process;
@@ -181,15 +184,16 @@ public class ChangeActivateStatusElementCommand extends Command {
         for (Connection connection : connectionList) {
             connection.setPropertyValue(EParameterName.ACTIVATE.getName(), !value);
         }
-
-        if (connIndex < outputs.size()) {
-            outputs.remove(this.curConn);
-            outputs.add(outputs.size() - deactiveNum, (Connection) object);
+        if (connectionList != null && connectionList.size() != 0) {
+            if (connIndex < outputs.size()) {
+                outputs.remove(this.curConn);
+                outputs.add(outputs.size() - deactiveNum, (Connection) object);
+            }
+            if (connIndex >= outputs.size()) {
+                outputs.add(curConn);
+            }
+            curConn.updateAllId();
         }
-        if (connIndex >= outputs.size()) {
-            outputs.add(curConn);
-        }
-        curConn.updateAllId();
         process.setActivate(true);
         process.checkStartNodes();
         process.checkProcess();
