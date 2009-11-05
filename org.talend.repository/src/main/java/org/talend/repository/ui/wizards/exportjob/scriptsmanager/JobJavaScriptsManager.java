@@ -108,18 +108,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
-            if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
-                selectedJobVersion = this.getSelectedJobVersion();
-            }
-            if (progressMonitor != null) {
-                progressMonitor
-                        .subTask(Messages.getString("JobJavaScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
-            // use character @ as temporary classpath separator, this one will be replaced during the export.
-            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
-            ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
+            selectedJobVersion = preExportResource(process, i, selectedJobVersion);
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, context, contextName, selectedJobVersion,
@@ -127,25 +116,142 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                                 exportChoice, ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), processItem,
-                    escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+            List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
+                    processItem, selectedJobVersion, resources, codeOptions);
+            resources.addAll(childrenList);
+            process[i].addResources(resources);
 
-            addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
-                    selectedJobVersion);
+            // Gets job designer resouce
+            // List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
+            // process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
+        }
 
-            addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i],
-                    selectedJobVersion);
+        // Exports the system libs
+        List<ExportFileResource> list = new ArrayList<ExportFileResource>(Arrays.asList(process));
+        // Add the java system libraries
+        ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
+        list.add(rootResource);
+        // Gets system routines
+        List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
+        rootResource.addResources(systemRoutineList);
+        // Gets user routines
+        List<URL> userRoutineList = getUserRoutine(isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
+        rootResource.addResources(userRoutineList);
 
-            addDependencies(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needDependencies), process[i]);
-            resources.addAll(getJobScripts(processItem, selectedJobVersion, (Boolean) exportChoice
-                    .get(ExportChoice.needJobScript))); // always need job generation
+        // Gets talend libraries
+        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries), process);
+        rootResource.addResources(talendLibraries);
 
-            addContextScripts(process[i], selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needContext));
+        if (PluginChecker.isRulesPluginLoaded()) {
+            // hywang add for 6484,add final drl files or xls files to exported job script
+            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$
+            list.add(ruleFileResource);
+            try {
+                Map<String, List<URL>> map = initUrlForRulesFiles(process);
+                Object[] keys = map.keySet().toArray();
+                for (int i = 0; i < keys.length; i++) {
+                    List<URL> talendDrlFiles = map.get(keys[i].toString());
+                    ruleFileResource.addResources(keys[i].toString(), talendDrlFiles);
+                }
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            } catch (MalformedURLException e) {
+                ExceptionHandler.process(e);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return list;
+    }
 
-            // add children jobs
-            boolean needChildren = true;
-            List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice,
-                    selectedJobVersion);
+    /**
+     * DOC informix Comment method "posExportResource".
+     * @param process
+     * @param exportChoice
+     * @param contextName
+     * @param launcher
+     * @param statisticPort
+     * @param tracePort
+     * @param i
+     * @param processItem
+     * @param selectedJobVersion
+     * @param resources
+     * @param codeOptions
+     * @return
+     */
+    private List<URL> posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
+            String launcher, int statisticPort, int tracePort, int i, ProcessItem processItem, String selectedJobVersion,
+            List<URL> resources, String... codeOptions) {
+        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), processItem,
+                escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+
+        addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
+                selectedJobVersion);
+
+        addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i],
+                selectedJobVersion);
+
+        addDependencies(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needDependencies), process[i]);
+        resources.addAll(getJobScripts(processItem, selectedJobVersion, (Boolean) exportChoice
+                .get(ExportChoice.needJobScript))); // always need job generation
+
+        addContextScripts(process[i], selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needContext));
+
+        // add children jobs
+        boolean needChildren = true;
+        List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice,
+                selectedJobVersion);
+        return childrenList;
+    }
+
+    /**
+     * DOC informix Comment method "preExportResource".
+     * @param process
+     * @param i
+     * @param selectedJobVersion
+     * @return
+     */
+    private String preExportResource(ExportFileResource[] process, int i, String selectedJobVersion) {
+        if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+            selectedJobVersion = this.getSelectedJobVersion();
+        }
+        if (progressMonitor != null) {
+            progressMonitor
+                    .subTask(Messages.getString("JobJavaScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
+        // use character @ as temporary classpath separator, this one will be replaced during the export.
+        String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
+                + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
+        ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
+        return selectedJobVersion;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.ui.wizards.exportjob.JobScriptsManager#getExportResources(org.talend.core.model.properties
+     * .ProcessItem[], boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
+     */
+    @Override
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            throws ProcessorException {
+
+        for (int i = 0; i < process.length; i++) {
+            ProcessItem processItem = (ProcessItem) process[i].getItem();
+            String selectedJobVersion = processItem.getProperty().getVersion();
+            selectedJobVersion = preExportResource(process, i, selectedJobVersion);
+
+            if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
+                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                        progressMonitor);
+            }
+            List<URL> resources = new ArrayList<URL>();
+            List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
+                    processItem, selectedJobVersion, resources, codeOptions);
             resources.addAll(childrenList);
             process[i].addResources(resources);
 

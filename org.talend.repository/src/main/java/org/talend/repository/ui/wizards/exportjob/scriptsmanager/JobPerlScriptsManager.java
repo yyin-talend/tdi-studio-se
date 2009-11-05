@@ -88,56 +88,128 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = getSelectedJobVersion();
-            if (selectedJobVersion == null) {
-                selectedJobVersion = process[i].getItem().getProperty().getVersion();
-            }
-            if (progressMonitor != null) {
-                progressMonitor
-                        .subTask(Messages.getString("JobPerlScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + selectedJobVersion); //$NON-NLS-1$
-            }
+            selectedJobVersion = preExportResource(process, i, selectedJobVersion);
             if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, context, contextName, selectedJobVersion,
                         statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice
                                 .get(ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher((Boolean) exportChoice.get(ExportChoice.needLauncher), processItem,
-                    escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
-
-            // Gets system routines.
-            List<URL> systemRoutineList = getSystemRoutine((Boolean) exportChoice.get(ExportChoice.needSystemRoutine));
-            if (systemRoutineList.size() > 0) {
-                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                        + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
-            }
-            // Gets user routines.
-            String projectName = getCorrespondingProjectName(processItem);
-            try {
-                List<URL> userRoutineList = getUserRoutine(projectName, (Boolean) exportChoice.get(ExportChoice.needUserRoutine));
-                if (userRoutineList.size() > 0) {
-                    process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                            + PATH_SEPARATOR + projectName, userRoutineList);
-                }
-            } catch (MalformedURLException e) {
-                ExceptionHandler.process(e);
-            }
-
-            addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)),
-                    process[i], selectedJobVersion);
-            List<URL> talendLibraries = getTalendLibraries((Boolean) exportChoice.get(ExportChoice.needTalendLibraries));
-            if (talendLibraries.size() > 0) {
-                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
-            }
-            resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJobScript)));
-            addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
-                    process[i]);
-            resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
-            boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needJobScript)
-                    && (Boolean) exportChoice.get(ExportChoice.needContext);
+            boolean needChildren = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
+                    processItem, selectedJobVersion, resources, codeOptions);
             addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
             process[i].addResources(resources);
         }
         return Arrays.asList(process);
+    }
+
+    /**
+     * Gets the export resources.
+     * 
+     * @param process
+     * @param needLauncher
+     * @param needSystemRoutine
+     * @param needUserRoutine
+     * @param needModule
+     * @param needJob
+     * @param needContext
+     * @return
+     */
+    @Override
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            throws ProcessorException {
+
+        ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME); //$NON-NLS-1$ //$NON-NLS-2$
+
+        for (int i = 0; i < process.length; i++) {
+            ProcessItem processItem = (ProcessItem) process[i].getItem();
+            String selectedJobVersion = getSelectedJobVersion();
+            selectedJobVersion = preExportResource(process, i, selectedJobVersion);
+            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
+                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+                        statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice.get(ExportChoice.applyToChildren),
+                        progressMonitor);
+            }
+            List<URL> resources = new ArrayList<URL>();
+            boolean needChildren = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
+                    processItem, selectedJobVersion, resources, codeOptions);
+            addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
+            process[i].addResources(resources);
+        }
+        return Arrays.asList(process);
+    }
+
+    /**
+     * DOC informix Comment method "posExportResource".
+     * @param process
+     * @param exportChoice
+     * @param contextName
+     * @param launcher
+     * @param statisticPort
+     * @param tracePort
+     * @param i
+     * @param processItem
+     * @param selectedJobVersion
+     * @param resources
+     * @param codeOptions
+     * @return
+     */
+    private boolean posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
+            String launcher, int statisticPort, int tracePort, int i, ProcessItem processItem, String selectedJobVersion,
+            List<URL> resources, String... codeOptions) {
+        resources.addAll(getLauncher((Boolean) exportChoice.get(ExportChoice.needLauncher), processItem,
+                escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+
+        // Gets system routines.
+        List<URL> systemRoutineList = getSystemRoutine((Boolean) exportChoice.get(ExportChoice.needSystemRoutine));
+        if (systemRoutineList.size() > 0) {
+            process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
+                    + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
+        }
+        // Gets user routines.
+        String projectName = getCorrespondingProjectName(processItem);
+        try {
+            List<URL> userRoutineList = getUserRoutine(projectName, (Boolean) exportChoice.get(ExportChoice.needUserRoutine));
+            if (userRoutineList.size() > 0) {
+                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
+                        + PATH_SEPARATOR + projectName, userRoutineList);
+            }
+        } catch (MalformedURLException e) {
+            ExceptionHandler.process(e);
+        }
+
+        addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)),
+                process[i], selectedJobVersion);
+        List<URL> talendLibraries = getTalendLibraries((Boolean) exportChoice.get(ExportChoice.needTalendLibraries));
+        if (talendLibraries.size() > 0) {
+            process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
+        }
+        resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJobScript)));
+        addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
+                process[i]);
+        resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
+        boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needJobScript)
+                && (Boolean) exportChoice.get(ExportChoice.needContext);
+        return needChildren;
+    }
+
+    /**
+     * DOC informix Comment method "preExportResource".
+     * @param process
+     * @param i
+     * @param selectedJobVersion
+     * @return
+     */
+    private String preExportResource(ExportFileResource[] process, int i, String selectedJobVersion) {
+        if (selectedJobVersion == null) {
+            selectedJobVersion = process[i].getItem().getProperty().getVersion();
+        }
+        if (progressMonitor != null) {
+            progressMonitor
+                    .subTask(Messages.getString("JobPerlScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + selectedJobVersion); //$NON-NLS-1$
+        }
+        return selectedJobVersion;
     }
 
     /**

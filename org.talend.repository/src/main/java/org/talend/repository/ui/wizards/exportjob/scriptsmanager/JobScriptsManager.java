@@ -160,6 +160,10 @@ public abstract class JobScriptsManager {
             Map<ExportChoice, Object> exportChoiceMap, IContext context, String contextName, String launcher, int statisticPort,
             int tracePort, String... codeOptions) throws ProcessorException;
 
+    public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
+            Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
+            String... codeOptions) throws ProcessorException;
+
     protected String getTmpFolder() {
         String tmpFold = getTmpFolderPath();
         File f = new File(tmpFold);
