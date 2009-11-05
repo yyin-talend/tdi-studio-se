@@ -277,37 +277,50 @@ public class FOXManager {
         }
 
         rootNode.setParent(null);
+        orderNode(rootNode);
+        treeData.add(rootNode);
 
-        // reset the order.only need to reset the first sub node if it group or loop node.
-        List<FOXTreeNode> firstSubchildren = rootNode.getChildren();
-        FOXTreeNode foundNode = null;
-        for (FOXTreeNode childen : firstSubchildren) {
-            if (childen.isGroup() || childen.isLoop()) {
-                foundNode = childen;
-                break;
-            }
-        }
-        if (foundNode != null) {
-            int tmpOrder = 0;
-            for (FOXTreeNode childen : firstSubchildren) {
-                if (childen.getOrder() < foundNode.getOrder()) {
-                    tmpOrder++;
+    }
+
+    /**
+     * 
+     * wzhang Comment method "orderNode".
+     * 
+     * @param node
+     */
+    public void orderNode(FOXTreeNode node) {
+        // reset the order.
+        if (node != null) {
+            List<FOXTreeNode> firstSubChildren = node.getChildren();
+            FOXTreeNode foundNode = null;
+            for (FOXTreeNode childen : firstSubChildren) {
+                if (childen.isGroup() || childen.isLoop()) {
+                    foundNode = childen;
+                    orderNode(childen);
+                    break;
                 }
+                orderNode(childen);
             }
-            if (tmpOrder > -1) {
-                int oldOrder = firstSubchildren.indexOf(foundNode);
-                if (oldOrder != -1 && oldOrder != tmpOrder) {
-                    rootNode.removeChild(foundNode);
-                    if (firstSubchildren.size() > tmpOrder) {
-                        rootNode.addChild(tmpOrder, foundNode);
-                    } else {
-                        rootNode.addChild(foundNode);
+            if (foundNode != null) {
+                int tmpOrder = 0;
+                for (FOXTreeNode childen : firstSubChildren) {
+                    if (childen.getOrder() < foundNode.getOrder()) {
+                        tmpOrder++;
+                    }
+                }
+                if (tmpOrder > -1) {
+                    int oldOrder = firstSubChildren.indexOf(foundNode);
+                    if (oldOrder != -1 && oldOrder != tmpOrder) {
+                        node.removeChild(foundNode);
+                        if (firstSubChildren.size() > tmpOrder) {
+                            node.addChild(tmpOrder, foundNode);
+                        } else {
+                            node.addChild(foundNode);
+                        }
                     }
                 }
             }
         }
-        treeData.add(rootNode);
-
     }
 
     public List<Map<String, String>> getLoopTable() {
