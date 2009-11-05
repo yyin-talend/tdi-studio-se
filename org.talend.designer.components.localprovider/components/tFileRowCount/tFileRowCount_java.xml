@@ -48,6 +48,11 @@
     >
       <DEFAULT>"\n"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="IGNORE_EMPTY_ROW" FIELD="CHECK" NUM_ROW="25" REQUIRED="true">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+       
   </PARAMETERS>
 
   <CODEGENERATION/>

@@ -74,6 +74,9 @@ String rowSeparator = ElementParameterParser.getValue(
 			if (ready_eof_<%=cid%>)
 				lineCount_<%=cid%> ++;
 		}
-
+		
+<%if ("true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY_ROW__")) ){%>
+        lineCount_<%=cid %> -= emptyLineCount_<%=cid%>;
+<%}%>
         globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>); 
         br_<%=cid %>.close();
