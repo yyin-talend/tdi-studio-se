@@ -1572,6 +1572,9 @@ public class DatabaseForm extends AbstractForm {
         } else {
             sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.database")); //$NON-NLS-1$
             sidOrDatabase = EDBParamName.Database;
+            if (EDatabaseConnTemplate.INFORMIX.getDBDisplayName().equals(getConnection().getDatabaseType())) {
+                sidOrDatabaseText.setLabelText("DataBase"); //$NON-NLS-1$
+            }
 
         }
         // hshen
