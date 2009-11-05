@@ -464,6 +464,13 @@ public class DataProcess {
 
                 nodeTarget = itemsMap.get(curConnec.getTarget());
 
+                if (nodeTarget.getComponentName().indexOf("Informix") != -1) {
+                    IElementParameter elementParameter = nodeTarget.getElementParameter("USE_TRANSACTION");//$NON-NLS-1$ 
+                    if (elementParameter != null) {
+                        elementParameter.setValue(Boolean.FALSE);
+                    }
+                }
+
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(graphicalNode.isActivate());
                 dataConnec.setLineStyle(EConnectionType.getTypeFromName(curConnec.getConnectionType()));
