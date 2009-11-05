@@ -260,19 +260,38 @@ if(useProxy){
             ftpClient.chdir(remoteDirectory);
             String path = ftpClient.pwd();
             com.enterprisedt.net.ftp.FTPFile[] ftpFiles = ftpClient.dirDetails(".");
-            for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
-                if (ftpFile.isDir()) {
-                  if ((!(".").equals(ftpFile.getName())) && (!("..").equals(ftpFile.getName()))) {
-                	java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFile.getName());
-                    if (!localFile.exists()) {
-                        localFile.mkdir();
-                    }
-                    getAllFiles(path + "/" + ftpFile.getName(), localDirectory + "/" + ftpFile.getName());
-                    ftpClient.chdir(path);
-                  }
-                } else if (!ftpFile.isLink()) {
-					downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
-                }
+            //use dir() for Bug9562 with FTP server in AS400
+            String[] ftpFileNames = ftpClient.dir(".");
+            //if dirDetails(...) doesn't work, then use dir(...), distinguish file type by FTPException
+            if((ftpFiles.length == 0) && (ftpFileNames.length != 0)){
+            	//if the file is folder, catch the FTPException and recur
+            	for(String ftpFileName : ftpFileNames){
+            		try{
+            			downloadFile(localDirectory + "/" + ftpFileName,ftpFileName);
+            		}catch(com.enterprisedt.net.ftp.FTPException e){
+            			java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFileName);
+            			if (!localFile.exists()) {
+	                        localFile.mkdir();
+	                    }
+	                    getAllFiles(path + "/" + ftpFileName, localDirectory + "/" + ftpFileName);
+	                    ftpClient.chdir(path);
+            		}
+            	}
+            }else{
+	            for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
+	                if (ftpFile.isDir()) {
+	                  if ((!(".").equals(ftpFile.getName())) && (!("..").equals(ftpFile.getName()))) {
+	                	java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFile.getName());
+	                    if (!localFile.exists()) {
+	                        localFile.mkdir();
+	                    }
+	                    getAllFiles(path + "/" + ftpFile.getName(), localDirectory + "/" + ftpFile.getName());
+	                    ftpClient.chdir(path);
+	                  }
+	                } else if (!ftpFile.isLink()) {
+						downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
+	                }
+	            }
             }
         }
 
@@ -280,12 +299,23 @@ if(useProxy){
                 com.enterprisedt.net.ftp.FTPException, java.text.ParseException {
             ftpClient.chdir(remoteDirectory);
             com.enterprisedt.net.ftp.FTPFile[] ftpFiles = ftpClient.dirDetails(".");
-            for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
-                if (!ftpFile.isDir() && !ftpFile.isLink()) {
-                    if (ftpFile.getName().matches(maskStr)) {
-                        downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
+            //use dir() for Bug9562 with FTP server in AS400 (the same way as getAllFiles())
+            String[] ftpFileNames = ftpClient.dir(".");
+            //if dirDetails(...) doesn't work, then use dir(...), but can not distinguish file type
+            if((ftpFiles.length == 0) && (ftpFileNames.length != 0)){
+	            for (String ftpFileName : ftpFileNames) {
+                    if (ftpFileName.matches(maskStr)) {
+                        downloadFile(localDirectory + "/" + ftpFileName,ftpFileName);
                     }
-                }
+	            }
+            }else{
+	            for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
+	                if (!ftpFile.isDir() && !ftpFile.isLink()) {
+	                    if (ftpFile.getName().matches(maskStr)) {
+	                        downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
+	                    }
+	                }
+	            }
             }
         }
         
