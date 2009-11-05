@@ -44,10 +44,12 @@ import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.components.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.repository.ProjectManager;
 
 /**
  * Component factory that look for each component and load their information. <br/>
@@ -84,10 +86,50 @@ public class ComponentsFactory implements IComponentsFactory {
         }
     }
 
+    private List<ComponentSetting> getComponentsFromProject() {
+        // TODO check components used from ref projects.
+        List<ComponentSetting> components = (List<ComponentSetting>) ProjectManager.getInstance().getCurrentProject()
+                .getEmfProject().getComponentsSettings();
+        return components;
+    }
+
+    private boolean isComponentVisible(String componentName) {
+        if (true) {
+            return true;
+        }
+        Boolean visible = Boolean.TRUE;
+
+        String[] componentsAlwaysNeeded = { "tPreJob", "tPostJob" };
+        if (ArrayUtils.contains(componentsAlwaysNeeded, componentName)) {
+            return true;
+        }
+
+        // here we just check if the component is visible somewhere in the settings.
+        // if it's visible in any category, we will load the component
+        // if the component is unknown (new component?), we will load also
+        // (technical components will always loaded by default as they're not saved in componentSettings)
+        // to avoid any problem, we also load by default the category named "Technical".
+        for (ComponentSetting componentSetting : getComponentsFromProject()) {
+            if (componentSetting.getName().equals(componentName)) {
+                if (componentSetting.isHidden()) {
+                    visible = Boolean.FALSE;
+                } else {
+                    return true;
+                }
+                if ("Technical".equals(componentSetting.getFamily())) { //$NON-NLS-1$
+                    return true;
+                }
+            }
+        }
+        return visible;
+    }
+
     private void init() {
         removeOldComponentsUserFolder(); // not used anymore
 
         TimeMeasure.measureActive = false;
+        // TimeMeasure.display = true;
+        // TimeMeasure.displaySteps = true;
         TimeMeasure.begin("ComponentsFactory.init"); //$NON-NLS-1$
         long startTime = System.currentTimeMillis();
         componentList = new ArrayList<IComponent>();
@@ -204,7 +246,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
             public boolean accept(final File file) {
                 return file.isDirectory() && file.getName().charAt(0) != '.'
-                        && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
+                        && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER)
+                        && isComponentVisible(file.getName());
             }
 
         };
@@ -372,6 +415,10 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void loadIcons(File folder, IComponent component) {
+        if (component.isTechnical()) {
+            // technical component's icon is never displayed, so no need to load it.
+            return;
+        }
         ComponentIconLoading cil = new ComponentIconLoading(folder);
 
         component.setIcon32(cil.getImage32());
