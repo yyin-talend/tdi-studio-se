@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -462,87 +463,98 @@ public final class EMFRepositoryNodeManager {
         String select = lcSql.split("select ")[1]; //$NON-NLS-1$
         String[] s = select.split(" from "); //$NON-NLS-1$
         String[] columns = s[0].split(","); //$NON-NLS-1$
-        if (s.length > 1) {
-            String fromStr = s[1];
-            String whereStr = ""; //$NON-NLS-1$
-            int indexWhere = s[1].indexOf(" where "); //$NON-NLS-1$
-            if (indexWhere != -1) {
-                fromStr = s[1].split(" where ")[0]; //$NON-NLS-1$
-                whereStr = s[1].split(" where ")[1]; //$NON-NLS-1$
-            }
-            String[] tables = fromStr.split(","); //$NON-NLS-1$
-            String[] rel = whereStr.split(" and "); //$NON-NLS-1$
 
-            for (String string : columns) {
-                int dotIndex = string.indexOf("."); //$NON-NLS-1$
-                if (dotIndex != -1) {
-                    tableNames.add(string.substring(0, dotIndex).trim()
-                            .replaceAll("\\" + leftDbQuote, "").replaceAll("\\" + rightDbQuote, "")); //$NON-NLS-1$ //$NON-NLS-2$ 
-                }
-                columnsNames.add(string.trim());
+        boolean hasFunctionInColumn = false; // hywang add for 9970,to see if there is one column contains funtion
+        for (int i = 0; i < columns.length; i++) {
+            if (columns[i].contains("(") || columns[i].contains(")")) {
+                hasFunctionInColumn = true;
+                break;
             }
-            for (String string : tables) {
-                String tableName = string;
-                if (string.contains(".")) { //$NON-NLS-1$
-                    tableName = string
-                            .substring(string.indexOf(".") + 1).replaceAll("\\" + leftDbQuote, "").replaceAll("\\" + rightDbQuote, ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                }
-                if (!tableNames.contains(tableName.trim())) {
-                    tableNames.add(tableName);
-                }
-            }
-            for (int i = 0; i < rel.length; i++) {
-                String[] strs = rel[i].split("="); //$NON-NLS-1$
-                if (strs.length == 2) {
-                    strs[0] = strs[0].trim();
-                    strs[1] = strs[1].trim();
-                    relations.add(strs);
-                }
-            }
-
-            // add column's name of relations to column names.
-            for (String[] string : relations) {
-                if (!columnsNames.contains(string[0])) {
-                    columnsNames.add(string[0]);
-                }
-                if (!columnsNames.contains(string[1])) {
-                    columnsNames.add(string[1]);
-                }
-            }
-            // fixed table Names when contains alias.
-            fixedNamesContainAlias(tableNames, TABLE_ALIAS_PREFIX);
-
-            // fixed column Names when contains alias.
-            fixedNamesContainAlias(columnsNames, COLUMN_ALIAS_PREFIX);
-
-            // replace table's alias with table real name in columnsNames.
-            for (int i = 0; i < columnsNames.size(); i++) {
-                String string = columnsNames.get(i);
-                if (string.contains(".")) { //$NON-NLS-1$
-                    columnsNames.set(i, string.substring(string.indexOf(".") + 1)); //$NON-NLS-1$
-
-                }
-            }
-            // fixed relations ,when contans alias.
-            for (int i = 0; i < relations.size(); i++) {
-                String[] strs = relations.get(i);
-                String s0 = strs[0];
-                String s1 = strs[1];
-                for (String string : tableNames) {
-                    int di = s0.indexOf("."); //$NON-NLS-1$
-                    if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s0.substring(0, di))) {
-                        s0 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s0.substring(di); //$NON-NLS-1$
-                    }
-                    di = s1.indexOf("."); //$NON-NLS-1$
-                    if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s1.substring(0, di))) {
-                        s1 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s1.substring(di); //$NON-NLS-1$
-                    }
-                }
-                relations.set(i, new String[] { s0, s1 });
-            }
-
         }
-        return columns;
+        if (!hasFunctionInColumn) {
+            if (s.length > 1) {
+                String fromStr = s[1];
+                String whereStr = ""; //$NON-NLS-1$
+                int indexWhere = s[1].indexOf(" where "); //$NON-NLS-1$
+                if (indexWhere != -1) {
+                    fromStr = s[1].split(" where ")[0]; //$NON-NLS-1$
+                    whereStr = s[1].split(" where ")[1]; //$NON-NLS-1$
+                }
+                String[] tables = fromStr.split(","); //$NON-NLS-1$
+                String[] rel = whereStr.split(" and "); //$NON-NLS-1$
+
+                for (String string : columns) {
+                    int dotIndex = string.indexOf("."); //$NON-NLS-1$
+                    if (dotIndex != -1) {
+                        tableNames.add(string.substring(0, dotIndex).trim()
+                                .replaceAll("\\" + leftDbQuote, "").replaceAll("\\" + rightDbQuote, "")); //$NON-NLS-1$ //$NON-NLS-2$ 
+                    }
+                    columnsNames.add(string.trim());
+                }
+                for (String string : tables) {
+                    String tableName = string;
+                    if (string.contains(".")) { //$NON-NLS-1$
+                        tableName = string
+                                .substring(string.indexOf(".") + 1).replaceAll("\\" + leftDbQuote, "").replaceAll("\\" + rightDbQuote, ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    }
+                    if (!tableNames.contains(tableName.trim())) {
+                        tableNames.add(tableName);
+                    }
+                }
+                for (int i = 0; i < rel.length; i++) {
+                    String[] strs = rel[i].split("="); //$NON-NLS-1$
+                    if (strs.length == 2) {
+                        strs[0] = strs[0].trim();
+                        strs[1] = strs[1].trim();
+                        relations.add(strs);
+                    }
+                }
+
+                // add column's name of relations to column names.
+                for (String[] string : relations) {
+                    if (!columnsNames.contains(string[0])) {
+                        columnsNames.add(string[0]);
+                    }
+                    if (!columnsNames.contains(string[1])) {
+                        columnsNames.add(string[1]);
+                    }
+                }
+                // fixed table Names when contains alias.
+                fixedNamesContainAlias(tableNames, TABLE_ALIAS_PREFIX);
+
+                // fixed column Names when contains alias.
+                fixedNamesContainAlias(columnsNames, COLUMN_ALIAS_PREFIX);
+
+                // replace table's alias with table real name in columnsNames.
+                for (int i = 0; i < columnsNames.size(); i++) {
+                    String string = columnsNames.get(i);
+                    if (string.contains(".")) { //$NON-NLS-1$
+                        columnsNames.set(i, string.substring(string.indexOf(".") + 1)); //$NON-NLS-1$
+
+                    }
+                }
+                // fixed relations ,when contans alias.
+                for (int i = 0; i < relations.size(); i++) {
+                    String[] strs = relations.get(i);
+                    String s0 = strs[0];
+                    String s1 = strs[1];
+                    for (String string : tableNames) {
+                        int di = s0.indexOf("."); //$NON-NLS-1$
+                        if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s0.substring(0, di))) {
+                            s0 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s0.substring(di); //$NON-NLS-1$
+                        }
+                        di = s1.indexOf("."); //$NON-NLS-1$
+                        if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s1.substring(0, di))) {
+                            s1 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s1.substring(di); //$NON-NLS-1$
+                        }
+                    }
+                    relations.set(i, new String[] { s0, s1 });
+                }
+            }
+            return columns;
+        } else {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
     }
 
     /**
@@ -553,7 +565,6 @@ public final class EMFRepositoryNodeManager {
     private void fixedNamesContainAlias(List<String> tableNames, String prefix) throws Exception {
         for (int i = 0; i < tableNames.size(); i++) {
             String name = tableNames.get(i);
-
             String[] aliasNames = regExMatch(name);
             List<String> tableContainAlias = new ArrayList<String>();
             String aliasName = ""; //$NON-NLS-1$
