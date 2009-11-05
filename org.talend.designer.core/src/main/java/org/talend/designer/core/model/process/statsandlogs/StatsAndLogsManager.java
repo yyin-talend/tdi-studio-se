@@ -299,7 +299,6 @@ public class StatsAndLogsManager {
                     }
                     component = ComponentsFactoryProvider.getInstance().get(connectionComponentName);
 
-                    String url = getUrl(process);
                     if (component != null) {
                         connectionNode = new DataNode(component, connectionUID);
                         connectionNode.setSubProcessStart(true);
@@ -312,14 +311,15 @@ public class StatsAndLogsManager {
 
                         if (elementParameter != null && elementParameter.getName() != null) {//$NON-NLS-1$
                             elementParameter.setValue(Boolean.TRUE);//$NON-NLS-1$
+                            final String sharedConnName = "StatsAndLog_Shared_Connection"; //$NON-NLS-1$
                             if ((Boolean) process.getElementParameter(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName())
                                     .getValue()) {
                                 connectionNode.getElementParameter(EParameterName.SHARED_CONNECTION_NAME.getName()).setValue(
-                                        "\"StatsAndLog_Shared_Connection\"");//$NON-NLS-1$
+                                        TalendTextUtils.addQuotes(sharedConnName));
                             } else {
-
+                                String url = getUrl(process);
                                 connectionNode.getElementParameter(EParameterName.SHARED_CONNECTION_NAME.getName()).setValue(
-                                        "\"" + url + "_" + "StatsAndLog_Shared_Connection\"");//$NON-NLS-2$
+                                        TalendTextUtils.addQuotes(url + "_" + sharedConnName)); //$NON-NLS-1$
                             }
                         }
                         setConnectionParameter(connectionNode, process, connectionUID, dataNode, nodeList);
@@ -364,50 +364,62 @@ public class StatsAndLogsManager {
                 processDBType);
         String[] listItemsDisplayName = process.getElementParameter(EParameterName.DB_TYPE.getName()).getListItemsDisplayName();
         processDBType = listItemsDisplayName[indexOfItemFromList];
-        IElementParameter elementParameterFilename = process.getElementParameter(EParameterName.FILENAME.getName());
-        String processDBFileName = null;
-        if (elementParameterFilename != null) {
-            processDBFileName = (String) elementParameterFilename.getValue();
+
+        IElementParameter param = process.getElementParameter(EParameterName.FILENAME.getName());
+        final String empty = ""; //$NON-NLS-1$
+        String processDBFileName = empty;
+        if (param != null) {
+            processDBFileName = TalendTextUtils.removeQuotes((String) param.getValue());
         }
-        IElementParameter elementParameterDatasource = process.getElementParameter(EParameterName.DATASOURCE.getName());
-        String processDBDatasouce = null;
-        if (elementParameterDatasource != null) {
-            processDBDatasouce = (String) elementParameterDatasource.getValue();
+        param = process.getElementParameter(EParameterName.DATASOURCE.getName());
+        String processDBDatasouce = empty;
+        if (param != null) {
+            processDBDatasouce = TalendTextUtils.removeQuotes((String) param.getValue());
         }
 
-        String processDBName = (String) process.getElementParameter(EParameterName.DBNAME.getName()).getValue();
-        if (processDBName != null && processDBName.startsWith("\"")) {//$NON-NLS-1$
-            processDBName = processDBName.substring(1, processDBName.length() - 1);
+        param = process.getElementParameter(EParameterName.DBNAME.getName());
+        String processDBName = empty;
+        if (param != null) {
+            processDBName = TalendTextUtils.removeQuotes((String) param.getValue());
         }
-        String processHost = (String) process.getElementParameter(EParameterName.HOST.getName()).getValue();
-        if (processHost != null && processHost.startsWith("\"")) {//$NON-NLS-1$
-            processHost = processHost.substring(1, processHost.length() - 1);
+        param = process.getElementParameter(EParameterName.HOST.getName());
+        String processHost = empty;
+        if (param != null) {
+            processHost = TalendTextUtils.removeQuotes((String) param.getValue());
         }
-        String processDBPort = (String) process.getElementParameter(EParameterName.PORT.getName()).getValue();
-        if (processDBPort != null && processDBPort.startsWith("\"")) {//$NON-NLS-1$
-            processDBPort = processDBPort.substring(1, processDBPort.length() - 1);
+        param = process.getElementParameter(EParameterName.PORT.getName());
+        String processDBPort = empty;
+        if (param != null) {
+            processDBPort = TalendTextUtils.removeQuotes((String) param.getValue());
         }
-        String processDBPass = (String) process.getElementParameter(EParameterName.PASS.getName()).getValue();
-        if (processDBPass != null && processDBPass.startsWith("\"")) {//$NON-NLS-1$
-            processDBPass = processDBPass.substring(1, processDBPass.length() - 1);
+        param = process.getElementParameter(EParameterName.PASS.getName());
+        String processDBPass = empty;
+        if (param != null) {
+            processDBPass = TalendTextUtils.removeQuotes((String) param.getValue());
         }
-        String processDBSID = (String) process.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue();
-        if (processDBSID != null && processDBSID.startsWith("\"")) {//$NON-NLS-1$
-            processDBSID = processDBSID.substring(1, processDBSID.length() - 1);
+        param = process.getElementParameter(EParameterName.SCHEMA_DB.getName());
+        String processDBSID = empty;
+        if (param != null) {
+            processDBSID = TalendTextUtils.removeQuotes((String) param.getValue());
         }
-
-        String processDBUser = (String) process.getElementParameter(EParameterName.USER.getName()).getValue();
-        if (processDBUser != null && processDBUser.startsWith("\"")) {//$NON-NLS-1$
-            processDBUser = processDBUser.substring(1, processDBUser.length() - 1);
+        param = process.getElementParameter(EParameterName.USER.getName());
+        String processDBUser = empty;
+        if (param != null) {
+            processDBUser = TalendTextUtils.removeQuotes((String) param.getValue());
         }
-        String processDBAdditionParameters = (String) process.getElementParameter(EParameterName.PROPERTIES.getName()).getValue();
-        if (processDBAdditionParameters != null && processDBAdditionParameters.startsWith("\"")) {//$NON-NLS-1$
-            processDBAdditionParameters = processDBAdditionParameters.substring(1, processDBAdditionParameters.length() - 1);
+        param = process.getElementParameter(EParameterName.PROPERTIES.getName());
+        String processDBAdditionParameters = empty;
+        if (param != null) {
+            processDBAdditionParameters = TalendTextUtils.removeQuotes((String) param.getValue());
         }
-
-        String dbURL = DatabaseConnStrUtil.getURLString(processDBType, "", processHost, processDBUser, processDBPass,//$NON-NLS-1$
-                processDBPort, processDBName, processDBFileName, processDBDatasouce, "", processDBAdditionParameters);//$NON-NLS-1$
-        dbURL.toString();
+        param = process.getElementParameter(EParameterName.DB_VERSION.getName());
+        String processDBVersion = empty;
+        if (param != null) {
+            processDBVersion = TalendTextUtils.removeQuotes((String) param.getValue());
+        }
+        String dbURL = DatabaseConnStrUtil.getURLString(processDBType, processDBVersion, processHost, processDBUser,
+                processDBPass, processDBPort, processDBName, processDBFileName, processDBDatasouce, processDBFileName,
+                processDBAdditionParameters);
         return dbURL;
     }
 

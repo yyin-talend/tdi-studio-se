@@ -124,7 +124,7 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
 
         // hywang add for bug 7587
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (activeEditor != null) {
+        if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
             AbstractTalendEditor workbenchPart = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
             Boolean currentEditorDirty = workbenchPart.isDirty();
             if (!currentEditorDirty) {
