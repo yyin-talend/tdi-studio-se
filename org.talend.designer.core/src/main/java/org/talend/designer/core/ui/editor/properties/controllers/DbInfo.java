@@ -156,7 +156,9 @@ public class DbInfo {
                 list = ExtractMetaDataUtils.connect(trueDBTypeForJDBC, url, username, pwd, driverClassName, driverJarPath,
                         dbVersion);
             } else {
-                list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion);
+                // driverJarPath set to null,to reget driverJarPath
+                driverJarPath = ""; //$NON-NLS-N$
+                list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion); //$NON-NLS-N$
             }
             if (list != null && list.size() > 0) {
                 for (int i = 0; i < list.size(); i++) {
