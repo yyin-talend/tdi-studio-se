@@ -378,6 +378,11 @@ public abstract class JobScriptsManager {
                 monitor);
     }
 
+    protected void generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics, boolean trace,
+            boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
+        ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
+    }
+
     protected IResource[] sourceResouces = null;
 
     private boolean isMultiNodes;
