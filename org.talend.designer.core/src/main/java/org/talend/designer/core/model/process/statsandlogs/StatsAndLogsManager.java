@@ -319,7 +319,7 @@ public class StatsAndLogsManager {
                             } else {
                                 String url = getUrl(process);
                                 connectionNode.getElementParameter(EParameterName.SHARED_CONNECTION_NAME.getName()).setValue(
-                                        TalendTextUtils.addQuotes(url + "_" + sharedConnName)); //$NON-NLS-1$
+                                        url + "+" + TalendTextUtils.addQuotes("_" + sharedConnName)); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                         setConnectionParameter(connectionNode, process, connectionUID, dataNode, nodeList);
@@ -369,56 +369,56 @@ public class StatsAndLogsManager {
         final String empty = ""; //$NON-NLS-1$
         String processDBFileName = empty;
         if (param != null) {
-            processDBFileName = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBFileName = (String) param.getValue();
         }
         param = process.getElementParameter(EParameterName.DATASOURCE.getName());
         String processDBDatasouce = empty;
         if (param != null) {
-            processDBDatasouce = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBDatasouce = (String) param.getValue();
         }
 
         param = process.getElementParameter(EParameterName.DBNAME.getName());
         String processDBName = empty;
         if (param != null) {
-            processDBName = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBName = (String) param.getValue();
         }
         param = process.getElementParameter(EParameterName.HOST.getName());
         String processHost = empty;
         if (param != null) {
-            processHost = TalendTextUtils.removeQuotes((String) param.getValue());
+            processHost = (String) param.getValue();
         }
         param = process.getElementParameter(EParameterName.PORT.getName());
         String processDBPort = empty;
         if (param != null) {
-            processDBPort = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBPort = (String) param.getValue();
         }
         param = process.getElementParameter(EParameterName.PASS.getName());
         String processDBPass = empty;
         if (param != null) {
-            processDBPass = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBPass = (String) param.getValue();
         }
         param = process.getElementParameter(EParameterName.SCHEMA_DB.getName());
         String processDBSID = empty;
         if (param != null) {
-            processDBSID = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBSID = (String) param.getValue();
         }
         param = process.getElementParameter(EParameterName.USER.getName());
         String processDBUser = empty;
         if (param != null) {
-            processDBUser = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBUser = (String) param.getValue();
         }
         param = process.getElementParameter(EParameterName.PROPERTIES.getName());
         String processDBAdditionParameters = empty;
         if (param != null) {
-            processDBAdditionParameters = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBAdditionParameters = (String) param.getValue();
         }
         param = process.getElementParameter(EParameterName.DB_VERSION.getName());
         String processDBVersion = empty;
         if (param != null) {
-            processDBVersion = TalendTextUtils.removeQuotes((String) param.getValue());
+            processDBVersion = (String) param.getValue();
         }
-        String dbURL = DatabaseConnStrUtil.getURLString(processDBType, processDBVersion, processHost, processDBUser,
-                processDBPass, processDBPort, processDBName, processDBFileName, processDBDatasouce, processDBFileName,
+        String dbURL = DatabaseConnStrUtil.getURLString(true, processDBType, processDBVersion, processHost, processDBUser,
+                processDBPass, processDBPort, processDBSID, processDBFileName, processDBDatasouce, processDBFileName,
                 processDBAdditionParameters);
         return dbURL;
     }
