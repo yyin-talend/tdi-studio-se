@@ -869,8 +869,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      */
     @Override
     public void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
-        if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)
-                || exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
+        if (getCurrentExportType().equals(EXPORTTYPE_WSWAR) || getCurrentExportType().equals(EXPORTTYPE_WSZIP)
+                || getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
             return;
         }
         for (ExportFileResource fileResource : resourcesToExport) {
