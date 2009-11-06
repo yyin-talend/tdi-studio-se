@@ -980,7 +980,7 @@ public class DataProcess {
         }
 
         String[] fsNodeNeedReplace = new String[] {
-                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
         Node currentComponent = (Node) graphicalNode;
         AbstractNode dataNode;
@@ -1170,7 +1170,15 @@ public class DataProcess {
         for (INode dataNode : dataNodeList) {
             if (dataNode instanceof AbstractNode) {
                 INode graphicalNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
-                ((AbstractNode) dataNode).setDesignSubjobStartNode(buildCheckMap.get(graphicalNode));
+                INode currentDataNode = buildCheckMap.get(graphicalNode);
+                if (currentDataNode == null || !dataNodeList.contains(currentDataNode)) {
+                    ((AbstractNode) dataNode).setDesignSubjobStartNode(null);
+                    // call the function to recalculate the subjobstart node
+                    currentDataNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
+                    // set the value with the code after the if,
+                    // so it will avoid to calculate it at each call later.
+                }
+                ((AbstractNode) dataNode).setDesignSubjobStartNode(currentDataNode);
             }
         }
 
