@@ -1622,6 +1622,9 @@ public class DatabaseForm extends AbstractForm {
                 if (schemaText.getText().equals("")) { //$NON-NLS-1$
                     schemaText.setText("dbo"); //$NON-NLS-1$
                 }
+            } else if (template == EDatabaseConnTemplate.VERTICA) { // hywang add for bug 0009553
+                schemaText.setEditable(true);
+                addContextParams(EDBParamName.Schema, true);
             } else {
                 // schemaText.hide();
                 addContextParams(EDBParamName.Schema, false);
