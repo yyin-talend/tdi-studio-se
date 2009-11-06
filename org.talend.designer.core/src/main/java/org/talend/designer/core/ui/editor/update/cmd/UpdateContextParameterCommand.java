@@ -143,8 +143,8 @@ public class UpdateContextParameterCommand extends Command {
                         && result.isChecked()) {
                     List<IContext> list = (List<IContext>) updateObject;
                     String name = null;
-                    if (list.size() > 0) {
-                        IContext context = list.get(0);
+                    for (int j = 0; j < list.size(); j++) {
+                        IContext context = list.get(j);
                         name = context.getName();
 
                         if (!listContext.contains(context)) {
@@ -161,7 +161,7 @@ public class UpdateContextParameterCommand extends Command {
                             listContext.add(newContext);
 
                         }
-                        process.getContextManager().getListContext();
+                        // process.getContextManager().getListContext();
                     }
                 }
                 return;
