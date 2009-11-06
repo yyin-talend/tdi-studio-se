@@ -622,6 +622,9 @@ public class TableController extends AbstractElementPropertySectionController {
         String[] items = param.getListItemsDisplayCodeName();
         Object[] itemsValue = param.getListItemsValue();
         IElementParameter tmpParam;
+        if (itemsValue.length == 0) {
+            return line;
+        }
 
         tmpParam = (IElementParameter) itemsValue[0];
         switch (tmpParam.getField()) {
@@ -699,7 +702,7 @@ public class TableController extends AbstractElementPropertySectionController {
         Object[] itemsValue = param.getListItemsValue();
         IElementParameter tmpParam;
 
-        if (itemsValue[0] == null) {
+        if (itemsValue.length == 0 || itemsValue[0] == null) {
             return false;
         }
 

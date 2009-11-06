@@ -255,7 +255,9 @@ public enum EParameterName {
     IMPLICT_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.ImplictDefaultProjectsetting")), //$NON-NLS-1$
 
     // BASED_ON_INPUT_SCHEMAS
-    BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS"); //$NON-NLS-1$
+    BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS"), //$NON-NLS-1$
+
+    VALUES("VALUES"); //$NON-NLS-1$
 
     private String displayName;
 

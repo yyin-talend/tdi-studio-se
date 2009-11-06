@@ -81,6 +81,8 @@ public class ElementParameter implements IElementParameter {
 
     private boolean basedOnSubjobStarts = false;
 
+    private boolean columnsBasedOnSchema = false;
+
     // achen add
     private boolean basedOnInputSchema = false;
 
@@ -862,5 +864,13 @@ public class ElementParameter implements IElementParameter {
      */
     public void setReadOnlyIf(String readOnly) {
         this.readonlyIf = readOnly;
+    }
+
+    public boolean isColumnsBasedOnSchema() {
+        return this.columnsBasedOnSchema;
+    }
+
+    public void setColumnsBasedOnSchema(boolean columnsBasedOnSchema) {
+        this.columnsBasedOnSchema = columnsBasedOnSchema;
     }
 }

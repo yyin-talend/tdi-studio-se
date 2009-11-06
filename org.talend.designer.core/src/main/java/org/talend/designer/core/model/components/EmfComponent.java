@@ -104,8 +104,8 @@ import org.talend.repository.model.ExternalNodesFactory;
 
 /**
  * 
- * Component manager that read each information in a xml file with Emf. <br/>
- * $Id$
+ * Component manager that read each information in a xml file with Emf. <br/> $Id: EmfComponent.java 30440 2009-09-29
+ * 05:11:41Z nrousseau $
  */
 public class EmfComponent implements IComponent {
 
@@ -1571,6 +1571,9 @@ public class EmfComponent implements IComponent {
             }
             if (items.isSetBASEDONSUBJOBSTARTS()) {
                 param.setBasedOnSubjobStarts(items.isBASEDONSUBJOBSTARTS());
+            }
+            if (items.isSetCOLUMNSBASEDONSCHEMA()) {
+                param.setColumnsBasedOnSchema(items.isCOLUMNSBASEDONSCHEMA());
             }
             nbItems = items.getITEM().size();
             if (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()) {

@@ -59,6 +59,7 @@ import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IEbcdicConstant;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EComponentCategory;
@@ -1318,7 +1319,7 @@ public class Process extends Element implements IProcess2 {
         }
         nc.setData(nType.getBinaryData(), nType.getStringData());
         loadSchema(nc, nType);
-
+        loadColumnsBasedOnSchema(nc, listParamType);
         addNodeContainer(new NodeContainer(nc));
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
@@ -1329,6 +1330,79 @@ public class Process extends Element implements IProcess2 {
         }
 
         return nc;
+    }
+
+    private void loadColumnsBasedOnSchema(Node nc, EList listParamType) {
+        List<IMetadataTable> metadataList = nc.getMetadataList();
+        IElementParameter valuesParameter = nc.getElementParameter(EParameterName.VALUES.getName());
+        if (metadataList == null || valuesParameter == null || metadataList.size() == 0) {
+            return;
+        }
+        List<IMetadataColumn> listColumns = metadataList.get(0).getListColumns();
+        if (listColumns == null) {
+            return;
+        }
+        String[] listItemsDisplayValue = new String[listColumns.size()];
+        String[] listItemsDisplayCodeValue = new String[listColumns.size()];
+        Object[] listItemsValue = new Object[listColumns.size()];
+        ElementParameter newParam = null;
+        for (int i = 0; i < listColumns.size(); i++) {
+            IMetadataColumn column = listColumns.get(i);
+            listItemsDisplayCodeValue[i] = column.getLabel().toUpperCase();
+            listItemsDisplayValue[i] = column.getLabel();
+            newParam = new ElementParameter(nc);
+            newParam.setName(column.getLabel().toUpperCase()); //$NON-NLS-1$
+            newParam.setDisplayName(""); //$NON-NLS-1$
+            newParam.setField(EParameterFieldType.TEXT);
+            newParam.setValue(""); //$NON-NLS-1$
+            listItemsValue[i] = newParam;
+        }
+        valuesParameter.setListItemsDisplayName(listItemsDisplayValue);
+        valuesParameter.setListItemsDisplayCodeName(listItemsDisplayCodeValue);
+        valuesParameter.setListItemsValue(listItemsValue);
+
+        ElementParameterType pType = null;
+        for (int j = 0; j < listParamType.size(); j++) {
+            pType = (ElementParameterType) listParamType.get(j);
+            if (pType != null) {
+                IElementParameter param = nc.getElementParameter(pType.getName());
+                if (param.getField().equals(EParameterFieldType.TABLE)) {
+                    List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                    String[] codeList = param.getListItemsDisplayCodeName();
+                    Map<String, Object> lineValues = null;
+                    for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
+                        boolean found = false;
+                        for (int i = 0; i < codeList.length && !found; i++) {
+                            if (codeList[i].equals(elementValue.getElementRef())) {
+                                found = true;
+                            }
+                        }
+                        if (found) {
+                            if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
+                                lineValues = new HashMap<String, Object>();
+                                tableValues.add(lineValues);
+                            }
+                            lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                            if (elementValue.getType() != null) {
+                                lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue.getType());
+                            }
+                        }
+                    }
+                    // check missing codes in the table to have the default values.
+                    for (Map<String, Object> line : tableValues) {
+                        for (int i = 0; i < codeList.length; i++) {
+                            if (!line.containsKey(codeList[i])) {
+                                IElementParameter itemParam = (IElementParameter) param.getListItemsValue()[i];
+                                line.put(codeList[i], itemParam.getValue());
+                            }
+                        }
+                    }
+
+                    nc.setPropertyValue(pType.getName(), tableValues);
+                }
+            }
+        }
+
     }
 
     /**

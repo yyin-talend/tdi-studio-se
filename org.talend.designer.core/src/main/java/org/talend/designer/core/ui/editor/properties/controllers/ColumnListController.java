@@ -53,6 +53,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -440,6 +441,63 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 }
                 paramValues.clear();
                 paramValues.addAll(newParamValues);
+            } else if (param.isColumnsBasedOnSchema()) {
+                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+                List<Map<String, Object>> newParamValues = new ArrayList<Map<String, Object>>();
+                String[] listRepositoryItem = new String[columnNameList.length];
+                String[] listItemsDisplayValue = new String[columnNameList.length];
+                String[] listItemsDisplayCodeValue = new String[columnNameList.length];
+                Object[] listItemsValue = new Object[columnNameList.length];
+                String[] listItemsShowIf = new String[columnNameList.length];
+                String[] listItemsNotShowIf = new String[columnNameList.length];
+                ElementParameter newParam;
+                for (int j = 0; j < columnNameList.length; j++) {
+
+                    String columnName = columnNameList[j];
+                    listItemsDisplayCodeValue[j] = columnName.toUpperCase();
+                    listItemsDisplayValue[j] = columnName;
+                    listRepositoryItem[j] = ""; //$NON-NLS-1$
+                    listItemsShowIf[j] = null;
+                    listItemsNotShowIf[j] = null;
+                    newParam = new ElementParameter(node);
+                    newParam.setName(columnName.toUpperCase()); //$NON-NLS-1$
+                    newParam.setDisplayName(""); //$NON-NLS-1$
+                    newParam.setField(EParameterFieldType.TEXT);
+                    newParam.setValue(""); //$NON-NLS-1$
+                    listItemsValue[j] = newParam;
+
+                    boolean found = false;
+                    ColumnNameChanged colChanged = null;
+                    if (columnsChanged != null) {
+                        for (int k = 0; k < columnsChanged.size() && !found; k++) {
+                            colChanged = columnsChanged.get(k);
+                            if (colChanged.getNewName().equals(columnName)) {
+                                found = true;
+                            }
+                        }
+                    }
+
+                    for (int k = 0; k < paramValues.size(); k++) {
+                        Map<String, Object> line = paramValues.get(k);
+                        Map<String, Object> newline = new HashMap<String, Object>();
+                        if (found) {
+                            Object object = line.get(colChanged.getOldName().toUpperCase());
+                            if (object != null) {
+                                newline.put(colChanged.getNewName().toUpperCase(), object);
+                                line.remove(colChanged.getOldName().toUpperCase());
+                                line.putAll(newline);
+                            }
+                        }
+                    }
+
+                }
+                param.setListItemsDisplayName(listItemsDisplayValue);
+                param.setListItemsDisplayCodeName(listItemsDisplayCodeValue);
+                param.setListItemsValue(listItemsValue);
+                param.setListRepositoryItems(listRepositoryItem);
+                param.setListItemsShowIf(listItemsShowIf);
+                param.setListItemsNotShowIf(listItemsNotShowIf);
+
             }
         }
         synLengthTipFlag = null;
