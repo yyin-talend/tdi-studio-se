@@ -102,8 +102,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            IContext context, String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
-            throws ProcessorException {
+            IContext context, String launcher, int statisticPort, int tracePort, String... codeOptions) throws ProcessorException {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
@@ -111,14 +110,17 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             selectedJobVersion = preExportResource(process, i, selectedJobVersion);
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, context, contextName, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES, isOptionChoosed(
-                                exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                generateJobFiles(processItem, context, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                        progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
-            List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
-                    processItem, selectedJobVersion, resources, codeOptions);
-            resources.addAll(childrenList);
+            String contextName = context.getName();
+            if (contextName != null) {
+                List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort,
+                        tracePort, i, processItem, selectedJobVersion, resources, codeOptions);
+                resources.addAll(childrenList);
+            }
             process[i].addResources(resources);
 
             // Gets job designer resouce
@@ -166,6 +168,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * DOC informix Comment method "posExportResource".
+     * 
      * @param process
      * @param exportChoice
      * @param contextName
@@ -188,12 +191,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
                 selectedJobVersion);
 
-        addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i],
-                selectedJobVersion);
+        addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i], selectedJobVersion);
 
         addDependencies(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needDependencies), process[i]);
-        resources.addAll(getJobScripts(processItem, selectedJobVersion, (Boolean) exportChoice
-                .get(ExportChoice.needJobScript))); // always need job generation
+        resources.addAll(getJobScripts(processItem, selectedJobVersion, (Boolean) exportChoice.get(ExportChoice.needJobScript))); // always
+        // need
+        // job
+        // generation
 
         addContextScripts(process[i], selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needContext));
 
@@ -206,6 +210,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     /**
      * DOC informix Comment method "preExportResource".
+     * 
      * @param process
      * @param i
      * @param selectedJobVersion

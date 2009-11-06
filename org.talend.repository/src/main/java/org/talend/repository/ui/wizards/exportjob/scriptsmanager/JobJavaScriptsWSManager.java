@@ -50,7 +50,6 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.core.model.process.IContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
@@ -91,7 +90,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            IContext context, String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
             throws ProcessorException {
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
@@ -134,9 +133,9 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
             if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
-                generateJobFiles(processItem, context, contextName, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES, BooleanUtils
-                                .isTrue((Boolean) exportChoice.get(ExportChoice.applyToChildren)), progressMonitor);
+                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue((Boolean) exportChoice
+                                .get(ExportChoice.applyToChildren)), progressMonitor);
             }
             // generate the WSDL file
             ExportFileResource wsdlFile = getWSDLFile(processItem, BooleanUtils.isTrue((Boolean) exportChoice

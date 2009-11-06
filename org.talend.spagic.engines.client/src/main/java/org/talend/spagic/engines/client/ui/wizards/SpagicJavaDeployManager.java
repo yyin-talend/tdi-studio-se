@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.genhtml.HTMLDocUtils;
-import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
@@ -50,7 +49,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
 
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            IContext context, String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
             throws ProcessorException {
 
         for (int i = 0; i < process.length; i++) {

@@ -852,10 +852,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     public List<ExportFileResource> getExportResources() throws ProcessorException {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
-            return manager.getExportResources(process, exportChoiceMap, null, contextCombo.getText(), launcherCombo.getText(),
+            return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                     IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
         } else {
-            return manager.getExportResources(process, exportChoiceMap, null,
+            return manager.getExportResources(process, exportChoiceMap,
                     contextCombo == null ? "Default" : contextCombo.getText(), "all", //$NON-NLS-1$  //$NON-NLS-2$
                     IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
         }

@@ -80,8 +80,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            IContext context, String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
-            throws ProcessorException {
+            IContext context, String launcher, int statisticPort, int tracePort, String... codeOptions) throws ProcessorException {
 
         ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -90,14 +89,18 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             String selectedJobVersion = getSelectedJobVersion();
             selectedJobVersion = preExportResource(process, i, selectedJobVersion);
             if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
-                generateJobFiles(processItem, context, contextName, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice
-                                .get(ExportChoice.applyToChildren), progressMonitor);
+                generateJobFiles(processItem, context, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+                        statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice.get(ExportChoice.applyToChildren),
+                        progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
-            boolean needChildren = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
-                    processItem, selectedJobVersion, resources, codeOptions);
-            addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
+            String contextName = context.getName();
+            if (contextName != null) {
+                boolean needChildren = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort,
+                        i, processItem, selectedJobVersion, resources, codeOptions);
+                addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName,
+                        selectedJobVersion);
+            }
             process[i].addResources(resources);
         }
         return Arrays.asList(process);
@@ -142,6 +145,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
     /**
      * DOC informix Comment method "posExportResource".
+     * 
      * @param process
      * @param exportChoice
      * @param contextName
@@ -179,8 +183,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             ExceptionHandler.process(e);
         }
 
-        addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)),
-                process[i], selectedJobVersion);
+        addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)), process[i],
+                selectedJobVersion);
         List<URL> talendLibraries = getTalendLibraries((Boolean) exportChoice.get(ExportChoice.needTalendLibraries));
         if (talendLibraries.size() > 0) {
             process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
@@ -196,6 +200,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
     /**
      * DOC informix Comment method "preExportResource".
+     * 
      * @param process
      * @param i
      * @param selectedJobVersion

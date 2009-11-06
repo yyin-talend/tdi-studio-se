@@ -157,8 +157,8 @@ public abstract class JobScriptsManager {
      */
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Object> exportChoiceMap, IContext context, String contextName, String launcher, int statisticPort,
-            int tracePort, String... codeOptions) throws ProcessorException;
+            Map<ExportChoice, Object> exportChoiceMap, IContext context, String launcher, int statisticPort, int tracePort,
+            String... codeOptions) throws ProcessorException;
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
             Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
@@ -371,17 +371,23 @@ public abstract class JobScriptsManager {
      * Generates the job files.
      * 
      * @param needGenerateCode
+     * @param context
+     * @param process
+     * @throws ProcessorException
+     */
+    protected void generateJobFiles(ProcessItem process, IContext context, String version, boolean statistics, boolean trace,
+            boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
+        ProcessorUtilities.generateCode(process, context, version, statistics, trace, applyContextToChildren, monitor);
+    }
+
+    /**
+     * Generates the job files.
+     * 
+     * @param needGenerateCode
      * @param contextName
      * @param process
      * @throws ProcessorException
      */
-    protected void generateJobFiles(ProcessItem process, IContext context, String contextName, String version,
-            boolean statistics, boolean trace, boolean applyContextToChildren, IProgressMonitor monitor)
-            throws ProcessorException {
-        ProcessorUtilities.generateCode(process, context, contextName, version, statistics, trace, applyContextToChildren,
-                monitor);
-    }
-
     protected void generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics, boolean trace,
             boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
         ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
