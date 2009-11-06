@@ -40,8 +40,10 @@ if (bSupportExcel){
   }
 %>
 
-  if (sheets_<%=cid%>.size() <= 0)
+  if (sheets_<%=cid%>.size() <= 0){
+    wb_<%=cid%>.close();
     throw new RuntimeException("Special sheets not exist!");
+  }
 
   int lineCount_<%=cid %> = 0;
   int emptyLineCount_<%=cid%> = 0;
@@ -62,7 +64,8 @@ if (bSupportExcel){
       }
       emptyLineCount_<%=cid%> += bIsEmptyRow ? 1 : 0;    
     }
-  }
+  }  
+  wb_<%=cid%>.close();
 <%} else {//--middle 1%>
   java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>)));
   int lineCount_<%=cid %> = 0;
