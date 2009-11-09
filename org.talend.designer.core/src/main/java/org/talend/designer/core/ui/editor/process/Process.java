@@ -1319,7 +1319,9 @@ public class Process extends Element implements IProcess2 {
         }
         nc.setData(nType.getBinaryData(), nType.getStringData());
         loadSchema(nc, nType);
+
         loadColumnsBasedOnSchema(nc, listParamType);
+
         addNodeContainer(new NodeContainer(nc));
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
@@ -1335,9 +1337,15 @@ public class Process extends Element implements IProcess2 {
     private void loadColumnsBasedOnSchema(Node nc, EList listParamType) {
         List<IMetadataTable> metadataList = nc.getMetadataList();
         IElementParameter valuesParameter = nc.getElementParameter(EParameterName.VALUES.getName());
+
         if (metadataList == null || valuesParameter == null || metadataList.size() == 0) {
             return;
         }
+
+        if (!valuesParameter.isColumnsBasedOnSchema()) {
+            return;
+        }
+
         List<IMetadataColumn> listColumns = metadataList.get(0).getListColumns();
         if (listColumns == null) {
             return;
