@@ -21,6 +21,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -42,21 +43,25 @@ public class MigrateOracleJobSettingsParameterMigrationTask extends AbstractJobM
      * 
      * @see org.talend.core.model.migration.AbstractItemMigrationTask#execute(org.talend.core.model.properties.Item)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
         if (processType != null) {
             boolean modified = false;
-            EList elementParameters = processType.getParameters().getElementParameter();
-            for (int i = 0; i < elementParameters.size(); i++) {
-                ElementParameterType param = (ElementParameterType) elementParameters.get(i);
-                if (param.getName().equals("DB_TYPE_IMPLICIT_CONTEXT") || param.getName().equals("DB_TYPE")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    if (ORACLE_INPUT.equals(param.getValue())) {
-                        param.setValue(ORACLE_INPUT + ORACLE_SID);
-                        modified = true;
-                    } else if (ORACLE_OUTPUT.equals(param.getValue())) {
-                        param.setValue(ORACLE_OUTPUT + ORACLE_SID);
-                        modified = true;
+            final ParametersType parameters = processType.getParameters();
+            if (parameters != null) {
+                EList elementParameters = parameters.getElementParameter();
+                for (int i = 0; i < elementParameters.size(); i++) {
+                    ElementParameterType param = (ElementParameterType) elementParameters.get(i);
+                    if (param.getName().equals("DB_TYPE_IMPLICIT_CONTEXT") || param.getName().equals("DB_TYPE")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        if (ORACLE_INPUT.equals(param.getValue())) {
+                            param.setValue(ORACLE_INPUT + ORACLE_SID);
+                            modified = true;
+                        } else if (ORACLE_OUTPUT.equals(param.getValue())) {
+                            param.setValue(ORACLE_OUTPUT + ORACLE_SID);
+                            modified = true;
+                        }
                     }
                 }
             }
