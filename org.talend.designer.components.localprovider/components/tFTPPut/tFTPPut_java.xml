@@ -112,7 +112,7 @@ COMPATIBILITY="ALL"
     <PARAMETER NAME="REMOTEDIR" FIELD="TEXT" REQUIRED="false" NUM_ROW="5">
       <DEFAULT>"."</DEFAULT>
     </PARAMETER>  
-    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="6" NOT_SHOW_IF="(SFTP=='true')">
+    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="6" SHOW_IF="(USE_EXISTING_CONNECTION == 'true') OR (SFTP=='false')">
       <ITEMS DEFAULT="ascii">
      	<ITEM NAME="ASCII"  VALUE="ascii" />
         <ITEM NAME="BINARY"  VALUE="binary" />        
@@ -121,19 +121,22 @@ COMPATIBILITY="ALL"
      <PARAMETER 
     	NAME="OVERWRITE" 
     	FIELD="CLOSED_LIST" 
-    	NOT_SHOW_IF="(SFTP=='true') OR ((SFTP =='false') AND (APPEND == 'true'))"
-    	NUM_ROW="6" >
+    	SHOW_IF="((SFTP =='false') AND (APPEND == 'false')) OR ((USE_EXISTING_CONNECTION == 'true') AND (APPEND == 'false'))"
+    	NUM_ROW="7">
     	<ITEMS DEFAULT="never">
      	<ITEM NAME="NEVER" VALUE="never" />
         <ITEM NAME="ALWAYS"  VALUE="always" />        
         <ITEM NAME="SIZE_DIFFER"  VALUE="size_differ" />        
       </ITEMS>
     </PARAMETER>
+ 	<PARAMETER NAME="APPEND" FIELD="CHECK" NUM_ROW="7" SHOW_IF="(USE_EXISTING_CONNECTION == 'true') OR (SFTP=='false')">
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
     <PARAMETER 
     	NAME="SFTPOVERWRITE" 
     	FIELD="CLOSED_LIST" 
-    	NUM_ROW="6" 
-    	SHOW_IF="(SFTP=='true')">
+    	NUM_ROW="8" 
+    	SHOW_IF="(SFTP=='true') OR (USE_EXISTING_CONNECTION == 'true')">
     	<ITEMS DEFAULT="overwrite">
      	<ITEM NAME="OVERWRITE" VALUE="overwrite"/>    
         <ITEM NAME="RESUME"  VALUE="resume"/>  
@@ -144,27 +147,24 @@ COMPATIBILITY="ALL"
       NAME="AUTH_METHOD"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
-      SHOW_IF="(SFTP=='true')"
+      SHOW_IF="(SFTP=='true') AND (USE_EXISTING_CONNECTION == 'false')"
     >
       <ITEMS DEFAULT="PASSWORD">
         <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
         <ITEM NAME="PASSWORD"   VALUE="PASSWORD"/>
       </ITEMS>
     </PARAMETER>
- 	<PARAMETER NAME="APPEND" FIELD="CHECK" NUM_ROW="6" NOT_SHOW_IF="SFTP == 'true'">
-    	<DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="8" NB_LINES="5">
+    <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="10" NB_LINES="5">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
         <ITEM NAME="NEWNAME" VALUE="&quot;&quot;"/>
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="7" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="9" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    <PARAMETER NAME="CONNECT_MODE" FIELD="CLOSED_LIST" NUM_ROW="100" SHOW_IF="(SFTP=='false')">
+    <PARAMETER NAME="CONNECT_MODE" FIELD="CLOSED_LIST" NUM_ROW="100" SHOW_IF="(SFTP=='false') AND (USE_EXISTING_CONNECTION == 'false')">
       <ITEMS DEFAULT="PASSIVE">
         <ITEM NAME="PASSIVE"  VALUE="PASSIVE" />        
      	<ITEM NAME="ACTIVE"  VALUE="ACTIVE" />

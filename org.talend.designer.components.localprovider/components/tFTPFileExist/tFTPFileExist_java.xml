@@ -118,7 +118,7 @@ COMPATIBILITY="ALL"
       NAME="AUTH_METHOD"
       FIELD="CLOSED_LIST"
       NUM_ROW="80"
-      SHOW_IF="(SFTP=='true')"
+      SHOW_IF="(SFTP=='true') AND (USE_EXISTING_CONNECTION == 'false')"
     >
       <ITEMS DEFAULT="PASSWORD">
         <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
