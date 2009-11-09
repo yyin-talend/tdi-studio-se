@@ -137,31 +137,33 @@ public class StatsAndLogsManager {
         /*
          * maybe, need create every of committing node for log/stat/metter.
          */
-        String[] javaDbComponents = StatsAndLogsConstants.DB_OUTPUT_COMPONENTS;
-        for (String dbComponent : javaDbComponents) {
-            String commitComponentName = null;
-            if (OracleComponentHelper.filterOracleConnectionType(
-                    (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue()).equals(dbComponent)) {
-                if (dbComponent.endsWith("Output")) {//$NON-NLS-1$
-                    subString = dbComponent.substring(0, dbComponent.lastIndexOf("Output"));//$NON-NLS-1$
-                    commitComponentName = subString + "Commit";//$NON-NLS-1$
-                } else {
-                    commitComponentName = "tOracleCommit";//$NON-NLS-1$
-                }
-                commitComponent = ComponentsFactoryProvider.getInstance().get(commitComponentName);
-                if (commitComponent != null) {
-                    connectionUID2 = connectionUID + "_Commit";//$NON-NLS-1$ 
-                    commitNode = new DataNode(commitComponent, connectionUID2);
-                    commitNode.setSubProcessStart(true);
-                    commitNode.setActivate(true);
-                    commitNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(connectionUID);
-                    IElementParameter elementParameter = commitNode.getElementParameter("CLOSE");
-                    if (elementParameter != null) {
-                        elementParameter.setValue(Boolean.FALSE); //$NON-NLS-1$
+        if (dbFlag) {
+            String[] javaDbComponents = StatsAndLogsConstants.DB_OUTPUT_COMPONENTS;
+            for (String dbComponent : javaDbComponents) {
+                String commitComponentName = null;
+                if (OracleComponentHelper.filterOracleConnectionType(
+                        (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue()).equals(dbComponent)) {
+                    if (dbComponent.endsWith("Output")) {//$NON-NLS-1$
+                        subString = dbComponent.substring(0, dbComponent.lastIndexOf("Output"));//$NON-NLS-1$
+                        commitComponentName = subString + "Commit";//$NON-NLS-1$
+                    } else {
+                        commitComponentName = "tOracleCommit";//$NON-NLS-1$
                     }
+                    commitComponent = ComponentsFactoryProvider.getInstance().get(commitComponentName);
+                    if (commitComponent != null) {
+                        connectionUID2 = connectionUID + "_Commit";//$NON-NLS-1$ 
+                        commitNode = new DataNode(commitComponent, connectionUID2);
+                        commitNode.setSubProcessStart(true);
+                        commitNode.setActivate(true);
+                        commitNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(connectionUID);
+                        IElementParameter elementParameter = commitNode.getElementParameter("CLOSE");
+                        if (elementParameter != null) {
+                            elementParameter.setValue(Boolean.FALSE); //$NON-NLS-1$
+                        }
 
-                    commitNode.setProcess(process);
-                    nodeList.add(commitNode);
+                        commitNode.setProcess(process);
+                        nodeList.add(commitNode);
+                    }
                 }
             }
         }
@@ -176,13 +178,15 @@ public class StatsAndLogsManager {
                 logsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
                         basePath + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue()); //$NON-NLS-1$
             }
-            if (commitNode != null) {
-                connectionNode = addConnection(connectionNode, process, connectionUID, logsNode, nodeList, commitNode);
-            } else {
-                useNoConnectionComponentDB(logsNode, process, connectionUID);
+            if (dbFlag) {
+                if (commitNode != null) {
+                    connectionNode = addConnection(connectionNode, process, connectionUID, logsNode, nodeList, commitNode);
+                } else {
+                    useNoConnectionComponentDB(logsNode, process, connectionUID);
+                }
+                logsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
+                        process.getElementParameter(EParameterName.TABLE_LOGS.getName()).getValue());
             }
-            logsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
-                    process.getElementParameter(EParameterName.TABLE_LOGS.getName()).getValue());
             logsNode.getElementParameter(EParameterName.CATCH_RUNTIME_ERRORS.getName()).setValue(
                     process.getElementParameter(EParameterName.CATCH_RUNTIME_ERRORS.getName()).getValue());
             logsNode.getElementParameter(EParameterName.CATCH_USER_ERRORS.getName()).setValue(
@@ -204,14 +208,15 @@ public class StatsAndLogsManager {
                 statsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
                         basePath + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue()); //$NON-NLS-1$
             }
-            if (commitNode != null) {
-                connectionNode = addConnection(connectionNode, process, connectionUID, statsNode, nodeList, commitNode);
-            } else {
-                useNoConnectionComponentDB(statsNode, process, connectionUID);
+            if (dbFlag) {
+                if (commitNode != null) {
+                    connectionNode = addConnection(connectionNode, process, connectionUID, statsNode, nodeList, commitNode);
+                } else {
+                    useNoConnectionComponentDB(statsNode, process, connectionUID);
+                }
+                statsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
+                        process.getElementParameter(EParameterName.TABLE_STATS.getName()).getValue());
             }
-            statsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
-                    process.getElementParameter(EParameterName.TABLE_STATS.getName()).getValue());
-
             statsNode.setProcess(process);
             nodeList.add(statsNode);
         }
@@ -226,13 +231,15 @@ public class StatsAndLogsManager {
                 meterNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
                         basePath + process.getElementParameter(EParameterName.FILENAME_METTER.getName()).getValue());
             }
-            if (commitNode != null) {
-                connectionNode = addConnection(connectionNode, process, connectionUID, meterNode, nodeList, commitNode);
-            } else {
-                useNoConnectionComponentDB(meterNode, process, connectionUID);
+            if (dbFlag) {
+                if (commitNode != null) {
+                    connectionNode = addConnection(connectionNode, process, connectionUID, meterNode, nodeList, commitNode);
+                } else {
+                    useNoConnectionComponentDB(meterNode, process, connectionUID);
+                }
+                meterNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
+                        process.getElementParameter(EParameterName.TABLE_METER.getName()).getValue());
             }
-            meterNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
-                    process.getElementParameter(EParameterName.TABLE_METER.getName()).getValue());
 
             meterNode.setProcess(process);
             nodeList.add(meterNode);
