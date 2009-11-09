@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -353,6 +354,13 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
+                boolean currentColumnStillExist = ArrayUtils.contains(curColumnNameList, param.getValue());
+
+                if (curColumnNameList.length > 0 && !currentColumnStillExist) {
+                    param.setValue(curColumnValueList[0]);
+                } else if (!currentColumnStillExist) {
+                    param.setValue(""); //$NON-NLS-1$
+                }
                 syncNodePropertiesColumns(param, columnsChanged, curColumnNameList);
 
             }
