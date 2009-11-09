@@ -655,6 +655,7 @@ public class SelectorTableForm extends AbstractForm {
 
             initExistingNames();
             String labelName = IndiceHelper.getIndexedLabel(tableString, existingNames);
+
             if (forTemplate) {
                 labelName = MetadataTool.validateValue(labelName);
             }
@@ -836,9 +837,10 @@ public class SelectorTableForm extends AbstractForm {
             metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             initExistingNames();
             String lableName = IndiceHelper.getIndexedLabel(tableString, existingNames);
-            if (forTemplate) {
-                lableName = MetadataTool.validateValue(lableName);
-            }
+
+            // if (forTemplate) { //hywang modified for 0010012
+            lableName = MetadataTool.validateValue(lableName);
+            // }
             metadataTable.setLabel(lableName);
             metadataTable.setSourceName(tableString);
             metadataTable.setId(factory.getNextId());
