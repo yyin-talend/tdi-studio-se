@@ -363,6 +363,16 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
 
     /**
      * 
+     * wzhangComment method "isMDMOutput".
+     * 
+     * @return
+     */
+    public boolean istMDMOutput() {
+        return getComponent().getName().equals("tMDMOutput"); //$NON-NLS-1$
+    }
+
+    /**
+     * 
      * wzhang Comment method "istFileOutputMSXML".
      * 
      * @return

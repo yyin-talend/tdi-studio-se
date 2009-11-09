@@ -65,7 +65,7 @@ public class FOXMain {
      * @return
      */
     public void createUI(Composite parent) {
-        if (!connector.istWriteXMLField()) { //$NON-NLS-1$
+        if (!connector.istWriteXMLField() && !connector.istMDMOutput()) {
             IConnection inConn = null;
             List<? extends IConnection> incomeConnections = connector.getIncomingConnections();
             if (connector.istFileOutputMSXML() && incomeConnections.size() < 1) {

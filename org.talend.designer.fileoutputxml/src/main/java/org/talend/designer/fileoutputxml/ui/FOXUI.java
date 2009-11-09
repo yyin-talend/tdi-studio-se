@@ -268,7 +268,7 @@ public class FOXUI {
     }
 
     protected void initSchemaTable() {
-        if (!externalNode.istWriteXMLField()) { //$NON-NLS-1$
+        if (!externalNode.istWriteXMLField() && !externalNode.istMDMOutput()) {
             IMetadataTable metadataTable = this.externalNode.getMetadataList().get(0);
             if (metadataTable != null) {
                 List<IMetadataColumn> columnList = metadataTable.getListColumns();

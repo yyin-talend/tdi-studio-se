@@ -138,8 +138,8 @@ public class FOXManager {
         if (metadataTable == null) {
             metadataTable = new MetadataTable();
         }
-
-        if (foxComponent.getComponent().getName().equals("tWriteXMLField")) { //$NON-NLS-1$
+        String componentName = foxComponent.getComponent().getName();
+        if (componentName.equals("tWriteXMLField") || componentName.equals("tMDMOutput")) { //$NON-NLS-1$ //$NON-NLS-2$
             IConnection inConn = null;
             for (IConnection conn : foxComponent.getIncomingConnections()) {
                 if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
