@@ -161,14 +161,21 @@ public class FOXManager {
         String mainPath = null;
         String currentPath = null;
         String defaultValue = null;
-        int nodeOrder;
+        int nodeOrder = 0;
+        boolean haveOrder = true;
 
         // build root tree
         List<Map<String, String>> rootTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.ROOT);
         for (Map<String, String> rootMap : rootTable) {
             String newPath = rootMap.get(FileOutputXMLComponent.PATH);
             defaultValue = rootMap.get(FileOutputXMLComponent.VALUE);
-            nodeOrder = Integer.valueOf(rootMap.get(FileOutputXMLComponent.ORDER)).intValue();
+            String orderValue = rootMap.get(FileOutputXMLComponent.ORDER);
+            if (orderValue == null || "".equals(orderValue)) {
+                haveOrder = false;
+            }
+            if (haveOrder) {
+                nodeOrder = Integer.valueOf(rootMap.get(FileOutputXMLComponent.ORDER)).intValue();
+            }
             if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 temp.setDefaultValue(defaultValue);
@@ -190,7 +197,9 @@ public class FOXManager {
                 current = temp;
                 currentPath = newPath;
             }
-            temp.setOrder(nodeOrder);
+            if (haveOrder) {
+                temp.setOrder(nodeOrder);
+            }
             String columnName = rootMap.get(FileOutputXMLComponent.COLUMN);
             if (columnName != null && columnName.length() > 0) {
                 temp.setColumn(metadataTable.getColumn(columnName));
@@ -206,7 +215,13 @@ public class FOXManager {
         for (Map<String, String> groupMap : groupTable) {
             String newPath = groupMap.get(FileOutputXMLComponent.PATH);
             defaultValue = groupMap.get(FileOutputXMLComponent.VALUE);
-            nodeOrder = Integer.valueOf(groupMap.get(FileOutputXMLComponent.ORDER)).intValue();
+            String orderValue = groupMap.get(FileOutputXMLComponent.ORDER);
+            if (orderValue == null || "".equals(orderValue)) {
+                haveOrder = false;
+            }
+            if (haveOrder) {
+                nodeOrder = Integer.valueOf(groupMap.get(FileOutputXMLComponent.ORDER)).intValue();
+            }
             if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 temp.setDefaultValue(defaultValue);
@@ -229,7 +244,9 @@ public class FOXManager {
                 current = temp;
                 currentPath = newPath;
             }
-            temp.setOrder(nodeOrder);
+            if (haveOrder) {
+                temp.setOrder(nodeOrder);
+            }
             String columnName = groupMap.get(FileOutputXMLComponent.COLUMN);
             if (columnName != null && columnName.length() > 0) {
                 temp.setColumn(metadataTable.getColumn(columnName));
@@ -244,7 +261,13 @@ public class FOXManager {
         for (Map<String, String> loopMap : loopTable) {
             String newPath = loopMap.get(FileOutputXMLComponent.PATH);
             defaultValue = loopMap.get(FileOutputXMLComponent.VALUE);
-            nodeOrder = Integer.valueOf(loopMap.get(FileOutputXMLComponent.ORDER)).intValue();
+            String orderValue = loopMap.get(FileOutputXMLComponent.ORDER);
+            if (orderValue == null || "".equals(orderValue)) {
+                haveOrder = false;
+            }
+            if (haveOrder) {
+                nodeOrder = Integer.valueOf(loopMap.get(FileOutputXMLComponent.ORDER)).intValue();
+            }
             if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 temp.setDefaultValue(defaultValue);
@@ -265,7 +288,9 @@ public class FOXManager {
                 current = temp;
                 currentPath = newPath;
             }
-            temp.setOrder(nodeOrder);
+            if (haveOrder) {
+                temp.setOrder(nodeOrder);
+            }
             String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
             if (columnName != null && columnName.length() > 0) {
                 temp.setColumn(metadataTable.getColumn(columnName));
@@ -277,7 +302,9 @@ public class FOXManager {
         }
 
         rootNode.setParent(null);
-        orderNode(rootNode);
+        if (haveOrder) {
+            orderNode(rootNode);
+        }
         treeData.add(rootNode);
 
     }
