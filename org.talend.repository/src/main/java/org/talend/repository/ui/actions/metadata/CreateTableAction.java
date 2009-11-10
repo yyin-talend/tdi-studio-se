@@ -81,11 +81,11 @@ public class CreateTableAction extends AbstractCreateTableAction {
         if (node == null) {
             // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
             metadataNode = getMetadataNode(getCurrentRepositoryNode());
+            IStructuredSelection selection = (IStructuredSelection) getSelection();
+            node = (RepositoryNode) selection.getFirstElement();
             // Force focus to the repositoryView and open Metadata and DbConnection nodes
             getViewPart().setFocus();
             getViewPart().expand(metadataNode, true);
-            IStructuredSelection selection = (IStructuredSelection) getSelection();
-            node = (RepositoryNode) selection.getFirstElement();
         } else {
             metadataNode = getMetadataNode(node);
         }
