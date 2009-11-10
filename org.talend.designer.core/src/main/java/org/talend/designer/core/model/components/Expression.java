@@ -24,6 +24,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -60,7 +61,7 @@ public final class Expression {
 
     private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
 
-    private static ElementParameter currentParam;
+    // private static ElementParameter currentParam;
 
     private Expression(String expressionString) {
         this.expressionString = expressionString;
@@ -111,15 +112,15 @@ public final class Expression {
     }
 
     public static boolean evaluate(final String string, List<? extends IElementParameter> listParam, ElementParameter curParam) {
-        currentParam = curParam;
+        // currentParam = curParam;
         if (string.contains("(") //$NON-NLS-1$
                 && (isThereCondition(string, AND) || isThereCondition(string, OR))) {
-            return evaluateExpression(new Expression(string), listParam).isValid();
+            return evaluateExpression(new Expression(string), listParam, curParam).isValid();
         } else {
             String newValue; // remove brackets
             newValue = string.replace("(", ""); //$NON-NLS-1$ //$NON-NLS-2$
             newValue = newValue.replace(")", ""); //$NON-NLS-1$ //$NON-NLS-2$
-            return evaluateSimpleExpression(newValue, listParam);
+            return evaluateSimpleExpression(newValue, listParam, curParam);
         }
 
     }
@@ -137,7 +138,8 @@ public final class Expression {
         return false;
     }
 
-    private static boolean evaluateSimpleExpression(String simpleExpression, List<? extends IElementParameter> listParam) {
+    private static boolean evaluateSimpleExpression(String simpleExpression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
         boolean showParameter = false;
         String test = null;
         if (simpleExpression.contains(EQUALS)) {
@@ -186,6 +188,30 @@ public final class Expression {
         String[] varNames;
         StringTokenizer token = new StringTokenizer(variableName, "."); //$NON-NLS-1$
         varNames = StringUtils.split(variableName, '.');
+
+        // wyang: only for bug:9055, to search the related Node, for example tFTPGet wants to check tFTPConnection info
+        // variableName like: #LINK@NODE.CONNECTION.SFTP ----->it is a checkbox in tFTPConnection
+        // #LINK@NODE, #PREVIOUS@NODE, #NEXT@NODE ----->implement them later
+        if ((variableName != null) && (variableValue != null)) {
+            if (varNames[0].equals("#LINK@NODE")) {
+                if (currentParam.getElement() instanceof INode) {
+                    INode node = (INode) currentParam.getElement();
+                    String relatedNodeName = ElementParameterParser.getValue(node, "__" + varNames[1] + "__");
+                    List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
+                    for (INode aNode : generatingNodes) {
+                        if (aNode.getUniqueName().equals(relatedNodeName)) {
+                            simpleExpression = simpleExpression.replace(varNames[0] + "." + varNames[1] + ".", "");
+                            List<? extends IElementParameter> elementParameters = aNode.getElementParameters();
+                            // let's supose the currentParam = null, there won't want deal with the TABLE field, only
+                            // deal with LIST/CHECKBOX
+                            return evaluate(simpleExpression, elementParameters);
+
+                        }
+                    }
+
+                }
+            }
+        }
 
         if ((variableName != null) && (variableValue != null)) {
             for (IElementParameter param : listParam) {
@@ -349,7 +375,8 @@ public final class Expression {
         return showParameter;
     }
 
-    private static Expression evaluateExpression(Expression expression, List<? extends IElementParameter> listParam) {
+    private static Expression evaluateExpression(Expression expression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
         int indexBegining = 0, indexEnd;
         int expressionLevel = 0;
         String string = expression.getExpressionString();
@@ -373,11 +400,11 @@ public final class Expression {
                         if (isThereCondition(leftString, AND) || isThereCondition(leftString, OR)) {
                             Expression leftExpression = new Expression(leftString);
                             expression.setLeftExpression(leftExpression);
-                            evaluateExpression(leftExpression, listParam);
+                            evaluateExpression(leftExpression, listParam, currentParam);
                         } else {
                             Expression leftExpression = new Expression(leftString);
                             expression.setLeftExpression(leftExpression);
-                            leftExpression.setValid(evaluateSimpleExpression(leftString, listParam));
+                            leftExpression.setValid(evaluateSimpleExpression(leftString, listParam, currentParam));
                             // debug: System.out.println(leftString + " => " +
                             // leftExpression.isValid());
                         }
@@ -386,7 +413,7 @@ public final class Expression {
                         newValue = string.replace("(", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         newValue = newValue.replace(")", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         expression.setExpressionString(newValue);
-                        expression.setValid(evaluateSimpleExpression(newValue, listParam));
+                        expression.setValid(evaluateSimpleExpression(newValue, listParam, currentParam));
                     }
                 }
             } else if (expressionLevel == 0) {
@@ -411,7 +438,7 @@ public final class Expression {
                     String leftString = string.substring(0, i - 1).trim();
                     Expression leftExpression = new Expression(leftString);
                     expression.setLeftExpression(leftExpression);
-                    leftExpression.setValid(evaluateSimpleExpression(leftString, listParam));
+                    leftExpression.setValid(evaluateSimpleExpression(leftString, listParam, currentParam));
                     // debug: System.out.println(leftString + " => " +
                     // leftExpression.isValid());
                 }
@@ -420,9 +447,9 @@ public final class Expression {
                 expression.setRightExpression(rightExpression);
                 if (rightString.contains("(") //$NON-NLS-1$
                         || isThereCondition(rightString, AND) || isThereCondition(rightString, OR)) {
-                    evaluateExpression(rightExpression, listParam);
+                    evaluateExpression(rightExpression, listParam, currentParam);
                 } else { // no bracket == evaluate expression
-                    rightExpression.setValid(evaluateSimpleExpression(rightString, listParam));
+                    rightExpression.setValid(evaluateSimpleExpression(rightString, listParam, currentParam));
                     // debug: System.out.println(rightString + " => " +
                     // rightExpression.isValid());
                 }
