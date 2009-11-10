@@ -121,6 +121,7 @@ public enum EParameterName {
     TRACES_SHOW_ENABLE("Traces show"), //$NON-NLS-1$ Hidden parameter so no translation needed
     VARIABLES("VARIABLES"), //$NON-NLS-1$
     USE_EXISTING_CONNECTION(Messages.getString("EParameterName.useExistConn")), //$NON-NLS-1$
+    USE_TRANSACTION("use_transaction"),
 
     RESUMING_CHECKPOINT("Recovery Checkpoint"), //$NON-NLS-1$
     RESUMLABEL("Label"), //$NON-NLS-1$

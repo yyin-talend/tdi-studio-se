@@ -249,6 +249,7 @@ public class StatsAndLogsManager {
     }
 
     private static void useNoConnectionComponentDB(DataNode dataNode, Process process, String connectionUID) {
+
         dataNode.getElementParameter(EParameterName.HOST.getName()).setValue(
                 process.getElementParameter(EParameterName.HOST.getName()).getValue());
         dataNode.getElementParameter(EParameterName.PORT.getName()).setValue(
@@ -266,18 +267,24 @@ public class StatsAndLogsManager {
         dataNode.getElementParameter(EParameterName.PASS.getName()).setValue(
                 process.getElementParameter(EParameterName.PASS.getName()).getValue());
 
-        dataNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
-                OracleComponentHelper.filterOracleConnectionType((String) process.getElementParameter(
-                        EParameterName.DB_TYPE.getName()).getValue()));
+        Object dbType = process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue();
+        if (dbType != null) {
+            String dbStr = dbType.toString();
+            dataNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
+                    OracleComponentHelper.filterOracleConnectionType(dbStr));
+            if (dbStr.indexOf("Access") != -1) {//$NON-NLS-1$
+                dataNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
+                        process.getElementParameter(EParameterName.DBFILE.getName()).getValue());
+            } else if (dbStr.indexOf("Informix") != -1) {//$NON-NLS-1$
+                dataNode.getElementParameter(EParameterName.USE_TRANSACTION.getName()).setValue(Boolean.FALSE);
+            }
+        }
+
         IElementParameter param = dataNode.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName());
         if (param != null) {
             param.setValue(Boolean.FALSE);
         }
         dataNode.getMetadataFromConnector(connectionUID);
-        if (process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue().toString().indexOf("Access") != -1) {//$NON-NLS-1$
-            dataNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
-                    process.getElementParameter(EParameterName.DBFILE.getName()).getValue());
-        }
 
     }
 
