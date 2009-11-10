@@ -35,7 +35,8 @@
             }
            
             globalMap.put("tHash_<%=cid %>", tHash_<%=cid %>);
-
+            
+            int nb_line_<%=cid%> = 0;
 <%
 		}
 	}

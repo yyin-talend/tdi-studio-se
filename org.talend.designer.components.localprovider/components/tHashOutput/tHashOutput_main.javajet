@@ -38,7 +38,7 @@
 
 %>
 tHash_<%=cid %>.put(<%=connectionName%>_HashRow, <%=connectionName%>_HashRow);
-
+nb_line_<%=cid%> ++;
 <%
 		}
 	}
