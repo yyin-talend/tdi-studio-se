@@ -40,7 +40,6 @@ public class ChangeShareIdentityDefaultValueMigrationTaskIssue9519 extends Abstr
         // TODO Auto-generated constructor stub
     }
 
-    @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
         if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
@@ -56,7 +55,6 @@ public class ChangeShareIdentityDefaultValueMigrationTaskIssue9519 extends Abstr
                 ModifyComponentsAction.searchAndModify(item, processType, filter, Arrays
                         .<IComponentConversion> asList(new IComponentConversion() {
 
-							@Override
 							public void transform(NodeType node) {
 								// TODO Auto-generated method stub
 								 ElementParameterType propertyShareIdentitySetting = ComponentUtilities.getNodeProperty(node, "SHARE_IDENTITY_SETTING"); //$NON-NLS-1$
