@@ -243,14 +243,30 @@ if(cid.equals("talendLogs_DB")){ %>
        	<%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
         <%
     }
+    
+    if (useExistingConnection) {
+    	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+ %>
+ 	boolean isShareIdentity_<%=cid%> = globalMap.get("shareIdentitySetting_<%=connection%>") != null && (Boolean)globalMap.get("shareIdentitySetting_<%=connection%>") == true;
+ <%
+ 	}
+ 	
+ 	
     if(("true").equals(identityInsert) ) {
         %>
         java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
         <%
-        if (!useExistingConnection) {
+        if (useExistingConnection) {
+        	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
         %>
-        stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+	        if ( !isShareIdentity_<%=cid%> ) {
+	        	stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+	        }
         <%
+        } else {
+     	%>
+     		stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+     	<%
         }
     }    
 }

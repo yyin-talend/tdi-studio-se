@@ -34,7 +34,9 @@ imports="
     }
 	if(("true").equals(identityInsert) && useExistingConnection ) {
         %>
-        stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+		if ( isShareIdentity_<%=cid%> ) {
+        	 stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+        }
         <%
     } 
     if(("INSERT_OR_UPDATE").equals(dataAction)) {

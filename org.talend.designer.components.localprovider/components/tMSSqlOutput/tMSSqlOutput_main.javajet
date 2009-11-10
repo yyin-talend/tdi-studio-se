@@ -111,7 +111,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     if(incomingConnName != null && columnList != null){
     	if(("true").equals(identityInsert) && useExistingConnection ) {
         %>
-        stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+		if ( isShareIdentity_<%=cid%> ) {
+        	stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+        }
         <%
    		 } 
         %>
@@ -867,7 +869,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     	
 		if(("true").equals(identityInsert) && useExistingConnection ) {
         %>
-        stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] OFF");
+		if (isShareIdentity_<%=cid%> ) {
+        	 stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] OFF");
+        }
         <%
    		 } 
     }
