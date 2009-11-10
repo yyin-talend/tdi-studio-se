@@ -47,3 +47,9 @@ org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend
 org.talend.mdm.webservice.WSDataModelPK dataModel_<%=cid %> = new org.talend.mdm.webservice.WSDataModelPK(<%=dataModule %>);
 
 String input_<%=cid %>;
+
+List<String> xmlFieldList_<%=cid%> = (List<String>)globalMap.get("XMLFIELD");
+
+if(xmlFieldList_<%=cid%>!=null){
+	for(String strXmlField_<%=cid %> :xmlFieldList_<%=cid %>){
+		strXmlField_<%=cid %> = strXmlField_<%=cid %>.trim();

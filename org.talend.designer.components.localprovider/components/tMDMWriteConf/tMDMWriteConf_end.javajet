@@ -11,6 +11,11 @@ imports="
 	String cid = node.getUniqueName();
 	boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
 	boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
+%>
+	}//for
+}//if
+xmlFieldList_<%=cid%>.clear();
+<%
 	if(isMassInsert){
 		if(withReport){
 %> 

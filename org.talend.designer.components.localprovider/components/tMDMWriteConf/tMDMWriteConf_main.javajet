@@ -34,9 +34,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {//2
 
-    	List< ? extends IConnection> conns = node.getIncomingConnections();
-    	for (IConnection conn : conns) {//3
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+//    	List< ? extends IConnection> conns = node.getIncomingConnections();
+//    	for (IConnection conn : conns) {//3
+//    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
     		
 			    String rejectConnName = null;
 			    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
@@ -63,7 +63,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 			    }
 %>
 ///////////////////////	
-input_<%=cid %> = <%=conn.getName() %>.<%=xmlField %>;
+input_<%=cid %> = strXmlField_<%=cid %>;
 
 try{
 	org.talend.mdm.webservice.WSPutItem item_<%=cid %> = new org.talend.mdm.webservice.WSPutItem(dataCluster_<%=cid %>,input_<%=cid %>,dataModel_<%=cid %>, <%=isUpdate %>);
@@ -98,12 +98,8 @@ try{
 if(outConnName !=null){
 %>
 	<%=outConnName %> = new <%=outConnName %>Struct();
+	<%=outConnName %>.<%=xmlField %> = strXmlField_<%=cid %>;
 <%
-	for(IMetadataColumn column : metadata.getListColumns()) {
-%>
-    <%=outConnName %>.<%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%>;
-<%
-	}
 }
 %>
 }catch(Exception e){
@@ -121,13 +117,7 @@ if(dieOnError){
 		}
 %>
 	<%=rejectConnName %> = new <%=rejectConnName %>Struct();
-<%
-    	for(IMetadataColumn column : metadata.getListColumns()) {
-%>
-    <%=rejectConnName %>.<%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%>;
-<%
-		}
-%>
+    <%=rejectConnName %>.<%=xmlField %> = strXmlField_<%=cid %>;
 	<%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 <%
 	}else{
@@ -142,8 +132,8 @@ nb_line_<%=cid %>++;
 
 ///////////////////////    			
 <%
-    		}//4
-    	}//3
+//    		}//4
+//    	}//3
     }//2
 }//1
 %>
