@@ -1013,6 +1013,13 @@
              id="org.talend.repository.model.migration.MigrateOracleJobSettingsParameter"
              name="Migrate JobSettings Parameter for Oracle DB type">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ChangeShareIdentityDefaultValueMigrationTaskIssue9519"
+             description="Change Share Identity Setting from &quot;false&quot; to &quot;true&quot;"
+             id="org.talend.repository.model.migration.ChangeShareIdentityDefaultValueMigrationTaskIssue9519"
+             name="Change Share Identity Setting">
+       </projecttask>
    </extension>
    
    <extension
