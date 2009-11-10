@@ -138,30 +138,25 @@ public class UpdateContextParameterCommand extends Command {
 
                 }
             }
-            if (updateObject instanceof List) {
+
+            if (updateObject instanceof JobContext) {
                 if (result.getResultType() == EUpdateResult.ADD && result.getUpdateType() == EUpdateItemType.CONTEXT_GROUP
                         && result.isChecked()) {
-                    List<IContext> list = (List<IContext>) updateObject;
-                    String name = null;
-                    for (int j = 0; j < list.size(); j++) {
-                        IContext context = list.get(j);
-                        name = context.getName();
+                    IContext context = (IContext) updateObject;
+                    String name = context.getName();
+                    if (!listContext.contains(context)) {
 
-                        if (!listContext.contains(context)) {
-                            JobContext newContext = new JobContext(name);
-                            List<IContextParameter> newParamList = new ArrayList<IContextParameter>();
-                            newContext.setContextParameterList(newParamList);
-                            JobContextParameter param;
+                        JobContext newContext = new JobContext(name);
+                        List<IContextParameter> newParamList = new ArrayList<IContextParameter>();
+                        newContext.setContextParameterList(newParamList);
+                        JobContextParameter param = null;
 
-                            for (int i = 0; i < context.getContextParameterList().size(); i++) {
-                                param = (JobContextParameter) context.getContextParameterList().get(i).clone();
-                                param.setContext(newContext);
-                                newParamList.add(param);
-                            }
-                            listContext.add(newContext);
-
+                        for (int i = 0; i < context.getContextParameterList().size(); i++) {
+                            param = (JobContextParameter) context.getContextParameterList().get(i).clone();
+                            param.setContext(newContext);
+                            newParamList.add(param);
                         }
-                        // process.getContextManager().getListContext();
+                        listContext.add(newContext);
                     }
                 }
                 return;

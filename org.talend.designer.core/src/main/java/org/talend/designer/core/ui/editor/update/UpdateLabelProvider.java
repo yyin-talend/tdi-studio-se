@@ -67,6 +67,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                         image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
                         break;
                     case CONTEXT:
+                    case CONTEXT_GROUP:
                     case JOBLET_CONTEXT:
                         image = ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
                         break;
@@ -109,6 +110,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                 case RELOAD:
                     // return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
                 case CONTEXT:
+                case CONTEXT_GROUP:
                 case JOBLET_CONTEXT:
                     // return ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
                 default:

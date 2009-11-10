@@ -88,6 +88,14 @@ public class UpdateCheckResult extends UpdateResult {
             displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.STATSANDLOGS.getTitle());
             break;
         case CONTEXT:
+        case CONTEXT_GROUP:
+            String str = getParameter().toString();
+            if (getParameter() instanceof String) {
+                displayName = str;
+            } else if (str.startsWith("[") && str.endsWith("]") && str.length() > 2) {//$NON-NLS-1$//$NON-NLS-1$
+                displayName = str.substring(1, str.length() - 1);
+            }
+            break;
         case JOBLET_CONTEXT: {
             String display = null;
             switch (getResultType()) {
@@ -220,6 +228,9 @@ public class UpdateCheckResult extends UpdateResult {
         case CONTEXT:
         case JOBLET_CONTEXT:
             category = UpdatesConstants.CONTEXT;
+            break;
+        case CONTEXT_GROUP:
+            category = UpdatesConstants.CONTEXT_GROUP;
             break;
         case JOBLET_RENAMED:
         case RELOAD:

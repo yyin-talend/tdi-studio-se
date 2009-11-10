@@ -139,30 +139,43 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     private List<UpdateResult> checkGroupContext(boolean onlySimpleShow) {
         List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
         final IContextManager contextManager = getProcess().getContextManager();
-        List<IContext> addGroupContext2 = ((JobContextManager) contextManager).getAddGroupContext();
-        List<IContext> addGroupContext = new ArrayList<IContext>(addGroupContext2);
-        List<IContext> listContext = contextManager.getListContext();
+        List<IContext> addGroupContext = ((JobContextManager) contextManager).getAddGroupContext();
 
-        List<IContext> existedContextGroup = new ArrayList<IContext>();
-        if (addGroupContext.size() > 0) {
-            for (int i = 0; i < addGroupContext.size(); i++) {
-                IContext context = addGroupContext.get(i);
-                for (int j = 0; j < listContext.size(); j++) {
-                    if (context.getName().equals(listContext.get(j).getName())) {
-                        existedContextGroup.add(context);
-                        break;
+        Map<ContextItem, List<IContext>> addContextGroupMap = ((JobContextManager) contextManager).getAddContextGroupMap();
+        List<IContext> listContext = contextManager.getListContext();
+        for (ContextItem item : addContextGroupMap.keySet()) {
+
+            List<IContext> existedContextGroup = new ArrayList<IContext>();
+
+            if (addGroupContext.size() > 0) {
+                for (int i = 0; i < addGroupContext.size(); i++) {
+                    IContext context = addGroupContext.get(i);
+                    for (int j = 0; j < listContext.size(); j++) {
+                        if (context.getName().equals(listContext.get(j).getName())) {
+                            existedContextGroup.add(context);
+                            break;
+                        }
                     }
                 }
+                addGroupContext.removeAll(existedContextGroup);
             }
-            addGroupContext.removeAll(existedContextGroup);
+
+            if (addGroupContext.size() > 0) {
+                for (IContext context : addGroupContext) {
+                    String name = context.getName();
+                    List<Object> parameterList = new ArrayList<Object>();
+                    parameterList.add(name);
+
+                    UpdateCheckResult result = new UpdateCheckResult(context);
+                    String remark = UpdateRepositoryUtils.getRepositorySourceName(item);
+                    result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.ADD, parameterList, remark);
+                    result.setJob(getProcess());
+                    setConfigrationForReadOnlyJob(result);
+                    contextResults.add(result);
+                }
+            }
         }
-        if (addGroupContext.size() > 0) {
-            UpdateCheckResult result = new UpdateCheckResult(addGroupContext);
-            result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.ADD);
-            result.setJob(getProcess());
-            setConfigrationForReadOnlyJob(result);
-            contextResults.add(result);
-        }
+
         return contextResults;
     }
 

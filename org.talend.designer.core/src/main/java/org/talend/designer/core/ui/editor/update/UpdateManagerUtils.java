@@ -33,6 +33,7 @@ import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
@@ -440,7 +441,7 @@ public final class UpdateManagerUtils {
             return null;
         }
         Object object = result.getUpdateObject();
-        if (object instanceof List) {
+        if (object instanceof JobContext) {
             return new UpdateContextParameterCommand(result);
         }
         return null;
