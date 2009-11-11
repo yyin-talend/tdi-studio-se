@@ -462,13 +462,13 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 for (int j = 0; j < columnNameList.length; j++) {
 
                     String columnName = columnNameList[j];
-                    listItemsDisplayCodeValue[j] = columnName.toUpperCase();
+                    listItemsDisplayCodeValue[j] = columnName;
                     listItemsDisplayValue[j] = columnName;
                     listRepositoryItem[j] = ""; //$NON-NLS-1$
                     listItemsShowIf[j] = null;
                     listItemsNotShowIf[j] = null;
                     newParam = new ElementParameter(node);
-                    newParam.setName(columnName.toUpperCase()); //$NON-NLS-1$
+                    newParam.setName(columnName); //$NON-NLS-1$
                     newParam.setDisplayName(""); //$NON-NLS-1$
                     newParam.setField(EParameterFieldType.TEXT);
                     newParam.setValue(""); //$NON-NLS-1$
@@ -489,10 +489,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         Map<String, Object> line = paramValues.get(k);
                         Map<String, Object> newline = new HashMap<String, Object>();
                         if (found) {
-                            Object object = line.get(colChanged.getOldName().toUpperCase());
+                            Object object = line.get(colChanged.getOldName());
                             if (object != null) {
-                                newline.put(colChanged.getNewName().toUpperCase(), object);
-                                line.remove(colChanged.getOldName().toUpperCase());
+                                newline.put(colChanged.getNewName(), object);
+                                line.remove(colChanged.getOldName());
                                 line.putAll(newline);
                             }
                         }
