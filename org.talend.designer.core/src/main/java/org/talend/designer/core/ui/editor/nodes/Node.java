@@ -770,7 +770,8 @@ public class Node extends Element implements INode {
     }
 
     /**
-     * Set the label of a node. <br/> <b> /!\ This is the text of the label, not the name of the component</b>
+     * Set the label of a node. <br/>
+     * <b> /!\ This is the text of the label, not the name of the component</b>
      * 
      * @param titleName
      */
@@ -1499,7 +1500,7 @@ public class Node extends Element implements INode {
             externalNode.setStart(isStart());
             List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
             for (IMetadataTable metaTable : getMetadataList()) {
-                copyOfMetadataList.add(metaTable.clone());
+                copyOfMetadataList.add(metaTable.clone(true));
             }
             externalNode.setMetadataList(copyOfMetadataList);
             externalNode.setIncomingConnections(inputs);

@@ -49,7 +49,8 @@ public class ExternalUtilities {
         List<IODataComponent> outputs = inAndOut.getOuputs();
         for (IConnection currentConnection : node.getOutgoingConnections()) {
             if (currentConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-                IODataComponent component = new IODataComponent(currentConnection);
+                IODataComponent component = new IODataComponent(currentConnection, currentConnection.getMetadataTable().clone(
+                        true));
                 outputs.add(component);
             }
         }
