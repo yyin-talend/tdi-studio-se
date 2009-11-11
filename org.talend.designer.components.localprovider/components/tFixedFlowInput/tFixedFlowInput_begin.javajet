@@ -26,6 +26,14 @@ imports="
         "__VALUES__"
     );
     
+    boolean use_inTable = ("true").equals(ElementParameterParser.getValue(node, "__USE_INTABLE__"));
+    
+	List<Map<String, String>> inTableValues =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__INTABLE__"
+    );
+    
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	IMetadataTable metadata = null;
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -33,7 +41,10 @@ imports="
     }
     
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-	if(tableValues != null && tableValues.size() > 0 && conns != null && conns.size() > 0) {
+	
+//************** the original part that get only one value for each column ********************
+	if(!use_inTable){
+		if(tableValues != null && tableValues.size() > 0 && conns != null && conns.size() > 0) {
 	    %>
 	    globalMap.put("NB_LINE", <%=nbRows%>);
 	    for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {
@@ -58,5 +69,52 @@ imports="
     	            }
     	        }
     	    }
+		}
+//***************************the original part end ***************************************
+	}else{
+//******************the new part ---get several values for each column*********************
+		if(inTableValues != null && inTableValues.size() > 0 && conns != null && conns.size() > 0) {
+%>
+	int nb_line_<%=cid %> = 0;
+<%
+    	    for(IConnection conn : conns) {
+    	        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+	List<<%=conn.getName()%>Struct> cacheList_<%=cid %> = new java.util.ArrayList<<%=conn.getName()%>Struct>();
+<%    	        	
+    	            for(Map<String, String> tableValue : inTableValues) {
+%>
+	<%=conn.getName()%> = new <%=conn.getName()%>Struct();
+<%
+    	            	for(IMetadataColumn column: metadata.getListColumns()){
+    	            		String label = column.getLabel();
+	    	            	String value = tableValue.get(label);
+	        	            if(value == null || value.length() == 0){ //use the default value
+	    	            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	    	            		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+%>        	            	
+    <%=conn.getName()%>.<%=label %> = <%=defaultValue %>;        	            	
+<%
+        	            	}else{
+%>        	            	
+	<%=conn.getName()%>.<%=label %> = <%=value %>;
+<%
+        	            	}
+        	            }
+%>
+	cacheList_<%=cid %>.add(<%=conn.getName()%>);
+<%
+    	            }
+%>
+	for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {
+		for(<%=conn.getName()%>Struct tmpRow_<%=cid %> : cacheList_<%=cid %>){
+	
+			nb_line_<%=cid %> ++;		
+			<%=conn.getName()%> = tmpRow_<%=cid %>;
+<%
+    	        }
+    	    }
+		}
+//********************the new part end*****************************************************
 	}
 %>
