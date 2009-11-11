@@ -143,7 +143,10 @@ public class DeleteNodeContainerCommand extends Command {
                 }
                 if (!builtIn) {
                     if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
-                        process.addUniqueConnectionName(connection.getName());
+                        // for bug 10024
+                        String name = connection.getName();
+                        name = process.generateUniqueConnectionName(name);
+                        process.addUniqueConnectionName(name);
                     }
                 }
             }
