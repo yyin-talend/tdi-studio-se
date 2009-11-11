@@ -1556,6 +1556,7 @@ public class DatabaseForm extends AbstractForm {
      * 
      * @param boolean
      */
+    @SuppressWarnings("static-access")
     private void setPropertiesFormEditable(boolean visible) {
         clearContextParams();
         EDBParamName sidOrDatabase = null;
@@ -1577,6 +1578,15 @@ public class DatabaseForm extends AbstractForm {
             }
 
         }
+
+        if (EDatabaseTypeName.MSODBC.getDisplayName().equals(dbTypeCombo.getText())) {
+            sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.DataBase")); //$NON-NLS-1$
+        }
+
+        if (EDatabaseTypeName.GODBC.getDisplayName().equals(dbTypeCombo.getText())) {
+            sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.DataBase")); //$NON-NLS-1$
+        }
+
         // hshen
         if (EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText())) {
             addContextParams(EDBParamName.JdbcUrl, visible);
