@@ -90,7 +90,7 @@ COMPATIBILITY="ALL"
     <PARAMETER 
     	NAME="OVERWRITE" 
     	FIELD="CLOSED_LIST" 
-    	SHOW_IF="(SFTP =='false') OR (USE_EXISTING_CONNECTION == 'true')"
+    	SHOW_IF="((USE_EXISTING_CONNECTION == 'false') AND (SFTP =='false')) OR ((USE_EXISTING_CONNECTION == 'true') AND (#LINK@NODE.CONNECTION.SFTP == 'false'))"
     	NUM_ROW="30" >
     	<ITEMS DEFAULT="always">
      	<ITEM NAME="NEVER" VALUE="never" />

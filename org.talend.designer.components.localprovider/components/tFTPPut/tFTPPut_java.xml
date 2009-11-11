@@ -112,7 +112,7 @@ COMPATIBILITY="ALL"
     <PARAMETER NAME="REMOTEDIR" FIELD="TEXT" REQUIRED="false" NUM_ROW="5">
       <DEFAULT>"."</DEFAULT>
     </PARAMETER>  
-    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="6" SHOW_IF="(USE_EXISTING_CONNECTION == 'true') OR (SFTP=='false')">
+    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="6" SHOW_IF="((USE_EXISTING_CONNECTION == 'true') AND (#LINK@NODE.CONNECTION.SFTP == 'false')) OR ((USE_EXISTING_CONNECTION == 'false') AND (SFTP=='false'))">
       <ITEMS DEFAULT="ascii">
      	<ITEM NAME="ASCII"  VALUE="ascii" />
         <ITEM NAME="BINARY"  VALUE="binary" />        
@@ -121,7 +121,7 @@ COMPATIBILITY="ALL"
      <PARAMETER 
     	NAME="OVERWRITE" 
     	FIELD="CLOSED_LIST" 
-    	SHOW_IF="((SFTP =='false') AND (APPEND == 'false')) OR ((USE_EXISTING_CONNECTION == 'true') AND (APPEND == 'false'))"
+    	SHOW_IF="((USE_EXISTING_CONNECTION == 'false') AND (SFTP =='false') AND (APPEND == 'false')) OR (((USE_EXISTING_CONNECTION == 'true') AND (#LINK@NODE.CONNECTION.SFTP == 'false')) AND (APPEND == 'false'))"
     	NUM_ROW="7">
     	<ITEMS DEFAULT="never">
      	<ITEM NAME="NEVER" VALUE="never" />
@@ -129,14 +129,14 @@ COMPATIBILITY="ALL"
         <ITEM NAME="SIZE_DIFFER"  VALUE="size_differ" />        
       </ITEMS>
     </PARAMETER>
- 	<PARAMETER NAME="APPEND" FIELD="CHECK" NUM_ROW="7" SHOW_IF="(USE_EXISTING_CONNECTION == 'true') OR (SFTP=='false')">
+ 	<PARAMETER NAME="APPEND" FIELD="CHECK" NUM_ROW="7" SHOW_IF="((USE_EXISTING_CONNECTION == 'true') AND (#LINK@NODE.CONNECTION.SFTP == 'false')) OR ((USE_EXISTING_CONNECTION == 'false') AND (SFTP=='false'))">
     	<DEFAULT>false</DEFAULT>
     </PARAMETER>
     <PARAMETER 
     	NAME="SFTPOVERWRITE" 
     	FIELD="CLOSED_LIST" 
     	NUM_ROW="8" 
-    	SHOW_IF="(SFTP=='true') OR (USE_EXISTING_CONNECTION == 'true')">
+    	SHOW_IF="((USE_EXISTING_CONNECTION == 'false') AND (SFTP=='true')) OR ((USE_EXISTING_CONNECTION == 'true') AND (#LINK@NODE.CONNECTION.SFTP == 'true'))">
     	<ITEMS DEFAULT="overwrite">
      	<ITEM NAME="OVERWRITE" VALUE="overwrite"/>    
         <ITEM NAME="RESUME"  VALUE="resume"/>  
