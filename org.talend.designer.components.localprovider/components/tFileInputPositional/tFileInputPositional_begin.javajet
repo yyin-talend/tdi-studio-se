@@ -395,28 +395,28 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
 <%
 		}
 %>
-		for (int i = 0; i < <%=metadata.getListColumns().size()%>; i++) {
-			if (i >= arrFieldSeparator<%=cid%>.length ){
-				columnValue<%=cid %>[i]="";
+		for (int i_<%=cid %> = 0; i_<%=cid %> < <%=metadata.getListColumns().size()%>; i_<%=cid %>++) {
+			if (i_<%=cid %> >= arrFieldSeparator<%=cid%>.length ){
+				columnValue<%=cid %>[i_<%=cid %>]="";
 				continue;
 			}
 			 
 		    if (substringBegin<%=cid %> >= row_<%=cid %>.length()) {
-		    	columnValue<%=cid %>[i] = "";
+		    	columnValue<%=cid %>[i_<%=cid %>] = "";
 		    } else{
 		    
-				if (("*").equals(arrFieldSeparator<%=cid%>[i])){
+				if (("*").equals(arrFieldSeparator<%=cid%>[i_<%=cid %>])){
 					substringEnd<%=cid %> = row_<%=cid %>.length();
 				} else{
-	    			substringEnd<%=cid %> = substringEnd<%=cid %> + Integer.parseInt(arrFieldSeparator<%=cid%>[i]);
+	    			substringEnd<%=cid %> = substringEnd<%=cid %> + Integer.parseInt(arrFieldSeparator<%=cid%>[i_<%=cid %>]);
 			        if(substringEnd<%=cid %> > row_<%=cid %>.length())
 			        	substringEnd<%=cid %> = row_<%=cid %>.length();
 				}
 				
-	        	columnValue<%=cid %>[i] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);	
+	        	columnValue<%=cid %>[i_<%=cid %>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);	
 	        	
 	        	if (<%=isTrimAll%>)
-	        		columnValue<%=cid %>[i] = columnValue<%=cid %>[i].trim();
+	        		columnValue<%=cid %>[i_<%=cid %>] = columnValue<%=cid %>[i_<%=cid %>].trim();
 	        	
 	        	substringBegin<%=cid %> = substringEnd<%=cid %>;
 	        }
