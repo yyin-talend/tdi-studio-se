@@ -7,6 +7,7 @@ imports="
     org.talend.core.model.process.IConnection
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.EConnectionType
     java.util.List
 "
 %>
@@ -143,8 +144,8 @@ do {
     javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase_<%=cid%>, <%=filter%>, searchCtls_<%=cid%>);
     while (answer_<%=cid%> .hasMoreElements()) {//a
 <%
-	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-
+	List< ? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+	
     String rejectConnName = "";
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
@@ -179,11 +180,12 @@ do {
 <%
 	if(firstConnName.length()>0){
 %>
-		<%=firstConnName %> = new <%=firstConnName %>Struct();  
+		<%=firstConnName %> = new <%=firstConnName %>Struct(); 
+	try{ 
 <%
 	}
 %>
-    	try{
+
             javax.naming.directory.SearchResult sr_<%=cid%>  = (javax.naming.directory.SearchResult) answer_<%=cid%>.next();
     		globalMap.put("<%=cid%>_RESULT_NAME",sr_<%=cid%>.getName());
             attrs_<%=cid%> = sr_<%=cid%>.getAttributes();
