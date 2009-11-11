@@ -54,13 +54,14 @@ if (node.getIncomingConnections()!=null) {
 List< ? extends IConnection> outputConns = node.getOutgoingSortedConnections();
 
     String rejectConnName = "";
+    List<IMetadataColumn> rejectColumnList = null;
+    IMetadataTable metadataTable = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
         IConnection rejectConn = rejectConns.get(0);
         rejectConnName = rejectConn.getName();
+        metadataTable = rejectConn.getMetadataTable();
     }
-    List<IMetadataColumn> rejectColumnList = null;
-    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
     if(metadataTable != null) {
         rejectColumnList = metadataTable.getListColumns();      
     }
