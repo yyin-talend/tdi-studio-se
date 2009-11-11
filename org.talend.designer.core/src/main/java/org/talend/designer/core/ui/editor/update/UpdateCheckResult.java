@@ -89,11 +89,13 @@ public class UpdateCheckResult extends UpdateResult {
             break;
         case CONTEXT:
         case CONTEXT_GROUP:
-            String str = getParameter().toString();
-            if (getParameter() instanceof String) {
-                displayName = str;
-            } else if (str.startsWith("[") && str.endsWith("]") && str.length() > 2) {//$NON-NLS-1$//$NON-NLS-1$
-                displayName = str.substring(1, str.length() - 1);
+            if (getParameter() != null) {
+                String str = getParameter().toString();
+                if (getParameter() instanceof String) {
+                    displayName = str;
+                } else if (str.startsWith("[") && str.endsWith("]") && str.length() > 2) {//$NON-NLS-1$//$NON-NLS-1$
+                    displayName = str.substring(1, str.length() - 1);
+                }
             }
             break;
         case JOBLET_CONTEXT: {
