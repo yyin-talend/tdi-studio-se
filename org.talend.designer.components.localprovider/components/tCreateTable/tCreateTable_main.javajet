@@ -1180,15 +1180,16 @@ if(columnList != null && columnList.size() > 0) {
         } else {
             String tableName = ElementParameterParser.getValue(node,"__TABLE__");
             %>
-			java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
-			boolean whetherExist_<%=cid%> = false;
-			try {
-				isExistStmt_<%=cid%>.execute("SELECT * FROM " + <%=tableName%> );
-				whetherExist_<%=cid%> = true;
-			} catch (Exception e){
-				whetherExist_<%=cid%> = false;
-			}
-			isExistStmt_<%=cid%>.close();      
+            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            boolean whetherExist_<%=cid%> = false;
+            while(rsTable_<%=cid%>.next()) {
+                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+                    whetherExist_<%=cid%> = true;
+                    break;
+                }
+            }        
             <%
             if(("CREATE_IF_NOT_EXIST").equals(tableAction)) {
                 %>

@@ -33,15 +33,17 @@ if(cid.equals("talendLogs_DB")){%>
     String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]";
 	if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
 <%}%>            
-			java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
-			boolean whetherExist_<%=cid%> = false;
-			try {
-				isExistStmt_<%=cid%>.execute("SELECT * FROM " + <%=table%> );
-				whetherExist_<%=cid%> = true;
-			} catch (Exception e){
-				whetherExist_<%=cid%> = false;
-			}
-			isExistStmt_<%=cid%>.close();
+            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            boolean whetherExist_<%=cid%> = false;
+            while(rsTable_<%=cid%>.next()) {
+                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+                if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
+                    whetherExist_<%=cid%> = true;
+                    break;
+                }
+            }
+            rsTable_<%=cid%>.close();
             <%
             if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
                 %>
