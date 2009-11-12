@@ -80,9 +80,13 @@ public class JobVMArgumentsComposite {
 
     protected Button downButton;
 
+    protected Button checkBox;
+
     private RunProcessContext processContext;
 
     private SelectionListener selectionListener;
+
+    private boolean isSelect = false;
 
     /**
      * DOC gcui RunVMArgumentsViewer constructor comment.
@@ -91,11 +95,12 @@ public class JobVMArgumentsComposite {
      * @param labelText
      * @param parent
      */
-    public JobVMArgumentsComposite(String name, String labelText, Composite parent) {
+    public JobVMArgumentsComposite(String name, String labelText, final Composite parent) {
         Label label = new Label(parent, SWT.NONE);
         label.setText(labelText);
-
-        Composite composite = new Composite(parent, SWT.NONE);
+        checkBox = new Button(parent, SWT.CHECK);
+        checkBox.setText("Use specific JVM arguments");
+        final Composite composite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
         layout.numColumns = getNumberOfControls();
         layout.marginWidth = 0;
@@ -105,6 +110,40 @@ public class JobVMArgumentsComposite {
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         doFillIntoGrid(composite, layout.numColumns);
+        composite.setEnabled(false);
+
+        checkBox.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                isSelect = checkBox.getSelection();
+                if (isSelect) {
+                    setAllEnabled(composite);
+                } else {
+                    setAllEnabled(composite);
+                    composite.setEnabled(false);
+                }
+
+            }
+
+        });
+
+    }
+
+    public void setAllEnabled(Composite composite) {
+        if (isSelect) {
+            addButton.setEnabled(true);
+            removeButton.setEnabled(true);
+            upButton.setEnabled(true);
+            downButton.setEnabled(true);
+            composite.setEnabled(true);
+        } else {
+            addButton.setEnabled(false);
+            removeButton.setEnabled(false);
+            upButton.setEnabled(false);
+            downButton.setEnabled(false);
+            composite.setEnabled(false);
+        }
 
     }
 
@@ -156,9 +195,14 @@ public class JobVMArgumentsComposite {
 
     protected void createButtons(Composite box) {
         addButton = createPushButton(box, "New..."); //$NON-NLS-1$
+        addButton.setEnabled(false);
         removeButton = createPushButton(box, "Remove"); //$NON-NLS-1$
+        removeButton.setEnabled(false);
         upButton = createPushButton(box, "  Up  "); //$NON-NLS-1$
+        upButton.setEnabled(false);
         downButton = createPushButton(box, " Down "); //$NON-NLS-1$
+        downButton.setEnabled(false);
+
     }
 
     protected Button createPushButton(Composite parent, String key) {
