@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.action.IAction;
@@ -70,6 +71,7 @@ import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.editor.process.ConvertRepositoryNodeToProcessNode;
 import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -701,4 +703,14 @@ public class DesignerCoreService implements IDesignerCoreService {
     public void renameJobLaunch(IRepositoryObject obj, String originalName) {
         JobLaunchShortcutManager.renameJobLaunch(obj, originalName);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#createTalendPaletteDrawer(java.lang.String)
+     */
+    public PaletteDrawer createTalendPaletteDrawer(String family) {
+        return new TalendPaletteDrawer(family);
+    }
+
 }

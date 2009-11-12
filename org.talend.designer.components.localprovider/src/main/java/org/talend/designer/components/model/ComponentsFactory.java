@@ -22,6 +22,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
@@ -31,6 +36,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
@@ -44,12 +50,22 @@ import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.components.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.repository.ProjectManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.sun.org.apache.xerces.internal.dom.DeferredElementImpl;
 
 /**
  * Component factory that look for each component and load their information. <br/>
@@ -66,6 +82,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private List<IComponent> userComponentList = null;
 
+    private Set<String> usedInRef = null;
+
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
     // keep a list of the current provider for the selected component, to have the family translation
@@ -78,6 +96,8 @@ public class ComponentsFactory implements IComponentsFactory {
     private static final String SKELETON_SUFFIX = ".skeleton"; //$NON-NLS-1$
 
     private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet"; //$NON-NLS-1$
+
+    private static final String FAMILY_SPEARATOR = "--FAMILY--"; //$NON-NLS-1$
 
     public ComponentsFactory() {
         if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) { //$NON-NLS-1$
@@ -112,7 +132,12 @@ public class ComponentsFactory implements IComponentsFactory {
         for (ComponentSetting componentSetting : getComponentsFromProject()) {
             if (componentSetting.getName().equals(componentName)) {
                 if (componentSetting.isHidden()) {
-                    visible = Boolean.FALSE;
+                    if (isUsedInRefProjects(componentName)) {
+                        visible = Boolean.TRUE;
+                        componentSetting.setHidden(false);
+                    } else {
+                        visible = Boolean.FALSE;
+                    }
                 } else {
                     return true;
                 }
@@ -122,6 +147,29 @@ public class ComponentsFactory implements IComponentsFactory {
             }
         }
         return visible;
+    }
+
+    private boolean isUsedInRefProjects(String componentName) {
+        if (componentName == null) {
+            return false;
+        }
+        Set<String> componentsUsed = getComponentRefUsed();
+        for (String name : componentsUsed) {
+            if (componentName.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<String> getComponentRefUsed() {
+        if (usedInRef == null) {
+            ProjectManager manager = ProjectManager.getInstance();
+            List<Project> referencedProjects = manager.getReferencedProjects();
+            Set<String> componentsUsed = ComponentUtilities.getComponentsUsedInProjects(referencedProjects, true);
+            this.usedInRef = componentsUsed;
+        }
+        return usedInRef;
     }
 
     private void init() {
@@ -138,6 +186,8 @@ public class ComponentsFactory implements IComponentsFactory {
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
 
         XsdValidationCacheManager.getInstance().load();
+
+        getComponentRefUsed();
 
         // 1. Load system components:
         loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
@@ -274,7 +324,6 @@ public class ComponentsFactory implements IComponentsFactory {
 
         if (childDirectories != null) {
             for (File currentFolder : childDirectories) {
-
                 // get the skeleton files first, then XML config files later.
                 File[] skeletonFiles = currentFolder.listFiles(skeletonFilter);
                 if (skeletonFiles != null) {
@@ -510,5 +559,125 @@ public class ComponentsFactory implements IComponentsFactory {
         }
 
         return translated;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsFactory#getAllComponentsCanBeProvided()
+     */
+    public Map<String, ImageDescriptor> getAllComponentsCanBeProvided() {
+        List<String> sourcePath = new ArrayList<String>();
+        Map<String, ImageDescriptor> components = new HashMap<String, ImageDescriptor>();
+        sourcePath.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+        for (AbstractComponentsProvider provider : componentsProviderManager.getProviders()) {
+            sourcePath.add(provider.getComponentsLocation());
+        }
+        for (int i = 0; i < sourcePath.size(); i++) {
+            String path = sourcePath.get(i);
+            File source = getComponentsLocation(path);
+            File[] childDirectories;
+
+            FileFilter fileFilter = new FileFilter() {
+
+                public boolean accept(final File file) {
+                    return file.isDirectory() && file.getName().charAt(0) != '.'
+                            && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
+                }
+
+            };
+            if (source == null) {
+                ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
+                return null;
+            }
+
+            childDirectories = source.listFiles(fileFilter);
+            if (childDirectories != null) {
+                for (File currentFolder : childDirectories) {
+                    try {
+                        ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
+                    } catch (BusinessException e) {
+                        continue;
+                    }
+                    File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
+                            currentFolder.getName(), getCodeLanguageSuffix()));
+                    List<String> families = getComponentsFamilyFromXML(xmlMainFile);
+                    ComponentIconLoading cil = new ComponentIconLoading(currentFolder);
+                    ImageDescriptor image32 = cil.getImage32();
+                    if (families != null) {
+                        for (String family : families) {
+                            components.put(family + FAMILY_SPEARATOR + currentFolder.getName(), image32);
+                        }
+                    }
+
+                }
+            }
+
+        }
+        return components;
+    }
+
+    private List<String> getComponentsFamilyFromXML(File xmlMainFile) {
+        final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
+        final String familysTag = "FAMILIES";
+        final String header = "HEADER";
+        final String technical = "TECHNICAL";
+        List<String> familyNames = new ArrayList<String>();
+
+        DocumentBuilder analyseur;
+        try {
+            analyseur = fabrique.newDocumentBuilder();
+            analyseur.setErrorHandler(new ErrorHandler() {
+
+                public void error(final SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+
+                public void fatalError(final SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+
+                public void warning(final SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+
+            });
+
+            Document document = analyseur.parse(xmlMainFile);
+            NodeList elementsByTagName = document.getElementsByTagName(header);
+            String technicalValue = null;
+            if (elementsByTagName != null && elementsByTagName.getLength() > 0) {
+                Node item = elementsByTagName.item(0);
+                NamedNodeMap attributes = item.getAttributes();
+                if (attributes != null) {
+                    Node namedItem = attributes.getNamedItem(technical);
+                    if (namedItem != null) {
+                        technicalValue = namedItem.getNodeValue();
+                    }
+                }
+            }
+            // techenical node are not visible ,so no need to return it's family
+            if (technicalValue == null || !"true".equals(technicalValue)) {
+                NodeList element = document.getElementsByTagName(familysTag);
+                if (element != null && element.getLength() > 0) {
+                    Node family = element.item(0);
+                    NodeList childNodes = family.getChildNodes();
+                    for (int i = 0; i < childNodes.getLength(); i++) {
+                        if (childNodes.item(i) instanceof DeferredElementImpl) {
+                            familyNames.add(childNodes.item(i).getTextContent());
+                        }
+                    }
+                }
+            }
+
+        } catch (ParserConfigurationException e) {
+            ExceptionHandler.process(e);
+        } catch (SAXException e) {
+            ExceptionHandler.process(e);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+        return familyNames;
     }
 }

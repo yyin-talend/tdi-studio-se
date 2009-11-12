@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.preference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import java.util.Set;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -44,12 +46,14 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.designer.components.preference.labelformat.TalendPaletteLabelProvider;
 import org.talend.designer.components.preference.labelformat.TalendPaletteTreeProvider;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.actions.ShowStandardAction;
@@ -69,9 +73,9 @@ public class PaletteSettingPage extends ProjectSettingPage {
 
     private Project project = pro;
 
-    private Button leftButton;
+    private Button hideCompnentsButton;
 
-    private Button rightButton;
+    private Button displayComponentsButton;
 
     private ThreeCompositesSashForm compositesSachForm;
 
@@ -107,7 +111,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
 
     private void init() {
         // this.project = pro;
-        List<ComponentSetting> c = getComponentsFromProject();
+        List<ComponentSetting> c = getComponentsFromProject(project);
         for (ComponentSetting componentSetting : c) {
             statusBackup.put(componentSetting.getFamily() + FAMILY_SPEARATOR + componentSetting.getName(), !componentSetting
                     .isHidden());
@@ -116,8 +120,9 @@ public class PaletteSettingPage extends ProjectSettingPage {
 
     private PaletteRoot getViewerInput() {
         IComponentsFactory components = ComponentsFactoryProvider.getInstance();
-        PaletteRoot paletteRoot = CorePlugin.getDefault().getDesignerCoreService().getAllNodeStructure(components);
-        return paletteRoot;
+        return ComponentUtilities.createPaletteRootWithAllComponents();
+        // PaletteRoot paletteRoot = CorePlugin.getDefault().getDesignerCoreService().getAllNodeStructure(components);
+        // return paletteRoot;
     }
 
     /**
@@ -137,7 +142,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
         hiddenViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                rightButton.setEnabled(!event.getSelection().isEmpty());
+                displayComponentsButton.setEnabled(!event.getSelection().isEmpty());
             }
         });
         createButtons(parent.getMidComposite());
@@ -151,11 +156,12 @@ public class PaletteSettingPage extends ProjectSettingPage {
         displayViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                leftButton.setEnabled(!event.getSelection().isEmpty());
+                hideCompnentsButton.setEnabled(!event.getSelection().isEmpty());
             }
         });
 
         PaletteRoot input = getViewerInput();
+        getComponentsFromProject(project);
         hiddenViewer.setInput(input);
         displayViewer.setInput(input);
     }
@@ -250,11 +256,11 @@ public class PaletteSettingPage extends ProjectSettingPage {
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.verticalAlignment = GridData.CENTER;
         buttonComposite2.setLayoutData(gridData);
-        rightButton = new Button(buttonComposite2, SWT.NONE);
-        rightButton.setImage(ImageProvider.getImage(EImage.RIGHT_ICON));
-        rightButton.setToolTipText(""); //$NON-NLS-1$
-        GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(rightButton);
-        rightButton.addSelectionListener(new SelectionAdapter() {
+        displayComponentsButton = new Button(buttonComposite2, SWT.NONE);
+        displayComponentsButton.setImage(ImageProvider.getImage(EImage.RIGHT_ICON));
+        displayComponentsButton.setToolTipText(""); //$NON-NLS-1$
+        GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(displayComponentsButton);
+        displayComponentsButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 setComponentVisible(hiddenViewer.getSelection(), true);
@@ -263,13 +269,13 @@ public class PaletteSettingPage extends ProjectSettingPage {
 
             }
         });
-        leftButton = new Button(buttonComposite2, SWT.NONE);
-        leftButton.setImage(ImageProvider.getImage(EImage.LEFT_ICON));
-        leftButton.setToolTipText(""); //$NON-NLS-1$
+        hideCompnentsButton = new Button(buttonComposite2, SWT.NONE);
+        hideCompnentsButton.setImage(ImageProvider.getImage(EImage.LEFT_ICON));
+        hideCompnentsButton.setToolTipText(""); //$NON-NLS-1$
         gridData = new GridData();
         gridData.verticalAlignment = GridData.CENTER;
-        leftButton.setLayoutData(gridData);
-        leftButton.addSelectionListener(new SelectionAdapter() {
+        hideCompnentsButton.setLayoutData(gridData);
+        hideCompnentsButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 setComponentVisible(displayViewer.getSelection(), false);
@@ -278,8 +284,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
             }
         });
 
-        rightButton.setEnabled(false);
-        leftButton.setEnabled(false);
+        displayComponentsButton.setEnabled(false);
+        hideCompnentsButton.setEnabled(false);
 
     }
 
@@ -298,8 +304,32 @@ public class PaletteSettingPage extends ProjectSettingPage {
             retreiveAllEntry(names, entry);
         }
 
+        List<Project> projects = new ArrayList<Project>();
+        projects.add(project);
+        List<Project> refProjects = ProjectManager.getInstance().getReferencedProjects();
+        if (refProjects != null) {
+            projects.addAll(refProjects);
+        }
+        Set<String> usedComponents = ComponentUtilities.getComponentsUsedInProjects(projects, false);
+
+        boolean hasUsedComponent = false;
         for (String string : names) {
+            if (!visible) {
+                if (usedComponents.contains(string)) {
+                    hasUsedComponent = true;
+                    continue;
+                }
+
+            }
             setComponentVisible(string, visible, !RESTORE);
+
+        }
+        if (hasUsedComponent) {
+            MessageDialog messageDialog = new MessageDialog(getShell(), "Message", null,
+                    "Some components you selected as hidden are used in this project, so they must be visible." + "\n"
+                            + "Those components will automatically be set as visible.", MessageDialog.INFORMATION,
+                    new String[] { "OK" }, 0);
+            messageDialog.open();
         }
 
         refreshViewer();
@@ -320,7 +350,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ComponentSetting> getComponentsFromProject() {
+    public List<ComponentSetting> getComponentsFromProject(Project project) {
         List<ComponentSetting> components = (List<ComponentSetting>) project.getEmfProject().getComponentsSettings();
         return components;
     }
@@ -328,8 +358,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
     public boolean isComponentVisible(PaletteEntry entry) {
         String label = entry.getLabel();
 
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
-        List<ComponentSetting> components = getComponentsFromProject();
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent());
+        List<ComponentSetting> components = getComponentsFromProject(project);
 
         for (ComponentSetting componentSetting : components) {
             if (componentSetting.getName().equals(label) && componentSetting.getFamily() != null
@@ -350,7 +380,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
             String[] names = name.split(FAMILY_SPEARATOR);
             String family = names[0];
             String label = names[1];
-            List<ComponentSetting> components = getComponentsFromProject();
+            List<ComponentSetting> components = getComponentsFromProject(project);
             for (ComponentSetting componentSetting : components) {
                 if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
                         && componentSetting.getName().equals(label)) {

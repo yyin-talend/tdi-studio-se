@@ -1020,6 +1020,14 @@
              id="org.talend.repository.model.migration.ChangeShareIdentityDefaultValueMigrationTaskIssue9519"
              name="Change Share Identity Setting">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.VisibleComponentSettingsMigrationTask"
+             description="Migrate components to be visible in project settings"
+             id="org.talend.repository.model.migration.VisibleComponentSettingsMigrationTask"
+             name="Migrate components to be visible in project settings">
+       </projecttask>
+       
    </extension>
    
    <extension
