@@ -35,6 +35,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.utils.ProcessStreamTrashReaderUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -252,7 +253,7 @@ public class GuessSchemaProcess {
             previousFile.delete();
         }
         java.lang.Process executeprocess = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
-        ProcessStreamTrashReader.readAndForget(executeprocess);
+        ProcessStreamTrashReaderUtil.readAndForget(executeprocess);
 
         try {
             CsvArray array = new CsvArray();

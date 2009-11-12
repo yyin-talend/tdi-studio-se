@@ -114,6 +114,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
 
         if (selection == null || existingNames == null) {
             connection = ConnectionFactory.eINSTANCE.createWSDLSchemaConnection();
+            connection.setTimeOut(WSDLSchemaStep1Form.TIMEOUT);
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
@@ -148,6 +149,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createWSDLSchemaConnection();
+            connection.setTimeOut(WSDLSchemaStep1Form.TIMEOUT);
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
@@ -201,6 +203,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createWSDLSchemaConnection();
+            connection.setTimeOut(WSDLSchemaStep1Form.TIMEOUT);
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());

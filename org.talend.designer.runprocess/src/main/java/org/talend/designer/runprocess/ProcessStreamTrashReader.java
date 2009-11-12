@@ -16,6 +16,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.talend.core.model.utils.ProcessStreamTrashReaderUtil;
+
 /**
  * Read streams of a process. <br/>
  * 
@@ -39,7 +41,12 @@ public final class ProcessStreamTrashReader {
      * @return
      */
     public static String readErrorStream(final Process process) {
-
+        if (true) {
+            /*
+             * have changed and moved to class ProcessStreamTrashReaderUtil. bug 9735
+             */
+            return ProcessStreamTrashReaderUtil.readErrorStream(process);
+        }
         String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
 
         StringBuilder builder = new StringBuilder();
@@ -70,6 +77,13 @@ public final class ProcessStreamTrashReader {
     }
 
     public static void readAndForget(final Process process) {
+        if (true) {
+            /*
+             * have moved to class ProcessStreamTrashReaderUtil, bug 9735
+             */
+            ProcessStreamTrashReaderUtil.readAndForget(process);
+            return;
+        }
         try {
             new Thread() {
 
