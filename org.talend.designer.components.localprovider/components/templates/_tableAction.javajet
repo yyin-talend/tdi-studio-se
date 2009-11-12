@@ -32,18 +32,39 @@ if(cid.equals("talendLogs_DB")){%>
     // [%connection%][checktable]
     String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]";
 	if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
-<%}%>            
-            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-            boolean whetherExist_<%=cid%> = false;
-            while(rsTable_<%=cid%>.next()) {
-                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
-                    whetherExist_<%=cid%> = true;
-                    break;
-                }
-            }
-            rsTable_<%=cid%>.close();
+<%}%>      
+<% 
+			//begin fixed:bug 10001
+			if(MSSQL.equalsIgnoreCase(dbmsId)) {
+%>
+				java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
+				boolean whetherExist_<%=cid%> = false;
+				try {
+					isExistStmt_<%=cid%>.execute("SELECT * FROM " + <%=table%> );
+					whetherExist_<%=cid%> = true;
+				} catch (Exception e){
+					whetherExist_<%=cid%> = false;
+				}
+				isExistStmt_<%=cid%>.close();
+<%
+			} else {
+			//case above code:when use exist connection the Postgresql table action don't using option "Create if not exist" or "Drop table if exist and create".
+			//so use below code.
+%>      
+	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+	            boolean whetherExist_<%=cid%> = false;
+	            while(rsTable_<%=cid%>.next()) {
+	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+	                if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
+	                    whetherExist_<%=cid%> = true;
+	                    break;
+	                }
+	            }
+	            rsTable_<%=cid%>.close();
+<%
+			}
+%>
             <%
             if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
                 %>
