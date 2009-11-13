@@ -104,7 +104,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
   if (tmp_key_<%=cid%> != null){
   try{
-    value_<%=cid %> = value_<%=cid %>.replace("\\n", "\n").replace("\\r", "\r");
   <%
             for (IContextParameter ctxParam :params)
              {
