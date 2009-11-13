@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
@@ -82,9 +83,9 @@ public class JobSettingsManager {
 
     private static final String CONTEXTLOAD_CONDITION = EParameterName.IMPLICIT_TCONTEXTLOAD.getName() + " == 'true'"; //$NON-NLS-1$
 
-    private static final String QUOTE = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "\"" : "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String QUOTE = TalendTextUtils.getQuoteChar();
 
-    private static final String CONNECTOR = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "+" : "."; //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String CONNECTOR = TalendTextUtils.getStringConnect();
 
     /**
      * 
@@ -800,8 +801,17 @@ public class JobSettingsManager {
                         .generateNewQuery(null, table, dbType, schema, realTableName));
                 paramName = JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName());
                 String conditionStatement = (String) process.getElementParameter(paramName).getValue();
-                if (!("\"\"".equals(conditionStatement) || "".equals(conditionStatement) || "''".equals(conditionStatement))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    query = query + CONNECTOR + QUOTE + " WHERE " + QUOTE + CONNECTOR + conditionStatement; //$NON-NLS-1$
+                if (conditionStatement != null) {
+                    String tmp = TalendTextUtils.removeQuotes(conditionStatement);
+                    if (!"".equals(tmp)) { //$NON-NLS-1$
+                        query = query + CONNECTOR + QUOTE + " WHERE " + QUOTE + CONNECTOR + conditionStatement; //$NON-NLS-1$
+                    }
+                }
+                final String quoteByDBType = TalendTextUtils.getQuoteByDBType(dbType, false);
+                EDatabaseTypeName dbTypeName = EDatabaseTypeName.getTypeFromDbType(dbType);
+                if (dbTypeName == EDatabaseTypeName.MSSQL) {
+                    query = query.replaceAll("(?i)\\bkey\\b", //$NON-NLS-1$ 
+                            "\\\\" + quoteByDBType + "key\\\\" + quoteByDBType); //$NON-NLS-1$  //$NON-NLS-2$ 
                 }
                 tContextLoadNode.getElementParameter(JobSettingsConstants.QUERY).setValue(query);
             }
