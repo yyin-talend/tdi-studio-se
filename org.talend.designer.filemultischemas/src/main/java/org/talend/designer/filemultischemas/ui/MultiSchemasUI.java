@@ -292,6 +292,7 @@ public class MultiSchemasUI {
         String filePath = getMultiSchemaManager().getParameterValue(EParameterName.FILENAME);
         getConnection().setFilePath(filePath);
         fileField.setText(getConnection().getFilePath());
+        getConnection().setFieldSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
         getConnection().setFieldSeparatorType(getFieldSeparatorFromString(getConnection().getFieldSeparatorValue()));
 
         boolean isUseMuliSaparator = (Boolean) getMultiSchemaManager()
@@ -318,7 +319,7 @@ public class MultiSchemasUI {
 
         rowSeparatorManager();
         fieldSeparatorCombo.setText(getConnection().getFieldSeparatorType().getName());
-        fieldSeparatorText.setText(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
+        fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
         multiSeparatorsText.setText(getMultiSchemaManager().getParameterValue(EParameterName.MULTI_SEPARATORS));
         keyIndexText.setText(TalendTextUtils.removeQuotes(getMultiSchemaManager().getParameterValue(EParameterName.COLUMNINDEX)));
         keyValuesText.setText(getMultiSchemaManager().getParameterValue(EParameterName.MULTI_KEYVALUES));
