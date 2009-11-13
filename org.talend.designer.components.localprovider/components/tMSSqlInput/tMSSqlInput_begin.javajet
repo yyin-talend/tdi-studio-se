@@ -41,15 +41,13 @@ imports="
 		    %>
 		    int nb_line_<%=cid%> = 0;
 		    String dbschema_<%=cid%> = "";
-		    String dbquery_<%=cid%> = <%=dbquery%>;
-		    dbquery_<%=cid%> = dbquery_<%=cid%>.replaceAll("\\.(?i)key",".\\\"key\\\"");
 			<%@ include file="../templates/tMSSql/_tMSSqlConnection.javajet"%>		 							
         	java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
 
-        	java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(dbquery_<%=cid%>);
+        	java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
         	java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
         	int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
-        	globalMap.put("<%=cid %>_QUERY",dbquery_<%=cid%>);
+        	globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
         	<%
         	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
         	List<IMetadataColumn> columnList = metadata.getListColumns();
