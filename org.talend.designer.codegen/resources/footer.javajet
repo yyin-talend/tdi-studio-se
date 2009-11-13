@@ -281,40 +281,11 @@
 	startTime = System.currentTimeMillis();
 <%
 		//1. send the begin msg
-		boolean isFirstLoop = true; 
+
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
 		<%=statCatcherNode.getUniqueName() %>.addMessage("begin");					
 <%
-        	if(isFirstLoop){ // if the normal process have not executed the end_Hash.put(key), have to kill current process , see issue:6523
-%>
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-
-                public void run() {
-
-                    java.util.Set<String> startKeySet = new java.util.HashSet(start_Hash.keySet());
-                    java.util.Set<String> endKeySet = new java.util.HashSet(end_Hash.keySet());
-
-                    boolean removeAll = startKeySet.removeAll(endKeySet);
-
-                    // if the normal process have not executed the end_Hash.put(key), see bug:6523
-                    for (String component : startKeySet) {
-                        end_Hash.put(component, System.currentTimeMillis());
-						<%for (INode statCatcherNodeInner : process.getNodesOfType("tStatCatcher")) {%>                        
-                        	<%=statCatcherNodeInner.getUniqueName() %>.addMessage("end", component, end_Hash.get(component) - start_Hash.get(component));
-                            try {
-                                <%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }                        	
-						<%}%>
-                    }
-
-                }
-            });				
-<%        	
-				isFirstLoop = false;
-        	}
     	}
 	
         List<INode> prejobNodes = new ArrayList<INode>();
