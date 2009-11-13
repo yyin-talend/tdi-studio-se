@@ -1336,17 +1336,16 @@ public class Process extends Element implements IProcess2 {
 
     private void loadColumnsBasedOnSchema(Node nc, EList listParamType) {
         List<IMetadataTable> metadataList = nc.getMetadataList();
+        if (listParamType == null || metadataList == null || metadataList.size() == 0) {
+            return;
+        }
+        List<IMetadataColumn> listColumns = metadataList.get(0).getListColumns();
+        if (listColumns == null) {
+            return;
+        }
         for (IElementParameter parameter : nc.getElementParameters()) {
-            if (parameter.getField().equals(EParameterFieldType.TABLE) && parameter.isColumnsBasedOnSchema()) {
+            if (EParameterFieldType.TABLE.equals(parameter.getField()) && parameter.isColumnsBasedOnSchema()) {
 
-                if (metadataList == null || metadataList.size() == 0) {
-                    return;
-                }
-
-                List<IMetadataColumn> listColumns = metadataList.get(0).getListColumns();
-                if (listColumns == null) {
-                    return;
-                }
                 String[] listItemsDisplayValue = new String[listColumns.size()];
                 String[] listItemsDisplayCodeValue = new String[listColumns.size()];
                 Object[] listItemsValue = new Object[listColumns.size()];
@@ -1366,17 +1365,13 @@ public class Process extends Element implements IProcess2 {
                 parameter.setListItemsDisplayCodeName(listItemsDisplayCodeValue);
                 parameter.setListItemsValue(listItemsValue);
 
-                ElementParameterType pType = null;
                 for (int j = 0; j < listParamType.size(); j++) {
-                    pType = (ElementParameterType) listParamType.get(j);
+                    ElementParameterType pType = (ElementParameterType) listParamType.get(j);
                     if (pType != null) {
-                        IElementParameter param = nc.getElementParameter(pType.getName());
-                        if (param == null) {
-                            continue;
-                        }
-                        if (param.getField().equals(EParameterFieldType.TABLE)) {
+                        if (parameter.getField().getName().equals(pType.getField())
+                                && parameter.getName().equals(pType.getName())) {
                             List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                            String[] codeList = param.getListItemsDisplayCodeName();
+                            String[] codeList = parameter.getListItemsDisplayCodeName();
                             Map<String, Object> lineValues = null;
                             for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
                                 boolean found = false;
@@ -1401,7 +1396,7 @@ public class Process extends Element implements IProcess2 {
                             for (Map<String, Object> line : tableValues) {
                                 for (int i = 0; i < codeList.length; i++) {
                                     if (!line.containsKey(codeList[i])) {
-                                        IElementParameter itemParam = (IElementParameter) param.getListItemsValue()[i];
+                                        IElementParameter itemParam = (IElementParameter) parameter.getListItemsValue()[i];
                                         line.put(codeList[i], itemParam.getValue());
                                     }
                                 }
