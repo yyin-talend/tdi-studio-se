@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
@@ -457,48 +458,53 @@ public class Problems {
                 Integer start = (Integer) marker.getAttribute(IMarker.CHAR_START);
                 Integer end = (Integer) marker.getAttribute(IMarker.CHAR_END);
 
-                Information information = PropertiesFactory.eINSTANCE.createInformation();
-                information.setText(message);
-                informations.add(information);
+                if (lineNr != null && message != null && severity != null && start != null && end != null) {
+                    Information information = PropertiesFactory.eINSTANCE.createInformation();
+                    information.setText(message);
+                    informations.add(information);
 
-                ProblemStatus status = null;
-                switch (severity) {
-                case IMarker.SEVERITY_ERROR:
-                    status = ProblemStatus.ERROR;
-                    information.setLevel(InformationLevel.ERROR_LITERAL);
-                    String path = file.getLocation().toString();
-                    uniName = setErrorMark(path, lineNr);
-                    break;
-                case IMarker.SEVERITY_WARNING:
-                    status = ProblemStatus.WARNING;
-                    information.setLevel(InformationLevel.WARN_LITERAL);
-                    break;
-                case IMarker.SEVERITY_INFO:
-                    status = ProblemStatus.INFO;
-                    information.setLevel(InformationLevel.INFO_LITERAL);
-                    break;
-                default:
-                    break;
+                    ProblemStatus status = null;
+                    switch (severity) {
+                    case IMarker.SEVERITY_ERROR:
+                        status = ProblemStatus.ERROR;
+                        information.setLevel(InformationLevel.ERROR_LITERAL);
+                        IPath location = file.getLocation();
+                        if (location != null) {
+                            String path = location.toString();
+                            uniName = setErrorMark(path, lineNr);
+                        }
+                        break;
+                    case IMarker.SEVERITY_WARNING:
+                        status = ProblemStatus.WARNING;
+                        information.setLevel(InformationLevel.WARN_LITERAL);
+                        break;
+                    case IMarker.SEVERITY_INFO:
+                        status = ProblemStatus.INFO;
+                        information.setLevel(InformationLevel.INFO_LITERAL);
+                        break;
+                    default:
+                        break;
+                    }
+                    if (status != null) {
+                        ProblemType type = ProblemType.NONE;
+                        if (property.getItem() instanceof RoutineItem) {
+                            type = ProblemType.ROUTINE;
+                            if (status != ProblemStatus.ERROR) {
+                                continue;
+                            }
+                        } else if (property.getItem() instanceof ProcessItem) {
+                            type = ProblemType.JOB;
+                            if (status != ProblemStatus.ERROR) {
+                                continue;
+                            }
+                        }
+                        if ("".equals(uniName) || uniName == null) { //$NON-NLS-1$
+                            uniName = "uniName";//$NON-NLS-1$
+                        }
+                        add(status, marker, routineFileName, message, lineNr, uniName, start, end, type, version);
+                    }
                 }
 
-                if (status != null) {
-                    ProblemType type = ProblemType.NONE;
-                    if (property.getItem() instanceof RoutineItem) {
-                        type = ProblemType.ROUTINE;
-                        if (status != ProblemStatus.ERROR) {
-                            continue;
-                        }
-                    } else if (property.getItem() instanceof ProcessItem) {
-                        type = ProblemType.JOB;
-                        if (status != ProblemStatus.ERROR) {
-                            continue;
-                        }
-                    }
-                    if ("".equals(uniName) || uniName == null) { //$NON-NLS-1$
-                        uniName = "uniName";//$NON-NLS-1$
-                    }
-                    add(status, marker, routineFileName, message, lineNr, uniName, start, end, type, version);
-                }
             }
             if (fromJob.length > 0 && fromJob[0]) {
                 addErrorMark();
