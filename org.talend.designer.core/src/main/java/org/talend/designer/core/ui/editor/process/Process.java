@@ -1371,6 +1371,9 @@ public class Process extends Element implements IProcess2 {
                     pType = (ElementParameterType) listParamType.get(j);
                     if (pType != null) {
                         IElementParameter param = nc.getElementParameter(pType.getName());
+                        if (param == null) {
+                            continue;
+                        }
                         if (param.getField().equals(EParameterFieldType.TABLE)) {
                             List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                             String[] codeList = param.getListItemsDisplayCodeName();
