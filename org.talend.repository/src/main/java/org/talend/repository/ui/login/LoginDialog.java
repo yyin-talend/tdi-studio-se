@@ -254,7 +254,7 @@ public class LoginDialog extends TrayDialog {
             super(parent, SWT.NONE);
 
             if (imgDesc != null) {
-                ImageData scaledTo = imgDesc.getImageData().scaledTo(imgDesc.getImageData().width, DIALOG_HEIGHT);
+                ImageData scaledTo = imgDesc.getImageData().scaledTo(imgDesc.getImageData().width, DIALOG_HEIGHT - 2);
                 ImageDescriptor imageDescriptor = ImageDescriptor.createFromImageData(scaledTo);
                 img = imageDescriptor.createImage();
                 addPaintListener(new PaintListener() {
