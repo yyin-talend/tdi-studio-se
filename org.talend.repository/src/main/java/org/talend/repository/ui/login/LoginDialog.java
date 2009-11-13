@@ -26,6 +26,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -63,7 +64,7 @@ public class LoginDialog extends TrayDialog {
 
     private static final int INNER_LOGIN_COMPOSITE_WIDTH = 350;
 
-    private static final int DIALOG_HEIGHT = 330;
+    private static final int DIALOG_HEIGHT = 320;
 
     private static final int DIALOG_WIDTH = 215 + INNER_LOGIN_COMPOSITE_WIDTH + 1;
 
@@ -253,8 +254,9 @@ public class LoginDialog extends TrayDialog {
             super(parent, SWT.NONE);
 
             if (imgDesc != null) {
-                img = imgDesc.createImage();
-
+                ImageData scaledTo = imgDesc.getImageData().scaledTo(imgDesc.getImageData().width, DIALOG_HEIGHT);
+                ImageDescriptor imageDescriptor = ImageDescriptor.createFromImageData(scaledTo);
+                img = imageDescriptor.createImage();
                 addPaintListener(new PaintListener() {
 
                     public void paintControl(PaintEvent e) {
