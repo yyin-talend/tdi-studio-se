@@ -80,10 +80,12 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.IUIRefresher;
@@ -541,68 +543,81 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         final JobContextManager manager = (JobContextManager) getProcess().getContextManager();
         if (manager.isModified()) {
             final Map<String, String> nameMap = manager.getNameMap();
-            // gcui:if nameMap is empty it do nothing.
-            if (!nameMap.isEmpty()) {
-                // gcui:add a progressDialog.
-                ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay()
-                        .getActiveShell().getShell());
-                IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-                    public void run(final IProgressMonitor monitor) {
-                        monitor.beginTask("Saving Please Waite....", IProgressMonitor.UNKNOWN);
-                        Display.getDefault().syncExec(new Runnable() {
+            // gcui:add a progressDialog.
+            ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay()
+                    .getActiveShell().getShell());
+            IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-                            public void run() {
-                                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                                factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) {
+                public void run(final IProgressMonitor monitor) {
+                    monitor.beginTask("Saving Please Waite....", IProgressMonitor.UNKNOWN);
+                    Display.getDefault().syncExec(new Runnable() {
 
-                                    @Override
-                                    protected void run() throws LoginException, PersistenceException {
-                                        try {
-                                            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                        public void run() {
+                            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                            factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) {
 
-                                            Set<String> curContextVars = getCurrentContextVariables(manager);
-                                            String jobId = getProcess().getProperty().getId();
+                                @Override
+                                protected void run() throws LoginException, PersistenceException {
+                                    try {
+                                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
 
+                                        Set<String> curContextVars = getCurrentContextVariables(manager);
+                                        IProcess process2 = getProcess();
+                                        String jobId = process2.getProperty().getId();
+                                        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                                .getActivePage().getEditorReferences();
+                                        List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService()
+                                                .getOpenedProcess(reference);
+
+                                        // gcui:if nameMap is empty it do nothing.
+                                        if (!nameMap.isEmpty()) {
                                             UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory,
                                                     nameMap, jobId, curContextVars);
-
-                                            IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                                                    .getActivePage().getEditorReferences();
-                                            List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService()
-                                                    .getOpenedProcess(reference);
-
                                             UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes,
                                                     nameMap, jobId, curContextVars);
                                             nameMap.clear();
                                             manager.setModified(false);
-                                        } catch (PersistenceException e) {
-                                            // e.printStackTrace();
-                                            ExceptionHandler.process(e);
                                         }
+                                        // add for bug 9564
+                                        List<IRepositoryObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
+                                        List<ProcessItem> allProcess = new ArrayList<ProcessItem>();
+                                        for (IRepositoryObject repositoryObject : all) {
+                                            Item item = repositoryObject.getProperty().getItem();
+                                            if (item instanceof ProcessItem) {
+                                                ProcessItem processItem = (ProcessItem) item;
+                                                allProcess.add(processItem);
+                                            }
+                                        }
+                                        UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory,
+                                                allProcess, process2);
+
+                                    } catch (PersistenceException e) {
+                                        // e.printStackTrace();
+                                        ExceptionHandler.process(e);
                                     }
-                                });
+                                }
+                            });
 
-                            }
+                        }
 
-                        });
-                        monitor.done();
-                        if (monitor.isCanceled()) {
-                            try {
-                                throw new InterruptedException("Save Fail"); //$NON-NLS-1$
-                            } catch (InterruptedException e) {
-                                ExceptionHandler.process(e);
-                            }
+                    });
+                    monitor.done();
+                    if (monitor.isCanceled()) {
+                        try {
+                            throw new InterruptedException("Save Fail"); //$NON-NLS-1$
+                        } catch (InterruptedException e) {
+                            ExceptionHandler.process(e);
                         }
                     }
-                };
-                try {
-                    progressDialog.run(true, true, runnable);
-                } catch (InvocationTargetException e1) {
-                    ExceptionHandler.process(e1);
-                } catch (InterruptedException e1) {
-                    ExceptionHandler.process(e1);
                 }
+            };
+            try {
+                progressDialog.run(true, true, runnable);
+            } catch (InvocationTargetException e1) {
+                ExceptionHandler.process(e1);
+            } catch (InterruptedException e1) {
+                ExceptionHandler.process(e1);
             }
         }
     }
