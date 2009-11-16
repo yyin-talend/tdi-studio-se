@@ -174,7 +174,6 @@ public class RepositoryDoubleClickAction extends Action {
                 continue;
             }
             if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_TABLE)) {
-                System.out.println(current.getClassForDoubleClick());
                 if (current.getClassForDoubleClick().equals(IMetadataTable.class)) {
                     return current;
                 }

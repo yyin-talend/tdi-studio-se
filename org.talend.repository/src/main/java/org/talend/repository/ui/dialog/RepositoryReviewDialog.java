@@ -410,7 +410,6 @@ class FakeRepositoryView extends RepositoryView {
     public void printItem(TreeItem[] items) {
         for (TreeItem treeItem : items) {
             Object o = treeItem.getData();
-            System.out.println(o);
 
             getViewer().setExpandedState(o, true);
 

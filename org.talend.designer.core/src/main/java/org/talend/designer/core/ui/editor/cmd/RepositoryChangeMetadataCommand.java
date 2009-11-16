@@ -69,11 +69,12 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 }
             }
         }
-        IElementParameter schemaTypeParameter = node.getElementParameter(propName).getParentParameter().getChildParameters().get(
-                EParameterName.SCHEMA_TYPE.getName());
-        IElementParameter repositorySchemaTypeParameter = node.getElementParameter(propName).getParentParameter()
-                .getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        String schemaType = (String) schemaTypeParameter.getValue();
+        // IElementParameter schemaTypeParameter =
+        // node.getElementParameter(propName).getParentParameter().getChildParameters().get(
+        // EParameterName.SCHEMA_TYPE.getName());
+        // IElementParameter repositorySchemaTypeParameter = node.getElementParameter(propName).getParentParameter()
+        // .getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        // String schemaType = (String) schemaTypeParameter.getValue();
         // bug 6028, Display the parameter of REPOSITORY_SCHEMA_TYPE
         // if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
         // repositorySchemaTypeParameter.setShow(true);
