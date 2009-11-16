@@ -24,9 +24,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -116,7 +114,6 @@ public class LoginDialog extends TrayDialog {
         layout.horizontalSpacing = 0;
         layout.verticalSpacing = 0;
         container.setLayout(layout);
-        container.setBackground(new Color(null, 0, 0, 0));
 
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
@@ -254,9 +251,7 @@ public class LoginDialog extends TrayDialog {
             super(parent, SWT.NONE);
 
             if (imgDesc != null) {
-                ImageData scaledTo = imgDesc.getImageData().scaledTo(imgDesc.getImageData().width, DIALOG_HEIGHT - 2);
-                ImageDescriptor imageDescriptor = ImageDescriptor.createFromImageData(scaledTo);
-                img = imageDescriptor.createImage();
+                img = imgDesc.createImage();
                 addPaintListener(new PaintListener() {
 
                     public void paintControl(PaintEvent e) {
