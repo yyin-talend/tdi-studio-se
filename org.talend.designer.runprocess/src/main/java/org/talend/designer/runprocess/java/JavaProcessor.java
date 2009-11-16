@@ -115,6 +115,7 @@ import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
+import org.talend.designer.runprocess.ui.JobVMArgumentsComposite;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.ProjectManager;
 
@@ -1036,13 +1037,15 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     }
 
     private String[] addVMArguments(String[] strings) {
+        System.out.println();
+        // System.out.println(JobVMArgumentsComposite.isSelect);
         String string = null;
         RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
-        if (activeContext != null) {
+        if (activeContext != null && JobVMArgumentsComposite.isSelect) {
             string = (activeContext.getProcess().getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName()).getValue())
                     .toString();
         }
-        if (string == null || "".equals(string)) {
+        if (string == null || "".equals(string) || !JobVMArgumentsComposite.isSelect) {
             string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
         }
         String replaceAll = string.trim();

@@ -86,7 +86,7 @@ public class JobVMArgumentsComposite {
 
     private SelectionListener selectionListener;
 
-    private boolean isSelect = false;
+    public static boolean isSelect = false;
 
     /**
      * DOC gcui RunVMArgumentsViewer constructor comment.
