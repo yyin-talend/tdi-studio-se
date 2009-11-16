@@ -378,6 +378,9 @@ public class PaletteSettingPage extends ProjectSettingPage {
     private void setComponentVisible(String name, boolean visible, boolean restore) {
         try {
             String[] names = name.split(FAMILY_SPEARATOR);
+            if (names.length != 2) {
+                return;
+            }
             String family = names[0];
             String label = names[1];
             List<ComponentSetting> components = getComponentsFromProject(project);

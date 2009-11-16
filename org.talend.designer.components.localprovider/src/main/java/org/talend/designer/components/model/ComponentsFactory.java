@@ -87,7 +87,10 @@ public class ComponentsFactory implements IComponentsFactory {
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
     // keep a list of the current provider for the selected component, to have the family translation
+    // only for components that are loaded
     private static Map<IComponent, AbstractComponentsProvider> componentToProviderMap;
+
+    private static Map<String, AbstractComponentsProvider> componentsAndProvider = new HashMap<String, AbstractComponentsProvider>();
 
     // 1. only the in the directory /components ,not including /resource
     // 2. include the skeleton files and external include files
@@ -545,15 +548,24 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#getFamilyTranslation(IComponent component,
      * java.lang.String)
      */
-    public String getFamilyTranslation(IComponent component, String text) {
+    public String getFamilyTranslation(Object component, String text) {
         String translated = Messages.getString(text);
 
         // if text translated is not in local provider, look into other providers.
         if (translated.startsWith("!!")) { //$NON-NLS-1$
-            if (componentToProviderMap.containsKey(component)) {
-                String translatedFromProvider = componentToProviderMap.get(component).getFamilyTranslation(text);
-                if (translatedFromProvider != null) {
-                    translated = translatedFromProvider;
+            if (component instanceof IComponent) {
+                if (componentToProviderMap.containsKey(component)) {
+                    String translatedFromProvider = componentToProviderMap.get(component).getFamilyTranslation(text);
+                    if (translatedFromProvider != null) {
+                        translated = translatedFromProvider;
+                    }
+                }
+            } else if (component instanceof String) {
+                if (componentsAndProvider.containsKey(component)) {
+                    String translatedFromProvider = componentsAndProvider.get(component).getFamilyTranslation(text);
+                    if (translatedFromProvider != null) {
+                        translated = translatedFromProvider;
+                    }
                 }
             }
         }
@@ -567,50 +579,61 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#getAllComponentsCanBeProvided()
      */
     public Map<String, ImageDescriptor> getAllComponentsCanBeProvided() {
-        List<String> sourcePath = new ArrayList<String>();
+        List source = new ArrayList();
         Map<String, ImageDescriptor> components = new HashMap<String, ImageDescriptor>();
-        sourcePath.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+        source.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-        for (AbstractComponentsProvider provider : componentsProviderManager.getProviders()) {
-            sourcePath.add(provider.getComponentsLocation());
-        }
-        for (int i = 0; i < sourcePath.size(); i++) {
-            String path = sourcePath.get(i);
-            File source = getComponentsLocation(path);
-            File[] childDirectories;
+        source.addAll(componentsProviderManager.getProviders());
+        for (int i = 0; i < source.size(); i++) {
+            String path = null;
+            Object object = source.get(i);
+            if (object instanceof String) {
+                path = (String) object;
+            } else if (object instanceof AbstractComponentsProvider) {
+                path = ((AbstractComponentsProvider) object).getComponentsLocation();
+            }
+            if (path != null) {
+                File sourceFile = getComponentsLocation(path);
+                File[] childDirectories;
 
-            FileFilter fileFilter = new FileFilter() {
+                FileFilter fileFilter = new FileFilter() {
 
-                public boolean accept(final File file) {
-                    return file.isDirectory() && file.getName().charAt(0) != '.'
-                            && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
+                    public boolean accept(final File file) {
+                        return file.isDirectory() && file.getName().charAt(0) != '.'
+                                && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
+                    }
+
+                };
+                if (sourceFile == null) {
+                    ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
+                    continue;
                 }
 
-            };
-            if (source == null) {
-                ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
-                return null;
-            }
-
-            childDirectories = source.listFiles(fileFilter);
-            if (childDirectories != null) {
-                for (File currentFolder : childDirectories) {
-                    try {
-                        ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
-                    } catch (BusinessException e) {
-                        continue;
-                    }
-                    File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
-                            currentFolder.getName(), getCodeLanguageSuffix()));
-                    List<String> families = getComponentsFamilyFromXML(xmlMainFile);
-                    ComponentIconLoading cil = new ComponentIconLoading(currentFolder);
-                    ImageDescriptor image32 = cil.getImage32();
-                    if (families != null) {
-                        for (String family : families) {
-                            components.put(family + FAMILY_SPEARATOR + currentFolder.getName(), image32);
+                childDirectories = sourceFile.listFiles(fileFilter);
+                if (childDirectories != null) {
+                    for (File currentFolder : childDirectories) {
+                        try {
+                            ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
+                        } catch (BusinessException e) {
+                            continue;
                         }
-                    }
+                        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
+                                currentFolder.getName(), getCodeLanguageSuffix()));
+                        List<String> families = getComponentsFamilyFromXML(xmlMainFile);
+                        ComponentIconLoading cil = new ComponentIconLoading(currentFolder);
+                        ImageDescriptor image32 = cil.getImage32();
+                        if (families != null) {
+                            for (String family : families) {
+                                components.put(family + FAMILY_SPEARATOR + currentFolder.getName(), image32);
+                                if (object instanceof AbstractComponentsProvider) {
+                                    if (!componentsAndProvider.containsKey(family)) {
+                                        componentsAndProvider.put(family, (AbstractComponentsProvider) object);
+                                    }
+                                }
+                            }
+                        }
 
+                    }
                 }
             }
 
@@ -680,4 +703,5 @@ public class ComponentsFactory implements IComponentsFactory {
         }
         return familyNames;
     }
+
 }
