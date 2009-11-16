@@ -23,16 +23,19 @@ public class JobletReferenceBean {
 
     private String jobPath;
 
+    private String projectName;
+
     private int nodeNum = 1;
 
     private boolean isJob = true; // false, is joblet
 
     private boolean isDelete = false;
 
-    public JobletReferenceBean(String jobName, String jobVersion, String jobPath) {
+    public JobletReferenceBean(String jobName, String jobVersion, String jobPath, String projectName) {
         this.jobPath = jobPath;
         this.jobName = jobName;
         this.jobVersion = jobVersion;
+        this.projectName = projectName;
     }
 
     public void setJobFlag(boolean isJob, boolean isDelete) {
@@ -67,6 +70,14 @@ public class JobletReferenceBean {
     public void addNodeNum() {
         this.nodeNum = this.nodeNum + 1;
 
+    }
+
+    public String getProjectName() {
+        return this.projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     @Override

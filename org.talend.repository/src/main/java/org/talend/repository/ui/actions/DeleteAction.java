@@ -43,6 +43,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.process.INode;
@@ -50,6 +51,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -252,6 +254,44 @@ public class DeleteAction extends AContextualAction {
         return (openProcessMap.get(property.getId(), property.getLabel(), property.getVersion()) != null);
     }
 
+    /**
+     * 
+     * wzhang Comment method "calcParentProjects".
+     * 
+     * @param curProject
+     * @param parentProject
+     * @param refParentProjects
+     * @return
+     */
+    private static boolean calcParentProjects(Project curProject, Project parentProject, Set<Project> refParentProjects) {
+        boolean found = false;
+        if (curProject != null && parentProject != null) {
+            EList referencedProjects = parentProject.getEmfProject().getReferencedProjects();
+            for (ProjectReference pRef : (List<ProjectReference>) referencedProjects) {
+                final String technicalLabel = pRef.getReferencedProject().getTechnicalLabel();
+                if (technicalLabel != null) {
+                    final Project project = new Project(pRef.getReferencedProject());
+                    if (technicalLabel.equals(curProject.getTechnicalLabel())
+                            || calcParentProjects(curProject, project, refParentProjects)) {
+                        found = true;
+                        if (!refParentProjects.contains(project)) {
+                            refParentProjects.add(project);
+                        }
+                    }
+                    if (!(technicalLabel.equals(curProject.getTechnicalLabel()))
+                            && calcParentProjects(curProject, project, refParentProjects)) {
+                        found = true;
+                        final Project paProject = new Project(pRef.getProject());
+                        if (!refParentProjects.contains(paProject)) {
+                            refParentProjects.add(paProject);
+                        }
+                    }
+                }
+            }
+        }
+        return found;
+    }
+
     public static List<JobletReferenceBean> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory,
             DeleteActionCache deleteActionCache, RepositoryNode currentJobNode) {
         IRepositoryObject object = currentJobNode.getObject();
@@ -275,41 +315,92 @@ public class DeleteAction extends AContextualAction {
                 if (!(item instanceof JobletProcessItem)) {
                     return list;
                 }
-
                 EList nodesList = null;
-                for (IRepositoryObject process : deleteActionCache.getProcessList()) {
-                    // node = (EList) process.getGraphicalNodes();item
-
-                    Property property2 = process.getProperty();
-
-                    boolean isDelete = factory.getStatus(process) == ERepositoryStatus.DELETED;
-                    boolean isJob = true;
-
-                    Item item2 = property2.getItem();
-                    if (item == item2) {
-                        continue;
-                    }
-                    if (!isOpenedItem(item2, deleteActionCache.getOpenProcessMap())) {
-                        if (item2 instanceof ProcessItem) {
-                            nodesList = ((ProcessItem) item2).getProcess().getNode();
-                        } else if (item2 instanceof JobletProcessItem) {
-                            nodesList = ((JobletProcessItem) item2).getJobletProcess().getNode();
+                // wzhang added to fix bug 10050
+                Set<Project> refParentProjects = new HashSet<Project>();
+                final Project currentProject = ProjectManager.getInstance().getCurrentProject();
+                try {
+                    if (currentProject != null) {
+                        final Project[] readProject = factory.readProject();
+                        for (Project p : readProject) {
+                            if (p.equals(currentProject)) {
+                                continue;
+                            }
+                            calcParentProjects(currentProject, p, refParentProjects);
                         }
+                        refParentProjects.add(currentProject); // contain current project
                     }
-                    if (nodesList != null) {
-                        // isExtensionComponent(node);
-                        for (Object object2 : nodesList) {
-                            if (object2 instanceof NodeType) {
-                                NodeType nodeType = (NodeType) object2;
-                                nodeType.getElementParameter();
-                                boolean equals = nodeType.getComponentName().equals(label)
-                                        && nodeType.getComponentVersion().equals(version);
+                    for (Project refP : refParentProjects) {
+                        List<IRepositoryObject> processes = factory.getAll(refP, ERepositoryObjectType.PROCESS);
+                        List<IRepositoryObject> jobletes = factory.getAll(refP, ERepositoryObjectType.JOBLET);
+                        processes.addAll(jobletes);
+                        deleteActionCache.setProcessList(processes);
+                        for (IRepositoryObject process : deleteActionCache.getProcessList()) {
+                            // node = (EList) process.getGraphicalNodes();item
+
+                            Property property2 = process.getProperty();
+
+                            boolean isDelete = factory.getStatus(process) == ERepositoryStatus.DELETED;
+                            boolean isJob = true;
+
+                            Item item2 = property2.getItem();
+                            if (item == item2) {
+                                continue;
+                            }
+                            if (!isOpenedItem(item2, deleteActionCache.getOpenProcessMap())) {
+                                if (item2 instanceof ProcessItem) {
+                                    nodesList = ((ProcessItem) item2).getProcess().getNode();
+                                } else if (item2 instanceof JobletProcessItem) {
+                                    nodesList = ((JobletProcessItem) item2).getJobletProcess().getNode();
+                                }
+                            }
+                            if (nodesList != null) {
+                                // isExtensionComponent(node);
+                                for (Object object2 : nodesList) {
+                                    if (object2 instanceof NodeType) {
+                                        NodeType nodeType = (NodeType) object2;
+                                        nodeType.getElementParameter();
+                                        boolean equals = nodeType.getComponentName().equals(label)
+                                                && nodeType.getComponentVersion().equals(version);
+                                        if (equals) {
+                                            String path = item2.getState().getPath();
+
+                                            boolean found = false;
+                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
+                                                    .getVersion(), path, refP.getLabel());
+                                            bean.setJobFlag(isJob, isDelete);
+
+                                            for (JobletReferenceBean b : list) {
+                                                if (b.toString().equals(bean.toString())) {
+                                                    found = true;
+                                                    b.addNodeNum();
+                                                    break;
+                                                }
+                                            }
+                                            if (!found) {
+                                                list.add(bean);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        for (IProcess openedProcess : deleteActionCache.getOpenedProcessList()) {
+                            for (INode node : openedProcess.getGraphicalNodes()) {
+                                boolean equals = node.getComponent().getName().equals(label)
+                                        && node.getComponent().getVersion().equals(version);
+
+                                boolean isDelete = factory.getStatus(openedProcess) == ERepositoryStatus.DELETED;
+                                boolean isJob = true;
+                                Property property2 = openedProcess.getProperty();
+                                Item item2 = property2.getItem();
+                                String path = item2.getState().getPath();
+
                                 if (equals) {
-                                    String path = item2.getState().getPath();
 
                                     boolean found = false;
                                     JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
-                                            .getVersion(), path);
+                                            .getVersion(), path, refP.getLabel());
                                     bean.setJobFlag(isJob, isDelete);
 
                                     for (JobletReferenceBean b : list) {
@@ -323,45 +414,22 @@ public class DeleteAction extends AContextualAction {
                                         list.add(bean);
                                     }
                                 }
-                            }
-                        }
-                    }
-                }
-                for (IProcess openedProcess : deleteActionCache.getOpenedProcessList()) {
-                    for (INode node : openedProcess.getGraphicalNodes()) {
-                        boolean equals = node.getComponent().getName().equals(label)
-                                && node.getComponent().getVersion().equals(version);
 
-                        boolean isDelete = factory.getStatus(openedProcess) == ERepositoryStatus.DELETED;
-                        boolean isJob = true;
-                        Property property2 = openedProcess.getProperty();
-                        Item item2 = property2.getItem();
-                        String path = item2.getState().getPath();
-
-                        if (equals) {
-
-                            boolean found = false;
-                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2.getVersion(), path);
-                            bean.setJobFlag(isJob, isDelete);
-
-                            for (JobletReferenceBean b : list) {
-                                if (b.toString().equals(bean.toString())) {
-                                    found = true;
-                                    b.addNodeNum();
-                                    break;
-                                }
-                            }
-                            if (!found) {
-                                list.add(bean);
                             }
                         }
 
                     }
+
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                } catch (BusinessException e) {
+                    ExceptionHandler.process(e);
                 }
 
             }
 
         }
+
         return list;
     }
 

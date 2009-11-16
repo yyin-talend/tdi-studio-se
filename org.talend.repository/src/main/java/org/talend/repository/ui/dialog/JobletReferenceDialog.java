@@ -69,6 +69,8 @@ public class JobletReferenceDialog extends SelectionDialog {
             JobletReferenceBean bean = (JobletReferenceBean) element;
             switch (columnIndex) {
             case 1:
+                return bean.getProjectName() + " "; //$NON-NLS-1$
+            case 2:
                 if (bean.isDelete()) {
                     return bean.getJobName()
                             + " " + bean.getJobVersion() + "(" + Messages.getString("JobletReferenceDialog.DeletedInfor") + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$  
@@ -79,7 +81,7 @@ public class JobletReferenceDialog extends SelectionDialog {
                     }
                     return prefix + bean.getJobName() + " " + bean.getJobVersion(); //$NON-NLS-1$
                 }
-            case 2:
+            case 3:
                 return "" + bean.getNodeNum(); //$NON-NLS-1$
             case 0:
             default:
@@ -168,6 +170,10 @@ public class JobletReferenceDialog extends SelectionDialog {
         tableLayout.addColumnData(new ColumnPixelData(20, false));
         column = new TableColumn(table, SWT.NONE);
         column.setText(""); //$NON-NLS-1$
+
+        tableLayout.addColumnData(new ColumnPixelData(200, true));
+        column = new TableColumn(table, SWT.NONE);
+        column.setText(Messages.getString("JobletReferenceDialog.project")); //$NON-NLS-1$
 
         tableLayout.addColumnData(new ColumnPixelData(200, true));
         column = new TableColumn(table, SWT.NONE);

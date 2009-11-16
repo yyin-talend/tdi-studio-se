@@ -133,7 +133,7 @@ public final class DeleteActionCache {
         return this.processList;
     }
 
-    private void setProcessList(List<IRepositoryObject> processList) {
+    public void setProcessList(List<IRepositoryObject> processList) {
         this.processList = processList;
     }
 
