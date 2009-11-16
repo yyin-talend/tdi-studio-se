@@ -179,10 +179,12 @@ public class FOXManager {
             if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 temp.setDefaultValue(defaultValue);
+                temp.setAttribute(true);
                 current.addChild(temp);
             } else if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                 temp = new NameSpaceNode(newPath);
                 temp.setDefaultValue(defaultValue);
+                temp.setNameSpace(true);
                 current.addChild(temp);
             } else {
                 temp = this.addElement(current, currentPath, newPath, defaultValue);
@@ -225,10 +227,12 @@ public class FOXManager {
             if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 temp.setDefaultValue(defaultValue);
+                temp.setAttribute(true);
                 current.addChild(temp);
             } else if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                 temp = new NameSpaceNode(newPath);
                 temp.setDefaultValue(defaultValue);
+                temp.setNameSpace(true);
                 current.addChild(temp);
             } else {
                 temp = this.addElement(current, currentPath, newPath, defaultValue);
@@ -271,10 +275,12 @@ public class FOXManager {
             if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 temp.setDefaultValue(defaultValue);
+                temp.setAttribute(true);
                 current.addChild(temp);
             } else if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                 temp = new NameSpaceNode(newPath);
                 temp.setDefaultValue(defaultValue);
+                temp.setNameSpace(true);
                 current.addChild(temp);
             } else {
                 temp = this.addElement(current, currentPath, newPath, defaultValue);
@@ -321,33 +327,56 @@ public class FOXManager {
             List<FOXTreeNode> firstSubChildren = node.getChildren();
             FOXTreeNode foundNode = null;
             for (FOXTreeNode childen : firstSubChildren) {
-                if (childen.isGroup() || childen.isLoop()) {
+                if (childen.isLoop()) {
                     foundNode = childen;
-                    orderNode(childen);
+                    sortOrder(foundNode, node);
                     break;
+                } else if (childen.isGroup()) {
+                    foundNode = childen;
+                    sortOrder(foundNode, node);
+                    orderNode(childen);
+                } else {
+                    orderNode(childen);
                 }
-                orderNode(childen);
             }
-            if (foundNode != null) {
+        }
+    }
+
+    /**
+     * 
+     * wzhang Comment method "sortOrder".
+     * 
+     * @param treeNode
+     * @param node
+     */
+    public void sortOrder(FOXTreeNode treeNode, FOXTreeNode node) {
+        if (node != null) {
+            List<FOXTreeNode> children = node.getChildren();
+            if (treeNode != null) {
                 int tmpOrder = 0;
-                for (FOXTreeNode childen : firstSubChildren) {
-                    if (childen.getOrder() < foundNode.getOrder()) {
+                int attrNsCount = 0;
+                for (FOXTreeNode child : children) {
+                    if (child.getOrder() < treeNode.getOrder()) {
                         tmpOrder++;
+                    }
+                    if (child.isAttribute() || child.isNameSpace()) {
+                        attrNsCount++;
                     }
                 }
                 if (tmpOrder > -1) {
-                    int oldOrder = firstSubChildren.indexOf(foundNode);
+                    int oldOrder = children.indexOf(treeNode);
                     if (oldOrder != -1 && oldOrder != tmpOrder) {
-                        node.removeChild(foundNode);
-                        if (firstSubChildren.size() > tmpOrder) {
-                            node.addChild(tmpOrder, foundNode);
+                        node.removeChild(treeNode);
+                        if (children.size() > tmpOrder) {
+                            node.addChild(tmpOrder - attrNsCount, treeNode);
                         } else {
-                            node.addChild(foundNode);
+                            node.addChild(treeNode);
                         }
                     }
                 }
             }
         }
+
     }
 
     public List<Map<String, String>> getLoopTable() {

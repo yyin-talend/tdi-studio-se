@@ -48,6 +48,10 @@ public abstract class FOXTreeNode {
 
     private int order;
 
+    private boolean isAttribute = false;
+
+    private boolean isNameSpace = false;
+
     public boolean hasLink() {
         return column != null;
     }
@@ -342,6 +346,22 @@ public abstract class FOXTreeNode {
      */
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public boolean isAttribute() {
+        return this.isAttribute;
+    }
+
+    public void setAttribute(boolean isAttribute) {
+        this.isAttribute = isAttribute;
+    }
+
+    public boolean isNameSpace() {
+        return this.isNameSpace;
+    }
+
+    public void setNameSpace(boolean isNameSpace) {
+        this.isNameSpace = isNameSpace;
     }
 
 }
