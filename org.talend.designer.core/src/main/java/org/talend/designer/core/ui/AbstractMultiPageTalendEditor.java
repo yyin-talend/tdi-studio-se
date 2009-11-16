@@ -576,8 +576,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                                                     nameMap, jobId, curContextVars);
                                             UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes,
                                                     nameMap, jobId, curContextVars);
-                                            nameMap.clear();
-                                            manager.setModified(false);
                                         }
                                         // add for bug 9564
                                         List<IRepositoryObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
@@ -596,6 +594,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                                         // e.printStackTrace();
                                         ExceptionHandler.process(e);
                                     }
+                                    nameMap.clear();
+                                    manager.setModified(false);
                                 }
                             });
 
