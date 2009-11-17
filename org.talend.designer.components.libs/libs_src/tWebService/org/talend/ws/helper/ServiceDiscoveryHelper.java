@@ -14,6 +14,8 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLReader;
+
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.talend.ws.helper.conf.ServiceHelperConfiguration;
 
@@ -46,10 +48,13 @@ public class ServiceDiscoveryHelper {
      */
     private void init() throws WSDLException, IOException {
         wsdlFactory = WSDLFactory.newInstance();
+        WSDLReader newWSDLReader = wsdlFactory.newWSDLReader();
+        newWSDLReader.setFeature(com.ibm.wsdl.Constants.FEATURE_VERBOSE, false);
+
         if (configuration == null) {
-            definition = wsdlFactory.newWSDLReader().readWSDL(wsdlUri);
+            definition = newWSDLReader.readWSDL(wsdlUri);
         } else {
-            definition = wsdlFactory.newWSDLReader().readWSDL(configuration.createWSDLLocator(wsdlUri));
+            definition = newWSDLReader.readWSDL(configuration.createWSDLLocator(wsdlUri));
         }
         schemaCollection = new XmlSchemaCollection();
 
