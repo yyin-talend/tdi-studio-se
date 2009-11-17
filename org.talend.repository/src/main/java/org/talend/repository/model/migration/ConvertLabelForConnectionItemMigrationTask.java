@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -29,22 +30,16 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
- * DOC ggu class global comment. Detailled comment <br/>
+ * DOC zli class global comment. Detailled comment <br/>
  * 
  */
 public class ConvertLabelForConnectionItemMigrationTask extends AbstractItemMigrationTask {
 
     private static final ProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
-    private boolean changed = false;
-
-    private static final int MIN = 192;
-
-    private static final int MAX = 255;
-
     @Override
     public ExecutionResult execute(Item item) {
-
+        boolean changed = false;
         if (item instanceof ConnectionItem) {
             ConnectionItem conItem = (ConnectionItem) item;
             Connection connection = conItem.getConnection();
@@ -54,25 +49,24 @@ public class ConvertLabelForConnectionItemMigrationTask extends AbstractItemMigr
                 String label = table.getLabel();
                 if (label != null) {
                     String validateValue = MetadataTool.validateValue(label);
-                    if (validateValue != null) {
+                    if (validateValue != null && !label.equals(validateValue)) {
                         table.setLabel(validateValue);
-                        if (!table.getLabel().equals(label)) {
-                            try {
-                                FACTORY.save(conItem, true);
-                            } catch (PersistenceException e) {
-                                e.printStackTrace();
-                            }
-                            changed = true;
-                        }
+                        changed = true;
                     }
                 }
             }
         }
         if (changed) {
-            return ExecutionResult.SUCCESS_WITH_ALERT;
-        } else {
-            return ExecutionResult.SUCCESS_NO_ALERT;
+            try {
+                FACTORY.save(item, true);
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
+            }
         }
+        return ExecutionResult.NOTHING_TO_DO;
+
     }
 
     @Override
@@ -83,7 +77,7 @@ public class ConvertLabelForConnectionItemMigrationTask extends AbstractItemMigr
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2009, 11, 17, 12, 0, 0);
         return gc.getTime();
     }
 }
