@@ -72,9 +72,10 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
      */
     private void createChildNode(FOXTreeNode node) {
         String label = null;
-        while (!StringUtil.validateLabelForXML(label)) {
-            InputDialog dialog = new InputDialog(null, Messages.getString("CreateNameSpaceAction.1"), //$NON-NLS-1$
-                    Messages.getString("CreateNameSpaceAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+        while (!StringUtil.validateLabelForNameSpace(label)) {
+            InputDialog dialog = new InputDialog(null, Messages.getString("CreateNameSpaceAction.title"), //$NON-NLS-1$
+                    Messages.getString("CreateNameSpaceAction.content"), //$NON-NLS-1$
+                    "", null); //$NON-NLS-1$
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
