@@ -724,8 +724,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 // (List<IElementParameter>) node.getElementParameters());
 
                                 IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                                /*
+                                 * should ignore the db type column. because database component can use other database
+                                 * schema.
+                                 */
                                 if (onlySimpleShow
-                                        || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
+                                        || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
+                                                IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
                                     result = new UpdateCheckResult(node);
                                     result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, copyOfrepositoryMetadata,
                                             source);
