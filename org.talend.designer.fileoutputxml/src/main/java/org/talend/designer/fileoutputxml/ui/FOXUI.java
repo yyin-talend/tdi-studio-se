@@ -24,10 +24,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -63,6 +65,7 @@ import org.talend.designer.fileoutputxml.action.RemoveGroupAction;
 import org.talend.designer.fileoutputxml.action.SetForLoopAction;
 import org.talend.designer.fileoutputxml.action.SetGroupAction;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.edit.FOXTargetTreeViewerProvider;
@@ -538,12 +541,22 @@ public class FOXUI {
 
         private void onValueChanged(final String newValue, boolean showAlertIfError, String property) {
             final Text text = getControl();
-
+            FOXTreeNode selectNode = null;
+            ISelection selection = xmlViewer.getSelection();
+            if (selection instanceof TreeSelection) {
+                Object obj = ((TreeSelection) selection).getFirstElement();
+                if (obj instanceof FOXTreeNode) {
+                    selectNode = (FOXTreeNode) obj;
+                }
+            }
             String errorMessage = null;
 
             // modified for wzhang. fix value can contains space.
             if ("C4".equals(property)) { //$NON-NLS-1$
                 validateLabel = StringUtil.validateLabelForFixedValue(text.getText());
+            }
+            if ("C1".equals(property) && selectNode != null && selectNode instanceof NameSpaceNode) {
+                validateLabel = StringUtil.validateLabelForNameSpace(text.getText());
             } else {
                 validateLabel = StringUtil.validateLabelForXML(text.getText());
             }
