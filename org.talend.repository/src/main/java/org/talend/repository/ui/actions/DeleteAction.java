@@ -271,17 +271,13 @@ public class DeleteAction extends AContextualAction {
                 final String technicalLabel = pRef.getReferencedProject().getTechnicalLabel();
                 if (technicalLabel != null) {
                     final Project project = new Project(pRef.getReferencedProject());
+                    final Project paProject = new Project(pRef.getProject());
                     if (technicalLabel.equals(curProject.getTechnicalLabel())
                             || calcParentProjects(curProject, project, refParentProjects)) {
                         found = true;
                         if (!refParentProjects.contains(project)) {
                             refParentProjects.add(project);
                         }
-                    }
-                    if (!(technicalLabel.equals(curProject.getTechnicalLabel()))
-                            && calcParentProjects(curProject, project, refParentProjects)) {
-                        found = true;
-                        final Project paProject = new Project(pRef.getProject());
                         if (!refParentProjects.contains(paProject)) {
                             refParentProjects.add(paProject);
                         }
