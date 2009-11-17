@@ -1296,7 +1296,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (item instanceof FolderItem) {
             toReturn = ERepositoryStatus.EDITABLE;
         } else {
-            toReturn = this.repositoryFactoryFromProvider.getStatus(item);
+            if (!isLastVersion(item)) {
+                toReturn = ERepositoryStatus.READ_ONLY;
+            } else {
+                toReturn = this.repositoryFactoryFromProvider.getStatus(item);
+            }
         }
 
         if (toReturn != ERepositoryStatus.DELETED
@@ -1337,9 +1341,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * .Item)
      */
     public boolean isEditableAndLockIfPossible(Item item) {
-        if (!projectManager.isInCurrentMainProject(item)) {
+        if (!projectManager.isInCurrentMainProject(item) || !isLastVersion(item)) {
             return false;
         }
+
         ERepositoryStatus status = getStatus(item);
         if (status.isPotentiallyEditable()) {
             try {
@@ -1351,6 +1356,22 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
 
         return status.isEditable();
+    }
+
+    private boolean isLastVersion(Item item) {
+        if (item.getProperty() != null) {
+            try {
+                List<IRepositoryObject> allVersion = getAllVersion(item.getProperty().getId());
+                if (allVersion != null && !allVersion.isEmpty()) {
+                    if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {
+                        return true;
+                    }
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return false;
     }
 
     /*

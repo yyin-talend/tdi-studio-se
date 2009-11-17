@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
@@ -90,29 +89,30 @@ public class CreateConnectionAction extends AbstractCreateAction {
     public void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
-        RepositoryNode dbConnectionNode = getCurrentRepositoryNode();
-        ISelection selection = getSelection();
+        if (this.repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
         if (isToolbar()) {
-            if (dbConnectionNode != null && dbConnectionNode.getContentType() != ERepositoryObjectType.METADATA_CONNECTIONS) {
-                dbConnectionNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != ERepositoryObjectType.METADATA_CONNECTIONS) {
+                repositoryNode = null;
             }
-            if (dbConnectionNode == null) {
-                dbConnectionNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_CONNECTIONS);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_CONNECTIONS);
             }
         }
-        RepositoryNode metadataNode = dbConnectionNode.getParent();
+        RepositoryNode metadataNode = repositoryNode.getParent();
         if (metadataNode != null) {
             // Force focus to the repositoryView and open Metadata and DbConnection nodes
             getViewPart().setFocus();
             getViewPart().expand(metadataNode, true);
-            getViewPart().expand(dbConnectionNode, true);
+            getViewPart().expand(repositoryNode, true);
         }
 
         DatabaseConnection connection = null;
         IPath pathToSave = null;
 
         // Define the RepositoryNode, by default Metadata/DbConnection
-        RepositoryNode node = dbConnectionNode;
+        RepositoryNode node = repositoryNode;
         // When the userSelection is an element of metadataNode, use it !
         if (!isToolbar()) {
             Object userSelection = ((IStructuredSelection) getSelection()).getFirstElement();
@@ -146,14 +146,12 @@ public class CreateConnectionAction extends AbstractCreateAction {
             break;
         }
 
-        // Init the content of the Wizard
-        init(node);
         DatabaseWizard databaseWizard;
         if (isToolbar()) {
             databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, node, getExistingNames());
             databaseWizard.setToolBar(true);
         } else {
-            databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, selection, getExistingNames());
+            databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, node, getExistingNames());
         }
 
         // Open the Wizard

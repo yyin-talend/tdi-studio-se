@@ -32,6 +32,8 @@ public abstract class AbstractCreateAction extends AContextualAction {
 
     private String[] existingNames;
 
+    protected RepositoryNode repositoryNode;
+
     /**
      * DOC tguiu AbstractCreateAction constructor comment.
      */
@@ -46,6 +48,7 @@ public abstract class AbstractCreateAction extends AContextualAction {
             return;
         }
         init((RepositoryNode) o);
+        repositoryNode = (RepositoryNode) o;
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             // setEnabled(false);
         }
@@ -60,7 +63,7 @@ public abstract class AbstractCreateAction extends AContextualAction {
      */
     protected String[] getExistingNames() {
         if (existingNames == null) {
-            init(getCurrentRepositoryNode());
+            init(repositoryNode);
         }
         return existingNames;
     }

@@ -13,7 +13,6 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -75,29 +74,30 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
     protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileDelimitedNode = metadataNode.getChildren().get(1);
-        RepositoryNode fileDelimitedNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
 
         if (isToolbar()) {
-            if (fileDelimitedNode != null && fileDelimitedNode.getContentType() != ERepositoryObjectType.METADATA_FILE_DELIMITED) {
-                fileDelimitedNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != ERepositoryObjectType.METADATA_FILE_DELIMITED) {
+                repositoryNode = null;
             }
-            if (fileDelimitedNode == null) {
-                fileDelimitedNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_DELIMITED);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_DELIMITED);
             }
 
         }
-        ISelection selection = null;
+
         WizardDialog wizardDialog;
         if (isToolbar()) {
-            init(fileDelimitedNode);
+            init(repositoryNode);
             DelimitedFileWizard delimitedFileWizard = new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
-                    fileDelimitedNode, getExistingNames());
+                    repositoryNode, getExistingNames());
             delimitedFileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), delimitedFileWizard);
         } else {
-            selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new DelimitedFileWizard(PlatformUI
-                    .getWorkbench(), creation, selection, getExistingNames()));
+                    .getWorkbench(), creation, repositoryNode, getExistingNames()));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

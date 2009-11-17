@@ -21,8 +21,9 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * Action that will edit routines.
@@ -48,11 +49,13 @@ public class ReadSqlpatternAction extends AbstractSqlpatternAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getType() == ERepositoryObjectType.SQLPATTERNS
-                    && ((SQLPatternItem) node.getObject().getProperty().getItem()).isSystem();
+            if (node.getObjectType() != ERepositoryObjectType.SQLPATTERNS) {
+                canWork = false;
+            }
+
         }
         setEnabled(canWork);
     }

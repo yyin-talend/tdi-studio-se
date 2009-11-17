@@ -22,12 +22,10 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * Action that will edit routines.
@@ -59,12 +57,10 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
         }
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getType() == ERepositoryObjectType.SQLPATTERNS;
-            // && !((SQLPatternItem) node.getObject().getProperty().getItem()).isSystem();
-            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+            if (node.getObjectType() != ERepositoryObjectType.SQLPATTERNS || !factory.isPotentiallyEditable(node.getObject())) {
                 canWork = false;
             }
+
         }
         setEnabled(canWork);
     }

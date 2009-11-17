@@ -23,7 +23,6 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * Action that will edit routines.
@@ -51,8 +50,9 @@ public class ReadRoutineAction extends AbstractRoutineAction {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getType() == ERepositoryObjectType.ROUTINES;
+            if (node.getObjectType() != ERepositoryObjectType.ROUTINES) {
+                canWork = false;
+            }
         }
         setEnabled(canWork);
     }

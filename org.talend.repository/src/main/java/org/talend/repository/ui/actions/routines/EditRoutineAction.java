@@ -21,12 +21,10 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * Action that will edit routines.
@@ -58,10 +56,7 @@ public class EditRoutineAction extends AbstractRoutineAction {
         }
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getType() == ERepositoryObjectType.ROUTINES;
-            // && !((RoutineItem) node.getObject().getProperty().getItem()).isBuiltIn();
-            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+            if (node.getObjectType() != ERepositoryObjectType.ROUTINES || !factory.isPotentiallyEditable(node.getObject())) {
                 canWork = false;
             }
         }

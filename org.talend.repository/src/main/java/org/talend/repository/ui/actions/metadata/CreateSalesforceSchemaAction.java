@@ -13,7 +13,6 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -73,28 +72,30 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
 
     protected void doRun() {
 
-        RepositoryNode salesforceSchema = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
 
         if (isToolbar()) {
-            if (salesforceSchema != null && salesforceSchema.getContentType() != ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
-                salesforceSchema = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+                repositoryNode = null;
             }
-            if (salesforceSchema == null) {
-                salesforceSchema = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
             }
         }
-        ISelection selection = null;
+        // ISelection selection = null;
         WizardDialog wizardDialog = null;
         if (isToolbar()) {
-            init(salesforceSchema);
+            init(repositoryNode);
             SalesforceSchemaWizard salesForceSchemaWizard = new SalesforceSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    salesforceSchema, getExistingNames(), false);
+                    repositoryNode, getExistingNames(), false);
             salesForceSchemaWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), salesForceSchemaWizard);// TODO send
         } else {
-            selection = getSelection();
+            // selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new SalesforceSchemaWizard(PlatformUI
-                    .getWorkbench(), creation, selection, getExistingNames(), false));
+                    .getWorkbench(), creation, repositoryNode, getExistingNames(), false));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

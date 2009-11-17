@@ -13,7 +13,6 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -80,28 +79,30 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
     protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileRegexpNode = metadataNode.getChildren().get(3);
-        RepositoryNode fileRegexpNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            RepositoryNode repositoryNode = getCurrentRepositoryNode();
+        }
         if (isToolbar()) {
-            if (fileRegexpNode != null && fileRegexpNode.getContentType() != ERepositoryObjectType.METADATA_FILE_REGEXP) {
-                fileRegexpNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != ERepositoryObjectType.METADATA_FILE_REGEXP) {
+                repositoryNode = null;
             }
-            if (fileRegexpNode == null) {
-                fileRegexpNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_REGEXP);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_REGEXP);
             }
         }
-        ISelection selection = null;
+        // ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {
-            init(fileRegexpNode);
-            RegexpFileWizard regexpfileWizard = new RegexpFileWizard(PlatformUI.getWorkbench(), creation, fileRegexpNode,
+            init(repositoryNode);
+            RegexpFileWizard regexpfileWizard = new RegexpFileWizard(PlatformUI.getWorkbench(), creation, repositoryNode,
                     getExistingNames());
             regexpfileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), regexpfileWizard);
 
         } else {
-            selection = getSelection();
+            // selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new RegexpFileWizard(
-                    PlatformUI.getWorkbench(), creation, selection, getExistingNames()));
+                    PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames()));
         }
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();

@@ -13,7 +13,6 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -72,29 +71,30 @@ public class CreateFileExcelAction extends AbstractCreateAction {
 
     protected void doRun() {
 
-        RepositoryNode fileExcelNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
 
         if (isToolbar()) {
-            if (fileExcelNode != null && fileExcelNode.getContentType() != ERepositoryObjectType.METADATA_FILE_EXCEL) {
-                fileExcelNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != ERepositoryObjectType.METADATA_FILE_EXCEL) {
+                repositoryNode = null;
             }
-            if (fileExcelNode == null) {
-                fileExcelNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_EXCEL);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_EXCEL);
             }
         }
-        ISelection selection = null;
+
         // TODO need to create wizard dialog and pages
         WizardDialog wizardDialog;
         if (isToolbar()) {
-            init(fileExcelNode);
-            ExcelFileWizard excelFileWizard = new ExcelFileWizard(PlatformUI.getWorkbench(), creation, fileExcelNode,
+            init(repositoryNode);
+            ExcelFileWizard excelFileWizard = new ExcelFileWizard(PlatformUI.getWorkbench(), creation, repositoryNode,
                     getExistingNames());
             excelFileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), excelFileWizard);
         } else {
-            selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new ExcelFileWizard(PlatformUI.getWorkbench(),
-                    creation, selection, getExistingNames()));
+                    creation, repositoryNode, getExistingNames()));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

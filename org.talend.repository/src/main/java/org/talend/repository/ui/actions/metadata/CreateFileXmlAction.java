@@ -13,7 +13,6 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -79,27 +78,30 @@ public class CreateFileXmlAction extends AbstractCreateAction {
     protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileXMLNode = metadataNode.getChildren().get(4);
-        RepositoryNode fileXMLNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
 
         if (isToolbar()) {
-            if (fileXMLNode != null && fileXMLNode.getContentType() != ERepositoryObjectType.METADATA_FILE_XML) {
-                fileXMLNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != ERepositoryObjectType.METADATA_FILE_XML) {
+                repositoryNode = null;
             }
-            if (fileXMLNode == null) {
-                fileXMLNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_XML);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_XML);
             }
         }
-        ISelection selection = null;
+        // ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {
-            init(fileXMLNode);
-            XmlFileWizard xmlFileWizard = new XmlFileWizard(PlatformUI.getWorkbench(), creation, fileXMLNode, getExistingNames());
+            init(repositoryNode);
+            XmlFileWizard xmlFileWizard = new XmlFileWizard(PlatformUI.getWorkbench(), creation, repositoryNode,
+                    getExistingNames());
             xmlFileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), xmlFileWizard);
         } else {
-            selection = getSelection();
+            // selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new XmlFileWizard(PlatformUI.getWorkbench(),
-                    creation, selection, getExistingNames()));
+                    creation, repositoryNode, getExistingNames()));
         }
 
         //        

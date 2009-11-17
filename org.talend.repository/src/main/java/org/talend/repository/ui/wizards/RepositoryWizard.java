@@ -109,7 +109,12 @@ public abstract class RepositoryWizard extends Wizard {
     private void reload() throws PersistenceException {
         if (repositoryObject != null) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            Property property = factory.reload(repositoryObject.getProperty());
+            if (repositoryObject.getProperty() == null || repositoryObject.getProperty().getItem() == null
+                    || repositoryObject.getProperty().getItem().getProperty() == null) {
+                return;
+            }
+
+            Property property = factory.reload(repositoryObject.getProperty().getItem().getProperty());
             repositoryObject.setProperty(property);
         }
     }

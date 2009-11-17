@@ -80,29 +80,30 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
     protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode filePositionalNode = metadataNode.getChildren().get(2);
-        RepositoryNode filePositionalNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
 
         if (isToolbar()) {
-            if (filePositionalNode != null
-                    && filePositionalNode.getContentType() != ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
-                filePositionalNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
+                repositoryNode = null;
             }
-            if (filePositionalNode == null) {
-                filePositionalNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
             }
         }
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {
-            init(filePositionalNode);
+            init(repositoryNode);
             FilePositionalWizard filePositionalWizard = new FilePositionalWizard(PlatformUI.getWorkbench(), creation,
-                    filePositionalNode, getExistingNames());
+                    repositoryNode, getExistingNames());
             filePositionalWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), filePositionalWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new FilePositionalWizard(PlatformUI
-                    .getWorkbench(), creation, selection, getExistingNames()));
+                    .getWorkbench(), creation, repositoryNode, getExistingNames()));
         }
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();

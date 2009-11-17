@@ -13,7 +13,6 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -124,26 +123,28 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
     }
 
     protected void doRun() {
-        RepositoryNode wsdlSchemaNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
         if (isToolbar()) {
-            if (wsdlSchemaNode != null && wsdlSchemaNode.getContentType() != currentNodeType) {
-                wsdlSchemaNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != currentNodeType) {
+                repositoryNode = null;
             }
-            if (wsdlSchemaNode == null) {
-                wsdlSchemaNode = getRepositoryNodeForDefault(currentNodeType);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(currentNodeType);
             }
         }
         WizardDialog wizardDialog;
-        ISelection selection = null;
+        // ISelection selection = null;
         if (isToolbar()) {
-            init(wsdlSchemaNode);
-            WSDLSchemaWizard wsdlSchemaWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, wsdlSchemaNode,
+            init(repositoryNode);
+            WSDLSchemaWizard wsdlSchemaWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, repositoryNode,
                     getExistingNames(), false);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wsdlSchemaWizard);
         } else {
-            selection = getSelection();
+            // selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new WSDLSchemaWizard(
-                    PlatformUI.getWorkbench(), creation, selection, getExistingNames(), false));
+                    PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames(), false));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

@@ -13,7 +13,6 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -82,28 +81,30 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
     protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileLDAPSchemaNode = metadataNode.getChildren().get(6);
-        RepositoryNode fileLDAPSchemaNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
 
         if (isToolbar()) {
-            if (fileLDAPSchemaNode != null && fileLDAPSchemaNode.getContentType() != currentNodeType) {
-                fileLDAPSchemaNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != currentNodeType) {
+                repositoryNode = null;
             }
-            if (fileLDAPSchemaNode == null) {
-                fileLDAPSchemaNode = getRepositoryNodeForDefault(currentNodeType);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(currentNodeType);
             }
         }
-        ISelection selection = null;
+        // ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {
-            init(fileLDAPSchemaNode);
-            LDAPSchemaWizard ldafSchemaWizard = new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation, fileLDAPSchemaNode,
+            init(repositoryNode);
+            LDAPSchemaWizard ldafSchemaWizard = new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation, repositoryNode,
                     getExistingNames(), false);
             ldafSchemaWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), ldafSchemaWizard);
         } else {
-            selection = getSelection();
+            // selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new LDAPSchemaWizard(
-                    PlatformUI.getWorkbench(), creation, selection, getExistingNames(), false));
+                    PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames(), false));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

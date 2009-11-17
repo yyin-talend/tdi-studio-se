@@ -75,28 +75,30 @@ public class CreateFileLdifAction extends AbstractCreateAction {
     protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileLdifNode = metadataNode.getChildren().get(5);
-        RepositoryNode fileLdifNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
 
         if (isToolbar()) {
-            if (fileLdifNode != null && fileLdifNode.getContentType() != ERepositoryObjectType.METADATA_FILE_LDIF) {
-                fileLdifNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != ERepositoryObjectType.METADATA_FILE_LDIF) {
+                repositoryNode = null;
             }
-            if (fileLdifNode == null) {
-                fileLdifNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_LDIF);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_LDIF);
             }
         }
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {
-            init(fileLdifNode);
-            LdifFileWizard ldifFileWizard = new LdifFileWizard(PlatformUI.getWorkbench(), creation, fileLdifNode,
+            init(repositoryNode);
+            LdifFileWizard ldifFileWizard = new LdifFileWizard(PlatformUI.getWorkbench(), creation, repositoryNode,
                     getExistingNames());
             ldifFileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), ldifFileWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new LdifFileWizard(PlatformUI.getWorkbench(),
-                    creation, selection, getExistingNames()));
+                    creation, repositoryNode, getExistingNames()));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

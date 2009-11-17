@@ -79,28 +79,30 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
     protected void doRun() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileGenericSchemaNode = metadataNode.getChildren().get(7);
-        RepositoryNode fileGenericSchemaNode = getCurrentRepositoryNode();
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
 
         if (isToolbar()) {
-            if (fileGenericSchemaNode != null && fileGenericSchemaNode.getContentType() != currentNodeType) {
-                fileGenericSchemaNode = null;
+            if (repositoryNode != null && repositoryNode.getContentType() != currentNodeType) {
+                repositoryNode = null;
             }
-            if (fileGenericSchemaNode == null) {
-                fileGenericSchemaNode = getRepositoryNodeForDefault(currentNodeType);
+            if (repositoryNode == null) {
+                repositoryNode = getRepositoryNodeForDefault(currentNodeType);
             }
         }
         WizardDialog wizardDialog;
         ISelection selection = null;
         if (isToolbar()) {
-            init(fileGenericSchemaNode);
+            init(repositoryNode);
             GenericSchemaWizard genericSchemaWizard = new GenericSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    fileGenericSchemaNode, getExistingNames(), false);
+                    repositoryNode, getExistingNames(), false);
             genericSchemaWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), genericSchemaWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new GenericSchemaWizard(PlatformUI
-                    .getWorkbench(), creation, selection, getExistingNames(), false));
+                    .getWorkbench(), creation, repositoryNode, getExistingNames(), false));
         }
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
