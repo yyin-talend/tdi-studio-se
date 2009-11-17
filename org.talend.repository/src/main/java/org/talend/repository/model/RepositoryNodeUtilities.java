@@ -329,6 +329,7 @@ public class RepositoryNodeUtilities {
             case METADATA_SALESFORCE_SCHEMA:
             case METADATA_WSDL_SCHEMA:
             case METADATA_FILE_EBCDIC:
+            case METADATA_MDMCONNECTION:
             case METADATA_FILE_RULES:// added by hyWang
             case METADATA_FILE_LINKRULES:
             case METADATA_SAPCONNECTIONS:

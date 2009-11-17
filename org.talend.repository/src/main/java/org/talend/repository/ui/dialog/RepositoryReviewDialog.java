@@ -774,6 +774,15 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataEbcdicConnectionNode();
                 }
             }
+            if (repositoryType.equals(ERepositoryCategoryType.MDM.getName())) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider)
+                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataMDMConnectionNode();
+                }
+            }
             // added by hyWang
             if (repositoryType.equals(ERepositoryCategoryType.RULE.getName())) {
                 if (provider instanceof RepositoryContentProvider) {
@@ -905,6 +914,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getMetadataSAPConnectionNode());
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
+            container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
 
             container.add(contentProvider.getMetadataConNode());
 
@@ -949,6 +959,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getMetadataSAPConnectionNode());
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
+                        refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
 
                         refContainer.add(refProject.getMetadataConNode());
 

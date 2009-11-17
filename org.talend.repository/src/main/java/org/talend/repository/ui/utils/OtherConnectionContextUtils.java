@@ -23,6 +23,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
@@ -80,6 +81,11 @@ public final class OtherConnectionContextUtils {
         EndpointURI,
         Encoding,
 
+        // MDM
+        MDMURL,
+        UNIVERSE,
+        DATACLUSTER,
+        DATAMODEL,
     }
 
     /*
@@ -308,6 +314,54 @@ public final class OtherConnectionContextUtils {
 
         paramName = prefixName + EParamName.QueryCondition;
         ConnectionContextHelper.createParameters(varList, paramName, ssConn.getQueryCondition());
+
+        return varList;
+    }
+
+    static void setMDMPropertiesForContextMode(String prefixName, MDMConnection conn) {
+        // if (conn == null || prefixName == null) {
+        // return;
+        // }
+        // prefixName = prefixName + ConnectionContextHelper.LINE;
+        // String paramName = null;
+        //
+        // paramName = prefixName + EParamName.XmlFilePath;
+        // conn.setXmlFilePath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+        //
+        // EList schema = conn.getSchema();
+        // if (schema != null) {
+        // if (schema.get(0) instanceof XmlXPathLoopDescriptor) {
+        // XmlXPathLoopDescriptor descriptor = (XmlXPathLoopDescriptor) schema.get(0);
+        // paramName = prefixName + EParamName.XPathQuery;
+        // descriptor.setAbsoluteXPathQuery(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+        // }
+        // }
+        //
+        // paramName = prefixName + EParamName.Encoding;
+        // conn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+    }
+
+    static List<IContextParameter> getMDMSchemaVariables(String prefixName, MDMConnection conn) {
+        if (conn == null || prefixName == null) {
+            return Collections.emptyList();
+        }
+        List<IContextParameter> varList = new ArrayList<IContextParameter>();
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.UNIVERSE;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getUniverse());
+
+        paramName = prefixName + EParamName.DATACLUSTER;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getDatacluster());
+
+        paramName = prefixName + EParamName.DATAMODEL;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getDatamodel());
+
+        paramName = prefixName + EParamName.MDMURL;
+        String url = "http://" + conn.getServer() + ":" + conn.getPort() + "/talend/TalendPort";
+        ConnectionContextHelper.createParameters(varList, paramName, url);
 
         return varList;
     }

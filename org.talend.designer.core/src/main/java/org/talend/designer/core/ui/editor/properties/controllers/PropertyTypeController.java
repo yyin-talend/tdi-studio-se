@@ -385,6 +385,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     if (ERepositoryCategoryType.EBCDIC.getName().equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
                     }
+
+                    // mdm
+                    if (ERepositoryCategoryType.MDM.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
+                    }
                     // sap
                     if (ERepositoryCategoryType.SAP.getName().equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_SAPCONNECTIONS);

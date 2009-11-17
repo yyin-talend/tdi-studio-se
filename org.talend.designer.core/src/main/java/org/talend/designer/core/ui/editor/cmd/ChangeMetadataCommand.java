@@ -426,6 +426,7 @@ public class ChangeMetadataCommand extends Command {
                 outputWasRepository = true;
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
+
         }
 
         if (inputSchemaParam != null
@@ -599,6 +600,19 @@ public class ChangeMetadataCommand extends Command {
                 IElementParameter eltTablename = curNode.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
                 changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, eltTablename);
             }
+        }
+    }
+
+    /**
+     * hwang Comment method "setMDMConcept".
+     */
+    protected void setMDMConcept(Element curNode, String newdbTableName) {
+        if (curNode == null) {
+            return;
+        }
+        IElementParameter conceptPara = curNode.getElementParameter("CONCEPT");//$NON-NLS-1$
+        if (conceptPara != null) {
+            conceptPara.setValue(TalendTextUtils.addQuotes(newdbTableName));
         }
     }
 

@@ -873,6 +873,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             value = false;
                         }
                     }
+
                     boolean flag = filterComponent(component, name, type);
                     if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
                         neededComponents.add(emfComponent);

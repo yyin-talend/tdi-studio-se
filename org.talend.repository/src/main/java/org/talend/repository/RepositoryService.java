@@ -61,6 +61,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.core.ui.IMDMProviderService;
 import org.talend.core.ui.ISAPProviderService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -364,6 +365,14 @@ public class RepositoryService implements IRepositoryService {
                             IEBCDICProviderService.class);
                     if (service != null) {
                         relatedWizard = service.newEbcdicWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+                    }
+                }
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_MDMCONNECTION)) {
+                if (PluginChecker.isMDMPluginLoaded()) {
+                    IMDMProviderService service = (IMDMProviderService) GlobalServiceRegister.getDefault().getService(
+                            IMDMProviderService.class);
+                    if (service != null) {
+                        relatedWizard = service.newMDMWizard(PlatformUI.getWorkbench(), creation, realNode, null);
                     }
                 }
             } else if (objectType.equals(ERepositoryObjectType.METADATA_SAPCONNECTIONS)) {

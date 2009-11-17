@@ -44,6 +44,7 @@ import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
@@ -239,6 +240,8 @@ public final class ConnectionContextHelper {
             varList = OtherConnectionContextUtils.getSalesforceVariables(label, (SalesforceSchemaConnection) conn);
         } else if (conn instanceof GenericSchemaConnection) {
             //
+        } else if (conn instanceof MDMConnection) {
+            varList = OtherConnectionContextUtils.getMDMSchemaVariables(label, (MDMConnection) conn);
         }
 
         return varList;

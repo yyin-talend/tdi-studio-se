@@ -145,6 +145,24 @@ public class RepositoryDoubleClickAction extends Action {
 
     /**
      * 
+     * hwang Comment method "isMDMTable".
+     * 
+     * for mdm
+     */
+    private boolean isMDMTable(RepositoryNode node) {
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType == ERepositoryObjectType.MDM_CONCEPT) {
+            node = node.getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_MDMCONNECTION) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 
      * hwang Comment method "isSAPTable".
      * 
      * for sap

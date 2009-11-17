@@ -32,7 +32,7 @@ Require-Bundle: org.talend.libraries,
  org.talend.commons.ui,
  org.eclipse.core.filesystem,
  org.talend.registration;visibility:=reexport,
- org.apache.log4j;bundle-version="1.2.13"
+ org.apache.log4j
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,

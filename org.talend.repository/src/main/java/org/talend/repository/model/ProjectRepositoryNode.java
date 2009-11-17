@@ -34,6 +34,7 @@ import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -74,7 +75,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             docNode, metadataConNode, sqlPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
             metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode,// metadataSAPFunctionNode,
-            metadataEbcdicConnectionNode, metadataRulesNode;
+            metadataEbcdicConnectionNode, metadataMDMConnectionNode, metadataRulesNode;
 
     private RepositoryNode jobletNode;
 
@@ -188,6 +189,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 break;
             case METADATA_FILE_EBCDIC:
                 this.metadataEbcdicConnectionNode = null;
+                break;
+            case METADATA_MDMCONNECTION:
+                this.metadataMDMConnectionNode = null;
                 break;
             case METADATA_SALESFORCE_SCHEMA:
                 this.metadataSalesforceSchemaNode = null;
@@ -389,6 +393,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
             metadataNode.getChildren().add(metadataEbcdicConnectionNode);
         }
+
+        if (PluginChecker.isMDMPluginLoaded()) {
+            metadataMDMConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataMDMConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_MDMCONNECTION);
+            metadataMDMConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_MDMCONNECTION);
+            metadataNode.getChildren().add(metadataMDMConnectionNode);
+        }
+
         // 7.14 RULES
         if (PluginChecker.isRulesPluginLoaded() && codeLanguage != ECodeLanguage.PERL) {
             // hidden for current version until 3.1.2m
@@ -457,12 +469,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataSAPConnectionNode) {
                 convert(factory.getMetadataSAPConnection(newProject), metadataSAPConnectionNode,
                         ERepositoryObjectType.METADATA_SAPCONNECTIONS, recBinNode);
-            }
-            // else if (parent == metadataSAPFunctionNode) {
-            // convert(factory.getMetadataSAPConnection(newProject), metadataSAPFunctionNode,
-            // ERepositoryObjectType.METADATA_SAP_FUNCTION, recBinNode);
-            // }
-            else if (parent == metadataEbcdicConnectionNode) {
+            } else if (parent == metadataMDMConnectionNode) {
+                convert(factory.getMetadataMDM(newProject), metadataMDMConnectionNode,
+                        ERepositoryObjectType.METADATA_MDMCONNECTION, recBinNode);
+            } else if (parent == metadataEbcdicConnectionNode) {
                 convert(factory.getMetadataEBCDIC(newProject), metadataEbcdicConnectionNode,
                         ERepositoryObjectType.METADATA_FILE_EBCDIC, recBinNode);
             } else if (parent == sqlPatternNode) {
@@ -858,6 +868,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             EbcdicConnection ebcdicConnection = (EbcdicConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
                     .getConnection();
             createTables(recBinNode, node, repositoryObject, ebcdicConnection);
+        }
+        if (type == ERepositoryObjectType.METADATA_MDMCONNECTION) {
+            MDMConnection mdmConnection = (MDMConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                    .getConnection();
+            createTables(recBinNode, node, repositoryObject, mdmConnection);
         }
     }
 
@@ -1332,6 +1347,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.metadataEbcdicConnectionNode;
     }
 
+    public RepositoryNode getMetadataMDMConnectionNode() {
+        return this.metadataMDMConnectionNode;
+    }
+
     public RepositoryNode getContextNode() {
         return this.getContextNode();
     }
@@ -1402,6 +1421,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.metadataFileExcelNode;
         case METADATA_FILE_EBCDIC:
             return this.metadataEbcdicConnectionNode;
+        case METADATA_MDMCONNECTION:
+            return this.metadataMDMConnectionNode;
         case METADATA_SALESFORCE_SCHEMA:
             return this.metadataSalesforceSchemaNode;
         case METADATA_GENERIC_SCHEMA:

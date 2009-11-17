@@ -162,6 +162,8 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getSQLPattern();
         } else if (type == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
             return BusinessPackage.eINSTANCE.getCopybook();
+        } else if (type == ERepositoryObjectType.METADATA_MDMCONNECTION) {
+            return BusinessPackage.eINSTANCE.getMDM();
         }
         return null;
     }

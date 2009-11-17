@@ -1934,4 +1934,22 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void unloadResources() throws PersistenceException {
         repositoryFactoryFromProvider.unloadResources();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataMDM()
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataMDM() throws PersistenceException {
+        return getMetadataMDM(projectManager.getCurrentProject());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataMDM(org.talend.core.model.general.Project)
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataMDM(Project project) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataMDM(project);
+    }
 }

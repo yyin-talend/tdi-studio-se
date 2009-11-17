@@ -509,6 +509,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                                 table = table.clone();
                                                 setDBTableFieldValue(node, table.getTableName(), null);
                                                 setSAPFunctionName(node, table.getLabel());
+                                                setMDMConcept(node, table.getTableName());
                                                 table.setTableName(node.getMetadataList().get(0).getTableName());
                                                 if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
                                                     ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null,

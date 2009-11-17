@@ -54,6 +54,7 @@ import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -257,6 +258,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 }
                                 if ((connection instanceof EbcdicConnection)
                                         && (repositoryValue.equals(ERepositoryCategoryType.EBCDIC.getName()))) {
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof MDMConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.MDM.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
                                 if ((connection instanceof RegexpFileConnection)
