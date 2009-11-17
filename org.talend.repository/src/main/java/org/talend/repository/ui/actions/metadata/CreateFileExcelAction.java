@@ -135,8 +135,6 @@ public class CreateFileExcelAction extends AbstractCreateAction {
             collectSiblingNames(node);
             creation = false;
             break;
-        default:
-            return;
         }
         setEnabled(true);
     }

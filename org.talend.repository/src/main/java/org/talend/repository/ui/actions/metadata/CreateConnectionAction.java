@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -114,18 +113,18 @@ public class CreateConnectionAction extends AbstractCreateAction {
         // Define the RepositoryNode, by default Metadata/DbConnection
         RepositoryNode node = repositoryNode;
         // When the userSelection is an element of metadataNode, use it !
-        if (!isToolbar()) {
-            Object userSelection = ((IStructuredSelection) getSelection()).getFirstElement();
-            if (userSelection instanceof RepositoryNode) {
-                switch (((RepositoryNode) userSelection).getType()) {
-                case REPOSITORY_ELEMENT:
-                case SIMPLE_FOLDER:
-                case SYSTEM_FOLDER:
-                    node = (RepositoryNode) userSelection;
-                    break;
-                }
-            }
-        }
+        // if (!isToolbar()) {
+        // Object userSelection = ((IStructuredSelection) getSelection()).getFirstElement();
+        // if (userSelection instanceof RepositoryNode) {
+        // switch (((RepositoryNode) userSelection).getType()) {
+        // case REPOSITORY_ELEMENT:
+        // case SIMPLE_FOLDER:
+        // case SYSTEM_FOLDER:
+        // node = (RepositoryNode) userSelection;
+        // break;
+        // }
+        // }
+        // }
         boolean creation = false;
         // Define the repositoryObject DatabaseConnection and his pathToSave
         switch (node.getType()) {
