@@ -354,8 +354,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
-                boolean currentColumnStillExist = ArrayUtils.contains(curColumnNameList, param.getValue());
-
+                boolean currentColumnStillExist = ArrayUtils.contains(curColumnValueList, param.getValue()); // 10155
                 if (curColumnNameList.length > 0 && !currentColumnStillExist) {
                     param.setValue(curColumnValueList[0]);
                 } else if (!currentColumnStillExist) {
