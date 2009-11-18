@@ -22,3 +22,10 @@ for bare type of webservice: modified ServiceInvokerHelper.java
 
 please @see talend-ws-1.0.jar\org\talend\ws\mapper\ListPropertyMapper.java
 			talend-ws-1.0.jar\org\talend\ws\helper\ServiceInvokerHelper.java 
+			
+4.(2009-11-18 modified by bchen) support for this webservice:http://www.ebi.ac.uk/intact/binary-search-ws/binarysearch?wsdl
+consider the situation about no targetnamespace in schema
+
+modified ServiceInvokerHelper.java
+
+please @see talend-ws-1.0.jar\org\talend\ws\helper\ServiceInvokerHelper.java 

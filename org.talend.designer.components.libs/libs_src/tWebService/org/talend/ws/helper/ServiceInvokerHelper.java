@@ -116,7 +116,7 @@ public class ServiceInvokerHelper implements ClassMapper {
             org.apache.ws.commons.schema.XmlSchema[] xs = xmlSchemaCollection.getXmlSchemas();
             if (xs != null) {
                 for (org.apache.ws.commons.schema.XmlSchema x : xs) {
-                    if (namespaces.contains(x.getTargetNamespace())) {
+                    if (namespaces.contains(x.getTargetNamespace()) || x.getTargetNamespace() == null) {
                         continue;
                     }
                     namespaces.add(x.getTargetNamespace());
