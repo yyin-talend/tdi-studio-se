@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
+import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
@@ -43,6 +44,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 
@@ -166,8 +168,32 @@ public class ExternalNodeChangeCommand extends Command {
                             metadataInputWasRepository.put(connection, Boolean.TRUE);
                         }
                     }
-                    boolean empty = connection.getMetadataTable().getListColumns().isEmpty(); // before is empty
-                    connection.getMetadataTable().setListColumns(metadata.getListColumns());
+                    // for bug 9849
+                    List<IMetadataColumn> listColumns = connection.getMetadataTable().getListColumns();
+                    boolean empty = listColumns.isEmpty(); // before is empty
+                    List<IMetadataColumn> newListColumns = metadata.getListColumns();
+                    List<ColumnNameChanged> columnNameChangeds = new ArrayList<ColumnNameChanged>();
+                    int size = listColumns.size();
+                    int newSize = newListColumns.size();
+                    if (newSize < size) {
+                        size = newSize;
+                    }
+
+                    for (int i = 0; i < size; i++) {
+                        IMetadataColumn metadataColumn = listColumns.get(i);
+                        IMetadataColumn newMetadataColumn = newListColumns.get(i);
+                        if (metadataColumn != null && newMetadataColumn != null) {
+                            String oldLabel = metadataColumn.getLabel();
+                            String newLabel = newMetadataColumn.getLabel();
+                            if (oldLabel != null && !oldLabel.equals(newLabel)) {
+                                columnNameChangeds.add(new ColumnNameChanged(oldLabel, newLabel));
+                            }
+                        }
+                    }
+
+                    connection.getMetadataTable().setListColumns(newListColumns);
+                    ColumnListController.updateColumnList(sourceNode, columnNameChangeds, false);
+
                     if (empty) { // trace init
                         connection.initTraceParamters();
                     }
