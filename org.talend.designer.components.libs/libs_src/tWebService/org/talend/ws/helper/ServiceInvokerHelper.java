@@ -1,13 +1,10 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package org.talend.ws.helper;
 
-import java.io.IOException;
-import org.talend.ws.exception.LocalizedException;
-import org.talend.ws.mapper.ClassMapper;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -16,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
 import javax.wsdl.Input;
 import javax.wsdl.Message;
 import javax.wsdl.Operation;
@@ -26,6 +24,7 @@ import javax.wsdl.WSDLException;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.dynamic.DynamicClientFactory;
@@ -33,33 +32,44 @@ import org.apache.cxf.jaxb.JAXBUtils;
 import org.apache.cxf.jaxb.JAXBUtils.IdentifierType;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaType;
+import org.talend.ws.exception.LocalizedException;
 import org.talend.ws.helper.conf.ServiceHelperConfiguration;
 import org.talend.ws.helper.map.MapConverter;
+import org.talend.ws.mapper.ClassMapper;
 import org.talend.ws.mapper.EmptyMessageMapper;
 import org.talend.ws.mapper.MapperFactory;
 import org.talend.ws.mapper.MessageMapper;
 
 /**
- *
+ * 
  * @author rlamarche
  */
 public class ServiceInvokerHelper implements ClassMapper {
 
     private ServiceDiscoveryHelper serviceDiscoveryHelper;
+
     private DynamicClientFactory dynamicClientFactory;
+
     private final String packagePrefix;
+
     private Map<String, String> namespacePackageMap;
+
     private Map<String, String> packageNamespaceMap;
+
     private Map<QName, Map<QName, Client>> clients;
+
     private List<String> bindingFiles;
+
     private Map<Message, MessageMapper> mappers;
+
     private MapperFactory mapperFactory;
+
     private ServiceHelperConfiguration configuration;
 
     protected ServiceInvokerHelper() {
-        packagePrefix = "tmp" + (String.valueOf((new Random(Calendar.getInstance().
-                getTimeInMillis())).nextInt()).substring(1));
+        packagePrefix = "tmp" + (String.valueOf((new Random(Calendar.getInstance().getTimeInMillis())).nextInt()).substring(1));
         dynamicClientFactory = DynamicClientFactory.newInstance();
         namespacePackageMap = new HashMap<String, String>();
         packageNamespaceMap = new HashMap<String, String>();
@@ -100,6 +110,28 @@ public class ServiceInvokerHelper implements ClassMapper {
             f.deleteOnExit();
             bindingFiles.add(f.getAbsolutePath());
         }
+        // bchen , some targetnamespace in schema missing in definitions,code for bug 9900 (for bare webservice)
+        XmlSchemaCollection xmlSchemaCollection = serviceDiscoveryHelper.getSchema();
+        if (xmlSchemaCollection != null) {
+            org.apache.ws.commons.schema.XmlSchema[] xs = xmlSchemaCollection.getXmlSchemas();
+            if (xs != null) {
+                for (org.apache.ws.commons.schema.XmlSchema x : xs) {
+                    if (namespaces.contains(x.getTargetNamespace())) {
+                        continue;
+                    }
+                    namespaces.add(x.getTargetNamespace());
+                    String packageName = packagePrefix + JAXBUtils.namespaceURIToPackage(x.getTargetNamespace());
+                    namespacePackageMap.put(x.getTargetNamespace(), packageName);
+                    packageNamespaceMap.put(packageName, x.getTargetNamespace());
+
+                    File f = org.apache.cxf.tools.util.JAXBUtils.getPackageMappingSchemaBindingFile(x.getTargetNamespace(),
+                            packageName);
+                    f.deleteOnExit();
+                    bindingFiles.add(f.getAbsolutePath());
+                }
+            }
+        }
+        // end bchen ,code for bug 9900
         mapperFactory = new MapperFactory(this, serviceDiscoveryHelper.getSchema());
     }
 
@@ -118,9 +150,8 @@ public class ServiceInvokerHelper implements ClassMapper {
     }
 
     protected Client createClient(QName service, QName port) {
-        Client client = dynamicClientFactory.createClient(serviceDiscoveryHelper.getLocalWsdlUri(), service, Thread.currentThread().
-                getContextClassLoader(), port, bindingFiles);
-
+        Client client = dynamicClientFactory.createClient(serviceDiscoveryHelper.getLocalWsdlUri(), service, Thread
+                .currentThread().getContextClassLoader(), port, bindingFiles);
         HTTPConduit conduit = (HTTPConduit) client.getConduit();
         if (configuration != null) {
             configuration.configureHttpConduit(conduit);
@@ -151,9 +182,8 @@ public class ServiceInvokerHelper implements ClassMapper {
         MessageMapper inMessageMapper = null;
         MessageMapper outMessageMapper = null;
 
-
-        BindingOperationInfo bindingOperationInfo = client.getEndpoint().
-                getEndpointInfo().getBinding().getOperation(new QName(client.getEndpoint().getService().getName().getNamespaceURI(), operation.getName()));
+        BindingOperationInfo bindingOperationInfo = client.getEndpoint().getEndpointInfo().getBinding().getOperation(
+                new QName(client.getEndpoint().getService().getName().getNamespaceURI(), operation.getName()));
         if (input != null) {
             inMessageMapper = getMessageMapper(input.getMessage());
         } else {
@@ -182,7 +212,8 @@ public class ServiceInvokerHelper implements ClassMapper {
         return retValues;
     }
 
-    public Map<String, Object> invoke(QName serviceName, QName portName, String operationName, Object params) throws Exception, LocalizedException {
+    public Map<String, Object> invoke(QName serviceName, QName portName, String operationName, Object params) throws Exception,
+            LocalizedException {
         if (serviceName == null) {
             throw new IllegalArgumentException("serviceName is mandatory.");
         }
@@ -196,14 +227,16 @@ public class ServiceInvokerHelper implements ClassMapper {
         }
         Port port = service.getPort(portName.getLocalPart());
         if (port == null) {
-            throw new IllegalArgumentException("Port " + portName + " does not exists for service " + serviceName.toString() + ".");
+            throw new IllegalArgumentException("Port " + portName + " does not exists for service " + serviceName.toString()
+                    + ".");
         }
         if (operationName == null) {
             throw new IllegalArgumentException("operationName is mandatory.");
         }
         Operation operation = port.getBinding().getPortType().getOperation(operationName, null, null);
         if (operation == null) {
-            throw new IllegalArgumentException("Operation " + operationName + " does not exists for service " + serviceName.toString() + ".");
+            throw new IllegalArgumentException("Operation " + operationName + " does not exists for service "
+                    + serviceName.toString() + ".");
         }
 
         Client client = getClient(serviceName, portName);
@@ -212,8 +245,9 @@ public class ServiceInvokerHelper implements ClassMapper {
     }
 
     /**
-     * Invoke a service with a simple map of parametes (address.city=LYON, address.zipCode=69003, etc ...)
-     * Returned results are also in this format
+     * Invoke a service with a simple map of parametes (address.city=LYON, address.zipCode=69003, etc ...) Returned
+     * results are also in this format
+     * 
      * @param serviceName
      * @param portName
      * @param operationName
@@ -222,7 +256,8 @@ public class ServiceInvokerHelper implements ClassMapper {
      * @throws java.lang.Exception
      * @throws org.talend.ws.exception.LocalizedException
      */
-    public Map<String, Object> invokeSimple(QName serviceName, QName portName, String operationName, Object params) throws Exception, LocalizedException {
+    public Map<String, Object> invokeSimple(QName serviceName, QName portName, String operationName, Object params)
+            throws Exception, LocalizedException {
         if (params instanceof Map) {
             params = MapConverter.mapToDeepMap((Map<String, Object>) params);
         }
@@ -234,8 +269,7 @@ public class ServiceInvokerHelper implements ClassMapper {
 
     protected String getClassNameForType(XmlSchemaType schemaType) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getPackageForNamespaceURI(schemaType.getQName().
-                getNamespaceURI()));
+        sb.append(getPackageForNamespaceURI(schemaType.getQName().getNamespaceURI()));
         sb.append(".");
         sb.append(getClassNameForTypeName(schemaType.getName()));
         String className = sb.toString();

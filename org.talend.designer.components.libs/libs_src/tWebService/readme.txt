@@ -13,3 +13,12 @@ SimplePropertyMapper.java
 
 please @see talend-ws-1.0.jar\org\talend\ws\mapper\ListPropertyMapper.java
 	    	talend-ws-1.0.jar\org\talend\ws\mapper\SimplePropertyMapper.java
+	    	
+3.(2009-11-18 modified by bchen) fixed bug 9900
+
+for wrap type of webservice: update to cxf-2.2.4.jar, jaxb-xjc-2.1.12.jar and jaxb-impl-2.1.12.jar.
+						     modified ListPropertyMapper.java
+for bare type of webservice: modified ServiceInvokerHelper.java
+
+please @see talend-ws-1.0.jar\org\talend\ws\mapper\ListPropertyMapper.java
+			talend-ws-1.0.jar\org\talend\ws\helper\ServiceInvokerHelper.java 

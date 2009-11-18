@@ -126,9 +126,17 @@ public class ListPropertyMapper implements PropertyMapper {
             return null;
         }
         if (!(property instanceof List)) {
-            throw new IllegalArgumentException("You must provide a list of properties");
+            if (!(property instanceof Object[])) {// bchen treat Object[] as List ,bug for 9900 (wrap webservice)
+                throw new IllegalArgumentException("You must provide a list of properties");
+            }// bchen end
         }
-        List<Object> properties = (List<Object>) property;
+        List<Object> properties = null;
+        if (property instanceof Object[]) {// bchen treat Object[] as List ,bug for 9900 (wrap webservice)
+            Object[] os = (Object[]) property;
+            properties = Arrays.asList(os);
+        } else {// bchen end
+            properties = (List<Object>) property;
+        }
         List<Object> values = new ArrayList<Object>(properties.size());
 
         for (Object prop : properties) {
