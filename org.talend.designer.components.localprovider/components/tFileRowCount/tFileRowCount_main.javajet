@@ -22,9 +22,10 @@ String rowSeparator = ElementParameterParser.getValue(
 );
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
-if (<%=filename%>.toLowerCase().endsWith(".xlsx")) throw new RuntimeException("not support excel 2007");  
+String tmp_<%=cid%> = <%=filename%>;
+if (tmp_<%=cid%>.toLowerCase().endsWith(".xlsx")) throw new RuntimeException("not support excel 2007");  
 int lineCount_<%=cid %> = 0;
-if (<%=filename%>.toLowerCase().endsWith(".xls")){
+if (tmp_<%=cid%>.toLowerCase().endsWith(".xls")){
   final jxl.WorkbookSettings wbs_<%=cid%> = new jxl.WorkbookSettings();
   wbs_<%=cid%>.setEncoding(<%=encoding%>);
   final jxl.Workbook wb_<%=cid%> = jxl.Workbook.getWorkbook(
