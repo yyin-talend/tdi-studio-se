@@ -27,10 +27,10 @@ if(!("NONE").equals(tableAction)) {
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
             %>
 <%
-//to fixed: bug8842
-if(cid.equals("talendLogs_DB")){%>	         
-    // [%connection%][checktable]
-    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]";
+//to fixed: bug8422
+if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){%>	         
+    // [%connection%][checktable][tableName]
+    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]" + "[" + <%=table%> + "]";
 	if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
 <%}%>      
 <% 
@@ -88,8 +88,8 @@ if(cid.equals("talendLogs_DB")){%>
             }
             %>
 <%
-//to fixed: bug8842
-if(cid.equals("talendLogs_DB")){%>
+//to fixed: bug8422
+if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){%>
 		GlobalResource.resourceMap.put(keyCheckTable_<%=cid %>, true);
 	}
 <%}%>            
