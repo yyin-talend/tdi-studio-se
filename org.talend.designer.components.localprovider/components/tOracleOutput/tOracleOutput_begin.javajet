@@ -259,8 +259,8 @@ if(columnList != null && columnList.size()>0) {
                 //to fixed: bug8422
                 if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){ %>
                 		java.sql.PreparedStatement pstmt_<%=cid %> = null;         
-                        // [%connection%][psmt]
-                        String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]";
+                        // [%connection%][psmt][tableName]
+                        String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + <%=table%> + "]";
                 		if(GlobalResource.resourceMap.get(keyPsmt_<%=cid %>)== null){
                 			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
                 			GlobalResource.resourceMap.put(keyPsmt_<%=cid %>, pstmt_<%=cid %>);
