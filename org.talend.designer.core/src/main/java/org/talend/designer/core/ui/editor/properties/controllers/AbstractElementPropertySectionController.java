@@ -50,6 +50,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -82,6 +84,10 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.properties.Information;
+import org.talend.core.model.properties.InformationLevel;
+import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -104,6 +110,7 @@ import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
+import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.core.utils.UpgradeParameterHelper;
@@ -143,6 +150,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected EditionControlHelper editionControlHelper;
 
     private int additionalHeightSize;
+
+    private List<Problem> proForJavaErrorMark = null;
 
     protected static final String VARIABLE_TOOLTIP = Messages
             .getString("AbstractElementPropertySectionController.variableTooltip"); //$NON-NLS-1$
@@ -492,6 +501,54 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     Control control = (Control) event.widget;
                     setCodeProblems(null);
                     checkErrorsForPropertiesOnly(control);
+                    IWorkbench workbench = PlatformUI.getWorkbench();
+                    Property property = null;
+                    if (workbench != null) {
+                        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                        if (page != null) {
+                            IEditorPart editorPart = page.getActiveEditor();
+                            if (editorPart instanceof AbstractMultiPageTalendEditor) {
+                                AbstractMultiPageTalendEditor multiPageTalendEditor = ((AbstractMultiPageTalendEditor) editorPart);
+                                property = multiPageTalendEditor.getProcess().getProperty();
+                            }
+                        }
+                    }
+                    if (property == null) {
+                        return;
+                    }
+                    ECodeLanguage language = ((RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
+                            org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+                    property.getInformations().clear();
+                    if (language == ECodeLanguage.JAVA && proForJavaErrorMark != null) {
+                        for (Problem problem : proForJavaErrorMark) {
+                            if (ProblemStatus.ERROR.equals(problem.getStatus())) {
+                                String problemResource = problem.getDescription();
+                                Information information = PropertiesFactory.eINSTANCE.createInformation();
+                                if (problemResource != null) {
+                                    information.setText(problemResource);
+                                }
+                                information.setLevel(InformationLevel.ERROR_LITERAL);
+                                property.getInformations().add(information);
+                            }
+                        }
+                    } else if (language == ECodeLanguage.PERL && proForPerlErrorMark != null) {
+                        for (String componentName : proForPerlErrorMark.keySet()) {
+                            Problem problem = proForPerlErrorMark.get(componentName);
+                            if (ProblemStatus.ERROR.equals(problem.getStatus())) {
+                                String problemResource = problem.getDescription();
+                                Information information = PropertiesFactory.eINSTANCE.createInformation();
+                                if (problemResource != null) {
+                                    information.setText(problemResource);
+                                }
+                                information.setLevel(InformationLevel.ERROR_LITERAL);
+                                property.getInformations().add(information);
+                            }
+                        }
+
+                    }
+                    Problems.computePropertyMaxInformationLevel(property);
+                    Problems.refreshRepositoryView();
+                    Problems.refreshProblemTreeView();
                 }
             }
 
@@ -581,7 +638,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             ControlProperties existingControlProperties = controlToProp.get(control);
 
             List<Problem> problems = getCodeProblems();
-            List<Problem> proForJavaErrorMark = new ArrayList<Problem>();
+            proForJavaErrorMark = new ArrayList<Problem>();
             if (valueFinal != null) {
                 String key = CodeGenerationUtils.buildProblemKey(elem.getElementName(), elementParameter.getName());
                 if (language == ECodeLanguage.PERL) {
