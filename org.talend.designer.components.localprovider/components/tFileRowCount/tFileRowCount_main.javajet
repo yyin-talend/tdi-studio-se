@@ -20,13 +20,49 @@ String rowSeparator = ElementParameterParser.getValue(
     node,
     "__ROWSEPARATOR__"
 );
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
+if (<%=filename%>.toLowerCase().endsWith(".xlsx")) throw new RuntimeException("not support excel 2007");  
+int lineCount_<%=cid %> = 0;
+if (<%=filename%>.toLowerCase().endsWith(".xls")){
+  final jxl.WorkbookSettings wbs_<%=cid%> = new jxl.WorkbookSettings();
+  wbs_<%=cid%>.setEncoding(<%=encoding%>);
+  final jxl.Workbook wb_<%=cid%> = jxl.Workbook.getWorkbook(
+      new java.io.BufferedInputStream(
+          new java.io.FileInputStream(<%=filename%>)), wbs_<%=cid%>);
 
-        java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader
+  java.util.List<jxl.Sheet> sheets_<%=cid%> = new java.util.ArrayList<jxl.Sheet>();;
+  sheets_<%=cid%> = java.util.Arrays.<jxl.Sheet> asList(wb_<%=cid%>.getSheets());
+  
+  if (sheets_<%=cid%>.size() <= 0){
+    wb_<%=cid%>.close();
+    throw new RuntimeException("Special sheets not exist!");
+  }  
+  int emptyLineCount_<%=cid%> = 0;
+ 
+  for (jxl.Sheet sheet_<%=cid%> : sheets_<%=cid%>) {
+    int one_sheet_rows = sheet_<%=cid%>.getRows();
+    lineCount_<%=cid %> += one_sheet_rows;
+  
+    for (int i = 0; i < one_sheet_rows; i++){
+      jxl.Cell[] sheet_row = sheet_<%=cid%>.getRow(i);
+    
+      boolean bIsEmptyRow = true;
+      for (jxl.Cell cell: sheet_row){
+        if (cell.getContents() != null){
+          bIsEmptyRow = false;
+          break;
+        }
+      }
+      emptyLineCount_<%=cid%> += bIsEmptyRow ? 1 : 0;
+    }
+  }  
+  wb_<%=cid%>.close();
+  
+} else{        					
+          java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader
         									(new java.io.InputStreamReader
-        									(new java.io.FileInputStream(<%=filename %>)));
-        int lineCount_<%=cid %> = 0;
-
+        									(new java.io.FileInputStream(<%=filename %>), <%=encoding%>));				
         String rowSeparator_<%=cid %> = <%=rowSeparator %>;
         byte[] bytes_<%=cid %> = rowSeparator_<%=cid %>.getBytes();
         int index_<%=cid %> = 0;
@@ -56,5 +92,7 @@ String rowSeparator = ElementParameterParser.getValue(
             }
             if(eol_<%=cid %> && index_<%=cid %> == 0) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
         }
-        globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>); 
-        br_<%=cid %>.close();
+       br_<%=cid %>.close();
+  }    
+  globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>);    
+
