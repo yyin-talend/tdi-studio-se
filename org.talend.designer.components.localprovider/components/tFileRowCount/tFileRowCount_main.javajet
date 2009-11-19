@@ -5,124 +5,56 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 "
 %>
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String filename = ElementParameterParser.getValue(node, "__FILENAME__");
-String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-boolean bSupportExcel = "true".equals(ElementParameterParser.getValue(node, "__SUPPORT_EXCEL__"));
-String strSheetsName = ElementParameterParser.getValue(node, "__EXCEL_SHEETS__").replace("\"", "").trim();
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
 
-//--start 1
-if (bSupportExcel){
-%>
-  final jxl.WorkbookSettings wbs_<%=cid%> = new jxl.WorkbookSettings();
-  wbs_<%=cid%>.setEncoding("ISO-8859-15");
-  final jxl.Workbook wb_<%=cid%> = jxl.Workbook.getWorkbook(
-      new java.io.BufferedInputStream(
-          new java.io.FileInputStream(<%=filename%>)), wbs_<%=cid%>);
-
-  java.util.List<jxl.Sheet> sheets_<%=cid%> = new java.util.ArrayList<jxl.Sheet>();;
-
-<%if ("".equals(strSheetsName)){ %>
-    sheets_<%=cid%> = java.util.Arrays.<jxl.Sheet> asList(wb_<%=cid%>.getSheets());
-<%
-  }else {
-    String sheets[] = strSheetsName.split(",");
-    for (String sheet: sheets){
-%>      
-      if (wb_<%=cid%>.getSheet("<%=sheet%>") != null)
-        sheets_<%=cid%>.add(wb_<%=cid%>.getSheet("<%=sheet%>"));
-<%
-    }
-  }
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
 %>
 
-  if (sheets_<%=cid%>.size() <= 0){
-    wb_<%=cid%>.close();
-    throw new RuntimeException("Special sheets not exist!");
-  }
+        java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader
+        									(new java.io.InputStreamReader
+        									(new java.io.FileInputStream(<%=filename %>)));
+        int lineCount_<%=cid %> = 0;
 
-  int lineCount_<%=cid %> = 0;
-  int emptyLineCount_<%=cid%> = 0;
- 
-  for (jxl.Sheet sheet_<%=cid%> : sheets_<%=cid%>) {
-    int one_sheet_rows = sheet_<%=cid%>.getRows();
-    lineCount_<%=cid %> += one_sheet_rows;
-  
-    for (int i = 0; i < one_sheet_rows; i++){
-      jxl.Cell[] sheet_row = sheet_<%=cid%>.getRow(i);
-    
-      boolean bIsEmptyRow = true;
-      for (jxl.Cell cell: sheet_row){
-        if (cell.getContents() != null){
-          bIsEmptyRow = false;
-          break;
+        String rowSeparator_<%=cid %> = <%=rowSeparator %>;
+        byte[] bytes_<%=cid %> = rowSeparator_<%=cid %>.getBytes();
+        int index_<%=cid %> = 0;
+
+        int oneChar_<%=cid %> = 0;
+        boolean eol_<%=cid %>=false;
+        int emptyLineCount_<%=cid %>=1;
+		
+		if(bytes_<%=cid %>.length > 0) {
+            while ((oneChar_<%=cid %> = br_<%=cid %>.read()) != -1) {
+            	
+    			if(lineCount_<%=cid%>==0) lineCount_<%=cid%> = 1;
+                if (oneChar_<%=cid %> == bytes_<%=cid %>[index_<%=cid %>]) {
+                    if (index_<%=cid %> == bytes_<%=cid %>.length - 1) {
+                        lineCount_<%=cid %>++;
+                        if(eol_<%=cid%>) emptyLineCount_<%=cid %>++;
+                        eol_<%=cid %>=true;
+                        index_<%=cid %> = 0;
+                    } else {
+                        index_<%=cid %>++;
+                    }
+                }else{
+                	eol_<%=cid %> = false;
+                	emptyLineCount_<%=cid %>=1;
+                	index_<%=cid %>= 0;
+                }
+            }
+            if(eol_<%=cid %> && index_<%=cid %> == 0) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
         }
-      }
-      emptyLineCount_<%=cid%> += bIsEmptyRow ? 1 : 0;    
-    }
-  }  
-  wb_<%=cid%>.close();
-<%} else {//--middle 1%>
-  java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>)));
-  int lineCount_<%=cid %> = 0;
-
-  String rowSeparator_<%=cid %> = <%=rowSeparator %>;
-  byte[] bytes_<%=cid %> = rowSeparator_<%=cid %>.getBytes();
-  int index_<%=cid %> = 0;
-
-  int oneChar_<%=cid%> = 0;
-  int emptyLineCount_<%=cid%> = 0;
-  int rowSeparator_count_<%=cid%> = 0;
-  boolean ready_eof_<%=cid%> = false;
-  boolean bFirstRowIsEmpty_<%=cid%> = true;
-    
-  if (bytes_<%=cid%>.length > 0) {
-    while ((oneChar_<%=cid%> = br_<%=cid%>.read()) != -1) {
-
-      if (oneChar_<%=cid%> == bytes_<%=cid%>[index_<%=cid%>]) {
-
-        if (index_<%=cid%> == bytes_<%=cid%>.length - 1) {
-          lineCount_<%=cid%> ++;
-          
-          if (bFirstRowIsEmpty_<%=cid%>){
-            emptyLineCount_<%=cid%> ++;
-            bFirstRowIsEmpty_<%=cid%> = false; // only one time
-          }
-        
-         if ( ++ rowSeparator_count_<%=cid%> == 2){
-            emptyLineCount_<%=cid%> ++;
-            rowSeparator_count_<%=cid%> = 1;
-          }
-        
-          index_<%=cid%> = 0;
-          ready_eof_<%=cid%> = false;
-        } else {
-          index_<%=cid%> ++;
-          continue;
-        }
-      } else {
-        if (bFirstRowIsEmpty_<%=cid%>)
-          bFirstRowIsEmpty_<%=cid%> = false;
-        
-        index_<%=cid%> = 0;
-        rowSeparator_count_<%=cid%> = 0;
-        ready_eof_<%=cid%> = true;
-      }
-    }
-    // add last line not end with row separator
-    if (ready_eof_<%=cid%>)
-      lineCount_<%=cid%> ++;
-  }  
-  br_<%=cid %>.close();
-<%
-} //--end 1
-
-if ("true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY_ROW__")) ){
-%>
-  lineCount_<%=cid %> -= emptyLineCount_<%=cid%>;
-<%}%>
-globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>); 
+        globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>); 
+        br_<%=cid %>.close();
