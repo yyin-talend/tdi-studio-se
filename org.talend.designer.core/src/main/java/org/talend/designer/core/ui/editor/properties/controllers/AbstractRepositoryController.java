@@ -40,6 +40,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -56,8 +57,10 @@ import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -238,9 +241,37 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand(e);
+            if (cmd instanceof ChangeMetadataCommand) {
+                ((ChangeMetadataCommand) cmd).setConnection(getConnection());
+            }
             executeCommand(cmd);
         }
     };
+
+    /**
+     * 
+     * DOC wzhang Comment method "getConnection".
+     * 
+     * @return
+     */
+    private Connection getConnection() {
+        if (this.elem == null) {
+            return null;
+        }
+        if (elem instanceof Node) {
+            String propertyValue = (String) (((Node) elem).getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+            IRepositoryObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+            if (lastVersion != null) {
+                final Item item = lastVersion.getProperty().getItem();
+                if (item != null && item instanceof ConnectionItem) {
+                    Connection repositoryConn = ((ConnectionItem) item).getConnection();
+                    return repositoryConn;
+                }
+            }
+        }
+        return null;
+
+    }
 
     private Command createCommand(SelectionEvent selectionEvent) {
         if (selectionEvent.getSource() instanceof Button) {

@@ -23,6 +23,7 @@ import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
@@ -33,6 +34,9 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
@@ -44,6 +48,7 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.utils.SAPParametersUtils;
+import org.talend.repository.UpdateRepositoryUtils;
 
 /**
  * ggu class global comment. Detailled comment
@@ -289,6 +294,20 @@ public class UpdateNodeParameterCommand extends Command {
                                     IElementParameter param = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                                     if (param != null) {
                                         ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, newTable);
+                                        // wzhang added to fix 9251. get the current connection.
+                                        String propertyValue = (String) node
+                                                .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                                        IRepositoryObject lastVersion = UpdateRepositoryUtils
+                                                .getRepositoryObjectById(propertyValue);
+                                        Connection repositoryConn = null;
+                                        if (lastVersion != null) {
+                                            final Item item = lastVersion.getProperty().getItem();
+                                            if (item != null && item instanceof ConnectionItem) {
+                                                repositoryConn = ((ConnectionItem) item).getConnection();
+                                            }
+                                        }
+                                        cmd.setConnection(repositoryConn);
+
                                         cmd.setRepositoryMode(true);
                                         cmd.execute(true);
                                     } else {
