@@ -15,7 +15,10 @@ imports="
     String cid = node.getUniqueName();
     
     String nbRows = ElementParameterParser.getValue(node, "__NB_ROWS__");
+    
+    boolean use_singleMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SINGLEMODE__"));
     boolean use_inTable = ("true").equals(ElementParameterParser.getValue(node, "__USE_INTABLE__"));
+    boolean use_inlineContent = ("true").equals(ElementParameterParser.getValue(node, "__USE_INLINECONTENT__"));
     
     List<Map<String, String>> tableValues =
     (List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -30,13 +33,14 @@ imports="
     );
     
     List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-    if(!use_inTable){
+    if(use_singleMode){
     	if(tableValues != null && tableValues.size() > 0 && conns != null && conns.size() > 0) {
         %>
         }        
         <%
     	}
-    }else{
+//********************the new part*****************************************************    	
+    }else if(use_inTable){
     	if(inTableValues != null && inTableValues.size() > 0 && conns != null && conns.size() > 0) {
     	    for(IConnection conn : conns) {
     	        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -50,6 +54,14 @@ imports="
     	        }
     	    }
     	}
-    }
+//********************the new part*****************************************************
+    } else if(use_inlineContent){
 %>
+		}
+	  fid_<%=cid %>.close();
+	}
 
+	globalMap.put("NB_LINE", nb_line_<%=cid %>);
+<%
+	}
+%>
