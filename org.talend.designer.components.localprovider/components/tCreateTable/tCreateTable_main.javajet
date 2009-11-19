@@ -1180,24 +1180,6 @@ if(columnList != null && columnList.size() > 0) {
         } else {
             String tableName = ElementParameterParser.getValue(node,"__TABLE__");
             %>
-<%
-			//begin fixed:bug 10001
-			if(("MSSQL").equals(dbType)) {
-%>
-				java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
-				boolean whetherExist_<%=cid%> = false;
-				try {
-					isExistStmt_<%=cid%>.execute("SELECT * FROM " + <%=tableName%> );
-					whetherExist_<%=cid%> = true;
-				} catch (Exception e){
-					whetherExist_<%=cid%> = false;
-				}
-				isExistStmt_<%=cid%>.close();
-<%
-			} else {
-			//case above code:when use exist connection the Postgresql table action don't using option "Create if not exist" or "Drop table if exist and create".
-			//so use below code.
-%>
 	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
 	            boolean whetherExist_<%=cid%> = false;
@@ -1207,10 +1189,7 @@ if(columnList != null && columnList.size() > 0) {
 	                    whetherExist_<%=cid%> = true;
 	                    break;
 	                }
-	            }
-<%
-			}
-%>        
+	            }     
             <%
             if(("CREATE_IF_NOT_EXIST").equals(tableAction)) {
                 %>

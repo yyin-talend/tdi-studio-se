@@ -32,25 +32,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
     // [%connection%][checktable][tableName]
     String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]" + "[" + <%=table%> + "]";
 	if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
-<%}%>      
-<% 
-			//begin fixed:bug 10001
-			if(MSSQL.equalsIgnoreCase(dbmsId)) {
-%>
-				java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
-				boolean whetherExist_<%=cid%> = false;
-				try {
-					isExistStmt_<%=cid%>.execute("SELECT * FROM " + <%=table%> );
-					whetherExist_<%=cid%> = true;
-				} catch (Exception e){
-					whetherExist_<%=cid%> = false;
-				}
-				isExistStmt_<%=cid%>.close();
-<%
-			} else {
-			//case above code:when use exist connection the Postgresql table action don't using option "Create if not exist" or "Drop table if exist and create".
-			//so use below code.
-%>      
+<%}%>        
 	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
 	            boolean whetherExist_<%=cid%> = false;
@@ -62,9 +44,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 	                }
 	            }
 	            rsTable_<%=cid%>.close();
-<%
-			}
-%>
+
             <%
             if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
                 %>
@@ -113,8 +93,14 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
             stmtTruncCount_<%=cid%>.close();
             stmtTrunc_<%=cid%>.close();            
             <%
-        }         
-        
+        } 
+       //begin fixed:bug 10001          
+		if (!useExistingConnection) {
+		%>
+			conn_<%=cid%>.commit();
+		<%
+        } 
+        //end 10001
         if (useExistingConnection) {
 		%>
 			conn_<%=cid%>.setAutoCommit(false);
