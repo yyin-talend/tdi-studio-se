@@ -23,6 +23,7 @@ String rowSeparator = ElementParameterParser.getValue(
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
 String tmp_<%=cid%> = <%=filename%>;
+int emptyLineCount_<%=cid%> = 0;
 if (tmp_<%=cid%>.toLowerCase().endsWith(".xlsx")) throw new RuntimeException("not support excel 2007");  
 int lineCount_<%=cid %> = 0;
 if (tmp_<%=cid%>.toLowerCase().endsWith(".xls")){
@@ -38,8 +39,7 @@ if (tmp_<%=cid%>.toLowerCase().endsWith(".xls")){
   if (sheets_<%=cid%>.size() <= 0){
     wb_<%=cid%>.close();
     throw new RuntimeException("Special sheets not exist!");
-  }  
-  int emptyLineCount_<%=cid%> = 0;
+  } 
  
   for (jxl.Sheet sheet_<%=cid%> : sheets_<%=cid%>) {
     int one_sheet_rows = sheet_<%=cid%>.getRows();
@@ -61,39 +61,53 @@ if (tmp_<%=cid%>.toLowerCase().endsWith(".xls")){
   wb_<%=cid%>.close();
   
 } else{        					
-          java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader
-        									(new java.io.InputStreamReader
-        									(new java.io.FileInputStream(<%=filename %>), <%=encoding%>));				
-        String rowSeparator_<%=cid %> = <%=rowSeparator %>;
-        byte[] bytes_<%=cid %> = rowSeparator_<%=cid %>.getBytes();
-        int index_<%=cid %> = 0;
-
-        int oneChar_<%=cid %> = 0;
-        boolean eol_<%=cid %>=false;
-        int emptyLineCount_<%=cid %>=1;
+  java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>), <%=encoding%>));			
+  String rowSeparator_<%=cid %> = <%=rowSeparator %>;
+  byte[] bytes_<%=cid %> = rowSeparator_<%=cid %>.getBytes();
+  int index_<%=cid %> = 0, oneChar_<%=cid %> = 0, tipEmptyLineCount_<%=cid %> = 0; 
+  boolean bTipEmptyFlagOpen_<%=cid %> = true, bReadyEOF = false;
 		
-		if(bytes_<%=cid %>.length > 0) {
-            while ((oneChar_<%=cid %> = br_<%=cid %>.read()) != -1) {
-            	
-    			if(lineCount_<%=cid%>==0) lineCount_<%=cid%> = 1;
-                if (oneChar_<%=cid %> == bytes_<%=cid %>[index_<%=cid %>]) {
-                    if (index_<%=cid %> == bytes_<%=cid %>.length - 1) {
-                        lineCount_<%=cid %>++;
-                        if(eol_<%=cid%>) emptyLineCount_<%=cid %>++;
-                        eol_<%=cid %>=true;
-                        index_<%=cid %> = 0;
-                    } else {
-                        index_<%=cid %>++;
-                    }
-                }else{
-                	eol_<%=cid %> = false;
-                	emptyLineCount_<%=cid %>=1;
-                	index_<%=cid %>= 0;
-                }
-            }
-            if(eol_<%=cid %> && index_<%=cid %> == 0) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
+  if(bytes_<%=cid %>.length > 0) {
+    while ((oneChar_<%=cid %> = br_<%=cid %>.read()) != -1) {
+      if (oneChar_<%=cid %> == bytes_<%=cid %>[index_<%=cid %>]) {
+      
+        if (index_<%=cid %> < bytes_<%=cid %>.length - 1){
+          index_<%=cid %> ++ ;
+          continue; // match next char
         }
-       br_<%=cid %>.close();
-  }    
+        
+        if (index_<%=cid %> == bytes_<%=cid %>.length - 1) {                  
+          lineCount_<%=cid %>++;
+          if(bTipEmptyFlagOpen_<%=cid %>) {
+            tipEmptyLineCount_<%=cid %> ++;
+            emptyLineCount_<%=cid%> ++;
+          }
+          bReadyEOF = false; // next row must be have char(or EOF flag)
+          bTipEmptyFlagOpen_<%=cid %> = true; 
+          index_<%=cid %> = 0;
+        }
+        
+      }else{      
+        bReadyEOF = true;
+        bTipEmptyFlagOpen_<%=cid %> = false;
+        tipEmptyLineCount_<%=cid %> = 0;
+        index_<%=cid %> = 0;        
+      }
+    }
+    
+    if (bReadyEOF) lineCount_<%=cid %> ++ ; // add last row if not end by row separator
+    
+    if (bTipEmptyFlagOpen_<%=cid %>) {
+      lineCount_<%=cid %> -= tipEmptyLineCount_<%=cid %>;
+      emptyLineCount_<%=cid%> -= tipEmptyLineCount_<%=cid %>;
+    }          
+  }
+  br_<%=cid %>.close();
+} 
+<%
+  if ("true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY_ROW__")) ){
+%>
+  lineCount_<%=cid %> -= emptyLineCount_<%=cid%>;
+<%}%>   
   globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>);    
 
