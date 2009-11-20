@@ -65,7 +65,7 @@ if (tmp_<%=cid%>.toLowerCase().endsWith(".xls")){
   String rowSeparator_<%=cid %> = <%=rowSeparator %>;
   byte[] bytes_<%=cid %> = rowSeparator_<%=cid %>.getBytes();
   int index_<%=cid %> = 0, oneChar_<%=cid %> = 0, tipEmptyLineCount_<%=cid %> = 0; 
-  boolean bTipEmptyFlagOpen_<%=cid %> = true, bReadyEOF = false;
+  boolean bTipEmptyFlagOpen_<%=cid %> = true, bReadyEOF_<%=cid%> = false;
 		
   if(bytes_<%=cid %>.length > 0) {
     while ((oneChar_<%=cid %> = br_<%=cid %>.read()) != -1) {
@@ -82,20 +82,20 @@ if (tmp_<%=cid%>.toLowerCase().endsWith(".xls")){
             tipEmptyLineCount_<%=cid %> ++;
             emptyLineCount_<%=cid%> ++;
           }
-          bReadyEOF = false; // next row must be have char(or EOF flag)
+          bReadyEOF_<%=cid%> = false; // next row must be have char(or EOF flag)
           bTipEmptyFlagOpen_<%=cid %> = true; 
           index_<%=cid %> = 0;
         }
         
       }else{      
-        bReadyEOF = true;
+        bReadyEOF_<%=cid%> = true;
         bTipEmptyFlagOpen_<%=cid %> = false;
         tipEmptyLineCount_<%=cid %> = 0;
         index_<%=cid %> = 0;        
       }
     }
     
-    if (bReadyEOF) lineCount_<%=cid %> ++ ; // add last row if not end by row separator
+    if (bReadyEOF_<%=cid%>) lineCount_<%=cid %> ++ ; // add last row if not end by row separator
     
     if (bTipEmptyFlagOpen_<%=cid %>) {
       lineCount_<%=cid %> -= tipEmptyLineCount_<%=cid %>;
