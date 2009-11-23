@@ -12,15 +12,14 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml.action;
 
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
-import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.designer.fileoutputxml.ui.edit.NameSpaceDialog;
 import org.talend.designer.fileoutputxml.util.StringUtil;
 
 /**
@@ -72,22 +71,20 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
      */
     private void createChildNode(FOXTreeNode node) {
         String label = null;
-        while (!StringUtil.validateLabelForNameSpace(label)) {
-            InputDialog dialog = new InputDialog(null, Messages.getString("CreateNameSpaceAction.title"), //$NON-NLS-1$
-                    Messages.getString("CreateNameSpaceAction.content"), //$NON-NLS-1$
-                    "", null); //$NON-NLS-1$
-            int status = dialog.open();
-            if (status == InputDialog.OK) {
-                label = dialog.getValue().trim();
-                if (label != null && label.length() == 0) {
-                    break;
-                }
+        String defaultValue = null;
+        while (!StringUtil.validateLabelForNameSpace(label) || !StringUtil.validateLabelForFixedValue(defaultValue)) {
+            NameSpaceDialog nsDialog = new NameSpaceDialog(null);
+            int status = nsDialog.open();
+            if (status == nsDialog.OK) {
+                defaultValue = nsDialog.getNSValue();
+                label = nsDialog.getPrefix();
             }
-            if (status == InputDialog.CANCEL) {
+            if (status == nsDialog.CANCEL) {
                 return;
             }
         }
         FOXTreeNode child = new NameSpaceNode(label);
+        child.setDefaultValue(defaultValue);
         // add by wzhang. set the row name
         child.setRow(node.getRow());
         node.addChild(child);
