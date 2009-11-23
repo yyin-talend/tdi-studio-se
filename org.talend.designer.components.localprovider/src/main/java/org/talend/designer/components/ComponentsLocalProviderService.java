@@ -54,6 +54,20 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
         return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
     }
 
+    public void setPreferenceStoreValue(String key, Object value) {
+        if (key != null) {
+            if (value != null) {
+                if (value instanceof String) {
+                    getPreferenceStore().setValue(key, (String) value);
+                } else if (value instanceof Boolean) {
+                    getPreferenceStore().setValue(key, (Boolean) value);
+                } else if (value instanceof Integer) {
+                    getPreferenceStore().setValue(key, (Integer) value);
+                }
+            }
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -77,7 +91,8 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
                         public void run() {
                             Status status = new Status(IStatus.ERROR, ComponentsLocalProviderPlugin.PLUGIN_ID, 1, tempE
                                     .getMessage(), tempE.getCause());
-                            ErrorDialog dlg = new ErrorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                            ErrorDialog dlg = new ErrorDialog(
+                                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                                     Messages.getString("ComponentsLocalProviderService.talendExchangeError"), Messages.getString("ComponentsLocalProviderService.componentLoadError"), status, IStatus.ERROR); //$NON-NLS-1$ //$NON-NLS-2$
                             dlg.open();
                         }
