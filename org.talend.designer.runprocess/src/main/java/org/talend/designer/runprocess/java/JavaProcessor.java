@@ -94,6 +94,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
@@ -111,11 +112,9 @@ import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
-import org.talend.designer.runprocess.ui.JobVMArgumentsComposite;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.ProjectManager;
 
@@ -1037,15 +1036,18 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     }
 
     private String[] addVMArguments(String[] strings) {
-        System.out.println();
-        // System.out.println(JobVMArgumentsComposite.isSelect);
         String string = null;
-        RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
-        if (activeContext != null && JobVMArgumentsComposite.isSelect) {
-            string = (activeContext.getProcess().getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName()).getValue())
-                    .toString();
+        if (this.process != null) {
+            IElementParameter param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
+            if (param != null && param.getValue() instanceof Boolean && (Boolean) param.getValue()) { // checked
+                param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
+                if (param != null) {
+                    string = (String) param.getValue();
+                }
+            }
         }
-        if (string == null || "".equals(string) || !JobVMArgumentsComposite.isSelect) {
+        // if not check or the value is empty, should use preference
+        if (string == null || "".equals(string)) { //$NON-NLS-1$
             string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
         }
         String replaceAll = string.trim();

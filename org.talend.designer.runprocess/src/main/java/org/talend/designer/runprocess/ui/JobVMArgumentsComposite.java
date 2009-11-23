@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jdt.internal.ui.workingsets.WorkingSetMessages;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -48,13 +50,13 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.runprocess.RunProcessContext;
-import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 
 /**
  * gcui class global comment. Detailled comment <br/>
@@ -68,7 +70,7 @@ public class JobVMArgumentsComposite {
 
     protected TableViewer viewer;
 
-    private List<String> list;
+    private List<String> list = new ArrayList<String>();
 
     private Composite buttonBox;
 
@@ -86,8 +88,6 @@ public class JobVMArgumentsComposite {
 
     private SelectionListener selectionListener;
 
-    public static boolean isSelect = false;
-
     /**
      * DOC gcui RunVMArgumentsViewer constructor comment.
      * 
@@ -95,11 +95,12 @@ public class JobVMArgumentsComposite {
      * @param labelText
      * @param parent
      */
-    public JobVMArgumentsComposite(String name, String labelText, final Composite parent) {
+    public JobVMArgumentsComposite(String name, String labelText, Composite parent) {
         Label label = new Label(parent, SWT.NONE);
         label.setText(labelText);
+
         checkBox = new Button(parent, SWT.CHECK);
-        checkBox.setText("Use specific JVM arguments");
+        checkBox.setText(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getDisplayName());
         final Composite composite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
         layout.numColumns = getNumberOfControls();
@@ -111,40 +112,35 @@ public class JobVMArgumentsComposite {
 
         doFillIntoGrid(composite, layout.numColumns);
         composite.setEnabled(false);
-
         checkBox.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                isSelect = checkBox.getSelection();
-                if (isSelect) {
-                    setAllEnabled(composite);
-                } else {
-                    setAllEnabled(composite);
-                    composite.setEnabled(false);
+                setAllEnabled(composite, checkBox.getSelection());
+                if (getJobProcess() != null) {
+                    executeCommand(new PropertyChangeCommand((Element) getJobProcess(),
+                            EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName(), checkBox.getSelection()));
                 }
-
             }
 
         });
 
     }
 
-    public void setAllEnabled(Composite composite) {
-        if (isSelect) {
-            addButton.setEnabled(true);
-            removeButton.setEnabled(true);
-            upButton.setEnabled(true);
-            downButton.setEnabled(true);
-            composite.setEnabled(true);
-        } else {
-            addButton.setEnabled(false);
-            removeButton.setEnabled(false);
-            upButton.setEnabled(false);
-            downButton.setEnabled(false);
-            composite.setEnabled(false);
+    private void setAllEnabled(Composite parent, boolean enabled) {
+        setControlEnable(parent, enabled);
+        if (viewer != null) {
+            setControlEnable(viewer.getTable(), enabled);
+            if (parent == null) {
+                setControlEnable(viewer.getTable().getParent(), enabled);
+            }
         }
 
+        setControlEnable(addButton, enabled);
+        setControlEnable(removeButton, enabled);
+        setControlEnable(upButton, enabled);
+        setControlEnable(downButton, enabled);
+        selectionChanged();
     }
 
     protected void doFillIntoGrid(Composite parent, int numColumns) {
@@ -172,10 +168,14 @@ public class JobVMArgumentsComposite {
      */
     public Composite getButtonBoxControl(Composite parent) {
         if (buttonBox == null) {
-            buttonBox = new Composite(parent, SWT.NONE);
+            buttonBox = new Composite(parent, SWT.NULL);
             GridLayout layout = new GridLayout();
             layout.marginWidth = 0;
             buttonBox.setLayout(layout);
+            GridData layoutData = new GridData();
+            layoutData.widthHint = 100;
+            layoutData.minimumWidth = 100;
+            buttonBox.setLayoutData(layoutData);
             createButtons(buttonBox);
             buttonBox.addDisposeListener(new DisposeListener() {
 
@@ -194,22 +194,21 @@ public class JobVMArgumentsComposite {
     }
 
     protected void createButtons(Composite box) {
-        addButton = createPushButton(box, "New..."); //$NON-NLS-1$
+        addButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_new_label);
         addButton.setEnabled(false);
-        removeButton = createPushButton(box, "Remove"); //$NON-NLS-1$
+        removeButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_remove_label);
         removeButton.setEnabled(false);
-        upButton = createPushButton(box, "  Up  "); //$NON-NLS-1$
+        upButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_up_label);
         upButton.setEnabled(false);
-        downButton = createPushButton(box, " Down "); //$NON-NLS-1$
+        downButton = createPushButton(box, WorkingSetMessages.WorkingSetConfigurationDialog_down_label);
         downButton.setEnabled(false);
-
     }
 
     protected Button createPushButton(Composite parent, String key) {
         Button button = new Button(parent, SWT.PUSH);
         button.setText(key);
         button.setFont(parent.getFont());
-        GridData data = new GridData();
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
         button.setLayoutData(data);
         button.addSelectionListener(getSelectionListener());
         return button;
@@ -264,11 +263,13 @@ public class JobVMArgumentsComposite {
     }
 
     protected void selectionChanged() {
-        int index = viewer.getTable().getSelectionIndex();
-        int size = viewer.getTable().getItemCount();
-        setControlEnable(removeButton, index >= 0);
-        setControlEnable(upButton, size > 1 && index > 0);
-        setControlEnable(downButton, size > 1 && index >= 0 && index < size - 1);
+        if (viewer != null) {
+            int index = viewer.getTable().getSelectionIndex();
+            int size = viewer.getTable().getItemCount();
+            setControlEnable(removeButton, index >= 0);
+            setControlEnable(upButton, size > 1 && index > 0);
+            setControlEnable(downButton, size > 1 && index >= 0 && index < size - 1);
+        }
     }
 
     /**
@@ -294,58 +295,36 @@ public class JobVMArgumentsComposite {
         };
     }
 
-    protected void doLoadDefault() {
-        if (viewer != null) {
-            list.clear();
-            String s = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
-            if (s != null && !"".equals(s)) { //$NON-NLS-1$
-                for (String tmp : readString(s)) {
-                    list.add(tmp);
-                }
-            }
-            viewer.setInput(list);
-        }
-    }
-
     protected void doSave() {
         String s = writeString(list);
-        if (s != null) {
-            // RunProcessContext activeContext =
-            // RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
-            if (processContext != null) {
-                if (processContext.getProcess() instanceof IProcess2 && processContext.getProcess() instanceof Element) {
-                    IProcess2 elem = (IProcess2) processContext.getProcess();
-                    if (elem != null) {
-                        PropertyChangeCommand cmd = new PropertyChangeCommand((Element) elem, EParameterName.JOB_RUN_VM_ARGUMENTS
-                                .getName(), s);
-                        CommandStack commandStack = elem.getCommandStack();
-                        if (commandStack != null) {
-                            commandStack.execute(cmd);
-                        } else {
-                            cmd.execute();
-                        }
-                    }
-                }
-            }
+        if (s != null && getJobProcess() != null) {
+            executeCommand(new PropertyChangeCommand((Element) getJobProcess(), EParameterName.JOB_RUN_VM_ARGUMENTS.getName(), s));
         }
     }
 
-    protected void refresh(RunProcessContext processContext) {
-        if (viewer != null) {
-            this.processContext = processContext;
-            list.clear();
-            // RunProcessContext activeContext =
-            // RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
-            if (processContext != null) {
-                String s = (processContext.getProcess().getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName())
-                        .getValue()).toString();
-                if (s != null && !"".equals(s)) { //$NON-NLS-1$
-                    for (String tmp : readString(s)) {
-                        list.add(tmp);
+    private IProcess getJobProcess() {
+        if (getProcessContext() != null) {
+            return getProcessContext().getProcess();
+        }
+        return null;
+    }
+
+    private void executeCommand(Command cmd) {
+        if (cmd != null) {
+            boolean exec = false;
+            if (processContext != null && processContext.getProcess() instanceof IProcess2) {
+                IProcess2 process = (IProcess2) processContext.getProcess();
+                if (process != null) {
+                    CommandStack commandStack = process.getCommandStack();
+                    if (commandStack != null) {
+                        exec = true;
+                        commandStack.execute(cmd);
                     }
                 }
             }
-            viewer.setInput(list);
+            if (!exec) {
+                cmd.execute();
+            }
         }
     }
 
@@ -357,7 +336,6 @@ public class JobVMArgumentsComposite {
      */
     protected TableViewer getTableControl(Composite parent) {
         if (viewer == null) {
-            list = new ArrayList<String>();
             Table table = createTable(parent);
             viewer = new TableViewer(table);
             viewer.setContentProvider(createContentProvider());
@@ -416,14 +394,6 @@ public class JobVMArgumentsComposite {
         return addButton.getShell();
     }
 
-    public void setEnabled(boolean enabled, Composite parent) {
-        setControlEnable(getTableControl(parent).getTable(), enabled);
-        setControlEnable(addButton, enabled);
-        setControlEnable(removeButton, enabled);
-        setControlEnable(upButton, enabled);
-        setControlEnable(downButton, enabled);
-    }
-
     protected void setControlEnable(Control control, boolean enable) {
         if (control != null && !control.isDisposed()) {
             control.setEnabled(enable);
@@ -445,9 +415,36 @@ public class JobVMArgumentsComposite {
 
     public void setProcessContext(RunProcessContext processContext) {
         this.processContext = processContext;
-        if (this.processContext != null) {
-            System.out.println(processContext.getSystemProcess());
+        list.clear();
+        if (getProcessContext() != null && getJobProcess() != null) {
+            if (checkBox != null && !checkBox.isDisposed()) {
+                IElementParameter param = getJobProcess().getElementParameter(
+                        EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
+                if (param != null && param.getValue() instanceof Boolean && (Boolean) param.getValue()) { // checked
+                    checkBox.setSelection(true);
+                } else {
+                    checkBox.setSelection(false);
+                }
+                setAllEnabled(null, checkBox.getSelection());
+            }
+            if (viewer != null && !viewer.getTable().isDisposed()) {
+                IElementParameter param = getJobProcess().getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
+                if (param != null && param.getValue() != null) {
+                    String s = (String) param.getValue();
+                    if (s != null && !"".equals(s)) { //$NON-NLS-1$
+                        for (String tmp : readString(s)) {
+                            list.add(tmp);
+                        }
+                    }
+                }
+            }
+        } else {
+            if (checkBox != null && !checkBox.isDisposed()) {
+                checkBox.setSelection(false);
+                setAllEnabled(null, checkBox.getSelection());
+            }
         }
+        viewer.setInput(list);
     }
 
     protected IStructuredContentProvider createContentProvider() {

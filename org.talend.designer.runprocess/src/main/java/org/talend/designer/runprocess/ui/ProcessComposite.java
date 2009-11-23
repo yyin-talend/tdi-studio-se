@@ -886,11 +886,10 @@ public class ProcessComposite extends Composite {
         this.processContext = processContext;
         if (processContext != null) {
             processContext.addPropertyChangeListener(pcl);
-            if (argumentsViewer != null) {
-                argumentsViewer.refresh(processContext);
-            }
         }
-
+        if (argumentsViewer != null) {
+            argumentsViewer.setProcessContext(processContext);
+        }
         boolean disableAll = false;
         if (processContext != null) {
             disableAll = processContext.getProcess().disableRunJobView();

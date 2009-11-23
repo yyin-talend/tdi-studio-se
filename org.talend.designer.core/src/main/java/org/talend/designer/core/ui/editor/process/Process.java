@@ -324,9 +324,21 @@ public class Process extends Element implements IProcess2 {
         param.setShow(false);
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         if (service != null) {
-            param.setValue(service.getPreferenceStore().getString("vmarguments"));
+            param.setValue(service.getPreferenceStore().getString("vmarguments")); //$NON-NLS-1$
         }
         addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
+        param.setCategory(EComponentCategory.MAIN);
+        param.setField(EParameterFieldType.CHECK);
+        param.setDisplayName(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setValue(false);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
 
         param = new ElementParameter(this);
         param.setName(TalendDesignerPrefConstants.DISPLAY_SUBJOBS);
