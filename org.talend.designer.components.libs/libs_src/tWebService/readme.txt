@@ -29,3 +29,8 @@ consider the situation about no targetnamespace in schema
 modified ServiceInvokerHelper.java
 
 please @see talend-ws-1.0.jar\org\talend\ws\helper\ServiceInvokerHelper.java 
+
+5.(2009-11-23 modified by bchen) fiexd bug 8674
+
+please @see org\talend\ws\helper\ServiceDiscoveryHelper.java
+			org\talend\ws\helper\ServiceInvokerHelper.java

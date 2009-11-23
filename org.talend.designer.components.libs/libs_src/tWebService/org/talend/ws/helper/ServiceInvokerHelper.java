@@ -150,8 +150,10 @@ public class ServiceInvokerHelper implements ClassMapper {
     }
 
     protected Client createClient(QName service, QName port) {
-        Client client = dynamicClientFactory.createClient(serviceDiscoveryHelper.getLocalWsdlUri(), service, Thread
-                .currentThread().getContextClassLoader(), port, bindingFiles);
+        // bchen bug for 8674
+        Client client = dynamicClientFactory.createClient(serviceDiscoveryHelper.getWsdlUri(), service, Thread.currentThread()
+                .getContextClassLoader(), port, bindingFiles);
+        // end
         HTTPConduit conduit = (HTTPConduit) client.getConduit();
         if (configuration != null) {
             configuration.configureHttpConduit(conduit);
