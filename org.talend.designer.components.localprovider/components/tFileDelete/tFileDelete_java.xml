@@ -48,7 +48,7 @@
       NUM_ROW="1"
       SHOW_IF="(FOLDER_FILE == 'false' AND FOLDER == 'true')"
       >
-	<DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
+	<DEFAULT>"The folder and its content will be deleted permanently."</DEFAULT>
 	</PARAMETER>
 	
 	<PARAMETER 
@@ -57,7 +57,7 @@
       NUM_ROW="1"
       SHOW_IF="FOLDER_FILE == 'true'"
       >
-	<DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
+	<DEFAULT>"The folder or the file will be deleted permanently."</DEFAULT>
 	</PARAMETER>
     
     <PARAMETER
