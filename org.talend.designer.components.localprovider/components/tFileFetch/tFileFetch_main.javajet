@@ -84,7 +84,7 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 		i++;
 		String name = param.get("COMMON_PARAMS_NAME");
 		String value = param.get("COMMON_PARAMS_VALUE");
-		varPartList.add("common_" + i + "_" + cid);
+		varPartList.add("common_" + i + "" + cid);
 %>
 	org.apache.commons.httpclient.methods.multipart.StringPart common_<%=i %>_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.StringPart(<%=name %>, <%=value %>);
 <%
@@ -177,10 +177,23 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 	
 	//open file dans la directory
 	if (fileName_<%=cid %>.compareTo("")==0) {
-		fileName_<%=cid %> = url_<%=cid %>.getFile();
-		if (fileName_<%=cid %>.compareTo("")==0) {
-			fileName_<%=cid %> = "defaultfilename.txt";
-		}
+	  fileName_<%=cid %> = url_<%=cid %>.getFile();
+	  int iLocation_<%=cid%> = fileName_<%=cid %>.lastIndexOf("/");
+	  if (iLocation_<%=cid%> > 0){
+	    fileName_<%=cid %> = fileName_<%=cid %>.substring(iLocation_<%=cid%> + 1);
+	  } else{
+	    fileName_<%=cid %> = "defaultfilename.txt";
+	  }
+	}
+		 
+	try{
+	  java.io.File test_file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
+	  test_file_<%=cid%>.getParentFile().mkdirs();
+	  if (test_file_<%=cid%>.createNewFile()){
+	    test_file_<%=cid%>.delete();
+	  }
+	} catch(Exception e){
+	  fileName_<%=cid %> = "defaultfilename.txt";
 	}
 	java.io.File file_<%=cid%> = new java.io.File(dir_<%=cid %>,fileName_<%=cid %>);
 	file_<%=cid%>.getParentFile().mkdirs();
@@ -235,11 +248,25 @@ java.io.DataInputStream in<%=cid%>=null;
 	
 	//open file dans la directory
 	if (fileName<%=cid %>.compareTo("")==0) {
-		fileName<%=cid %> = url<%=cid %>.getFile();
-		if (fileName<%=cid %>.compareTo("")==0) {
-			fileName<%=cid %> = "defaultfilename.txt";
-		}
+	  fileName<%=cid %> = url<%=cid %>.getFile();
+	  int iLocation<%=cid%> = fileName<%=cid %>.lastIndexOf("/");
+	  if (iLocation<%=cid%> > 0){
+	    fileName<%=cid %> = fileName<%=cid %>.substring(iLocation<%=cid%> + 1);
+	  } else{
+	    fileName<%=cid %> = "defaultfilename.txt";
+	  }
 	}
+	
+	try{
+	  java.io.File testfile<%=cid%> = new java.io.File(dir<%=cid %>, fileName<%=cid %>);
+	  testfile<%=cid%>.getParentFile().mkdirs();
+	  if (testfile<%=cid%>.createNewFile()){
+	    testfile<%=cid%>.delete();
+	  }
+	} catch(Exception e){
+	  fileName<%=cid %> = "defaultfilename.txt";
+	}
+	
     final java.io.DataOutputStream out<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(
             dir<%=cid %>, fileName<%=cid %>))); 
 	// copy file
