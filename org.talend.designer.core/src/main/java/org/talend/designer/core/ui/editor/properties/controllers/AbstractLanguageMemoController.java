@@ -43,6 +43,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
@@ -109,13 +110,26 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         IControlCreator txtCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
-                StyledText control = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(), language);
-                IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                FontData fontData = new FontData(fontType);
-                Font font = new Font(parent.getDisplay(), fontData);
-                addResourceDisposeListener(control, font);
-                control.setFont(font);
+                final StyledText control = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
+                        language);
+                Display display = Display.getCurrent();
+                if (display == null) {
+                    display = Display.getDefault();
+                }
+                if (display != null) {
+                    display.syncExec(new Runnable() {
+
+                        public void run() {
+                            IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                            String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                            FontData fontData = new FontData(fontType);
+                            Font font = new Font(parent.getDisplay(), fontData);
+                            addResourceDisposeListener(control, font);
+                            control.setFont(font);
+                        }
+                    });
+                }
+
                 return control;
             }
         };
@@ -386,15 +400,25 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             IControlCreator txtCtrl = new IControlCreator() {
 
                 public Control createControl(final Composite parent, final int style) {
-                    ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
-                            language);
+                    final ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault()
+                            .getPreferenceStore(), language);
+                    Display display = Display.getCurrent();
+                    if (display == null) {
+                        display = Display.getDefault();
+                    }
+                    if (display != null) {
+                        display.syncExec(new Runnable() {
 
-                    IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-                    String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                    FontData fontData = new FontData(fontType);
-                    Font font = new Font(parent.getDisplay(), fontData);
-                    addResourceDisposeListener(colorText, font);
-                    colorText.setFont(font);
+                            public void run() {
+                                IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                                FontData fontData = new FontData(fontType);
+                                Font font = new Font(parent.getDisplay(), fontData);
+                                addResourceDisposeListener(colorText, font);
+                                colorText.setFont(font);
+                            }
+                        });
+                    }
                     return colorText;
                 }
             };
