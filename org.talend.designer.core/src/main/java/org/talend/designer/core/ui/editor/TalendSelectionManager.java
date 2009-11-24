@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.SelectionManager;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
@@ -23,7 +24,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
+import org.talend.designer.core.ui.editor.connections.ConnectionPerformanceEditPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
+import org.talend.designer.core.ui.editor.nodes.NodeFigure;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
@@ -35,6 +38,8 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
  * 
  */
 public class TalendSelectionManager extends SelectionManager {
+
+    private Point selectPoint = null;
 
     private ETalendSelectionType selectionType;
 
@@ -72,12 +77,77 @@ public class TalendSelectionManager extends SelectionManager {
                 }
                 needRefresh = true;
             }
+            if (arg0 instanceof ConnectionPerformanceEditPart && getSelectPoint() != null) {
+                if (needRefresh) {
+                    EditPart transferPart = transferFocus((ConnectionPerformanceEditPart) arg0);
+                    if (transferPart == null) {
+                        needRefresh = false;
+                        setSelectPoint(null);
+                        return;
+                    }
+                    super.appendSelection(transferPart);
+                    needRefresh = false;
+                    return;
+                }
+            }
 
             if (needRefresh) {
                 super.appendSelection(arg0);
                 needRefresh = false;
+                setSelectPoint(null);
             }
         }
+    }
+
+    /*
+     * (non-Javadoc) for bug 10072
+     * 
+     * @when the selected element is ConnectionPerformanceEditPart,transfer Focus to nodepart
+     */
+    private EditPart transferFocus(ConnectionPerformanceEditPart arg0) {
+        ConnectionPart connPart = (ConnectionPart) arg0.getParent();
+
+        EditPart targetPart = connPart.getTarget();
+        if (targetPart instanceof NodePart) {
+            NodeFigure targetFigure = (NodeFigure) ((NodePart) targetPart).getFigure();
+            if (targetFigure.containsPoint(getSelectPoint())) {
+                setSelectPoint(null);
+                return targetPart;
+            }
+        }
+
+        EditPart sourcePart = connPart.getSource();
+        if (sourcePart instanceof NodePart) {
+            NodeFigure sourceFigure = (NodeFigure) ((NodePart) sourcePart).getFigure();
+            if (sourceFigure.containsPoint(getSelectPoint())) {
+                setSelectPoint(null);
+                return sourcePart;
+            }
+        }
+
+        if (connPart.getParent() instanceof TalendScalableFreeformRootEditPart) {
+            TalendScalableFreeformRootEditPart parentPart = (TalendScalableFreeformRootEditPart) connPart.getParent();
+            if (parentPart.getContents() instanceof ProcessPart) {
+                ProcessPart processPart = (ProcessPart) parentPart.getContents();
+                List children = processPart.getChildren();
+                for (int i = 0; i < children.size(); i++) {
+                    List nodeList = ((SubjobContainerPart) children.get(i)).getChildren();
+                    nodeList.remove(sourcePart.getParent());
+                    nodeList.remove(targetPart.getParent());
+                    for (int j = 0; j < nodeList.size(); j++) {
+                        if (nodeList.get(j) instanceof NodeContainerPart) {
+                            NodePart nodePart = ((NodeContainerPart) nodeList.get(j)).getNodePart();
+                            NodeFigure figure = (NodeFigure) nodePart.getFigure();
+                            if (figure.containsPoint(getSelectPoint())) {
+                                setSelectPoint(null);
+                                return nodePart;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /*
@@ -138,6 +208,14 @@ public class TalendSelectionManager extends SelectionManager {
      */
     public ETalendSelectionType getSelectionType() {
         return this.selectionType;
+    }
+
+    public Point getSelectPoint() {
+        return this.selectPoint;
+    }
+
+    public void setSelectPoint(Point selectPoint) {
+        this.selectPoint = selectPoint;
     }
 
 }

@@ -1567,6 +1567,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         public void mouseDown(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
             TalendEditorContextMenuProvider.setEnableContextMenu(true);
             createConnection = false;
+            if (viewer.getSelectionManager() instanceof TalendSelectionManager) {
+                Point point = new Point(mouseEvent.x, mouseEvent.y);
+                ((TalendSelectionManager) viewer.getSelectionManager()).setSelectPoint(point);
+            }
             if (mouseEvent.button == 2) {
                 getEditor().setCursor(Cursors.HAND);
                 processor = new DragProcessor();
