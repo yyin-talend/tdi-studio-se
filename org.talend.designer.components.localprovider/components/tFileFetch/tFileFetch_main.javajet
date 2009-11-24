@@ -21,6 +21,7 @@ String protocol = ElementParameterParser.getValue(node,"__PROTO__");
 
 
 String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
+boolean bMakeDirs = "true".equals(ElementParameterParser.getValue(node, "__MAKEDIRS__"));
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
 String dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__");
@@ -178,6 +179,10 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 	//open file dans la directory
 	if (fileName_<%=cid %>.compareTo("")==0) {
 		fileName_<%=cid %> = url_<%=cid %>.getFile();
+<%      if (!bMakeDirs){%>
+          int iLocation_<%=cid%> = (fileName_<%=cid %> == null ? 0 : fileName_<%=cid %>.lastIndexOf("/"));
+          fileName_<%=cid %> = (iLocation_<%=cid%> <= 0 ? "" : fileName_<%=cid %>.substring(iLocation_<%=cid%>));
+<%      }%>
 		if (fileName_<%=cid %>.compareTo("")==0) {
 			fileName_<%=cid %> = "defaultfilename.txt";
 		}
@@ -236,6 +241,10 @@ java.io.DataInputStream in<%=cid%>=null;
 	//open file dans la directory
 	if (fileName<%=cid %>.compareTo("")==0) {
 		fileName<%=cid %> = url<%=cid %>.getFile();
+<%      if (!bMakeDirs){%>
+          int iLocation<%=cid%> = (fileName<%=cid %> == null ? 0 : fileName<%=cid %>.lastIndexOf("/"));
+          fileName<%=cid %> = (iLocation<%=cid%> <= 0 ? "" : fileName<%=cid %>.substring(iLocation<%=cid%>));
+<%      }%>
 		if (fileName<%=cid %>.compareTo("")==0) {
 			fileName<%=cid %> = "defaultfilename.txt";
 		}
