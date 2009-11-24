@@ -37,6 +37,8 @@ public class SAXLoopHandler extends DefaultHandler {
 
     private List<String> loopCols = new ArrayList<String>();
 
+    private List<Boolean> asXMLs = null;
+
     private String currentPath = "";
 
     // current element is include in looppath
@@ -55,24 +57,27 @@ public class SAXLoopHandler extends DefaultHandler {
     private LoopEntry entry;
 
     List<Map<String, Object>> listArgs = new ArrayList<Map<String, Object>>();
-    //===============add for bug7632 begin======================================
+
+    // ===============add for bug7632 begin======================================
     private SAXLooper saxLooper;
-    //========================end===============================================
+
+    // ========================end===============================================
 
     public SAXLoopHandler(LoopEntry entry) {
         this.entry = entry;
         this.loopPath = entry.getLoop();
         this.loopCols = entry.getPaths();
+        this.asXMLs = entry.getAsXMLs();
         if (entry.getSubLoop() != null) {
             this.subLoopPath = entry.getSubLoop().getLoop();
         } else {
             this.subLoopPath = loopPath;
         }
     }
-    
-    public SAXLoopHandler(SAXLooper saxLooper,LoopEntry entry) {
-    	this(entry);
-    	this.saxLooper = saxLooper;
+
+    public SAXLoopHandler(SAXLooper saxLooper, LoopEntry entry) {
+        this(entry);
+        this.saxLooper = saxLooper;
     }
 
     /**
@@ -149,19 +154,36 @@ public class SAXLoopHandler extends DefaultHandler {
             // paser the attributes
             for (int i = 0; i < loopCols.size(); i++) {
                 String column = loopCols.get(i);
-                int index = column.lastIndexOf("@");
-                if (index > 0) {
-                    if (currentPath.equals(column.substring(0, index - 1))) {
-                        String attribute = attributes.getValue(column.substring(index + 1));
-                        if (attribute != null && false == currentRowHaveValue[i]) {
-                            currentRow[i] = attribute;
-                            currentRowHaveValue[i] = true;
+                boolean asXML = this.asXMLs.get(i);
+
+                if (asXML && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
+                    indexOfColumn = i; // correct the index for text
+                    if (currentRow[i] == null)
+                        currentRow[i] = "";
+                    currentRow[i] = currentRow[i] + "<" + qName;
+                    if (attributes.getLength() > 0) {
+                        for (int m = 0; m < attributes.getLength(); m++) {
+                            currentRow[i] = currentRow[i] + " " + attributes.getQName(m) + "=" + "\"" + attributes.getValue(m)
+                                    + "\"";
                         }
                     }
+                    outputText = true;
+                    currentRow[i] = currentRow[i] + ">";
                 } else {
+                    int index = column.lastIndexOf("@");
+                    if (index > 0) {
+                        if (currentPath.equals(column.substring(0, index - 1))) {
+                            String attribute = attributes.getValue(column.substring(index + 1));
+                            if (attribute != null && false == currentRowHaveValue[i]) {
+                                currentRow[i] = attribute;
+                                currentRowHaveValue[i] = true;
+                            }
+                        }
+                    } else {
 
-                    if (currentPath.equals(column)) {
-                        outputText = true;
+                        if (currentPath.equals(column)) {
+                            outputText = true;
+                        }
                     }
                 }
             }
@@ -202,6 +224,7 @@ public class SAXLoopHandler extends DefaultHandler {
                         currentRow[indexOfColumn] += text;
                     }
                 }
+
                 /**
                  * when the loop has functions, add the value of the element to the args
                  */
@@ -229,8 +252,13 @@ public class SAXLoopHandler extends DefaultHandler {
             if (currentRow[indexOfColumn] == null) {
                 currentRow[indexOfColumn] = "";
             }
-            currentRowHaveValue[indexOfColumn] = true;
+            if (currentRow[indexOfColumn].trim().startsWith("<")) {
+                currentRow[indexOfColumn] = currentRow[indexOfColumn] + "</" + qName + ">";
+            } else {
+                currentRowHaveValue[indexOfColumn] = true;
+            }
         }
+
         outputText = false;
 
         if (currentPath.equals(loopPath)) {
@@ -264,7 +292,7 @@ public class SAXLoopHandler extends DefaultHandler {
                 entry.getRows().add(currentRow);
                 // ===========add for bug7632==========================
                 if (this.entry.getOriginalLoopPath() != null) {
-                	this.saxLooper.addLoopOrder(this.entry.getOriginalLoopPath());
+                    this.saxLooper.addLoopOrder(this.entry.getOriginalLoopPath());
                 }
                 // =================end================================
             }

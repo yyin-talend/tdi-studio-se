@@ -40,6 +40,9 @@ public class SAXLooper {
     // node paths special which tab will be read as the row value
     private String[] nodePaths;
 
+    // add to support node.asXML()
+    private boolean[] asXMLs;
+
     private LoopEntry entry;
 
     private SAXLoopCompositeHandler result;
@@ -50,9 +53,10 @@ public class SAXLooper {
      * @param loopPath :loop path in the tFileInputXML component.
      * @param nodePaths :node paths special which tab will be read as the row value
      */
-    public SAXLooper(String loopPath, String[] nodePaths) {
+    public SAXLooper(String loopPath, String[] nodePaths, boolean[] asXMLs) {
         this.loopPath = loopPath;
         this.nodePaths = nodePaths;
+        this.asXMLs = asXMLs;
         initLoopEntry();
     }
 
@@ -168,7 +172,7 @@ public class SAXLooper {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Get result iterator. This must be call after the parse method.
      * 
@@ -243,8 +247,10 @@ public class SAXLooper {
             loopPath = loopPath.substring(0, loopPath.lastIndexOf("/"));
         }
         // parse the node path to loopEntry
-        for (String column : nodePaths) {
+        for (int m = 0; m < nodePaths.length; m++) {
+            String column = nodePaths[m];
             String resultCol = this.loopPath;
+            boolean isAsXML = this.asXMLs[m];
             String tmpLoopPath = null;
             String[] splits = column.split("/");
             for (String tmp : splits) {
@@ -280,7 +286,7 @@ public class SAXLooper {
             }
 
             if (function == null) {
-                entryMap.get(tmpLoopPath).addPath(resultCol, column);
+                entryMap.get(tmpLoopPath).addPath(resultCol, column, isAsXML);
             } else {// add the exist function to the loopentry
                 entryMap.get(tmpLoopPath).addPath(column, column);
                 entryMap.get(tmpLoopPath).addFunction(column, function);
@@ -288,6 +294,8 @@ public class SAXLooper {
             }
 
         }
+
+        // add to support node.asXML()
 
         // set sub entry
         String[] splits = loopPath.split("/");
@@ -434,70 +442,21 @@ public class SAXLooper {
             long timeStart = System.currentTimeMillis();
 
             String file = "./src/org/talend/xml/sax/in.xml";
-            String rootPath = "/orderdata/order/header";
-            String[] loopPath = new String[] { "/.", "/../line-detail" };
-            String[][] pathList = new String[][] {
-                    { "cust-vendor-num", "cust-vendor-num" + "/@xsi:nil", "cust", "cust" + "/@xsi:nil" },
-                    { "prod-num", "prod-num" + "/@xsi:nil", "custom-var", "custom-var" + "/@xsi:nil" } };
-            // String rootPath = "/orderdata/order/";
-            // String[] loopPath = new String[] { "/header", "line-detail" };
-            // String[][] pathList = new String[][] {
-            // { "cust-vendor-num", "cust-vendor-num" + "/@xsi:nil", "cust", "cust" + "/@xsi:nil" },
-            // { "prod-num", "prod-num" + "/@xsi:nil", "custom-var", "custom-var" + "/@xsi:nil" } };
-            // String file = "./src/org/talend/xml/sax/in.xml";
-            // String loopPath = "/row/subrow/*[name()]";
-            // String[] pathList = new String[] { ".", "." + "/@xsi:nil" };
+            String[] query = new String[] { "cust-vendor-num", "cust-vendor-num" + "/@xsi:nil", "cust", "cust" + "/@xsi:nil" };
+            boolean[] asXMLs = new boolean[] { true, false, true, false };
+            String loopPath = "/orderdata/order/header";
 
-            // String file = "./src/org/talend/xml/sax/in1.xml";
-            // String loopPath = "/schools/school/class/student";// "/areas/area/street/home";
-            // String[] pathList = new String[] { "../../@school_name", "../@class_name", "@stu_no", "name", "name" +
-            // "/@xsi:nil",
-            // "age", "age" + "/@xsi:nil", "sex", "sex" + "/@xsi:nil", "/*[name()]" };// new String[] { "@number",
-            // "owner",
-            // "house", "../../@city", "../@name",
-            // "../@id",
-            // "../length","../../../@provite" };
-
-            // String file = "F:/test/XML/multiNS.xml";
-            // String loopPath = "/pol:root/pol:order/pol:project";
-            // String[] pathList = new String[] { "pol:code", "pol:name", "pol:customer/pol:code",
-            // "pol:customer/pol:name" };
-
-            // String file = "F:/to others/toMicheal/outt.xml";
-            // String loopPath = "/REF-ETI/ID-COURIE/DOC-REF/EXPLRE-DOC-REF";
-            // String[] pathList = new String[] { "../../../@REF-ETI", "../../../AUTEUR", "../../@ID-COURIE",
-            // "../../INFO-COURIE/STE-JUR-CT", "../../INFO-COURIE/POL-NUM-STE", "../../INFO-COURIE/PERS-NUM",
-            // "../../INFO-COURIE/ID-ARV", "../../INFO-COURIE/COD-EVC", "../../VAR-COURIE/MASTER-I",
-            // "../../VAR-COURIE/INTERFACE", "../../VAR-COURIE/INTERFACE/CPOST-APPORT-INT", "../../GEST-REJET",
-            // "../@DOC-REF", "../../DOC-EXTN/ID-DOC-EXTN", "COD-ROUTAG", "POSTAL-COD", "NUM-PST-DEST" };
-
-            // SAXLooper looper = new SAXLooper(loopPath, pathList);
-            // looper.parse(file);
-            // Iterator<Map<String, String>> it = looper.iterator();
-            // while (it.hasNext()) {
-            // Map<String, String> tmp = it.next();
-            // for (String value : pathList) {
-            // System.out.print("|" + tmp.get(value));
-            // }
-            // System.out.println();
-            // }
-            SAXLooper looper = new SAXLooper(rootPath, loopPath, pathList);
+            SAXLooper looper = new SAXLooper(loopPath, query, asXMLs);
             looper.parse(file);
 
-            Iterator<Map<String, Map<String, String>>> iter = looper.multiIterator();
+            java.util.Iterator<java.util.Map<String, String>> iter = looper.iterator();
 
             while (iter.hasNext()) {
-                Map<String, Map<String, String>> map = iter.next();
-                // Map<String, String> tmpMap = (Map<String, String>) map.get("value");
-                int i;
-                for (i = 0; i < loopPath.length; i++) {
-                    if (map.get(loopPath[i]) != null) {
-                        break;
-                    }
-                }
+                java.util.Map<String, String> row = iter.next();
 
-                for (int j = 0; j < pathList[i].length; j++) {
-                    System.out.print(map.get(loopPath[i]).get(pathList[i][j]));
+                for (int j = 0; j < query.length; j++) {
+                    System.out.print(row.get(query[j]));
+                    System.out.println();
                 }
                 System.out.println();
 

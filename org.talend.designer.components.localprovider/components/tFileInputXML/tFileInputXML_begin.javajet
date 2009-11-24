@@ -577,9 +577,27 @@ String[] queryPaths_<%=cid%> = new String[]{
 %>
 };
 
+boolean[] asXMLs_<%=cid%> = new boolean[]{
+<%
+	first = true;
+	for(Map<String,String> path:mapping){
+%>	
+	<%=first?"":","%><%=path.get("NODECHECK")%>
+<%
+		String query = path.get("QUERY");
+		if(query!=null && query.indexOf("@")<0){
+%>		
+	,false
+<%
+		}
+		first=false;
+	}
+%>
+};
+
 String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
-org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=loopQuery%>,queryPaths_<%=cid%>);
+org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=loopQuery%>,queryPaths_<%=cid%>,asXMLs_<%=cid%>);
 Object filename_<%=cid %> = <%=filename %>;
 if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
 	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");

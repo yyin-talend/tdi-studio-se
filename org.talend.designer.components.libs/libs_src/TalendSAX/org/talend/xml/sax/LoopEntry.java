@@ -33,6 +33,11 @@ public class LoopEntry {
     // node full paths
     private List<String> paths = new ArrayList<String>();
 
+    // ==================add for the feature10170==========================
+    private List<Boolean> asXMLs = new ArrayList<Boolean>();
+
+    // ==========================end========================================
+
     // node original path
     private List<String> originalPaths = new ArrayList<String>();
 
@@ -45,6 +50,7 @@ public class LoopEntry {
     public LoopEntry(String loop) {
         this.loop = loop;
     }
+
     // =================add for bug7632 start========================
     private String originalLoopPath = null;
 
@@ -57,6 +63,7 @@ public class LoopEntry {
     }
 
     // =====================bug7632 end==============================
+
     /**
      * This use in init LoopEntry object. DOC s Comment method "addPath".
      * 
@@ -66,6 +73,31 @@ public class LoopEntry {
     public void addPath(String path, String originalPath) {
         paths.add(path);
         originalPaths.add(originalPath);
+    }
+
+    public void addPath(String path, String originalPath, Boolean asXML) {
+        paths.add(path);
+        originalPaths.add(originalPath);
+        // ===========add for feature10170===================
+        asXMLs.add(asXML);
+        // ===============end=================================
+    }
+
+    public void setAsXMLs(boolean[] asXML) {
+        for (int i = 0; i < asXML.length; i++) {
+            this.asXMLs.add(asXML[i]);
+        }
+    }
+
+    public List<Boolean> getAsXMLs() {
+        if (this.asXMLs.size() > 0) {
+            return this.asXMLs;
+        } else {
+            for (int i = 0; i < this.paths.size(); i++) {
+                this.asXMLs.add(false);
+            }
+            return this.asXMLs;
+        }
     }
 
     /**
