@@ -40,22 +40,22 @@ while (ifContinue<%=cid%>) {
         out<%=cid%> = new java.io.PrintWriter(socket<%=cid%>.getOutputStream(), true);
         out<%=cid%>.println(<%=output%>); 
         
+        in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream()));
+        StringBuilder sb<%=cid%> = new StringBuilder();
+        char[] target<%=cid%> = new char[1024];
+        in<%=cid%>.read(target<%=cid%>);
+        sb<%=cid%>.append(target<%=cid%>);
         <% if(("true").equals(print)){ %>
         //get data from client
             System.out.println(socket<%=cid%>.getInetAddress()+" input is : ");
-            in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream()));
-            StringBuilder sb<%=cid%> = new StringBuilder();
-            char[] target<%=cid%> = new char[1024];
-            in<%=cid%>.read(target<%=cid%>);
-            sb<%=cid%>.append(target<%=cid%>);
             String spl<%=cid%>[] = sb<%=cid%>.toString().trim().split(<%=eol%>);
             for (int i = 0; i < spl<%=cid%>.length; i++) {
                 System.out.println(spl<%=cid%>[i]);
             }
-            in<%=cid%>.close();
         <%}%>
         //put in globalMap 
         globalMap.put("<%=cid %>_INPUT_DATA",sb<%=cid%>.toString().trim());
+        in<%=cid%>.close();
         out<%=cid%>.close();
         socket<%=cid%>.close();
     }catch (java.io.IOException e) {
