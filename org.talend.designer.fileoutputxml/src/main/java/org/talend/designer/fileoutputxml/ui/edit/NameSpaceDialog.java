@@ -38,7 +38,7 @@ public class NameSpaceDialog extends TitleAreaDialog {
 
     private static final String DEFAULT = Messages.getString("NameSpaceDialog.defaultMessage"); //$NON-NLS-1$
 
-    private String prefixValue;
+    private String prefixValue = "";
 
     private String nsValue;
 

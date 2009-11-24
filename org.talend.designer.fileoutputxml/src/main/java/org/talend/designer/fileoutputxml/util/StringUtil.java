@@ -70,7 +70,7 @@ public class StringUtil {
         if (label.contains(".")) { //$NON-NLS-1$
             return false;
         }
-        if (!("".equals(label)) && !(" ".equals(label))) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (!("".equals(label)) && !("".equals(label.trim()))) { //$NON-NLS-1$ //$NON-NLS-2$
             char firstChar = label.charAt(0);
             if (!Character.isLetter(firstChar)) {
                 return false;

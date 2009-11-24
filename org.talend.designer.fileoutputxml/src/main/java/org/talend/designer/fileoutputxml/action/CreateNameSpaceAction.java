@@ -77,7 +77,10 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
             int status = nsDialog.open();
             if (status == nsDialog.OK) {
                 defaultValue = nsDialog.getNSValue();
-                label = nsDialog.getPrefix();
+                if (defaultValue != null) {
+                    defaultValue = defaultValue.trim();
+                }
+                label = nsDialog.getPrefix().trim();
             }
             if (status == nsDialog.CANCEL) {
                 return;
