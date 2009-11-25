@@ -19,7 +19,21 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	   return "";
 	}
 	String cid = node.getUniqueName();
+	
+	String sourceComponent = ElementParameterParser.getValue(node, "__LIST__");
+    	INode sourceNode=null;
+    	for (INode currentNode : (List<INode>) node.getProcess().getGeneratingNodes()) {
+    	   if (currentNode.getUniqueName().equals(sourceComponent)) {
+    	      sourceNode = currentNode;
+    	   }
+    	}
+    	if (sourceNode != null) {
+    	List<IConnection> connections = (List<IConnection>) sourceNode.getIncomingConnections();
+    	if (connections != null && connections.size() > 0) {
 %>
 nb_line_<%=cid %>++;
-	}	
+	}
+<%      }
+	}
+%>
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);       

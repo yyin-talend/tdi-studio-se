@@ -18,6 +18,12 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	
+	String cid = node.getUniqueName();
+%>
+
+int nb_line_<%=cid%> = 0;
+<%
+	
 	if (node.getOutgoingConnections(EConnectionType.FLOW_REF).size() != 0) {
 	   return "";
 	}
@@ -25,7 +31,6 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-    	String cid = node.getUniqueName();
     	String sourceComponent = ElementParameterParser.getValue(node, "__LIST__");
     	INode sourceNode=null;
     	for (INode currentNode : (List<INode>) node.getProcess().getGeneratingNodes()) {
@@ -40,7 +45,6 @@
           	String connectionName = connection.getName();
           	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();  
  %>
-  int nb_line_<%=cid%> = 0;
   java.util.Map <<%=connectionName%>Struct, <%=connectionName%>Struct>  tHash_<%=sourceComponent%> = (java.util.Map<<%=connectionName%>Struct, <%=connectionName%>Struct>) globalMap.get( "tHash_<%=sourceComponent%>" );
 	java.util.Collection values<%=cid%>= tHash_<%=sourceComponent%>.values();
 		Object[] oValue<%=cid%> = values<%=cid%>.toArray();	
