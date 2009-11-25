@@ -180,7 +180,7 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 <%  if (bMakeDirs){ %>
 	  sFullPath_<%=cid%> = url_<%=cid %>.getFile();
 	  iLocation_<%=cid%> = sFullPath_<%=cid%>.lastIndexOf("/");	
-	  sFullPath_<%=cid%> = sFullPath_<%=cid%>.substring(0, iLocation_<%=cid%>);
+	  sFullPath_<%=cid%> = iLocation_<%=cid%> > 0 ? sFullPath_<%=cid%>.substring(0, iLocation_<%=cid%>) : "";
 <%  }%>	
 
     java.io.File dir_<%=cid %> = new java.io.File(<%=directory %> + sFullPath_<%=cid%>);
