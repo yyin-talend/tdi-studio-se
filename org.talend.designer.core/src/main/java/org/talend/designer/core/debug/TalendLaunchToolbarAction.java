@@ -78,7 +78,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         IRepositoryObject[] allVersionArray = null;
         try {
             if (factory != null) {
-                allVersion = factory.getAll(ERepositoryObjectType.JOBS);
+                allVersion = factory.getAll(ERepositoryObjectType.PROCESS);
                 if (allVersion != null && allVersion.size() > 0) {
                     allVersionArray = new IRepositoryObject[allVersion.size()];
                     allVersionArray = allVersion.toArray(allVersionArray);
@@ -221,7 +221,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         IRepositoryObject[] allVersionArray = null;
         try {
             if (factory != null) {
-                allVersion = factory.getAll(ERepositoryObjectType.JOBS);
+                allVersion = factory.getAll(ERepositoryObjectType.PROCESS);
                 if (allVersion != null && allVersion.size() > 0) {
                     allVersionArray = new IRepositoryObject[allVersion.size()];
                     allVersionArray = allVersion.toArray(allVersionArray);
