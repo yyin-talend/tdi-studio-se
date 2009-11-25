@@ -85,7 +85,8 @@
 <%
 				if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
-				<%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+				<%=outconnName %>.<%=outLabel %> = (<%=preconnName %>.<%=preLabel %> == null || "".equals(<%=preconnName %>.<%=preLabel %>)) ? null : TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+				
 <%
 				}else{
 %>
@@ -143,7 +144,7 @@
 <%
 			if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
-				<%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+				<%=outconnName %>.<%=outLabel %> = (<%=preconnName %>.<%=preLabel %> == null || "".equals(<%=preconnName %>.<%=preLabel %>)) ? null : TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
 <%
 			} else {
 %>
