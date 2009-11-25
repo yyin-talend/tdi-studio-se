@@ -182,12 +182,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     // @Override
     public void createPartControl(Composite parent) {
-        // TODO Auto-generated method stub
-        // super.createPartControl(parent);
 
         splitter = new TalendFlyoutPaletteComposite(parent, SWT.NONE, getSite().getPage(), getPaletteViewerProvider(),
                 getPalettePreferences());
-        super.createPartControl(splitter);
+        createGraphicalViewer(splitter);
         splitter.setGraphicalControl(getGraphicalControl());
         if (page != null) {
             splitter.setExternalViewer(page.getPaletteViewer());

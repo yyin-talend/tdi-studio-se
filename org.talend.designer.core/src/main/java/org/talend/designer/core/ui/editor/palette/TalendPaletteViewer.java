@@ -19,6 +19,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.SystemUtils;
+import org.eclipse.draw2d.FigureCanvas;
+import org.eclipse.draw2d.IToolViewer;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.ui.palette.PaletteViewer;
@@ -50,7 +52,7 @@ import org.talend.designer.core.i18n.Messages;
 /**
  * 
  */
-public class TalendPaletteViewer extends PaletteViewer {
+public class TalendPaletteViewer extends PaletteViewer implements IToolViewer {
 
     private static final String TOOL_TIP = Messages.getString("TalendPaletteViewer.tooltipValue"); //$NON-NLS-1$
 
@@ -94,6 +96,18 @@ public class TalendPaletteViewer extends PaletteViewer {
 
     private void initToolBar() {
         // getViewSite().getActionBars().getToolBarManager();
+    }
+
+    /**
+     * 
+     * override from parent ScrollingGraphicalViewer, and remove the "final".
+     */
+    @Override
+    public Control createControl(Composite parent) {
+        FigureCanvas canvas = new TalendFigureCanvas(parent, getLightweightSystem(), this);
+        setControl(canvas);
+        installRootFigure(); // change the parent method to "protected".
+        return canvas;
     }
 
     /*

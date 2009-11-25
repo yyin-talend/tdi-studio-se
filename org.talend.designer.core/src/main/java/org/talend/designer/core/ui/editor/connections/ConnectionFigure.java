@@ -30,8 +30,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class ConnectionFigure extends PolylineConnection {
 
-    private int alpha = -1;
-
     private IConnectionProperty connectionProperty;
 
     private Node linkedNode;
@@ -81,18 +79,10 @@ public class ConnectionFigure extends PolylineConnection {
             }
         }
 
-        if (alpha != -1) {
-            graphics.setAlpha(alpha);
+        if (getAlpha() != null && getAlpha() != -1) {
+            graphics.setAlpha(getAlpha());
         }
         super.paint(graphics);
-    }
-
-    public int getAlpha() {
-        return this.alpha;
-    }
-
-    public void setAlpha(int alpha) {
-        this.alpha = alpha;
     }
 
     protected void setConnectionProperty(IConnectionProperty connectionProperty) {

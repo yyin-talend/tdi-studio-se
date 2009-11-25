@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
+import java.beans.PropertyChangeEvent;
+
 import org.eclipse.draw2d.FocusEvent;
 import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.IFigure;
@@ -55,6 +57,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
         super(drawer);
     }
 
+    @SuppressWarnings("restriction")
     public IFigure createFigure() {
         if (getParent() instanceof TalendDrawerEditPart) {
 
@@ -84,4 +87,18 @@ public class TalendDrawerEditPart extends DrawerEditPart {
         return super.createFigure();
     }
 
+    @SuppressWarnings("restriction")
+    public void propertyChange(PropertyChangeEvent evt) {
+        super.propertyChange(evt);
+        String property = evt.getPropertyName();
+        if (property.equals(PaletteDrawer.PROPERTY_INITIAL_STATUS)) {
+            boolean isExpaned = getDrawerFigure().isExpanded();
+            if (isExpaned == getDrawer().isInitiallyOpen()) {
+                return;
+            }
+            getDrawerFigure().setExpanded(getDrawer().isInitiallyOpen());
+            refreshVisuals();
+        }
+
+    }
 }
