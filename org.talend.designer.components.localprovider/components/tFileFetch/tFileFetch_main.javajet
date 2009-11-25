@@ -21,6 +21,7 @@ String protocol = ElementParameterParser.getValue(node,"__PROTO__");
 
 
 String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
+boolean bMakeDirs = "true".equals(ElementParameterParser.getValue(node, "__MAKEDIRS__"));
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
 String dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__");
@@ -171,14 +172,23 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 	String fileName_<%=cid %> = <%=filename%>;
 	
 	//open directory
-	java.io.File dir_<%=cid %> = new java.io.File(<%=directory %>);
 	
-	java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);
 	
+	java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);	
+    int iLocation_<%=cid%> = 0;
+    String sFullPath_<%=cid%> = "";
+<%  if (bMakeDirs){ %>
+	  sFullPath_<%=cid%> = url_<%=cid %>.getFile();
+	  iLocation_<%=cid%> = sFullPath_<%=cid%>.lastIndexOf("/");	
+	  sFullPath_<%=cid%> = sFullPath_<%=cid%>.substring(0, iLocation_<%=cid%>);
+<%  }%>	
+
+    java.io.File dir_<%=cid %> = new java.io.File(<%=directory %> + sFullPath_<%=cid%>);
+    
 	//open file dans la directory
 	if (fileName_<%=cid %>.compareTo("")==0) {
 	  fileName_<%=cid %> = url_<%=cid %>.getFile();
-	  int iLocation_<%=cid%> = fileName_<%=cid %>.lastIndexOf("/");
+	  iLocation_<%=cid%> = fileName_<%=cid %>.lastIndexOf("/");
 	  if (iLocation_<%=cid%> > 0){
 	    fileName_<%=cid %> = fileName_<%=cid %>.substring(iLocation_<%=cid%> + 1);
 	  } else{
@@ -238,25 +248,34 @@ if(useProxy){
 
 String fileName<%=cid %> = <%=filename %>;
 java.io.DataInputStream in<%=cid%>=null;
-	
-	//open directory
-	java.io.File dir<%=cid %> = new java.io.File(<%=directory %>);
+
+
         		
     // open url stream
 	java.net.URL url<%=cid %> = new java.net.URL(<%=uri %>);
 	java.net.URLConnection conn<%=cid %> = url<%=cid %>.openConnection();
-	
+
+	int iLocation<%=cid%> = 0;
+    String sFullPath<%=cid%> = "";
+<%  if (bMakeDirs){ %>
+	  sFullPath<%=cid%> = url<%=cid %>.getFile();
+	  iLocation<%=cid%> = sFullPath<%=cid%>.lastIndexOf("/");	
+	  sFullPath<%=cid%> = iLocation<%=cid%> > 0 ? sFullPath<%=cid%>.substring(0, iLocation<%=cid%>) : "";
+<%  }%>	
+
+	//open directory
+	java.io.File dir<%=cid %> = new java.io.File(<%=directory %> + sFullPath<%=cid%>);
 	//open file dans la directory
 	if (fileName<%=cid %>.compareTo("")==0) {
 	  fileName<%=cid %> = url<%=cid %>.getFile();
-	  int iLocation<%=cid%> = fileName<%=cid %>.lastIndexOf("/");
+	  iLocation<%=cid%> = fileName<%=cid %>.lastIndexOf("/");
 	  if (iLocation<%=cid%> > 0){
 	    fileName<%=cid %> = fileName<%=cid %>.substring(iLocation<%=cid%> + 1);
 	  } else{
 	    fileName<%=cid %> = "defaultfilename.txt";
 	  }
 	}
-	
+		
 	try{
 	  java.io.File testfile<%=cid%> = new java.io.File(dir<%=cid %>, fileName<%=cid %>);
 	  testfile<%=cid%>.getParentFile().mkdirs();
@@ -266,9 +285,7 @@ java.io.DataInputStream in<%=cid%>=null;
 	} catch(Exception e){
 	  fileName<%=cid %> = "defaultfilename.txt";
 	}
-	
-    final java.io.DataOutputStream out<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(
-            dir<%=cid %>, fileName<%=cid %>))); 
+    
 	// copy file
    try{
    in<%=cid%> = new java.io.DataInputStream(conn<%=cid %>.getInputStream());
@@ -280,11 +297,12 @@ java.io.DataInputStream in<%=cid%>=null;
       System.err.println("There is an exception on: "+<%=uri %>);
       e.printStackTrace();
       System.out.println("\r\n");
-      in<%=cid%>=null;
-      
+      in<%=cid%>=null;      
 <%}
 %>    
 }  
+    final java.io.DataOutputStream out<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(
+            dir<%=cid %>, fileName<%=cid %>)));
 	//close opened object
 	if(in<%=cid%>!=null){
     byte[] buffer<%=cid%> = new byte[1024];
