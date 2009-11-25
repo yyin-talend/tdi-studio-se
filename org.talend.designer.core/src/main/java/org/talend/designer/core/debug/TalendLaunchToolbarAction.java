@@ -52,6 +52,8 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
 
     private ISelection selection;
 
+    private IProxyRepositoryFactory factory; // hywang for 10068
+
     private final static String RUN_LABEL = Messages.getString("MultiPageEditorContributor.runMenu"); //$NON-NLS-1$
 
     /**
@@ -72,6 +74,20 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         ILaunchConfiguration[] historyList = getHistory();
         ILaunchConfiguration[] favoriteList = getFavorites();
 
+        List<IRepositoryObject> allVersion = null;
+        IRepositoryObject[] allVersionArray = null;
+        try {
+            if (factory != null) {
+                allVersion = factory.getAll(ERepositoryObjectType.JOBS);
+                if (allVersion != null && allVersion.size() > 0) {
+                    allVersionArray = new IRepositoryObject[allVersion.size()];
+                    allVersionArray = allVersion.toArray(allVersionArray);
+                }
+            }
+        } catch (PersistenceException e1) {
+            ExceptionHandler.process(e1);
+        }
+
         // Add favorites
         int accelerator = 1;
         accelerator = addToMenu(menu, favoriteList, accelerator);
@@ -82,16 +98,17 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         }
 
         // Add history launches next
-        addToMenu(menu, historyList, accelerator);
+        addToMenu(menu, historyList, accelerator, allVersionArray);
     }
 
-    private int addToMenu(Menu menu, ILaunchConfiguration[] launchList, int accelerator) {
+    private int addToMenu(Menu menu, ILaunchConfiguration[] launchList, int accelerator, IRepositoryObject... allVersion) {
+
         for (int i = 0; i < launchList.length; i++) {
             ILaunchConfiguration launch = launchList[i];
             try {
                 if (launch.getType().getIdentifier().equals(TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE)
                         && isCurrentProject(launch)) {
-                    if (checkItemExisted(launch)) {
+                    if (checkItemExisted(launch, allVersion)) {
                         LaunchAction action = new LaunchAction(launch, getMode());
                         addToMenu(menu, action, accelerator);
                         accelerator++;
@@ -105,15 +122,23 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         return accelerator;
     }
 
-    private boolean checkItemExisted(ILaunchConfiguration launch) throws CoreException, PersistenceException {
+    private boolean checkItemExisted(ILaunchConfiguration launch, IRepositoryObject... allVersion) throws CoreException,
+            PersistenceException {
         String jobId = launch.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
         String jobVersion = launch.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
         if (jobId != null) {
-            IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-            List<IRepositoryObject> allVersion = factory.getAllVersion(jobId);
-            for (IRepositoryObject obj : allVersion) {
-                if (obj.getProperty().getVersion().equals(jobVersion)) {
-                    return true;
+            if (allVersion != null) {
+                for (IRepositoryObject obj : allVersion) {
+                    if (obj.getProperty().getVersion().equals(jobVersion)) {
+                        return true;
+                    }
+                }
+            } else {
+                List<IRepositoryObject> all = factory.getAllVersion(jobId);
+                for (IRepositoryObject obj : all) {
+                    if (obj.getProperty().getVersion().equals(jobVersion)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -129,6 +154,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
     public void init(IWorkbenchWindow window) {
         super.init(window);
         this.window = window;
+        this.factory = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
     }
 
     /*
@@ -191,12 +217,25 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
      */
     @Override
     protected ILaunchConfiguration getLastLaunch() {
+        List<IRepositoryObject> allVersion = null;
+        IRepositoryObject[] allVersionArray = null;
+        try {
+            if (factory != null) {
+                allVersion = factory.getAll(ERepositoryObjectType.JOBS);
+                if (allVersion != null && allVersion.size() > 0) {
+                    allVersionArray = new IRepositoryObject[allVersion.size()];
+                    allVersionArray = allVersion.toArray(allVersionArray);
+                }
+            }
+        } catch (PersistenceException e1) {
+            ExceptionHandler.process(e1);
+        }
         LaunchHistory history = getLaunchConfigurationManager().getLaunchHistory(getLaunchGroupIdentifier());
         if (history != null) {
             try {
                 ILaunchConfiguration[] filterConfigs = history.getCompleteLaunchHistory();
                 for (ILaunchConfiguration launchConfiguration : filterConfigs) {
-                    if (isCurrentProject(launchConfiguration) && checkItemExisted(launchConfiguration)) {
+                    if (isCurrentProject(launchConfiguration) && checkItemExisted(launchConfiguration, allVersionArray)) {
                         return launchConfiguration;
                     }
                 }
