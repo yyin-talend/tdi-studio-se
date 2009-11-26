@@ -95,7 +95,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
             <%
         } 
        //begin fixed:bug 10001          
-		if (!useExistingConnection) {
+		if (!useExistingConnection && !INFORMIX.equals(dbmsId)) {//in Informix db when not use transaction don't using commit() method
 		%>
 			conn_<%=cid%>.commit();
 		<%
