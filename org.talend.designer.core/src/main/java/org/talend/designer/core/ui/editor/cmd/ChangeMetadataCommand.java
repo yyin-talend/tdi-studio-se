@@ -456,10 +456,7 @@ public class ChangeMetadataCommand extends Command {
         }
 
         List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
-        // for bug 10254
-        if (!node.getComponent().getName().contains("SCD")) {//$NON-NLS-1$
-            ColumnListController.updateColumnList(node, columnNameChanged, true);
-        }
+        ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (inputNode != null) {
             List<ColumnNameChanged> inputColumnNameChangedExt = MetadataTool.getColumnNameChangedExt(inputNode, oldInputMetadata,

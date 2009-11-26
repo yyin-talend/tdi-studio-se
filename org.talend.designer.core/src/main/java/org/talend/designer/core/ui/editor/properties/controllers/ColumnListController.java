@@ -334,11 +334,13 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         String[] refColumnListNames = refColumnListNamesTmp.toArray(new String[0]);
         String[] refColumnListValues = refColumnListValuesTmp.toArray(new String[0]);
+
+        boolean isSCDComponent = node.getComponent().getName().contains("SCD");//$NON-NLS-1$
         for (int i = 0; i < node.getElementParameters().size(); i++) {
             IElementParameter param = node.getElementParameters().get(i);
             columnList = getColumnList(node, param.getContext());
             columnNameList = columnList.toArray(new String[0]);
-            if (param.getField() == EParameterFieldType.COLUMN_LIST) {
+            if (param.getField() == EParameterFieldType.COLUMN_LIST && !isSCDComponent) {
                 curColumnNameList = columnNameList;
                 curColumnValueList = columnNameList;
             }
@@ -350,7 +352,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 curColumnNameList = refColumnListNames;
                 curColumnValueList = refColumnListValues;
             }
-            if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
+            if ((param.getField() == EParameterFieldType.COLUMN_LIST && !isSCDComponent)
+                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
@@ -659,8 +662,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * 
      * DOC ggu Comment method "syncNodePropertiesTableColumns".<BR/>
      * 
-     * synchronize COLUMN_LIST, PREV_COLUMN_LIST, LOOKUP_COLUMN_LIST in table. <br/> when modified column name of schema
-     * .
+     * synchronize COLUMN_LIST, PREV_COLUMN_LIST, LOOKUP_COLUMN_LIST in table. <br/>
+     * when modified column name of schema .
      * 
      * @param param
      * @param columnsChanged
