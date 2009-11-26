@@ -434,15 +434,15 @@ public class CLASS {
                                     sqlSentence = sqlSentence.substring(0, sqlSentence.length() - 2);
                                     sqlSentence += "\"";
                                 }
-                                codeStringBuilder.append("globalMap.put(\"").append(cid).append("_QUERY\", ").append(sqlSentence).append(");\n");
-                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(").append(sqlSentence).append(");\n");
+                                codeStringBuilder.append("String tempSQLSentence_").append(cid).append("_"+String.valueOf(i)).append(" = ").append(sqlSentence).append(";\n");
+                                codeStringBuilder.append("globalMap.put(\"").append(cid).append("_QUERY\", tempSQLSentence_").append(cid).append("_"+String.valueOf(i)).append(");\n");
+                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(tempSQLSentence_").append(cid).append("_"+String.valueOf(i)).append(");\n");
                                 sqlQueryBuilder.delete(0, sqlQueryBuilder.length()).append("\"");
                             } else {
                                 sqlQueryBuilder.append(" ");
                             }
                             line = null;
                         }
-
                     } while (true);
                     resultBuilder.append("//execute sqlPattern: ").append(key).append("\nstmt_").append(cid).append(
                             ".clearBatch();\n");
