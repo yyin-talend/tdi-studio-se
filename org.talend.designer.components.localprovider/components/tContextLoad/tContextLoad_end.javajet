@@ -12,6 +12,7 @@
 	String cid = node.getUniqueName();
     boolean disError=ElementParameterParser.getValue(node, "__DISABLE_ERROR__").equals("true");
     boolean disWarning=ElementParameterParser.getValue(node, "__DISABLE_WARNINGS__").equals("true");
+    boolean bDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIEONERROR__"));
     boolean disInfo=ElementParameterParser.getValue(node, "__DISABLE_INFO__").equals("true");
     String newVariable = ElementParameterParser.getValue(node, "__LOAD_NEW_VARIABLE__");
     String oldVariable = ElementParameterParser.getValue(node, "__NOT_LOAD_OLD_VARIABLE__");
@@ -32,6 +33,9 @@
 %>
 	for(Object obj_<%=cid %> :newPropertyList_<%=cid%>){
 		System.<%=newVariable.equals("Error")?"err":"out"%>.println("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
+        <%if (bDieOnError && newVariable.equals("Error")){%>
+		  throw new RuntimeException("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
+		<%}%>        
 	}
 <%
 	}
@@ -41,6 +45,9 @@
 %>
 	for(Object obj_<%=cid %> :noAssignList_<%=cid %>){
 		System.<%=oldVariable.equals("Error")?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
+		<%if (bDieOnError && oldVariable.equals("Error")){%>
+		  throw new RuntimeException("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
+		<%}%>
 	}
 <%
 	}

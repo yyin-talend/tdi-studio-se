@@ -101,7 +101,16 @@
       NUM_ROW="5"
     >
       <DEFAULT>true</DEFAULT>
-    </PARAMETER>
+    </PARAMETER>    
+    
+    <PARAMETER
+      NAME="DIEONERROR"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
     
    </PARAMETERS>
    <CODEGENERATION/>
