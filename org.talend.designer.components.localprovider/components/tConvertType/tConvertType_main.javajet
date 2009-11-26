@@ -19,7 +19,7 @@
 	String cid = node.getUniqueName();
 	boolean autoCast = ("true").equals(ElementParameterParser.getValue(node, "__AUTOCAST__"));
 	List<Map<String, String>> manualtable = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MANUALTABLE__");
-
+    boolean bDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIEONERROR__"));
 	IConnection inMainCon = null;
 	List<? extends IConnection> connsIn = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
 	if(connsIn == null || connsIn.size() == 0 ){
@@ -42,17 +42,24 @@
 	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
 	if(rejectConns != null && rejectConns.size() > 0) {
 	    for(IConnection conn : rejectConns) {
-			rejectConnName = conn.getName();
+			if (conn.isActivate()){
+			  rejectConnName = conn.getName();
+			}
 		}
 	}
-   
+	// Output Reject flow
+    boolean bOutputReject = (rejectConnName != null) && (!bDieOnError);
+    
+    // will ignore error
+    boolean bIgnoreError = (rejectConnName == null) && (!bDieOnError);
+    
 	IMetadataTable preMetadata = inMainCon.getMetadataTable();   
 	List<IMetadataColumn> preColumns = preMetadata.getListColumns();   
    
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	IMetadataTable metadata = metadatas.get(0);
 	List<IMetadataColumn> columns = metadata.getListColumns();
-	if(rejectConnName!=null){
+	if(bOutputReject){
 %>
 	<%=rejectConnName %> =new <%=rejectConnName %>Struct();
 	String errorCode_<%=cid %>="";
@@ -62,6 +69,7 @@
 	stringBuffer.append("\n");//control code format	
 %>
 	<%=outconnName %>=new <%=outconnName %>Struct();
+	boolean bHasError_<%=cid%> = false;
 <%
 	if(autoCast){ //autoCast begin
 		for(IMetadataColumn col:columns){//col:columns	
@@ -80,8 +88,9 @@
 	    	 	if(("byte[]").equals(inType)){
 	    	 		inType = "byteArray";
 	    	 	}
-%>
+%>           
 			try{
+			  if(!bHasError_<%=cid%>){
 <%
 				if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
@@ -92,29 +101,36 @@
 				<%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
 <%
 				}
-				if(rejectConnName!=null){
+				if(bOutputReject){
 %>		
 				<%=rejectConnName %>.<%=outLabel %> = <%=outconnName %>.<%=outLabel %>;
 <%
 				}
 %>
+			  }
 			}catch(Exception e){
+			    bHasError_<%=cid%> = true;
 <%
-				if(rejectConnName!=null){
+				if(bOutputReject){
 %>
-				if(("").equals(errorMessage_<%=cid %>)){
+				  if(("").equals(errorMessage_<%=cid %>)){
 					errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
-				}else{
+				  }else{
 					errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
-				}
+				  }
 <%				
-				} else {
+				} else if(bIgnoreError){
 %>
-				throw e;
+				  System.err.println(e.getMessage());				  
+<%
+				} else if(bDieOnError){
+%>
+				  throw e;
 <%
 				}
 %>
 			}
+            if (bHasError_<%=cid%>) <%=outconnName %> = null;			
 <%			
      		}
 	 	 }//3
@@ -139,7 +155,8 @@
 			String outPattern = out.getPattern();
 			String preLabel = in.getLabel();
 %>     
-			try{       
+			try{
+			  if(!bHasError_<%=cid%>){       
 <%
 			if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
@@ -150,36 +167,44 @@
 				<%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
 <%
 				}
-				if(rejectConnName!=null){
+				if(bOutputReject){
 %>		
 				<%=rejectConnName %>.<%=outLabel %> = <%=outconnName %>.<%=outLabel %>;
 <%
 				}
 %>
+			  }
 			}catch(Exception e){
+			    bHasError_<%=cid%> = true;
 <%
-				if(rejectConnName!=null){
+				if(bOutputReject){
 %>
-				if(("").equals(errorMessage_<%=cid %>)){
-					errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
-				}else{
-					errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
-				}
+				  if(("").equals(errorMessage_<%=cid %>)){
+				    errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
+				  }else{
+				    errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
+				  }
 <%				
-				} else {
+				} else if(bIgnoreError){
 %>
-				throw e;
+				  System.err.println(e.getMessage());				  
+<%
+				} else if(bDieOnError){
+%>
+				  throw e;
 <%
 				}
 %>
 			}
+
+			if (bHasError_<%=cid%>) <%=outconnName %> = null;
 <%
 		} 
 	}//manual end.
 %>
 <% 
 	stringBuffer.append("\n");//control code format	
-	if(rejectConnName!=null){//occure Reject
+	if(bOutputReject){//occure Reject
 %>
 	if(errorMessage_<%=cid %>.length()>0){
 		if(errorMessage_<%=cid %>.contains("Can't support convert")){
@@ -189,9 +214,8 @@
 		}
 		<%=rejectConnName %>.errorCode=errorCode_<%=cid %>;
 		<%=rejectConnName %>.errorMessage= errorMessage_<%=cid %>;
-		<%=outconnName %>=null;
-	} else {
-		<%=rejectConnName %>=null;
+	} else{
+	  <%=rejectConnName %> = null;
 	}
 	errorMessage_<%=cid %>="";
 <%

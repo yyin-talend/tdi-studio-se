@@ -70,6 +70,14 @@
 					LENGTH="255" READONLY="false" CUSTOM="true" />
 			</TABLE>
 		</PARAMETER>
+		
+	<PARAMETER 
+      NAME="DIEONERROR"
+      FIELD="CHECK"
+      NUM_ROW="10"
+    >
+    <DEFAULT>false</DEFAULT>
+    </PARAMETER>
     
   </PARAMETERS>
   
