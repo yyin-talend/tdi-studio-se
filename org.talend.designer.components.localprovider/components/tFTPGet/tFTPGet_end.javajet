@@ -13,6 +13,7 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	String ignoreFailureAtQuit= ElementParameterParser.getValue(node,"__IGNORE_FAILURE_AT_QUIT__");
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 	boolean sftp = false;
@@ -77,3 +78,12 @@
 %>
 
 globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
+ 	}catch(Exception e){
+<%
+        if(("true").equals(dieOnError)){
+%>
+            throw(e);
+<%
+		}
+%>
+	}

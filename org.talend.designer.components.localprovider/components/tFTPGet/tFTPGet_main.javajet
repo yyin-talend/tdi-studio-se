@@ -31,7 +31,6 @@
 	}
 %>
 
-
 		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
     	String dir_<%=cid %> = root_<%=cid %>;
     	String mask_<%=cid %> = maskStr_<%=cid%>.replaceAll("\\\\", "/") ;  
@@ -52,5 +51,4 @@
         	}
         }
    		getter_<%=cid %>.chdir(root_<%=cid %>);
- 	
 
