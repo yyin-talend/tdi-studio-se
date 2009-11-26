@@ -20,7 +20,9 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String field = ElementParameterParser.getValue(node, "__FIELD__");
-String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+
+String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
@@ -33,13 +35,34 @@ if(inConns!=null){
     }
 }
 
+String rejectConnName = "";
+List<IMetadataColumn> rejectColumnList = null;
+List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+if(rejectConns != null && rejectConns.size() > 0) {
+    IConnection rejectConn = rejectConns.get(0);
+    rejectColumnList = rejectConn.getMetadataTable().getListColumns();
+    rejectConnName = rejectConn.getName();
+}
+
 IConnection outConn = null;
+String firstConnName = "";
 List< ? extends IConnection> outConns = node.getOutgoingConnections();
 if(outConns!=null){
     for (IConnection conn : outConns) {
     	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
     		outConn = conn;
+    		firstConnName = outConn.getName();
     		break;
+    	}
+    }
+}
+
+if(outConns!=null){
+    for (IConnection conn : outConns) {
+    	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+<%=conn.getName() %> = null;
+<%
     	}
     }
 }
@@ -65,6 +88,10 @@ if(inConn!=null){
 //set original columns
 List<IMetadataColumn> newColumnList = new ArrayList<IMetadataColumn>();
 if(outConn!=null && inConn!=null){
+%>
+try{
+	<%=outConn.getName() %> = new <%=outConn.getName() %>Struct();
+<%
 	IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 	IMetadataTable inputMetadataTable = inConn.getMetadataTable();
 	for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
@@ -85,163 +112,101 @@ if(outConn!=null && inConn!=null){
 			newColumnList.add(outputCol);
 		}
 	}
-}
 %>
 
 String temp_<%=cid%> = null;
 <%
-if(!dieOnError.equals("true")){
-%>
-	boolean flag_<%=cid %> = true;
-<%
-}
-for(int i=0; i<newColumnList.size();i++){
-	IMetadataColumn column = newColumnList.get(i);
-	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-	String primitiveTypeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
-	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-	String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
-	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-		if(dieOnError.equals("true")){
+    for(int i=0; i<newColumnList.size();i++){
+    	IMetadataColumn column = newColumnList.get(i);
+    	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+    	String primitiveTypeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
+    	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    	String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
+    	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+			if(!("").equals(rejectConnName)&&rejectConnName.equals(firstConnName)
+				&& (column.getLabel().equals("errorMessage") || column.getLabel().equals("errorCode"))){
+			}else{
 %>
 <%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
 <%
+			}
 		}else{
-%>
-if(flag_<%=cid %>){
-	try{
-		<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
-	}catch(Exception e){
-		<%=outConn.getName()%>.<%=column.getLabel() %> = null;
-		flag_<%=cid %> = false;
-	}
-}else{
-	<%=outConn.getName()%>.<%=column.getLabel() %> = null;
-}
-<%
-		}
-	}else{ 
-		if(dieOnError.equals("true")){
 %>
 	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
 	if(temp_<%=cid %>.length() > 0) {
 <%
-		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-		} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+			} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
 <%
-		}else if(javaType == JavaTypesManager.DATE) { 
+			}else if(javaType == JavaTypesManager.DATE) { 
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
-		} else {
+			} else {
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
 <%
-		}
+			}
 %>
 	} else {						
 <%
-		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-		if(defaultValue == null) {
+			String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+			if(defaultValue == null) {
 %>
 		throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=outConn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
-		} else {
+			} else {
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
 <%
-		}
+			}
 %>
 	}
 <%
-		}else{
+    	}
+    }
+	if(!("").equals(rejectConnName) && rejectConnName.equals(firstConnName)){
 %>
-if(flag_<%=cid %>){
-try{
-	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
-	if(temp_<%=cid %>.length() > 0) {
+	<%=outConn.getName() %> = null;
 <%
-		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-		} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
-%>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
-<%
-		}else if(javaType == JavaTypesManager.DATE) { 
-%>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
-<%
-		} else {
-%>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
-<%
-		}
-%>
-	} else {						
-<%
-		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-		if(defaultValue == null) {
-%>
-		throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=outConn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
-<%
-		} else {
-%>
-		<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
-<%
-		}
-%>
 	}
-}catch(Exception e){
-<%
-		if(defaultValue != null){
 %>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+}catch(Exception ex_<%=cid %>){
 <%
-		}else{
-			if(column.isNullable()) {
+	if(dieOnError){
 %>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = null;
+	throw(ex_<%=cid %>);
 <%
-			}else if(javaType == JavaTypesManager.BOOLEAN){
+	}else{
+		if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 %>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = false;
+	<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
-			}else{
+            for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
 %>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
+    <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName %>.<%=column.getLabel() %>;
 <%
 			}
+%>    
+    <%=rejectConnName%>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+    <%=firstConnName %> = null;
+<%
+		} else if(("").equals(rejectConnName)){
+%>
+    System.err.println(ex_<%=cid %>.getMessage());
+    <%=firstConnName %> = null;
+<%
+		} else if(rejectConnName.equals(firstConnName)){
+%>
+	<%=rejectConnName%>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+<%
 		}
-%>
-	flag_<%=cid %> = false;
-}
-}else{
-<%
-		if(defaultValue != null){
-%>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
-<%
-		}else{
-			if(column.isNullable()) {
-%>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = null;
-<%
-			}else if(javaType == JavaTypesManager.BOOLEAN){
-%>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = false;
-<%
-			}else{
-%>
-	<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
-<%
-			}
-		}
+	}
 %>
 }
 <%
-		}
-	}
 }
 %>
 

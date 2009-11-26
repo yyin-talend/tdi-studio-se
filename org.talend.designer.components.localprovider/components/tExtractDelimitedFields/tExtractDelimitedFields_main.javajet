@@ -180,6 +180,11 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 <%
 		}
 	}
+	if(!("").equals(rejectConnName) && rejectConnName.equals(firstConnName)){
+%>
+	<%=outConn.getName() %> = null;
+<%
+	}
 %>
 	nb_line_<%=cid%>++;
 }catch(Exception ex_<%=cid %>){
