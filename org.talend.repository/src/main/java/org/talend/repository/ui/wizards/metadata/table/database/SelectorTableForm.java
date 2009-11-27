@@ -1086,7 +1086,7 @@ public class SelectorTableForm extends AbstractForm {
      */
     public void initControlData() {
         checkConnection(false);
-        if (itemTableName.size() > 0) {
+        if (itemTableName != null && itemTableName.size() > 0) {
             threadExecutor = new CustomThreadPoolExecutor(itemTableName.size());
         }
     }
