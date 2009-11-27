@@ -29,6 +29,10 @@ String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "_
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 
 boolean trim = ("true").equals(ElementParameterParser.getValue(node, "__TRIM__"));
+
+String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
+boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
+
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 
@@ -121,7 +125,11 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 			}
 		}
 		if(!isOirginalColumn){
-			newColumnList.add(outputCol);
+			if(!("").equals(rejectConnName)&&rejectConnName.equals(firstConnName)
+				&& (outputCol.getLabel().equals("errorMessage") || outputCol.getLabel().equals("errorCode"))){
+			}else{
+				newColumnList.add(outputCol);
+			}
 		}
 	}
 %>
@@ -133,13 +141,9 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 		String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
 		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-			if(!("").equals(rejectConnName)&&rejectConnName.equals(firstConnName)
-				&& (column.getLabel().equals("errorMessage") || column.getLabel().equals("errorCode"))){
-			}else{
 %>
 	<%=outConn.getName()%>.<%=column.getLabel() %> = <%=i%>>=length_<%=cid%>?"":newFields_<%=cid%>[<%=i%>];
 <%
-			}
 		}else{ 
 %>
 	temp_<%=cid %> = <%=i%>>=length_<%=cid%>?"":newFields_<%=cid%>[<%=i%>];
@@ -149,10 +153,16 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
 <%
-			}else if(javaType == JavaTypesManager.DATE) { 
+			}else if(javaType == JavaTypesManager.DATE) {
+				if(checkNum){
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>, false);
+<%
+				}else{
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
+				}
 			}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
@@ -180,6 +190,18 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 <%
 		}
 	}
+	
+	if(checkNum) {
+%>
+	 int filedsum_<%=cid %> = newFields_<%=cid%>.length;
+	 if(filedsum_<%=cid %> < <%=newColumnList.size() %>){
+	 	throw new RuntimeException("Column(s) missing");
+	 } else if(filedsum_<%=cid %> > <%=newColumnList.size() %>) {
+	 	throw new RuntimeException("Too many columns");
+	 }     
+<%
+	}
+	
 	if(!("").equals(rejectConnName) && rejectConnName.equals(firstConnName)){
 %>
 	<%=outConn.getName() %> = null;

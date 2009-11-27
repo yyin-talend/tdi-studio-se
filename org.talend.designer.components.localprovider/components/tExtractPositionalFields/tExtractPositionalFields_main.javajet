@@ -34,6 +34,9 @@ String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__D
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 
+String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
+boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
+
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
 if(inConns!=null){
@@ -114,7 +117,11 @@ try{
 			}
 		}
 		if(!isOirginalColumn){
-			newColumnList.add(outputCol);
+			if(!("").equals(rejectConnName)&&rejectConnName.equals(firstConnName)
+				&& (outputCol.getLabel().equals("errorMessage") || outputCol.getLabel().equals("errorCode"))){
+			}else{
+				newColumnList.add(outputCol);
+			}
 		}
 	}
 
@@ -167,13 +174,9 @@ try{
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 		String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
 		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-			if(!("").equals(rejectConnName)&&rejectConnName.equals(firstConnName)
-				&& (column.getLabel().equals("errorMessage") || column.getLabel().equals("errorCode"))){
-			}else{
 %>
 	<%=outConn.getName()%>.<%=column.getLabel() %> = newFields_<%=cid%>.get("<%=column.getLabel()%>");
 <%
-			}
 		}else{ 
 %>
 	temp_<%=cid %> = newFields_<%=cid%>.get("<%=column.getLabel()%>");
@@ -183,10 +186,16 @@ try{
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
 <%
-			}else if(javaType == JavaTypesManager.DATE) { 
+			}else if(javaType == JavaTypesManager.DATE) {
+				if(checkNum){
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>, false);
+<%
+				}else{
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
+				}
 			}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
@@ -214,6 +223,18 @@ try{
 <%
 		}
 	}
+	
+	if(checkNum) {
+%>
+	 int filedsum_<%=cid %> = newFields_<%=cid%>.size();
+	 if(filedsum_<%=cid %> < <%=newColumnList.size() %>){
+	 	throw new RuntimeException("Column(s) missing");
+	 } else if(filedsum_<%=cid %> > <%=newColumnList.size() %>) {
+	 	throw new RuntimeException("Too many columns");
+	 }
+<%
+	}
+	
 	if(!("").equals(rejectConnName) && rejectConnName.equals(firstConnName)){
 %>
 	<%=outConn.getName() %> = null;
