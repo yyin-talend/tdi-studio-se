@@ -52,6 +52,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -2087,7 +2088,7 @@ public class Node extends Element implements INode {
                     }
                     value = (String) param.getValue();
                     if (value == null || value.equals("")) { //$NON-NLS-1$
-                        if (this.getComponent() != null && "tFileInputMSDelimited".equals(this.getComponent().getName())) {
+                        if (this.getComponent() != null && "tFileInputMSDelimited".equals(this.getComponent().getName())) { //$NON-NLS-1$
                             multiSchemaDelimetedSeparaor.add(param);
                             if (multiSchemaDelimetedSeparaor.size() == 2) {
                                 String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
@@ -2349,6 +2350,7 @@ public class Node extends Element implements INode {
         for (IElementParameter param : this.getElementParameters()) {
             if (param.isShow(getElementParameters()) && param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 canEditSchema = true;
+                break;
             }
         }
         INodeConnector mainConnector;
@@ -2358,18 +2360,20 @@ public class Node extends Element implements INode {
             mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
         }
 
-        if (!isExternalNode()) {
-            if (canEditSchema) {
-                for (int i = 0; i < getMetadataFromConnector(mainConnector.getName()).getListColumns().size(); i++) {
-                    IMetadataColumn column = getMetadataFromConnector(mainConnector.getName()).getListColumns().get(i);
+        if (mainConnector != null && !isExternalNode()) {
+            IMetadataTable table = getMetadataFromConnector(mainConnector.getName());
+
+            if (canEditSchema && table != null) {
+                for (int i = 0; i < table.getListColumns().size(); i++) {
+                    IMetadataColumn column = table.getListColumns().get(i);
                     if (column.isCustom()) {
                         continue;
                     }
                     String value = column.getPattern();
                     String typevalue = column.getTalendType();
-                    if ("id_Date".equals(typevalue)) {
-                        if (value == null || "".equals(value)) {
-                            String errorMessage = "A value must be set for Date Pattern";
+                    if (JavaTypesManager.DATE.getId().equals(typevalue) || PerlTypesManager.DATE.equals(typevalue)) {
+                        if (value == null || "".equals(value)) { //$NON-NLS-1$
+                            String errorMessage = Messages.getString("Node.PatterErrorMessage"); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             noSchema = true;
                         }
@@ -2378,7 +2382,7 @@ public class Node extends Element implements INode {
                 }
 
                 if ((mainConnector.getMaxLinkInput() == 0) && (mainConnector.getMaxLinkOutput() != 0)) {
-                    if (getMetadataFromConnector(mainConnector.getName()).getListColumns().size() == 0) {
+                    if (table.getListColumns().size() == 0) {
                         String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         noSchema = true;
@@ -2386,7 +2390,7 @@ public class Node extends Element implements INode {
                 }
             } else {
                 if ((mainConnector.getMaxLinkInput() != 0) && (mainConnector.getMaxLinkOutput() != 0)) {
-                    if (getMetadataFromConnector(mainConnector.getName()).getListColumns().size() == 0) {
+                    if (table != null && table.getListColumns().size() == 0) {
                         noSchema = true;
                     }
                 }
@@ -2402,7 +2406,7 @@ public class Node extends Element implements INode {
 
         // test empty schema in built in connections (several outputs with
         // different schema)
-        if (!noSchema && (!canEditSchema || isExternalNode())) {
+        if (mainConnector != null && !noSchema && (!canEditSchema || isExternalNode())) {
             if (mainConnector.isMultiSchema()) {
                 if (getMetadataList() != null) {
                     for (IMetadataTable meta : getMetadataList()) {
