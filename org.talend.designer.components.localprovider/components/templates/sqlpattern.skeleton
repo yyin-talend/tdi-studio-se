@@ -21,7 +21,9 @@ public class CLASS {
 
         StringBuilder resultBuilder = new StringBuilder();
         if (list != null) {
+        	int sql_id = 0;
             for (Map<String, Object> map : list) {
+            	sql_id++;
                 Set<String> keySet = map.keySet();
                 for (String key : keySet) {
                     String SQLPattern = (String) map.get(key);
@@ -434,9 +436,9 @@ public class CLASS {
                                     sqlSentence = sqlSentence.substring(0, sqlSentence.length() - 2);
                                     sqlSentence += "\"";
                                 }
-                                codeStringBuilder.append("String tempSQLSentence_").append(cid).append("_"+String.valueOf(i)).append(" = ").append(sqlSentence).append(";\n");
-                                codeStringBuilder.append("globalMap.put(\"").append(cid).append("_QUERY\", tempSQLSentence_").append(cid).append("_"+String.valueOf(i)).append(");\n");
-                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(tempSQLSentence_").append(cid).append("_"+String.valueOf(i)).append(");\n");
+                                codeStringBuilder.append("String tempSQLSentence_").append(cid).append("_"+sql_id).append(" = ").append(sqlSentence).append(";\n");
+                                codeStringBuilder.append("globalMap.put(\"").append(cid).append("_QUERY\", tempSQLSentence_").append(cid).append("_"+sql_id).append(");\n");
+                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(tempSQLSentence_").append(cid).append("_"+sql_id).append(");\n");
                                 sqlQueryBuilder.delete(0, sqlQueryBuilder.length()).append("\"");
                             } else {
                                 sqlQueryBuilder.append(" ");
