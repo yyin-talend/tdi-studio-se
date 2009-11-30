@@ -1460,7 +1460,7 @@ public class CLASS {
     public class OracleManager extends Manager {
     	  private String[] oracleKeyWords= {
     		    	"ACCESS" ,"AUDIT","COMPRESS","DESC" , 
-    		    	"ADD","ACCESS","CONNECT","DISTINCT" ,
+    		    	"ADD","CONNECT","DISTINCT" ,
     		    	"ALL","BY","CREATE","DROP",
     		    	"ALTER","CHAR","CURRENT","ELSE",
     		    	"AND","CHECK","DATE","EXCLUSIVE",
@@ -1681,6 +1681,36 @@ public class CLASS {
     }
     
     public class SybaseManager extends Manager {
+    	 private String[] sybaseKeyWords= {
+    			 "ACCESS" ,"AUDIT","COMPRESS","DESC" , 
+ 		    	"ADD","CONNECT","COUNT","DISTINCT" ,
+ 		    	"ALL","BY","CREATE","DROP",
+ 		    	"ALTER","CHAR","CURRENT","ELSE",
+ 		    	"AND","CHECK","DATE","EXCLUSIVE",
+ 		    	"ANY","CLUSTER","DECIMAL","	EXISTS",
+ 		    	"AS","COLUMN","DEFAULT","FILE",
+ 		    	"ASC","COMMENT","DELETE","FLOAT",
+ 		    	"FOR","LONG","PCTFREE","SUCCESSFUL",
+ 		    	"FROM","FALSE","MAXEXTENTS","PRIOR","SYNONYM",
+ 		    	"GRANT","MINUS","PRIVILEGES","SYSDATE",
+ 		    	"GROUP","MODE","PUBLIC","TABLE",
+ 		    	"HAVING","MODIFY","RAW","THEN",
+ 		    	"IDENTIFIED","NETWORK","RENAME","TO",
+ 				"IMMEDIATE","NOAUDIT","RESOURCE","TRIGGER",
+ 				"IN","NOCOMPRESS","REVOKE","UID",
+ 				"INCREMENT","NOT","ROW","UNION",
+ 				"INDEX","NOWAIT","ROWID","UNIQUE",
+ 				"INITIAL","NULL","ROWNUM","UPDATE",
+ 				"INSERT","NUMBER","ROWS","USER",
+ 				"INTEGER","OF","SELECT","VALIDATE",
+ 				"INTERSECT","OFFLINE","SESSION","VALUES",
+ 				"INTO","ON","SET","VARCHAR",
+ 				"IS","ONLINE","SHARE",
+ 				"LEVEL","OPTION","SIZE","VIEW",
+ 				"LIKE","OR","SMALLINT","WHENEVER",
+ 				"LOCK","ORDER","START","WHERE","WITH"
+    			 
+    	 };
         public SybaseManager(String cid) {
             super(cid);
         }
@@ -1693,6 +1723,26 @@ public class CLASS {
         protected String getRProtectedChar() {
             return "";
         }
+        protected boolean isSybaseKeyword (String keyword) {
+            for (int i=0 ; i < sybaseKeyWords.length ; i++){
+                if (sybaseKeyWords[i].equalsIgnoreCase(keyword)) {
+                	return true;
+                }
+            }
+        	return false;
+        }
+        protected String getLProtectedChar(String keyword) {
+        	if (isSybaseKeyword(keyword)){
+        		return "\\\"";
+        	}
+        	return getLProtectedChar();
+        }
+        protected String getRProtectedChar(String keyword) {
+        	if (isSybaseKeyword(keyword)){
+        		return "\\\"";
+        	}
+        	return getRProtectedChar();
+        }  
         protected String setNullable(boolean nullable) {
             if(!nullable) {
                 return " not null ";
