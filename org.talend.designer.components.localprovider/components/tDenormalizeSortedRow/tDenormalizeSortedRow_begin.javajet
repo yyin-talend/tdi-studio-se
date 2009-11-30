@@ -85,7 +85,7 @@ boolean  flag_<%=cid%> = true;//flag for the encounter of first row.
 	for(String columnName : groupColumns){
 		String type = typesMap.get(columnName);
 %><%=type %> group_<%=columnName %>_<%=cid %><%
-if(("String").equals(type) || ("Object").equals(type) || ("java.util.Date").equals(type) || ("byte[]").equals(type)){%>=null<%}else if(("boolean").equals(type) || ("Boolean").equals(type)){%>=false<%}else{%>=(<%=type %>)0<%}%>;
+if(("String").equals(type) || ("Object").equals(type) || ("java.util.Date").equals(type) || ("byte[]").equals(type) || "BigDecimal".equals(type) || "Double".equals(type) || "Float".equals(type) || "Long".equals(type)){%>=null<%}else if(("boolean").equals(type) || ("Boolean").equals(type)){%>=false<%}else{%>=(<%=type %>)0<%}%>;
 <%	}
 	
 	//gen denormalize variable
