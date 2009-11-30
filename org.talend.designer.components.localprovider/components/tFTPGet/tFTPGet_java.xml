@@ -169,7 +169,7 @@ COMPATIBILITY="ALL"
       FIELD="CHECK"
       NUM_ROW="120"
     >
-      <DEFAULT>false</DEFAULT>
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>    
   </PARAMETERS>
   

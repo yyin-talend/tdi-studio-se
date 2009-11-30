@@ -25,7 +25,6 @@
 	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
 	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
-	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
     String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
     String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
@@ -62,7 +61,6 @@ if(useProxy){
         props_<%=cid%>.put("java.net.socks.username", <%=proxyUser %>);
         props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);        
 <%}%>
-	try{
 <%
 if(sftp){ // *** sftp *** //
 %>	
@@ -200,13 +198,7 @@ if(sftp){ // *** sftp *** //
                             globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
                             
                         }
-<%
-        				if(("true").equals(dieOnError)){
-%>
-                        	throw e;
-<%
-						}
-%>
+				throw e;
             }
             count++;
         }
@@ -389,13 +381,7 @@ if(sftp){ // *** sftp *** //
 	} catch (com.enterprisedt.net.ftp.FTPException e) {
 		msg_<%=cid%>.add("file [" + remoteFileName + "] download unsuccessfully.");
         globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
-<%
-        if(("true").equals(dieOnError)){
-%>
-			throw e;
-<%
-        }
-%>
+		throw e;
     }
             count++;
         }

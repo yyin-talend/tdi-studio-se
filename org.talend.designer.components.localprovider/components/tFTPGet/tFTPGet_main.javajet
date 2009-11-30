@@ -15,6 +15,7 @@
 	String cid = node.getUniqueName();
 	String overwrite=ElementParameterParser.getValue(node, "__OVERWRITE__");
 	String sftpoverwrite=ElementParameterParser.getValue(node, "__SFTPOVERWRITE__");
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
@@ -30,7 +31,7 @@
 		sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	}
 %>
-
+	try{
 		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
     	String dir_<%=cid %> = root_<%=cid %>;
     	String mask_<%=cid %> = maskStr_<%=cid%>.replaceAll("\\\\", "/") ;  
@@ -51,4 +52,16 @@
         	}
         }
    		getter_<%=cid %>.chdir(root_<%=cid %>);
-
+ 	}catch(Exception e){
+<%
+        if(("true").equals(dieOnError)){
+%>
+            throw(e);
+<%
+		}else{
+%>
+			System.err.print(e.getMessage());
+<%
+		}
+%>
+	}

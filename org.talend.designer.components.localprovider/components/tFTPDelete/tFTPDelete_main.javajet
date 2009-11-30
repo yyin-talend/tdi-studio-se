@@ -13,6 +13,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String targetType = ElementParameterParser.getValue(node, "__TARGET_TYPE__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
@@ -28,9 +29,11 @@
 	}else{
 		sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	}
+%>
+try{
+<%
 	if(sftp){
 %>
-
 
    globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
    java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
@@ -122,3 +125,16 @@
    	}
    ftp_<%=cid %>.chdir(root<%=cid %>);
 <%}%>
+ 	}catch(Exception e){
+<%
+        if(("true").equals(dieOnError)){
+%>
+            throw(e);
+<%
+		}else{
+%>
+			System.err.print(e.getMessage());
+<%
+		}
+%>
+	}
