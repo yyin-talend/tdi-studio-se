@@ -41,12 +41,29 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:INFORMIX"
     />
-
+    
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tInformixConnection"
+      NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />  
+    
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -54,8 +71,9 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"1533"</DEFAULT>
     </PARAMETER>
@@ -63,7 +81,7 @@
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -73,8 +91,9 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SID"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -82,9 +101,10 @@
     <PARAMETER
       NAME="DBSERVER"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REQUIRED="true"
       REPOSITORY_VALUE="DATASOURCE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>       
@@ -94,6 +114,7 @@
       FIELD="TEXT"
       NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -103,6 +124,7 @@
       FIELD="TEXT"
       NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -163,7 +185,8 @@
 	<PARAMETER
       NAME="USE_TRANSACTION"
       FIELD="CHECK"
-      NUM_ROW="10"      
+      NUM_ROW="10"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >       
       <DEFAULT>true</DEFAULT>
     </PARAMETER>   

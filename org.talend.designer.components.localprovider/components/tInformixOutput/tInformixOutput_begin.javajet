@@ -56,7 +56,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	
-	boolean useExistingConnection = false; // dose not active this function
+	boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
 	
 	boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
 	
@@ -72,18 +72,6 @@ int insertedCount_<%=cid%>=0;
 
 String tableName_<%=cid%> = <%=table%>;
 boolean whetherReject_<%=cid%> = false;
-<%
-if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
-    %>
-    String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%>;
-    <%
-} else {
-    %>
-    String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%> + ";" + <%=dbproperties%>;
-    <%
-}
-%>
-
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
@@ -126,10 +114,33 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
     }
 }
 %> 
-java.lang.Class.forName("com.informix.jdbc.IfxDriver");
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+	if (useExistingConnection) {
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String connectionName = "conn_" + connection;
+%>
+	java.sql.Connection conn_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
+<%
+	} else {
+
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+    String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%>;
+<%
+		} else {
+%>
+    String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%> + ";" + <%=dbproperties%>;
+<%
+		}
+%>
+	java.lang.Class.forName("com.informix.jdbc.IfxDriver");
+	String dbUser_<%=cid %> = <%=dbuser%>;
+	String dbPwd_<%=cid %> = <%=dbpwd%>;
+	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+
+<%
+	}
+%>
 
 <%if (useTransaction) {
 %>

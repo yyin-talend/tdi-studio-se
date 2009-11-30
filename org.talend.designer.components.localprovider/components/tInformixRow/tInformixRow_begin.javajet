@@ -21,26 +21,36 @@ imports="
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
+    
+    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+    
+	if (useExistingConnection) {
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String connectionName = "conn_" + connection;
 %>
-java.lang.Class.forName("com.informix.jdbc.IfxDriver");
+	java.sql.Connection conn_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
+<%
+	} else {
+%>
+	java.lang.Class.forName("com.informix.jdbc.IfxDriver");
 
 <%
-if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
-    %>
-    String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%>;
-    <%
-} else {
-    %>
-    String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%> + ";" + <%=dbproperties%>;
-    <%
-}
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
-
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
-
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-
+    String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%>;
+<%
+		} else {
+%>
+    String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%> + ";" + <%=dbproperties%>;
+<%
+		}
+%>
+	String dbUser_<%=cid %> = <%=dbuser%>;
+	String dbPwd_<%=cid %> = <%=dbpwd%>;
+	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+	}
+%>
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
 
 boolean whetherReject_<%=cid%> = false;
