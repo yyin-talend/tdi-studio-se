@@ -652,9 +652,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void moveObject(IRepositoryObject objToMove, IPath targetPath, IPath... sourcePath) throws PersistenceException,
             BusinessException {
         checkAvailability(objToMove);
-        Item item = objToMove.getProperty().getItem();
-        Project project = new Project(projectManager.getProject(item));
-        checkFileNameAndPath(project, item, RepositoryConstants.getPattern(objToMove.getType()), targetPath, false);
+        // avoid to check the name, since it's only one object moved, from one folder to another one, of course the name
+        // don't exist already.
+
+        // Item item = objToMove.getProperty().getItem();
+        // Project project = new Project(projectManager.getProject(item));
+        // checkFileNameAndPath(project, item, RepositoryConstants.getPattern(objToMove.getType()), targetPath, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, targetPath);
         // i18n
         // log.debug("Move [" + objToMove + "] to \"" + path + "\".");
@@ -810,7 +813,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     public List<IRepositoryObject> getAllVersion(Project project, String id, String folderPath, ERepositoryObjectType type)
             throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getAllVersion(project, id);
+        return this.repositoryFactoryFromProvider.getAllVersion(project, id, folderPath, type);
     }
 
     /*
@@ -837,7 +840,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public IRepositoryObject getLastVersion(String id) throws PersistenceException {
-
         IRepositoryObject lastRefVersion = getLastRefVersion(projectManager.getCurrentProject(), id);
         return lastRefVersion;
 

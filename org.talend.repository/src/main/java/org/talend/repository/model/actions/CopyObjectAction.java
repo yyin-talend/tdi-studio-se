@@ -13,8 +13,6 @@
 package org.talend.repository.model.actions;
 
 import org.eclipse.core.runtime.IPath;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
@@ -59,23 +57,23 @@ public class CopyObjectAction {
 
         // Cannot move logically deleted objects :
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        try {
-            if (objectToCopy != null && objectToCopy.getId() == null) {
-                return false;
-            }
-            // Cannot copy for refProject
-            // if (objectToCopy != null && factory.getStatus(objectToCopy) == ERepositoryStatus.READ_ONLY) {
-            // return false;
-            // }
-            objectToCopy = factory.getLastVersion(objectToCopy.getId());
-            if (objectToCopy == null || factory.getStatus(objectToCopy) == ERepositoryStatus.DELETED) {
-                return false;
-            }
-
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
+        // try {
+        if (objectToCopy != null && objectToCopy.getId() == null) {
             return false;
         }
+        // Cannot copy for refProject
+        // if (objectToCopy != null && factory.getStatus(objectToCopy) == ERepositoryStatus.READ_ONLY) {
+        // return false;
+        // }
+        // objectToCopy = factory.getLastVersion(objectToCopy.getId());
+        if (objectToCopy == null || factory.getStatus(objectToCopy) == ERepositoryStatus.DELETED) {
+            return false;
+        }
+
+        // } catch (PersistenceException e) {
+        // ExceptionHandler.process(e);
+        // return false;
+        // }
 
         // Cannot copy system routines:
         if (objectToCopy.getType() == ERepositoryObjectType.ROUTINES) {

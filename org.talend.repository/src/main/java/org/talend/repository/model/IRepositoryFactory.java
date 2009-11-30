@@ -112,6 +112,9 @@ public interface IRepositoryFactory {
      */
     public List<IRepositoryObject> getAllVersion(Project project, String id) throws PersistenceException;
 
+    public List<IRepositoryObject> getAllVersion(Project project, String id, String relativeFolder, ERepositoryObjectType type)
+            throws PersistenceException;
+
     /**
      * Returns last version of an object given its id.
      * 

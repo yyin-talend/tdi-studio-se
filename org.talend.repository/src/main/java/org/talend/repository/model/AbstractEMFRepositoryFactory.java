@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -228,21 +230,43 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
+    Map<String, String> lastFolderForItemMap = new HashMap<String, String>();
+
+    Map<String, ERepositoryObjectType> lastRepositoryTypeForItemMap = new HashMap<String, ERepositoryObjectType>();
+
+    protected void addToHistory(String id, ERepositoryObjectType itemType, String path) {
+        lastFolderForItemMap.put(id, path);
+        lastRepositoryTypeForItemMap.put(id, itemType);
+    }
+
     protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
-        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
-                ERepositoryObjectType.SVG_BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
-                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_SAPCONNECTIONS,
-                ERepositoryObjectType.SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
-                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
-                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_EXCEL,
-                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
-                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
+        if (lastFolderForItemMap.containsKey(id)) {
+            ERepositoryObjectType itemType = lastRepositoryTypeForItemMap.get(id);
+            String currentPath = lastFolderForItemMap.get(id);
+            Object fullFolder = getFullFolder(project, itemType, currentPath);
+
+            if (fullFolder != null) {
+                List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, fullFolder, id, itemType, true, false,
+                        true);
+                toReturn.addAll(itemsFound);
+                return toReturn;
+            }
+        }
+
+        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.PROCESS,
+                ERepositoryObjectType.JOBLET, ERepositoryObjectType.METADATA_CONNECTIONS,
+                ERepositoryObjectType.METADATA_SAPCONNECTIONS, ERepositoryObjectType.SQLPATTERNS,
+                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
+                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
+                ERepositoryObjectType.METADATA_FILE_EXCEL, ERepositoryObjectType.METADATA_FILE_LDIF,
+                ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
                 ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
-                ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.JOBLET,
-                ERepositoryObjectType.METADATA_FILE_EBCDIC, ERepositoryObjectType.METADATA_FILE_RULES,
-                ERepositoryObjectType.METADATA_MDMCONNECTION };// feature6484
+                ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.METADATA_FILE_EBCDIC,
+                ERepositoryObjectType.METADATA_FILE_RULES, ERepositoryObjectType.METADATA_MDMCONNECTION,
+                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.SVG_BUSINESS_PROCESS,
+                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.SNIPPETS };
         // added
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
@@ -250,6 +274,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, folder, id, repositoryObjectType,
                         allVersion, true, true);
                 if (!itemsFound.isEmpty()) {
+                    addToHistory(id, repositoryObjectType, itemsFound.get(0).getProperty().getItem().getState().getPath());
                     toReturn.addAll(itemsFound);
                     // all items from the same id are always in the same folder
                     // as we shouldn't find any other item with the same id in another folder.
@@ -645,33 +670,41 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         property.setMaxInformationLevel(maxLevel);
     }
 
-    public Property getUptodateProperty(Project project, Property property) throws PersistenceException {
-        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(property.getItem());
-
+    private Object getFullFolder(Project project, ERepositoryObjectType itemType, String path) throws PersistenceException {
         Object folder = getFolder(project, itemType);
+        if (folder == null) {
+            return null;
+        }
         Object fullFolder;
-
-        if (folder == null)
-            return property; // we do not support the top/tdq folders support
-
         if (folder instanceof IFolder) {
             fullFolder = (IFolder) getFolder(project, itemType);
-            fullFolder = ((IFolder) fullFolder).getFolder(new Path(property.getItem().getState().getPath()));
+            fullFolder = ((IFolder) fullFolder).getFolder(new Path(path));
         } else {
             // FolderItem
-            if (!"".equals(property.getItem().getState().getPath())) {
+            if (!"".equals(path)) {
                 // MOD mzhao feature 9207
                 if (folder == null) {
-                    fullFolder = ResourceModelUtils.getProject(project).getFolder(
-                            new Path(property.getItem().getState().getPath()));
+                    fullFolder = ResourceModelUtils.getProject(project).getFolder(new Path(path));
                 } else {
                     fullFolder = this.getFolderHelper(project.getEmfProject()).getFolder(
-                            ((FolderItem) folder).getProperty().getLabel() + "/" + property.getItem().getState().getPath());
+                            ((FolderItem) folder).getProperty().getLabel() + "/" + path);
                 }
             } else {
                 fullFolder = folder;
             }
         }
+        return fullFolder;
+    }
+
+    public Property getUptodateProperty(Project project, Property property) throws PersistenceException {
+
+        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(property.getItem());
+
+        Object fullFolder = getFullFolder(project, itemType, property.getItem().getState().getPath());
+        if (fullFolder == null) {
+            return null;
+        }
+
         List<IRepositoryObject> allVersion;
         if (fullFolder != null) {
             allVersion = getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true, false, true);

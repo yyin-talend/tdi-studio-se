@@ -74,20 +74,6 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         ILaunchConfiguration[] historyList = getHistory();
         ILaunchConfiguration[] favoriteList = getFavorites();
 
-        List<IRepositoryObject> allVersion = null;
-        IRepositoryObject[] allVersionArray = null;
-        try {
-            if (factory != null) {
-                allVersion = factory.getAll(ERepositoryObjectType.PROCESS);
-                if (allVersion != null && allVersion.size() > 0) {
-                    allVersionArray = new IRepositoryObject[allVersion.size()];
-                    allVersionArray = allVersion.toArray(allVersionArray);
-                }
-            }
-        } catch (PersistenceException e1) {
-            ExceptionHandler.process(e1);
-        }
-
         // Add favorites
         int accelerator = 1;
         accelerator = addToMenu(menu, favoriteList, accelerator);
@@ -98,7 +84,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         }
 
         // Add history launches next
-        addToMenu(menu, historyList, accelerator, allVersionArray);
+        addToMenu(menu, historyList, accelerator);
     }
 
     private int addToMenu(Menu menu, ILaunchConfiguration[] launchList, int accelerator, IRepositoryObject... allVersion) {
@@ -217,25 +203,12 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
      */
     @Override
     protected ILaunchConfiguration getLastLaunch() {
-        List<IRepositoryObject> allVersion = null;
-        IRepositoryObject[] allVersionArray = null;
-        try {
-            if (factory != null) {
-                allVersion = factory.getAll(ERepositoryObjectType.PROCESS);
-                if (allVersion != null && allVersion.size() > 0) {
-                    allVersionArray = new IRepositoryObject[allVersion.size()];
-                    allVersionArray = allVersion.toArray(allVersionArray);
-                }
-            }
-        } catch (PersistenceException e1) {
-            ExceptionHandler.process(e1);
-        }
         LaunchHistory history = getLaunchConfigurationManager().getLaunchHistory(getLaunchGroupIdentifier());
         if (history != null) {
             try {
                 ILaunchConfiguration[] filterConfigs = history.getCompleteLaunchHistory();
                 for (ILaunchConfiguration launchConfiguration : filterConfigs) {
-                    if (isCurrentProject(launchConfiguration) && checkItemExisted(launchConfiguration, allVersionArray)) {
+                    if (isCurrentProject(launchConfiguration) && checkItemExisted(launchConfiguration)) {
                         return launchConfiguration;
                     }
                 }

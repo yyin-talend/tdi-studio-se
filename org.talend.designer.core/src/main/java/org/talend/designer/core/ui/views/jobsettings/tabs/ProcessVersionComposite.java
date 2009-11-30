@@ -54,9 +54,11 @@ import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.i18n.Messages;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.ui.action.OpenExistVersionProcessAction;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -163,8 +165,12 @@ public class ProcessVersionComposite extends AbstractTabComposite {
                         .getParentRepositoryNodeFromSelection(repositoryObject);
 
                 try {
+                    Project project = ProjectManager.getInstance().getProject(repositoryObject.getProperty());
+
                     List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
-                            repositoryObject.getId());
+                            new org.talend.core.model.general.Project(project), repositoryObject.getId(),
+                            repositoryObject.getProperty().getItem().getState().getPath(),
+                            ERepositoryObjectType.getItemType(repositoryObject.getProperty().getItem()));
                     Collections.sort(allVersion, new IRepositoryObjectComparator());
                     Object[] objects = new Object[allVersion.size()];
                     for (int i = 0; i < objects.length; i++) {
