@@ -435,8 +435,13 @@ public class Node extends Element implements INode {
         }
 
         size = new Dimension();
-        size.height = getIcon32().getImageData().height;
-        size.width = getIcon32().getImageData().width;
+        if (getIcon32() != null) {
+            size.height = getIcon32().getImageData().height;
+            size.width = getIcon32().getImageData().width;
+        } else {
+            size.height = DEFAULT_SIZE;
+            size.width = DEFAULT_SIZE;
+        }
     }
 
     public IProcess getProcess() {
