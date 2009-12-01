@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -82,8 +81,6 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private List<IComponent> userComponentList = null;
 
-    private Set<String> usedInRef = null;
-
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
     // keep a list of the current provider for the selected component, to have the family translation
@@ -124,6 +121,7 @@ public class ComponentsFactory implements IComponentsFactory {
             return true;
         }
 
+        List<ComponentSetting> settingsFromCompName = new ArrayList<ComponentSetting>();
         // here we just check if the component is visible somewhere in the settings.
         // if it's visible in any category, we will load the component
         // if the component is unknown (new component?), we will load also
@@ -131,45 +129,69 @@ public class ComponentsFactory implements IComponentsFactory {
         // to avoid any problem, we also load by default the category named "Technical".
         for (ComponentSetting componentSetting : getComponentsFromProject()) {
             if (componentSetting.getName().equals(componentName)) {
-                if (componentSetting.isHidden()) {
-                    if (isUsedInRefProjects(componentName)) {
-                        visible = Boolean.TRUE;
-                        componentSetting.setHidden(false);
-                    } else {
-                        visible = Boolean.FALSE;
-                    }
-                } else {
-                    return true;
-                }
+                settingsFromCompName.add(componentSetting);
+                // if (componentSetting.isHidden()) {
+                // // hide component only if hidden in all projects
+                // if (manager.getReferencedProjects(manager.getCurrentProject()).size() > 0
+                // && isHiddenInRefProjects(componentName)) {
+                // visible = Boolean.FALSE;
+                // } else {
+                // visible = Boolean.TRUE;
+                // componentSetting.setHidden(false);
+                // }
+                // } else {
+                // return true;
+                // }
                 if ("Technical".equals(componentSetting.getFamily())) { //$NON-NLS-1$
                     return true;
                 }
             }
         }
+
+        // load components those visible in any category
+        int hideCount = 0;
+        for (ComponentSetting componentSetting : settingsFromCompName) {
+            if (componentSetting.isHidden()) {
+                // hide component only if hidden in all projects
+                if (isHiddenInRefProjects(componentSetting)) {
+                    hideCount++;
+                } else {
+                    visible = Boolean.TRUE;
+                    componentSetting.setHidden(false);
+                }
+            } else {
+                visible = Boolean.TRUE;
+            }
+        }
+        if (settingsFromCompName.size() > 0 && hideCount == settingsFromCompName.size()) {
+            visible = Boolean.FALSE;
+        }
+
         return visible;
     }
 
-    private boolean isUsedInRefProjects(String componentName) {
-        if (componentName == null) {
+    private boolean isHiddenInRefProjects(ComponentSetting settingInMain) {
+        if (settingInMain == null) {
             return false;
         }
-        Set<String> componentsUsed = getComponentRefUsed();
-        for (String name : componentsUsed) {
-            if (componentName.equals(name)) {
-                return true;
+        int hiddenCount = 0;
+        ProjectManager manager = ProjectManager.getInstance();
+        List<Project> referencedProjects = manager.getReferencedProjects();
+        for (Project curProject : referencedProjects) {
+            List<ComponentSetting> componentsSettings = (List<ComponentSetting>) curProject.getEmfProject()
+                    .getComponentsSettings();
+            for (ComponentSetting setting : componentsSettings) {
+                if (setting.isHidden() && setting.getName().equals(settingInMain.getName())
+                        && setting.getFamily().equals(settingInMain.getFamily())) {
+                    hiddenCount++;
+                }
             }
         }
-        return false;
-    }
-
-    private Set<String> getComponentRefUsed() {
-        if (usedInRef == null) {
-            ProjectManager manager = ProjectManager.getInstance();
-            List<Project> referencedProjects = manager.getReferencedProjects();
-            Set<String> componentsUsed = ComponentUtilities.getComponentsUsedInProjects(referencedProjects, true);
-            this.usedInRef = componentsUsed;
+        if (hiddenCount == referencedProjects.size()) {
+            return true;
         }
-        return usedInRef;
+
+        return false;
     }
 
     private void init() {
@@ -186,8 +208,6 @@ public class ComponentsFactory implements IComponentsFactory {
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
 
         XsdValidationCacheManager.getInstance().load();
-
-        getComponentRefUsed();
 
         // 1. Load system components:
         loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
