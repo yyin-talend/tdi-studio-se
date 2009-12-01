@@ -2379,7 +2379,7 @@ public class Node extends Element implements INode {
                     if (JavaTypesManager.DATE.getId().equals(typevalue) || PerlTypesManager.DATE.equals(typevalue)) {
                         if (value == null || "".equals(value)) { //$NON-NLS-1$
                             String errorMessage = Messages.getString("Node.PatterErrorMessage"); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             noSchema = true;
                         }
                     }
