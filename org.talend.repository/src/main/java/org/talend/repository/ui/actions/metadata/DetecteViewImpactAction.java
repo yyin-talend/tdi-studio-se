@@ -157,11 +157,11 @@ public class DetecteViewImpactAction extends AContextualAction {
                 // schema
                 AbstractMetadataObject metadataObject = subObject.getAbstractMetadataObject();
                 if (metadataObject instanceof MetadataTable) {
-                    RepositoryUpdateManager.updateSchema((MetadataTable) metadataObject, false, isOnlySimpleShow());
+                    RepositoryUpdateManager.updateSchema((MetadataTable) metadataObject, node, false, isOnlySimpleShow());
                 } else
                 // query
                 if (metadataObject instanceof Query) {
-                    RepositoryUpdateManager.updateQuery((Query) metadataObject, false, isOnlySimpleShow());
+                    RepositoryUpdateManager.updateQuery((Query) metadataObject, node, false, isOnlySimpleShow());
                 } else
                 // sap function
                 if (metadataObject instanceof SAPFunctionUnit) {
@@ -181,10 +181,9 @@ public class DetecteViewImpactAction extends AContextualAction {
                     if (item instanceof ConnectionItem) {
                         Connection connection = ((ConnectionItem) item).getConnection();
                         if (connection instanceof DatabaseConnection) {
-                            RepositoryUpdateManager
-                                    .updateDBConnection((DatabaseConnection) connection, false, isOnlySimpleShow());
+                            RepositoryUpdateManager.updateDBConnection((ConnectionItem) item, false, isOnlySimpleShow());
                         } else {
-                            RepositoryUpdateManager.updateFileConnection(connection, false, isOnlySimpleShow());
+                            RepositoryUpdateManager.updateFileConnection((ConnectionItem) item, false, isOnlySimpleShow());
                         }
                     } else
                     // joblet

@@ -260,7 +260,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                             }
                         }
                         // update
-                        RepositoryUpdateManager.updateDBConnection(c);
+                        RepositoryUpdateManager.updateDBConnection(connectionItem);
                     }
                     factory.save(connectionItem);
                     // 0005170: Schema renamed - new name not pushed out to dependant jobs

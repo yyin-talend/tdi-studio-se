@@ -290,7 +290,7 @@ public class DelimitedFileWizard extends RepositoryWizard implements INewWizard 
                     factory.create(connectionItem, delimitedFileWizardPage0.getDestinationPath());
                 } else {
                     // update
-                    RepositoryUpdateManager.updateFileConnection(connectionItem.getConnection());
+                    RepositoryUpdateManager.updateFileConnection(connectionItem);
 
                     factory.save(connectionItem);
                     closeLockStrategy();

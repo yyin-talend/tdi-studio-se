@@ -216,7 +216,7 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
                     factory.create(connectionItem, excelFileWizardPage0.getDestinationPath());
                 } else {
                     // update
-                    RepositoryUpdateManager.updateFileConnection(connectionItem.getConnection());
+                    RepositoryUpdateManager.updateFileConnection(connectionItem);
 
                     factory.save(connectionItem);
                     closeLockStrategy();

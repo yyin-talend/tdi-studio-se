@@ -282,7 +282,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
                     factory.create(connectionItem, xmlFileWizardPage0.getDestinationPath());
                 } else {
                     // update
-                    RepositoryUpdateManager.updateFileConnection(connectionItem.getConnection());
+                    RepositoryUpdateManager.updateFileConnection(connectionItem);
 
                     factory.save(connectionItem);
                     closeLockStrategy();

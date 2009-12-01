@@ -291,7 +291,7 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
                     factory.create(connectionItem, ldifFileWizardPage0.getDestinationPath());
                 } else {
                     // update
-                    RepositoryUpdateManager.updateFileConnection(connectionItem.getConnection());
+                    RepositoryUpdateManager.updateFileConnection(connectionItem);
 
                     factory.save(connectionItem);
                     closeLockStrategy();

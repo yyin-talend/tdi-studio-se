@@ -26,6 +26,7 @@ import org.eclipse.emf.common.ui.celleditor.ExtendedComboBoxCellEditor;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -62,8 +63,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -72,17 +76,23 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.SQLPatternUtils;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 
@@ -218,7 +228,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
                     String label = repositoryObject.getLabel();
 
-                    refreshComboContent(tableViewer);
+                    refreshComboContent(tableViewer, false);
                     SQLPatternInfor infor = null;
                     for (SQLPatternInfor sqlPatternInfor : comboContent) {
                         if (sqlPatternInfor.getCompoundId().equals(id)) {
@@ -255,7 +265,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                         map.put(SQLPatternUtils.SQLPATTERNLIST, sqlPatternInfor.getCompoundId());
                         executeCommand(new Command() {
                         });
-                        refreshComboContent(tableViewer);
+                        refreshComboContent(tableViewer, false);
                         updateCodeText();
                     }
                     tableViewer.refresh();
@@ -267,7 +277,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         List<Map> tableContent = getTableInput(element);
         tableViewer.setInput(tableContent);
 
-        refreshComboContent(tableViewer);
+        refreshComboContent(tableViewer, false);
 
         dynamicComboBoxCellEditor = new DynamicComboBoxCellEditor(table, comboContent, comboboxCellEditorLabelProvider);
         tableViewer.setCellEditors(new CellEditor[] { dynamicComboBoxCellEditor });
@@ -284,7 +294,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     map.put(SQLPatternUtils.SQLPATTERNLIST, sqlPatternInfor.getCompoundId());
                     tableInput.add(map);
 
-                    refreshComboContent(tableViewer);
+                    refreshComboContent(tableViewer, false);
 
                     tableViewer.refresh();
                     if (!buttonRemove.isEnabled()) {
@@ -319,7 +329,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
                 if (needRefresh) {
                     refreshCode(element);
-                    refreshComboContent(tableViewer);
+                    refreshComboContent(tableViewer, false);
                     tableViewer.refresh();
                     executeCommand(new PropertyChangeCommand(element, EParameterName.SQLPATTERN_VALUE.getName(), element
                             .getElementParameter(EParameterName.SQLPATTERN_VALUE.getName()).getValue()));
@@ -343,7 +353,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 tableInput.remove(selectedElement);
                 tableInput.add(index - 1, selectedElement);
                 refreshCode(element);
-                refreshComboContent(tableViewer);
+                refreshComboContent(tableViewer, false);
                 tableViewer.refresh();
                 executeCommand(new PropertyChangeCommand(element, EParameterName.SQLPATTERN_VALUE.getName(), element
                         .getElementParameter(EParameterName.SQLPATTERN_VALUE.getName()).getValue()));
@@ -366,7 +376,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 tableInput.remove(selectedElement);
                 tableInput.add(index + 1, selectedElement);
                 refreshCode(element);
-                refreshComboContent(tableViewer);
+                refreshComboContent(tableViewer, false);
                 tableViewer.refresh();
                 executeCommand(new PropertyChangeCommand(element, EParameterName.SQLPATTERN_VALUE.getName(), element
                         .getElementParameter(EParameterName.SQLPATTERN_VALUE.getName()).getValue()));
@@ -655,7 +665,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * @param tableViewer
      * @param legalParameters
      */
-    private void refreshComboContent(final TableViewer tableViewer) {
+    private void refreshComboContent(final TableViewer tableViewer, final boolean modifySQL) {
         Display.getDefault().syncExec(new Runnable() {
 
             /*
@@ -670,7 +680,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 comboContent.clear();
 
                 List<Map> tableInput = (List<Map>) tableViewer.getInput();
-                List<SQLPatternInfor> content = getAllSqlPatterns();
+                List<SQLPatternInfor> content = getAllSqlPatterns(tableInput, modifySQL);
                 for (Map map : tableInput) {
                     String id = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
                     SQLPatternInfor unusedSqlPatternInfor = null;
@@ -695,7 +705,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         buttonRemove.setEnabled(((List<Map>) tableViewer.getInput()).size() > 0);
     }
 
-    private List<SQLPatternInfor> getAllSqlPatterns() {
+    private List<SQLPatternInfor> getAllSqlPatterns(List<Map> tableInput, boolean modifySQL) {
 
         IElementParameter elementParam = element.getElementParameter(EParameterName.SQLPATTERN_DB_NAME.getName());
         if (elementParam == null) {
@@ -705,18 +715,45 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         // String dbName = (String) elementParam.getValue();
         List<SQLPatternInfor> patternInfor = new ArrayList<SQLPatternInfor>();
         try {
-
-            List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.SQLPATTERNS, false);
+            List<IRepositoryObject> list = null;
+            if (isItemIndexChecked() && modifySQL) {
+                List<RelationshipItemBuilder.Relation> relations = new ArrayList<RelationshipItemBuilder.Relation>();
+                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                List<IRepositoryObject> updateList = new ArrayList<IRepositoryObject>();
+                for (Map map : tableInput) {
+                    String id = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
+                    relations.addAll(RelationshipItemBuilder.getInstance().getItemsRelatedTo(id, ItemCacheManager.LATEST_VERSION,
+                            RelationshipItemBuilder.SQLPATTERN_RELATION));
+                }
+                for (RelationshipItemBuilder.Relation relation : relations) {
+                    try {
+                        IRepositoryObject obj = factory.getLastVersion(relation.getId());
+                        if (obj != null) {
+                            updateList.add(obj);
+                        }
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+                list = updateList;
+            } else {
+                list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
+                        ERepositoryObjectType.SQLPATTERNS, false);
+            }
             for (IRepositoryObject repositoryObject : list) {
-                SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
-                // disable this test as there is now only Generic ELT components
-                // if (item.getEltName().equals(dbName)) {
-                patternInfor.add(new SQLPatternInfor(item.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
-                        + item.getProperty().getLabel(), item.getProperty().getLabel()));
-                // }
+                Item item = repositoryObject.getProperty().getItem();
+                if (item instanceof SQLPatternItem) {
+                    SQLPatternItem sqlitem = (SQLPatternItem) repositoryObject.getProperty().getItem();
+                    // disable this test as there is now only Generic ELT components
+                    // if (item.getEltName().equals(dbName)) {
+                    patternInfor.add(new SQLPatternInfor(sqlitem.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
+                            + sqlitem.getProperty().getLabel(), sqlitem.getProperty().getLabel()));
+                    // }
+                }
+
             }
         } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
 
         return patternInfor;
@@ -1028,7 +1065,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      */
     public void resourceChanged(IResourceChangeEvent event) {
         if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-            refreshComboContent(this.tableViewer);
+            refreshComboContent(this.tableViewer, true);
             refresh();
         }
     }
@@ -1088,6 +1125,12 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             return compoundId;
         }
 
+    }
+
+    public boolean isItemIndexChecked() {
+        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+        IPreferenceStore preferenceStore = designerCoreService.getDesignerCorePreferenceStore();
+        return preferenceStore.getBoolean(ITalendCorePrefConstants.ITEM_INDEX);
     }
 
 }

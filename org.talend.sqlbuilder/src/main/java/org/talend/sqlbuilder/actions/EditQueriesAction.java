@@ -78,7 +78,7 @@ public class EditQueriesAction extends AContextualAction {
 
         Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
-        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, node);
 
         connParameters.setNodeReadOnly(false);
         connParameters.setFromRepository(true);
