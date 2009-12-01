@@ -92,7 +92,24 @@ public class FooterComposite extends Composite {
         }
 
         statusBar = new StatusBar(this, SWT.NONE);
-        
+
+        Button applyButton = new Button(this, SWT.NONE);
+        applyButton.setEnabled(!mapperManager.componentIsReadOnly());
+        applyButton.setText(Messages.getString("FooterComposite.button.APPLY")); //$NON-NLS-1$
+        FormData applyFormData = new FormData();
+        applyFormData.width = 100;
+        applyButton.setLayoutData(applyFormData);
+        applyButton.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                uiManager.closeMapper(SWT.APPLICATION_MODAL);
+            }
+
+        });
+
         Button okButton = new Button(this, SWT.NONE);
         okButton.setEnabled(!mapperManager.componentIsReadOnly());
         okButton.setText(Messages.getString("FooterComposite.button.OK")); //$NON-NLS-1$
@@ -145,10 +162,9 @@ public class FooterComposite extends Composite {
         cancelFormData.width = 100;
         cancelButton.setLayoutData(cancelFormData);
 
-        // applyFormData.right = new FormAttachment(100);
-        // cancelFormData.right = new FormAttachment(applyButton, -5);
         cancelFormData.right = new FormAttachment(100, -5);
         okFormData.right = new FormAttachment(cancelButton, -5);
+        applyFormData.right = new FormAttachment(okButton, -5);
 
     }
 

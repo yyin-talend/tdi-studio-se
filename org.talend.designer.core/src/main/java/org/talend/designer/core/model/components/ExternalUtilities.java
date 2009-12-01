@@ -36,7 +36,7 @@ public class ExternalUtilities {
             return null;
         }
         externalNode.setExternalData(node.getExternalData());
-
+        externalNode.setOriginalNode(node);
         IODataComponentContainer inAndOut = new IODataComponentContainer();
 
         List<IODataComponent> inputs = inAndOut.getInputs();

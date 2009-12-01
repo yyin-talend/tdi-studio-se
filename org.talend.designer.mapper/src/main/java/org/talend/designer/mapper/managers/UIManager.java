@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -49,6 +51,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
@@ -67,6 +71,8 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -80,6 +86,9 @@ import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.abstractmap.ui.visualmap.link.PointLinkDescriptor;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
@@ -649,6 +658,7 @@ public class UIManager extends AbstractUIManager {
     public void closeMapper(int response) {
 
         boolean save = true;
+
         for (DataMapTableView dataMapTableView : getInputsTablesView()) {
             dataMapTableView.notifyFocusLost();
         }
@@ -658,8 +668,8 @@ public class UIManager extends AbstractUIManager {
         for (DataMapTableView dataMapTableView : getVarsTablesView()) {
             dataMapTableView.notifyFocusLost();
         }
-
-        if (response == SWT.OK && mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(false)) {
+        if ((response == SWT.OK || response == SWT.APPLICATION_MODAL)
+                && mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(false)) {
 
             save = MessageDialog.openConfirm(getMapperContainer().getShell(), Messages
                     .getString("UIManager.SaveDespiteErrors.Title"), //$NON-NLS-1$
@@ -671,7 +681,21 @@ public class UIManager extends AbstractUIManager {
             prepareClosing(response);
 
             if (parent instanceof Shell) {
-                ((Shell) parent).close();
+                if (response == SWT.OK || response == SWT.CANCEL) {
+                    ((Shell) parent).close();
+                } else {
+                    IExternalNode externalNode = mapperManager.getAbstractMapComponent().getExternalNode();
+                    IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+
+                    if (externalNode != null && (part instanceof AbstractMultiPageTalendEditor)) {
+                        INode node = externalNode.getOriginalNode();
+                        if (node != null && node instanceof Node) {
+                            Command cmd = new ExternalNodeChangeCommand((Node) node, externalNode);
+                            CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
+                            cmdStack.execute(cmd);
+                        }
+                    }
+                }
             }
         }
     }
@@ -692,7 +716,7 @@ public class UIManager extends AbstractUIManager {
 
         saveCurrentUIProperties();
 
-        if (response == SWT.OK) {
+        if (response == SWT.OK || response == SWT.APPLICATION_MODAL) {
             createVisualMapImage();
             closeWithoutPrompt = true;
             // see bug 7471
