@@ -14,9 +14,10 @@ String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 
 boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
-%>	
+%>
+java.io.FileOutputStream out<%=cid%> = null;
 try {
-    java.io.FileOutputStream out<%=cid%> = new java.io.FileOutputStream(fileNewName_<%=cid%>, <%=isAppend%>);
+    out<%=cid%> = new java.io.FileOutputStream(fileNewName_<%=cid%>, <%=isAppend%>);
 <% if(isAppend){%>
     try{
         //to check if the file-to-write is an existing-valid ARFF file
@@ -36,6 +37,9 @@ try {
 } catch (java.io.IOException e) {
     // TODO Auto-generated catch block
     e.printStackTrace();
+}finally{
+	out<%=cid%>.close();
+	out<%=cid%> = null;
 }
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 
