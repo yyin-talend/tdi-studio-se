@@ -656,6 +656,9 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 commandStack = (CommandStack) editor.getAdapter(CommandStack.class);
             }
         }
+        if (commandStack == null) {
+            return;
+        }
         commandStack.execute(cmd);
     }
 
