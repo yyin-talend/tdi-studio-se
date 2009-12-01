@@ -81,8 +81,11 @@
          version="0.0.0"
          search-location="self"/>
 
-   <requires>
-      <import plugin="org.talend.repository.mdm"/>
-   </requires>
+   <plugin
+         id="org.talend.repository.mdm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
