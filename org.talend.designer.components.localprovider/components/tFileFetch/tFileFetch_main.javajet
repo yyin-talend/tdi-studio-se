@@ -69,10 +69,17 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 <%}%>
 
 
-<%if(needAuth){%>
+<%if(needAuth){
+   if ((!useProxy) && useProxyNTLM && (!"".equals(proxyDomain))){
+%>
+    client_tFileFetch_1.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, new org.apache.commons.httpclient.NTCredentials(<%=username %>, <%=password %>, new java.net.URL(<%=uri%>).getHost(), <%=proxyDomain%>));
+<%  
+   } else{
+%>
     org.apache.commons.httpclient.Credentials creds_<%=cid %> = new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, <%=password %>);
     client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, creds_<%=cid %>);
-<%}%>
+<% }
+}%>
 
 <%if(post){
 	boolean uploadFile = ("true").equals(ElementParameterParser.getValue(node,"__UPLOAD__"));
@@ -110,8 +117,11 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
     post_<%=cid %>.setRequestEntity(new org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity(parts_<%=cid %>, post_<%=cid %>.getParams()));					
 //here excute the post the method
    try{
-    client_<%=cid %>.executeMethod(post_<%=cid %>);
-    }catch(Exception e){
+    int status_<%=cid%>  = client_<%=cid %>.executeMethod(post_<%=cid %>);     
+    if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {      
+      throw new Exception("Method failed: " + post_<%=cid %>.getStatusLine());
+    }      
+   }catch(Exception e){
 <% if(("true").equals(dieOnError)){
 %>
    throw(e);
@@ -128,8 +138,12 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
             
      
 <% }else{%>   			
-    try{
-    client_<%=cid %>.executeMethod(get_<%=cid %>);
+    try{      
+      int status_<%=cid%>  = client_<%=cid %>.executeMethod(get_<%=cid %>);     
+      if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {       
+        throw new Exception("Method failed: " + get_<%=cid %>.getStatusLine());
+      }  
+    
     }catch(Exception e){
 <% if(("true").equals(dieOnError)){
 %>
