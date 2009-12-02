@@ -44,9 +44,6 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  * DOC nrousseau class global comment. Detailled comment <br/>
  * 
  */
-/**
- * DOC informix class global comment. Detailled comment
- */
 public class StatsAndLogsManager {
 
     public static final String TPREJOB = "tPrejob"; //$NON-NLS-1$
@@ -137,7 +134,6 @@ public class StatsAndLogsManager {
         IComponent commitComponent = null;
 
         String subString = null;
-        boolean useSharedConnection = false;
         /*
          * maybe, need create every of committing node for log/stat/metter.
          */
@@ -170,20 +166,6 @@ public class StatsAndLogsManager {
                     }
                 }
             }
-            IComponent connectionComponent = getConnectionComponent(process);
-            if (connectionComponent != null) {
-                connectionNode = new DataNode(connectionComponent, connectionUID);
-                connectionNode.setSubProcessStart(true);
-                connectionNode.setActivate(true);
-                // check if shared parameter exist, if yes, use it ONLY when use the project settings.
-                // name for shared connection can be always the same, as we use only when project settings is
-                // activated.
-                IElementParameter elementParameter = connectionNode.getElementParameter(EParameterName.USE_SHARED_CONNECTION
-                        .getName());
-                if (elementParameter != null && elementParameter.getName() != null) {
-                    useSharedConnection = true;
-                }
-            }
         }
 
         if (useLogs) {
@@ -197,7 +179,7 @@ public class StatsAndLogsManager {
                         basePath + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue()); //$NON-NLS-1$
             }
             if (dbFlag) {
-                if (commitNode != null && useSharedConnection) {
+                if (commitNode != null) {
                     connectionNode = addConnection(connectionNode, process, connectionUID, logsNode, nodeList, commitNode);
                 } else {
                     useNoConnectionComponentDB(logsNode, process, connectionUID);
@@ -227,7 +209,7 @@ public class StatsAndLogsManager {
                         basePath + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue()); //$NON-NLS-1$
             }
             if (dbFlag) {
-                if (commitNode != null && useSharedConnection) {
+                if (commitNode != null) {
                     connectionNode = addConnection(connectionNode, process, connectionUID, statsNode, nodeList, commitNode);
                 } else {
                     useNoConnectionComponentDB(statsNode, process, connectionUID);
@@ -250,7 +232,7 @@ public class StatsAndLogsManager {
                         basePath + process.getElementParameter(EParameterName.FILENAME_METTER.getName()).getValue());
             }
             if (dbFlag) {
-                if (commitNode != null && useSharedConnection) {
+                if (commitNode != null) {
                     connectionNode = addConnection(connectionNode, process, connectionUID, meterNode, nodeList, commitNode);
                 } else {
                     useNoConnectionComponentDB(meterNode, process, connectionUID);
@@ -306,17 +288,6 @@ public class StatsAndLogsManager {
 
     }
 
-    /**
-     * DOC zli Comment method "addConnection".
-     * 
-     * @param connectionNode
-     * @param process
-     * @param connectionUID
-     * @param dataNode
-     * @param nodeList
-     * @param commitNode
-     * @return
-     */
     private static DataNode addConnection(DataNode connectionNode, Process process, String connectionUID, DataNode dataNode,
             List<DataNode> nodeList, DataNode commitNode) {
         IElementParameter param = dataNode.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName());
@@ -334,7 +305,12 @@ public class StatsAndLogsManager {
                 String connectionComponentName = null;
                 if (OracleComponentHelper.filterOracleConnectionType(
                         (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue()).equals(dbComponent)) {//$NON-NLS-1$
-                    connectionComponentName = getComponentName(dbComponent);
+                    if (dbComponent.endsWith("Output")) { //$NON-NLS-1$
+                        String substring = dbComponent.substring(0, dbComponent.lastIndexOf("Output")); //$NON-NLS-1$
+                        connectionComponentName = substring + "Connection"; //$NON-NLS-1$
+                    } else {
+                        connectionComponentName = "tOracleConnection"; //$NON-NLS-1$
+                    }
                     component = ComponentsFactoryProvider.getInstance().get(connectionComponentName);
 
                     if (component != null) {
@@ -389,43 +365,6 @@ public class StatsAndLogsManager {
         ((List<IConnection>) dataNode.getOutgoingConnections()).add(dataConnec);
         ((List<IConnection>) commitNode.getIncomingConnections()).add(dataConnec);
         return connectionNode;
-    }
-
-    /**
-     * DOC zli Comment method "getConnectionComponent".
-     * 
-     * @param process
-     * @return
-     */
-    private static IComponent getConnectionComponent(Process process) {
-        String[] javaDbComponents = StatsAndLogsConstants.DB_OUTPUT_COMPONENTS;
-        IComponent component = null;
-        for (String dbComponent : javaDbComponents) {
-            if (OracleComponentHelper.filterOracleConnectionType(
-                    (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue()).equals(dbComponent)) {//$NON-NLS-1$
-                String connectionComponentName = getComponentName(dbComponent);
-                component = ComponentsFactoryProvider.getInstance().get(connectionComponentName);
-                break;
-            }
-        }
-        return component;
-    }
-
-    /**
-     * DOC zli Comment method "getComponentName".
-     * 
-     * @param dbComponent
-     * @return
-     */
-    private static String getComponentName(String dbComponent) {
-        String connectionComponentName;
-        if (dbComponent.endsWith("Output")) { //$NON-NLS-1$
-            String substring = dbComponent.substring(0, dbComponent.lastIndexOf("Output")); //$NON-NLS-1$
-            connectionComponentName = substring + "Connection"; //$NON-NLS-1$
-        } else {
-            connectionComponentName = "tOracleConnection"; //$NON-NLS-1$
-        }
-        return connectionComponentName;
     }
 
     /**
