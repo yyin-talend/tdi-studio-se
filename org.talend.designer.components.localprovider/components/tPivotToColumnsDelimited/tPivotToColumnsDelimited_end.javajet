@@ -52,11 +52,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        }  
 %>
     
-    out<%=cid%>.write(pivot_Keys<%=cid%>.substring(0,pivot_Keys<%=cid%>.length()-1));
+    out<%=cid%>.write(pivot_Keys<%=cid%>.substring(0,pivot_Keys<%=cid%>.length()<=0?0:pivot_Keys<%=cid%>.length()-1));
     
     out<%=cid%>.write(<%=rowSeparator%>);
 
-    for(int i = 0;i<group_Keys_Split<%=cid%>.length;i++){
+    for(int i = 0;group_Keys_Split<%=cid%>!=null && i<group_Keys_Split<%=cid%>.length;i++){
         
         out<%=cid%>.write(group_Keys_Split<%=cid%>[i]);
         
@@ -106,7 +106,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        }  
 %>
 
-    for (int i=0; i<pivot_Keys_Split<%=cid%>.length; i++) {
+    for (int i=0; pivot_Keys_Split<%=cid%>!=null && i<pivot_Keys_Split<%=cid%>.length; i++) {
 
         finalStr<%=cid%>[i+<%=groupbys.size()%>] = pivot_Keys_Split<%=cid%>[i];
 
@@ -117,7 +117,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     CsvWriter<%=cid%>.flush();
 
-    for(int i = 0;i<group_Keys_Split<%=cid%>.length;i++){
+    for(int i = 0;group_Keys_Split<%=cid%>!=null && i<group_Keys_Split<%=cid%>.length;i++){
         
         finalStr<%=cid%> = new String[rowSize<%=cid%>];
         
