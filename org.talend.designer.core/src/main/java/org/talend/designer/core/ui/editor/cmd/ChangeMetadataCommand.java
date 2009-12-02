@@ -595,6 +595,9 @@ public class ChangeMetadataCommand extends Command {
         if (curNode != null) {
             String uniqueName = ((Node) curNode).getUniqueName();
             IElementParameter dbTableElementField = curNode.getElementParameterFromField(EParameterFieldType.DBTABLE);
+            if (dbTableElementField == null) {
+                dbTableElementField = curNode.getElementParameter(EParameterName.TABLE.getName());
+            }
             changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, dbTableElementField);
             if (((Node) curNode).isELTComponent()) {
                 IElementParameter eltTablename = curNode.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$

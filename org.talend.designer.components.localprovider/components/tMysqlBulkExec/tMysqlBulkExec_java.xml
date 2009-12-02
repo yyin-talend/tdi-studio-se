@@ -134,7 +134,7 @@
       FIELD="DBTABLE"
       NUM_ROW="6"
     >
-      <DEFAULT>"employee"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

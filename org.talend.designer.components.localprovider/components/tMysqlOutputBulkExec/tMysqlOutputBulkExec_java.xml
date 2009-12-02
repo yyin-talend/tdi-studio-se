@@ -33,7 +33,7 @@
 
   <PARAMETERS>
     <PARAMETER
-      NAME="PROPERTY_DB"
+      NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="1"
@@ -104,7 +104,7 @@
       FIELD="DBTABLE"
       NUM_ROW="6"
     >
-      <DEFAULT>"employee"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>    
 
 <!-- following property should not be displayed -->

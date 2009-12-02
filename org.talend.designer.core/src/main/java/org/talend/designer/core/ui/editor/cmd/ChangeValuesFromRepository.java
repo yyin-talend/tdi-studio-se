@@ -468,16 +468,16 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             if (!metadataInput) {
                                 IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
                                         EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                                String repositoryTable;
+                                String repositoryTable = null;
                                 if (propertyName.split(":")[1].equals(EParameterName.PROPERTY_TYPE.getName())) { //$NON-NLS-1$
                                     repositoryTable = (String) repositorySchemaTypeParameter.getValue();
-                                } else {
+                                } else if (item != null) {
                                     repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
                                 if (isNotSim) {
-                                    if (UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null) {
-                                        if (!"".equals(repositoryTable)) { //$NON-NLS-1$
+                                    if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null) {
+                                        if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
                                             param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
                                                     EmfComponent.REPOSITORY);
                                             IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
@@ -498,9 +498,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         }
                                     }
                                 } else {
-                                    if (UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
+                                    if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
                                             && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 1) {
-                                        if (!"".equals(repositoryTable)) { //$NON-NLS-1$
+                                        if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
                                             param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
                                                     EmfComponent.REPOSITORY);
                                             IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
