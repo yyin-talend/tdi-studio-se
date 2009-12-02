@@ -2,6 +2,11 @@
 
 	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA"
 		COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20070312A"
+		
+		SCHEMA_AUTO_PROPAGATE="true"
+    	DATA_AUTO_PROPAGATE="false"
+    	HAS_CONDITIONAL_OUTPUTS="true"
+		
 		STARTABLE="false">
 		<SIGNATURE />
 	</HEADER>
@@ -15,7 +20,21 @@
 	</DOCUMENTATION>
 
 	<CONNECTORS>
-		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1" />
+		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="0" />
+		<CONNECTOR
+		 NAME="MAIN" 
+		 CTYPE="FLOW" 
+		 MAX_OUTPUT="1" 
+		 BASE_SCHEMA="FLOW" 
+		/>
+		<CONNECTOR
+		 NAME="REJECT"
+		 CTYPE="FLOW" 
+		 MAX_OUTPUT="1" 
+		 LINE_STYLE="2" 
+		 COLOR="FF0000" 
+		 BASE_SCHEMA="FLOW" 
+		/>
 		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0" />
 		<CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
 		<CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -4153,7 +4172,7 @@
 			REQUIRED="true">
 			<DEFAULT>true</DEFAULT>
 		</PARAMETER>
-
+		
 		<PARAMETER NAME="COMMIT_LEVEL" FIELD="TEXT" NUM_ROW="9"
 			REQUIRED="true" SHOW_IF="EXTENDINSERT == 'true'">
 			<DEFAULT>200</DEFAULT>
@@ -4218,6 +4237,40 @@
 		   NUM_ROW="70">
 		   <DEFAULT>false</DEFAULT>
 		</PARAMETER>
+		
+		<PARAMETER 
+	       NAME="RETREIVE_INSERT_ID" 
+	       FIELD="CHECK" 
+	       REQUIRED="true"
+	       SHOW_IF="(ACTION=='insert') and (EXTENDINSERT=='false')" 
+		   NUM_ROW="80">
+		   <DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER
+	      NAME="SCHEMA_FLOW"
+	      FIELD="SCHEMA_TYPE"
+	      NUM_ROW="90"
+	      CONTEXT="MAIN">
+	      <TABLE READONLY="true" IF="(ACTION!='insert') or (EXTENDINSERT=='true') or (RETREIVE_INSERT_ID=='false')">
+	      </TABLE>
+	      <TABLE READONLY="true" IF="(EXTENDINSERT=='false') and (ACTION=='insert') and (RETREIVE_INSERT_ID=='true')">
+	        <COLUMN NAME="salesforce_id" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+	      </TABLE>
+	    </PARAMETER>
+		
+		<PARAMETER
+	      NAME="SCHEMA_REJECT"
+	      FIELD="SCHEMA_TYPE"
+	      REQUIRED="true"
+	      NUM_ROW="90"
+	      CONTEXT="REJECT">
+	      <TABLE READONLY="true">
+	        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+	        <COLUMN NAME="errorFields" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+	        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+	      </TABLE>
+	    </PARAMETER>    
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
@@ -4247,5 +4300,7 @@
 
 	<RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
+		<RETURN NAME="NB_SUCCESS" TYPE="id_Integer" AVAILABILITY="AFTER" />
+		<RETURN NAME="NB_REJECT" TYPE="id_Integer" AVAILABILITY="AFTER" />
 	</RETURNS>
 </COMPONENT>

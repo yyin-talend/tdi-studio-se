@@ -15,7 +15,9 @@ package org.talend.salesforce;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.axis.EngineConfiguration;
 import org.apache.axis.configuration.EngineConfigurationFactoryFinder;
@@ -105,13 +107,12 @@ public class SforceManagementImpl implements SforceManagement {
         }
     }
 
-   
     private Boolean needCompression = false;
 
     public void setNeedCompression(Boolean needCompression) {
         this.needCompression = needCompression;
     }
-    
+
     /**
      * login
      */
@@ -822,4 +823,74 @@ public class SforceManagementImpl implements SforceManagement {
         return this.binding.getServerTimestamp().getTimestamp();
     }
 
+    public Map<String, String> readResult(Object[] results) throws Exception {
+        Map<String, String> resultMessage = null;
+        if (results instanceof SaveResult[]) {
+            for (SaveResult result : (SaveResult[]) results) {
+                resultMessage = new HashMap<String, String>();
+                resultMessage.put("id", result.getId());
+                resultMessage.put("success", String.valueOf(result.isSuccess()));
+                if (!result.isSuccess()) {
+                    for (Error error : result.getErrors()) {
+                        if (error.getStatusCode() != null)
+                            resultMessage.put("StatusCode", error.getStatusCode().toString());
+                        if (error.getFields() != null) {
+                            StringBuffer fields = new StringBuffer();
+                            for (String field : error.getFields()) {
+                                fields.append(field);
+                                fields.append(",");
+                            }
+                            if (fields.length() > 0) {
+                                fields.deleteCharAt(fields.length() - 1);
+                            }
+                            resultMessage.put("Fields", fields.toString());
+                        }
+                        resultMessage.put("Message", error.getMessage());
+                    }
+                }
+            }
+            return resultMessage;
+        } else if (results instanceof DeleteResult[]) {
+            for (DeleteResult result : (DeleteResult[]) results) {
+                resultMessage = new HashMap<String, String>();
+                resultMessage.put("id", result.getId());
+                resultMessage.put("success", String.valueOf(result.isSuccess()));
+                if (!result.isSuccess()) {
+                    for (Error error : result.getErrors()) {
+                        if (error.getStatusCode() != null)
+                            resultMessage.put("StatusCode", error.getStatusCode().toString());
+                        resultMessage.put("Message", error.getMessage());
+                    }
+                }
+            }
+            return resultMessage;
+        } else if (results instanceof UpsertResult[]) {
+            for (UpsertResult result : (UpsertResult[]) results) {
+                resultMessage = new HashMap<String, String>();
+                resultMessage.put("id", result.getId());
+                resultMessage.put("success", String.valueOf(result.isSuccess()));
+                resultMessage.put("created", String.valueOf(result.isCreated()));
+                if (!result.isSuccess()) {
+                    for (Error error : result.getErrors()) {
+                        if (error.getStatusCode() != null)
+                            resultMessage.put("StatusCode", error.getStatusCode().toString());
+                        if (error.getFields() != null) {
+                            StringBuffer fields = new StringBuffer();
+                            for (String field : error.getFields()) {
+                                fields.append(field);
+                                fields.append(",");
+                            }
+                            if (fields.length() > 0) {
+                                fields.deleteCharAt(fields.length() - 1);
+                            }
+                            resultMessage.put("Fields", fields.toString());
+                        }
+                        resultMessage.put("Message", error.getMessage());
+                    }
+                }
+            }
+            return resultMessage;
+        }
+        return null;
+    }
 }

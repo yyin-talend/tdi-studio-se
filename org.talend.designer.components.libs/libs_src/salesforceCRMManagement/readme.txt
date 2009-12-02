@@ -13,3 +13,5 @@ some resources:
 3. feature 8570: modified SforceManagement.java and SforceManagementImpl.java , add SforceCompressionService.java
 
 4. Bug 9056, modify bug when upsert.
+
+5. feature 3103: add retrieve insert ID and reject link. 

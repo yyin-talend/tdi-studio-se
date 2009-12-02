@@ -14,6 +14,7 @@ package org.talend.salesforce;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.axis.message.MessageElement;
 
@@ -63,4 +64,6 @@ public interface SforceManagement {
     public void setNeedCompression(Boolean needCompression);
 
     public SforceService getSforceService();
+    
+    public Map<String, String> readResult(Object[] os) throws Exception;
 }

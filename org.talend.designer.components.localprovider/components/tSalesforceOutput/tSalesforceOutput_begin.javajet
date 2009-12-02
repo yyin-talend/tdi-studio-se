@@ -24,6 +24,8 @@ imports="
 	if (!extendedInsert) commitLevel = "1";
 %>       
         int nb_line_<%=cid %> = 0;
+        int nb_success_<%=cid%> = 0;
+        int nb_reject_<%=cid%> = 0;
 
         org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
         sforceManagement_<%=cid%>.setNeedCompression(<%=needCompression%>);
