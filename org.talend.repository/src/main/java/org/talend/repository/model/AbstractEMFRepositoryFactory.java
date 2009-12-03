@@ -248,8 +248,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             Object fullFolder = getFullFolder(project, itemType, currentPath);
 
             if (fullFolder != null) {
-                List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, fullFolder, id, itemType, true, false,
-                        true);
+                List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, fullFolder, id, itemType, allVersion,
+                        false, true);
                 toReturn.addAll(itemsFound);
                 return toReturn;
             }
