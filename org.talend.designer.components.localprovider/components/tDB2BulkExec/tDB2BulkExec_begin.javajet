@@ -78,7 +78,7 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
 	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);      
 %>
-<%@ include file="../templates/_tableAction.javajet"%>
+<%@ include file="../templates/_tableActionForBulk.javajet"%>
 <%    
 	////////////////////////////////////////////    
     if(("INSERT").equals(action) || ("REPLACE").equals(action)) {
@@ -120,7 +120,7 @@ if(columnList != null && columnList.size() > 0) {
                         
         	java.sql.CallableStatement callStmt_<%=cid%> = null;
         	String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-        	String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%>.replace("\\","/") + "\" OF DEL MODIFIED BY COLDEL" + <%=field_separator%> + " dateformat=\""+<%=dateformat%>+"\" timeformat=\"" +<%=timeformat%>+ "\" timestampformat=\"" + <%=timestampformat%>+"\"" + " INSERT INTO "  + tableName_<%=cid%> ;        			
+        	String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%>.replace("\\","/") + "\" OF DEL MODIFIED BY COLDEL" + <%=field_separator%> + " dateformat=\""+<%=dateformat%>+"\" timeformat=\"" +<%=timeformat%>+ "\" timestampformat=\"" + <%=timestampformat%>+"\"" + " INSERT INTO \""  + tableName_<%=cid%> + "\""; 	        			
         	
         	callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
         	callStmt_<%=cid%>.setString(1, param_<%=cid%>);

@@ -4,35 +4,54 @@
 manager = getManager(dbmsId, cid);   
 
 if(!("NONE").equals(tableAction)) {
-		if (useExistingConnection) {
-		%>
-			conn_<%=cid%>.setAutoCommit(true);
-		<%
-		}
+
         if(("DROP_CREATE").equals(tableAction)) {
-            %>            
+%>            
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
             stmtDrop_<%=cid%>.close();
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.close();
-            <%
+<%
         } else if(("CREATE").equals(tableAction)) {
-            %>
+%>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreate_<%=cid%>.close();
-            <%
-        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
-            %>
 <%
-//to fixed: bug8422
-if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){%>	         
-    // [%connection%][checktable][tableName]
-    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]" + "[" + <%=table%> + "]";
-	if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
-<%}%>        
+        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
+%>
+<%
+			//to fixed: bug8422
+			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
+%>	         
+		    // [%connection%][checktable][tableName]
+		    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]" + "[" + <%=table%> + "]";
+			if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
+<%
+			}
+%>              
+<% 
+			/*
+				case multi connection access the same db, that maybe have a locked in System table(e.g mssql).
+				so in mssql use "Select" checked the table whether exist.
+			*/
+			//TODO we will use like "select" sql intead of use system table to checked table?
+			if(MSSQL.equalsIgnoreCase(dbmsId)) {
+%>
+				java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
+				boolean whetherExist_<%=cid%> = false;
+				try {
+					isExistStmt_<%=cid%>.execute("SELECT TOP 1 1 FROM " +  <%=table%> );
+					whetherExist_<%=cid%> = true;
+				} catch (Exception e){
+					whetherExist_<%=cid%> = false;
+				}
+				isExistStmt_<%=cid%>.close();
+<%
+			} else {
+%>      
 	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
 	            boolean whetherExist_<%=cid%> = false;
@@ -44,18 +63,20 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 	                }
 	            }
 	            rsTable_<%=cid%>.close();
-
-            <%
+<%
+			}
+%>
+<%
             if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-                %>
+%>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
                     stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
                     stmtCreate_<%=cid%>.close();            
                 }                
-                <%
+<%
             } else {
-                %>
+%>
                 if(whetherExist_<%=cid%>) {
                     java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
                     stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
@@ -64,24 +85,27 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
                 stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
                 stmtCreate_<%=cid%>.close();
-            <%
-            }
-            %>
 <%
-//to fixed: bug8422
-if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){%>
-		GlobalResource.resourceMap.put(keyCheckTable_<%=cid %>, true);
-	}
-<%}%>            
-            <%
+            }
+%>
+<%
+			//to fixed: bug8422
+			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
+%>
+				GlobalResource.resourceMap.put(keyCheckTable_<%=cid %>, true);
+			}
+<%
+			}
+%>            
+<%
         } else if(("CLEAR").equals(tableAction)) {
-            %>
+%>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
             stmtClear_<%=cid%>.close();
-           <%
+<%
         }else if(("TRUNCATE").equals(tableAction)) {
-            %>
+%>
             java.sql.Statement stmtTruncCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsTruncCount_<%=cid%> = stmtTruncCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
             java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -92,19 +116,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
             rsTruncCount_<%=cid%>.close();
             stmtTruncCount_<%=cid%>.close();
             stmtTrunc_<%=cid%>.close();            
-            <%
-        } 
-       //begin fixed:bug 10001          
-		if (!useExistingConnection && !INFORMIX.equals(dbmsId)) {//in Informix db when not use transaction don't using commit() method
-		%>
-			conn_<%=cid%>.commit();
-		<%
-        } 
-        //end 10001
-        if (useExistingConnection) {
-		%>
-			conn_<%=cid%>.setAutoCommit(false);
-		<%
-		}
-           
-    }%>
+<%
+        }         
+    }
+%>

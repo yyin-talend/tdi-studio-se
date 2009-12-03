@@ -150,7 +150,7 @@ if(!("true").equals(useExistingConn)) {
 }
 if(columnList != null && columnList.size() > 0) {    
    %>
-   <%@ include file="../templates/_tableAction.javajet"%>
+   <%@ include file="../templates/_tableActionForOutput.javajet"%>
    <%
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   

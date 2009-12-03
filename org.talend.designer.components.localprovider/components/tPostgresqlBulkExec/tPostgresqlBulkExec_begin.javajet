@@ -23,7 +23,7 @@ String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 StringBuilder tableName = new StringBuilder();
 StringBuilder tmpTableName = new StringBuilder();
-boolean standardConformingString= ("true").equals(ElementParameterParser.getValue(node,"__USE_L2_VERSION__"));
+boolean standardConformingString= ("true").equals(ElementParameterParser.getValue(node,"__STANDARD_CONFORMING_STRING__"));
 boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 %>
@@ -145,7 +145,7 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
 	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
 %>
-	<%@ include file="../templates/_tableAction.javajet"%>	
+	<%@ include file="../templates/_tableActionForBulk.javajet"%>	
 <%    
 }
 

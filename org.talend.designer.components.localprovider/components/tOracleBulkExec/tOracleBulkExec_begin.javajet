@@ -247,7 +247,7 @@ if(columnList != null && columnList.size() > 0) {
         }
     }
 %>	
-	<%@ include file="../templates/_tableAction.javajet"%>	
+	<%@ include file="../templates/_tableActionForBulk.javajet"%>	
 <%  
 }
 %>

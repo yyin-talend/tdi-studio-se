@@ -138,7 +138,7 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
 	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
 %>
-<%@ include file="../templates/_tableAction.javajet"%>	
+<%@ include file="../templates/_tableActionForBulk.javajet"%>	
 <%    
 }
 if(("UPDATE").equals(dataAction)) {

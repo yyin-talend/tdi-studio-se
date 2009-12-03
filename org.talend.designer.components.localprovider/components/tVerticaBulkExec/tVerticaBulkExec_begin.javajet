@@ -73,7 +73,7 @@ if(columnList != null && columnList.size()>0) {
 	    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%>;
 	}
 	
-	<%@ include file="../templates/_tableAction.javajet"%>
+	<%@ include file="../templates/_tableActionForBulk.javajet"%>
 <%    
 }
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
