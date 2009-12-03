@@ -101,6 +101,23 @@ public class LoginDialog extends TrayDialog {
         newShell.setText(Messages.getString("LoginDialog.title", brandingService.getFullProductName())); //$NON-NLS-1$
     }
 
+    @Override
+    protected Control createContents(Composite parent) {
+        Composite composite = new Composite(parent, 0);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        layout.verticalSpacing = 0;
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        applyDialogFont(composite);
+        // initialize the dialog units
+        initializeDialogUnits(composite);
+        // create the dialog area and button bar
+        dialogArea = createDialogArea(composite);
+        return composite;
+    }
+
     /**
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */

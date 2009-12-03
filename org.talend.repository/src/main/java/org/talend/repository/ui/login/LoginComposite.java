@@ -68,6 +68,7 @@ import org.talend.commons.exception.WarningException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.PasswordHelper;
+import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -183,7 +184,6 @@ public class LoginComposite extends Composite {
         Composite formBody = form.getBody();
 
         formBody.setBackgroundMode(SWT.INHERIT_DEFAULT);
-
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -191,6 +191,10 @@ public class LoginComposite extends Composite {
         form.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         layout = new GridLayout(3, false);
+        if (!EnvironmentUtils.isWindowsSystem()) {
+            layout.marginHeight = 0;
+            layout.verticalSpacing = 0;
+        }
         formBody.setLayout(layout);
 
         messageImageStatus = toolkit.createComposite(formBody);
@@ -217,7 +221,7 @@ public class LoginComposite extends Composite {
         messageImageStatus.setLayoutData(projectGroupData2);
 
         Group groupConnection = new Group(formBody, SWT.NONE);
-        groupConnection.setText(Messages.getString("LoginComposite.connection")); //$NON-NLS-1$
+        groupConnection.setText(Messages.getString("LoginComposite.connection")); //$NON-NLS-1$       
 
         projectGroupData2 = new GridData(GridData.FILL_HORIZONTAL);
         projectGroupData2.horizontalSpan = 3;
@@ -253,9 +257,9 @@ public class LoginComposite extends Composite {
         boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
         Label userLabel;
         if (usesMailCheck) {
-            toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
+            userLabel = toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
         } else {
-            toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.usernameNoMail")); //$NON-NLS-1$
+            userLabel = toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.usernameNoMail")); //$NON-NLS-1$
         }
         // Username:
 
@@ -266,7 +270,7 @@ public class LoginComposite extends Composite {
         user.setEnabled(false);
 
         // Password:
-        toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
+        Label passLabel = toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
         passwordText = toolkit.createText(groupConnection, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
         GridData passwordGrid = new GridData(GridData.FILL_HORIZONTAL);
         passwordGrid.horizontalSpan = 2;
