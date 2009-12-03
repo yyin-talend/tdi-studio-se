@@ -62,7 +62,7 @@ public class LoginDialog extends TrayDialog {
 
     private static final int INNER_LOGIN_COMPOSITE_WIDTH = 350;
 
-    private static final int DIALOG_HEIGHT = 320;
+    private static final int DIALOG_HEIGHT = 278;
 
     private static final int DIALOG_WIDTH = 215 + INNER_LOGIN_COMPOSITE_WIDTH + 1;
 
