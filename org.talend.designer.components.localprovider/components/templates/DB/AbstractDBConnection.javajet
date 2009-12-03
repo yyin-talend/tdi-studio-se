@@ -22,7 +22,6 @@ imports="
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
     
 	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
-	boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
 %>
 <%
 	connUtil.beforeComponentProcess(node);
@@ -59,7 +58,7 @@ imports="
 	}
 %> 
 
-	conn_<%=cid%>.setAutoCommit(<%=setAutoCommit%>);
+	<%connUtil.setAutoCommit(node);%>
 <%
 	connUtil.afterComponentProcess(node);
 %>
