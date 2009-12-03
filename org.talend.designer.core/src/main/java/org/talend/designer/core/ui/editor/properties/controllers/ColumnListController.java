@@ -293,21 +293,22 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         Object value = param.getValue();
         boolean listContainValue = false;
         int numValue = 0;
-        for (int i = 0; i < curColumnValueList.length && !listContainValue; i++) {
-            if (curColumnValueList[i].equals(value)) {
-                listContainValue = true;
-                numValue = i;
+        if (curColumnNameList != null && curColumnValueList != null) {
+            for (int i = 0; i < curColumnValueList.length && !listContainValue; i++) {
+                if (curColumnValueList[i].equals(value)) {
+                    listContainValue = true;
+                    numValue = i;
+                }
             }
-        }
-
-        combo.setItems(curColumnNameList);
-        if (!listContainValue) {
-            if (curColumnNameList.length > 0) {
-                elem.setPropertyValue(param.getName(), curColumnValueList[0]);
-                combo.setText(curColumnNameList[0]);
+            combo.setItems(curColumnNameList);
+            if (!listContainValue) {
+                if (curColumnNameList.length > 0) {
+                    elem.setPropertyValue(param.getName(), curColumnValueList[0]);
+                    combo.setText(curColumnNameList[0]);
+                }
+            } else {
+                combo.setText(curColumnNameList[numValue]);
             }
-        } else {
-            combo.setText(curColumnNameList[numValue]);
         }
     }
 
