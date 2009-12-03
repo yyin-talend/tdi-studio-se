@@ -37,13 +37,13 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.utils.ManagerConnection;
-import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
  */
 
-public class DatabaseTableWizard extends RepositoryWizard implements INewWizard {
+public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(DatabaseTableWizard.class);
 

@@ -46,14 +46,14 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.xml.sax.SAXException;
 
 /**
  * DOC ggu class global comment. Detailled comment <br/>
  * 
  */
-public class ImportSchemaFileWizard extends RepositoryWizard implements INewWizard {
+public class ImportSchemaFileWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(ImportSchemaFileWizard.class);
 
@@ -123,15 +123,13 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
 
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             } catch (BusinessException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
@@ -218,8 +216,8 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
 
     private void initConnection() {
         connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
         connectionProperty.setStatusCode(""); //$NON-NLS-1$ 
         String name = file.getName();
@@ -252,5 +250,10 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
                 detailError);
         log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
 
+    }
+
+    @Override
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
     }
 }

@@ -53,7 +53,9 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SVGBusinessProcessItem;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.ui.ILastVersionChecker;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
@@ -74,7 +76,7 @@ import org.talend.repository.model.RepositoryNode;
 /**
  * @generated
  */
-public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMarker {
+public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMarker, ILastVersionChecker {
 
     /**
      * @generated
@@ -239,9 +241,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             }
 
             Item item = repositoryEditorInput.getItem();
-            IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-
-            return repositoryFactory.isEditableAndLockIfPossible(item);
+            // IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+            return isLastVersion(item);
         }
         return super.isEditable();
     }
@@ -450,6 +451,23 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         ISelection selection = getSelection();
 
         super.setFocus();
+    }
+
+    public boolean isLastVersion(Item item) {
+        if (item.getProperty() != null) {
+            try {
+                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                        item.getProperty().getId());
+                if (allVersion != null && !allVersion.isEmpty()) {
+                    if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {
+                        return true;
+                    }
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return false;
     }
 
 }

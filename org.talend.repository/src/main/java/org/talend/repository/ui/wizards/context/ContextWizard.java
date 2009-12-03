@@ -35,6 +35,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -48,15 +49,15 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
-import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
  * FileWizard present the FileForm. Use to create a new connection to a DB.
  */
 
-public class ContextWizard extends RepositoryWizard implements INewWizard {
+public class ContextWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(ContextWizard.class);
 
@@ -68,6 +69,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
 
     private IContextManager contextManager;
 
+    private ISelection selection;
+
     String oldSource;
 
     ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();;
@@ -76,8 +79,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
      * 
      * this constructor only for context mode. (feature 2449)
      */
-    public ContextWizard(final String contextName, boolean creation, ISelection selection,
-            final List<IContextParameter> paramList) {
+    public ContextWizard(final String contextName, boolean creation, ISelection selection, final List<IContextParameter> paramList) {
         this(PlatformUI.getWorkbench(), creation, selection, false);
         initContextMode(contextName, paramList);
     }
@@ -118,7 +120,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
     public ContextWizard(IWorkbench workbench, boolean creation, ISelection selection, boolean forceReadOnly) {
         super(workbench, creation, forceReadOnly);
         pathToSave = getPath(selection);
-
+        this.selection = selection;
         setWindowTitle(""); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.CONTEXT_WIZ));
         setNeedsProgressMonitor(true);
@@ -126,8 +128,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         if (creation) {
             contextItem = PropertiesFactory.eINSTANCE.createContextItem();
             contextProperty = PropertiesFactory.eINSTANCE.createProperty();
-            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY)).getUser());
+            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                    .getUser());
             contextProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             contextProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -223,8 +225,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                 // TimeMeasure.end("performFinish");
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
@@ -262,8 +263,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
             RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
 
             IPath path;
-            if (node != null
-                    && (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)) {
+            if (node != null && (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)) {
                 path = RepositoryNodeUtilities.getPath(node);
                 return path;
             }
@@ -274,6 +274,20 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
 
     public ContextItem getContextItem() {
         return this.contextItem;
+    }
+
+    @Override
+    public Item getVersionItem() {
+        if (this.selection != null) {
+            RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
+            RepositoryObject object = (RepositoryObject) node.getObject();
+            if (object != null) {
+                return object.getProperty().getItem();
+            } else if (this.creation) {
+                return this.contextItem;
+            }
+        }
+        return null;
     }
 
 }

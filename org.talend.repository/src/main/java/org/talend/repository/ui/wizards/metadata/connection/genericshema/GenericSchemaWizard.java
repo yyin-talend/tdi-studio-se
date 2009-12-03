@@ -45,15 +45,15 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
-import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
  * ftang class global comment. Detailled comment <br/>
  * 
  */
-public class GenericSchemaWizard extends RepositoryWizard implements INewWizard {
+public class GenericSchemaWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(GenericSchemaWizard.class);
 
@@ -379,6 +379,11 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
      */
     public IPath getPathForSaveAsGenericSchema() {
         return this.genericSchemaWizardPage0.getPathForSaveAsGenericSchema();
+    }
+
+    @Override
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
     }
 
 }

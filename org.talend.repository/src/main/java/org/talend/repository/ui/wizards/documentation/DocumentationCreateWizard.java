@@ -35,7 +35,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.documentation.LinkUtils.LinkInfo;
 
 /**
@@ -44,7 +44,7 @@ import org.talend.repository.ui.wizards.documentation.LinkUtils.LinkInfo;
  * $Id$
  * 
  */
-public class DocumentationCreateWizard extends RepositoryWizard implements IDocumentationContext {
+public class DocumentationCreateWizard extends CheckLastVersionRepositoryWizard implements IDocumentationContext {
 
     /** Main wizard page. */
     private DocumentationPage mainPage;
@@ -251,6 +251,11 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
      */
     public boolean isDocVersionEditable() {
         return true;
+    }
+
+    @Override
+    public Item getVersionItem() {
+        return this.documentationItem;
     }
 
 }

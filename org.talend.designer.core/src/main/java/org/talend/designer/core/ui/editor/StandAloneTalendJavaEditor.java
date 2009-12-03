@@ -52,9 +52,12 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -62,6 +65,7 @@ import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -69,7 +73,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * Stand alone Perl editor.<br/>
  * 
  */
-public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements IUIRefresher {
+public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements IUIRefresher, ILastVersionChecker {
 
     public static final String ID = "org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor"; //$NON-NLS-1$
 
@@ -89,7 +93,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     @Override
     public boolean isEditable() {
-        return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable();
+        return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable() && isLastVersion(item);
     }
 
     @Override
@@ -380,4 +384,22 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             ExceptionHandler.process(e);
         }
     }
+
+    public boolean isLastVersion(Item item) {
+        if (item.getProperty() != null) {
+            try {
+                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                        item.getProperty().getId());
+                if (allVersion != null && !allVersion.isEmpty()) {
+                    if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {
+                        return true;
+                    }
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return false;
+    }
+
 }

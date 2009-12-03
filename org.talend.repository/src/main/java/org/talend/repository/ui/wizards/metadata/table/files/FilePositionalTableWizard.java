@@ -29,7 +29,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 
 /**
  * DOC ocarbone class global comment. Detailled comment <br/>
@@ -37,7 +37,7 @@ import org.talend.repository.ui.wizards.RepositoryWizard;
  * $Id$
  * 
  */
-public class FilePositionalTableWizard extends RepositoryWizard implements INewWizard {
+public class FilePositionalTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(FilePositionalTableWizard.class);
 
@@ -124,6 +124,11 @@ public class FilePositionalTableWizard extends RepositoryWizard implements INewW
      */
     public void init(final IWorkbench workbench, final IStructuredSelection selection) {
         this.selection = selection;
+    }
+
+    @Override
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
     }
 
 }

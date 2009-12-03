@@ -29,7 +29,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileTableWizardPage;
 
@@ -39,7 +39,7 @@ import org.talend.repository.ui.wizards.metadata.table.files.FileTableWizardPage
  * @author ftang, 18/09/2007
  * 
  */
-public class LDAPSchemaTableWizard extends RepositoryWizard implements INewWizard {
+public class LDAPSchemaTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(GenericSchemaTableWizard.class);
 
@@ -105,8 +105,7 @@ public class LDAPSchemaTableWizard extends RepositoryWizard implements INewWizar
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 // update
-                RepositoryUpdateManager
-                        .updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
+                RepositoryUpdateManager.updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
 
                 factory.save(repositoryObject.getProperty().getItem());
                 closeLockStrategy();
@@ -130,6 +129,11 @@ public class LDAPSchemaTableWizard extends RepositoryWizard implements INewWizar
      */
     public void init(final IWorkbench workbench, final IStructuredSelection selection) {
         this.selection = selection;
+    }
+
+    @Override
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
     }
 
 }

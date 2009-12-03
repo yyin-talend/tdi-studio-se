@@ -24,13 +24,13 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileTableWizardPage;
 
 /**
  * DOC qzhang class global comment. Detailled comment
  */
-public class SalesforceSchemaTableWizard extends RepositoryWizard implements INewWizard {
+public class SalesforceSchemaTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(SalesforceSchemaTableWizard.class);
 
@@ -109,6 +109,11 @@ public class SalesforceSchemaTableWizard extends RepositoryWizard implements INe
      */
     public void init(final IWorkbench workbench, final IStructuredSelection selection) {
         this.selection = selection;
+    }
+
+    @Override
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
     }
 
 }

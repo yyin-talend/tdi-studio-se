@@ -78,6 +78,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
@@ -85,6 +86,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -127,6 +129,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
 
@@ -137,7 +140,7 @@ import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
  * $Id$
  * 
  */
-public class Process extends Element implements IProcess2 {
+public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     // properties
     public static final String NEED_UPDATE_JOB = "NEED_UPDATE_JOB"; //$NON-NLS-1$
@@ -2103,7 +2106,7 @@ public class Process extends Element implements IProcess2 {
 
     public boolean checkReadOnly() {
         IProxyRepositoryFactory repFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        boolean readOnlyLocal = !repFactory.isEditableAndLockIfPossible(property.getItem());
+        boolean readOnlyLocal = !repFactory.isEditableAndLockIfPossible(property.getItem()) || !isLastVersion(property.getItem());
         this.setReadOnly(readOnlyLocal);
         return readOnlyLocal;
     }
@@ -3294,4 +3297,25 @@ public class Process extends Element implements IProcess2 {
         this.screenshot = imagedes;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.ILastVersionChecker#isLastVersion(org.talend.core.model.properties.Item)
+     */
+    public boolean isLastVersion(Item item) {
+        if (item.getProperty() != null) {
+            try {
+                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                        item.getProperty().getId());
+                if (allVersion != null && !allVersion.isEmpty()) {
+                    if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {
+                        return true;
+                    }
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return false;
+    }
 }

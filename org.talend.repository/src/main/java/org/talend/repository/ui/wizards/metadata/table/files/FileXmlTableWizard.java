@@ -29,7 +29,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 
 /**
  * DOC ocarbone class global comment.
@@ -37,7 +37,7 @@ import org.talend.repository.ui.wizards.RepositoryWizard;
  * $Id$
  * 
  */
-public class FileXmlTableWizard extends RepositoryWizard implements INewWizard {
+public class FileXmlTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(FileXmlTableWizard.class);
 
@@ -57,8 +57,8 @@ public class FileXmlTableWizard extends RepositoryWizard implements INewWizard {
      * @param ISelection
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public FileXmlTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable, boolean forceReadOnly) {
+    public FileXmlTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable,
+            boolean forceReadOnly) {
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -127,6 +127,11 @@ public class FileXmlTableWizard extends RepositoryWizard implements INewWizard {
      */
     public void init(final IWorkbench workbench, final IStructuredSelection selection) {
         this.selection = selection;
+    }
+
+    @Override
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
     }
 
 }

@@ -43,8 +43,8 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
-import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
@@ -52,7 +52,7 @@ import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
  * FileWizard present the FileForm. Use to create a new connection to a DB.
  */
 
-public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
+public class RegexpFileWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(RegexpFileWizard.class);
 
