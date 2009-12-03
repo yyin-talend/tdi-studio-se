@@ -74,6 +74,7 @@
       NAME="TABLEACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="2"
+       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="CREATE_TABLE">       
         <ITEM NAME="CREATE_TABLE"        VALUE="CREATE_TABLE" />

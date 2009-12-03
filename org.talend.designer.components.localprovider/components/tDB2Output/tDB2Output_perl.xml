@@ -51,7 +51,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="REGEXP:^t(DB2|Perl)*Connection$"
+      FILTER="tDB2Connection"
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
