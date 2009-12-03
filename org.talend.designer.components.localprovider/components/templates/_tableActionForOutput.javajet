@@ -1,9 +1,13 @@
 <%@ jet 
 %>
 <%  
-manager = getManager(dbmsId, cid);   
+//issue 0010346 Parallelization crash with "Drop table if exists and create"
+Boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+if (!isParallelize) {
+//end issue 0010346 Parallelization crash with "Drop table if exists and create"
+	manager = getManager(dbmsId, cid);   
 
-if(!("NONE").equals(tableAction)) {
+	if(!("NONE").equals(tableAction)) {
 
         if(("DROP_CREATE").equals(tableAction)) {
 %>            
@@ -117,6 +121,9 @@ if(!("NONE").equals(tableAction)) {
             stmtTruncCount_<%=cid%>.close();
             stmtTrunc_<%=cid%>.close();            
 <%
-        }         
-    }
+		}         
+	}
+//issue 0010346 Parallelization crash with "Drop table if exists and create"
+}
+//end issue 0010346 Parallelization crash with "Drop table if exists and create"
 %>

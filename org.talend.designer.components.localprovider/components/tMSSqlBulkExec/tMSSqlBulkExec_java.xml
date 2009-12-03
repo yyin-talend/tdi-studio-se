@@ -152,7 +152,7 @@
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
-      SHOW_IF="(ACTION=='INSERT' and PARALLELIZE != 'true') or (ACTION=='UPDATE' and PARALLELIZE != 'true')"
+      NOT_SHOW_IF="(ACTION=='EXPORT') or (PARALLELIZE == 'true')"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM NAME="NONE" VALUE="NONE" />
