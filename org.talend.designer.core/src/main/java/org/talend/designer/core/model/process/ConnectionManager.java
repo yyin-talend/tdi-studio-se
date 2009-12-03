@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -300,6 +301,18 @@ public class ConnectionManager {
         if (newTarget.isFileScaleComponent()) {
             if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && !connectorName.equals("FSCOMBINE")) { //$NON-NLS-1$
                 return false;
+            }
+        }
+        // for bug 10378
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            if (EComponentType.JOBLET_INPUT_OUTPUT.equals(newTarget.getComponent().getComponentType())) {
+                if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    boolean isFilterRowComponent = "tFilterRow".equals(source.getComponent().getName());
+                    if (isFilterRowComponent && connectorName != null
+                            && (connectorName.equals("FILTER") || connectorName.equals("REJECT"))) {//$NON-NLS-1$//$NON-NLS-1$
+                        return false;
+                    }
+                }
             }
         }
 
