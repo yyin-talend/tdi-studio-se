@@ -33,7 +33,7 @@
 
   <PARAMETERS>
     <PARAMETER
-      NAME="PROPERTY"
+      NAME="PROPERTY_DB"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="1"
