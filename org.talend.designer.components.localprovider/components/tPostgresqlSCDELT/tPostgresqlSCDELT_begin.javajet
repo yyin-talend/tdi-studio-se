@@ -24,6 +24,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 List<IMetadataColumn> columnList = getColumnList(node);
 if(columnList != null && columnList.size() > 0) {
+    String strFieldName = ""; // temp variable to save name of field
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     List<Map<String, String>> sourceKeys = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
     boolean isEnableType1 = ("true").equals(ElementParameterParser.getValue(node, "__USE_L1__"));
@@ -178,12 +179,12 @@ if(columnList != null && columnList.size() > 0) {
                 columnNames.add(StringUtils.getPostgresqlProtectedColumnName(sk.get("NAME")));                
             }
         }
+        
         for(Map<String, String> type1Attribute : type1Attributes) {
-            columnNames.add(StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME")));
-            setColumns.add(StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME")) + 
-                    " = t." + StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME")));
-            whereClause.add(" d." + StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME")) + 
-                    " <> t." + StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME")));            
+            strFieldName = StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME"));
+            columnNames.add(strFieldName);
+            setColumns.add(strFieldName +  " = t." + strFieldName);                    
+            whereClause.add(" COALESCE(d." + strFieldName + "<> t."+ strFieldName + ", (d." + strFieldName + " is null and not t." + strFieldName + " is null) or (not d." + strFieldName + " is null and t." + strFieldName + " is null))");                   
         }
         selectColumnString = StringUtils.join(columnNames.toArray(), ", t.");
         columnNameString = StringUtils.join(columnNames.toArray(), ", ");    
@@ -210,8 +211,8 @@ if(columnList != null && columnList.size() > 0) {
     if(isEnableType2) {
         List<String> whereClause = new ArrayList<String>();
         for (Map<String, String> type2Attribute : type2Attributes) {
-            whereClause.add(" d." + StringUtils.getPostgresqlProtectedColumnName(type2Attribute.get("NAME")) + 
-                    " <> t." + StringUtils.getPostgresqlProtectedColumnName(type2Attribute.get("NAME")));
+            strFieldName = StringUtils.getPostgresqlProtectedColumnName(type2Attribute.get("NAME"));            
+            whereClause.add(" COALESCE(d." + strFieldName + "<> t."+ strFieldName + ", (d." + strFieldName + " is null and not t." + strFieldName + " is null) or (not d." + strFieldName + " is null and t." + strFieldName + " is null))");
         }
         String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
         %>
@@ -261,7 +262,7 @@ if(columnList != null && columnList.size() > 0) {
         <%
         if(isEnableDebug) {
             %>
-            System.out.println("[<%=cid%>] type2 new active row slq\n" + insertForType2_<%=cid %> + "\ndone");
+            System.out.println("[<%=cid%>] type2 new active row sql\n" + insertForType2_<%=cid %> + "\ndone");
             <%
         }
     }
