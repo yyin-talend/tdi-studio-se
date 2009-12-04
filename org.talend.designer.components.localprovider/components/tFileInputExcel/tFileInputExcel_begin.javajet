@@ -417,6 +417,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}//version judgement /***excel 2007 xlsx*****/
 		else{
 %>
+			org.apache.log4j.Logger logger_<%=cid%> = org.apache.log4j.Logger.getLogger("org.openxml4j.opc");
+	        logger_<%=cid%>.setLevel(org.apache.log4j.Level.WARN);
 			class RegexUtil_<%=cid %> {
 				
 		    	public java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> getSheets(org.apache.poi.xssf.usermodel.XSSFWorkbook workbook, String oneSheetName, boolean useRegex) {
