@@ -33,6 +33,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 
     boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
     
+    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+    
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");    
     
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
@@ -565,7 +567,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         }    
         
         ////////////commit every////////////
-        if(useTransaction &&  !("").equals(commitEvery) && !("0").equals(commitEvery)) {
+        if(!useExistingConnection && useTransaction &&  !("").equals(commitEvery) && !("0").equals(commitEvery)) {
             %>
             commitCounter_<%=cid%>++;
             

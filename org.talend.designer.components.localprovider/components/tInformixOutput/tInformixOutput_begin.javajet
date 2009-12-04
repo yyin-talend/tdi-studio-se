@@ -142,7 +142,7 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
 	}
 %>
 
-<%if (useTransaction) {
+<%if (!useExistingConnection && useTransaction) {
 %>
 	if(conn_<%=cid%>.getAutoCommit()) {
 	    conn_<%=cid%>.setAutoCommit(false);

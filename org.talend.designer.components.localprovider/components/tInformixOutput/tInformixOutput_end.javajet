@@ -19,7 +19,7 @@ imports="
 	
 	boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
 	
-    if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
+    if(!useExistingConnection && useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
         %>
         conn_<%=cid%>.commit();
         <%

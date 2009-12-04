@@ -15,7 +15,7 @@ imports="
 	boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
 	boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
 
-if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
+if(!useExistingConnection && useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 

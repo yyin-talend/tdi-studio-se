@@ -21,7 +21,7 @@ String propagateRecordset = ElementParameterParser.getValue(node,"__PROPAGATE_RE
 String recordsetColumn = ElementParameterParser.getValue(node,"__RECORD_SET_COLUMN__");
 boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
 String incomingConnName = null;
-
+boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = null;
 
 String rejectConnName = null;
@@ -49,7 +49,7 @@ for(IConnection conn : outgoingConns) {
     <%=conn.getName() %> = null;            
 <%      }
 }
-if( useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
+if(!useExistingConnection && useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
     %>
     commitCounter_<%=cid%>++;
     <%
@@ -157,7 +157,7 @@ whetherReject_<%=cid%> = false;
         <%
     }	
 	
-if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
+if(!useExistingConnection &&useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
     %>
     if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
     
