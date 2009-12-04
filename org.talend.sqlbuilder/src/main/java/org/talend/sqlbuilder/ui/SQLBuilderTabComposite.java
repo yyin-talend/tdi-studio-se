@@ -24,6 +24,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PartInitException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -32,6 +34,8 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
+import org.talend.sqlbuilder.editors.SQLBuilderEditorInput;
+import org.talend.sqlbuilder.editors.SQLBuilderEditorSite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -66,7 +70,6 @@ public class SQLBuilderTabComposite extends Composite {
      */
     public void openNewEditor(RepositoryNode node, List<String> repositories, ConnectionParameters connParam,
             boolean isDefaultEditor) {
-
         Assert.isNotNull(node, Messages.getString("SQLBuilderTabComposite.assertMessage")); //$NON-NLS-1$
         createTabFolder();
         try {
@@ -185,6 +188,11 @@ public class SQLBuilderTabComposite extends Composite {
         }
         MultiPageSqlBuilderEditor builderEditor = new MultiPageSqlBuilderEditor(nodesSel, tabItem, isDefaultEditor, connParam,
                 node, dialog);
+        try {
+            builderEditor.init(new SQLBuilderEditorSite(), new SQLBuilderEditorInput());
+        } catch (PartInitException e) {
+            ExceptionHandler.process(e);
+        }
         builderEditor.createPartControl(tabFolder);
         tabItem.setControl(builderEditor.getContainer());
         tabItem.setData(TextUtil.KEY, builderEditor);
