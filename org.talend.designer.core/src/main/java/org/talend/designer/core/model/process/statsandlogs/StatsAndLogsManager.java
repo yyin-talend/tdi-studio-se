@@ -137,6 +137,9 @@ public class StatsAndLogsManager {
         /*
          * maybe, need create every of committing node for log/stat/metter.
          */
+
+        // for bug 10453
+        boolean isNotInformixDB = true;
         if (dbFlag) {
             String[] javaDbComponents = StatsAndLogsConstants.DB_OUTPUT_COMPONENTS;
             for (String dbComponent : javaDbComponents) {
@@ -150,6 +153,9 @@ public class StatsAndLogsManager {
                         commitComponentName = "tOracleCommit";//$NON-NLS-1$
                     }
                     commitComponent = ComponentsFactoryProvider.getInstance().get(commitComponentName);
+                    if (commitComponentName.indexOf("Informix") != -1) {
+                        isNotInformixDB = false;
+                    }
                     if (commitComponent != null) {
                         connectionUID2 = connectionUID + "_Commit";//$NON-NLS-1$ 
                         commitNode = new DataNode(commitComponent, connectionUID2);
@@ -179,7 +185,7 @@ public class StatsAndLogsManager {
                         basePath + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue()); //$NON-NLS-1$
             }
             if (dbFlag) {
-                if (commitNode != null) {
+                if (commitNode != null && isNotInformixDB) {
                     connectionNode = addConnection(connectionNode, process, connectionUID, logsNode, nodeList, commitNode);
                 } else {
                     useNoConnectionComponentDB(logsNode, process, connectionUID);
@@ -209,7 +215,7 @@ public class StatsAndLogsManager {
                         basePath + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue()); //$NON-NLS-1$
             }
             if (dbFlag) {
-                if (commitNode != null) {
+                if (commitNode != null && isNotInformixDB) {
                     connectionNode = addConnection(connectionNode, process, connectionUID, statsNode, nodeList, commitNode);
                 } else {
                     useNoConnectionComponentDB(statsNode, process, connectionUID);
@@ -232,7 +238,7 @@ public class StatsAndLogsManager {
                         basePath + process.getElementParameter(EParameterName.FILENAME_METTER.getName()).getValue());
             }
             if (dbFlag) {
-                if (commitNode != null) {
+                if (commitNode != null && isNotInformixDB) {
                     connectionNode = addConnection(connectionNode, process, connectionUID, meterNode, nodeList, commitNode);
                 } else {
                     useNoConnectionComponentDB(meterNode, process, connectionUID);
