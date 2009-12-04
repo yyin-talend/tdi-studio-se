@@ -126,7 +126,7 @@ public class NodeLabel extends Element {
         if (offset.y > (MAX_DISTANCE - STANDARD_LABEL_HEIGHT)) {
             this.offset.y = MAX_DISTANCE - STANDARD_LABEL_HEIGHT;
         } else {
-            if (offset.y < (-MAX_DISTANCE - node.getSize().width)) {
+            if (offset.y < (-MAX_DISTANCE - node.getSize().height)) {
                 this.offset.y = -MAX_DISTANCE - node.getSize().height;
             } else {
                 this.offset.y = offset.y;
