@@ -280,11 +280,13 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
     public Item getVersionItem() {
         if (this.selection != null) {
             RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
-            RepositoryObject object = (RepositoryObject) node.getObject();
-            if (object != null) {
-                return object.getProperty().getItem();
-            } else if (this.creation) {
-                return this.contextItem;
+            if (node != null) {
+                RepositoryObject object = (RepositoryObject) node.getObject();
+                if (object != null) {
+                    return object.getProperty().getItem();
+                } else if (this.creation) {
+                    return this.contextItem;
+                }
             }
         }
         return null;
