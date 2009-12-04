@@ -138,6 +138,8 @@ if (canGenerate) {
 			Map<String, String> spArg = spArgs.get(i);
 			String argName = spArg.get("COLUMN");
 			String argType = spArg.get("TYPE");
+			boolean isCustom = ("true").equals(spArg.get("ISCUSTOME"));
+			String argCustom = spArg.get("CUSTOMENAME");
 			
 			// Search Java type of argument, based on schema column
 			String typeToGenerate = null;
@@ -159,54 +161,71 @@ if (canGenerate) {
 			
 			// Input argument
 			if (("IN").equals(argType) || ("INOUT").equals(argType)) {
-				if (nullable) {
-					%>
-					if (<%=inConnectionName%>.<%=argName%> == null) {
-						statement_<%=cid%>.setNull(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
-					} else {
-					<%
-				}
-				
-				String method;
-				if (("byte[]").equals(typeToGenerate)) {
- 			  		method = "Bytes";
- 	  			} else if (("Integer").equals(typeToGenerate)) {
-		 	   		method = "Int";
-		 	   	} else {
-					method = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
-				}
-				
-				// Bind parameter to CallableStatement
-				if (("char").equals(typeToGenerate) || ("Character").equals(typeToGenerate)) {
-					%>
-					if (<%=inConnectionName%>.<%=argName%> == '\0') {
-						statement_<%=cid%>.setString(<%=argIndex%>, "");
-					} else {
-						statement_<%=cid%>.setString(<%=argIndex%>, String.valueOf(<%=inConnectionName%>.<%=argName%>));
-					}
-					<%
-				} else if (("java.util.Date").equals(typeToGenerate)) {
-					%>
-					statement_<%=cid%>.setTimestamp(<%=argIndex%>, new java.sql.Timestamp(<%=inConnectionName%>.<%=argName%>.getTime()));
-					<%
+				// input type is custom defined
+				if(isCustom){
+%>
+				if (<%=inConnectionName%>.<%=argName%> == null) {
+					statement_<%=cid%>.setNull(<%=argIndex%>, java.sql.Types.STRUCT, <%=argCustom%>);
 				} else {
-					%>
-					statement_<%=cid%>.set<%=method%>(<%=argIndex%>, <%=inConnectionName%>.<%=argName%>);
-					<%
+					statement_<%=cid%>.setObject(<%=argIndex%>,<%=inConnectionName%>.<%=argName%>);
 				}
-				
-				if (nullable) {
-					%>
-					}
-					<%
-				}
+<%
+				}else{ // the db types 
+    				if (nullable) {
+    					%>
+    					if (<%=inConnectionName%>.<%=argName%> == null) {
+    						statement_<%=cid%>.setNull(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
+    					} else {
+    					<%
+    				}
+    				
+    				String method;
+    				if (("byte[]").equals(typeToGenerate)) {
+     			  		method = "Bytes";
+     	  			} else if (("Integer").equals(typeToGenerate)) {
+    		 	   		method = "Int";
+    		 	   	} else {
+    					method = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+    				}
+    				
+    				// Bind parameter to CallableStatement
+    				if (("char").equals(typeToGenerate) || ("Character").equals(typeToGenerate)) {
+    					%>
+    					if (<%=inConnectionName%>.<%=argName%> == '\0') {
+    						statement_<%=cid%>.setString(<%=argIndex%>, "");
+    					} else {
+    						statement_<%=cid%>.setString(<%=argIndex%>, String.valueOf(<%=inConnectionName%>.<%=argName%>));
+    					}
+    					<%
+    				} else if (("java.util.Date").equals(typeToGenerate)) {
+    					%>
+    					statement_<%=cid%>.setTimestamp(<%=argIndex%>, new java.sql.Timestamp(<%=inConnectionName%>.<%=argName%>.getTime()));
+    					<%
+    				} else {
+    					%>
+    					statement_<%=cid%>.set<%=method%>(<%=argIndex%>, <%=inConnectionName%>.<%=argName%>);
+    					<%
+    				}
+    				
+    				if (nullable) {
+    					%>
+    					}
+    					<%
+    				}
+    			}
 			}
 			
 			// Output argument
 			if (("OUT").equals(argType) || ("INOUT").equals(argType) ) {
-				%>
+				if(isCustom){
+%>
+				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.STRUCT,<%=argCustom %>);
+<%
+				}else{
+%>
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
-	  			<%
+<%
+	  			}
 			}else if(("RECORDSET").equals(argType)){
 %>
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, oracle.jdbc.OracleTypes.CURSOR);

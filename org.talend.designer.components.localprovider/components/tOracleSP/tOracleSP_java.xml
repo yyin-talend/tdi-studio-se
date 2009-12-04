@@ -214,6 +214,9 @@
             <ITEM NAME="RECORDSET" VALUE="RECORDSET"/>
           </ITEMS>
         </ITEM>
+        <ITEM NAME="ISCUSTOME" FIELD="CHECK">
+        </ITEM>
+        <ITEM NAME="CUSTOMENAME" FIELD="TEXT"></ITEM>
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
