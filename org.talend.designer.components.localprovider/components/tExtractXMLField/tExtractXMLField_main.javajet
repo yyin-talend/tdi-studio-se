@@ -164,37 +164,84 @@ if(!("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.
 <%
 		//get the mapping column 
 		for (int i=0;i<mapping.size();i++) { 
-			for(IMetadataColumn column:columns) {
-				if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
-					if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
-        				String query = mapping.get(i).get("QUERY");
-        				if(query.trim().length()>0 && query.startsWith("\"")){
-        					
-        					String nodeCheck = mapping.get(i).get("NODECHECK");
-        					
-        					if(query.startsWith("\"") && query.endsWith("\"")){
-        						query = query.substring(1, query.length() - 1);
-        					}
+			String query = mapping.get(i).get("QUERY");
+			String nodeCheck = mapping.get(i).get("NODECHECK");
+			if(query!=null && query.trim().length()>0){
 %>
-				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix("<%=query%>",<%=loopQuery%>));
+				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
 			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
 			    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
 <%
-							if(("true").equals(nodeCheck)){
+				if(("true").equals(nodeCheck)){
 %>
 				str_<%=cid %> = node_<%=cid %>.asXML();
 <%
-							}else{
+				}else{
 %>
 			    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
 <%
-							}
-%>
-				if (str_<%=cid %> != null ) {
-<%
+				}
+				
+				for(IMetadataColumn column:columns) {
+					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
+						if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+	        				
 							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+							
+							boolean isNotSetDefault = false;
+							String defaultValue=column.getDefault();
+							if(defaultValue!=null){
+								isNotSetDefault = defaultValue.length()==0;
+							}else{
+								isNotSetDefault=true;
+							}
+							
+							if(("true").equals(nodeCheck)){
+%>
+				<%=outputConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
+<%
+	            				continue;
+	            			}
+							if(javaType == JavaTypesManager.STRING){
+								if(column.isNullable()){
+%>
+									if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+											<%=outputConnName %>.<%=column.getLabel() %> =null;
+									}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+										<%=outputConnName %>.<%=column.getLabel() %> ="";
+									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+										<%=outputConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?null:column.getDefault()%>;
+									}else{
+<%
+								}else{ // column.isNullable()
+%>
+									if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+										<%=outputConnName %>.<%=column.getLabel() %> ="";
+									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+										<%=outputConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+									}else{
+<%
+								}
+							}else{ // other type
+								if(column.isNullable()){
+%>	
+										if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+											<%=outputConnName %>.<%=column.getLabel() %> =null;
+										}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
+											<%=outputConnName %>.<%=column.getLabel() %>=<%=isNotSetDefault?null:column.getDefault()%>;
+										}else{
+<%
+								}else{ // column.isNullable()
+%>
+										if(xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+											<%=outputConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+										}else{
+<%
+								}
+							}
+									
 							if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
 				<%=outputConnName%>.<%=column.getLabel() %> = str_<%= cid %>;
@@ -211,12 +258,20 @@ if(!("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.
 								}
 							}
 %>
-			}
+									}
 <%
-        				}else{
+							break;
+	        			}
+					}
+				}
+			}else{
+				for(IMetadataColumn inColumn:inColumns) {
+					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
+						if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
 %>
-			<%=outputConnName%>.<%=column.getLabel()%> = <%=inputConnName%>.<%=column.getLabel()%>;
+		<%=outputConnName%>.<%=inColumn.getLabel()%> = <%=inputConnName%>.<%=inColumn.getLabel()%>;
 <%
+							break;
 						}
 					}
 				}
@@ -263,7 +318,3 @@ if(!("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.
 %>
 
    globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
-
-
-
-			
