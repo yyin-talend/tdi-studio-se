@@ -58,7 +58,6 @@ imports="
 		    <%dbInputBeginUtil.createStatement(node);%>
 		    
 		    String dbquery_<%=cid%> = <%=dbInputBeginUtil.getQueryString(node)%>;
-		    <%dbInputBeginUtil.replaceKeyWord(node);%>
 		    
 		    java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(dbquery_<%=cid%>);
 		    java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();

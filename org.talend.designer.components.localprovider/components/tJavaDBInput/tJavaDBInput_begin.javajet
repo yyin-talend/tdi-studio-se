@@ -20,6 +20,7 @@ imports="
 	class DBInputBeginUtil extends DefaultDBInputUtil{
 	    
 		public void beforeComponentProcess(INode node){
+			super.beforeComponentProcess(node);
 			dbhost = ElementParameterParser.getValue(node, "__HOST__");
 			dbport = ElementParameterParser.getValue(node, "__PORT__");
 			String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");
@@ -69,18 +70,18 @@ imports="
 <%
 			if(("EMBEDED").equals(frameworkType)) {
 %>
-				url_<%=cid%> = "jdbc:derby:" + <%=db%>;
+				String url_<%=cid%> = "jdbc:derby:" + <%=db%>;
 				//set the root path of the database
 				System.setProperty("derby.system.home", <%=dbRootPath%>);
 <%
 			} else {
     			if(("JCCJDBC").equals(frameworkType)) {
 %>
-    				url_<%=cid%> = "jdbc:derby:net://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=db%>;
+    				String url_<%=cid%> = "jdbc:derby:net://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=db%>;
 <%
     			} else {
 %>
-    				url_<%=cid%> = "jdbc:derby://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=db%>;
+    				String url_<%=cid%> = "jdbc:derby://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=db%>;
 <%
     			}
     		}

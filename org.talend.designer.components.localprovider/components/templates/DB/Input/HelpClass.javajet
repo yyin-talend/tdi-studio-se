@@ -56,9 +56,6 @@ imports="
 			return dbquery;
 		}
 		
-		public void replaceKeyWord(INode node) {
-		}
-		
 		public void createStatement(INode node) {
 %>
 			java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
