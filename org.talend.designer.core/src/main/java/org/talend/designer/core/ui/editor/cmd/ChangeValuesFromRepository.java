@@ -323,6 +323,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     elem.setPropertyValue("VERSION_2007", versionCheckFor2007); //$NON-NLS-N$
                                 }
                             }
+                            if (param.getField().equals(EParameterFieldType.FILE)) {
+                                if (objectValue != null) {
+                                    objectValue = objectValue.toString().replace("\\", "/");
+                                }
+                            }
                             elem.setPropertyValue(param.getName(), objectValue);
                         }
                         param.setRepositoryValueUsed(true);
