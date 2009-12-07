@@ -2,7 +2,7 @@
 	imports="
 	
 	org.talend.designer.codegen.config.CodeGeneratorArgument
-	
+	org.talend.core.model.process.ElementParameterParser  
     java.util.List
 	org.talend.core.model.process.AbstractExternalNode
 	org.talend.core.model.process.IConnection
@@ -28,6 +28,38 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	OracleMapperComponent node = (OracleMapperComponent) codeGenArgument.getArgument();
 	boolean stats = codeGenArgument.isStatistics(); 
+	
+	///// hint options/////
+	boolean useHintOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_HINT_OPTIONS__"));
+	Map<String, String> hintsValues = null; 
+	if (useHintOptions) {
+		List<Map<String, String>> hintOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HINT_OPTIONS__");
+		hintsValues = new HashMap<String, String>();
+		String hintValue = null;
+		boolean firstInsert = true;
+		boolean firstUpdate = true;
+		boolean firstDelete = true;
+		boolean firstTableName = true;
+		for(java.util.Map<String, String> option : hintOptions) {
+			//get
+			if(option.get("HINT").matches("\"/\\*NORMALIZED_HINT\\*/\"")) {
+				//String id = cid.replace(node.getComponent().getName() + "_", "");
+				//hintValue = "\"/*\"+" + table + "+\".\" + "  + "\"" + option.get("SQL_STMT")+ ".\"" + "+" +  id   +  "+\"*/\" " ;
+			}else if (option.get("HINT").matches("\"/\\*+.*\\*/\"")) {
+				hintValue = option.get("HINT");	
+			}
+			//set
+			if ("SELECT".equalsIgnoreCase(option.get("SQL_STMT"))){
+				if(firstInsert){
+					hintsValues.put("SELECT", hintValue) ;
+					firstInsert = false;
+				}else {
+					hintsValues.put("SELECT", hintsValues.get("SELECT") + "+" + hintValue) ;
+				}									
+			}
+		}
+	} 
+	//// hint options end ////
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -60,6 +92,12 @@
             }
 
             String sqlQuery = gm.buildSqlSelect((DbMapComponent) node, outputTable.getName());
+            
+            if (useHintOptions && hintsValues.get("SELECT")!= null) {
+	            StringBuffer tmpSqlQuery = new StringBuffer(sqlQuery);
+	            tmpSqlQuery.insert("SELECT".length()+1,hintsValues.get("SELECT").substring(1,hintsValues.get("SELECT").length()-1)+" ");
+	            sqlQuery = tmpSqlQuery.toString();
+            }
             
 				%>
 

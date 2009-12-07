@@ -328,26 +328,96 @@ for(Column colStmt:stmtStructure){
 	counterOuter ++;
 }
 
+///// hint options/////
+boolean useHintOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_HINT_OPTIONS__"));
+Map<String, String> hintsValues = null; 
+if (useHintOptions) {
+	List<Map<String, String>> hintOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HINT_OPTIONS__");
+	hintsValues = new HashMap<String, String>();
+	String hintValue = null;
+	boolean firstInsert = true;
+	boolean firstUpdate = true;
+	boolean firstDelete = true;
+	boolean firstTableName = true;
+	for(java.util.Map<String, String> option : hintOptions) {
+		//get
+		if(option.get("HINT").matches("\"/\\*NORMALIZED_HINT\\*/\"")) {
+			String id = cid.replace(node.getComponent().getName() + "_", "");
+			hintValue = "\"/*\"+" + dbtable + "+\".\" + "  + "\"" + option.get("SQL_STMT")+ ".\"" + "+" +  id   +  "+\"*/\" " ;
+		}else if (option.get("HINT").matches("\"/\\*+.*\\*/\"")) {
+			hintValue = option.get("HINT");	
+		}
+		//set
+		if ("INSERT".equalsIgnoreCase(option.get("SQL_STMT"))){
+			if(firstInsert){
+				hintsValues.put("INSERT", hintValue) ;
+				firstInsert = false;
+			}else {
+				hintsValues.put("INSERT", hintsValues.get("INSERT") + "+" + hintValue) ;
+			}									
+		}else if ("UPDATE".equalsIgnoreCase(option.get("SQL_STMT"))) {
+			if(firstUpdate){
+				hintsValues.put("UPDATE", hintValue) ;
+				firstUpdate = false;
+			}else {
+				hintsValues.put("UPDATE", hintsValues.get("UPDATE") + "+" + hintValue) ;
+			}
+		}else if ("DELETE".equalsIgnoreCase(option.get("SQL_STMT"))) {
+			if (firstDelete){
+				hintsValues.put("DELETE", hintValue) ;
+				firstDelete =false;
+			}else {
+				hintsValues.put("DELETE", hintsValues.get("DELETE") + "+" + hintValue) ;
+			}		
+		}else if ("TABLE_NAME".equalsIgnoreCase(option.get("SQL_STMT"))){
+			if (firstTableName){
+				hintsValues.put("TABLE_NAME", hintValue) ;
+				firstTableName = false;
+			}else {
+				hintsValues.put("TABLE_NAME", hintsValues.get("TABLE_NAME") + "+" + hintValue) ;
+			}
+		}
+	}
+} 
+//// hint options end ////
 
 	if(("INSERT").equals(dataAction)){
-	%>	
-	
-	
-String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" ("+select_query+")";
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
+%>	
+	String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" ("+select_query+")";
+<%	   
+		if (useHintOptions && hintsValues.get("INSERT") != null){ 
+%>	
+	    StringBuffer insertStringBuffer_<%=cid%> = new StringBuffer(insertQuery);
+	    insertStringBuffer_<%=cid%>.insert(insertQuery.indexOf("INSERT")+ "INSERT".length() + 1 , <%=hintsValues.get("INSERT")%> + " ");
+	    insertQuery =insertStringBuffer_<%=cid%>.toString(); 
+<%
+		}
+%>   
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
-	<%
+<%
 	}else if (("UPDATE").equals(dataAction)){
-	%>
+%>
+	String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
+<%
+		if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
+%>
+		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
+<%
+		}
+%>
+	;
+<%		if (useHintOptions && hintsValues.get("UPDATE") != null){
+%>
+	    StringBuffer updateStringBuffer_<%=cid%> = new StringBuffer(updateQuery);
+	    updateStringBuffer_<%=cid%>.insert(updateQuery.indexOf("UPDATE")+ "UPDATE".length() +1 , <%=hintsValues.get("UPDATE")%>  + " ");
+	    updateQuery =updateStringBuffer_<%=cid%>.toString(); 
+<%		
+		}
+%>
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 
-String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
-<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
-<%}%>
-;
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
-
-	<%		
+<%		
 	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 	%>
 
@@ -385,6 +455,14 @@ String deleteQuery = "DELETE  FROM ("+select_query+") " + tableName_<%=cid%>
 +"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
+<%
+	if(useHintOptions && hintsValues.get("DELETE") != null) {
+%>
+    StringBuffer deleteStringBuffer_<%=cid%> = new StringBuffer(deleteQuery);
+    deleteStringBuffer_<%=cid%>.insert(deleteQuery.indexOf("DELETE")+ "DELETE".length()+1 , <%=hintsValues.get("DELETE")%>  + " " );
+    deleteQuery =deleteStringBuffer_<%=cid%>.toString();  
+  <%
+  }%>
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 
 	<%		

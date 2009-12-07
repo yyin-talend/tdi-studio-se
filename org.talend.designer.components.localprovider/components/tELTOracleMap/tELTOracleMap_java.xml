@@ -182,7 +182,39 @@
       </PARAMETER>
 
    </PARAMETERS>
-
+    
+  <ADVANCED_PARAMETERS>
+      <PARAMETER
+      NAME="USE_HINT_OPTIONS"
+      FIELD="CHECK"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="HINT_OPTIONS"
+      FIELD="TABLE"
+      NUM_ROW="10"
+      NB_LINES="5"      
+	  SHOW_IF="USE_HINT_OPTIONS == 'true'"
+    >
+      <ITEMS>
+        <ITEM NAME="HINT" VALUE="&quot;/*+ */&quot;" FIELD="TEXT" />
+        <ITEM NAME="POSITION" VALUE="AFTER" FIELD="CLOSED_LIST">
+        	<ITEMS DEFAULT="AFTER">
+        		<ITEM NAME="AFTER"  VALUE="AFTER"/>
+        	</ITEMS>
+		</ITEM>
+        <ITEM NAME="SQL_STMT"  VALUE="true"  FIELD="CLOSED_LIST">
+        	<ITEMS DEFAULT="SELECT">
+        		<ITEM NAME="SELECT"  VALUE="SELECT"/>
+        	</ITEMS>
+		</ITEM>
+      </ITEMS>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>
+  
    <CODEGENERATION>
    </CODEGENERATION>
 

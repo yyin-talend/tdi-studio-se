@@ -223,6 +223,41 @@
     </PARAMETER>
 
   </PARAMETERS>
+  
+    <ADVANCED_PARAMETERS>
+      <PARAMETER
+      NAME="USE_HINT_OPTIONS"
+      FIELD="CHECK"
+      NUM_ROW="10"
+      SHOW_IF="DATA_ACTION != 'MERGE'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="HINT_OPTIONS"
+      FIELD="TABLE"
+      NUM_ROW="10"
+      NB_LINES="5"      
+	  SHOW_IF="USE_HINT_OPTIONS == 'true'"
+    >
+      <ITEMS>
+        <ITEM NAME="HINT" VALUE="&quot;/*+ */&quot;" FIELD="TEXT" />
+        <ITEM NAME="POSITION" VALUE="AFTER" FIELD="CLOSED_LIST">
+        	<ITEMS DEFAULT="AFTER">
+        		<ITEM NAME="AFTER"  VALUE="AFTER"/>
+        	</ITEMS>
+		</ITEM>
+        <ITEM NAME="SQL_STMT"  VALUE="true"  FIELD="CLOSED_LIST">
+        	<ITEMS DEFAULT="INSERT">
+        		<ITEM NAME="INSERT"  VALUE="INSERT"/>
+				<ITEM NAME="UPDATE"  VALUE="UPDATE"/>
+				<ITEM NAME="DELETE"  VALUE="DELETE"/>
+        	</ITEMS>
+		</ITEM>
+      </ITEMS>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
   </CODEGENERATION>
