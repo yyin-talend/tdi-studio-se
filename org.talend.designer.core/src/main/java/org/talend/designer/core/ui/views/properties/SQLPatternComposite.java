@@ -69,6 +69,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
@@ -92,6 +93,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
@@ -118,6 +120,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     private TableViewer tableViewer;
 
     private Text codeText;
+
+    private Map<SQLPatternItem, Project> sqlPatternAndProject = new HashMap<SQLPatternItem, Project>();
 
     /**
      * yzhang AdvancedContextComposite constructor comment.
@@ -533,6 +537,9 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     String path = dbName + "/" + RepositoryConstants.USER_DEFINED; //$NON-NLS-1$
 
                     repositoryService.createSqlpattern(path, true);
+                } else if (sqlPatternAndProject.get(patternItem) != null) {
+                    MessageDialog.openInformation(getShell(), "Information",
+                            "Forbid modification on sql template from reference project");
                 } else {
                     boolean answer = MessageDialog.openQuestion(getShell(), Messages.getString("SQLPatternComposite.TOS"), //$NON-NLS-1$
                             Messages.getString("SQLPatternComposite.modifySQLPattern")); //$NON-NLS-1$
@@ -742,6 +749,24 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             } else {
                 list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
                         ERepositoryObjectType.SQLPATTERNS, false);
+
+                // add reference sql pattern
+                List<Project> referencedProjects = ProjectManager.getInstance().getReferencedProjects();
+                for (Project project : referencedProjects) {
+                    List<IRepositoryObject> refList;
+                    refList = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(project,
+                            ERepositoryObjectType.SQLPATTERNS, false);
+                    for (IRepositoryObject repositoryObject : refList) {
+                        Item item = repositoryObject.getProperty().getItem();
+                        if (item instanceof SQLPatternItem) {
+                            if (!((SQLPatternItem) item).isSystem()) {
+                                list.add(repositoryObject);
+                                sqlPatternAndProject.put((SQLPatternItem) item, project);
+                            }
+                        }
+                    }
+                }
+
             }
             for (IRepositoryObject repositoryObject : list) {
                 Item item = repositoryObject.getProperty().getItem();
