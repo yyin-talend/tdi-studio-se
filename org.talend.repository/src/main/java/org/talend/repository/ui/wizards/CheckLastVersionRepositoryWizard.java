@@ -50,6 +50,8 @@ public abstract class CheckLastVersionRepositoryWizard extends RepositoryWizard 
                     || this instanceof DocumentationUpdateWizard) {
                 return super.isRepositoryObjectEditable() && isLastVersion(getVersionItem());
             }
+        }
+        if (getConnectionItem() != null) {
             return super.isRepositoryObjectEditable() && isLastVersion(getConnectionItem());
         }
         return super.isRepositoryObjectEditable();
