@@ -240,7 +240,7 @@ if(columnList != null && columnList.size() > 0) {
     	}
     	columns += ")";
     }
-    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
     if(convertToUppercase) {
         for(Column column : stmtStructure) {
             column.setColumnName(column.getColumnName().toUpperCase());

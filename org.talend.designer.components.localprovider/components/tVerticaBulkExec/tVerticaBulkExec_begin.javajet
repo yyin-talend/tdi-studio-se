@@ -65,7 +65,7 @@ List<Column> stmtStructure = null;
 StringBuilder insertColName = null;
 Manager manager = null;
 if(columnList != null && columnList.size()>0) {
-	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
 %>
 	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
 	    tableName_<%=cid%> = <%=table%>;

@@ -92,7 +92,7 @@ if(columnList != null && columnList.size() > 0) {
     String tableName = ElementParameterParser.getValue(node, "__TABLE__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     if(!("NONE").equals(tableAction)) {
-        List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+        List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
