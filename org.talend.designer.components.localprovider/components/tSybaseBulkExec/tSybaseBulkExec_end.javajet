@@ -25,7 +25,7 @@ boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"
 List<IMetadataColumn> columnList = getColumnList(node);
 if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {        
-        List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+        List<Column> stmtStructure =  getManager(dbmsId, cid).createColumnList(columnList, null);
         Manager manager = getManager(dbmsId, cid);
         %>
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
