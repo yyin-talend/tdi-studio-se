@@ -84,7 +84,7 @@ public class SnippetDropTargetListener implements TransferDropTargetListener {
     private RepositoryNode getSelection() {
         LocalSelectionTransfer transfer = (LocalSelectionTransfer) getTransfer();
         IStructuredSelection selection = (IStructuredSelection) transfer.getSelection();
-        if (selection != null) {
+        if (selection != null && selection.getFirstElement() instanceof RepositoryNode) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             return node;
         }

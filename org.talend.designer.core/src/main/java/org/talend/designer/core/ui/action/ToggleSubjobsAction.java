@@ -79,7 +79,6 @@ public class ToggleSubjobsAction extends Action {
                 if (process == null) {
                     continue;
                 }
-                process.getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).setValue(display);
                 List<? extends ISubjobContainer> subjobs = process.getSubjobContainers();
 
                 for (ISubjobContainer subjobContainer : subjobs) {

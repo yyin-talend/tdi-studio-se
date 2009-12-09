@@ -82,6 +82,10 @@ public class SQLEditorProposalUtil {
      */
     public IContentProposal[] getSQLEditorContentProposals(String content, int positionInt) {
         this.position = positionInt;
+        proposals = new ArrayList<IContentProposal>();
+        if (content.length() < positionInt) {
+            return new IContentProposal[0];
+        }
         contents[0] = content.substring(0, positionInt);
         contents[1] = content.substring(positionInt);
         proposals = new ArrayList<IContentProposal>();

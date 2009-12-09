@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.DisplaySubjobCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -63,7 +64,7 @@ public class DisplaySubjobAction extends SelectionAction {
             if (o instanceof NodePart) {
                 NodePart part = (NodePart) o;
                 Node node = (Node) part.getModel();
-                if (!(Boolean) node.getProcess().getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue()) {
+                if (!isDisplayWholeSubjob()) {
                     // if the subjobs are not displayed, no need to display this action.
                     return false;
                 }
@@ -76,7 +77,7 @@ public class DisplaySubjobAction extends SelectionAction {
             } else if (o instanceof SubjobContainerPart) {
                 SubjobContainerPart part = (SubjobContainerPart) o;
                 SubjobContainer subjob = (SubjobContainer) part.getModel();
-                if (!(Boolean) subjob.getProcess().getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue()) {
+                if (!isDisplayWholeSubjob()) {
                     // if the subjobs are not displayed, no need to display this action.
                     return false;
                 }
@@ -114,5 +115,9 @@ public class DisplaySubjobAction extends SelectionAction {
                 execute(displaySubjobCommand);
             }
         }
+    }
+
+    private boolean isDisplayWholeSubjob() {
+        return DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.DISPLAY_SUBJOBS);
     }
 }

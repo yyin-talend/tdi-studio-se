@@ -28,6 +28,7 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.utils.DesignerColorUtils;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -432,7 +433,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
      * @see org.talend.core.model.process.ISubjobContainer#isDisplayed()
      */
     public boolean isDisplayed() {
-        if (!(Boolean) getProcess().getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue()) {
+        if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.DISPLAY_SUBJOBS)) {
             return false;
         }
         return (Boolean) getPropertyValue(EParameterName.SUBJOB_DISPLAYED.getName());

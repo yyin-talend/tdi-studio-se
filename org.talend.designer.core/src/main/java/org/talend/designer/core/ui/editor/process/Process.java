@@ -301,7 +301,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setDisplayName(EParameterName.COMP_DEFAULT_FILE_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(
+        param.setValue(DesignerPlugin.getDefault().getPreferenceStore().getString(
                 TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
         param.setReadOnly(true);
         addElementParameter(param);
@@ -313,7 +313,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(
+        param.setValue(DesignerPlugin.getDefault().getPreferenceStore().getString(
                 TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
         param.setReadOnly(true);
         addElementParameter(param);
@@ -339,21 +339,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setNumRow(99);
         param.setShow(false);
         param.setValue(false);
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-
-        param = new ElementParameter(this);
-        param.setName(TalendDesignerPrefConstants.DISPLAY_SUBJOBS);
-        param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.CHECK);
-        param.setDisplayName(TalendDesignerPrefConstants.DISPLAY_SUBJOBS);
-        param.setNumRow(99);
-        param.setShow(false);
-        param
-                .setValue(DesignerPlugin.getDefault().getPluginPreferences().getBoolean(
-                        TalendDesignerPrefConstants.DISPLAY_SUBJOBS));
-        param.setReadOnly(true);
         addElementParameter(param);
 
         param = new ElementParameter(this);
