@@ -11,6 +11,7 @@ public class CLASS {
     public static final String POSTGRESQL = "POSTGRESQL";
     public static final String POSTGREPLUS = "POSTGREPLUS";
     public static final String SYBASE = "SYBASE";
+    public static final String INFORMIX = "INFORMIX";
 	private static Map<String, SCDManager> managerMap = new HashMap<String, SCDManager>();
     public class Column {
         private String labelName;
@@ -55,6 +56,54 @@ public class CLASS {
             return isKey;
         }
     }
+    
+    public class InfromixSCDManager extends SCDManager {
+    	
+    	  public InfromixSCDManager(String cid) {
+              super(cid);
+          }
+          protected String getDBMSId() {
+              return "informix_id";
+          }        
+          protected String getLProtectedChar() {
+              return "";
+          }
+          protected String getRProtectedChar() {
+              return "";
+          }
+          protected String getSequence(String surrogateKeySequence) {
+              return "+ \"" + surrogateKeySequence + "\" + \".nextval";
+          }
+          protected String getIncrement() {
+              return "";
+          }        
+          protected String getDate(String endDateValue) {
+              return "TO_DATE('\" + " + endDateValue + " + \"-01-01', 'yyyy-mm-dd')";
+          }        
+          protected String getYear(String endDateField) {
+              return "EXTRACT(YEAR FROM " + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+          }
+          protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+              if(activeFieldType == JavaTypesManager.STRING) {
+                  return "'true'";
+              } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                  return "'t'";
+              } else {
+                  return "1";
+              }            
+          }
+          protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+              if(activeFieldType == JavaTypesManager.STRING) {
+                  return "'false'";
+              } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                  return "'f'";
+              } else {
+                  return "0";
+              }            
+          }        
+    	
+    }
+    
     public class SCDConfiger {
         private String surrogateKeyField;
         private String surrogateKeyFieldType;
@@ -1802,6 +1851,8 @@ public class CLASS {
                 manager = new PostgresqlSCDManager(cid);
             } else if(dbType.equals(SYBASE)) {
                 manager = new SybaseSCDManager(cid);
+            } else if(dbType.equals(INFORMIX)) {
+                manager = new InfromixSCDManager(cid);
             }
             managerMap.put(cid, manager);
         }
