@@ -149,6 +149,9 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
                 isValid = MoveObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target);
                 break;
             case DND.DROP_DEFAULT:
+            case DND.Drop: // hywang
+                isValid = MoveObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target);
+                break;
             default:
                 isValid = false;
             }
