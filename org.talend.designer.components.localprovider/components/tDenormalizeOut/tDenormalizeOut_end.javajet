@@ -14,11 +14,10 @@ imports="
     java.util.HashMap
 "
 %>
-
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
+String cid = node.getUniqueName(); 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
 
@@ -67,7 +66,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 		%>
 java.util.List<OnRowsEndStruct<%=destination %>> result_list_<%=cid %> = new java.util.ArrayList<OnRowsEndStruct<%=destination %>>();
-
+if (denormalize_result_<%=cid %> != null) {
 <%
 	for(boolean b : denormalizeMergeFlags){
 		if(b){
@@ -192,12 +191,14 @@ while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
 			//gen loop end end
 		}//i f(denormalizeColumns.size() > 0|| groupColumns.size() > 0) end
 		%>
+}
 //generate result end
 globalMap.put("<%=destination %>", result_list_<%=cid %>);
-globalMap.put("<%=cid %>_NB_LINE", result_list_<%=cid %>.size());
+globalMap.put("<%=cid %>_NB_LINE", result_list_<%=cid %>.size()); 
 <%
 	}
 }
 %>
+
         
 
