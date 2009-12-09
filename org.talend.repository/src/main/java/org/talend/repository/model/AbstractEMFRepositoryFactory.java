@@ -299,9 +299,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = null;
         IFolder fullFolder = (IFolder) getFolder(project, type);
-        fullFolder = fullFolder.getFolder(new Path(relativeFolder));
-        serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, true, false, true);
-        return convert(serializableAllVersion);
+        if (fullFolder != null) { // hywang for double click folder NPE
+            fullFolder = fullFolder.getFolder(new Path(relativeFolder));
+            serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, true, false, true);
+            return convert(serializableAllVersion);
+        }
+        serializableAllVersion = new ArrayList<IRepositoryObject>();
+        return serializableAllVersion;
     }
 
     public boolean isNameAvailable(Project project, Item item, String name) throws PersistenceException {
