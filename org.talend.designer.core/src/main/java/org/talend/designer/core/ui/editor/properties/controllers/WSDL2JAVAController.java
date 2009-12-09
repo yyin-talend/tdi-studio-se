@@ -29,6 +29,9 @@ import org.apache.axis.wsdl.WSDL2Java;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -265,6 +268,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             try {
                 RoutineItem returnItem = createRoutine(path, label, javaFile);
                 syncRoutine(returnItem, true);
+                refreshProject();
             } catch (IllegalArgumentException e) {
                 // nothing need to do for the duplicate label, there don't overwrite it.
             } catch (Exception e) {
@@ -274,6 +278,16 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
 
         FilesUtils.removeFolder(dir, true);
 
+    }
+
+    private void refreshProject() {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+        try {
+            prj.build(IncrementalProjectBuilder.AUTO_BUILD, null);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     /**
