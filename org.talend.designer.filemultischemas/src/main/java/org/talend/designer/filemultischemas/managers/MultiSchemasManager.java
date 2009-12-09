@@ -634,7 +634,7 @@ public class MultiSchemasManager {
                     for (int i = 0; i < split.length; i++) {
                         split[i] = split[i].trim();
                         if (split[i].startsWith(TalendTextUtils.getQuoteChar())
-                                && split[i].endsWith(TalendTextUtils.getQuoteChar())) {
+                                && split[i].endsWith(TalendTextUtils.getQuoteChar()) && split[i].length() - 1 > 0) {
                             split[i] = split[i].substring(1, split[i].length() - 1);
                         }
                         String varName = ContextParameterUtils.getVariableFromCode(split[i]);
