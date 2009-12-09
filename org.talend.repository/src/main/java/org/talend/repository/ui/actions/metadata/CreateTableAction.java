@@ -228,7 +228,9 @@ public class CreateTableAction extends AbstractCreateTableAction {
                             return;
                         }
                     }
-                    setEnabled(true);
+                    if (isLastVersion(node)) {
+                        setEnabled(true);
+                    }
                     return;
                 }
 
@@ -244,7 +246,9 @@ public class CreateTableAction extends AbstractCreateTableAction {
                         || ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
                     setText(CREATE_LABEL);
                     collectChildNames(node);
-                    setEnabled(true);
+                    if (isLastVersion(node)) {
+                        setEnabled(true);
+                    }
                     return;
                 }
                 // if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {

@@ -266,6 +266,9 @@ public class EditPropertiesAction extends AContextualAction {
                         canWork = false;
                         break;
                     }
+                    if (canWork && !isLastVersion(node)) {
+                        canWork = false;
+                    }
                 }
             }
         }

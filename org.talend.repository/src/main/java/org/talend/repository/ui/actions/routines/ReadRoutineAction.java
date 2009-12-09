@@ -47,6 +47,7 @@ public class ReadRoutineAction extends AbstractRoutineAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
+        super.init(viewer, selection);
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
@@ -63,9 +64,10 @@ public class ReadRoutineAction extends AbstractRoutineAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     protected void doRun() {
-        RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
-        RoutineItem routineItem = (RoutineItem) node.getObject().getProperty().getItem();
-
+        if (repositoryNode == null && getSelection() != null) {
+            repositoryNode = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
+        }
+        RoutineItem routineItem = (RoutineItem) repositoryNode.getObject().getProperty().getItem();
         try {
             openRoutineEditor(routineItem, true);
         } catch (PartInitException e) {

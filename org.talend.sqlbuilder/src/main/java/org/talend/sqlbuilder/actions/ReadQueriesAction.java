@@ -41,6 +41,8 @@ import org.talend.sqlbuilder.util.TextUtil;
  */
 public class ReadQueriesAction extends AContextualAction {
 
+    private RepositoryNode repositoryNode;
+
     public ReadQueriesAction() {
         super();
         setText(Messages.getString("EditQueriesAction.textOpenQueries")); //$NON-NLS-1$
@@ -49,15 +51,17 @@ public class ReadQueriesAction extends AContextualAction {
 
     protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
-        RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+        if (repositoryNode == null && selection != null) {
+            repositoryNode = (RepositoryNode) selection.getFirstElement();
+        }
 
         ConnectionParameters connParameters = new ConnectionParameters();
-        if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
-            connParameters.setRepositoryName(node.getObject().getLabel());
-            connParameters.setRepositoryId(node.getObject().getId());
+        if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            connParameters.setRepositoryName(repositoryNode.getObject().getLabel());
+            connParameters.setRepositoryId(repositoryNode.getObject().getId());
             connParameters.setQuery(""); //$NON-NLS-1$
-        } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
-            QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) node.getObject();
+        } else if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
+            QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) repositoryNode.getObject();
             DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
             connParameters.setRepositoryName(parent.getProperty().getLabel());
             connParameters.setRepositoryId(parent.getProperty().getId());
@@ -74,27 +78,30 @@ public class ReadQueriesAction extends AContextualAction {
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
         dial.open();
-        refresh(node);
+        refresh(repositoryNode);
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
             Object o = selection.getFirstElement();
-            RepositoryNode node = (RepositoryNode) o;
+            repositoryNode = (RepositoryNode) o;
 
-            switch (node.getType()) {
+            switch (repositoryNode.getType()) {
             case REPOSITORY_ELEMENT:
                 IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+                if (factory.getStatus(repositoryNode.getObject()) == ERepositoryStatus.DELETED) {
                     canWork = false;
                 }
-                if (node.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
-                        && node.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY) {
+                if (repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
+                        && repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY) {
                     canWork = false;
                 }
                 break;
             default:
+                canWork = false;
+            }
+            if (!isLastVersion(repositoryNode)) {
                 canWork = false;
             }
         }

@@ -24,6 +24,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -160,7 +161,7 @@ public final class ConnectionContextHelper {
 
         ISelection selection = getRepositoryContext(contextName, false);
 
-        if (selection == null) {
+        if (selection == null||selection.isEmpty()) {
             return null;
         }
 
@@ -418,11 +419,14 @@ public final class ConnectionContextHelper {
         if (selection == null || selection.isEmpty()) {
             return false;
         }
-
-        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, selection, false);
-        WizardDialog dlg = new WizardDialog(activeShell, contextWizard);
-        if (dlg.open() == Window.OK) {
-            return true;
+        Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+        if (firstElement instanceof RepositoryNode) {
+            ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, (RepositoryNode) firstElement,
+                    false);
+            WizardDialog dlg = new WizardDialog(activeShell, contextWizard);
+            if (dlg.open() == Window.OK) {
+                return true;
+            }
         }
         return false;
     }

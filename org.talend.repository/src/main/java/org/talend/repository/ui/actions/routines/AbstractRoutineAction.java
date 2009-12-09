@@ -13,6 +13,8 @@
 package org.talend.repository.ui.actions.routines;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -28,6 +30,7 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -37,6 +40,8 @@ import org.talend.repository.ui.actions.AContextualAction;
  * 
  */
 public abstract class AbstractRoutineAction extends AContextualAction {
+
+    protected RepositoryNode repositoryNode;
 
     /**
      * DOC smallet Comment method "openRoutineEditor".
@@ -99,4 +104,14 @@ public abstract class AbstractRoutineAction extends AContextualAction {
         return talendEditor;
 
     }
+
+    public void init(TreeViewer viewer, IStructuredSelection selection) {
+        setEnabled(false);
+        Object o = selection.getFirstElement();
+        if (selection.isEmpty() || selection.size() != 1 || !(o instanceof RepositoryNode)) {
+            return;
+        }
+        repositoryNode = (RepositoryNode) o;
+    }
+
 }

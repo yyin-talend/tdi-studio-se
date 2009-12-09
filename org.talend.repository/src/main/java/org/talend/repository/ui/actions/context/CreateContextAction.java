@@ -29,7 +29,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.context.ContextWizard;
 
 /**
@@ -38,7 +37,7 @@ import org.talend.repository.ui.wizards.context.ContextWizard;
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class CreateContextAction extends AContextualAction {
+public class CreateContextAction extends AbstractConextAction {
 
     private static final String CREATE_LABEL = Messages.getString("CreateContextAction.createContext"); //$NON-NLS-1$
 
@@ -89,7 +88,7 @@ public class CreateContextAction extends AContextualAction {
 
     @Override
     protected void doRun() {
-        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), true, getSelection(), false);
+        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), true, repositoryNode, false);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();
 

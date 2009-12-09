@@ -183,7 +183,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
             collectChildNames(node);
             break;
         case REPOSITORY_ELEMENT:
-            if (factory.isPotentiallyEditable(node.getObject())) {
+            if (factory.isPotentiallyEditable(node.getObject()) && isLastVersion(node)) {
                 this.setText(EDIT_LABEL);
                 this.setImageDescriptor(defaultImage);
                 collectSiblingNames(node);

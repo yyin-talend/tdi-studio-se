@@ -35,7 +35,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -69,8 +68,6 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
 
     private IContextManager contextManager;
 
-    private ISelection selection;
-
     String oldSource;
 
     ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();;
@@ -80,7 +77,7 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
      * this constructor only for context mode. (feature 2449)
      */
     public ContextWizard(final String contextName, boolean creation, ISelection selection, final List<IContextParameter> paramList) {
-        this(PlatformUI.getWorkbench(), creation, selection, false);
+        this(PlatformUI.getWorkbench(), creation, (RepositoryNode) ((IStructuredSelection) selection).getFirstElement(), false);
         initContextMode(contextName, paramList);
     }
 
@@ -117,10 +114,10 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
      * @param strings
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public ContextWizard(IWorkbench workbench, boolean creation, ISelection selection, boolean forceReadOnly) {
+    public ContextWizard(IWorkbench workbench, boolean creation, RepositoryNode repositoryNode, boolean forceReadOnly) {
         super(workbench, creation, forceReadOnly);
-        pathToSave = getPath(selection);
-        this.selection = selection;
+        pathToSave = getPath(repositoryNode);
+
         setWindowTitle(""); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.CONTEXT_WIZ));
         setNeedsProgressMonitor(true);
@@ -137,18 +134,23 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
 
             contextManager = new JobContextManager();
         } else {
-            RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
-            RepositoryObject object = (RepositoryObject) node.getObject();
-            setRepositoryObject(object);
-            isRepositoryObjectEditable();
-            initLockStrategy();
 
-            contextItem = (ContextItem) object.getProperty().getItem();
-            oldSource = contextItem.getProperty().getLabel();
+            RepositoryNode node = repositoryNode;
+            if (node == null && selection != null) {
+                node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
+            }
+            if (node != null) {
+                RepositoryObject object = (RepositoryObject) node.getObject();
+                setRepositoryObject(object);
+                isRepositoryObjectEditable();
+                initLockStrategy();
 
-            contextProperty = contextItem.getProperty();
-            contextManager = new JobContextManager(contextItem.getContext(), contextItem.getDefaultContext());
+                contextItem = (ContextItem) object.getProperty().getItem();
+                oldSource = contextItem.getProperty().getLabel();
 
+                contextProperty = contextItem.getProperty();
+                contextManager = new JobContextManager(contextItem.getContext(), contextItem.getDefaultContext());
+            }
         }
         initLockStrategy();
     }
@@ -258,15 +260,15 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
         this.selection = selection2;
     }
 
-    private IPath getPath(ISelection selection) {
-        if (selection != null) {
-            RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
-
-            IPath path;
-            if (node != null && (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)) {
-                path = RepositoryNodeUtilities.getPath(node);
-                return path;
-            }
+    private IPath getPath(RepositoryNode repositoryNode) {
+        RepositoryNode node = repositoryNode;
+        if (node == null && selection != null) {
+            node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
+        }
+        IPath path;
+        if (node != null && (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)) {
+            path = RepositoryNodeUtilities.getPath(node);
+            return path;
         }
 
         return new Path(""); //$NON-NLS-1$
@@ -274,22 +276,6 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
 
     public ContextItem getContextItem() {
         return this.contextItem;
-    }
-
-    @Override
-    public Item getVersionItem() {
-        if (this.selection != null) {
-            RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
-            if (node != null) {
-                RepositoryObject object = (RepositoryObject) node.getObject();
-                if (object != null) {
-                    return object.getProperty().getItem();
-                } else if (this.creation) {
-                    return this.contextItem;
-                }
-            }
-        }
-        return null;
     }
 
 }

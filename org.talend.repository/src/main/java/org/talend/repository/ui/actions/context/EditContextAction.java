@@ -22,10 +22,10 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.context.ContextWizard;
 
 /**
@@ -34,7 +34,7 @@ import org.talend.repository.ui.wizards.context.ContextWizard;
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class EditContextAction extends AContextualAction {
+public class EditContextAction extends AbstractConextAction {
 
     private static final String EDIT_LABEL = Messages.getString("EditContextAction.editContext"); //$NON-NLS-1$
 
@@ -58,6 +58,8 @@ public class EditContextAction extends AContextualAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        super.init(viewer, selection);
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
             Object o = selection.getFirstElement();
@@ -71,7 +73,7 @@ public class EditContextAction extends AContextualAction {
             default:
                 canWork = false;
             }
-            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+            if (node.getObject() != null && !factory.isPotentiallyEditable(node.getObject()) || !isLastVersion(node)) {
                 canWork = false;
             }
         }
@@ -84,7 +86,10 @@ public class EditContextAction extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     protected void doRun() {
-        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, getSelection(), false);
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
+        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, repositoryNode, false);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();
 
@@ -97,4 +102,5 @@ public class EditContextAction extends AContextualAction {
     public Class getClassForDoubleClick() {
         return ContextItem.class;
     }
+
 }

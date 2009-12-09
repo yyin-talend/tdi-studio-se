@@ -21,6 +21,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -49,6 +50,7 @@ public class EditRoutineAction extends AbstractRoutineAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
+        super.init(viewer, selection);
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {
@@ -56,7 +58,8 @@ public class EditRoutineAction extends AbstractRoutineAction {
         }
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            if (node.getObjectType() != ERepositoryObjectType.ROUTINES || !factory.isPotentiallyEditable(node.getObject())) {
+            if (node.getObjectType() != ERepositoryObjectType.ROUTINES
+                    || !ProjectManager.getInstance().isInCurrentMainProject(node) || !isLastVersion(node)) {
                 canWork = false;
             }
         }
@@ -69,12 +72,14 @@ public class EditRoutineAction extends AbstractRoutineAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     protected void doRun() {
-        RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
-        RoutineItem routineItem = (RoutineItem) node.getObject().getProperty().getItem();
+        if (repositoryNode == null) {
+            repositoryNode = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
+        }
+        RoutineItem routineItem = (RoutineItem) repositoryNode.getObject().getProperty().getItem();
 
         try {
             openRoutineEditor(routineItem, false);
-            refresh(node);
+            refresh(repositoryNode);
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (SystemException e) {

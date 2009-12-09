@@ -47,6 +47,8 @@ import org.talend.sqlbuilder.util.TextUtil;
  */
 public class EditQueriesAction extends AContextualAction {
 
+    private RepositoryNode repositoryNode;
+
     public EditQueriesAction() {
         super();
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_QUERY_ICON));
@@ -54,31 +56,33 @@ public class EditQueriesAction extends AContextualAction {
 
     protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
-        RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+        if (repositoryNode == null && selection != null) {
+            repositoryNode = (RepositoryNode) selection.getFirstElement();
+        }
 
         ConnectionParameters connParameters = new ConnectionParameters();
-        if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
-            connParameters.setRepositoryName(node.getObject().getLabel());
-            connParameters.setRepositoryId(node.getObject().getId());
+        if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            connParameters.setRepositoryName(repositoryNode.getObject().getLabel());
+            connParameters.setRepositoryId(repositoryNode.getObject().getId());
             connParameters.setQuery(""); //$NON-NLS-1$
-        } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
-            QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) node.getObject();
+        } else if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
+            QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) repositoryNode.getObject();
             DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
             connParameters.setRepositoryName(parent.getProperty().getLabel());
             connParameters.setRepositoryId(parent.getProperty().getId());
             connParameters.setQueryObject(queryRepositoryObject.getQuery());
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
-        } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
-            DatabaseConnectionItem connectionItem = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
+        } else if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+            DatabaseConnectionItem connectionItem = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
             connParameters.setRepositoryName(connectionItem.getProperty().getLabel());
             connParameters.setRepositoryId(connectionItem.getProperty().getId());
-            connParameters.setMetadataTable((MetadataTableRepositoryObject) node.getObject());
+            connParameters.setMetadataTable((MetadataTableRepositoryObject) repositoryNode.getObject());
             connParameters.setQuery(""); //$NON-NLS-1$
         }
 
         Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
-        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, node);
+        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, repositoryNode);
 
         connParameters.setNodeReadOnly(false);
         connParameters.setFromRepository(true);
@@ -96,26 +100,26 @@ public class EditQueriesAction extends AContextualAction {
         if (canWork) {
 
             Object o = selection.getFirstElement();
-            RepositoryNode node = (RepositoryNode) o;
-            switch (node.getType()) {
+            repositoryNode = (RepositoryNode) o;
+            switch (repositoryNode.getType()) {
             case REPOSITORY_ELEMENT:
-                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED
-                        || factory.getStatus(node.getObject()) == ERepositoryStatus.LOCK_BY_OTHER) {
+                if (factory.getStatus(repositoryNode.getObject()) == ERepositoryStatus.DELETED
+                        || factory.getStatus(repositoryNode.getObject()) == ERepositoryStatus.LOCK_BY_OTHER) {
                     canWork = false;
                 }
-                if (!isUnderDBConnection(node)) {
+                if (!isUnderDBConnection(repositoryNode)) {
                     canWork = false;
                 }
-                if (node.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
-                        && node.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY
-                        && node.getObjectType() != ERepositoryObjectType.METADATA_CON_TABLE) {
+                if (repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
+                        && repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY
+                        && repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CON_TABLE) {
                     canWork = false;
                 } else {
                     // for cdc
                     if (PluginChecker.isCDCPluginLoaded()) {
                         ICDCProviderService cdcService = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
                                 ICDCProviderService.class);
-                        if (cdcService != null && cdcService.isSubscriberTableNode(node)) {
+                        if (cdcService != null && cdcService.isSubscriberTableNode(repositoryNode)) {
                             canWork = false;
                             break;
                         }
@@ -123,7 +127,7 @@ public class EditQueriesAction extends AContextualAction {
                     IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
                             IRepositoryService.class);
                     IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-                    if (repFactory.isPotentiallyEditable(node.getObject())) {
+                    if (repFactory.isPotentiallyEditable(repositoryNode.getObject())) {
                         this.setText(Messages.getString("EditQueriesAction.textEditQueries")); //$NON-NLS-1$
                     } else {
                         this.setText(Messages.getString("EditQueriesAction.textOpenQueries")); //$NON-NLS-1$
@@ -133,7 +137,8 @@ public class EditQueriesAction extends AContextualAction {
             default:
                 canWork = false;
             }
-            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+            if (canWork
+                    && (!ProjectManager.getInstance().isInCurrentMainProject(repositoryNode) || !isLastVersion(repositoryNode))) {
                 canWork = false;
             }
         }

@@ -23,7 +23,6 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.context.ContextWizard;
 
 /**
@@ -32,7 +31,7 @@ import org.talend.repository.ui.wizards.context.ContextWizard;
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class ReadContextAction extends AContextualAction {
+public class ReadContextAction extends AbstractConextAction {
 
     private static final String LABEL = Messages.getString("EditContextAction.readContext"); //$NON-NLS-1$
 
@@ -54,6 +53,7 @@ public class ReadContextAction extends AContextualAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
+        super.init(viewer, selection);
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
             Object o = selection.getFirstElement();
@@ -77,7 +77,10 @@ public class ReadContextAction extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     protected void doRun() {
-        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, getSelection(), true);
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
+        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, repositoryNode, true);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();
 
