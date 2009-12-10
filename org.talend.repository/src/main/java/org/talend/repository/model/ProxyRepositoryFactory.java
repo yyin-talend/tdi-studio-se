@@ -571,8 +571,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @seeorg.talend.repository.model.IProxyRepositoryFactory#deleteObjectPhysical(org.talend.core.model.repository.
      * IRepositoryObject)
      */
-    public void forceDeleteObjectPhysical(IRepositoryObject objToDelete) throws PersistenceException {
-        this.repositoryFactoryFromProvider.deleteObjectPhysical(projectManager.getCurrentProject(), objToDelete);
+    public void forceDeleteObjectPhysical(IRepositoryObject objToDelete, String version) throws PersistenceException {
+        this.repositoryFactoryFromProvider.deleteObjectPhysical(projectManager.getCurrentProject(), objToDelete, version);
         // i18n
         // log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
@@ -586,11 +586,22 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * IRepositoryObject)
      */
     public void deleteObjectPhysical(IRepositoryObject objToDelete) throws PersistenceException {
-        deleteObjectPhysical(projectManager.getCurrentProject(), objToDelete);
+        deleteObjectPhysical(objToDelete, null);
+    }
+
+    public void deleteObjectPhysical(IRepositoryObject objToDelete, String version) throws PersistenceException {
+        deleteObjectPhysical(projectManager.getCurrentProject(), objToDelete, version);
     }
 
     public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete) throws PersistenceException {
-        this.repositoryFactoryFromProvider.deleteObjectPhysical(project, objToDelete);
+        deleteObjectPhysical(project, objToDelete, null);
+    }
+
+    public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete, String version) throws PersistenceException {
+        if (project == null || objToDelete == null) {
+            return;
+        }
+        this.repositoryFactoryFromProvider.deleteObjectPhysical(project, objToDelete, version);
         // i18n
         // log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };

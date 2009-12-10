@@ -172,6 +172,8 @@ public interface IRepositoryFactory {
      */
     public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete) throws PersistenceException;
 
+    public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete, String version) throws PersistenceException;
+
     /**
      * Restore a logically deleted object. <code>isDeleted</code> on this object will now returned <code>false</code>.
      * 
