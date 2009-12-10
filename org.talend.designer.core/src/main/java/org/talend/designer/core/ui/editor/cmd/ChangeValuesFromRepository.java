@@ -239,7 +239,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
+                if (("TYPE".equals(repositoryValue) || param.isShow(elem.getElementParameters())) && (repositoryValue != null)
                         && (!param.getName().equals(propertyTypeName))) {
                     IElementParameter relatedPropertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
                             param.getCategory());
