@@ -23,7 +23,7 @@ String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
 boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
-
+boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
 if (useExistingConnection) {
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String connectionName = "conn_" + connection;
@@ -48,6 +48,13 @@ if (useExistingConnection) {
 	<%
 }
 
+	if (useTransaction) {
+%>
+	if(connection_<%=cid%>.getAutoCommit()) {
+	    connection_<%=cid%>.setAutoCommit(false);
+	}
+<%
+	}
 %>
 java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call " + <%=spName%> + "(
 <%

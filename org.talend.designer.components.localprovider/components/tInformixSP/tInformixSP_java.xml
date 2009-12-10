@@ -40,6 +40,7 @@
       SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:INFORMIX"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
     
     <PARAMETER
@@ -186,6 +187,14 @@
         </ITEM>
       </ITEMS>
     </PARAMETER>
+    
+    	<PARAMETER
+      NAME="USE_TRANSACTION"
+      FIELD="CHECK"
+      NUM_ROW="110"
+    >       
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER> 
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>

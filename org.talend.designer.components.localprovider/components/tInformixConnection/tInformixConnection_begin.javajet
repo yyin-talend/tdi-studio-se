@@ -28,7 +28,16 @@ imports="
 		public String getDirverClassName(INode node){
 			return "com.informix.jdbc.IfxDriver";
 		}
-				
+		
+		public void setAutoCommit(INode node) {
+			boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
+			boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
+			if (useTransaction) {
+%>
+			conn_<%=cid%>.setAutoCommit(<%=setAutoCommit%>);
+<%
+			}
+		}		
 	}//end class
 	
 	connUtil = new ConnectionUtil();

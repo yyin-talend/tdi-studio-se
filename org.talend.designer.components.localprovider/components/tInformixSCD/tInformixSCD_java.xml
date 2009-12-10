@@ -214,6 +214,14 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="USE_TRANSACTION"
+      FIELD="CHECK"
+      NUM_ROW="75"
+    >       
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER> 
+
     <PARAMETER
       NAME="USE_L0"
       FIELD="CHECK"

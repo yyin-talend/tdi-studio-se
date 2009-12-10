@@ -55,7 +55,7 @@ java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
 
 boolean whetherReject_<%=cid%> = false;
 <%
-if(!useExistingConnection && useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
+if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
 
 int commitEvery_<%=cid%> = <%=commitEvery%>;

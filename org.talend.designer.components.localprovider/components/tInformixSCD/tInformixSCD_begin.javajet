@@ -49,6 +49,7 @@ skeleton="../templates/slowly_change_dimension.skeleton"
 	    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	    boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
 	    boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+	    boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
 	    String dbType = INFORMIX;
 	    SCDConfiger scdConfiger = getSCDConfiger(node);
 	    SCDManager scdManager = getSCDManager(cid, dbType);
@@ -88,6 +89,13 @@ skeleton="../templates/slowly_change_dimension.skeleton"
 
 <%        
     }
+	if (useTransaction) {
+%>
+	if(connection_<%=cid%>.getAutoCommit()) {
+	    connection_<%=cid%>.setAutoCommit(false);
+	}
+<%
+	}
 %>
     String tableName_<%=cid%> = <%=dbtable%>;
     java.sql.Timestamp timestamp_<%=cid%> = null;
