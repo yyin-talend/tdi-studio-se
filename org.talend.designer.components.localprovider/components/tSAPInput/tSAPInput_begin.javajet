@@ -118,6 +118,10 @@ String language = ElementParameterParser.getValue(node, "__LANGUAGE__");
 String hostname = ElementParameterParser.getValue(node, "__HOSTNAME__");
 String systemnumber = ElementParameterParser.getValue(node, "__SYSTEMNUMBER__");
 
+String serverType = ElementParameterParser.getValue(node,"__SERVERTYPE__");
+String systemId = ElementParameterParser.getValue(node,"__SYSTEMID__");
+String groupName = ElementParameterParser.getValue(node,"__GROUPNAME__");
+
 String functionName = ElementParameterParser.getValue(node, "__SAP_FUNCTION__");
 
 String iterate_out_type = ElementParameterParser.getValue(node, "__SAP_ITERATE_OUT_TYPE__");
@@ -138,6 +142,7 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 <%if(useExistingConn){%>	    
 	  client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("conn_<%=connection %>");	
 <%}else{%>
+	<%if("ApplicationServer".equals(serverType)){%>
 	  //Create a client connection to a dedicated R/3 system
 	  client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
 					            				 <%=userid %>,   	// userid
@@ -145,6 +150,16 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 					            				 <%=language %>,    // language
 					            				 <%=hostname %>,    // host name
 					            				 <%=systemnumber %> );      // system number
+	<%}else{%>
+	//Create a client connection to Message Server 
+	client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP client
+			            				 <%=userid %>,   	// userid
+			            				 <%=password %>,    // password
+			            				 <%=language %>,    // language
+			            				 <%=hostname %>,    // host name
+			            				 <%=systemId %>,    // system ID,defined in sapmsg.ini
+			            				 <%=groupName%> );  // group name    
+	<%}%>
 	        				 
 		// Open the connection
 		client_<%=cid %>.connect();
