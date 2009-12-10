@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.ui.celleditor.ExtendedComboBoxCellEditor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -78,6 +79,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -751,22 +753,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                         ERepositoryObjectType.SQLPATTERNS, false);
 
                 // add reference sql pattern
-                List<Project> referencedProjects = ProjectManager.getInstance().getReferencedProjects();
-                for (Project project : referencedProjects) {
-                    List<IRepositoryObject> refList;
-                    refList = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(project,
-                            ERepositoryObjectType.SQLPATTERNS, false);
-                    for (IRepositoryObject repositoryObject : refList) {
-                        Item item = repositoryObject.getProperty().getItem();
-                        if (item instanceof SQLPatternItem) {
-                            if (!((SQLPatternItem) item).isSystem()) {
-                                list.add(repositoryObject);
-                                sqlPatternAndProject.put((SQLPatternItem) item, project);
-                            }
-                        }
-                    }
-                }
-
+                addReferencedSQLTemplate(list, ProjectManager.getInstance().getCurrentProject());
             }
             for (IRepositoryObject repositoryObject : list) {
                 Item item = repositoryObject.getProperty().getItem();
@@ -785,6 +772,34 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         }
 
         return patternInfor;
+    }
+
+    private void addReferencedSQLTemplate(List<IRepositoryObject> list, Project project) {
+        try {
+            List<ProjectReference> referencedProjects = (List<ProjectReference>) project.getEmfProject().getReferencedProjects();
+            for (ProjectReference referenced : referencedProjects) {
+                org.talend.core.model.properties.Project referencedEmfProject = referenced.getReferencedProject();
+                EList refeInRef = referencedEmfProject.getReferencedProjects();
+                Project newProject = new Project(referencedEmfProject);
+                if (refeInRef != null && refeInRef.size() > 0) {
+                    addReferencedSQLTemplate(list, newProject);
+                }
+                List<IRepositoryObject> refList;
+                refList = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(newProject,
+                        ERepositoryObjectType.SQLPATTERNS, false);
+                for (IRepositoryObject repositoryObject : refList) {
+                    Item item = repositoryObject.getProperty().getItem();
+                    if (item instanceof SQLPatternItem) {
+                        if (!((SQLPatternItem) item).isSystem()) {
+                            list.add(repositoryObject);
+                            sqlPatternAndProject.put((SQLPatternItem) item, project);
+                        }
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     private ILabelProvider comboboxCellEditorLabelProvider = new ILabelProvider() {
