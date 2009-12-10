@@ -15,6 +15,7 @@
 	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.process.INode
 	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.utils.TalendTextUtils
 	"
 %>
 <%
@@ -84,106 +85,7 @@
 	}
 %>
 
-<%
-            //this is a inner class to process the schema issue.
-            class SchemaUtil {
-
-                // keep all schema configuration
-                private List<SAPSchema> sapSchemaList = new ArrayList<SAPSchema>();
-
-                class SAPSchema {
-
-                    public String getSchemaName() {
-                        return schemaName;
-                    }
-
-                    public String getSapParameterType() {
-                        return sapParameterType;
-                    }
-
-                    public String getSapTableName() {
-                        return sapTableName;
-                    }
-
-                    public String getSapParameterName() {
-                        return sapParameterName;
-                    }
-
-                    public String getSapParameterValue() {
-                        return sapParameterValue;
-                    }
-                    
-                    public String getRowNumber() {
-                        return rowNumber;
-                    }                    
-
-                    String schemaName;
-
-                    String sapParameterType;
-
-                    String sapTableName;
-
-                    String sapParameterName;
-
-                    String sapParameterValue;
-                    
-                    String rowNumber;
-
-                    public SAPSchema(String schemaName, String sapParameterType, String sapTableName, String sapParameterName,
-                            String sapParameterValue, String rowNumber) {
-
-                        this.schemaName = schemaName;
-
-                        this.sapParameterType = sapParameterType;
-
-                        this.sapTableName = sapTableName;
-
-                        this.sapParameterName = sapParameterName;
-
-                        this.sapParameterValue = sapParameterValue;
-                        
-                        this.rowNumber = rowNumber;
-                    }
-
-                }
-
-                // step_1
-                public void addSAPSchema(String schemaName, String sapParameterType, String sapTableName,
-                        String sapParameterName, String sapParameterValue, String rowNumber) {
-                    SAPSchema newSAPSchema = new SAPSchema(schemaName, sapParameterType, sapTableName, sapParameterName,
-                            sapParameterValue, rowNumber);
-
-                    // process List
-                    sapSchemaList.add(newSAPSchema);
-                }
-
-                // step_2
-                // <tableName, sameType_sameTable_schema>
-                public Map<String, List<SAPSchema>> extractSchemaMap(String sapParameterType) {
-                    Map<String, List<SAPSchema>> map = new HashMap<String, List<SAPSchema>>();
-                    for (SAPSchema sapSchema : sapSchemaList) {
-
-                        // filter the sapParameterType first
-                        if (!sapSchema.getSapParameterType().equals(sapParameterType)) {
-                            continue;
-                        }
-
-                        String key = sapSchema.getSapTableName();
-                        List<SAPSchema> tableNamekeyList = map.get(key);
-                        if (tableNamekeyList == null) {
-                            List<SAPSchema> newTableNamekeyList = new ArrayList<SAPSchema>();
-                            newTableNamekeyList.add(sapSchema);
-                            map.put(key, newTableNamekeyList);
-
-                        } else {
-                            tableNamekeyList.add(sapSchema);
-                        }
-                    }
-                    return map;
-                }
-            }
-            
-            
+<%         
 List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
 
 List<Map<String, String>> tempSchemaBufferBaseOnLink = new ArrayList<Map<String, String>>();
@@ -202,51 +104,7 @@ if(conns != null && conns.size() > 0){
 }
 schemas =  tempSchemaBufferBaseOnLink;
 
-/*            
-            //intial the schema in buffer
-            SchemaUtil schemaUtil = new SchemaUtil();
-            
-			List<Map<String, String>> sapMapping = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MAPPING_OUTPUT__");            
-            
-			for(Map<String, String> configRow : sapMapping){			
-				schemaUtil.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), configRow.get("SAP_PARAMETER_VALUE"));
-				if(false){
-				System.out.println(configRow.get("SCHEMA_COLUMN") + " " + configRow.get("SAP_PARAMETER_TYPE") + " " + configRow.get("SAP_TABLE_NAME") + " " + configRow.get("SAP_PARAMETER_NAME") + " " + configRow.get("SAP_PARAMETER_VALUE"));
-				}
-			}
-*/			
 
-            //intial the input configuration in buffer
-            SchemaUtil schemaUtil_input = new SchemaUtil();			
-			
-			List<Map<String, String>> sapMapping_input = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MAPPING_INPUT__");            
-            
-			for(Map<String, String> configRow : sapMapping_input){
-				
-				String parameterType = configRow.get("SAP_PARAMETER_TYPE");
-				if("input_table".equals(parameterType) || "table_input".equals(parameterType)) { // table can support multi-row
-				
-    				String multiValues = configRow.get("SAP_PARAMETER_VALUE");// the multi-value delimited by ,
-    				if(multiValues != null && multiValues.indexOf(",") != -1){
-    					String[] values = multiValues.split(",");    					
-    					for(int k = 0; k < values.length; k++){
-    						//add: entry_1
-    						schemaUtil_input.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), values[k], k+"");
-    					}
-    				}else{
-    						//add: entry_2
-    						schemaUtil_input.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), configRow.get("SAP_PARAMETER_VALUE"), configRow.get("SAP_TABLE_ROWNUMBER"));
-    				}
-				
-				}else {
-					//add: entry_3
-					schemaUtil_input.addSAPSchema(configRow.get("SCHEMA_COLUMN"), configRow.get("SAP_PARAMETER_TYPE"), configRow.get("SAP_TABLE_NAME"), configRow.get("SAP_PARAMETER_NAME"), configRow.get("SAP_PARAMETER_VALUE"), configRow.get("SAP_TABLE_ROWNUMBER"));
-				}
-				
-				if(false){
-				System.out.println(configRow.get("SCHEMA_COLUMN") + " " + configRow.get("SAP_PARAMETER_TYPE") + " " + configRow.get("SAP_TABLE_NAME") + " " + configRow.get("SAP_PARAMETER_NAME") + " " + configRow.get("SAP_PARAMETER_VALUE")+ " " + configRow.get("SAP_TABLE_ROWNUMBER"));
-				}
-			}
 %>
 
 <%
@@ -305,149 +163,221 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
         com.sap.mw.jco.JCO.ParameterList exportParameterList_<%=cid %> = function_<%=cid %>.getExportParameterList();
         com.sap.mw.jco.JCO.ParameterList tableParameterList_<%=cid %> = function_<%=cid %>.getTableParameterList();
         
-<%
-        /* the following is output part, it will output data to SAP. */
-        // "input_single"
-        Map<String, List<SchemaUtil.SAPSchema>> input_single_map = schemaUtil_input.extractSchemaMap("input_single");
-        for (String key : input_single_map.keySet()) {
-            List<SchemaUtil.SAPSchema> oneTableNamelist = input_single_map.get(key);
-            for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
-%>              
-		importParameterList_<%=cid %>.setValue(<%=schema.getSapParameterValue() %>, <%=schema.getSapParameterName() %>); // "input_single"--<%=schema.getSchemaName() %>
-<%            }
-        }
-%>
-
-<%
-        // "input_structure"
-        Map<String, List<SchemaUtil.SAPSchema>> input_structure_map = schemaUtil_input.extractSchemaMap("input_structure");
-        java.util.Set<String> input_structure_set=input_structure_map.keySet();
-        if(input_structure_set.size()>0){
-%>
         com.sap.mw.jco.JCO.Structure input_structure_<%=cid %>=null;
-<%        for (String key : input_structure_map.keySet()) {
-%>          
-		input_structure_<%=cid %> = importParameterList_<%=cid %>.getStructure(<%=key %>);
-<%          List<SchemaUtil.SAPSchema> oneTableNamelist = input_structure_map.get(key);
-            for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
-%>              
-		input_structure_<%=cid %>.setValue(<%=schema.getSapParameterValue() %>, <%=schema.getSapParameterName() %>); // "input_structure"--<%=schema.getSchemaName() %>
-<%          }
-        }
-        }
-%>
-
-<%
-        // "input_table"
-        Map<String, List<SchemaUtil.SAPSchema>> input_table_map = schemaUtil_input.extractSchemaMap("input_table");
-        java.util.Set<String> input_table_set=input_table_map.keySet();
-        if(input_table_set.size()>0){
-%>
         com.sap.mw.jco.JCO.Table input_table_<%=cid %>=null; 
-<%        
-        for (String key : input_table_set) {
-%>          
-		input_table_<%=cid %> = importParameterList_<%=cid %>.getTable(<%=key %>);
-
-<%          List<SchemaUtil.SAPSchema> oneTableNamelist = input_table_map.get(key);
-            
-			//split the TABLE_ROW
-			Map<String, List<SchemaUtil.SAPSchema>> mapRowNumber = new HashMap<String, List<SchemaUtil.SAPSchema>> ();
-            for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
-            	 String rowNumber = schema.getRowNumber();
-            	 List<SchemaUtil.SAPSchema> rowNumberList = mapRowNumber.get(rowNumber);
-            	 if(rowNumberList != null){
-            	 	rowNumberList.add(schema);
-            	 }else{
-            	 	List<SchemaUtil.SAPSchema> newRowNumberList = new ArrayList<SchemaUtil.SAPSchema>();
-            	 	newRowNumberList.add(schema);
-            	 	mapRowNumber.put(rowNumber, newRowNumberList);
-            	 }
-            }
-            
-            java.util.Set<String> rowNumber_set=mapRowNumber.keySet();
-            java.util.List<String> listForSort = new ArrayList<String>(rowNumber_set);
-            java.util.Collections.sort(listForSort,
-            	new java.util.Comparator(){
-                  public int compare(Object o1, Object o2){
-                    if (Integer.parseInt((String)o1) < Integer.parseInt((String)o2)) return -1;
-                    if (Integer.parseInt((String)o1) > Integer.parseInt((String)o2)) return 1;
-                    return 0;
-                  }
-           		}
-           	);
-            
-            for(String rowNumberkey : listForSort){
-%>
-        		input_table_<%=cid %>.appendRow();
-<%            
-            	List<SchemaUtil.SAPSchema> oneRowlist = mapRowNumber.get(rowNumberkey);
-					for(SchemaUtil.SAPSchema schema : oneRowlist){
-%>					
-					input_table_<%=cid %>.setValue(<%=schema.getSapParameterValue() %>, <%=schema.getSapParameterName() %>); // "input_table"--<%=schema.getSchemaName() %>
-<%					
-					}
-
-            }
-        }
-    }
-%>        
-
-<%
-        // "table_input"
-        Map<String, List<SchemaUtil.SAPSchema>> table_input_map = schemaUtil_input.extractSchemaMap("table_input");
-        java.util.Set<String> table_input_set=table_input_map.keySet();
-        if(table_input_set.size()>0){
-%>
         com.sap.mw.jco.JCO.Table  table_input_<%=cid %>=null; 
-<%        
-        for (String key : table_input_set) {
-%>          
-		table_input_<%=cid %> = tableParameterList_<%=cid %>.getTable(<%=key %>);
+        
+        Object isListObject_<%=cid%>=null;
+        
+<%
+			Map<String,String> input_single_map = new HashMap<String,String>();
+			Map<String,Map<String,String>> input_structure_map = new HashMap<String,Map<String,String>>();
+			Map<String,Map<String,String>> input_table_map = new HashMap<String,Map<String,String>>();
+			Map<String,Map<String,String>> table_input_map = new HashMap<String,Map<String,String>>();
+			Map<String,String> table_map = null;
 
-<%          List<SchemaUtil.SAPSchema> oneTableNamelist = table_input_map.get(key);
+			List<Map<String, String>> sapMapping_input = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MAPPING_INPUT__");            
             
-			//split the TABLE_ROW
-			Map<String, List<SchemaUtil.SAPSchema>> mapRowNumber = new HashMap<String, List<SchemaUtil.SAPSchema>> ();
-            for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
-            	 String rowNumber = schema.getRowNumber();
-            	 List<SchemaUtil.SAPSchema> rowNumberList = mapRowNumber.get(rowNumber);
-            	 if(rowNumberList != null){
-            	 	rowNumberList.add(schema);
-            	 }else{
-            	 	List<SchemaUtil.SAPSchema> newRowNumberList = new ArrayList<SchemaUtil.SAPSchema>();
-            	 	newRowNumberList.add(schema);
-            	 	mapRowNumber.put(rowNumber, newRowNumberList);
-            	 }
-            }
-            
-            java.util.Set<String> rowNumber_set=mapRowNumber.keySet();
-            java.util.List<String> listForSort = new ArrayList<String>(rowNumber_set);
-            java.util.Collections.sort(listForSort,
-            	new java.util.Comparator(){
-                  public int compare(Object o1, Object o2){
-                    if (Integer.parseInt((String)o1) < Integer.parseInt((String)o2)) return -1;
-                    if (Integer.parseInt((String)o1) > Integer.parseInt((String)o2)) return 1;
-                    return 0;
-                  }
-           		}
-           	);
-            
-            for(String rowNumberkey : listForSort){
-%>
-        		table_input_<%=cid %>.appendRow();
-<%            
-            	List<SchemaUtil.SAPSchema> oneRowlist = mapRowNumber.get(rowNumberkey);
-					for(SchemaUtil.SAPSchema schema : oneRowlist){
-%>					
-					 table_input_<%=cid %>.setValue(<%=schema.getSapParameterValue() %>, <%=schema.getSapParameterName() %>); // "table_input"--<%=schema.getSchemaName() %>
-<%					
+			for(Map<String, String> configRow : sapMapping_input){
+			
+				String parameterType = configRow.get("SAP_PARAMETER_TYPE");
+				if("table_input".equals(parameterType)) { 
+					if(table_input_map.get(configRow.get("SAP_TABLE_NAME"))==null){
+						table_map = new HashMap<String,String>();
+						table_map.put(configRow.get("SAP_PARAMETER_NAME"),configRow.get("SAP_PARAMETER_VALUE"));
+						table_input_map.put(configRow.get("SAP_TABLE_NAME"),table_map);
+					}else{
+						table_map = table_input_map.get(configRow.get("SAP_TABLE_NAME"));
+						table_map.put(configRow.get("SAP_PARAMETER_NAME"),configRow.get("SAP_PARAMETER_VALUE"));
 					}
+				}else if("input_table".equals(parameterType)){
+					if(input_table_map.get(configRow.get("SAP_TABLE_NAME"))==null){
+						table_map = new HashMap<String,String>();
+						table_map.put(configRow.get("SAP_PARAMETER_NAME"),configRow.get("SAP_PARAMETER_VALUE"));
+						input_table_map.put(configRow.get("SAP_TABLE_NAME"),table_map);
+					}else{
+						table_map = input_table_map.get(configRow.get("SAP_TABLE_NAME"));
+						table_map.put(configRow.get("SAP_PARAMETER_NAME"),configRow.get("SAP_PARAMETER_VALUE"));
+					}
+				}else if("input_structure".equals(parameterType)){
+					if(input_structure_map.get(configRow.get("SAP_TABLE_NAME"))==null){
+						table_map = new HashMap<String,String>();
+						table_map.put(configRow.get("SAP_PARAMETER_NAME"),configRow.get("SAP_PARAMETER_VALUE"));
+						input_structure_map.put(configRow.get("SAP_TABLE_NAME"),table_map);
+					}else{
+						table_map = input_structure_map.get(configRow.get("SAP_TABLE_NAME"));
+						table_map.put(configRow.get("SAP_PARAMETER_NAME"),configRow.get("SAP_PARAMETER_VALUE"));
+					}
+				}else{
+					input_single_map.put(configRow.get("SAP_PARAMETER_NAME"),configRow.get("SAP_PARAMETER_VALUE"));	
+				}
+				
+				if(true){
+				System.out.println(configRow.get("SCHEMA_COLUMN") + " " + configRow.get("SAP_PARAMETER_TYPE") + " " + configRow.get("SAP_TABLE_NAME") + " " + configRow.get("SAP_PARAMETER_NAME") + " " + configRow.get("SAP_PARAMETER_VALUE")+ " " + configRow.get("SAP_TABLE_ROWNUMBER"));
+				}
+			}
+			
+			if(!input_single_map.isEmpty()){
+				for(Object pName:input_single_map.keySet()){
+%>
+				importParameterList_<%=cid %>.setValue(<%=input_single_map.get(pName)%>,<%=pName.toString()%>); // "input_single"		
+<%
+				}
+			}
+			if(!input_structure_map.isEmpty()){
+				for(Object tableName:input_structure_map.keySet()){
+%>
+				input_structure_<%=cid %> = importParameterList_<%=cid %>.getStructure(<%=tableName.toString()%>);					
+<%
+					table_map = (HashMap<String,String>)input_structure_map.get(tableName);
+					for(Object ColName: table_map.keySet()){
+%>
+				input_structure_<%=cid %>.setValue(<%=table_map.get(ColName)%>,<%=ColName.toString()%>);	// "input_structure"						
+<%
+					}
+				}
+			}
+			if(!input_table_map.isEmpty()){
+				String tName = "";
+				String cName = "";
+				for(Object tableName:input_table_map.keySet()){
+					tName = TalendTextUtils.removeQuotes(tableName.toString());
+					table_map = (HashMap<String,String>)input_table_map.get(tableName);
+					for(Object colName: table_map.keySet()){
+						cName = TalendTextUtils.removeQuotes(colName.toString());
+						String multiValues = table_map.get(colName);
+%>
+						java.util.List list_<%=tName%>_<%=cName%>_<%=cid%> = new java.util.ArrayList();				
+<%
+						if(multiValues != null && multiValues.indexOf(",") != -1){
+    						String[] values = multiValues.split(",");
+    						for(int k = 0; k < values.length; k++){
+%>
+						list_<%=tName%>_<%=cName%>_<%=cid%>.add(<%=values[k]%>);
+<%
+    						}
+    					}else{
+%>
+						isListObject_<%=cid%> = <%=table_map.get(colName)%>;
+						if(isListObject_<%=cid%> instanceof java.util.List){
+							list_<%=tName%>_<%=cName%>_<%=cid%>.addAll((java.util.List)isListObject_<%=cid%>);
+						}else{
+							list_<%=tName%>_<%=cName%>_<%=cid%>.add(<%=table_map.get(colName)%>);
+						}
+<%						
+    					}
+					}
+%>
+					int rowSize_<%=tName%>_<%=cid%> = 0;
+<% 
+					boolean isFirstRow = true;
+					for(Object colName: table_map.keySet()){
+						cName = TalendTextUtils.removeQuotes(colName.toString());
+						if(isFirstRow){ 
+%>
+						rowSize_<%=tName%>_<%=cid%> = list_<%=tName%>_<%=cName%>_<%=cid%>.size();														
+<%
+							isFirstRow = false;
+						}else{
+%>
+						if(rowSize_<%=tName%>_<%=cid%>!=list_<%=tName%>_<%=cName%>_<%=cid%>.size()){
+							throw new RuntimeException("The row count of column: <%=cName%> in table: <%=tName%> not equals others, please make sure the row count of every columns equal.");
+						}					
+<%
+						}
+					}
+%>
+					input_table_<%=cid %> = importParameterList_<%=cid %>.getTable(<%=tableName%>);
+					input_table_<%=cid %>.appendRows(rowSize_<%=tName%>_<%=cid%>);
+					input_table_<%=cid %>.firstRow();
+					for(int rowNum_<%=tName%>=0;rowNum_<%=tName%><rowSize_<%=tName%>_<%=cid%>;rowNum_<%=tName%>++){			
+<%
+					
+					for(Object colName: table_map.keySet()){
+						cName = TalendTextUtils.removeQuotes(colName.toString());
+%>
+						input_table_<%=cid %>.setValue(list_<%=tName%>_<%=cName%>_<%=cid%>.get(rowNum_<%=tName%>),<%=colName.toString()%>);// "table_input"
+												
+<%
+					}
+%>
+						input_table_<%=cid %>.nextRow();
+					}	
+<%
+				}
+			}
+			if(!table_input_map.isEmpty()){
+				String tName = "";
+				String cName = "";
+				for(Object tableName:table_input_map.keySet()){
+					tName = TalendTextUtils.removeQuotes(tableName.toString());
+					table_map = (HashMap<String,String>)table_input_map.get(tableName);
+					for(Object colName: table_map.keySet()){
+						cName = TalendTextUtils.removeQuotes(colName.toString());
+						String multiValues = table_map.get(colName);
+%>
+						java.util.List list_<%=tName%>_<%=cName%>_<%=cid%> = new java.util.ArrayList();				
+<%
+						if(multiValues != null && multiValues.indexOf(",") != -1){
+    						String[] values = multiValues.split(",");
+    						for(int k = 0; k < values.length; k++){
+%>
+						list_<%=tName%>_<%=cName%>_<%=cid%>.add(<%=values[k]%>);
+<%
+    						}
+    					}else{
+%>
+						isListObject_<%=cid%> = <%=table_map.get(colName)%>;
+						if(isListObject_<%=cid%> instanceof java.util.List){
+							list_<%=tName%>_<%=cName%>_<%=cid%>.addAll((java.util.List)isListObject_<%=cid%>);
+						}else{
+							list_<%=tName%>_<%=cName%>_<%=cid%>.add(<%=table_map.get(colName)%>);
+						}
+<%						
+    					}
+					}
+%>
+					int rowSize_<%=tName%>_<%=cid%> = 0;
+<%
+					boolean isFirstRow = true;
+					for(Object colName: table_map.keySet()){
+						cName = TalendTextUtils.removeQuotes(colName.toString());
+						if(isFirstRow){
+%>
+						rowSize_<%=tName%>_<%=cid%> = list_<%=tName%>_<%=cName%>_<%=cid%>.size();														
+<%
+							isFirstRow = false;
+						}else{
+%>
+						if(rowSize_<%=tName%>_<%=cid%>!=list_<%=tName%>_<%=cName%>_<%=cid%>.size()){
+							throw new RuntimeException("The row count of column: <%=cName%> in table: <%=tName%> not equals others, please make sure the row count of every columns equal.");
+						}					
+<%
+						}
+					}
+%>
+					table_input_<%=cid %> = tableParameterList_<%=cid%>.getTable(<%=tableName%>);
+					table_input_<%=cid %>.appendRows(rowSize_<%=tName%>_<%=cid%>);
+					table_input_<%=cid %>.firstRow();
+					for(int rowNum_<%=tName%>=0;rowNum_<%=tName%><rowSize_<%=tName%>_<%=cid%>;rowNum_<%=tName%>++){			
+<%
+					
+					for(Object colName: table_map.keySet()){
+						cName = TalendTextUtils.removeQuotes(colName.toString());
+%>
+						table_input_<%=cid %>.setValue(list_<%=tName%>_<%=cName%>_<%=cid%>.get(rowNum_<%=tName%>),<%=colName.toString()%>);// "input_table"
+												
+<%
+					}
+%>
+						table_input_<%=cid %>.nextRow();
+					}	
+<%
+				}
+			}	
+%>        
+        
 
-            }
-        }
-    }
-%>    
 
         client_<%=cid %>.execute(function_<%=cid %>);
         
