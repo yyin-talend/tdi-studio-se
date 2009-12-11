@@ -114,7 +114,7 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 		} else {
 			message<%=cid %>= <%=invalidMessage%>;
 		}					
-		globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);	
+		globalMap.put("<%=cid %>_DIFFERENCE", (validate<%=cid %> == 1)?true:false);	
 		<%
 		if (print) {
 		%>
