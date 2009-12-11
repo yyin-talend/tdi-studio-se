@@ -442,8 +442,16 @@
     </PARAMETER>
   </ADVANCED_PARAMETERS>
 
-   <CODEGENERATION>
-   </CODEGENERATION>
+  <CODEGENERATION>
+     <IMPORTS>
+		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxjdbcx.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxlang.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxlsupp.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxsqlj.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Informix" MODULE="ifxtools.jar" REQUIRED="true" />
+     </IMPORTS>
+  </CODEGENERATION>
    
   <RETURNS>
     <RETURN NAME="NB_LINE_UPDATED"  TYPE="id_Integer" AVAILABILITY="AFTER"/>
