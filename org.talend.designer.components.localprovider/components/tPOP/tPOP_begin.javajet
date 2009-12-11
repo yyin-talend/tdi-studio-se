@@ -63,9 +63,16 @@
 	if(useSSL){
 %>
 		java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+		<%if("pop3".equals(protocol)) {%>
 		props_<%=cid %>.setProperty("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");			
 		props_<%=cid %>.setProperty("mail.pop3.socketFactory.fallback", "false");
-		props_<%=cid %>.setProperty("mail.pop3.socketFactory.port",port_<%=cid %> + "");		
+		props_<%=cid %>.setProperty("mail.pop3.socketFactory.port",port_<%=cid %> + "");
+		<%} else{%>
+		props_<%=cid %>.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props_<%=cid %>.setProperty("mail.imap.socketFactory.fallback", "false");
+        props_<%=cid %>.setProperty("mail.imap.socketFactory.port", port_<%=cid %> + "");
+        <%}%>
+		
 <%
 	}
 	if ("pop3".equals(protocol)){
