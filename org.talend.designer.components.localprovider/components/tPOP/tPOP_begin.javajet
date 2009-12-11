@@ -22,7 +22,7 @@
     String allEmails = ElementParameterParser.getValue(node, "__ALL_EMAILS__");
 
     String maxEmails = ElementParameterParser.getValue(node, "__MAX_EMAILS__");
-    String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
+    boolean bDeleteFromServer = "true".equals(ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__"));
     String protocol = ElementParameterParser.getValue(node, "__PROTOCOL__");
     
     List<Map<String, String>> filterList = 
@@ -92,19 +92,14 @@
 		store_<%=cid %>.connect();
 		folder_<%=cid %> = store_<%=cid %>.getFolder(mbox_<%=cid%>);
 <%
-	}
-
-	if (("true").equals(deleteFromServer)) {
-%>
-     folder_<%=cid %>.open(javax.mail.Folder.READ_WRITE);
-<%
-  } else
-  {
+    }
 %> 
-    folder_<%=cid %>.open(javax.mail.Folder.READ_ONLY);
-<%
-  }
-%>	
+    try{
+      folder_<%=cid %>.open(javax.mail.Folder.READ_WRITE);
+    } catch(Exception e){
+      folder_<%=cid %>.open(javax.mail.Folder.READ_ONLY);
+    }
+    
     javax.mail.Message[] msgs_<%=cid %> = folder_<%=cid %>.getMessages();
     for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; counter_<%=cid %>++) {
 <%
@@ -156,13 +151,13 @@
 	}
 	if(filterList.size()>0){
 %>
-	if(isMatch_<%=cid%>){
+	  if(isMatch_<%=cid%>){
 <%
 	}
-%>
-	if ("pop3".equals("<%=protocol%>"))
+	if (bDeleteFromServer){
+%> 
         message_<%=cid %>.setFlag(javax.mail.Flags.Flag.DELETED, true);
-        
+   <%}%>     
         String filename_<%=cid %> = <%=filenamePattern %>;
         java.io.File file_<%=cid %> = new java.io.File(<%=outputDirectory %>, filename_<%=cid %>);
         java.io.OutputStream os_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>);

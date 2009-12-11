@@ -13,7 +13,7 @@
 		
 	// component id
 	String cid = node.getUniqueName();
-	String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
+	boolean bDeleteFromServer = "true".equals(ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__"));
 	List<Map<String, String>> filterList = 
 		(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_FILTER__");
 
@@ -28,7 +28,7 @@
 
     if (folder_<%=cid %> != null)    
 <%
-   if (("true").equals(deleteFromServer)) {
+   if (bDeleteFromServer) {
 %>
      folder_<%=cid %>.close(true); 
 <%
