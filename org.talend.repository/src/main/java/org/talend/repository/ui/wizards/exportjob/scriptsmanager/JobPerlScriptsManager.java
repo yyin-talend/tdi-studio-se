@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.FileLocator;
@@ -88,9 +87,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = getSelectedJobVersion();
             selectedJobVersion = preExportResource(process, i, selectedJobVersion);
-            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, context, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice.get(ExportChoice.applyToChildren),
+                        statisticPort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
                         progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
@@ -129,9 +128,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = getSelectedJobVersion();
             selectedJobVersion = preExportResource(process, i, selectedJobVersion);
-            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        statisticPort != IProcessor.NO_TRACES, (Boolean) exportChoice.get(ExportChoice.applyToChildren),
+                        statisticPort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
                         progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
@@ -162,11 +161,11 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     private boolean posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
             String launcher, int statisticPort, int tracePort, int i, ProcessItem processItem, String selectedJobVersion,
             List<URL> resources, String... codeOptions) {
-        resources.addAll(getLauncher((Boolean) exportChoice.get(ExportChoice.needLauncher), processItem,
+        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), processItem,
                 escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
         // Gets system routines.
-        List<URL> systemRoutineList = getSystemRoutine((Boolean) exportChoice.get(ExportChoice.needSystemRoutine));
+        List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
         if (systemRoutineList.size() > 0) {
             process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
                     + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
@@ -174,7 +173,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         // Gets user routines.
         String projectName = getCorrespondingProjectName(processItem);
         try {
-            List<URL> userRoutineList = getUserRoutine(projectName, (Boolean) exportChoice.get(ExportChoice.needUserRoutine));
+            List<URL> userRoutineList = getUserRoutine(projectName, isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
             if (userRoutineList.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
                         + PATH_SEPARATOR + projectName, userRoutineList);
@@ -183,18 +182,16 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             ExceptionHandler.process(e);
         }
 
-        addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)), process[i],
-                selectedJobVersion);
-        List<URL> talendLibraries = getTalendLibraries((Boolean) exportChoice.get(ExportChoice.needTalendLibraries));
+        addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i], selectedJobVersion);
+        List<URL> talendLibraries = getTalendLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries));
         if (talendLibraries.size() > 0) {
             process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
         }
-        resources.addAll(getJobScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needJobScript)));
-        addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
-                process[i]);
-        resources.addAll(getContextScripts(processItem, (Boolean) exportChoice.get(ExportChoice.needContext)));
-        boolean needChildren = (Boolean) exportChoice.get(ExportChoice.needJobScript)
-                && (Boolean) exportChoice.get(ExportChoice.needContext);
+        resources.addAll(getJobScripts(processItem, isOptionChoosed(exportChoice, ExportChoice.needJobScript)));
+        addDependencies(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needDependencies), process[i]);
+        resources.addAll(getContextScripts(processItem, isOptionChoosed(exportChoice, ExportChoice.needContext)));
+        boolean needChildren = isOptionChoosed(exportChoice, ExportChoice.needJobScript)
+                && isOptionChoosed(exportChoice, ExportChoice.needContext);
         return needChildren;
     }
 
@@ -438,9 +435,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         }
         processedJob.add(process);
         addComponentModules(process, curResource);
-        addJobItem(allResources, process, (Boolean) exportChoice.get(ExportChoice.needJobItem), curResource, selectedJobVersion);
-        addDependencies(allResources, process, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
-                curResource);
+        addJobItem(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needJobItem), curResource,
+                selectedJobVersion);
+        addDependencies(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needDependencies), curResource);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {
@@ -451,7 +448,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
                     .getJobVersion());
             String contextName = null;
-            if ((Boolean) exportChoice.get(ExportChoice.applyToChildren)) {
+            if (isOptionChoosed(exportChoice, ExportChoice.applyToChildren)) {
                 // see bug 0003862: Export job with the flag "Apply to children" if the child don't have the
                 // same context fails.
                 ProcessItem processItem = ItemCacheManager.getProcessItem(subjobInfo.getJobId(), subjobInfo.getJobVersion());

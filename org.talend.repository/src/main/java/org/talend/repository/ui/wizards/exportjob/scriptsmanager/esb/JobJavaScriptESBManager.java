@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -88,7 +87,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         HashMap<String, String> jobMap = new HashMap<String, String>();
 
         boolean needJob = true;
-        boolean needContext = BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext));
+        boolean needContext = isOptionChoosed(exportChoice, ExportChoice.needContext);
         ExportFileResource libResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         ExportFileResource contextResource = new ExportFileResource(null, ""); //$NON-NLS-1$
 
@@ -126,18 +125,17 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            if (!BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.doNotCompileCode))) {
+            if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue((Boolean) exportChoice
-                                .get(ExportChoice.applyToChildren)), progressMonitor);
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                        progressMonitor);
                 generateESBActionFile(processItem, contextName);
             }
 
-            addJobItem(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needJobItem)),
-                    itemsResource, selectedJobVersion);
+            addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), itemsResource,
+                    selectedJobVersion);
 
-            addDependencies(process, processItem, BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needDependencies)),
-                    itemsResource);
+            addDependencies(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needDependencies), itemsResource);
 
             // add children jobs
             boolean needChildren = true;
@@ -270,10 +268,10 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
-            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), BooleanUtils
-                    .isTrue((Boolean) exportChoice.get(ExportChoice.needJobScript))));
+            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), isOptionChoosed(
+                    exportChoice, ExportChoice.needJobScript)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
-                    BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext)));
+                    isOptionChoosed(exportChoice, ExportChoice.needContext));
         }
 
     }

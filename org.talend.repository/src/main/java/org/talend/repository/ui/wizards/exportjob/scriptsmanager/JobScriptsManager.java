@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -111,9 +112,21 @@ public abstract class JobScriptsManager {
         this.progressMonitor = progressMonitor;
     }
 
+    // bug 8720
+    protected boolean isOptionChoosed(Map<ExportChoice, Object> exportChoice, Object key) {
+        if (key != null) {
+            final Object object = exportChoice.get(key);
+            if (object instanceof Boolean) {
+                return BooleanUtils.isTrue((Boolean) object);
+            }
+        }
+        return false;
+    }
+
     /**
      * 
-     * DOC Represent exportchoice <br/> .
+     * DOC Represent exportchoice <br/>
+     * .
      * 
      * $Id: JobScriptsExportWizardPage.java 1 2007-1-31下�?�06:14:19 +0000 ylv $
      * 

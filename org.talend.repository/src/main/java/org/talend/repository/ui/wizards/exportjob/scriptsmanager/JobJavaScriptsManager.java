@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -194,7 +193,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i], selectedJobVersion);
 
         addDependencies(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needDependencies), process[i]);
-        resources.addAll(getJobScripts(processItem, selectedJobVersion, (Boolean) exportChoice.get(ExportChoice.needJobScript))); // always
+        resources
+                .addAll(getJobScripts(processItem, selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needJobScript))); // always
         // need
         // job
         // generation
@@ -301,14 +301,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
         }
         return list;
-    }
-
-    // bug 8720
-    public boolean isOptionChoosed(Map<ExportChoice, Object> exportChoice, Object key) {
-        if (key != null) {
-            return BooleanUtils.isTrue((Boolean) exportChoice.get(key));
-        }
-        return false;
     }
 
     /**
