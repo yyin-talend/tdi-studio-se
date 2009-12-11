@@ -270,10 +270,10 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
-            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
-                    (Boolean) exportChoice.get(ExportChoice.needJobScript)));
+            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), BooleanUtils
+                    .isTrue((Boolean) exportChoice.get(ExportChoice.needJobScript))));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
-                    (Boolean) exportChoice.get(ExportChoice.needContext));
+                    BooleanUtils.isTrue((Boolean) exportChoice.get(ExportChoice.needContext)));
         }
 
     }
