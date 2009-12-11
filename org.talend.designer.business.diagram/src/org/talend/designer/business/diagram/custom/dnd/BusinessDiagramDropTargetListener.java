@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gmf.runtime.diagram.ui.parts.DiagramDropTargetListener;
 import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
@@ -49,19 +50,11 @@ public class BusinessDiagramDropTargetListener extends DiagramDropTargetListener
     protected List getObjectsBeingDropped() {
         TransferData[] data = getCurrentEvent().dataTypes;
         List eObjects = new ArrayList();
-
-        for (int i = 0; i < data.length; i++) {
-            if (LocalSelectionTransfer.getTransfer().isSupportedType(data[i])) {
-
-                Object nativeToJava = LocalSelectionTransfer.getTransfer().nativeToJava(data[i]);
-
-                if (nativeToJava instanceof IStructuredSelection) {
-                    IStructuredSelection structuredSelection = (IStructuredSelection) nativeToJava;
-                    eObjects.addAll(structuredSelection.toList());
-                }
-            }
+        ISelection selection = LocalSelectionTransfer.getTransfer().getSelection();
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            eObjects.addAll(structuredSelection.toList());
         }
-
         return eObjects;
     }
 
