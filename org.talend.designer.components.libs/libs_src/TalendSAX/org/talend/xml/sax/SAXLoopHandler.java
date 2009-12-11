@@ -59,7 +59,7 @@ public class SAXLoopHandler extends DefaultHandler {
     List<Map<String, Object>> listArgs = new ArrayList<Map<String, Object>>();
 
     // ===============add for bug7632 begin======================================
-    private SAXLooper saxLooper;
+    private ComplexSAXLooper saxLooper;
 
     // ========================end===============================================
 
@@ -75,7 +75,7 @@ public class SAXLoopHandler extends DefaultHandler {
         }
     }
 
-    public SAXLoopHandler(SAXLooper saxLooper, LoopEntry entry) {
+    public SAXLoopHandler(ComplexSAXLooper saxLooper, LoopEntry entry) {
         this(entry);
         this.saxLooper = saxLooper;
     }

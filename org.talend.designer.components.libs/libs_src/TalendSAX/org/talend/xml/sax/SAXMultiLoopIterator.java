@@ -12,7 +12,7 @@ public class SAXMultiLoopIterator implements Iterator<Map<String, Map<String, St
 
     private Iterator<String> iters;
 
-    public SAXMultiLoopIterator(SAXLooper saxLooper, LoopEntry[] entries) {
+    public SAXMultiLoopIterator(ComplexSAXLooper saxLooper, LoopEntry[] entries) {
         this.iterators = new SAXLoopIterator[entries.length];
         this.endEntries = new LoopEntry[entries.length]; // store all the last entries here.
         for (int i = 0; i < entries.length; i++) {
