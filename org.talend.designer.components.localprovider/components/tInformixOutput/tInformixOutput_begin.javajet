@@ -60,6 +60,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
 	
+	String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
+	
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
+	
 %>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
@@ -79,7 +83,16 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
 }
+
+if (("true").equals(useBatchSize) && !useExistingConnection) {
+    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
 %>
+   int batchSize_<%=cid%> = <%=batchSize%>;
+   int batchSizeCounter_<%=cid%>=0;
+<%   
+   }
+}
+%> 
 
 <%
 if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || ("UPDATE_OR_INSERT").equals(dataAction)) {

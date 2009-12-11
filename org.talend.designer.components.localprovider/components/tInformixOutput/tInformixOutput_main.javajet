@@ -35,7 +35,11 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
     
-    List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");    
+    List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
+    
+	String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
+	
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
     
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
@@ -112,6 +116,23 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
             %>
+            
+<%
+            	//----------------------------use batch
+            	//1.when have Rejects link don't using batch
+            if (rejectConnName == null  && ("true").equals(useBatchSize) && !useExistingConnection) {
+%>
+    		pstmt_<%=cid %>.addBatch();
+    		nb_line_<%=cid%>++;    		 
+			
+<%				
+				if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+%>
+    		  	batchSizeCounter_<%=cid%>++;
+<%
+    		  }
+    		}else {    		
+%>
             try {
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
@@ -143,6 +164,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } 
                 %>
             }
+           <%}//---end use batch%>
             <%
         } else if(("UPDATE").equals(dataAction)) {
             int counterCol = 1;
@@ -181,6 +203,23 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
             %>
+            
+<%
+            	//----------------------------use batch
+            	//1.when have Rejects link don't using batch
+            if (rejectConnName == null  && ("true").equals(useBatchSize) && !useExistingConnection) {
+%>
+    		pstmt_<%=cid %>.addBatch();
+    		nb_line_<%=cid%>++;    		 
+			
+<%				
+				if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+%>
+    		  	batchSizeCounter_<%=cid%>++;
+<%
+    		  }
+    		}else {    		
+%>
             try {
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
@@ -212,6 +251,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } 
                 %>
             }
+		<%}//---end use batch%>
             <%
         } else if (("INSERT_OR_UPDATE").equals(dataAction)) {
             int columnIndex = 1;
@@ -509,6 +549,23 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
             %>
+       
+<%
+            	//----------------------------use batch
+            	//1.when have Rejects link don't using batch
+            if (rejectConnName == null  && ("true").equals(useBatchSize) && !useExistingConnection) {
+%>
+    		pstmt_<%=cid %>.addBatch();
+    		nb_line_<%=cid%>++;    		 
+			
+<%				
+				if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+%>
+    		  	batchSizeCounter_<%=cid%>++;
+<%
+    		  }
+    		}else {    		
+%>
             try {
                 deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(Exception e) {
@@ -539,6 +596,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } 
                 %>
             }
+		<%}//---end use batch%>
             nb_line_<%=cid%>++;
         <%
         }
@@ -565,6 +623,54 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             <%
         }    
+        
+                    	//////////batch execute by batch size///////
+    	if ("true".equals(useBatchSize) && !useExistingConnection) {
+    		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
+%>
+    			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
+<%
+                if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+%>                                                
+                try {
+						pstmt_<%=cid %>.executeBatch();                	
+            	    	<%
+            	    	if (("INSERT").equals(dataAction)) {
+            	    	%>
+            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	<%
+            	    	}else if (("UPDATE").equals(dataAction)) {
+            	    	%>
+            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	<%
+            	    	}else if (("DELETE").equals(dataAction)) {
+            	    	%>
+            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	<%
+            	    	}
+            	    	%>                         	    	
+            	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
+                }catch (java.sql.BatchUpdateException e){
+                	<%if(("true").equals(dieOnError)) {
+                	%>
+                		throw(e);
+                	<%
+                	}else {
+                	%>
+                	System.err.println(e.getMessage());
+                	<%
+                	}%>
+                }
+                <%
+                }%>    			
+    			
+    			
+    			
+    			}
+    		<%	
+    		}
+    	
+    	}
         
         ////////////commit every////////////
         if(!useExistingConnection && useTransaction &&  !("").equals(commitEvery) && !("0").equals(commitEvery)) {
