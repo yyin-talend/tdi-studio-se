@@ -64,6 +64,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 	
+	boolean useBatchInsertOptimization = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_INSERT_OPTIMIZATION__"));
+	
 %>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
@@ -143,6 +145,13 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
 		} else {
 %>
     String url_<%=cid%> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%> + ";" + <%=dbproperties%>;
+<%
+		}
+%>
+<%
+		if (useBatchInsertOptimization && ("INSERT").equals(dataAction)) {
+%>
+	url_<%=cid%> +=";IFX_USEPUT=1";
 <%
 		}
 %>
