@@ -84,6 +84,8 @@ public class ChangeMetadataCommand extends Command {
 
     private String currentConnector;
 
+    protected boolean isNotSim = false;
+
     // Default constructor.
     public ChangeMetadataCommand() {
     }
@@ -641,6 +643,11 @@ public class ChangeMetadataCommand extends Command {
     private void changeTableNameParameter(String newdbTableName, String olddbTableName, String uniqueName,
             IElementParameter dbTableElementField) {
         if (dbTableElementField != null) {
+            if (isNotSim) {
+                newdbTableName = newdbTableName == null ? "" : newdbTableName; //$NON-NLS-1$
+                dbTableElementField.setValue(TalendTextUtils.addQuotes(newdbTableName));
+                return;
+            }
             Object value = dbTableElementField.getValue();
             String removeQuotes = TalendTextUtils.removeQuotes((String) value);
             boolean b = value == null || removeQuotes.equals(""); //$NON-NLS-1$

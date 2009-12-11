@@ -94,8 +94,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private int index;
 
-    private boolean isNotSim = false;
-
     private String currentTableName;
 
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
