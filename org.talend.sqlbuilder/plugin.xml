@@ -42,7 +42,7 @@
       <key
             commandId="org.talend.sqlbuilder.actions.ExecSQLAction"
             schemeId="org.talend.core.scheme"
-            sequence="Ctrl+L">
+            sequence="Ctrl+Enter">
       </key>
    </extension>
    <extension-point id="editorAction" name="SQL Editor Action" schema="schema/editorAction.exsd"/>
