@@ -42,6 +42,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			String pattern = ((column.getPattern() == null) || (column.getPattern().trim().length() == 0)) ? "" : column.getPattern();
     			patternsMap.put(column.getLabel(), pattern);
     		}
+        	Map<String, String> outTypesMap = new HashMap<String, String>();
+        	for(IMetadataColumn outColumn : metadata.getListColumns()){
+        		String type = JavaTypesManager.getTypeToGenerate(outColumn.getTalendType(), true);
+        		outTypesMap.put(outColumn.getLabel(), type);
+        	}
 			List<Map<String, String>> denormalizes = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__DENORMALIZE_COLUMNS__");
         	List<String> denormalizeColumns = new ArrayList<String>();
         	List<String> denormalizeDelimiters = new ArrayList<String>();
@@ -130,7 +135,14 @@ if(hash_<%=inputColumn %>_<%=cid %>.containsKey(<%=connName %>.<%=inputColumn %>
 	}
 <%
 		}else{
-			if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
+			if("List".equals(outTypesMap.get(denormalizeColumn))){
+%>
+	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.add(<%=connName %>.<%=denormalizeColumn %>);
+<%
+				continue;
+    		}
+    		
+    		if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
 				if((("java.util.Date").equals(typesMap.get(denormalizeColumn))) && (patternsMap.get(denormalizeColumn).length() != 0)){
 %>		
 	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(<%=denormalizeDelimiters.get(k) %>).append(FormatterUtils.format_Date(<%=connName %>.<%=denormalizeColumn %>, <%=patternsMap.get(denormalizeColumn) %>));
@@ -159,6 +171,13 @@ if(hash_<%=inputColumn %>_<%=cid %>.containsKey(<%=connName %>.<%=inputColumn %>
 	}
 <%
 		}else{
+			if("List".equals(outTypesMap.get(denormalizeColumn))){
+%>
+	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.add(<%=connName %>.<%=denormalizeColumn %>);
+<%
+				continue;
+    		}
+    		
 			if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
 				if((("java.util.Date").equals(typesMap.get(denormalizeColumn))) && (patternsMap.get(denormalizeColumn).length() != 0)){
 %>		
@@ -196,6 +215,12 @@ if(denormalize_result_<%=cid %> == null){
 	}
 <%
 					}else{
+						if("List".equals(outTypesMap.get(denormalizeColumn))){
+%>
+	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.add(<%=connName %>.<%=denormalizeColumn %>);
+<%
+            				continue;
+                		}
 						if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
 							if((("java.util.Date").equals(typesMap.get(denormalizeColumn))) && (patternsMap.get(denormalizeColumn).length() != 0)){
 %>		
@@ -224,6 +249,12 @@ if(denormalize_result_<%=cid %> == null){
 	}
 <%
 					}else{
+						if("List".equals(outTypesMap.get(denormalizeColumn))){
+%>
+	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.add(<%=connName %>.<%=denormalizeColumn %>);
+<%
+							continue;
+    					}
 						if(typesMap.get(denormalizeColumn) !=null && patternsMap.get(denormalizeColumn) != null){
 							if((("java.util.Date").equals(typesMap.get(denormalizeColumn))) && (patternsMap.get(denormalizeColumn).length() != 0)){
 %>		

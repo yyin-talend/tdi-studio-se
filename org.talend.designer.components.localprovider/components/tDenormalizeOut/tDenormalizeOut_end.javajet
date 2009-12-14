@@ -42,6 +42,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		String pattern = ((column.getPattern() == null) || (column.getPattern().trim().length() == 0)) ? "" : column.getPattern();
     		patternsMap.put(column.getLabel(), pattern);
     	}
+    	Map<String, String> outTypesMap = new HashMap<String, String>();
+    	for(IMetadataColumn outColumn : metadata.getListColumns()){
+    		String type = JavaTypesManager.getTypeToGenerate(outColumn.getTalendType(), true);
+    		outTypesMap.put(outColumn.getLabel(), type);
+    	}
     	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
         List<Map<String, String>> denormalizes = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__DENORMALIZE_COLUMNS__");
         List<String> denormalizeColumns = new ArrayList<String>();
@@ -124,6 +129,12 @@ while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
 			for(int i = 0; i < denormalizeColumns.size(); i++){
 				String inputColumn = denormalizeColumns.get(i);
 				String delimiter = denormalizeDelimiters.get(i);
+				if("List".equals(outTypesMap.get(inputColumn))){
+%>
+	denormalize_row_<%=cid %>.<%=inputColumn %> = denormalize_result_<%=cid %>.<%=inputColumn %>;
+<%
+					continue;
+				}
 				if(denormalizeMergeFlags.get(i)){
 %>
 	for(<%=typesMap.get(inputColumn) %> temp_<%=cid %> : denormalize_result_<%=cid %>.<%=inputColumn %>){
