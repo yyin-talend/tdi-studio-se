@@ -108,6 +108,8 @@
     }
     
     javax.mail.Message[] msgs_<%=cid %> = folder_<%=cid %>.getMessages();
+    String filterValue_<%=cid%> = null;
+    int splitter_index_<%=cid%> = 0;
     for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; counter_<%=cid %>++) {
 <%
    if (("false").equals(allEmails)) {
@@ -140,19 +142,25 @@
 	java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getReplyTo()[0]==null?"":message_<%=cid %>.getReplyTo()[0].toString());
 	isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
 <%
-		}else if(("BeforeDate").equals(filterItem)){
-%>
-	java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>,"dd-MM-yyy");
-	if(date_<%=i%>_<%=cid%>!=null){
-		isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().before(date_<%=i%>_<%=cid%>));
-	}
-<%
-		}else if(("AfterDate").equals(filterItem)){
-%>
-	java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>,"dd-MM-yyy");
-	if(date_<%=i%>_<%=cid%>!=null){
-		isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().after(date_<%=i%>_<%=cid%>));
-	}
+		}else{
+		
+%>  
+    filterValue_<%=cid%> = (<%=filterptn%>).trim();
+    splitter_index_<%=cid%> = filterValue_<%=cid%>.indexOf(";");
+    if (splitter_index_<%=cid%> < 0){
+      throw new RuntimeException("Wrong DATE filter setting in <%=cid%> Advanced settings. Correct setting is: pattern;value, e.g: \"dd-MM-yyyy HH:mm:ss;01-01-2000 12:13:14\". Of course you can change the pattern what you want");
+    } else{
+      String date_pattern_<%=cid%> = filterValue_<%=cid%>.substring(0, splitter_index_<%=cid%>);
+      String date_value_<%=cid%> = filterValue_<%=cid%>.substring(splitter_index_<%=cid%> + 1);
+      if ("".equals(date_pattern_<%=cid%>) || "".equals(date_pattern_<%=cid%>)){
+        throw new RuntimeException("Wrong DATE filter setting in <%=cid%> Advanced settings. Correct setting is: pattern;value, e.g: \"dd-MM-yyyy HH:mm:ss;01-01-2000 12:13:14\". Of course you can change the pattern what you want");        
+      } else{
+        java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(date_value_<%=cid%>, date_pattern_<%=cid%>);
+	    if(date_<%=i%>_<%=cid%>!=null){
+		  isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().<%if ("BeforeDate".equals(filterItem)){%>before<%}else if("AfterDate".equals(filterItem)){%>after<%}%>(date_<%=i%>_<%=cid%>));
+	    }
+      }
+    }
 <%
 		}
 	}
