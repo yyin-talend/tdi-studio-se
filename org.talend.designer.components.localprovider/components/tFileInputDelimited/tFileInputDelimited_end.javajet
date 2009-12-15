@@ -11,7 +11,7 @@
 <% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-    String cid = node.getUniqueName();	
+    String cid = node.getUniqueName();
 	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %>
@@ -21,10 +21,13 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
+			String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 %>
 
             }
-            fid_<%=cid %>.close();
+            if(!(<%=filename %> instanceof java.io.InputStream)){
+            	fid_<%=cid %>.close();
+            }
             globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
 <%
 		}
@@ -46,7 +49,9 @@
 
 				nb_line_<%=cid%>++;
 			}
-			csvReader<%=cid %>.close();
+			if(!(filename_<%=cid %> instanceof java.io.InputStream)){
+				csvReader<%=cid %>.close();
+			}
 			globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}

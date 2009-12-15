@@ -20,7 +20,10 @@
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 %>
-            in<%=cid %>.close();
+			if(!(source_<%=cid %> instanceof java.io.InputStream)){
+            	in<%=cid %>.close();
+            }
+            in<%=cid %> = null;
             globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}
