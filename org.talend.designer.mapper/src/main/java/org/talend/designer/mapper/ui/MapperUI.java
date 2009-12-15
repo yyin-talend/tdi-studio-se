@@ -136,9 +136,9 @@ public class MapperUI {
 
     private ScrollBar vBar3;
 
-    private ExecutionLimiter backgroundRefreshLimiter;
+    private ExecutionLimiterImproved backgroundRefreshLimiter;
 
-    private ExecutionLimiter backgroundRefreshLimiterForceRecalculate;
+    private ExecutionLimiterImproved backgroundRefreshLimiterForceRecalculate;
 
     private int backgroundRefreshTimeForScrolling = DEFAULT_TIME_BEFORE_NEW_BG_REFRESH;
 
@@ -839,6 +839,12 @@ public class MapperUI {
         ImageProviderMapper.releaseImages();
         ColorProviderMapper.releaseColors();
         FontProviderMapper.releaseFonts();
+        if (backgroundRefreshLimiter != null) {
+            backgroundRefreshLimiter.shutdown();
+        }
+        if (backgroundRefreshLimiterForceRecalculate != null) {
+            backgroundRefreshLimiterForceRecalculate.shutdown();
+        }
     }
 
     protected void updateBackground(boolean forceRecalculate, boolean antialias) {
