@@ -372,7 +372,7 @@ public class CsvWriter {
 	 *                destination stream.
 	 */
 	public void write(String content) throws IOException {
-		write(content, false);
+		write(content, true);
 	}
 
 	public void writeComment(String commentText) throws IOException {
@@ -429,7 +429,7 @@ public class CsvWriter {
 	 *             destination stream.
 	 */
 	public void writeRecord(String[] values) throws IOException {
-		writeRecord(values, false);
+		writeRecord(values, true);
 	}
 
 	/**
