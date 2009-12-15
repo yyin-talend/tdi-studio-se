@@ -76,7 +76,7 @@ public class RowGeneratorDialog extends Dialog {
         for (IMetadataColumn preColumn : listColumns) {
             preOutputColumnSet.add(preColumn.getLabel());
         }
-        setShellStyle(getShellStyle() | SWT.RESIZE);
+        setShellStyle(getShellStyle() | SWT.DIALOG_TRIM | SWT.MIN | SWT.MAX | SWT.APPLICATION_MODAL | SWT.RESIZE);
     }
 
     /*
