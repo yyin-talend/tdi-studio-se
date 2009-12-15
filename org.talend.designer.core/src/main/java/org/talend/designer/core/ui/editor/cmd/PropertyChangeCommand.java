@@ -466,17 +466,31 @@ public class PropertyChangeCommand extends Command {
                 // See issue 975, update the schema.
                 Node node = (Node) elem;
                 if (node.getMetadataList().size() > 0) {
-                    IMetadataTable metadataTable = node.getMetadataFromConnector(testedParam.getContext());
-                    testedParam.setValueToDefault(node.getElementParameters());
-                    IMetadataTable newMetadataTable = (IMetadataTable) testedParam.getValue();
-                    newMetadataTable.setTableName(metadataTable.getTableName());
-                    newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
-                    metadataTable.setReadOnly(newMetadataTable.isReadOnly());
+                    IMetadataTable metadataTable = null;
+                    IMetadataTable newMetadataTable = null;
+                    if (node.getComponent() != null && "tSalesforceOutput".equals(node.getComponent().getName())) {
+                        metadataTable = node.getMetadataFromConnector(testedParam.getContext());
+                        testedParam.setValueToDefault(node.getElementParameters());
+                        IMetadataTable defaultMetadataTable = (IMetadataTable) testedParam.getValue();
 
-                    metadataTable.setListColumns(newMetadataTable.clone(true).getListColumns());
+                        IElementParameter param = node.getElementParameter(EParameterName.SCHEMA.getName());
+                        IMetadataTable meta = node.getMetadataFromConnector(param.getContext());
+                        newMetadataTable = meta.clone(true);
+                        newMetadataTable.getListColumns().addAll(defaultMetadataTable.getListColumns());
+                    } else {
+                        metadataTable = node.getMetadataFromConnector(testedParam.getContext());
+                        testedParam.setValueToDefault(node.getElementParameters());
+                        newMetadataTable = (IMetadataTable) testedParam.getValue();
 
-                    changeMetadataCommand = new ChangeMetadataCommand(node, null, metadataTable, newMetadataTable);
-                    changeMetadataCommand.execute(true);
+                    }
+                    if (metadataTable != null && newMetadataTable != null) {
+                        newMetadataTable.setTableName(metadataTable.getTableName());
+                        newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
+                        metadataTable.setReadOnly(newMetadataTable.isReadOnly());
+                        metadataTable.setListColumns(newMetadataTable.clone(true).getListColumns());
+                        changeMetadataCommand = new ChangeMetadataCommand(node, null, metadataTable, newMetadataTable);
+                        changeMetadataCommand.execute(true);
+                    }
                 }
             }
         }
