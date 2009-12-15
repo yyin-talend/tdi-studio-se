@@ -275,7 +275,7 @@ public class CsvWriter {
 		boolean textQualify = userSettings.ForceQualifier;
 
 		if (!preserveSpaces && content.length() > 0) {
-			content = content;
+			content = content.trim();
 		}
 
 		if (!textQualify
