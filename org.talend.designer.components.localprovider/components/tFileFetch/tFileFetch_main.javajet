@@ -92,7 +92,7 @@ String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 		i++;
 		String name = param.get("COMMON_PARAMS_NAME");
 		String value = param.get("COMMON_PARAMS_VALUE");
-		varPartList.add("common_" + i + "" + cid);
+		varPartList.add("common_" + i + "_" + cid);
 %>
 	org.apache.commons.httpclient.methods.multipart.StringPart common_<%=i %>_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.StringPart(<%=name %>, <%=value %>);
 <%
