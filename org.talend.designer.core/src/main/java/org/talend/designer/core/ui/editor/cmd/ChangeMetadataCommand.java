@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -452,8 +453,21 @@ public class ChangeMetadataCommand extends Command {
 
         for (INodeConnector connector : node.getListConnector()) {
             if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)) {
-                // if there is some other schema dependant of this one, modify them
-                MetadataTool.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
+                if (node.getComponent() != null && "tSalesforceOutput".equals(node.getComponent().getName())
+                        && "REJECT".equals(connector.getName())) {
+                    IMetadataTable clone = newOutputMetadata.clone(true);
+                    Iterator<IMetadataColumn> iterator = clone.getListColumns().iterator();
+                    while (iterator.hasNext()) {
+                        IMetadataColumn column = iterator.next();
+                        if (column.isCustom()) {
+                            iterator.remove();
+                        }
+                    }
+                    MetadataTool.copyTable(clone, node.getMetadataFromConnector(connector.getName()));
+                } else {
+                    // if there is some other schema dependant of this one, modify them
+                    MetadataTool.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
+                }
             }
         }
 
