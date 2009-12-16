@@ -297,12 +297,13 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isNameAvailable(org.talend.core.model.properties.Item,
      * java.lang.String)
      */
-    public boolean isNameAvailable(Item item, String name) throws PersistenceException {
-        return isNameAvailable(projectManager.getCurrentProject(), item, name);
+    public boolean isNameAvailable(Item item, String name, List<IRepositoryObject>... givenList) throws PersistenceException {
+        return isNameAvailable(projectManager.getCurrentProject(), item, name, givenList);
     }
 
-    public boolean isNameAvailable(Project project, Item item, String name) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.isNameAvailable(project, item, name);
+    public boolean isNameAvailable(Project project, Item item, String name, List<IRepositoryObject>... givenList)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.isNameAvailable(project, item, name, givenList);
     }
 
     /*

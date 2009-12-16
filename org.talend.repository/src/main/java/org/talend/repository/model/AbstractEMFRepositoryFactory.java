@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -308,7 +309,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return serializableAllVersion;
     }
 
-    public boolean isNameAvailable(Project project, Item item, String name) throws PersistenceException {
+    public boolean isNameAvailable(Project project, Item item, String name, List<IRepositoryObject>... givenList)
+            throws PersistenceException {
         if (name == null) {
             name = item.getProperty().getLabel();
         }
@@ -329,7 +331,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             path = item.getState().getPath();
         }
 
-        List<IRepositoryObject> list = getAll(project, type, true, false);
+        List<IRepositoryObject> list;
+
+        if (givenList.length == 0) {
+            list = getAll(project, type, true, false);
+        } else {
+            list = givenList[0];
+        }
 
         for (IRepositoryObject current : list) {
             if (name.equalsIgnoreCase(current.getProperty().getLabel())
@@ -344,8 +352,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     }
 
     protected abstract List<IRepositoryObject> getSerializableFromFolder(Project project, Object folder, String id,
-            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted)
-            throws PersistenceException;
+            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted,
+            boolean... recursiveCall) throws PersistenceException;
 
     protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(Project project, ERepositoryObjectType type,
             boolean onlyLastVersion) throws PersistenceException;
@@ -411,8 +419,30 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         // will automatically set the children folders
         folderHelper.createFolder("code/routines/system"); //$NON-NLS-1$
 
+        List<IRepositoryObject> repositoryObjects = getAll(project, ERepositoryObjectType.ROUTINES, false, false);
+
         for (URL url : routines) {
-            createRoutine(url, path);
+            String[] fragments = url.toString().split("/"); //$NON-NLS-1$
+            String label = fragments[fragments.length - 1];
+            String[] tmp = label.split("\\."); //$NON-NLS-1$
+            String routineLabel = tmp[0];
+
+            if (routineLabel.equals(ITalendSynchronizer.TEMPLATE)) {
+                continue;
+            }
+
+            RoutineItem existingItem = null;
+            for (IRepositoryObject object : repositoryObjects) {
+                if (object.getLabel().equals(routineLabel) && object.getProperty().getItem() instanceof RoutineItem) {
+                    existingItem = (RoutineItem) object.getProperty().getItem();
+                    break;
+                }
+            }
+            if (existingItem == null) {
+                createRoutine(url, path, routineLabel);
+            } else {
+                updateRoutine(url, existingItem);
+            }
         }
     }
 
@@ -425,8 +455,37 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
         List<URL> routines = service.getSystemSQLPatterns();
 
+        List<IRepositoryObject> repositoryObjects = getAll(project, ERepositoryObjectType.SQLPATTERNS, false, false);
+
         for (URL url : routines) {
-            createSQLPattern(url);
+            String[] fragments = url.toString().split("/"); //$NON-NLS-1$
+            String label = fragments[fragments.length - 1];
+            String[] tmp = label.split("\\."); //$NON-NLS-1$
+
+            Path relativePath = new Path(url.getFile());
+
+            // for instance: categoryName is Teradata; fileName is
+            // Loadfile.sqlpattern
+            String fileName = relativePath.segment(relativePath.segmentCount() - 1);
+            String categoryName = relativePath.segment(relativePath.segmentCount() - 2);
+
+            tmp = fileName.split("\\."); //$NON-NLS-1$
+
+            String sqlPatternLabel = tmp[0];
+
+            SQLPatternItem existingItem = null;
+            for (IRepositoryObject object : repositoryObjects) {
+                if (object.getLabel().equals(sqlPatternLabel) && object.getProperty().getItem() instanceof SQLPatternItem
+                        && ((SQLPatternItem) object.getProperty().getItem()).getEltName().equals(categoryName)) {
+                    existingItem = (SQLPatternItem) object.getProperty().getItem();
+                    break;
+                }
+            }
+            if (existingItem == null) {
+                createSQLPattern(url, sqlPatternLabel, categoryName);
+            } else {
+                updateSQLPattern(url, existingItem);
+            }
         }
     }
 
@@ -436,7 +495,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @param url
      * @throws PersistenceException
      */
-    private void createRoutine(URL url, IPath path) throws PersistenceException {
+    private void createRoutine(URL url, IPath path, String label) throws PersistenceException {
         if (url == null) {
             throw new IllegalArgumentException();
         }
@@ -444,11 +503,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         try {
             Property property = PropertiesFactory.eINSTANCE.createProperty();
             property.setId(getNextId());
-
-            String[] fragments = url.toString().split("/"); //$NON-NLS-1$
-            String label = fragments[fragments.length - 1];
-            String[] tmp = label.split("\\."); //$NON-NLS-1$
-            property.setLabel(tmp[0]);
+            property.setLabel(label);
 
             ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
             stream = url.openStream();
@@ -476,7 +531,35 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         }
     }
 
-    private void createSQLPattern(URL url) throws PersistenceException {
+    private void updateRoutine(URL url, RoutineItem item) throws PersistenceException {
+        InputStream stream = null;
+        try {
+            stream = url.openStream();
+            byte[] innerContent = new byte[stream.available()];
+            stream.read(innerContent);
+            stream.close();
+
+            byte[] currentContent = item.getContent().getInnerContent();
+
+            if (!Arrays.equals(innerContent, currentContent)) {
+                item.getContent().setInnerContent(innerContent);
+                Project project = getRepositoryContext().getProject();
+                save(project, item);
+            }
+
+        } catch (IOException ioe) {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    throw new PersistenceException(ioe);
+                }
+            }
+            throw new PersistenceException(ioe);
+        }
+    }
+
+    private void createSQLPattern(URL url, String sqlPatternLabel, String categoryName) throws PersistenceException {
         if (url == null) {
             throw new IllegalArgumentException();
         }
@@ -485,20 +568,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             Property property = PropertiesFactory.eINSTANCE.createProperty();
             property.setId(getNextId());
 
-            String[] fragments = url.toString().split("/"); //$NON-NLS-1$
-            String label = fragments[fragments.length - 1];
-            String[] tmp = label.split("\\."); //$NON-NLS-1$
-
-            Path relativePath = new Path(url.getFile());
-
-            // for instance: categoryName is Teradata; fileName is
-            // Loadfile.sqlpattern
-            String fileName = relativePath.segment(relativePath.segmentCount() - 1);
-            String categoryName = relativePath.segment(relativePath.segmentCount() - 2);
-
-            tmp = fileName.split("\\."); //$NON-NLS-1$
-
-            property.setLabel(tmp[0]);
+            property.setLabel(sqlPatternLabel);
 
             ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
             stream = url.openStream();
@@ -546,7 +616,37 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         }
     }
 
+    private void updateSQLPattern(URL url, SQLPatternItem item) throws PersistenceException {
+        InputStream stream = null;
+        try {
+            stream = url.openStream();
+            byte[] innerContent = new byte[stream.available()];
+            stream.read(innerContent);
+            stream.close();
+
+            byte[] currentContent = item.getContent().getInnerContent();
+
+            if (!Arrays.equals(innerContent, currentContent)) {
+                item.getContent().setInnerContent(innerContent);
+                Project project = getRepositoryContext().getProject();
+                save(project, item);
+            }
+
+        } catch (IOException ioe) {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    throw new PersistenceException(ioe);
+                }
+            }
+            throw new PersistenceException(ioe);
+        }
+    }
+
     public void logOnProject(Project project) throws LoginException, PersistenceException {
+        setLoggedOnProject(false);
+
         new StatusPreferenceInitializer().initializeDefaultPreferences();
         String productVersion = RepositoryPlugin.getDefault().getBundle().getHeaders().get(
                 org.osgi.framework.Constants.BUNDLE_VERSION).toString();
@@ -561,6 +661,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             project.getEmfProject().setProductVersion(productBranding + "-" + productVersion); //$NON-NLS-1$
         }
         saveProject();
+
+        setLoggedOnProject(true);
     }
 
     protected abstract void saveProject() throws PersistenceException;

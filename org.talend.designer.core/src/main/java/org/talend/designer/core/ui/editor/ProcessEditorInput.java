@@ -59,7 +59,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
         if (readonly == null) {
             checkReadOnly();
         } else {
-            setForceReadOnly(readonly);
+            setReadOnly(readonly);
         }
     }
 

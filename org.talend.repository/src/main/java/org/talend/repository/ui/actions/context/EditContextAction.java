@@ -73,7 +73,7 @@ public class EditContextAction extends AbstractConextAction {
             default:
                 canWork = false;
             }
-            if (node.getObject() != null && !factory.isPotentiallyEditable(node.getObject()) || !isLastVersion(node)) {
+            if (canWork && (node.getObject() != null && !factory.isPotentiallyEditable(node.getObject()) || !isLastVersion(node))) {
                 canWork = false;
             }
         }

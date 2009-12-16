@@ -101,7 +101,7 @@ public class ReadQueriesAction extends AContextualAction {
             default:
                 canWork = false;
             }
-            if (!isLastVersion(repositoryNode)) {
+            if (canWork && !isLastVersion(repositoryNode)) {
                 canWork = false;
             }
         }

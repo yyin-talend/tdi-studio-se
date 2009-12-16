@@ -50,6 +50,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
     private List<DynamicChoiceBean> choices = new ArrayList<DynamicChoiceBean>();
 
+    private boolean loggedOnProject = false;
+
     public List<DynamicButtonBean> getButtons() {
         return buttons;
     }
@@ -208,6 +210,14 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     }
 
     public void logOffProject() {
-        // do nothing by default
+        loggedOnProject = false;
+    }
+
+    public boolean isLoggedOnProject() {
+        return loggedOnProject;
+    }
+
+    public void setLoggedOnProject(boolean loggedOnProject) {
+        this.loggedOnProject = loggedOnProject;
     }
 }

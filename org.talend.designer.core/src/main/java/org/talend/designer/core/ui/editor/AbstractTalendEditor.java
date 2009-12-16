@@ -737,7 +737,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (!readOnly) {
             // When gain focus, check read-only to disable read-only mode if process has been restore while opened :
             // 1. Enabled/disabled components :
-            process.checkReadOnly();
+
+            // process.checkReadOnly();
 
             // 2. Set backgroung color :
             List children = getViewer().getRootEditPart().getChildren();

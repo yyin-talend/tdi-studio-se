@@ -87,12 +87,16 @@ public interface IRepositoryFactory {
      * 
      * Implementations should be updated when folder are treated as Items.
      * 
+     * This function will take some time as it will retrieve all items from the repository. It is possible also to give
+     * in parameter the list of items, to avoid to have this function too slow.
+     * 
      * @param item
      * @param name TODO
      * @return <code>true</code> if the name is not used an so is available.
      * @throws PersistenceException
      */
-    public boolean isNameAvailable(Project project, Item item, String name) throws PersistenceException;
+    public boolean isNameAvailable(Project project, Item item, String name, List<IRepositoryObject>... givenList)
+            throws PersistenceException;
 
     public boolean isPathValid(Project project, ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
 
