@@ -26,7 +26,8 @@ public class StringUtil {
             return false;
         }
         char firstChar = label.charAt(0);
-        if (!Character.isLetter(firstChar)) {
+        // see bug 10359,support begin with "_".
+        if (!Character.isLetter(firstChar) && !('_' == firstChar)) {
             return false;
         }
         //        if (label.toLowerCase().startsWith("xml")) { //$NON-NLS-1$
