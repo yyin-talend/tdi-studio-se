@@ -8,331 +8,269 @@ imports="
     java.util.Map
 "
 %>
-
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-
 String protocol = ElementParameterParser.getValue(node,"__PROTO__");
-
-
-
-
 String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
 boolean bMakeDirs = "true".equals(ElementParameterParser.getValue(node, "__MAKEDIRS__"));
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
-
 String dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__");
-%>   
 
-<%if(("http").equals(protocol)){
+if(("http").equals(protocol)){
 
-String uri = ElementParameterParser.getValue(node, "__URI__");
-boolean post = ("true").equals(ElementParameterParser.getValue(node,"__POST__"));
-boolean printResponse = ("true").equals(ElementParameterParser.getValue(node,"__PRINT__"));
-boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
-String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
-String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
-String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+  String uri = ElementParameterParser.getValue(node, "__URI__");
+  boolean post = ("true").equals(ElementParameterParser.getValue(node,"__POST__"));
+  boolean printResponse = ("true").equals(ElementParameterParser.getValue(node,"__PRINT__"));
+  boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
+  String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
+  String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
+  String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 
-boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
-String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
-String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
-String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
-boolean useProxyNTLM = ("true").equals(ElementParameterParser.getValue(node,"__PROXY_NTLM__"));
-String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
+  boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
+  String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+  String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+  String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+  String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+  boolean useProxyNTLM = ("true").equals(ElementParameterParser.getValue(node,"__PROXY_NTLM__"));
+  String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 %>
-    org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
-    boolean isContinue=true;
-    client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
-<%if(post){%>
-    org.apache.commons.httpclient.methods.PostMethod post_<%=cid %> = new org.apache.commons.httpclient.methods.PostMethod(<%=uri %>);		
-<%}else{%>
-	org.apache.commons.httpclient.methods.GetMethod get_<%=cid %> = new org.apache.commons.httpclient.methods.GetMethod(<%=uri %>);
-<%}%>
+  org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();  
+  client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
+  
+  <%if(useProxy){%> 
+    client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
+    <%if(useProxyNTLM){%>
+      client_<%=cid %>.getState().setProxyCredentials(
+        new org.apache.commons.httpclient.auth.AuthScope( <%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null ),
+          new org.apache.commons.httpclient.NTCredentials( <%=proxyUser %>,
+		    <%=proxyPassword %>, <%=proxyHost %>, <%=proxyDomain %> ));
+    <%}else{%>
+      client_<%=cid %>.getState().setProxyCredentials(
+  	    new org.apache.commons.httpclient.auth.AuthScope(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null),
+    	  new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, <%=proxyPassword %>));
+    <%}
+  }%>
 
-<%if(useProxy){%> 
-		client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
-	<%if(useProxyNTLM){%>
-		client_<%=cid %>.getState().setProxyCredentials(
-						new org.apache.commons.httpclient.auth.AuthScope( <%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null ),
-						new org.apache.commons.httpclient.NTCredentials( <%=proxyUser %>,
-								<%=proxyPassword %>, <%=proxyHost %>, <%=proxyDomain %> ));			
-	<%}else{%>
-		client_<%=cid %>.getState().setProxyCredentials(
-  	  new org.apache.commons.httpclient.auth.AuthScope(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null),
-    	new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, <%=proxyPassword %>));
+  <%if(needAuth){
+    if ((!useProxy) && useProxyNTLM && (!"".equals(proxyDomain))){
+  %>
+      client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, new org.apache.commons.httpclient.NTCredentials(<%=username %>, <%=password %>, new java.net.URL(<%=uri%>).getHost(), <%=proxyDomain%>));
+    <%} else{%>
+      client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, <%=password %>));
+    <%}
+  }%>
+
+  <%if(post){%>
+    org.apache.commons.httpclient.methods.PostMethod method_<%=cid%> = new org.apache.commons.httpclient.methods.PostMethod(<%=uri %>);
+    <%
+    List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");	
+    List<String> varPartList = new ArrayList<String>();	//common string parameter part	
+    int i = 0;
+    for(Map<String, String> param : commonParams){
+      i++;
+      String name = param.get("COMMON_PARAMS_NAME");
+      String value = param.get("COMMON_PARAMS_VALUE");
+      varPartList.add("common_" + i + "_" + cid);
+      %>
+      org.apache.commons.httpclient.methods.multipart.StringPart common_<%=i %>_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.StringPart(<%=name %>, <%=value %>);
+      <%
+    }
+    
+    if ("true".equals(ElementParameterParser.getValue(node,"__UPLOAD__"))){
+      List<Map<String, String>> fileParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILE_PARAMS__");
+      int j = 0;
+      for(Map<String, String> param : fileParams){
+        j++;
+        String name = param.get("FILE_PARAMS_NAME");
+        String value = param.get("FILE_PARAMS_VALUE");
+        varPartList.add("file_" + j + "_" + cid);
+        %>
+        org.apache.commons.httpclient.methods.multipart.FilePart file_<%=j %>_<%=cid %>  = new org.apache.commons.httpclient.methods.multipart.FilePart(<%=name %>, new java.io.File(<%=value %>));  
+        <%
+      }
+    }
+    %>
+    
+    org.apache.commons.httpclient.methods.multipart.Part[] parts_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.Part[]{<%for(String var: varPartList){%><%=var %>,<%}%>};    
+    method_<%=cid%>.setRequestEntity(new org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity(parts_<%=cid %>, method_<%=cid%>.getParams()));          
+  <%} else{%>
+    org.apache.commons.httpclient.methods.GetMethod method_<%=cid%> = new org.apache.commons.httpclient.methods.GetMethod(<%=uri %>);
   <%}%>
-<%}%>
-
-
-<%if(needAuth){
-   if ((!useProxy) && useProxyNTLM && (!"".equals(proxyDomain))){
-%>
-    client_tFileFetch_1.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, new org.apache.commons.httpclient.NTCredentials(<%=username %>, <%=password %>, new java.net.URL(<%=uri%>).getHost(), <%=proxyDomain%>));
-<%  
-   } else{
-%>
-    org.apache.commons.httpclient.Credentials creds_<%=cid %> = new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, <%=password %>);
-    client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, creds_<%=cid %>);
-<% }
-}%>
-
-<%if(post){
-	boolean uploadFile = ("true").equals(ElementParameterParser.getValue(node,"__UPLOAD__"));
-    
-	List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");
-	List<Map<String, String>> fileParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILE_PARAMS__");
-	List<String> varPartList = new ArrayList<String>();	//common string parameter part	
-	int i = 0;
-	for(Map<String, String> param : commonParams){
-		i++;
-		String name = param.get("COMMON_PARAMS_NAME");
-		String value = param.get("COMMON_PARAMS_VALUE");
-		varPartList.add("common_" + i + "_" + cid);
-%>
-	org.apache.commons.httpclient.methods.multipart.StringPart common_<%=i %>_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.StringPart(<%=name %>, <%=value %>);
-<%
-	}
-%>
-
-<%	//file parameter part
-	if(uploadFile){
-	int j = 0;	
-	for(Map<String, String> param : fileParams){
-		String name = param.get("FILE_PARAMS_NAME");
-		String value = param.get("FILE_PARAMS_VALUE");
-		varPartList.add("file_" + j + "_" + cid);
-%>
-	org.apache.commons.httpclient.methods.multipart.FilePart file_<%=j %>_<%=cid %>  = new org.apache.commons.httpclient.methods.multipart.FilePart(<%=name %>, new java.io.File(<%=value %>));	
-<%
-	}
-	}
-%>
-    org.apache.commons.httpclient.methods.multipart.Part[] parts_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.Part[]{<%for(String var: varPartList){%><%=var %>,<%}%>};		
-    
-    post_<%=cid %>.setRequestEntity(new org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity(parts_<%=cid %>, post_<%=cid %>.getParams()));					
-//here excute the post the method
-   try{
-    int status_<%=cid%>  = client_<%=cid %>.executeMethod(post_<%=cid %>);     
+   
+  boolean isContinue = true;
+  try{
+    int status_<%=cid%>  = client_<%=cid %>.executeMethod(method_<%=cid%>);     
     if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {      
-      throw new Exception("Method failed: " + post_<%=cid %>.getStatusLine());
+      throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
     }      
-   }catch(Exception e){
-<% if(("true").equals(dieOnError)){
-%>
-   throw(e);
-<% }else{
-%>   
-      System.err.println("There is an exception on: "+<%=uri %>);
+  }catch(Exception e){
+    <% if(("true").equals(dieOnError)){%>
+      throw(e);
+    <% }else{%>   
+      System.err.println("There is an exception on: " + <%=uri %>);
       e.printStackTrace();
       System.out.println("\r\n");
-      isContinue=false;
-<% }
-%>
-}
+      isContinue = false;
+    <%}%>
+  }
+  
+  if (isContinue){   
+    <%if(printResponse){%>
+      System.out.println("Status Line: " + method_<%=cid%>.getStatusLine());  
+      //write out the response headers
+      System.out.println("*** Response Header ***");  
+      org.apache.commons.httpclient.Header[] responseHeaders_<%=cid %> = method_<%=cid%>.getResponseHeaders();  
+  
+      for (int i = 0; i < responseHeaders_<%=cid %>.length; i++){
+        System.out.print(responseHeaders_<%=cid %>[i]);
+      }
+    <%}%>
+   
+    java.io.InputStream in_<%=cid %> = method_<%=cid%>.getResponseBodyAsStream();
+    String sDir_<%=cid%> = (<%=directory%>).trim();
+    String fileName_<%=cid %> = (<%=filename%>).trim();    
+  
+    //open directory
+    java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);    
+    
+    String sURIPath_<%=cid%> = "";
+    int iLastSlashIndex_<%=cid%> = 0;
+    sURIPath_<%=cid%> = url_<%=cid %>.getFile();
+    iLastSlashIndex_<%=cid%> = sURIPath_<%=cid%>.lastIndexOf("/");
       
-            
-     
-<% }else{%>   			
-    try{      
-      int status_<%=cid%>  = client_<%=cid %>.executeMethod(get_<%=cid %>);     
-      if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {       
-        throw new Exception("Method failed: " + get_<%=cid %>.getStatusLine());
-      }  
+    <%if (bMakeDirs){%>
+      sDir_<%=cid%> = sDir_<%=cid%>.concat(iLastSlashIndex_<%=cid%> > 0 ? sURIPath_<%=cid%>.substring(0, iLastSlashIndex_<%=cid%>) : "");
+    <%}%>
+        
+    //if not input file name, get the name from URI
+    if ("".equals(fileName_<%=cid %>)) {      
+      if (iLastSlashIndex_<%=cid%> > 0 && (!sURIPath_<%=cid%>.endsWith("/"))){
+        fileName_<%=cid %> = sURIPath_<%=cid%>.substring(iLastSlashIndex_<%=cid%> + 1);
+      } else{
+        fileName_<%=cid %> = "defaultfilename.txt";
+      }
+    }
     
-    }catch(Exception e){
-<% if(("true").equals(dieOnError)){
-%>
-   throw(e);
-<% }else{
-%>   
-      System.err.println("There is an exception on: "+<%=uri %>);
-      e.printStackTrace();
-      System.out.println("\r\n");
-      isContinue=false;
-<% }
-%>  
-} 
-<%}%>
-    if(isContinue==true){
-<%  if(printResponse){%>	
-	
-	<%if(post){%>
-	System.out.println("Status Line: " + post_<%=cid %>.getStatusLine());
-	<%}else{%>
-	System.out.println("Status Line: " + get_<%=cid %>.getStatusLine());
-	<%}%>
-	//write out the response headers
-	System.out.println("*** Response Header ***");	
-	<%if(post){%>
-	org.apache.commons.httpclient.Header[] responseHeaders_<%=cid %> = post_<%=cid %>.getResponseHeaders();	
-	<%}else{%>
-	org.apache.commons.httpclient.Header[] responseHeaders_<%=cid %> = get_<%=cid %>.getResponseHeaders();	
-	<%}%>
-	for (int i=0; i<responseHeaders_<%=cid %>.length; i++){
-    	System.out.print(responseHeaders_<%=cid %>[i]);
-	}
-<%  }%>
-
-    <%if(post){%>
-	java.io.InputStream in_<%=cid %> = post_<%=cid %>.getResponseBodyAsStream();
-	<%}else{%>
-	java.io.InputStream in_<%=cid %> = get_<%=cid %>.getResponseBodyAsStream();
-	<%}%>
-	String fileName_<%=cid %> = <%=filename%>;
-	
-	//open directory
-	
-	
-	java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);	
-    int iLocation_<%=cid%> = 0;
-    String sFullPath_<%=cid%> = "";
-<%  if (bMakeDirs){ %>
-	  sFullPath_<%=cid%> = url_<%=cid %>.getFile();
-	  iLocation_<%=cid%> = sFullPath_<%=cid%>.lastIndexOf("/");	
-	  sFullPath_<%=cid%> = iLocation_<%=cid%> > 0 ? sFullPath_<%=cid%>.substring(0, iLocation_<%=cid%>) : "";
-<%  }%>	
-
-    java.io.File dir_<%=cid %> = new java.io.File(<%=directory %> + sFullPath_<%=cid%>);
+    java.io.File dir_<%=cid %> = new java.io.File(sDir_<%=cid%>);
     
-	//open file dans la directory
-	if (fileName_<%=cid %>.compareTo("")==0) {
-	  fileName_<%=cid %> = url_<%=cid %>.getFile();
-	  iLocation_<%=cid%> = fileName_<%=cid %>.lastIndexOf("/");
-	  if (iLocation_<%=cid%> > 0){
-	    fileName_<%=cid %> = fileName_<%=cid %>.substring(iLocation_<%=cid%> + 1);
-	  } else{
-	    fileName_<%=cid %> = "defaultfilename.txt";
-	  }
-	}
-		 
-	try{
-	  java.io.File test_file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
-	  test_file_<%=cid%>.getParentFile().mkdirs();
-	  if (test_file_<%=cid%>.createNewFile()){
-	    test_file_<%=cid%>.delete();
-	  }
-	} catch(Exception e){
-	  fileName_<%=cid %> = "defaultfilename.txt";
-	}
-	java.io.File file_<%=cid%> = new java.io.File(dir_<%=cid %>,fileName_<%=cid %>);
-	file_<%=cid%>.getParentFile().mkdirs();
-	java.io.FileOutputStream out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid%>);
-
+    // pretreatment
+    try{
+      java.io.File test_file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
+      test_file_<%=cid%>.getParentFile().mkdirs();
+      if (test_file_<%=cid%>.createNewFile()){
+        test_file_<%=cid%>.delete();
+      }
+    } catch(Exception e){
+      fileName_<%=cid %> = "defaultfilename.txt";
+    }
+  
+    java.io.File file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
+    file_<%=cid%>.getParentFile().mkdirs();    
+    java.io.FileOutputStream out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid%>);
     byte[] buffer_<%=cid %> = new byte[1024];
     int count_<%=cid %> = 0;
     while ((count_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>)) > 0) {
         out_<%=cid %>.write(buffer_<%=cid %>, 0, count_<%=cid %>);
     }
-    
     // close opened object
-    in_<%=cid %>.close();
-    out_<%=cid %>.close();
-    }
-    <%if(post){%>
-	post_<%=cid %>.releaseConnection();
-	<%}else{%>
-	get_<%=cid %>.releaseConnection();
-	<%}%>
-	
-<%}
-if(("ftp").equals(protocol)){%>
-
+    in_<%=cid %>.close();   
+    out_<%=cid %>.close(); 
+  }        
+  method_<%=cid%>.releaseConnection();
 <%
-String uri = ElementParameterParser.getValue(node, "__URI__");
-boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
-String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
-String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
-String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
-//The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
-//And it can not work with the FTP proxy directly, only support the socks proxy.
-if(useProxy){
+}
+
+if(("ftp").equals(protocol)){
+
+  String uri = ElementParameterParser.getValue(node, "__URI__");
+  boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
+  String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+  String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+  String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+  String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+  
+  //The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
+  //And it can not work with the FTP proxy directly, only support the socks proxy.
+  if(useProxy){
 %>
-        java.util.Properties props = System.getProperties();
-        props.put("socksProxyPort", <%=proxyPort %>);
-        props.put("socksProxyHost", <%=proxyHost %>);
-        props.put("java.net.socks.username", <%=proxyUser %>);
-        props.put("java.net.socks.password", <%=proxyPassword %>);        
-<%}%>
+    java.util.Properties props = System.getProperties();
+    props.put("socksProxyPort", <%=proxyPort %>);
+    props.put("socksProxyHost", <%=proxyHost %>);
+    props.put("java.net.socks.username", <%=proxyUser %>);
+    props.put("java.net.socks.password", <%=proxyPassword %>);        
+<% }%>
 
-String fileName<%=cid %> = <%=filename %>;
-java.io.DataInputStream in<%=cid%>=null;
-
-
-        		
-    // open url stream
-	java.net.URL url<%=cid %> = new java.net.URL(<%=uri %>);
-	java.net.URLConnection conn<%=cid %> = url<%=cid %>.openConnection();
-
-	int iLocation<%=cid%> = 0;
-    String sFullPath<%=cid%> = "";
-<%  if (bMakeDirs){ %>
-	  sFullPath<%=cid%> = url<%=cid %>.getFile();
-	  iLocation<%=cid%> = sFullPath<%=cid%>.lastIndexOf("/");	
-	  sFullPath<%=cid%> = iLocation<%=cid%> > 0 ? sFullPath<%=cid%>.substring(0, iLocation<%=cid%>) : "";
-<%  }%>	
-
-	//open directory
-	java.io.File dir<%=cid %> = new java.io.File(<%=directory %> + sFullPath<%=cid%>);
-	//open file dans la directory
-	if (fileName<%=cid %>.compareTo("")==0) {
-	  fileName<%=cid %> = url<%=cid %>.getFile();
-	  iLocation<%=cid%> = fileName<%=cid %>.lastIndexOf("/");
-	  if (iLocation<%=cid%> > 0){
-	    fileName<%=cid %> = fileName<%=cid %>.substring(iLocation<%=cid%> + 1);
-	  } else{
-	    fileName<%=cid %> = "defaultfilename.txt";
-	  }
-	}
-		
-	try{
-	  java.io.File testfile<%=cid%> = new java.io.File(dir<%=cid %>, fileName<%=cid %>);
-	  testfile<%=cid%>.getParentFile().mkdirs();
-	  if (testfile<%=cid%>.createNewFile()){
-	    testfile<%=cid%>.delete();
-	  }
-	} catch(Exception e){
-	  fileName<%=cid %> = "defaultfilename.txt";
-	}
+  java.io.DataInputStream in_<%=cid%> = null;
+ 
+  String sDir_<%=cid%> = (<%=directory%>).trim();
+  String fileName_<%=cid %> = (<%=filename%>).trim();
+  
+  //open url stream
+  java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);    
+  java.net.URLConnection conn_<%=cid %> = url_<%=cid %>.openConnection();
     
-	// copy file
-   try{
-   in<%=cid%> = new java.io.DataInputStream(conn<%=cid %>.getInputStream());
-   }catch(Exception e){
-<% if(("true").equals(dieOnError)){
-%>    throw(e);
-<%}else{
-%>
-      System.err.println("There is an exception on: "+<%=uri %>);
+  String sURIPath_<%=cid%> = "";
+  int iLastSlashIndex_<%=cid%> = 0;
+  sURIPath_<%=cid%> = url_<%=cid %>.getFile();
+  iLastSlashIndex_<%=cid%> = sURIPath_<%=cid%>.lastIndexOf("/");
+      
+  <%if (bMakeDirs){%>
+    sDir_<%=cid%> = sDir_<%=cid%>.concat(iLastSlashIndex_<%=cid%> > 0 ? sURIPath_<%=cid%>.substring(0, iLastSlashIndex_<%=cid%>) : "");
+  <%}%>
+
+  //if not input file name, get the name from URI
+  if ("".equals(fileName_<%=cid %>)) {      
+    if (iLastSlashIndex_<%=cid%> > 0 && (!sURIPath_<%=cid%>.endsWith("/"))){
+      fileName_<%=cid %> = sURIPath_<%=cid%>.substring(iLastSlashIndex_<%=cid%> + 1);
+    } else{
+      fileName_<%=cid %> = "defaultfilename.txt";
+    }
+  }
+    
+  java.io.File dir_<%=cid %> = new java.io.File(sDir_<%=cid%>);
+
+  try{
+    java.io.File testfile_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
+    testfile_<%=cid%>.getParentFile().mkdirs();
+    if (testfile_<%=cid%>.createNewFile()){
+      testfile_<%=cid%>.delete();
+    }
+  } catch(Exception e){
+    fileName_<%=cid %> = "defaultfilename.txt";
+  }
+    
+  // copy file
+  try{
+    in_<%=cid%> = new java.io.DataInputStream(conn_<%=cid %>.getInputStream());
+  }catch(Exception e){
+    <% if(("true").equals(dieOnError)){%>    
+      throw(e);
+    <%}else{%>
+      System.err.println("There is an exception on: " + <%=uri %>);
       e.printStackTrace();
       System.out.println("\r\n");
-      in<%=cid%>=null;      
-<%}
-%>    
-}  
-    final java.io.DataOutputStream out<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(
-            dir<%=cid %>, fileName<%=cid %>)));
-	//close opened object
-	if(in<%=cid%>!=null){
-    byte[] buffer<%=cid%> = new byte[1024];
-    int count<%=cid%> = 0;
-    while ((count<%=cid%> = in<%=cid%>.read(buffer<%=cid%>)) > 0) {
-        out<%=cid%>.write(buffer<%=cid%>, 0, count<%=cid%>);
-    }
-    // close opened object
-    in<%=cid%>.close();
-    }
-    out<%=cid%>.close();
+      in_<%=cid%> = null;      
+    <%}%>
+  }  
+   
+  final java.io.DataOutputStream out_<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(dir_<%=cid %>, fileName_<%=cid %>)));
 
+  if(in_<%=cid%>!=null){
+    byte[] buffer_<%=cid%> = new byte[1024];
+    int count_<%=cid%> = 0;
+    while ((count_<%=cid%> = in_<%=cid%>.read(buffer_<%=cid%>)) > 0) {
+        out_<%=cid%>.write(buffer_<%=cid%>, 0, count_<%=cid%>);
+    }    
+    in_<%=cid%>.close();
+  }    
+  out_<%=cid%>.close();
+<%
+}
 
-<%}
 if(("smb").equals(protocol)){ //1%>
-
 <%
   String srcurl = ElementParameterParser.getValue(node, "__SMB_URI__"); 
   String domain = ElementParameterParser.getValue(node,"__SMB_DOMAIN__");
@@ -394,8 +332,6 @@ if(("smb").equals(protocol)){ //1%>
 	 
     SambaProtoClient_<%=cid %> spc_<%=cid %>=new SambaProtoClient_<%=cid %>();
     spc_<%=cid %>.copySMBFile(<%=domain %>, username_<%=cid %>, password_<%=cid %>, srcurl_<%=cid %>, <%=directory %>, fileName_<%=cid %>);
-
-
 <%
 }//1
 %>
