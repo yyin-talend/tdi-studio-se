@@ -196,14 +196,25 @@ if(currentRowCount_<%=cid %> > 0){
 %>  
     nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
 <%
-	if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
+		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
     nestXMLTool_<%=cid%>.removeEmptyElement(doc_<%=cid%>.getRootElement());
 <%
-	}
+		}
 %>
     output_<%=cid%>.write(doc_<%=cid%>);
+<%
+		if(!useStream){
+%>
     output_<%=cid%>.close();
+<%
+		}else{
+%>
+	output_<%=cid%>.flush();
+	output_<%=cid%> = null;
+<%
+		}
+%>
 <%
 	}else if(("Null").equals(mode)){
 		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
@@ -240,9 +251,18 @@ if(currentRowCount_<%=cid %> > 0){
 <%
 			}
 		}
+		
+		if(!useStream){
 %>
 	out_<%=cid%>.close();
 <%
+		}else{
+%>
+	out_<%=cid%>.flush();
+	outWriter_<%=cid %>.flush();
+	out_<%=cid %> = null;
+<%
+		}
 	}
 	if(!useStream && ("true").equals(split)){
 %>

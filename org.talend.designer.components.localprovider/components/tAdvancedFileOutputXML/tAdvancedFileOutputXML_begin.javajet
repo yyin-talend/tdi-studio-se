@@ -213,8 +213,8 @@ String[] startTabs_<%=cid%> = new String[endTabStrs_<%=cid%>.size()];
 java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
 	new java.io.OutputStreamWriter(new java.io.FileOutputStream(fileName_<%=cid%>), <%=encoding%>));
 <%}else{// the part of output stream%>
-java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
-	new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>));
+java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>);
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(outWriter_<%=cid %>);
 <%}%>
 out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
 out_<%=cid%>.newLine();

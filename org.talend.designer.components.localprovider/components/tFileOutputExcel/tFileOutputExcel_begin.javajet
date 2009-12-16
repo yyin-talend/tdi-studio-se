@@ -67,7 +67,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
             		new java.io.BufferedOutputStream(<%=outStream %>), 
-            		true, workbookSettings_<%=cid %>);
+            		false, workbookSettings_<%=cid %>);
 <%
 		}else{
 			if(isAppendFile){

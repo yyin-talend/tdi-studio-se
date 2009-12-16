@@ -74,8 +74,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		}else{ //the part of the output stream
 %>
-		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        		<%=outStream %>,<%= encoding%>));  
+		java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>,<%= encoding%>);
+		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);  
         
 <%
 		}

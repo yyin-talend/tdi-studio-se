@@ -13,6 +13,7 @@
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
     boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+    boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
     
     String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__")); 
@@ -52,8 +53,18 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
+			if(!useStream){
 %>
 	out<%=cid %>.close();
+<%
+			}else{
+%>
+	out<%=cid%>.flush();
+	writer_<%=cid %>.flush();
+	out<%=cid %> = null;
+<%
+			}
+%>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}
@@ -71,8 +82,27 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
+			if(!useStream){
 %>
     CsvWriter<%=cid%>.close();
+<%
+			}else{
+				if(isInRowMode){
+%>
+	CsvWriter<%=cid%>.close();
+	out<%=cid %>.flush();
+	outWriter_<%=cid %>.flush();
+<%
+				}else{
+%>
+	CsvWriter<%=cid%>.flush();
+	bufferWriter_<%=cid %>.flush();
+	outWriter_<%=cid %>.flush();
+	CsvWriter<%=cid%> = null;
+<%
+				}
+			}
+%>
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}

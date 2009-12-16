@@ -168,7 +168,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     			}
  %>
     		    //routines.system.Row
-    		    java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(<%=outStream %>,<%=encoding%>));
+    		    java.io.OutputStreamWriter writer_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>,<%=encoding%>);
+    		    java.io.Writer out<%=cid %> = new <%=writerClass%>(writer_<%=cid %>);
 <%
     			if(isIncludeHeader){
     		        List<IMetadataColumn> columns = metadata.getListColumns();
@@ -326,14 +327,16 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		//***********************the following is the part of output Stream**************************************
 	            if(isInRowMode){
 %>
-                java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>));
+				java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>);
+                java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(outWriter_<%=cid %>);
 				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]);  
 <%
                 }else{
 %>
-				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                    <%=outStream %>, <%=encoding%>)), field_Delim_<%=cid %>[0]);  
+				java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>);
+				java.io.BufferedWriter bufferWriter_<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);
+				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(bufferWriter_<%=cid %>, field_Delim_<%=cid %>[0]);  
 <%
                 }
 	            List<IMetadataColumn> columns = metadata.getListColumns();
