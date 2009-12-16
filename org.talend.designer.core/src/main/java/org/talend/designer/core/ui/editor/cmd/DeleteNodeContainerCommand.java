@@ -69,7 +69,7 @@ public class DeleteNodeContainerCommand extends Command {
                     // nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() - 1);
                     // }
                     prevNode.removeOutput(connection);
-                    process.removeUniqueConnectionName(connection.getName());
+                    process.removeUniqueConnectionName(connection.getUniqueName());
                 }
             }
             for (Connection connection : outputList) {
@@ -86,7 +86,7 @@ public class DeleteNodeContainerCommand extends Command {
                     }
                 }
                 if (!builtIn) {
-                    process.removeUniqueConnectionName(connection.getName());
+                    process.removeUniqueConnectionName(connection.getUniqueName());
                 }
             }
             if (builtIn) {
@@ -130,8 +130,9 @@ public class DeleteNodeContainerCommand extends Command {
                     connection.reconnect();
                     if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                         // for bug 10024
-                        String name = connection.getName();
-                        name = process.generateUniqueConnectionName(name);
+                        // see 10583
+                        String name = connection.getUniqueName();
+                        // name = process.generateUniqueConnectionName(name);
                         process.addUniqueConnectionName(name);
                     }
                 }
@@ -147,8 +148,9 @@ public class DeleteNodeContainerCommand extends Command {
                 if (!builtIn) {
                     if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                         // for bug 10024
-                        String name = connection.getName();
-                        name = process.generateUniqueConnectionName(name);
+                        // see 10583
+                        String name = connection.getUniqueName();
+                        // name = process.generateUniqueConnectionName(name);
                         process.addUniqueConnectionName(name);
                     }
                 }
