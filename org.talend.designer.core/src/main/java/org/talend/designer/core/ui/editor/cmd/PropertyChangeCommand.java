@@ -476,7 +476,7 @@ public class PropertyChangeCommand extends Command {
                         IElementParameter param = node.getElementParameter(EParameterName.SCHEMA.getName());
                         IMetadataTable meta = node.getMetadataFromConnector(param.getContext());
                         newMetadataTable = meta.clone(true);
-                        newMetadataTable.getListColumns().addAll(defaultMetadataTable.getListColumns());
+                        newMetadataTable.getListColumns().addAll(defaultMetadataTable.clone(true).getListColumns());
                     } else {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         testedParam.setValueToDefault(node.getElementParameters());
