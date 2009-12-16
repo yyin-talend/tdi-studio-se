@@ -53,7 +53,6 @@ import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
-import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -990,11 +989,11 @@ public class MapperUI {
         return vBar3;
     }
 
-    public ExecutionLimiter getBackgroundRefreshLimiter() {
+    public ExecutionLimiterImproved getBackgroundRefreshLimiter() {
         return this.backgroundRefreshLimiter;
     }
 
-    public ExecutionLimiter getBackgroundRefreshLimiterForceRecalculate() {
+    public ExecutionLimiterImproved getBackgroundRefreshLimiterForceRecalculate() {
         return this.backgroundRefreshLimiterForceRecalculate;
     }
 
