@@ -91,7 +91,8 @@ Object[] resultMessageObj_<%=cid%> = null;
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
 %>
-				java.util.List<org.apache.axis.message.MessageElement> list_<%=cid %> = new java.util.ArrayList<org.apache.axis.message.MessageElement>();				
+				java.util.List<org.apache.axis.message.MessageElement> list_<%=cid %> = new java.util.ArrayList<org.apache.axis.message.MessageElement>();
+				java.util.List<String> nullList_<%=cid %> = new java.util.ArrayList<String>();				
 <%    			
     			for (int i = 0; i < sizeColumns; i++) {//5  			
 
@@ -102,43 +103,43 @@ Object[] resultMessageObj_<%=cid%> = null;
   			        if("Id".equals(column.getLabel()) && !("upsert".equals(action))) continue;
     				
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-%>
-
-<%
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
-					if(!isPrimitive) { //begin
-%>   				
-	    		if(<%=conn.getName() %>.<%=column.getLabel() %> != null) { //
-<%
-    				} 
-%>              
-                 list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",    						
-<%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
-								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
+						if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
+							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) ));
+						}else{
+							nullList_<%=cid %>.add("<%=column.getLabel() %>");
+						}
 <%				
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
-								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
+						if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
+							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString() ));
+						}else{
+							nullList_<%=cid %>.add("<%=column.getLabel() %>");
+						}
 <%				
 					} else {//others
-%>
-								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+						
+%>   				
+		    			<%if(!isPrimitive) {%>
+		    			if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
+		    			<%}else{%>
+		    			if(!"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
+		    			<%}%>
+							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>) ));
+						}else{
+							nullList_<%=cid %>.add("<%=column.getLabel() %>");
+						}
 <%				
 					}
 %>
-					          ));
+					         
 					          				          
 							
-<%
-					if(!isPrimitive) {//end
-%>
-	    		} //
-<%
-					} 
-%>  			
+ 			
     			
 <%
 				}//5	
@@ -154,13 +155,13 @@ resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.insert("<%=modulename %>"
 	} else if ("update".equals(action)) {//#######
 %>
 
-resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.update("<%=modulename %>", <%=conn.getName() %>.Id, (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));    			
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.update("<%=modulename %>", <%=conn.getName() %>.Id, (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
 
 <%
     } else if ("upsert".equals(action)) {//#######
 %> 
 
-resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.upsert("<%=modulename %>", "<%=upsertkey%>", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));    			
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.upsert("<%=modulename %>", "<%=upsertkey%>", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
 
 <%
   }//#######

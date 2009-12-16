@@ -675,13 +675,14 @@ public class SforceManagementImpl implements SforceManagement {
     /**
      * update, one record, one time.
      */
-    public SaveResult[] update(String tablename, String id, MessageElement[] updatefields) throws Exception {
+    public SaveResult[] update(String tablename, String id, MessageElement[] updatefields, String[] fieldsToNull)
+            throws Exception {
 
         SObject item = new SObject(); // create the account object to hold our changes
         item.setType(tablename);
         item.setId(id); // need to have the id so that API knows which account to update
         item.set_any(updatefields); // set a new value for the name property
-
+        item.setFieldsToNull(fieldsToNull);// set a null field for the name property
         updateItems.add(item);
 
         // call the update passing an array of object
@@ -748,13 +749,15 @@ public class SforceManagementImpl implements SforceManagement {
     /**
      * upsert, one record, one time.
      */
-    public UpsertResult[] upsert(String tablename, String upsertkey, MessageElement[] updatefields) throws Exception {
+    public UpsertResult[] upsert(String tablename, String upsertkey, MessageElement[] updatefields, String[] fieldsToNull)
+            throws Exception {
 
         // create the account object to hold our changes
         SObject item = new SObject();
         item.setType(tablename);
         // set a new value for the name property
         item.set_any(updatefields);
+        item.setFieldsToNull(fieldsToNull);// set a null field for the name property
         upsertItems.add(item);
 
         upsertKeyColumn = upsertkey;

@@ -15,3 +15,5 @@ some resources:
 4. Bug 9056, modify bug when upsert.
 
 5. feature 3103: add retrieve insert ID and reject link. 
+
+6. feature 10325: add an ability of set null value when update/upsert.

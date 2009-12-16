@@ -51,9 +51,11 @@ public interface SforceManagement {
 
     public DeleteResult[] delete(String id) throws Exception;
 
-    public SaveResult[] update(String tablename, String id, MessageElement[] updatefields) throws Exception;
+    public SaveResult[] update(String tablename, String id, MessageElement[] updatefields, String[] fieldsToNull)
+            throws Exception;
 
-    public UpsertResult[] upsert(String tablename, String upsertkey, MessageElement[] updatefields) throws Exception;
+    public UpsertResult[] upsert(String tablename, String upsertkey, MessageElement[] updatefields, String[] fieldsToNull)
+            throws Exception;
 
     public List<SObject> query(String queryString) throws Exception;
 
@@ -64,6 +66,6 @@ public interface SforceManagement {
     public void setNeedCompression(Boolean needCompression);
 
     public SforceService getSforceService();
-    
+
     public Map<String, String> readResult(Object[] os) throws Exception;
 }
