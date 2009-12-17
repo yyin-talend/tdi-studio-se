@@ -36,6 +36,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		boolean isMerge= ("true").equals(ElementParameterParser.getValue(node, "__MERGE__"));
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
         		boolean isCompact = ("true").equals(ElementParameterParser.getValue(node, "__PRETTY_COMPACT__"));
+        		
+        		//========add for feature9076 start====================
+        		boolean needFileValid = ("true").equals(ElementParameterParser.getValue(node, "__FILE_VALID__"));
+        		boolean needDTDValid = ("true").equals(ElementParameterParser.getValue(node, "__DTD_VALID__"));
+        		String dtdRootName = ElementParameterParser.getValue(node, "__DTD_NAME__");
+        		String dtdFileName = ElementParameterParser.getValue(node, "__DTD_SYSTEMID__");
+        		
+        		boolean needXSLValid = ("true").equals(ElementParameterParser.getValue(node, "__XSL_VALID__"));
+        		String xslType = ElementParameterParser.getValue(node, "__XSL_TYPE__");
+        		String xslHref = ElementParameterParser.getValue(node, "__XSL_HREF__");
+        		//===========feature9076 end===========================
+        		
         		List<Map<String, String>> rootTable = 
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
                 List<Map<String, String>> groupTable = 
@@ -176,6 +188,23 @@ if(needRoot_<%=cid %> ==false){
 	doc_<%=cid %>=org.dom4j.DocumentHelper.createDocument();
 <%
 					}
+					
+					if(!isMerge){
+						if(needFileValid){
+							if(needDTDValid){
+%>
+	doc_<%=cid %>.addDocType(<%=dtdRootName %>, null, <%=dtdFileName %>);
+<%
+							}else if(needXSLValid){
+%>
+	java.util.Map<String, String> inMap_<%=cid %> = new java.util.HashMap<String, String>();
+	inMap_<%=cid %>.put("type",<%=xslType %>);
+	inMap_<%=cid %>.put("href",<%=xslHref %>);
+	doc_<%=cid %>.addProcessingInstruction("xml-stylesheet", inMap_<%=cid %>);
+<%
+							}
+						}
+					}
 					if(isCompact==true){//generate compact file
 %>
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createCompactFormat();
@@ -219,6 +248,21 @@ java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(outWriter_<%=ci
 out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
 out_<%=cid%>.newLine();
 <%
+					if(needFileValid){
+						if(needDTDValid){
+%>
+out_<%=cid%>.write("<!DOCTYPE "+<%=dtdRootName %>+" SYSTEM \"" + <%=dtdFileName %> + "\">");
+out_<%=cid%>.newLine();
+<%
+						}else if(needXSLValid){
+%>
+out_<%=cid%>.write("<?xml-stylesheet type=\""+<%=xslType %>+"\" href=\""+<%=xslHref%>+"\">");
+out_<%=cid%>.newLine();
+<%
+						}
+					}
+					
+					
 				}
 			}
 		}
