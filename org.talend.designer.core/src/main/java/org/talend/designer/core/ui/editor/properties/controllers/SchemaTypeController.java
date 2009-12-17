@@ -240,7 +240,14 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
             // 0004322: tRunJob can import the tBufferOutput schema from the son job
             if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
-                Button copySchemaButton = createAdditionalButton(subComposite, btn, btnSize, param, Messages
+                // for bug 10489
+                Button newButton = null;
+                if (resetBtn != null) {
+                    newButton = resetBtn;
+                } else {
+                    newButton = btn;
+                }
+                Button copySchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param, Messages
                         .getString("SchemaController.copyChildSchema"), Messages //$NON-NLS-1$
                         .getString("SchemaController.copyChildSchema.tooltip"), top); //$NON-NLS-1$
                 copySchemaButton.setData(NAME, COPY_CHILD_COLUMNS);
@@ -905,6 +912,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
         } else if (button.getData(NAME).equals(COPY_CHILD_COLUMNS)) {
             // 0004322: tRunJob can import the tBufferOutput schema from the son job
+            // 0010489 modify
+            String paramName = (String) button.getData(PARAMETER_NAME);
+            IElementParameter param = elem.getElementParameter(paramName);
             IElementParameter processParam = elem.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
             IElementParameter processIdParam = processParam.getChildParameters().get(
                     EParameterName.PROCESS_TYPE_PROCESS.getName());
@@ -916,7 +926,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
             MetadataDialog metaDialog = new MetadataDialog(composite.getShell(), node.getMetadataList().get(0), node,
                     getCommandStack());
             metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
-            metaDialog.open();
+            if (metaDialog.open() == MetadataDialog.OK) {
+                IMetadataTable outputMetaData = metaDialog.getOutputMetaData();
+                return new ChangeMetadataCommand(node, param, null, outputMetaData);
+            }
 
         }
 
