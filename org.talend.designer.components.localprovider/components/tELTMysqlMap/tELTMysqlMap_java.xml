@@ -42,6 +42,19 @@
   </CONNECTORS>
 
   <PARAMETERS>
+  
+  	<PARAMETER 
+		NAME="DB_VERSION" 
+		FIELD="CLOSED_LIST" 
+		NUM_ROW="1"
+		REPOSITORY_VALUE="DB_VERSION"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<ITEMS DEFAULT="MYSQL_5">
+			<ITEM NAME="MYSQL_5" VALUE="mysql-connector-java-5.1.0-bin.jar" />
+			<ITEM NAME="MYSQL_4" VALUE="mysql-connector-java-3.1.14-bin.jar" />
+		</ITEMS>
+	</PARAMETER>
+	
 	   <PARAMETER
 	     NAME="USE_EXISTING_CONNECTION"
 	     FIELD="CHECK"

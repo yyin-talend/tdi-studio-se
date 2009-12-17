@@ -44,10 +44,22 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
     
+    <PARAMETER 
+		NAME="DB_VERSION" 
+		FIELD="CLOSED_LIST" 
+		NUM_ROW="10"
+		REPOSITORY_VALUE="DB_VERSION"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<ITEMS DEFAULT="MYSQL_5">
+			<ITEM NAME="MYSQL_5" VALUE="mysql-connector-java-5.1.0-bin.jar" />
+			<ITEM NAME="MYSQL_4" VALUE="mysql-connector-java-3.1.14-bin.jar" />
+		</ITEMS>
+	</PARAMETER>
+    
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="2"
+      NUM_ROW="20"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>    
@@ -56,13 +68,13 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tMysqlConnection"
-      NUM_ROW="2"
+      NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />    
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -71,7 +83,7 @@
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="SERVER_NAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -82,7 +94,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -93,7 +105,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -104,7 +116,7 @@
 	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -115,7 +127,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -126,7 +138,7 @@
     <PARAMETER	
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="6"
+      NUM_ROW="60"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -134,7 +146,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="7"
+      NUM_ROW="70"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -151,7 +163,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="7"
+      NUM_ROW="70"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT" VALUE="INSERT" />
@@ -167,7 +179,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="9"
+      NUM_ROW="90"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -176,7 +188,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="9"
+      NUM_ROW="90"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -188,7 +200,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="10"
+      NUM_ROW="100"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -196,7 +208,7 @@
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="18"
+      NUM_ROW="120"
       SHOW="false"
     >       
       <DEFAULT>mysql_id</DEFAULT>
@@ -205,7 +217,12 @@
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
-  	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+  	<PARAMETER 
+  		NAME="PROPERTIES" 
+  		FIELD="TEXT" 
+  		NUM_ROW="4" 
+  		REPOSITORY_VALUE="PROPERTIES_STRING" 
+  		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>"noDatetimeStringSync=true"</DEFAULT>
 	</PARAMETER>
 	
@@ -373,9 +390,6 @@
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
-    <IMPORTS>
-    	<IMPORT NAME="Driver-MySql" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
-    </IMPORTS>
   </CODEGENERATION>
    
   <RETURNS>
