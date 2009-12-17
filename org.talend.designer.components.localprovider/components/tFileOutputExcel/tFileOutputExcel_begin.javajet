@@ -215,6 +215,7 @@ if(isIncludeHeader){
 <%
 	}
 %>
+		nb_line_<%=cid %>++;
 	}
 <%
 }
