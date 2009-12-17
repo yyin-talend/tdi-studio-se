@@ -19,7 +19,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.ui.images.ECoreImage;
 
 /**
- * DOC Administrator class global comment. Detailled comment
+ * DOC hwang class global comment. Detailled comment
  */
 public class ShowFavoriteAction extends Action {
 
@@ -29,7 +29,7 @@ public class ShowFavoriteAction extends Action {
 
     private ShowFavoriteAction() {
         super(PaletteMessages.FAVORITE_LABEL);
-        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.FAVORITE_ICON));
+        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.FAVORITE_DISICON));
     }
 
     public static ShowFavoriteAction getInstance() {
@@ -54,7 +54,9 @@ public class ShowFavoriteAction extends Action {
         state = false;
         setEnabled(false);
         getShowS().setEnabled(true);
-
+        if (!this.isEnabled()) {
+            setDisabledImageDescriptor(ImageProvider.getImageDesc(ECoreImage.FAVORITE_ICON));
+        }
     }
 
 }

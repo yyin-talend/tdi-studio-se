@@ -19,7 +19,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.ui.images.ECoreImage;
 
 /**
- * DOC Administrator class global comment. Detailled comment
+ * DOC hwang class global comment. Detailled comment
  */
 public class ShowStandardAction extends Action {
 
@@ -27,7 +27,7 @@ public class ShowStandardAction extends Action {
 
     private ShowStandardAction() {
         super(PaletteMessages.STANDARD_LABEL);
-        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.STANDARD_ICON));
+        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.STANDARD_DISICON));
     }
 
     public static ShowStandardAction getInstance() {
@@ -52,7 +52,6 @@ public class ShowStandardAction extends Action {
         ShowFavoriteAction.state = true;
         setEnabled(false);
         getShowF().setEnabled(true);
-
     }
 
     public void doRun() {
@@ -62,9 +61,11 @@ public class ShowStandardAction extends Action {
     }
 
     public void doSetEnable() {
-
         setEnabled(false);
         getShowF().setEnabled(true);
+        if (!this.isEnabled()) {
+            setDisabledImageDescriptor(ImageProvider.getImageDesc(ECoreImage.STANDARD_ICON));
+        }
     }
 
 }
