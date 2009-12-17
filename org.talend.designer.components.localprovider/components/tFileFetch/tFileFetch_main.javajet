@@ -14,11 +14,14 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String protocol = ElementParameterParser.getValue(node,"__PROTO__");
+boolean bUseCache = "true".equals(ElementParameterParser.getValue(node, "__USE_CACHE__"));
 String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
 boolean bMakeDirs = "true".equals(ElementParameterParser.getValue(node, "__MAKEDIRS__"));
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__");
-
+%>
+java.io.InputStream retIS_<%=cid%> = null;
+<%
 if(("http").equals(protocol)){
 
   String uri = ElementParameterParser.getValue(node, "__URI__");
@@ -128,58 +131,62 @@ if(("http").equals(protocol)){
         System.out.print(responseHeaders_<%=cid %>[i]);
       }
     <%}%>
-   
-    java.io.InputStream in_<%=cid %> = method_<%=cid%>.getResponseBodyAsStream();
-    String sDir_<%=cid%> = (<%=directory%>).trim();
-    String fileName_<%=cid %> = (<%=filename%>).trim();    
-  
-    //open directory
-    java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);    
     
-    String sURIPath_<%=cid%> = "";
-    int iLastSlashIndex_<%=cid%> = 0;
-    sURIPath_<%=cid%> = url_<%=cid %>.getFile();
-    iLastSlashIndex_<%=cid%> = sURIPath_<%=cid%>.lastIndexOf("/");
+    <%if (bUseCache){%>
+      retIS_<%=cid%> = method_<%=cid%>.getResponseBodyAsStream();
+    <%} else{%>
+      java.io.InputStream in_<%=cid %> = method_<%=cid%>.getResponseBodyAsStream();
+      String sDir_<%=cid%> = (<%=directory%>).trim();
+      String fileName_<%=cid %> = (<%=filename%>).trim();    
+  
+      //open directory
+      java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);    
+    
+      String sURIPath_<%=cid%> = "";
+      int iLastSlashIndex_<%=cid%> = 0;
+      sURIPath_<%=cid%> = url_<%=cid %>.getFile();
+      iLastSlashIndex_<%=cid%> = sURIPath_<%=cid%>.lastIndexOf("/");
       
-    <%if (bMakeDirs){%>
-      sDir_<%=cid%> = sDir_<%=cid%>.concat(iLastSlashIndex_<%=cid%> > 0 ? sURIPath_<%=cid%>.substring(0, iLastSlashIndex_<%=cid%>) : "");
-    <%}%>
+      <%if (bMakeDirs){%>
+        sDir_<%=cid%> = sDir_<%=cid%>.concat(iLastSlashIndex_<%=cid%> > 0 ? sURIPath_<%=cid%>.substring(0, iLastSlashIndex_<%=cid%>) : "");
+      <%}%>
         
-    //if not input file name, get the name from URI
-    if ("".equals(fileName_<%=cid %>)) {      
-      if (iLastSlashIndex_<%=cid%> > 0 && (!sURIPath_<%=cid%>.endsWith("/"))){
-        fileName_<%=cid %> = sURIPath_<%=cid%>.substring(iLastSlashIndex_<%=cid%> + 1);
-      } else{
+      //if not input file name, get the name from URI
+      if ("".equals(fileName_<%=cid %>)) {      
+        if (iLastSlashIndex_<%=cid%> > 0 && (!sURIPath_<%=cid%>.endsWith("/"))){
+          fileName_<%=cid %> = sURIPath_<%=cid%>.substring(iLastSlashIndex_<%=cid%> + 1);
+        } else{
+          fileName_<%=cid %> = "defaultfilename.txt";
+        }
+      }
+    
+      java.io.File dir_<%=cid %> = new java.io.File(sDir_<%=cid%>);
+    
+      // pretreatment
+      try{
+        java.io.File test_file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
+        test_file_<%=cid%>.getParentFile().mkdirs();
+        if (test_file_<%=cid%>.createNewFile()){
+          test_file_<%=cid%>.delete();
+        }
+      } catch(Exception e){
         fileName_<%=cid %> = "defaultfilename.txt";
       }
-    }
-    
-    java.io.File dir_<%=cid %> = new java.io.File(sDir_<%=cid%>);
-    
-    // pretreatment
-    try{
-      java.io.File test_file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
-      test_file_<%=cid%>.getParentFile().mkdirs();
-      if (test_file_<%=cid%>.createNewFile()){
-        test_file_<%=cid%>.delete();
-      }
-    } catch(Exception e){
-      fileName_<%=cid %> = "defaultfilename.txt";
-    }
   
-    java.io.File file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
-    file_<%=cid%>.getParentFile().mkdirs();    
-    java.io.FileOutputStream out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid%>);
-    byte[] buffer_<%=cid %> = new byte[1024];
-    int count_<%=cid %> = 0;
-    while ((count_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>)) > 0) {
+      java.io.File file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
+      file_<%=cid%>.getParentFile().mkdirs();    
+      java.io.FileOutputStream out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid%>);
+      byte[] buffer_<%=cid %> = new byte[1024];
+      int count_<%=cid %> = 0;
+      while ((count_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>)) > 0) {
         out_<%=cid %>.write(buffer_<%=cid %>, 0, count_<%=cid %>);
-    }
-    // close opened object
-    in_<%=cid %>.close();   
-    out_<%=cid %>.close(); 
-  }        
-  method_<%=cid%>.releaseConnection();
+      }
+      // close opened object
+      in_<%=cid %>.close();   
+      out_<%=cid %>.close(); 
+      method_<%=cid%>.releaseConnection();
+    <%}%>    
+  }
 <%
 }
 
@@ -202,138 +209,120 @@ if(("ftp").equals(protocol)){
     props.put("java.net.socks.username", <%=proxyUser %>);
     props.put("java.net.socks.password", <%=proxyPassword %>);        
 <% }%>
-
-  java.io.DataInputStream in_<%=cid%> = null;
- 
-  String sDir_<%=cid%> = (<%=directory%>).trim();
-  String fileName_<%=cid %> = (<%=filename%>).trim();
-  
   //open url stream
   java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);    
   java.net.URLConnection conn_<%=cid %> = url_<%=cid %>.openConnection();
+  
+  <%if (bUseCache){%>
+    retIS_<%=cid%> = conn_<%=cid %>.getInputStream();
+  <%} else {%>
+    java.io.DataInputStream in_<%=cid%> = null;
+    String sDir_<%=cid%> = (<%=directory%>).trim();
+    String fileName_<%=cid %> = (<%=filename%>).trim();
     
-  String sURIPath_<%=cid%> = "";
-  int iLastSlashIndex_<%=cid%> = 0;
-  sURIPath_<%=cid%> = url_<%=cid %>.getFile();
-  iLastSlashIndex_<%=cid%> = sURIPath_<%=cid%>.lastIndexOf("/");
+    String sURIPath_<%=cid%> = "";
+    int iLastSlashIndex_<%=cid%> = 0;
+    sURIPath_<%=cid%> = url_<%=cid %>.getFile();
+    iLastSlashIndex_<%=cid%> = sURIPath_<%=cid%>.lastIndexOf("/");
       
-  <%if (bMakeDirs){%>
-    sDir_<%=cid%> = sDir_<%=cid%>.concat(iLastSlashIndex_<%=cid%> > 0 ? sURIPath_<%=cid%>.substring(0, iLastSlashIndex_<%=cid%>) : "");
-  <%}%>
+    <%if (bMakeDirs){%>
+      sDir_<%=cid%> = sDir_<%=cid%>.concat(iLastSlashIndex_<%=cid%> > 0 ? sURIPath_<%=cid%>.substring(0, iLastSlashIndex_<%=cid%>) : "");
+    <%}%>
 
-  //if not input file name, get the name from URI
-  if ("".equals(fileName_<%=cid %>)) {      
-    if (iLastSlashIndex_<%=cid%> > 0 && (!sURIPath_<%=cid%>.endsWith("/"))){
-      fileName_<%=cid %> = sURIPath_<%=cid%>.substring(iLastSlashIndex_<%=cid%> + 1);
-    } else{
+    //if not input file name, get the name from URI
+    if ("".equals(fileName_<%=cid %>)) {      
+      if (iLastSlashIndex_<%=cid%> > 0 && (!sURIPath_<%=cid%>.endsWith("/"))){
+        fileName_<%=cid %> = sURIPath_<%=cid%>.substring(iLastSlashIndex_<%=cid%> + 1);
+      } else{
+        fileName_<%=cid %> = "defaultfilename.txt";
+      }
+    }
+    
+    java.io.File dir_<%=cid %> = new java.io.File(sDir_<%=cid%>);
+
+    try{
+      java.io.File testfile_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
+      testfile_<%=cid%>.getParentFile().mkdirs();
+      if (testfile_<%=cid%>.createNewFile()){
+        testfile_<%=cid%>.delete();
+      }
+    } catch(Exception e){
       fileName_<%=cid %> = "defaultfilename.txt";
     }
-  }
     
-  java.io.File dir_<%=cid %> = new java.io.File(sDir_<%=cid%>);
-
-  try{
-    java.io.File testfile_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
-    testfile_<%=cid%>.getParentFile().mkdirs();
-    if (testfile_<%=cid%>.createNewFile()){
-      testfile_<%=cid%>.delete();
-    }
-  } catch(Exception e){
-    fileName_<%=cid %> = "defaultfilename.txt";
-  }
-    
-  // copy file
-  try{
-    in_<%=cid%> = new java.io.DataInputStream(conn_<%=cid %>.getInputStream());
-  }catch(Exception e){
-    <% if(("true").equals(dieOnError)){%>    
-      throw(e);
-    <%}else{%>
-      System.err.println("There is an exception on: " + <%=uri %>);
-      e.printStackTrace();
-      System.out.println("\r\n");
-      in_<%=cid%> = null;      
-    <%}%>
-  }  
+    // copy file
+    try{
+      in_<%=cid%> = new java.io.DataInputStream(conn_<%=cid %>.getInputStream());
+    }catch(Exception e){
+      <% if(("true").equals(dieOnError)){%>    
+        throw(e);
+      <%}else{%>
+        System.err.println("There is an exception on: " + <%=uri %>);
+        e.printStackTrace();
+        System.out.println("\r\n");
+        in_<%=cid%> = null;      
+      <%}%>
+    }  
    
-  final java.io.DataOutputStream out_<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(dir_<%=cid %>, fileName_<%=cid %>)));
+    final java.io.DataOutputStream out_<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(dir_<%=cid %>, fileName_<%=cid %>)));
 
-  if(in_<%=cid%>!=null){
-    byte[] buffer_<%=cid%> = new byte[1024];
-    int count_<%=cid%> = 0;
-    while ((count_<%=cid%> = in_<%=cid%>.read(buffer_<%=cid%>)) > 0) {
+    if(in_<%=cid%>!=null){
+      byte[] buffer_<%=cid%> = new byte[1024];
+      int count_<%=cid%> = 0;
+      while ((count_<%=cid%> = in_<%=cid%>.read(buffer_<%=cid%>)) > 0) {
         out_<%=cid%>.write(buffer_<%=cid%>, 0, count_<%=cid%>);
+      }    
+      in_<%=cid%>.close();
     }    
-    in_<%=cid%>.close();
-  }    
-  out_<%=cid%>.close();
-<%
+    out_<%=cid%>.close();
+<%}
 }
 
-if(("smb").equals(protocol)){ //1%>
-<%
+if(("smb").equals(protocol)){//1
   String srcurl = ElementParameterParser.getValue(node, "__SMB_URI__"); 
   String domain = ElementParameterParser.getValue(node,"__SMB_DOMAIN__");
   String username = ElementParameterParser.getValue(node,"__SMB_USERNAME__");
   String password = ElementParameterParser.getValue(node,"__SMB_PASSWORD__");
-%>
- 
-    class SambaProtoClient_<%=cid %>{
-      
-      private void copySMBFile(String domain, String username, String password, String srcURL, String dirFilePath, String destFilePath) {
-        try {
-           
-
-            jcifs.smb.NtlmPasswordAuthentication auth = new jcifs.smb.NtlmPasswordAuthentication(domain, username, password);
-
-           
-            jcifs.smb.SmbFile sf = new jcifs.smb.SmbFile(srcURL, auth);
-
-            jcifs.smb.SmbFileInputStream in = new jcifs.smb.SmbFileInputStream(sf);
-
-            java.io.File destFile = new java.io.File(dirFilePath,destFilePath);
-            destFile.getParentFile().mkdirs();
-            java.io.OutputStream out = new java.io.FileOutputStream(destFile);
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
-        } catch (java.io.FileNotFoundException ex) {
-            System.out.println(ex.getMessage());
-        } catch (java.io.IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+%>     
+  String srcurl_<%=cid %> = <%=srcurl %>;
+  String fileName_<%=cid %> = <%=filename %>;
+  String username_<%=cid %> = <%=username %>;
+  String password_<%=cid %> = <%=password %>;
     
-    }
-    
-    String srcurl_<%=cid %>=<%=srcurl %>;
-    String fileName_<%=cid %>=<%=filename %>;
-    String username_<%=cid %>=<%=username %>;
-    String password_<%=cid %>=<%=password %>;
-    	if (fileName_<%=cid %>.compareTo("")==0) {
-		fileName_<%=cid %> = srcurl_<%=cid %>.substring(srcurl_<%=cid %>.lastIndexOf("/"));
-		
-	}
-	
-		if (username_<%=cid %>.compareTo("")==0) {
-		username_<%=cid %> =null;
-		
-	}
-	
-	   if (password_<%=cid %>.compareTo("")==0) {
-		password_<%=cid %> =null;
-		
-	}
-	 
-    SambaProtoClient_<%=cid %> spc_<%=cid %>=new SambaProtoClient_<%=cid %>();
-    spc_<%=cid %>.copySMBFile(<%=domain %>, username_<%=cid %>, password_<%=cid %>, srcurl_<%=cid %>, <%=directory %>, fileName_<%=cid %>);
-<%
-}//1
-%>
-  
+  if (fileName_<%=cid %>.compareTo("") == 0) {
+    fileName_<%=cid %> = srcurl_<%=cid %>.substring(srcurl_<%=cid %>.lastIndexOf("/"));
+  }
+  if (username_<%=cid %>.compareTo("") == 0) {
+    username_<%=cid %> = null;
+  }
+  if (password_<%=cid %>.compareTo("") == 0) {
+    password_<%=cid %> = null;
+  }
+  try {        
+    jcifs.smb.NtlmPasswordAuthentication auth = new jcifs.smb.NtlmPasswordAuthentication(<%=domain %>, username_<%=cid %>, password_<%=cid %>);
+    jcifs.smb.SmbFile sf = new jcifs.smb.SmbFile(srcurl_<%=cid %>, auth);
+        
+    <%if (bUseCache){%>
+      retIS_<%=cid%> = new jcifs.smb.SmbFileInputStream(sf);
+    <%} else {%>
+      jcifs.smb.SmbFileInputStream in = new jcifs.smb.SmbFileInputStream(sf);
+      java.io.File destFile = new java.io.File(<%=directory %>, fileName_<%=cid %>);
+      destFile.getParentFile().mkdirs();
+      java.io.OutputStream out = new java.io.FileOutputStream(destFile);
 
+      byte[] buf = new byte[1024];
+      int len;
+      while ((len = in.read(buf)) > 0) {
+        out.write(buf, 0, len);
+      }
+      in.close();
+      out.close();
+  } catch (java.io.FileNotFoundException ex) {
+    System.err.println(ex.getMessage());
+    <%}%> 
+  } catch (Exception e){
+    System.err.println(e.getMessage());
+  }
+<%}//1%>
+
+globalMap.put("<%=cid%>_INPUT_STREAM", retIS_<%=cid%>);

@@ -51,8 +51,8 @@ COMPATIBILITY="ALL"
   	SHOW_IF=" PROTO == 'HTTP_PROTO'"
   >
   <DEFAULT>true</DEFAULT>
-
   </PARAMETER>
+  
   <PARAMETER
      NAME="URI"
      FIELD="TEXT"
@@ -63,7 +63,14 @@ COMPATIBILITY="ALL"
    <DEFAULT>"http://talendforge.org/file_fetch.txt"</DEFAULT>
   </PARAMETER>
   
-   
+  <PARAMETER
+  	NAME="USE_CACHE"
+  	FIELD="CHECK"
+  	NUM_ROW="21"  	
+  >
+  <DEFAULT>false</DEFAULT>
+  </PARAMETER>
+  
   <PARAMETER
      NAME="SMB_URI"
      FIELD="TEXT"
@@ -73,14 +80,13 @@ COMPATIBILITY="ALL"
   >
    <DEFAULT>"smb://host/dir/remoteFileName.txt"</DEFAULT>
   </PARAMETER>
-  
-  
 
   <PARAMETER
      NAME="DIRECTORY"
      FIELD="DIRECTORY"
      NUM_ROW="30"
      REQUIRED="true"     
+     SHOW_IF=" USE_CACHE == 'false'"
   >
     <DEFAULT>"C:"</DEFAULT>
   </PARAMETER>
@@ -89,7 +95,7 @@ COMPATIBILITY="ALL"
   	NAME="MAKEDIRS"
   	FIELD="CHECK"
   	NUM_ROW="35"
-  	SHOW_IF=" (PROTO == 'HTTP_PROTO') or (PROTO == 'FTP_PROTO')"
+  	SHOW_IF="(PROTO != 'SAMBA_PROTO') AND (USE_CACHE == 'false')"
   >
   <DEFAULT>true</DEFAULT>
   </PARAMETER>
@@ -98,7 +104,8 @@ COMPATIBILITY="ALL"
      NAME="FILENAME"
      FIELD="TEXT"
      REQUIRED="true"
-     NUM_ROW="40"    
+     NUM_ROW="40"
+     SHOW_IF=" USE_CACHE == 'false'"
   >
     <DEFAULT>""</DEFAULT>
   </PARAMETER> 
@@ -131,9 +138,7 @@ COMPATIBILITY="ALL"
      SHOW_IF="PROTO=='SAMBA_PROTO'"
   >
     <DEFAULT>"password"</DEFAULT>
-  </PARAMETER>
-  
-  
+  </PARAMETER>  
   
    <PARAMETER
      NAME="DIE_ON_ERROR"
@@ -308,6 +313,8 @@ COMPATIBILITY="ALL"
      </IMPORTS>
   </CODEGENERATION>
 
-  <RETURNS/>
+  <RETURNS>
+    <RETURN NAME="INPUT_STREAM" TYPE="id_Object" AVAILABILITY="FLOW"/>
+  </RETURNS>
 
 </COMPONENT>
