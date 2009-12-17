@@ -389,7 +389,7 @@ public abstract class DataMapTableView extends Composite {
         GridData centerData = new GridData(GridData.FILL_BOTH);
         centerComposite.setLayoutData(centerData);
 
-        GridLayout centerLayout = new GridLayout();
+        GridLayout centerLayout = new GridLayout(2, false);
         int marginCenterLayout = 0;
         centerLayout.marginLeft = marginCenterLayout;
         centerLayout.marginRight = marginCenterLayout;
@@ -541,14 +541,12 @@ public abstract class DataMapTableView extends Composite {
         };
         tableViewerCreatorForColumns = this.extendedTableViewerForColumns.getTableViewerCreator();
         this.extendedTableViewerForColumns.setCommandStack(mapperManager.getCommandStack());
-
         tableForEntries = tableViewerCreatorForColumns.getTable();
-
         GridData tableEntriesGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         tableEntriesGridData.grabExcessVerticalSpace = true;
+        tableEntriesGridData.horizontalSpan = 2; // for 10690
         tableEntriesGridData.minimumHeight = tableForEntries.getHeaderHeight() + tableForEntries.getItemHeight();
         tableForEntries.setLayoutData(tableEntriesGridData);
-
         addTableForColumnsListeners();
 
     }
@@ -2032,15 +2030,10 @@ public abstract class DataMapTableView extends Composite {
 
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
 
-            // expressionFilterText = new Text(scrolledComposite, SWT.MULTI |
-            // SWT.WRAP | SWT.BORDER);
-            Composite filterCompsite = new Composite(getCenterComposite(), SWT.NONE);
-            filterCompsite.setLayout(new GridLayout(2, false));
-            filterCompsite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            expressionFilterText = new UnnotifiableColorStyledText(filterCompsite, SWT.BORDER | SWT.V_SCROLL, preferenceStore,
-                    LanguageManager.getCurrentLanguage().getName());
+            expressionFilterText = new UnnotifiableColorStyledText(getCenterComposite(), SWT.BORDER | SWT.V_SCROLL,
+                    preferenceStore, LanguageManager.getCurrentLanguage().getName());
             // hywang add for 9225
-            openExpressionBuilder = new Button(filterCompsite, SWT.PUSH);
+            openExpressionBuilder = new Button(getCenterComposite(), SWT.PUSH);
             openExpressionBuilder.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
             openExpressionBuilder.setVisible(table.isActivateExpressionFilter());
             openExpressionBuilder.addSelectionListener(new SelectionListener() {
@@ -2697,7 +2690,7 @@ public abstract class DataMapTableView extends Composite {
                     } else {
                         // System.out.println("selection.x="+selection.x);
                         // System.out.println("selection.y="+selection.y);
-                        //System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length()
+                        // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length()
                         // );
                         if (selection.y <= mapperColorStyledText.getCharCount()) {
                             mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x,
