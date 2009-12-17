@@ -43,6 +43,16 @@ imports="
 <%
 		}
 		
+		public void setAutoCommit(INode node) {
+			boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__IS_USE_AUTO_COMMIT__"));
+			boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
+			if (useTransaction) {
+%>
+			conn_<%=cid%>.setAutoCommit(<%=setAutoCommit%>);
+<%
+			}
+		}
+		
 	}//end class
 	connUtil = new ConnectionUtil();
 	
