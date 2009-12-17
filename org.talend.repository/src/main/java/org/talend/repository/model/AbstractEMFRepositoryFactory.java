@@ -248,13 +248,18 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             String currentPath = lastFolderForItemMap.get(id);
             Object fullFolder = getFullFolder(project, itemType, currentPath);
 
-            if (fullFolder != null) {
-                List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, fullFolder, id, itemType, allVersion,
-                        false, true);
-                if (!itemsFound.isEmpty()) { // add for items in recycle-bin
-                    toReturn.addAll(itemsFound);
-                    return toReturn;
+            try {
+                if (fullFolder != null) {
+                    List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, fullFolder, id, itemType, allVersion,
+                            false, true);
+                    if (!itemsFound.isEmpty()) { // add for items in recycle-bin
+                        toReturn.addAll(itemsFound);
+                        return toReturn;
+                    }
                 }
+            } catch (PersistenceException e) {
+                // do nothing.
+                // if any exception happen or can't find the item, just try to look for it everywhere.
             }
         }
 
