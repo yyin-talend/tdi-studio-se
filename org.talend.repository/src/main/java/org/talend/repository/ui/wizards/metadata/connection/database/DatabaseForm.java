@@ -388,7 +388,12 @@ public class DatabaseForm extends AbstractForm {
         // portText.setTextLimit(5);
         sidOrDatabaseText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.database"), 2); //$NON-NLS-1$
         schemaText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$
-        datasourceText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.dataSource"), 2); //$NON-NLS-1$
+        if (getConnection() != null
+                && EDatabaseConnTemplate.INFORMIX.getDBDisplayName().equals(getConnection().getDatabaseType())) {
+            datasourceText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.informixInstance"), 2); //$NON-NLS-1$ 
+        } else {
+            datasourceText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.dataSource"), 2); //$NON-NLS-1$
+        }
         additionParamText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.AddParams"), 2); //$NON-NLS-1$
 
         String[] extensions = { "*.*" }; //$NON-NLS-1$
@@ -1068,6 +1073,9 @@ public class DatabaseForm extends AbstractForm {
                     }
                     if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.AS400.getDBDisplayName())) {
                         additionParamText.setText(EDatabaseConnTemplate.AS400.getAdditionProperty());
+                    }
+                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.INFORMIX.getDBDisplayName())) {
+                        datasourceText.setLabelText(Messages.getString("DatabaseForm.informixInstance"));
                     }
                     checkAS400SpecificCase();
                     checkFieldsValue();
