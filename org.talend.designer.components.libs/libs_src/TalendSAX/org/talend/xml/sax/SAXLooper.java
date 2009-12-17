@@ -34,7 +34,7 @@ public class SAXLooper {
 
     private String rootPath = null;
 
-    private String[] arrLoopPath = null;
+    // private String[] arrLoopPath = null;
 
     private String[][] arrNodePaths = null;
 
@@ -43,6 +43,13 @@ public class SAXLooper {
     private boolean isSimpleParse = true;
 
     private ISAXLooper looper = null;
+
+    public SAXLooper(String loopPath, String[] nodePaths) {
+        this.loopPath = loopPath;
+        this.nodePaths = nodePaths;
+        this.asXMLs = new boolean[this.nodePaths.length];
+        judgeIsSimple();
+    }
 
     public SAXLooper(String loopPath, String[] nodePaths, boolean[] asXMLs) {
         this.loopPath = loopPath;
