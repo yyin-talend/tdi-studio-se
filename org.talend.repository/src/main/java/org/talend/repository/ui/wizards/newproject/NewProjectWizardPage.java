@@ -145,6 +145,7 @@ public class NewProjectWizardPage extends WizardPage {
 
         languageJavaRadio = new Button(radioContainer, SWT.RADIO);
         languageJavaRadio.setText(ECodeLanguage.JAVA.getName());
+        languageJavaRadio.setSelection(true);
 
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
