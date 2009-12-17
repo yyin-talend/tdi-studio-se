@@ -26,6 +26,7 @@ boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(nod
 String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
 String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__");
 String font = ElementParameterParser.getValue(node, "__FONT__");
+boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
 boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
 boolean isAppendFile = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_FILE__" ));
 boolean isAppendSheet = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_SHEET__" ));
@@ -164,9 +165,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 <%
 if(isIncludeHeader){
+	if(isDeleteEmptyFile){
 %>
-	//modif start
+	boolean needDel_<%=cid %> = false;
 <%
+	}
 	if(firstCellYAbsolute){
 %>
 		if (startRowNum_<%=cid %> == <%=firstCellYStr%>){
@@ -214,7 +217,10 @@ if(isIncludeHeader){
 		fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]><%=column.getLabel().length()%>?fitWidth_<%=cid%>[<%=i%>]:<%=column.getLabel().length()%>;
 <%
 	}
+		if(isDeleteEmptyFile){
 %>
+		needDel_<%=cid %> = true;
+<%		}%>
 		nb_line_<%=cid %>++;
 	}
 <%

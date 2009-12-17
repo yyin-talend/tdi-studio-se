@@ -68,8 +68,13 @@
 	writeableWorkbook_<%=cid %>.close();
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 	
-<%if(!useStream && !isAppend && isDeleteEmptyFile){%>
-	if(nb_line_<%=cid %> == <%=isIncludeHeader?"1":"0" %>){
+<%if(!useStream && !isAppend && isDeleteEmptyFile){
+	if(isIncludeHeader){
+%>
+	if(nb_line_<%=cid %> ==1 && needDel_<%=cid %>){
+<%	}else{%>
+	if(nb_line_<%=cid %> == 0){
+<%	}%>
 		new java.io.File(<%=filename %>).delete();
 	}		
 <%}%>	
