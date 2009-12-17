@@ -683,7 +683,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 						if(("true").equals(nodeCheck)){
 %>
-	str_<%=cid %> = node_<%=cid %>.asXML();
+	str_<%=cid %> = node_<%=cid %>==null?null:node_<%=cid %>.asXML();
 <%
 							
 						}else{
