@@ -1013,6 +1013,7 @@ public class SelectorTableForm extends AbstractForm {
             checkedItems.add(table.getLabel());
         }
         for (TableItem tableItem : table.getItems()) {
+            tableItem.setChecked(false);
             if (checkedItems.contains(tableItem.getText(0))) {
                 tableItem.setChecked(true);
                 Integer num = tableColumnNums.get(tableItem.getText(0));

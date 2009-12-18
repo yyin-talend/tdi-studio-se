@@ -176,7 +176,7 @@ public class DatabaseTableForm extends AbstractForm {
 
     private UtilsButton removeTableButton;
 
-    private IWizardPage parentWizardPage;
+    private final IWizardPage parentWizardPage;
 
     /**
      * TableForm Constructor to use by RCP Wizard.
@@ -584,6 +584,10 @@ public class DatabaseTableForm extends AbstractForm {
                                         tableNavigator.setSelection(tableNavigator.getItem(tableNavigator.getItemCount() - 1));
                                     }
                                 }
+                            }
+                            IWizardPage prePage = parentWizardPage.getPreviousPage();
+                            if (prePage instanceof SelectorTableWizardPage) {
+                                ((SelectorTableWizardPage) prePage).restoreCheckItems();
                             }
                         }
                     }

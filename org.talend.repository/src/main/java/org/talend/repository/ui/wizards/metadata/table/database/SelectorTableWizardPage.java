@@ -191,6 +191,10 @@ public class SelectorTableWizardPage extends WizardPage {
         }
     }
 
+    public void restoreCheckItems() {
+        tableForm.restoreCheckItems();
+    }
+
     // public IMetadataConnection getMetadataConnection() {
     // return this.metadataConnection;
     // }
