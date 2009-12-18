@@ -344,9 +344,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             classRoot = classRoot.append(projectName).append(folderName).append(JOB_CONTEXT_FOLDER);
             File contextDir = classRoot.toFile();
             if (contextDir.isDirectory()) {
+                // hywang for 0010727
+                final Project project = ProjectManager.getInstance().getProject(processItem);
+                processItem = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                        new org.talend.core.model.general.Project(project), processItem.getProperty()).getItem();
                 // See bug 0003568: Three contexts file exported, while only two contexts in the job.
-                list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), (ProcessItem) ProxyRepositoryFactory
-                        .getInstance().getUptodateProperty(processItem.getProperty()).getItem()));
+                list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), processItem));
             }
 
             // list.add(classRoot.toFile().toURL());
@@ -571,11 +574,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // prevent circle
             return;
         }
-        try {
-            process = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()).getItem();
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
+        // try { //won't reload ref project if the job is in ref project
+        // process = (ProcessItem)
+        // ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()).getItem();
+        // } catch (PersistenceException e) {
+        // e.printStackTrace();
+        // }
         processedJob.add(process);
         addJobItem(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needJobItem), resource);
         addDependencies(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needDependencies), resource);
