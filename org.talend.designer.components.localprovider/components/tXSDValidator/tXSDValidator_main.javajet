@@ -125,7 +125,7 @@ if (ErrorMessage_<%=cid%>!=null&& ErrorMessage_<%=cid%>.length()>0) {
 	ErrorMessage_<%=cid%>=null;
 }
 
-globalMap.put("<%=cid %>_DIFFERENCE", (validate_<%=cid %> == 1)?true:false);
+globalMap.put("<%=cid %>_DIFFERENCE", "" + validate_<%=cid %>);
 globalMap.put("<%=cid %>_ERROR_MESSAGE", "" + message_<%=cid %>);
 globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", "" + ErrorMessage_<%=cid%>);
 

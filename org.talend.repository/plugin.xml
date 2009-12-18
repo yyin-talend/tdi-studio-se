@@ -1034,13 +1034,7 @@
              id="org.talend.repository.model.migration.VisibleComponentSettingsMigrationTask"
              name="Migrate components to be visible in project settings">
        </projecttask>
-       <projecttask
-             beforeLogon="false"
-             class="org.talend.repository.model.migration.ChangeReturnTypeForBug10419"
-             description="change the type of the return value DIFFERENCE from String to Boolean"
-             id="org.talend.repository.model.migration.changeReturnTypeForBug10419"
-             name="change the type of the return value DIFFERENCE from String to Boolean">
-       </projecttask>
+       
    </extension>
    
    <extension
