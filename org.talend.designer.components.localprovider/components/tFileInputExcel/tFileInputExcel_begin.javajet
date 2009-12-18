@@ -136,7 +136,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 			for(Map<String, String> tmp:sheetNameList){
 %>
-        sheetList_<%= cid %>.addAll(regexUtil_<%=cid %>.getSheets(workbook_<%= cid %>, <%=tmp.get("SHEETNAME")%>, <%=tmp.get("USE_REGEX")==null?false:true%>));
+        sheetList_<%= cid %>.addAll(regexUtil_<%=cid %>.getSheets(workbook_<%= cid %>, <%=tmp.get("SHEETNAME")%>, <%=(tmp.get("USE_REGEX")!=null&&!"".equals(tmp.get("USE_REGEX")))?"true".equals(tmp.get("USE_REGEX")):false%>));
 <%
 			}
 		}
