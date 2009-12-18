@@ -84,6 +84,10 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ItemState;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
@@ -344,15 +348,45 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             public String getTooltipContent(TreeItem item) {
 
                 RepositoryNode node = (RepositoryNode) item.getData();
-                if (node.getObject() == null) {
+                IRepositoryObject object = node.getObject();
+                if (object == null) {
                     return null;
                 }
-                String content = node.getObject().getDescription();
-                if (content == null || content.equals("")) { //$NON-NLS-1$
-                    return null;
+                // add for feature 10281
+                String content = null;
+                Property property = object.getProperty();
+                String author = object.getAuthor().getLogin();
+                String login = null;
+                if (property != null && author != null) {
+                    Item item2 = property.getItem();
+                    if (item2 != null) {
+                        ItemState state = item2.getState();
+                        if (state != null) {
+                            User locker = state.getLocker();
+                            if (locker != null) {
+                                String lockerLogin = locker.getLogin();
+                                if (!author.equals(lockerLogin)) {
+                                    login = lockerLogin;
+                                }
+                            }
+                        }
+                    }
                 }
-
-                return content;
+                if (login != null && !"".equals(login)) {//$NON-NLS-1$
+                    content = "  locked by :" + login;//$NON-NLS-1$
+                }
+                String description = object.getDescription();
+                if (content == null || "".equals(content)) { //$NON-NLS-1$
+                    if (description == null || "".equals(description)) {//$NON-NLS-1$
+                        return null;
+                    }
+                    return description;
+                } else {
+                    if (description == null || "".equals(description)) {//$NON-NLS-1$
+                        return content;
+                    }
+                    return content + "\n" + "  Description: " + description;//$NON-NLS-1$//$NON-NLS-1$
+                }
             }
         };
 
