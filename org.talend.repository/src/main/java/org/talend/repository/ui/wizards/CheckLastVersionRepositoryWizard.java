@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.ILastVersionChecker;
@@ -72,8 +73,13 @@ public abstract class CheckLastVersionRepositoryWizard extends RepositoryWizard 
                 List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                         item.getProperty().getId());
                 if (allVersion != null && !allVersion.isEmpty()) {
-                    if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())
-                            || (super.creation && item.getProperty().getId() == null)) {
+                    String lastVersion = VersionUtils.DEFAULT_VERSION;
+                    for (IRepositoryObject object : allVersion) {
+                        if (VersionUtils.compareTo(object.getVersion(), lastVersion) > 0) {
+                            lastVersion = object.getVersion();
+                        }
+                    }
+                    if (VersionUtils.compareTo(item.getProperty().getVersion(), lastVersion) == 0) {
                         return true;
                     }
                 }
