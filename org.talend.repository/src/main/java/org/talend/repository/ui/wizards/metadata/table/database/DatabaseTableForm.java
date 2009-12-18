@@ -174,6 +174,8 @@ public class DatabaseTableForm extends AbstractForm {
 
     private UtilsButton addTableButton;
 
+    private UtilsButton removeTableButton;
+
     private IWizardPage parentWizardPage;
 
     /**
@@ -238,7 +240,7 @@ public class DatabaseTableForm extends AbstractForm {
      */
     private void initTreeNavigatorNodes() {
 
-        if (metadataTable == null) {
+        if (metadataTable == null || getConnection().getTables() != null && getConnection().getTables().isEmpty()) {
 
             if (getConnection().getTables() != null && !getConnection().getTables().isEmpty()) {
                 boolean isAllDeleted = true;
@@ -498,6 +500,9 @@ public class DatabaseTableForm extends AbstractForm {
         // Button Add metadata Table
         Composite button = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
         addTableButton = new UtilsButton(button, Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+
+        Composite rmButton = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
+        removeTableButton = new UtilsButton(rmButton, "Remove Schema", width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
     }
 
     /**
@@ -554,6 +559,42 @@ public class DatabaseTableForm extends AbstractForm {
             }
         });
 
+        removeTableButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (!removeTableButton.getEnabled()) {
+                    removeTableButton.setEnabled(true);
+                    TableItem[] selection = tableNavigator.getSelection();
+                    if (selection != null && selection.length > 0) {
+                        boolean openConfirm = MessageDialog.openConfirm(getShell(), "Confirm",
+                                "Are you sure to delete this schema ?");
+                        if (openConfirm) {
+                            for (TableItem item : selection) {
+                                if (tableNavigator.indexOf(item) != -1) {
+                                    Iterator iterator = getConnection().getTables().iterator();
+                                    while (iterator.hasNext()) {
+                                        MetadataTable table = (MetadataTable) iterator.next();
+                                        if (table.getLabel() != null && table.getLabel().equals(item.getText())) {
+                                            iterator.remove();
+                                        }
+                                    }
+                                    tableNavigator.remove(tableNavigator.indexOf(item));
+                                    if (tableNavigator.getItemCount() > 1) {
+                                        tableNavigator.setSelection(tableNavigator.getItem(tableNavigator.getItemCount() - 1));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    removeTableButton.setEnabled(false);
+                }
+
+            }
+
+        });
+
     }
 
     /**
@@ -587,6 +628,7 @@ public class DatabaseTableForm extends AbstractForm {
 
         retreiveSchemaButton.setEnabled(!isReadOnly());
         addTableButton.setEnabled(!isReadOnly());
+        removeTableButton.setEnabled(!isReadOnly());
         guessSchemaButton.setEnabled(!isReadOnly());
         if (isReadOnly()) {
 
@@ -954,6 +996,7 @@ public class DatabaseTableForm extends AbstractForm {
         nameText.setReadOnly(isReadOnly());
         commentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
+        addTableButton.setEnabled(!isReadOnly());
         addTableButton.setEnabled(!isReadOnly());
         retreiveSchemaButton.setEnabled(!isReadOnly());
     }
