@@ -364,11 +364,13 @@ class InformixManager extends Manager {
     private String host;
     private String port;
     private String dbServer;
-    public InformixManager(String host, String port, String dbName, String tableName, String dbServer, String userName, String password, String cid) {
+	private String dbSchema;
+    public InformixManager(String host, String port, String dbName, String tableName, String dbServer, String userName, String password, String cid, String dbSchema) {
         super(dbName, tableName, userName, password, cid);
         this.host = host;
         this.port = port;
         this.dbServer = dbServer;
+        this.dbSchema = dbSchema;
     }
     protected String getDriver() {
         return "com.informix.jdbc.IfxDriver";
@@ -384,6 +386,15 @@ class InformixManager extends Manager {
     }
     protected String getRProtectedChar() {
         return "";
+    }
+	protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append(super.retrieveTable());
+		javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
+        javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
+        javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getLProtectedChar() + "." + getRProtectedChar() + "\" + tableName_" + cid + ";\r\n");
+        javaCode.append("}");
+        return javaCode.toString();
     }
 }
 class IngresManager extends Manager {
@@ -1050,7 +1061,8 @@ class ManagerFactory {
             String dbServer = ElementParameterParser.getValue(node, "__DBSERVER__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
-            manager = new InformixManager(host, port, dbName, tableName, dbServer, userName, password, cid);
+			String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+            manager = new InformixManager(host, port, dbName, tableName, dbServer, userName, password, cid, dbSchema);
         } else if(("INGRES").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
