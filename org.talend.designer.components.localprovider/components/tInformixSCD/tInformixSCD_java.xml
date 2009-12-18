@@ -89,12 +89,11 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="DBSERVER"
+	<PARAMETER 
+      NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="41"
-      REQUIRED="true"
-      REPOSITORY_VALUE="DATASOURCE"
+      REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
@@ -129,7 +128,18 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
+    
+	<PARAMETER
+      NAME="DBSERVER"
+      FIELD="TEXT"
+      NUM_ROW="55"
+      REQUIRED="true"
+      REPOSITORY_VALUE="DATASOURCE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"

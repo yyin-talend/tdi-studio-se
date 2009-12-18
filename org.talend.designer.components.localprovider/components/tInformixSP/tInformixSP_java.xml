@@ -99,17 +99,16 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="DBSERVER"
+
+	<PARAMETER 
+      NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
-      REQUIRED="true"
-      REPOSITORY_VALUE="DATASOURCE"
+      REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>
 
     <PARAMETER
       NAME="USER"
@@ -132,7 +131,17 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
+    
+    <PARAMETER
+      NAME="DBSERVER"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+      REPOSITORY_VALUE="DATASOURCE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>  
 	
     <PARAMETER
       NAME="SCHEMA"

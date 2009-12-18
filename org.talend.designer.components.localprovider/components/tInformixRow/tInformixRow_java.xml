@@ -99,16 +99,15 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="DBSERVER"
+    	<PARAMETER 
+      NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
-      REQUIRED="true"
-      REPOSITORY_VALUE="DATASOURCE"
+      REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>       
+    </PARAMETER>
 
 	<PARAMETER
       NAME="USER"
@@ -129,11 +128,22 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
+ 
+    <PARAMETER
+      NAME="DBSERVER"
+      FIELD="TEXT"
+      NUM_ROW="6"
+      REQUIRED="true"
+      REPOSITORY_VALUE="DATASOURCE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>       
+    
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -142,7 +152,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="7"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -154,7 +164,7 @@
 	<PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -162,7 +172,7 @@
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -170,7 +180,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>"select * from mytable"</DEFAULT>
     </PARAMETER>
@@ -178,7 +188,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="9"
+      NUM_ROW="10"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -186,7 +196,7 @@
 	<PARAMETER
       NAME="USE_TRANSACTION"
       FIELD="CHECK"
-      NUM_ROW="10"
+      NUM_ROW="11"
     >       
       <DEFAULT>true</DEFAULT>
     </PARAMETER>   

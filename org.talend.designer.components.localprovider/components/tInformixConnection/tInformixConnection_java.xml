@@ -80,15 +80,14 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="DBSERVER"
+	<PARAMETER 
+      NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="3"
-      REQUIRED="true"
-      REPOSITORY_VALUE="DATASOURCE"
+      REPOSITORY_VALUE="SCHEMA"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>
 
     <PARAMETER
       NAME="USER"
@@ -109,6 +108,17 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+        <PARAMETER
+      NAME="DBSERVER"
+      FIELD="TEXT"
+      NUM_ROW="6"
+      REQUIRED="true"
+      REPOSITORY_VALUE="DATASOURCE"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER> 
+    
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"

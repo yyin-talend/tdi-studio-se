@@ -100,16 +100,15 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="DBSERVER"
+	<PARAMETER 
+      NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
-      REQUIRED="true"
-      REPOSITORY_VALUE="DATASOURCE"
+      REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>
 
     <PARAMETER
       NAME="USER"
@@ -134,9 +133,20 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="DBSERVER"
+      FIELD="TEXT"
+      NUM_ROW="6"
+      REQUIRED="true"
+      REPOSITORY_VALUE="DATASOURCE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER> 
+
+    <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -144,7 +154,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -152,7 +162,7 @@
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -160,7 +170,7 @@
   	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>   
@@ -168,7 +178,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="9"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>"select * from sysobjects "</DEFAULT>
