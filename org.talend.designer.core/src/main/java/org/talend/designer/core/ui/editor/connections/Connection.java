@@ -256,6 +256,17 @@ public class Connection extends Element implements IConnection, IPerformance {
         addElementParameter(param);
 
         param = new ElementParameter(this);
+        param.setName(EParameterName.UNIQUE_NAME.getName());
+        param.setValue(this.getUniqueName()); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.UNIQUE_NAME.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.ADVANCED);
+        param.setNumRow(1);
+        param.setReadOnly(true);
+        param.setShow(false);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
@@ -829,6 +840,11 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         if (id.equals(EParameterName.RESUMLABEL.getName())) {
             setResumingLabelConnection(value.toString());
+        }
+
+        if (id.equals(EParameterName.UNIQUE_NAME.getName())) {
+            // parameter.setValue(value);
+            setUniqueName(value.toString());
         }
 
         // feature 6355
