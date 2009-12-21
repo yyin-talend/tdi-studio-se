@@ -51,7 +51,8 @@ public final class OracleComponentHelper {
      */
     public static String filterOracleComponentName(String components) {
 
-        if (components.equals(StatsAndLogsConstants.ORACLE_SID_ALIAS) || components.equals(StatsAndLogsConstants.ORACLE_SN_ALIAS)) {
+        if (components.equals(StatsAndLogsConstants.ORACLE_SID_ALIAS) || components.equals(StatsAndLogsConstants.ORACLE_SN_ALIAS)
+                || components.equals(StatsAndLogsConstants.ORACLE_OCI_ALIAS)) {
             return "tOracleOutput"; //$NON-NLS-1$
         }
 

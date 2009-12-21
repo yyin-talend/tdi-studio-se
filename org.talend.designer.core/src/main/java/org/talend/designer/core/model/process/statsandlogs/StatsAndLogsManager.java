@@ -844,7 +844,7 @@ public class StatsAndLogsManager {
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'ACCESS') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'ACCESS' or DB_TYPE == 'OCLE_OCI') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // host
@@ -857,7 +857,7 @@ public class StatsAndLogsManager {
         param.setNumRow(53);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS')"); //$NON-NLS-1$
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS') "); //$NON-NLS-1$
         paramList.add(param);
 
         // port
@@ -870,7 +870,7 @@ public class StatsAndLogsManager {
         param.setNumRow(53);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD')"); //$NON-NLS-1$
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI')) "); //$NON-NLS-1$
         paramList.add(param);
 
         // databaseSource
@@ -897,7 +897,7 @@ public class StatsAndLogsManager {
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD')"); //$NON-NLS-1$
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI')"); //$NON-NLS-1$
         paramList.add(param);
 
         // additional parameters
@@ -922,7 +922,7 @@ public class StatsAndLogsManager {
         param.setNumRow(54);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
         param
-                .setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+                .setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL' or DB_TYPE=='OCLE_OCI') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // username
