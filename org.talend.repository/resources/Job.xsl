@@ -34,7 +34,7 @@
 					class="FONTSTYLE" summary="Job&#160;documentation">
 					<tr valign="top">
 						<!--<td width="15%" rowspan="2" align="center"></td> -->
-						<td rowspan="2" align="center">
+						<td  align="center">
 							<a href="{project/@link}">
 								<img src="{project/@logo}" border="0"
 									align="bottom" alt="" />
@@ -46,6 +46,9 @@
 						</td>
 					</tr>
 					<tr valign="top">
+						<td height="20" align="center" valign="top" class="TITLESTYLE">
+							<xsl:value-of select="/project/@company" />
+						</td>
 						<td height="20" align="left" valign="top"
 							class="TITLESTYLE">
 							<xsl:value-of select="/project/@title" />

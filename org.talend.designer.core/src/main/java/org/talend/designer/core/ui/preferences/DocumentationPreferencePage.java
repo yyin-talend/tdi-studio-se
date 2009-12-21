@@ -14,6 +14,8 @@ package org.talend.designer.core.ui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
@@ -46,16 +48,25 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
      */
     @Override
     protected void createFieldEditors() {
+        sourceCodeGenFieldEditor = new BooleanFieldEditor(
+                ITalendCorePrefConstants.DOC_GENERATESOURCECODE,
+                org.talend.repository.i18n.Messages.getString("DocumentationPreferencePage.sourceCodeToHTML"), getFieldEditorParent()); //$NON-NLS-1$
+        addField(sourceCodeGenFieldEditor);
+
         // see the bug 7073,qli
         if (isDocumentationPluginLoaded) {
             BooleanFieldEditor booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
                     .getString("PerformancePreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
             addField(booleanFieldEditor);
+
+            FileFieldEditor documentationLogo = new FileFieldEditor(ITalendCorePrefConstants.DOC_USER_LOGO, Messages
+                    .getString("DocumentationPreferencePage.userDocLogo"), getFieldEditorParent());
+            addField(documentationLogo);
+
+            StringFieldEditor companyName = new StringFieldEditor(ITalendCorePrefConstants.DOC_COMPANY_NAME, Messages
+                    .getString("DocumentationPreferencePage.companyName"), getFieldEditorParent());
+            addField(companyName);
         }
-        sourceCodeGenFieldEditor = new BooleanFieldEditor(
-                ITalendCorePrefConstants.DOC_GENERATESOURCECODE,
-                org.talend.repository.i18n.Messages.getString("DocumentationPreferencePage.sourceCodeToHTML"), getFieldEditorParent()); //$NON-NLS-1$
-        addField(sourceCodeGenFieldEditor);
 
     }
 
