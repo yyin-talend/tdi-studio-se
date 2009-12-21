@@ -864,7 +864,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     private void reBuildJobZipFile() {
         JavaJobExportReArchieveCreator creator = null;
-        String zipFile = getDestinationValue();
+        String zipFile = getTempDestinationValue();
+        String destinationZipFile = getDestinationValue();
 
         String tmpFolder = JavaJobExportReArchieveCreator.getTmpFolder();
         try {
@@ -887,11 +888,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 }
             }
             // rezip the tmpFolder to zipFile
-            ZipToFile.zipFile(tmpFolder, zipFile);
+            ZipToFile.zipFile(tmpFolder, destinationZipFile);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         } finally {
             JavaJobExportReArchieveCreator.deleteTempFiles();
+            JavaJobExportReArchieveCreator.deleteTempDestinationFiles();
         }
     }
 
@@ -903,9 +905,41 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     public ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
         ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue());
-
+                getTempDestinationValue());
         return exporterOperation;
+    }
+
+    /**
+     * DOC zli Comment method "getTempDestinationValue".
+     * 
+     * @return
+     */
+    protected String getTempDestinationValue() {
+        String idealSuffix = getOutputSuffix();
+        String destinationText = super.getDestinationValue();
+        String tempdestination = JavaJobExportReArchieveCreator.getTmpDestinationFolder();
+        if (destinationText.indexOf("\\") != -1) {
+            int lastIndexOf = destinationText.lastIndexOf("\\");
+            String substring = destinationText.substring(lastIndexOf + 1, destinationText.length());
+            tempdestination = tempdestination + "/" + substring;
+        }
+        if (tempdestination.length() != 0 && !tempdestination.endsWith(File.separator)) {
+            int dotIndex = tempdestination.lastIndexOf('.');
+            if (dotIndex != -1) {
+                // the last path seperator index
+                int pathSepIndex = tempdestination.lastIndexOf(File.separator);
+                if (pathSepIndex != -1 && dotIndex < pathSepIndex) {
+                    tempdestination += idealSuffix;
+                }
+            } else {
+                tempdestination += idealSuffix;
+            }
+        }
+        if (tempdestination.endsWith(this.getSelectedJobVersion() + this.getOutputSuffix())) {
+            return tempdestination;
+        }
+        return tempdestination;
+
     }
 
     /**

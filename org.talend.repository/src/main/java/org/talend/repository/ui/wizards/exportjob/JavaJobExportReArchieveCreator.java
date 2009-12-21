@@ -340,6 +340,33 @@ public class JavaJobExportReArchieveCreator {
     }
 
     /**
+     * DOC zli Comment method "getTmpDestinationFolder".
+     * 
+     * @return
+     */
+    public static String getTmpDestinationFolder() {
+        String tmp = System.getProperty("user.dir") + "/newExportFolder";//$NON-NLS-1$ //$NON-NLS-2$
+        tmp = tmp.replace('\\', '/');
+        File f = new File(tmp);
+        if (!f.exists()) {
+            f.mkdir();
+        }
+        return tmp;
+    }
+
+    /**
+     * DOC zli Comment method "deleteTempDestinationFiles".
+     */
+    public static void deleteTempDestinationFiles() {
+        String tmpFold = getTmpDestinationFolder();
+        File file = new File(tmpFold);
+        if (!file.exists() && !file.isDirectory()) {
+            return;
+        }
+        ZipToFile.deleteDirectory(file);
+    }
+
+    /**
      * 
      * only build the 'manifest.mf' to the classpath.jar
      */
