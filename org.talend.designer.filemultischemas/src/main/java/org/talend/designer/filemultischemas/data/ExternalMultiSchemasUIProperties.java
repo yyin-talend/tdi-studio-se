@@ -40,7 +40,11 @@ public class ExternalMultiSchemasUIProperties {
 
     public static final String PREVIEW_STRING = PREVIEW_LABEL + "..."; //$NON-NLS-1$
 
-    public static final String[] SCHEMAS_TREE_COLUMN_PROPERTY = new String[] { "KEY", "RECORD" }; //$NON-NLS-1$
+    public static final String COLUMN_KEY = "KEY";
+
+    public static final String COLUMN_RECORD = "RECORD";
+
+    public static final String COLUMN_SEPARATOR = "SEPARATOR";
 
     public static final int DIALOG_STYLE = SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
             | SWT.TITLE;

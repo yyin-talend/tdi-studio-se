@@ -234,7 +234,6 @@ public class UIManager {
             } else {
                 schemaDetailsViewer.setInput(null);
             }
-
             //
             tree.setRedraw(true);
             updateColumns(tree, colSize);

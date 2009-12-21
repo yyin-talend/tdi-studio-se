@@ -288,7 +288,7 @@ public class MultiSchemasManager {
      * @param line
      * @return
      */
-    private MultiSchemaRowData createRowData(String[] line, int selectColumnIndex) {
+    public MultiSchemaRowData createRowData(String[] line, int selectColumnIndex) {
         if (line == null || line.length < 1) {
             return null;
         }
@@ -414,7 +414,7 @@ public class MultiSchemasManager {
         return 0;
     }
 
-    private List<MultiMetadataColumn> createPropertiesColumns(SchemasKeyData keyData) {
+    public List<MultiMetadataColumn> createPropertiesColumns(SchemasKeyData keyData) {
         List<MultiMetadataColumn> columns = new ArrayList<MultiMetadataColumn>();
         if (keyData != null) {
             final int tagLevel = keyData.getTagLevel();
@@ -533,7 +533,7 @@ public class MultiSchemasManager {
         return null;
     }
 
-    private void createSimpleDatas(SchemasKeyData rootData, List<Map<String, String>> schemasValues) {
+    public void createSimpleDatas(SchemasKeyData rootData, List<Map<String, String>> schemasValues) {
 
         for (Map<String, String> line : schemasValues) {
             String code = line.get(IMultiSchemaConstant.RECORD);
@@ -588,7 +588,7 @@ public class MultiSchemasManager {
         }
     }
 
-    private void createMultiSchemasColumns(SchemasKeyData data, final IMetadataTable metadataTable) {
+    public void createMultiSchemasColumns(SchemasKeyData data, final IMetadataTable metadataTable) {
         //
         for (IMetadataColumn column : metadataTable.getListColumns()) {
 

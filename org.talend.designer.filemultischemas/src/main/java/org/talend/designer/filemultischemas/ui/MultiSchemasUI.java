@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,12 +30,17 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -70,6 +76,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -81,6 +88,8 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.EMetadataEncoding;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.Escape;
 import org.talend.core.model.metadata.builder.connection.FieldSeparator;
@@ -88,14 +97,17 @@ import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.filemultischemas.MultiSchemasComponent;
 import org.talend.designer.filemultischemas.data.CSVArrayAndSeparator;
 import org.talend.designer.filemultischemas.data.ExternalMultiSchemasUIProperties;
+import org.talend.designer.filemultischemas.data.MultiMetadataColumn;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.designer.filemultischemas.managers.MultiSchemasManager;
 import org.talend.designer.filemultischemas.managers.UIManager;
+import org.talend.designer.filemultischemas.ui.dialog.AddRowDialog;
 import org.talend.designer.filemultischemas.ui.dialog.MultiSchemaEventListener;
 import org.talend.designer.filemultischemas.ui.preview.MultiSchemasShadowProcessPreview;
 import org.talend.designer.filemultischemas.ui.preview.MultiSchemasUIThreadProcessor;
@@ -160,6 +172,8 @@ public class MultiSchemasUI {
     private Button previewBtn;
 
     private Button fetchBtn, leftBtn, rightBtn;
+
+    private Button addRow, removeRow, editSchema;
 
     private TreeViewer schemaTreeViewer;
 
@@ -282,7 +296,6 @@ public class MultiSchemasUI {
 
     private void initFieldValues() {
         // hywang add for feature 7373
-
         String selectedColumn = getMultiSchemaManager().getParameterValue(EParameterName.COLUMNINDEX);
         selectedColumn = TalendTextUtils.removeQuotes(selectedColumn);
         if (selectedColumn != null && !selectedColumn.equals("")) {
@@ -1002,7 +1015,84 @@ public class MultiSchemasUI {
         column.setWidth(20);
         column.setText("Separator");//$NON-NLS-1$
         column.setResizable(true);
-        schemaTreeViewer.setColumnProperties(ExternalMultiSchemasUIProperties.SCHEMAS_TREE_COLUMN_PROPERTY);
+        schemaTreeViewer.setColumnProperties(new String[] { ExternalMultiSchemasUIProperties.COLUMN_KEY,
+                ExternalMultiSchemasUIProperties.COLUMN_RECORD, ExternalMultiSchemasUIProperties.COLUMN_SEPARATOR });
+
+        // hywang for 10263
+        int columnCount = schemaTreeViewer.getTree().getColumnCount();
+        CellEditor[] editors = new CellEditor[columnCount];
+        for (int i = 0; i < columnCount; i++) {
+            editors[i] = new TextCellEditor(schemaTreeViewer.getTree());
+        }
+        schemaTreeViewer.setCellEditors(editors);
+        schemaTreeViewer.setCellModifier(new ICellModifier() {
+
+            public void modify(Object element, String property, Object value) {
+                if (element != null) {
+                    if (element instanceof TreeItem) {
+                        TreeItem item = (TreeItem) element;
+                        if (item.getData() != null) {
+                            if (item.getData() instanceof SchemasKeyData) {
+                                SchemasKeyData key = (SchemasKeyData) item.getData();
+                                if (property.equals(ExternalMultiSchemasUIProperties.COLUMN_KEY)) {
+                                    key.setUniqueRecord(value.toString());
+                                }
+                                if (property.equals(ExternalMultiSchemasUIProperties.COLUMN_RECORD)) {
+                                    key.setRecordType(value.toString());
+                                }
+                                if (property.equals(ExternalMultiSchemasUIProperties.COLUMN_SEPARATOR)) {
+                                    key.setSeparator(value.toString());
+                                }
+                                // Object input = schemaTreeViewer.getInput();
+                                // SchemasKeyData in = (SchemasKeyData) input;
+                                // if (in.getChildren().contains(key)) {
+                                // in.getChildren().remove(in.getChildren().indexOf(key));
+                                // List<MultiMetadataColumn> colums = multiSchemaManager.createPropertiesColumns(key);
+                                // key.setMetadataColumns(colums);
+                                // in.getChildren().add(key);
+                                // }
+                            }
+                            schemaTreeViewer.refresh();
+                        }
+                    }
+                }
+            }
+
+            public Object getValue(Object element, String property) {
+                String record = ""; //$NON-NLS-N$
+                if (element != null) {
+                    if (element instanceof SchemasKeyData) {
+                        SchemasKeyData key = (SchemasKeyData) element;
+                        if (property.equals(ExternalMultiSchemasUIProperties.COLUMN_KEY)) {
+                            record = key.getUniqueRecord();
+                        }
+                        if (property.equals(ExternalMultiSchemasUIProperties.COLUMN_RECORD)) {
+                            record = key.getRecordType();
+                        }
+                        if (property.equals(ExternalMultiSchemasUIProperties.COLUMN_SEPARATOR)) {
+                            record = key.getSeparator();
+                        }
+                    }
+                }
+                return record;
+            }
+
+            public boolean canModify(Object element, String property) {
+                return true;
+            }
+        });
+
+        Composite operateTreeComposite = new Composite(struComp, SWT.NONE);
+        operateTreeComposite.setLayout(new GridLayout(3, false));
+        operateTreeComposite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+        addRow = new Button(operateTreeComposite, SWT.NONE);
+        addRow.setText("Add");
+        removeRow = new Button(operateTreeComposite, SWT.NONE);
+        removeRow.setText("Remove");
+        removeRow.setEnabled(false);
+        editSchema = new Button(operateTreeComposite, SWT.NONE);
+        editSchema.setText("Edit Columns");
+        editSchema.setEnabled(false);
 
         Composite operation = new Composite(struComp, SWT.NONE);
         operation.setLayout(new GridLayout(2, false));
@@ -1087,6 +1177,8 @@ public class MultiSchemasUI {
         schemaTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
+                removeRow.setEnabled(true);
+                editSchema.setEnabled(true);
                 if (isReadOnly()) {
                     leftBtn.setEnabled(false);
                     rightBtn.setEnabled(false);
@@ -1161,6 +1253,112 @@ public class MultiSchemasUI {
                 getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
             }
         });
+        addRow.addSelectionListener(new SelectionAdapter() { // hywang for 10263
+
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        AddRowDialog dialog = new AddRowDialog(MultiSchemasUI.this.getShell());
+                        if (Window.OK == dialog.open()) {
+                            Object input = schemaTreeViewer.getInput();
+                            if (input instanceof SchemasKeyData) {
+
+                                SchemasKeyData data = (SchemasKeyData) input;
+                                List<SchemasKeyData> all = data.getChildren();
+                                SchemasKeyData newData = new SchemasKeyData(dialog.getRecordValue()); //$NON-NLS-N$
+                                newData.setSeparator(dialog.getSepValue()); //$NON-NLS-N$
+                                newData.setUniqueRecord(dialog.getKeyValue()); //$NON-NLS-N$
+
+                                final IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(
+                                        getMultiSchemasComponent(), dialog.getKeyValue());
+                                if (metadataTable != null) {
+                                    multiSchemaManager.createMultiSchemasColumns(newData, metadataTable.clone(true));
+                                } else {
+                                    List<MultiMetadataColumn> colums = multiSchemaManager.createPropertiesColumns(newData);
+                                    newData.setMetadataColumns(colums);
+                                }
+                                all.add(newData);
+                                data.addChild(newData);
+                                newData.setParent(data);
+                                schemaTreeViewer.refresh();
+                                int len = schemaTreeViewer.getTree().getItems().length;
+                                schemaTreeViewer.getTree().select(schemaTreeViewer.getTree().getItems()[len - 1]);
+                            }
+                            getUIManager()
+                                    .refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer, getSchemaDetailModel());
+                        }
+                    }
+                });
+        removeRow.addSelectionListener(new SelectionAdapter() { // hywang for 10263
+
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        boolean needRefresh = false;
+                        if (schemaTreeViewer == null) {
+                            return;
+                        }
+                        SchemasKeyData removeData = null;
+                        ISelection selection = schemaTreeViewer.getSelection();
+                        Object input = schemaTreeViewer.getInput();
+                        if (selection instanceof IStructuredSelection) {
+                            Object element = ((IStructuredSelection) selection).getFirstElement();
+                            if (element instanceof SchemasKeyData) {
+                                removeData = (SchemasKeyData) element;
+                            }
+                        }
+                        if (input instanceof SchemasKeyData) {
+                            SchemasKeyData data = (SchemasKeyData) input;
+                            List<SchemasKeyData> all = data.getChildren();
+                            if (all.contains(removeData)) {
+                                all.remove(removeData);
+                                schemaTreeViewer.setInput(data);
+                                needRefresh = true;
+                            }
+                            if (needRefresh) {
+                                schemaTreeViewer.refresh();
+                                int len = schemaTreeViewer.getTree().getItems().length;
+                                schemaTreeViewer.getTree().select(schemaTreeViewer.getTree().getItems()[len - 1]);
+                                removeRow.setEnabled(!all.isEmpty());
+                                editSchema.setEnabled(!all.isEmpty());
+                                getUIManager().refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer,
+                                        getSchemaDetailModel());
+                            }
+                        }
+                    }
+                });
+
+        editSchema.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ISelection selection = schemaTreeViewer.getSelection();
+                SchemasKeyData selectedData = null;
+                if (selection instanceof IStructuredSelection) {
+                    Object element = ((IStructuredSelection) selection).getFirstElement();
+                    if (element instanceof SchemasKeyData) {
+                        selectedData = (SchemasKeyData) element;
+                        IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(getMultiSchemasComponent(),
+                                selectedData.getUniqueRecord());
+                        if (metadataTable == null) {
+                            metadataTable = new org.talend.core.model.metadata.MetadataTable();
+                        }
+                        MetadataDialog dialog = new MetadataDialog(MultiSchemasUI.this.getShell(), metadataTable,
+                                getMultiSchemasComponent(), new CommandStackForComposite(MultiSchemasUI.this.getShell()));
+                        dialog.setText("Schema of " + selectedData.getUniqueRecord()); //$NON-NLS-N$
+                        if (Window.OK == dialog.open()) {
+                            metadataTable = dialog.getOutputMetaData();
+                            if (!selectedData.getMetadataColumns().isEmpty()) {
+                                selectedData.getMetadataColumns().clear();
+                            }
+                            multiSchemaManager.createMultiSchemasColumns(selectedData, metadataTable);
+                            getUIManager()
+                                    .refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer, getSchemaDetailModel());
+                        }
+                    }
+                }
+            }
+
+        });
+
     }
 
     @SuppressWarnings("restriction")

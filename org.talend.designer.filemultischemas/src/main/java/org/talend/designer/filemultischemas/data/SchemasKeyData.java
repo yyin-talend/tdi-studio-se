@@ -131,6 +131,10 @@ public class SchemasKeyData {
         }
     }
 
+    public void setRecordType(String recordType) {
+        this.recordType = recordType;
+    }
+
     private void updateRecycleChildren(SchemasKeyData current) {
         SchemasKeyData p = current.getParent();
         for (SchemasKeyData tmpChild : current.getChildren()) {
