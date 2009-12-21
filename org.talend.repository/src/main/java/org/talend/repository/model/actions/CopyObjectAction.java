@@ -14,12 +14,14 @@ package org.talend.repository.model.actions;
 
 import org.eclipse.core.runtime.IPath;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -87,7 +89,15 @@ public class CopyObjectAction {
             SQLPatternItem item = (SQLPatternItem) property.getItem();
             return !item.isSystem();
         }
-
+        // for cdc
+        if (PluginChecker.isCDCPluginLoaded()) {
+            ICDCProviderService cdcService = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                    ICDCProviderService.class);
+            if (cdcService != null
+                    && (cdcService.isSubscriberTableNode(sourceNode) || cdcService.isSystemSubscriberTable(sourceNode))) {
+                return false;
+            }
+        }
         // Special rule : temp ?
         if (targetNode == null) {
             return true;
