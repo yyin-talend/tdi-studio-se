@@ -2450,8 +2450,8 @@ public class Node extends Element implements INode {
                 if (inputMeta != null) {
                     INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
                     if (connector != null
-                            && connector.getMaxLinkInput() != 0
-                            && connector.getMaxLinkOutput() != 0
+                            && ((connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() != 0) || getComponent()
+                                    .getComponentType() == EComponentType.JOBLET_INPUT_OUTPUT)
                             && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
                                     | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
                                     | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
