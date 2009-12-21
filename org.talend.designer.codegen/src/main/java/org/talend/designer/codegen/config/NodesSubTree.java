@@ -25,7 +25,6 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.designer.codegen.i18n.Messages;
 
 /**
  * A process is cut out in a list of NodesSubTree. Each Subtrees are traversed to generate code.
@@ -155,7 +154,7 @@ public class NodesSubTree {
                     if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         allMainSubTreeConnections.add(connection);
                     } else {
-                        if ("true".equals(ElementParameterParser.getValue(connection, Messages.getString("NodesSubTree.enableParallel")))) { //$NON-NLS-1$ //$NON-NLS-2$
+                        if (Boolean.TRUE.toString().equals(ElementParameterParser.getValue(connection, "__ENABLE_PARALLEL__"))) { //$NON-NLS-1$ 
                             subTreeContainsParallelIterate = true;
                         }
                     }

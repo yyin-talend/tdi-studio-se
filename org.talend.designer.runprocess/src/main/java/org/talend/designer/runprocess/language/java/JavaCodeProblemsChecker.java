@@ -46,6 +46,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.DetailedProblem;
@@ -128,7 +129,9 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                                 .getUnit();
 
                         IProcess process = talendEditor.getProcess();
-
+                        if (AbstractProcessProvider.isExtensionProcessForJoblet(process)) { // joblet
+                            return;
+                        }
                         String selectedNodeName = multiPageTalendEditor.getSelectedNodeName();
 
                         if (selectedNodeName == null) {
