@@ -62,6 +62,10 @@ else if(("HSQLDB_INPROGRESS_PERSISTENT").equals(runningMode))
 	%>
 	url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%> + ";ifexists=true";
 	<%
+} else if(("HSQLDB_IN_MEMORY").equals(runningMode)) {
+	%>
+	url_<%=cid %> = "jdbc:hsqldb:mem:" + <%=dbname%> ;
+	<%
 }
 %>
 
