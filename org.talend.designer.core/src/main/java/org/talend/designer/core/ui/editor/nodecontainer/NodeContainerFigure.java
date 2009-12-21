@@ -19,8 +19,6 @@ import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -29,7 +27,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.ResourceDisposeUtil;
@@ -39,13 +36,12 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.dialog.mergeorder.ErrorMessageDialog;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 
 /**
- * This class create a figure with the given image. <br/>eh
+ * This class create a figure with the given image. <br/>
+ * eh
  * 
  * $Id$
  * 
@@ -314,32 +310,32 @@ public class NodeContainerFigure extends Figure {
 
     public void addListenerForDialog() {
 
-        markFigure.addMouseMotionListener(new MouseMotionListener() {
-
-            public void mouseDragged(MouseEvent me) {
-            }
-
-            public void mouseEntered(MouseEvent me) {
-                Node node = nodeContainer.getNode();
-                if (node.isErrorFlag()) {
-                    Shell shell = Display.getCurrent().getActiveShell();// getViewer().getControl().getShell();
-                    ErrorMessageDialog dialog = new ErrorMessageDialog(new Shell(shell), node);
-                    dialog.open();
-                }
-
-            }
-
-            public void mouseExited(MouseEvent me) {
-            }
-
-            public void mouseHover(MouseEvent me) {
-
-            }
-
-            public void mouseMoved(MouseEvent me) {
-            }
-
-        });
+        // markFigure.addMouseMotionListener(new MouseMotionListener() {
+        //
+        // public void mouseDragged(MouseEvent me) {
+        // }
+        //
+        // public void mouseEntered(MouseEvent me) {
+        // Node node = nodeContainer.getNode();
+        // if (node.isErrorFlag()) {
+        // Shell shell = Display.getCurrent().getActiveShell();// getViewer().getControl().getShell();
+        // ErrorMessageDialog dialog = new ErrorMessageDialog(new Shell(shell), node);
+        // dialog.open();
+        // }
+        //
+        // }
+        //
+        // public void mouseExited(MouseEvent me) {
+        // }
+        //
+        // public void mouseHover(MouseEvent me) {
+        //
+        // }
+        //
+        // public void mouseMoved(MouseEvent me) {
+        // }
+        //
+        // });
     }
 
 }

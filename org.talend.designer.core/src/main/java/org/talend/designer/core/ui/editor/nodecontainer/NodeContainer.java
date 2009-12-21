@@ -79,6 +79,8 @@ public class NodeContainer extends Element {
 
     private Dimension errorMarkSize;
 
+    private Rectangle errorMarkRectangle;
+
     public NodeContainer(Node node) {
         this.node = node;
         node.setNodeContainer(this);
@@ -140,6 +142,7 @@ public class NodeContainer extends Element {
         errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
         errorMarkLocation.y = markLocation.y - errorMarkSize.height;
         errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
+        this.errorMarkRectangle = errorMarkRectangle;
         statusRectangle.union(errorMarkRectangle);
 
         parallelLocation.x = nodeLocation.x - nodeSize.width / 2 - parallelSize.width;
@@ -181,6 +184,7 @@ public class NodeContainer extends Element {
         errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
         errorMarkLocation.y = markLocation.y - errorMarkSize.height;
         errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
+        this.errorMarkRectangle = errorMarkRectangle;
         statusRectangle.union(errorMarkRectangle);
 
         return statusRectangle;
@@ -264,6 +268,10 @@ public class NodeContainer extends Element {
         finalRect.height += errorNodeSize.height;
         finalRect.height += progressNodeSize.height;
         return finalRect;
+    }
+
+    public Rectangle getErrorMarkRectangle() {
+        return errorMarkRectangle;
     }
 
     /*

@@ -24,6 +24,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.ConnectionEditPart;
@@ -35,9 +36,14 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.requests.SelectionRequest;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.designer.core.ui.dialog.mergeorder.ErrorMessageDialog;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.NodeSnapToGeometry;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -295,4 +301,25 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
     protected List getModelSourceConnections() {
         return ((SubjobContainer) this.getModel()).getOutgoingConnections();
     }
+
+    @Override
+    public void performRequest(Request req) {
+        if (req instanceof SelectionRequest) {
+            Point location = ((SelectionRequest) req).getLocation();
+            List<NodeContainer> list = this.getModelChildren();
+            for (NodeContainer nodeCon : list) {
+                if (nodeCon.getErrorMarkRectangle().contains(location)) {
+                    Node node = nodeCon.getNode();
+                    if (node.isErrorFlag()) {
+                        Shell shell = Display.getCurrent().getActiveShell();// getViewer().getControl().getShell();
+                        ErrorMessageDialog dialog = new ErrorMessageDialog(new Shell(shell), node);
+                        dialog.open();
+                        break;
+                    }
+                }
+            }
+        }
+        super.performRequest(req);
+    }
+
 }
