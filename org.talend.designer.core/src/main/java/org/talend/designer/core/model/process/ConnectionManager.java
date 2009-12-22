@@ -397,7 +397,8 @@ public class ConnectionManager {
     public static boolean canRename(Node source, Node target, EConnectionType connType, String connectionName) {
         boolean canRename = true;
         if (connType.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
-            if (!(source.getProcess().checkValidConnectionName(connectionName))) {
+            if (!(source.getProcess().checkValidConnectionName(connectionName)) || KeywordsValidator.isKeyword(connectionName)
+                    || KeywordsValidator.isSqlKeyword(connectionName)) {
                 canRename = false;
             }
         } else if (connType.equals(EConnectionType.TABLE)) {
