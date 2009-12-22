@@ -21,7 +21,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -104,7 +103,6 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
 
         erDiagramComposite = new ErDiagramComposite(composite, SWT.VERTICAL);
 
-        composite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
         erDiagramComposite.setDialog(dialog);
         erDiagramComposite.setRootNode(repositoryNode);
         erDiagramComposite.setNodes(nodes, connParam.isShowDesignerPage());
