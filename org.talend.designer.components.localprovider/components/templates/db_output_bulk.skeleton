@@ -1199,18 +1199,39 @@ public class CLASS {
     }
     
     public class HSQLDBManager extends Manager {
+    	String [] hsqldbKeyWords = {};
         public HSQLDBManager(String cid) {
             super(cid);
         }
         protected String getDBMSId() {
             return HSQLDB;
-        }
+        }   
         protected String getLProtectedChar() {
-            return "\\\"";
+            return "";
         }
         protected String getRProtectedChar() {
-            return "\\\"";
-        }        
+            return "";
+        }     
+        protected boolean isHSQLDBKeyword (String keyword) {
+            for (int i=0 ; i < hsqldbKeyWords.length ; i++){
+                if (hsqldbKeyWords[i].equalsIgnoreCase(keyword)) {
+                	return true;
+                }
+            }
+        	return false;
+        }
+        protected String getLProtectedChar(String keyword) {
+        	if (isHSQLDBKeyword(keyword)){
+        		return "\\\"";
+        	}
+        	return getLProtectedChar();
+        }
+        protected String getRProtectedChar(String keyword) {
+        	if (isHSQLDBKeyword(keyword)){
+        		return "\\\"";
+        	}
+        	return getRProtectedChar();
+        }  
     }
     
     public class InformixManager extends Manager {
