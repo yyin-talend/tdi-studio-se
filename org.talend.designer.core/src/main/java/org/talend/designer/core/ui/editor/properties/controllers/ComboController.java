@@ -405,15 +405,15 @@ public class ComboController extends AbstractElementPropertySectionController {
                     ITDQPatternService.class);
             if (service != null && elem instanceof Node) {
                 Node node = (Node) elem;
+                IElementParameter propertyParam = node.getElementParameter("TYPE");
+                if (propertyParam != null) {
+                    String dbtype = propertyParam.getValue().toString();
 
-                String[][][] tdqPatterns = service.retrieveTDQPatterns();
-                Map<String, String> patternMap = new HashMap<String, String>();
+                    String[][][] tdqPatterns = service.retrieveTDQPatterns();
+                    if (tdqPatterns != null) {
+                        if (param.getName() != null && param.getName().equals("PATTERN_LIST")) { //$NON-NLS-1$
+                            Map<String, String> patternMap = new HashMap<String, String>();
 
-                if (tdqPatterns != null) {
-                    if (param.getName() != null && param.getName().equals("PATTERN_LIST")) { //$NON-NLS-1$
-                        IElementParameter propertyParam = node.getElementParameter("TYPE");
-                        if (propertyParam != null) {
-                            String dbtype = propertyParam.getValue().toString();
                             for (String[][] pattern : tdqPatterns) {
                                 for (String[] expression : pattern) {
                                     if (expression[2].equalsIgnoreCase(dbtype) || expression[2].equalsIgnoreCase("sql")) {
@@ -421,25 +421,16 @@ public class ComboController extends AbstractElementPropertySectionController {
                                     }
                                 }
                             }
-                        } else {
-                            patternMap.put("CUSTOM", "CUSTOM2"); // this is a default value
 
-                            for (String[][] pattern : tdqPatterns) {
-                                for (String[] expression : pattern) {
-                                    if (expression[2].equalsIgnoreCase("sql")) {
-                                        patternMap.put(expression[0], expression[1]);
-                                    }
-                                }
-                            }
+                            // set into paramlist
+                            param.setListItemsDisplayCodeName(patternMap.keySet().toArray(new String[patternMap.size()]));
+                            param.setListItemsValue(patternMap.values().toArray(new String[patternMap.size()]));
+                            param.setListItemsDisplayName(patternMap.keySet().toArray(new String[patternMap.size()]));
+                            param.setListItemsNotShowIf(new String[patternMap.size()]);
+                            param.setListItemsShowIf(new String[patternMap.size()]);
                         }
                     }
                 }
-
-                param.setListItemsDisplayCodeName(patternMap.keySet().toArray(new String[patternMap.size()]));
-                param.setListItemsValue(patternMap.values().toArray(new String[patternMap.size()]));
-                param.setListItemsDisplayName(patternMap.keySet().toArray(new String[patternMap.size()]));
-                param.setListItemsNotShowIf(new String[patternMap.size()]);
-                param.setListItemsShowIf(new String[patternMap.size()]);
             }
 
         } catch (Exception e) {
