@@ -23,8 +23,7 @@ class DeleteFolder<%=cid%>{
      * 
      * @param file
      */
-	public void delete(java.io.File file) {
-        // TODO Auto-generated method stub
+	public boolean delete(java.io.File file) {
         java.io.File[] files = file.listFiles();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
@@ -36,7 +35,7 @@ class DeleteFolder<%=cid%>{
             }
         }
         deleteDirectory(file);
-        file.delete();
+        return file.delete();
     }
 
     /**
@@ -45,7 +44,6 @@ class DeleteFolder<%=cid%>{
      * @param file
      */
     private void deleteDirectory(java.io.File file) {
-        // TODO Auto-generated method stub
         java.io.File[] filed = file.listFiles();
         for (int i = 0; i < filed.length; i++) {
             deleteDirectory(filed[i]);
@@ -55,66 +53,83 @@ class DeleteFolder<%=cid%>{
 
 }
 <%
-if(either){%>
-
+if(either){
+%>
 	java.io.File path_<%=cid%>=new java.io.File(<%=path%>);
 	if(path_<%=cid%>.exists()){
-	  if(path_<%=cid%>.isFile()){
-		path_<%=cid%>.delete();
-	  }else if(path_<%=cid%>.isDirectory()){ 
-	    DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
-	    df<%=cid%>.delete(path_<%=cid%>);   
-	  }
-    }
+		if(path_<%=cid%>.isFile()){
+	    	if(path_<%=cid%>.delete()){
+	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
+	    	}else{
+	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+	    	}
+		}else if(path_<%=cid%>.isDirectory()){ 
+	    	DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
+	    	if(df<%=cid%>.delete(path_<%=cid%>)){
+	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
+	    	}else{
+	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+	    	}
+		}
+    }else{
+		globalMap.put("<%=cid %>_CURRENT_STATUS", "File or path does not exists.");
+
 <%
-	if(("true").equals(failon)){
+		if(("true").equals(failon)){
 %>
-    else{
-    	throw new RuntimeException("the file or path does not exists or is invalid");
-    }
+    		throw new RuntimeException("the file or path does not exists or is invalid");
 <%
-	}
+		}
 %>
+    }
     globalMap.put("<%=cid %>_DELETE_PATH",<%=path%>);
 <%
 }else if(ifFolder){
 %>
 
-java.io.File file<%=cid%> = new java.io.File(<%=dirName%>);
+	java.io.File file<%=cid%> = new java.io.File(<%=dirName%>);
 
-if(file<%=cid%>.exists()&& file<%=cid%>.isDirectory()){
-	DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
-	df<%=cid%>.delete(file<%=cid%>);
-}
+	if(file<%=cid%>.exists()&& file<%=cid%>.isDirectory()){
+		DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
+		if(df<%=cid%>.delete(file<%=cid%>)){
+    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
+    	}else{
+    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+    	}
+	}else{
+		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+
 <%
-	if(("true").equals(failon)){
+		if(("true").equals(failon)){
 %>
-    else{
-    	throw new RuntimeException("Directory does not exists or is invalid");
-    }
+    		throw new RuntimeException("the file or path does not exists or is invalid");
 <%
-	}
-	%>
-	globalMap.put("<%=cid %>_DELETE_PATH",<%=dirName%>);
+		}
+%>
+    }
+    globalMap.put("<%=cid %>_DELETE_PATH",<%=path%>);
 <%
 }else{
 %>
     java.io.File file_<%=cid%>=new java.io.File(<%=fileName%>);
-    if(file_<%=cid%>.exists()&& file_<%=cid%>.isFile())
-    {
-    	file_<%=cid%>.delete();
-    }
+    if(file_<%=cid%>.exists()&& file_<%=cid%>.isFile()){
+    	if(file_<%=cid%>.delete()){
+    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
+    	}else{
+    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+    	}
+    }else{
+    	globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
 <%
-	if(("true").equals(failon)){
+		if(("true").equals(failon)){
 %>
-    else{
-    	throw new RuntimeException("File does not exists or is invalid");
-    }
+    		throw new RuntimeException("File does not exists or is invalid");
 <%
+		}
+%>
 	}
-	%>
 	globalMap.put("<%=cid %>_DELETE_PATH",<%=fileName%>);
-	<%
+<%
 }
 %>
     
