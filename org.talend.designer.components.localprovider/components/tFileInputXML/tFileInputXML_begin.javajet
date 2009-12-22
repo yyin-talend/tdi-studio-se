@@ -164,10 +164,28 @@ class XML_API_<%=cid%>{
     	hasDefaultNS = pr.countNSMap(root);
 	}
 
+//==============add for feature 10753 start================================
+	com.sun.org.apache.xpath.internal.objects.XObject obj = null;
+	
+	public int getNodeType(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException{
+		obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+		return obj.getType();
+	}
+	
+	public String getNodeString(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException{
+		if(obj==null){
+			obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+		}
+		return obj.str();
+	}
+
     public org.w3c.dom.Node getSingleNode(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException {
-        com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+    	if(obj==null){
+        	obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+        }
         return obj.nodelist().item(0);
     }
+//=====================end=================================================
 
     public org.w3c.dom.NodeList getNodeList(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException {
         com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
@@ -660,38 +678,51 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					String nodeCheck = mapping.get(i).get("NODECHECK");
 					if(("Xerces").equals(mode)){
 %>
-	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
+	if(xml_api_<%=cid%>.getNodeType(tmp_<%=cid %>,<%=query%>)==com.sun.org.apache.xpath.internal.objects.XObject.CLASS_NODESET){
+		node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
 <%
 						if("true".equals(useSeparator)){
 %>
-	if(node_<%=cid %>!=null && node_<%=cid %>.getNodeType()==org.w3c.dom.Node.ELEMENT_NODE && node_<%=cid %>.hasChildNodes()){
-		str_<%=cid %> = contentTool_<%=cid %>.getNodeContent(node_<%=cid%>);
-	}else{
-		str_<%=cid %> = node_<%=cid%>!=null?node_<%=cid%>.getTextContent():"";
-	}
+    	if(node_<%=cid %>!=null && node_<%=cid %>.getNodeType()==org.w3c.dom.Node.ELEMENT_NODE && node_<%=cid %>.hasChildNodes()){
+    		str_<%=cid %> = contentTool_<%=cid %>.getNodeContent(node_<%=cid%>);
+    	}else{
+    		str_<%=cid %> = node_<%=cid%>!=null?node_<%=cid%>.getTextContent():"";
+    	}
 <%
 						}else{
 %>
-	str_<%=cid %> = node_<%=cid%>!=null?node_<%=cid%>.getTextContent():"";
+		str_<%=cid %> = node_<%=cid%>!=null?node_<%=cid%>.getTextContent():"";
 <%
 						}
+%>
+	}else{
+		node_<%=cid %> = tmp_<%=cid %>;
+		str_<%=cid %> = xml_api_<%=cid%>.getNodeString(tmp_<%=cid %>,<%=query%>);
+	}
+<%
 					}else if(("Dom4j").equals(mode)){
 %>
 	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
-    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
-    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
+    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
+    	node_<%=cid%> = temp_<%=cid%>;
+    	str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
+    }else{
+    	node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
 <%
 						if(("true").equals(nodeCheck)){
 %>
-	str_<%=cid %> = node_<%=cid %>==null?null:node_<%=cid %>.asXML();
+		str_<%=cid %> = node_<%=cid %>==null?null:node_<%=cid %>.asXML();
 <%
 							
 						}else{
 %>
-    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
+    	str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
 <%
 						}
 %>
+	}
 <%
 					}else if(("SAX").equals(mode)){
 %>
