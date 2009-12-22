@@ -422,6 +422,8 @@ public class ComboController extends AbstractElementPropertySectionController {
                                 }
                             }
                         } else {
+                            patternMap.put("CUSTOM", "CUSTOM2"); // this is a default value
+
                             for (String[][] pattern : tdqPatterns) {
                                 for (String[] expression : pattern) {
                                     if (expression[2].equalsIgnoreCase("sql")) {
