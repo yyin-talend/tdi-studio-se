@@ -21,6 +21,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -54,10 +55,11 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
      * @param style
      */
     public SQLBuilderDesignerComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor,
-            ConnectionParameters connParam, RepositoryNode node, ISQLBuilderDialog d, List<RepositoryNode> nodes) {
+            ConnectionParameters connParam, RepositoryNode node, ISQLBuilderDialog d, List<RepositoryNode> nodes, boolean readOnly) {
         super(parent, SWT.NONE, d, connParam);
         this.tabItem = tabItem;
         this.isDefaultEditor = isDefaultEditor;
+        this.readOnly = readOnly;
         isOpen = isDefaultEditor;
         repositoryNode = node;
         initialContent(this, nodes);
@@ -81,6 +83,7 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
         setLayout(layout);
         createToolBar();
         createDesignerArea(composite, nodes);
+        adaptWidgetToReadOnly();
     }
 
     /**
@@ -100,6 +103,8 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
         div1.setBackground(composite.getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
 
         erDiagramComposite = new ErDiagramComposite(composite, SWT.VERTICAL);
+
+        composite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
         erDiagramComposite.setDialog(dialog);
         erDiagramComposite.setRootNode(repositoryNode);
         erDiagramComposite.setNodes(nodes, connParam.isShowDesignerPage());
@@ -273,7 +278,9 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
         return multiPageEditor;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.AbstractSQLEditorComposite#getColorText()
      */
     @Override
@@ -281,4 +288,9 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
         return getErDiagramComposite().getStyledText();
     }
 
+    @Override
+    protected void adaptWidgetToReadOnly() {
+        super.adaptWidgetToReadOnly();
+        erDiagramComposite.setEnabled(!isReadOnly());
+    }
 }

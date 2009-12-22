@@ -53,6 +53,8 @@ public class SQLBuilderTabComposite extends Composite {
 
     private ISQLBuilderDialog dialog;
 
+    private boolean readOnly = false;
+
     public SQLBuilderTabComposite(Composite parent, int style, ISQLBuilderDialog d) {
         super(parent, style);
         this.dialog = d;
@@ -188,6 +190,7 @@ public class SQLBuilderTabComposite extends Composite {
         }
         MultiPageSqlBuilderEditor builderEditor = new MultiPageSqlBuilderEditor(nodesSel, tabItem, isDefaultEditor, connParam,
                 node, dialog);
+        builderEditor.setReadOnly(readOnly);
         try {
             builderEditor.init(new SQLBuilderEditorSite(), new SQLBuilderEditorInput());
         } catch (PartInitException e) {
@@ -254,5 +257,9 @@ public class SQLBuilderTabComposite extends Composite {
 
     public void setNodesSel(List<RepositoryNode> nodesSel) {
         this.nodesSel = nodesSel;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 }

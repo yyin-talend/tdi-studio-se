@@ -75,6 +75,10 @@ import org.talend.sqlbuilder.util.UIUtils;
  */
 public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepositoryChangedListener {
 
+    private Composite container;
+
+    private boolean readOnly = false;
+
     // ends
     private boolean isFromRepositoryView = false;
 
@@ -231,7 +235,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * @param parent
      */
     protected Control createDialogArea(Composite parent) {
-        Composite container = (Composite) super.createDialogArea(parent);
+        container = (Composite) super.createDialogArea(parent);
         // container.setLayout(new GridLayout());
 
         final SashForm mainSashForm = new SashForm(container, SWT.NONE | SWT.VERTICAL);
@@ -304,6 +308,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     private void createSQLEditor(SashForm sashFormStructureAndEditor) {
 
         editorComposite = new SQLBuilderTabComposite(sashFormStructureAndEditor, SWT.BORDER, this);
+        editorComposite.setReadOnly(readOnly);
     }
 
     /**
@@ -648,6 +653,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
     public DBStructureComposite getStructureComposite() {
         return this.structureComposite;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
 }

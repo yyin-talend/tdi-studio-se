@@ -93,10 +93,11 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
      * @param style
      */
     public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor, ConnectionParameters connParam,
-            RepositoryNode node, ISQLBuilderDialog d) {
+            RepositoryNode node, ISQLBuilderDialog d, boolean readOnly) {
         super(parent, SWT.NONE, d, connParam);
         this.tabItem = tabItem;
         this.isDefaultEditor = isDefaultEditor;
+        this.readOnly = readOnly;
         repositoryNode = node;
         initialContent(this);
         this.setRepositoryNode(node);
@@ -121,6 +122,7 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
         createToolBar();
         createEditorArea(parent);
         createStatusArea(parent);
+        adaptWidgetToReadOnly();
     }
 
     /**
@@ -479,6 +481,12 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
 
     public StyledText getColorText() {
         return this.colorText;
+    }
+
+    @Override
+    protected void adaptWidgetToReadOnly() {
+        super.adaptWidgetToReadOnly();
+        colorText.setEditable(!isReadOnly());
     }
 
 }

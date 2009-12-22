@@ -68,6 +68,8 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
 
     private boolean ifcontext;
 
+    protected boolean readOnly = false;
+
     /**
      * qzhang AbstractSQLEditorComposite constructor comment.
      * 
@@ -375,4 +377,22 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
     public ISQLBuilderDialog getDialog() {
         return this.dialog;
     }
+
+    protected void adaptWidgetToReadOnly() {
+        this.clearTextAction.setEnabled(!isReadOnly());
+        this.saveSQLAction.setEnabled(!isReadOnly());
+        this.openFileAction.setEnabled(!isReadOnly());
+        this.guiModificationQueryAction.setEnabled(!isReadOnly());
+        this.contextModeAction.setEnabled(!isReadOnly());
+
+    }
+
+    public boolean isReadOnly() {
+        return this.readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
 }

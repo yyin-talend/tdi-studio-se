@@ -51,6 +51,7 @@ public class ReadQueriesAction extends AContextualAction {
 
     protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (repositoryNode == null && selection != null) {
             repositoryNode = (RepositoryNode) selection.getFirstElement();
         }
@@ -73,6 +74,8 @@ public class ReadQueriesAction extends AContextualAction {
                 IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+
+        dial.setReadOnly(true);
 
         connParameters.setNodeReadOnly(true);
         connParameters.setFromRepository(true);

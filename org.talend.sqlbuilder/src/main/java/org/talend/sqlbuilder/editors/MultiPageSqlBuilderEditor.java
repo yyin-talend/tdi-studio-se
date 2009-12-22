@@ -50,6 +50,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
     private SQLBuilderDesignerComposite sqlDesigner;
 
+    private boolean readOnly = false;
+
     public SQLBuilderEditorComposite getSqlEdit() {
         return this.sqlEdit;
     }
@@ -100,7 +102,9 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     @Override
     protected void createPages() {
         try {
-            sqlEdit = new SQLBuilderEditorComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode, dialog);
+            sqlEdit = new SQLBuilderEditorComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode, dialog,
+                    readOnly);
+
             sqlEdit.setEditorContent(connParam);
             sqlEdit.setRepositoryNode(rootNode);
             sqlEdit.setQueryObject(dialog.getConnParameters().getQueryObject());
@@ -111,7 +115,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.EditTab.Text")); //$NON-NLS-1$
             EMFRepositoryNodeManager.getInstance().setPrompt(false);
             sqlDesigner = new SQLBuilderDesignerComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode,
-                    dialog, nodes);
+                    dialog, nodes, readOnly);
+
             sqlDesigner.setSqlText(sqlEdit.getSQLToBeExecuted());
             sqlDesigner.setEditorContent(connParam);
             // sqlDesigner.setQueryObject(dialog.getConnParameters().getQueryObject());
@@ -408,5 +413,9 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     @Override
     protected void initializePageSwitching() {
 
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 }
