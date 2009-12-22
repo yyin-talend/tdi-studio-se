@@ -43,10 +43,22 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />  
     
+	<PARAMETER 
+		NAME="DB_VERSION" 
+		FIELD="CLOSED_LIST" 
+		NUM_ROW="10"
+		REPOSITORY_VALUE="DB_VERSION"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<ITEMS DEFAULT="VERTICA_3">
+			<ITEM NAME="VERTICA_3" VALUE="vertica_3.0_jdk_5.jar" />
+			<ITEM NAME="VERTICA_3.5" VALUE="vertica_3.5_jdk_5.jar" />
+		</ITEMS>
+	</PARAMETER>
+    
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="2"
+      NUM_ROW="20"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -55,14 +67,14 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tVerticaConnection"
-      NUM_ROW="2"
+      NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     /> 
     
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="SERVER_NAME" 
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"        
     >
@@ -72,7 +84,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -82,7 +94,7 @@
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       SHOW_IF="ACTION=='EXPORT'"          
     >
       <DEFAULT>"DB SERVER"</DEFAULT>
@@ -91,7 +103,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -101,7 +113,7 @@
     <PARAMETER 
 		NAME="SCHEMA_DB" 
 		FIELD="TEXT" 
-		NUM_ROW="4"
+		NUM_ROW="40"
 		REPOSITORY_VALUE="SCHEMA" 
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>""</DEFAULT>
@@ -110,7 +122,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="USERNAME"  
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"    
     >
@@ -120,7 +132,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -130,7 +142,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="6"
+      NUM_ROW="60"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -142,7 +154,7 @@
       </ITEMS>
     </PARAMETER>
 	
-	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="6"
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="60"
 			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"	
 		>
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
@@ -151,7 +163,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
@@ -160,7 +172,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="70"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -168,7 +180,7 @@
     <PARAMETER
       NAME="REMOTE_FILENAME"
       FIELD="FILE"
-      NUM_ROW="9"
+      NUM_ROW="90"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
@@ -177,7 +189,7 @@
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="13"
+      NUM_ROW="130"
       SHOW="false"
     >       
       <DEFAULT>vertica_id</DEFAULT>
@@ -234,9 +246,6 @@
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
-    <IMPORTS>
-		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" REQUIRED="true" /> 
-    </IMPORTS>
   </CODEGENERATION>
 
    <RETURNS />
