@@ -611,7 +611,7 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         newCon.useSSL = false;
         newCon.baseDN = (String) talendLDAPConnection.getBaseDNs().get(0);
         if (EEncryptionMethod.SSL_ENCRYPTION_METHOD.getName().equals(talendLDAPConnection.getEncryptionMethodName())) {
-            String keystorePath = System.getProperty("java.home") + "\\lib\\security\\cacerts";
+            String keystorePath = System.getProperty("java.home") + "\\lib\\security\\cacerts"; //$NON-NLS-1$ //$NON-NLS-2$
             newCon.cacerts = keystorePath;
             newCon.useSSL = true;
         }

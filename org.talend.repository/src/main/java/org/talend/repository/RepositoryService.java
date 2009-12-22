@@ -559,10 +559,10 @@ public class RepositoryService implements IRepositoryService {
         IElementParameter functionParam = null;
         for (IElementParameter param : node.getElementParameters()) {
 
-            if ("PROPERTY".equals(param.getName())) {
-                propertyParam = param.getChildParameters().get("REPOSITORY_PROPERTY_TYPE");
+            if ("PROPERTY".equals(param.getName())) { //$NON-NLS-1$
+                propertyParam = param.getChildParameters().get("REPOSITORY_PROPERTY_TYPE"); //$NON-NLS-1$
             }
-            if ("SAP_FUNCTION".equals(param.getName())) {
+            if ("SAP_FUNCTION".equals(param.getName())) { //$NON-NLS-1$
                 functionParam = param;
             }
         }
@@ -583,10 +583,10 @@ public class RepositoryService implements IRepositoryService {
                                 String functionName = (String) functionParam.getValue();
                                 if (function.getName().equals(functionName.substring(1, functionName.length() - 1))) {
                                     String document = function.getDocument();
-                                    if (document != null && !"".equals(document)) {
+                                    if (document != null && !"".equals(document)) { //$NON-NLS-1$
 
                                         internalNodeHTMLMap.put(node.getUniqueName(), document.substring(document
-                                                .indexOf("<font"), document.indexOf("</body>")));
+                                                .indexOf("<font"), document.indexOf("</body>"))); //$NON-NLS-1$ //$NON-NLS-2$
                                     }
                                 }
 

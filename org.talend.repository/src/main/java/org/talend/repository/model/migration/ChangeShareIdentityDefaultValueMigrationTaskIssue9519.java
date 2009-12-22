@@ -59,8 +59,8 @@ public class ChangeShareIdentityDefaultValueMigrationTaskIssue9519 extends Abstr
 								// TODO Auto-generated method stub
 								 ElementParameterType propertyShareIdentitySetting = ComponentUtilities.getNodeProperty(node, "SHARE_IDENTITY_SETTING"); //$NON-NLS-1$
 								  if (propertyShareIdentitySetting == null ){ //$NON-NLS-1$
-									  	ComponentUtilities.addNodeProperty(node, "SHARE_IDENTITY_SETTING", "CHECK");
-									  	 ComponentUtilities.setNodeValue(node, "SHARE_IDENTITY_SETTING", "true");
+									  	ComponentUtilities.addNodeProperty(node, "SHARE_IDENTITY_SETTING", "CHECK"); //$NON-NLS-1$ //$NON-NLS-2$
+									  	 ComponentUtilities.setNodeValue(node, "SHARE_IDENTITY_SETTING", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 							        }
 							}
                         	

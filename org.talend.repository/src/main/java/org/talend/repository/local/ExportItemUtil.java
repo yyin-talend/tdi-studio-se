@@ -264,10 +264,10 @@ public class ExportItemUtil {
                     String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
 
                     for (int j = 0; j < jarNameList.size(); j++) {
-                        String filePath = destinationDirectory.toString() + "/" + getNeedProjectPath() + "/lib/"
+                        String filePath = destinationDirectory.toString() + "/" + getNeedProjectPath() + "/lib/" //$NON-NLS-1$ //$NON-NLS-2$
                                 + jarNameList.get(j);
-                        copyJarToDestination(path + "/" + jarNameList.get(j), filePath);
-                        toExport.put(new File(filePath), new Path("/" + getNeedProjectPath() + "/lib/" + jarNameList.get(j)));
+                        copyJarToDestination(path + "/" + jarNameList.get(j), filePath); //$NON-NLS-1$
+                        toExport.put(new File(filePath), new Path("/" + getNeedProjectPath() + "/lib/" + jarNameList.get(j))); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
                 progressMonitor.worked(1);
@@ -328,7 +328,7 @@ public class ExportItemUtil {
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
             IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
             if (item.getProperty().getItem().getState().getPath() == null) {
-                item.getProperty().getItem().getState().setPath("");
+                item.getProperty().getItem().getState().setPath(""); //$NON-NLS-1$
             }
             IPath itemDestinationPath = typeFolderPath.append(item.getProperty().getItem().getState().getPath());
             fileNamePath = fileNamePath.append(itemDestinationPath);

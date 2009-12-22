@@ -33,7 +33,7 @@ public class DatabaseConnectionParameterUtil {
     public static String getTrueParamValue(DatabaseConnection conn, String paramValue) {
         String trueSchemaName = null;
         if (conn.isContextMode()) { // if connection is contextmode
-            if (conn.getContextId() != null && !"".equals(conn.getContextId())) { // hywang modified for
+            if (conn.getContextId() != null && !"".equals(conn.getContextId())) { // hywang modified for //$NON-NLS-1$
                 // 8846
                 String contextID = conn.getContextId();
                 paramValue = ContextParameterUtils.getVariableFromCode(paramValue);

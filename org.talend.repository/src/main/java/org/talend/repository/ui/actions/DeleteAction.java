@@ -605,7 +605,7 @@ public class DeleteAction extends AContextualAction {
                     // 3. the select node do not has father node(means do not contain "/")
                     String selectName = selection.getFirstElement().toString();
                     if (node.getContentType() == ERepositoryObjectType.SQLPATTERNS && selectName.equals(label)
-                            && !selectName.contains("/")) {
+                            && !selectName.contains("/")) { //$NON-NLS-1$
                         visible = false;
                     }
                     break;

@@ -145,7 +145,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         if (PluginChecker.isRulesPluginLoaded()) {
             // hywang add for 6484,add final drl files or xls files to exported job script
-            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$
+            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$ //$NON-NLS-1$
             list.add(ruleFileResource);
             try {
                 Map<String, List<URL>> map = initUrlForRulesFiles(process);
@@ -283,7 +283,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         if (PluginChecker.isRulesPluginLoaded()) {
             // hywang add for 6484,add final drl files or xls files to exported job script
-            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$
+            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$ //$NON-NLS-1$
             list.add(ruleFileResource);
             try {
                 Map<String, List<URL>> map = initUrlForRulesFiles(process);
@@ -440,7 +440,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
             String relativePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
                     + typeFolderPath.toOSString();
-            if (processPath != null && !"".equals(processPath)) {
+            if (processPath != null && !"".equals(processPath)) { //$NON-NLS-1$
                 relativePath = relativePath + PATH_SEPARATOR + processPath;
             }
             resource.addResources(relativePath, emfFileUrls);
@@ -988,7 +988,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                             for (Object obj : node.getElementParameter()) {
                                 if (obj instanceof ElementParameterType) {
                                     ElementParameterType elementParameter = (ElementParameterType) obj;
-                                    if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$
+                                    if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$ //$NON-NLS-1$
                                         String id = elementParameter.getValue();
                                         if (factory.getLastVersion(id).getProperty().getItem() != null) {
                                             if (factory.getLastVersion(id).getProperty().getItem() instanceof RulesItem) {
@@ -1024,7 +1024,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 File file = (File) iterator.next();
                 for (IRepositoryObject object : allRoutines) {
                     RoutineItem item = (RoutineItem) object.getProperty().getItem();
-                    if (!item.isBuiltIn() && file.getName().equals(item.getProperty().getLabel() + ".class")) {
+                    if (!item.isBuiltIn() && file.getName().equals(item.getProperty().getLabel() + ".class")) { //$NON-NLS-1$
                         iterator.remove();
                     }
                 }

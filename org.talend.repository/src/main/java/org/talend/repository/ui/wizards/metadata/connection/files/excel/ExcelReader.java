@@ -66,9 +66,9 @@ public class ExcelReader {
 
     private void init() throws BiffException, IOException {
         // hywang modified for excel 2007
-        if (excelPath.endsWith(".xls")) {
+        if (excelPath.endsWith(".xls")) { //$NON-NLS-1$
             isXlsx = false;
-        } else if (excelPath.endsWith(".xlsx")) {
+        } else if (excelPath.endsWith(".xlsx")) { //$NON-NLS-1$
             isXlsx = true;
         }
 
@@ -129,10 +129,10 @@ public class ExcelReader {
                     List<String> contents = new ArrayList<String>();
                     for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
                         String cell = null;
-                        if (row.getCell(j) != null && !row.getCell(j).equals("")) {
+                        if (row.getCell(j) != null && !row.getCell(j).equals("")) { //$NON-NLS-1$
                             cell = row.getCell(j).toString();
                         } else {
-                            cell = "";
+                            cell = ""; //$NON-NLS-1$
                         }
                         contents.add(cell);
                     }

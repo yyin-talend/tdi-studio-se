@@ -430,7 +430,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                         if (i >= csvRows.get(current).length) {
                             globalType = "id_String"; //$NON-NLS-1$
                         } else {
-                            if (value != null && !"".equals(value)) {
+                            if (value != null && !"".equals(value)) { //$NON-NLS-1$
                                 globalType = JavaDataTypeHelper.getTalendTypeOfValue(value);
                             } else {
                                 globalType = listColumns.get(i).getTalendType();
@@ -529,7 +529,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             return false;
         } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, metadataNameText.getText())) {
             metadataNameText.forceFocus();
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep3Form.nameInvalid")); //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, ""); //$NON-NLS-1$
             return false;
         } else if (isNameAllowed(metadataNameText.getText())) {
             updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist")); //$NON-NLS-1$

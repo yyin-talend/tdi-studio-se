@@ -496,7 +496,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
 
                 // define the metadataColumn to field i
                 MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                metadataColumn.setPattern("\"dd-MM-yyyy\"");
+                metadataColumn.setPattern("\"dd-MM-yyyy\""); //$NON-NLS-1$
                 // Convert javaType to TalendType
                 String talendType = null;
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
@@ -551,7 +551,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
             return false;
         } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, metadataNameText.getText())) {
             metadataNameText.forceFocus();
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep3Form.nameInvalid")); //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, ""); //$NON-NLS-1$
             return false;
         } else if (isNameAllowed(metadataNameText.getText())) {
             updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist")); //$NON-NLS-1$

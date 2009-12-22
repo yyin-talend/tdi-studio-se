@@ -224,7 +224,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 Messages.getString("SalesforceStep1Form.standardObjects"), Messages.getString("SalesforceStep1Form.selectModuleName"), //$NON-NLS-1$ //$NON-NLS-2$
                 item, 2, false);
         String moduleName2 = getConnection().getModuleName();
-        if (moduleName2 != null && !"".equals(moduleName2)) {
+        if (moduleName2 != null && !"".equals(moduleName2)) { //$NON-NLS-1$
             moduleNameCombo.add(moduleName2);
             moduleNameCombo.select(0);
         }
@@ -376,7 +376,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 getConnection().setModuleName(moduleName);
 
                 List list = getModuleName();
-                if (moduleName != null && !"".equals(moduleName) && list != null && !list.contains(moduleName)) {
+                if (moduleName != null && !"".equals(moduleName) && list != null && !list.contains(moduleName)) { //$NON-NLS-1$
                     getConnection().setUseCustomModuleName(true);
                 } else {
                     getConnection().setUseCustomModuleName(false);
@@ -654,7 +654,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         setTextValue(getConnection().getUserName(), userNameText);
         setTextValue(getConnection().getPassword(), passwordText);
         String batchSize2 = getConnection().getBatchSize();
-        setTextValue((batchSize2 != null && !"".equals(batchSize2)) ? batchSize2 : defaultBatchSize, batchSizeText);
+        setTextValue((batchSize2 != null && !"".equals(batchSize2)) ? batchSize2 : defaultBatchSize, batchSizeText); //$NON-NLS-1$
         useProxyBtn.setSelection(getConnection().isUseProxy());
         useHttpBtn.setSelection(getConnection().isUseHttpProxy());
         setTextValue(getConnection().getProxyHost(), proxyHostText);

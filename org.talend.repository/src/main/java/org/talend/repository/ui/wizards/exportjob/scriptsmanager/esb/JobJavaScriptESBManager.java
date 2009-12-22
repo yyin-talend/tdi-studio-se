@@ -91,7 +91,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         ExportFileResource libResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         ExportFileResource contextResource = new ExportFileResource(null, ""); //$NON-NLS-1$
 
-        ExportFileResource itemsResource = new ExportFileResource(null, "");
+        ExportFileResource itemsResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         if (needJob) {
             list.add(libResource);
         }

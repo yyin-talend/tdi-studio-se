@@ -33,7 +33,7 @@ public class ConnectionUserPerReader {
 
     private static ConnectionUserPerReader con = new ConnectionUserPerReader();
 
-    private String perfileName = "connection_user.properties";
+    private String perfileName = "connection_user.properties"; //$NON-NLS-1$
 
     private String path = null;
 
@@ -78,7 +78,7 @@ public class ConnectionUserPerReader {
     public List<ConnectionBean> readConnections() {
         if (!isRead)
             this.readProperties();
-        String userString = proper.getProperty("connection.users");
+        String userString = proper.getProperty("connection.users"); //$NON-NLS-1$
         if (userString == null) {
             userString = "";//$NON-NLS-1$
             return new ArrayList<ConnectionBean>(0);
@@ -109,7 +109,7 @@ public class ConnectionUserPerReader {
     public String readLastConncetion() {
         if (!isRead)
             this.readProperties();
-        String tmp = proper.getProperty("connection.lastConnection");
+        String tmp = proper.getProperty("connection.lastConnection"); //$NON-NLS-1$
         if (tmp == null) {
             tmp = "";//$NON-NLS-1$
         }
@@ -119,7 +119,7 @@ public class ConnectionUserPerReader {
     public String readLastWorkSpace() {
         if (!isRead)
             this.readProperties();
-        String workSpace = proper.getProperty("connection.lastWorkSpace");
+        String workSpace = proper.getProperty("connection.lastWorkSpace"); //$NON-NLS-1$
 
         if (workSpace == null) {
             return "";//$NON-NLS-1$
@@ -169,20 +169,20 @@ public class ConnectionUserPerReader {
         if (!isRead)
             this.readProperties();
         if (bean == null) {
-            proper.remove("connection.lastConnection");
-            proper.remove("connection.lastWorkSpace");
+            proper.remove("connection.lastConnection"); //$NON-NLS-1$
+            proper.remove("connection.lastWorkSpace"); //$NON-NLS-1$
         } else {
             String userName = bean.getName();
             String workSpace = bean.getWorkSpace();
-            if (!"".equals(userName) && userName != null) {
+            if (!"".equals(userName) && userName != null) { //$NON-NLS-1$
                 proper.setProperty("connection.lastConnection", userName);//$NON-NLS-1$
             } else {
-                proper.remove("connection.lastConnection");
+                proper.remove("connection.lastConnection"); //$NON-NLS-1$
             }
-            if (!"".equals(workSpace) && workSpace != null) {
+            if (!"".equals(workSpace) && workSpace != null) { //$NON-NLS-1$
                 proper.setProperty("connection.lastWorkSpace", workSpace);//$NON-NLS-1$
             } else {
-                proper.remove("connection.lastWorkSpace");
+                proper.remove("connection.lastWorkSpace"); //$NON-NLS-1$
             }
 
         }

@@ -38,7 +38,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  */
 public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTask {
 
-    private static final String MATCH_REGEX = "\\(\\(\\bString\\b\\)\\bglobalMap\\b\\.get\\("
+    private static final String MATCH_REGEX = "\\(\\(\\bString\\b\\)\\bglobalMap\\b\\.get\\(" //$NON-NLS-1$
             + "\"tServerAlive_[1-9]\\d*_SERVER_ALIVE_RESULT\"\\)\\)\\.equals\\(\"(OK|KO)\"\\)"; //$NON-NLS-1$
 
     public ExecutionResult execute(Item item) {
@@ -62,12 +62,12 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
         // System.out.println("group:" + match.group());
         while (match.find()) {
             String group = match.group();
-            String tmp = "";
-            if (group.contains("equals(\"OK\")")) {
-                tmp = group.replace("String", "Boolean").replace(".equals(\"OK\")", "");
+            String tmp = ""; //$NON-NLS-1$
+            if (group.contains("equals(\"OK\")")) { //$NON-NLS-1$
+                tmp = group.replace("String", "Boolean").replace(".equals(\"OK\")", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-            } else if (group.contains("equals(\"KO\")")) {
-                tmp = group.replace("((String)", "!((Boolean)").replace(".equals(\"KO\")", "");
+            } else if (group.contains("equals(\"KO\")")) { //$NON-NLS-1$
+                tmp = group.replace("((String)", "!((Boolean)").replace(".equals(\"KO\")", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             }
             match.appendReplacement(sb, tmp);
         }
@@ -89,7 +89,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
             for (Object elem : elementParameterList) {
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (language.equals(ECodeLanguage.JAVA)) {
-                    if (elemType.getValue() != null && elemType.getValue().contains("tServerAlive")) {
+                    if (elemType.getValue() != null && elemType.getValue().contains("tServerAlive")) { //$NON-NLS-1$
                         Matcher match = pattern.matcher(elemType.getValue());
                         if (match.matches()) {
                             String replace = getReplaceValue(match);
@@ -105,7 +105,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
                 for (Object elemV : elemValue) {
                     ElementValueType elemVal = (ElementValueType) elemV;
                     if (language.equals(ECodeLanguage.JAVA)) {
-                        if (elemVal.getValue() != null && elemVal.getValue().contains("tServerAlive")) {
+                        if (elemVal.getValue() != null && elemVal.getValue().contains("tServerAlive")) { //$NON-NLS-1$
                             Matcher match = pattern.matcher(elemVal.getValue());
                             if (match.matches()) {
                                 String replace = getReplaceValue(match);
@@ -126,7 +126,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
             for (Object elem : elementParameterList) {
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (language.equals(ECodeLanguage.JAVA)) {
-                    if (elemType.getValue() != null && elemType.getValue().contains("tServerAlive")) {
+                    if (elemType.getValue() != null && elemType.getValue().contains("tServerAlive")) { //$NON-NLS-1$
                         Matcher match = pattern.matcher(elemType.getValue());
                         if (match.matches()) {
                             String replace = getReplaceValue(match);

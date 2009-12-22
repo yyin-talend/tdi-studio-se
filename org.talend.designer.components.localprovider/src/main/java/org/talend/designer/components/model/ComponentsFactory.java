@@ -33,8 +33,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
@@ -81,6 +83,10 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private List<IComponent> userComponentList = null;
 
+    private IProgressMonitor monitor;
+
+    private SubProgressMonitor subMonitor;
+
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
     // keep a list of the current provider for the selected component, to have the family translation
@@ -116,7 +122,7 @@ public class ComponentsFactory implements IComponentsFactory {
     private boolean isComponentVisible(String componentName) {
         Boolean visible = Boolean.TRUE;
 
-        String[] componentsAlwaysNeeded = { "tPreJob", "tPostJob" };
+        String[] componentsAlwaysNeeded = { "tPreJob", "tPostJob" }; //$NON-NLS-1$ //$NON-NLS-2$
         if (ArrayUtils.contains(componentsAlwaysNeeded, componentName)) {
             return true;
         }
@@ -343,6 +349,10 @@ public class ComponentsFactory implements IComponentsFactory {
         };
 
         if (childDirectories != null) {
+            if (monitor != null) {
+                this.subMonitor = new SubProgressMonitor(monitor, childDirectories.length);
+            }
+
             for (File currentFolder : childDirectories) {
                 // get the skeleton files first, then XML config files later.
                 File[] skeletonFiles = currentFolder.listFiles(skeletonFilter);
@@ -407,6 +417,13 @@ public class ComponentsFactory implements IComponentsFactory {
                     BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
                             + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.WARN);
+                }
+
+                if (this.subMonitor != null) {
+                    this.subMonitor.worked(1);
+                }
+                if (this.monitor != null && this.monitor.isCanceled()) {
+                    return;
                 }
             }
         }
@@ -518,6 +535,15 @@ public class ComponentsFactory implements IComponentsFactory {
             }
         }
         return null;
+    }
+
+    public void initializeComponents(IProgressMonitor monitor) {
+        this.monitor = monitor;
+        if (componentList == null) {
+            init();
+        }
+        this.monitor = null;
+        this.subMonitor = null;
     }
 
     /*
@@ -661,9 +687,9 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private List<String> getComponentsFamilyFromXML(File xmlMainFile) {
         final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
-        final String familysTag = "FAMILIES";
-        final String header = "HEADER";
-        final String technical = "TECHNICAL";
+        final String familysTag = "FAMILIES"; //$NON-NLS-1$
+        final String header = "HEADER"; //$NON-NLS-1$
+        final String technical = "TECHNICAL"; //$NON-NLS-1$
         List<String> familyNames = new ArrayList<String>();
 
         DocumentBuilder analyseur;
@@ -699,7 +725,7 @@ public class ComponentsFactory implements IComponentsFactory {
                 }
             }
             // techenical node are not visible ,so no need to return it's family
-            if (technicalValue == null || !"true".equals(technicalValue)) {
+            if (technicalValue == null || !"true".equals(technicalValue)) { //$NON-NLS-1$
                 NodeList element = document.getElementsByTagName(familysTag);
                 if (element != null && element.getLength() > 0) {
                     Node family = element.item(0);

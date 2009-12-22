@@ -430,7 +430,7 @@ public class RepositoryNodeUtilities {
             return null;
         }
         String metadataName = values[2];
-        String repositoryId = name.substring(0, name.lastIndexOf(" - "));
+        String repositoryId = name.substring(0, name.lastIndexOf(" - ")); //$NON-NLS-1$
         RepositoryNode functionNode = getSAPFunctionFromConnection(repositoryId);
         for (RepositoryNode node : functionNode.getChildren()) {
             if (metadataName.equals(node.getProperties(EProperties.LABEL))) {

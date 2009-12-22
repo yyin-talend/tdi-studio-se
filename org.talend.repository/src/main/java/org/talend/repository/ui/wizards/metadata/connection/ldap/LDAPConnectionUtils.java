@@ -79,7 +79,7 @@ public class LDAPConnectionUtils {
         final String selectedDN = talendLDAPConnection.getSelectedDN();
         try {
             final EList baseDNs = talendLDAPConnection.getBaseDNs();
-            if (selectedDN == null || "".equals(selectedDN)) {
+            if (selectedDN == null || "".equals(selectedDN)) { //$NON-NLS-1$
                 dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(dn, null));
                 oc = dx.getAllObjectClasses();
                 if (oc != null) {
@@ -87,7 +87,7 @@ public class LDAPConnectionUtils {
                     allEntrys.add(entry);
                 }
             } else {
-                NamingEnumeration searchSubTree = LDAPSchemaStep3Form.dirOps.searchSubTree(selectedDN, "(objectClass=*)", 100, 1);
+                NamingEnumeration searchSubTree = LDAPSchemaStep3Form.dirOps.searchSubTree(selectedDN, "(objectClass=*)", 100, 1); //$NON-NLS-1$
                 while (searchSubTree.hasMore()) {
                     SearchResult next = (SearchResult) searchSubTree.next();
                     dn = new DN(next.getName());
@@ -103,8 +103,8 @@ public class LDAPConnectionUtils {
 
         } catch (NamingException e1) {
             try {
-                if ("CN=SCHEMA".equals(selectedDN)) {
-                    dn = new DN("CN=SCHEMA");
+                if ("CN=SCHEMA".equals(selectedDN)) { //$NON-NLS-1$
+                    dn = new DN("CN=SCHEMA"); //$NON-NLS-1$
                     dx = new DXAttributes(LDAPSchemaStep3Form.dirOps.read(dn, null));
                     oc = dx.getAllObjectClasses();
                     if (oc != null) {

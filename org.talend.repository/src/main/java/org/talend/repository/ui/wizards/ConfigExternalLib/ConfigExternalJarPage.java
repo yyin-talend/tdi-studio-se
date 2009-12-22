@@ -99,7 +99,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         routines = routine.getImports();
         libField.setInput(routines);
         Button button = new Button(composite, getMessageType());
-        button.setText("reload the library");
+        button.setText(Messages.getString("ConfigExternalJarPage.reloadLibrary")); //$NON-NLS-1$
         button.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -280,7 +280,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             boolean libExists = true; // hywang add
             if (typeNameRadioButton.getSelection()) {
                 modelName = nameText.getText();
-                String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath() + "/" + modelName; //$NON-NLS-N$
+                String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath() + "/" + modelName; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
                 File f = new File(path);
                 if (!f.exists()) {
                     final String name = modelName;
@@ -288,9 +288,9 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                     Display.getDefault().asyncExec(new Runnable() {
 
                         public void run() {
-                            MessageDialog.openError(getParentShell(), "Error", "File " + name + " can't be found in lib " //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$
-                                    + CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath()
-                                    + ",please check it again."); //$NON-NLS-N$
+                            MessageDialog.openError(getParentShell(), Messages.getString("ConfigExternalJarPage.error"), Messages.getString( //$NON-NLS-1$
+                                    "ConfigExternalJarPage.fileNotFound", name, CorePlugin.getDefault().getLibrariesService() //$NON-NLS-1$
+                                            .getJavaLibrariesPath()));
 
                         }
                     });

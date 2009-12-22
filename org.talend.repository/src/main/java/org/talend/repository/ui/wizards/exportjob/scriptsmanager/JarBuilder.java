@@ -46,7 +46,7 @@ public class JarBuilder {
 
     List<File> includeSystemRoutines = null;
 
-    private static final String SYSTEM = "system";
+    private static final String SYSTEM = "system"; //$NON-NLS-1$
 
     /**
      * Constructure.

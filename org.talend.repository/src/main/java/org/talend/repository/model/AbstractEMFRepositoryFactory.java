@@ -763,7 +763,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             String message = getItemsMessages(serializableAllVersion, size);
 
             throw new PersistenceException(Messages.getString(
-                    "AbstractEMFRepositoryFactory.presistenceException.OnlyOneOccurenceMustbeFound\", message)", message)); //$NON-NLS-1$
+                    "AbstractEMFRepositoryFactory.presistenceException.OnlyOneOccurenceMustbeFound", message)); //$NON-NLS-1$
         } else if (size == 1) {
             return serializableAllVersion.get(0);
         } else {
@@ -794,13 +794,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             fullFolder = ((IFolder) fullFolder).getFolder(new Path(path));
         } else {
             // FolderItem
-            if (!"".equals(path)) {
+            if (!"".equals(path)) { //$NON-NLS-1$
                 // MOD mzhao feature 9207
                 if (folder == null) {
                     fullFolder = ResourceModelUtils.getProject(project).getFolder(new Path(path));
                 } else {
                     fullFolder = this.getFolderHelper(project.getEmfProject()).getFolder(
-                            ((FolderItem) folder).getProperty().getLabel() + "/" + path);
+                            ((FolderItem) folder).getProperty().getLabel() + "/" + path); //$NON-NLS-1$
                 }
             } else {
                 fullFolder = folder;

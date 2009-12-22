@@ -48,13 +48,13 @@ public class MigrationTaskForIssue7547 extends AbstractJobMigrationTask {
                     .<IComponentConversion> asList(new IComponentConversion() {
 
                         public void transform(NodeType node) {
-                            ElementParameterType url = ComponentUtilities.getNodeProperty(node, "ALFRESCO_SERVER_URL");
-                            ElementParameterType userLogin = ComponentUtilities.getNodeProperty(node, "ALFRESCO_USER_LOGIN");
+                            ElementParameterType url = ComponentUtilities.getNodeProperty(node, "ALFRESCO_SERVER_URL"); //$NON-NLS-1$
+                            ElementParameterType userLogin = ComponentUtilities.getNodeProperty(node, "ALFRESCO_USER_LOGIN"); //$NON-NLS-1$
                             ElementParameterType userPassword = ComponentUtilities
-                                    .getNodeProperty(node, "ALFRESCO_USER_PASSWORD");
-                            url.setValue("\"" + url.getValue() + "\"");
-                            userLogin.setValue("\"" + userLogin.getValue() + "\"");
-                            userPassword.setValue("\"" + userPassword.getValue() + "\"");
+                                    .getNodeProperty(node, "ALFRESCO_USER_PASSWORD"); //$NON-NLS-1$
+                            url.setValue("\"" + url.getValue() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+                            userLogin.setValue("\"" + userLogin.getValue() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+                            userPassword.setValue("\"" + userPassword.getValue() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
                         }
 
                     }));

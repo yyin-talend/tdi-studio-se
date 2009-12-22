@@ -253,7 +253,7 @@ public class SelectorTableForm extends AbstractForm {
 
         GC gc = new GC(compositeRetreiveSchemaButton);
         // Button Create Table
-        String displayStr = Messages.getString("SelectorTableForm.selectAllTables");
+        String displayStr = Messages.getString("SelectorTableForm.selectAllTables"); //$NON-NLS-1$
         Point buttonSize = gc.stringExtent(displayStr);
         selectAllTablesButton = new UtilsButton(compositeRetreiveSchemaButton, displayStr, buttonSize.x + 12, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
@@ -504,7 +504,7 @@ public class SelectorTableForm extends AbstractForm {
                     } else {
                         clearTableItem(tableItem);
                         if (tableItem.getText() != null
-                                && tableItem.getText().equals(Messages.getString("SelectorTableForm.Pending"))) {
+                                && tableItem.getText().equals(Messages.getString("SelectorTableForm.Pending"))) { //$NON-NLS-1$
                             countPending--;
                         }
                     }
@@ -851,8 +851,8 @@ public class SelectorTableForm extends AbstractForm {
                 MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
                 if (metadataColumn.getTalendType().equals(JavaTypesManager.DATE.getId())
                         || metadataColumn.getTalendType().equals(PerlTypesManager.DATE)) {
-                    if ("".equals(metadataColumn.getPattern())) {
-                        metadataColumn.setPattern(TalendTextUtils.addQuotes("dd-MM-yyyy"));
+                    if ("".equals(metadataColumn.getPattern())) { //$NON-NLS-1$
+                        metadataColumn.setPattern(TalendTextUtils.addQuotes("dd-MM-yyyy")); //$NON-NLS-1$
                     }
                 }
                 // Check the label and add it to the table

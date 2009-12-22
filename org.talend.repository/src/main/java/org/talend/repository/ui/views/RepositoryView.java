@@ -667,7 +667,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         if (type != null && !type.isSubItem()) {
             RepositoryNode rootNode = researchRootRepositoryNode(type);
             refreshAllChildNodes(rootNode);
-        } else if (type != null && type.name().equals("METADATA_SAP_FUNCTION")) {
+        } else if (type != null && type.name().equals("METADATA_SAP_FUNCTION")) { //$NON-NLS-1$
             RepositoryNode rootNode = researchRootRepositoryNode(type);
             refreshAllChildNodes(rootNode);
         }

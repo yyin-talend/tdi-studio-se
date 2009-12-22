@@ -304,9 +304,9 @@ public class DataStringConnection {
             DataConnection tmp = dataConnection[selectionIndex];
             if (dbVersion != null) { // PTODO need refactor later.
                 if (DBTYPE_ACCESS == selectionIndex) {
-                    if (dbVersion.equals("Access 2003")) {
+                    if (dbVersion.equals("Access 2003")) { //$NON-NLS-1$
                         String str = tmp.getString();
-                        return str.replaceFirst(",\\s\\*\\.accdb", "");
+                        return str.replaceFirst(",\\s\\*\\.accdb", ""); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
@@ -321,9 +321,9 @@ public class DataStringConnection {
             DataConnection tmp = dataConnection[selectionIndex];
             if (dbVersion != null) { // PTODO need refactor later.
                 if (DBTYPE_ACCESS == selectionIndex) {
-                    if (dbVersion.equals("Access 2003")) {
+                    if (dbVersion.equals("Access 2003")) { //$NON-NLS-1$
                         String str = tmp.getRegex();
-                        return str.replaceFirst(",\\s\\*\\.accdb", "");
+                        return str.replaceFirst(",\\s\\*\\.accdb", ""); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }

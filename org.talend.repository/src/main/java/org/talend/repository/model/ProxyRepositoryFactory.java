@@ -108,6 +108,8 @@ import org.talend.repository.utils.RepositoryPathProvider;
  */
 public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
+    private static final int MAX_TASKS = 7;
+
     private static Logger log = Logger.getLogger(ProxyRepositoryFactory.class);
 
     private IRepositoryFactory repositoryFactoryFromProvider;
@@ -1547,20 +1549,23 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException {
         try {
+            monitorWrap.beginTask(Messages.getString("ProxyRepositoryFactory.logonInProgress"), MAX_TASKS); //$NON-NLS-1$
             LanguageManager.reset();
             getRepositoryContext().setProject(project);
 
-            monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.initializeProjectConnection")); //$NON-NLS-1$
-            monitorWrap.worked(1);
+            monitorWrap.subTask(Messages.getString("ProxyRepositoryFactory.initializeProjectConnection")); //$NON-NLS-1$
             this.repositoryFactoryFromProvider.beforeLogon(project);
+            monitorWrap.worked(1);
 
+            monitorWrap.subTask("Execute before logon migrations tasks"); //$NON-NLS-1$
             IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                     IMigrationToolService.class);
             service.executeProjectTasks(project, true, monitorWrap);
-
-            monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.logonInProgress")); //$NON-NLS-1$
             monitorWrap.worked(1);
+
+            monitorWrap.subTask(Messages.getString("ProxyRepositoryFactory.logonInProgress")); //$NON-NLS-1$
             this.repositoryFactoryFromProvider.logOnProject(project);
+            monitorWrap.worked(1);
 
             emptyTempFolder(project);
 
@@ -1569,19 +1574,25 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             String str[] = new String[] { getRepositoryContext().getUser() + "", projectManager.getCurrentProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
             log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
 
-            monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.synchronizeLibraries")); //$NON-NLS-1$
+            monitorWrap.subTask("Load Components..."); //$NON-NLS-1$
+            ComponentsFactoryProvider.getInstance().reset();
+            ComponentsFactoryProvider.getInstance().initializeComponents(monitorWrap);
             monitorWrap.worked(1);
 
+            monitorWrap.subTask("Execute migrations tasks"); //$NON-NLS-1$
             service.executeProjectTasks(project, false, monitorWrap);
+            monitorWrap.worked(1);
 
             // clean workspace
             IRunProcessService runProcessService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
                     IRunProcessService.class);
             runProcessService.deleteAllJobs(false);
 
-            ComponentsFactoryProvider.getInstance().reset();
+            monitorWrap.subTask(Messages.getString("ProxyRepositoryFactory.synchronizeLibraries")); //$NON-NLS-1$
             CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
+            monitorWrap.worked(1);
 
+            monitorWrap.subTask("Synchronize repository items"); //$NON-NLS-1$
             ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                     ICodeGeneratorService.class);
             try {
@@ -1597,6 +1608,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                     rulesService.syncAllRules();
                 }
             }
+            monitorWrap.worked(1);
             if (!CommonsPlugin.isHeadless()) {
                 CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
             }

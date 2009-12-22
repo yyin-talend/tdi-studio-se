@@ -236,14 +236,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
         IPath path = new Path(userDir);
         int length = nodes.length;
-        String destinationFile = "";
+        String destinationFile = ""; //$NON-NLS-1$
         if (getDialogSettings() != null) {
             IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
             if (section != null) {
                 destinationFile = section.get(DESTINATION_FILE);
             }
         }
-        if (destinationFile == null || "".equals(destinationFile)) {
+        if (destinationFile == null || "".equals(destinationFile)) { //$NON-NLS-1$
             if (length == 1) {
                 // TODOthis is changed by shenhaize first open ,it show contains in the combo
                 path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$

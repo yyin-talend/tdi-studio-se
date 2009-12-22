@@ -463,7 +463,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (chkButton.isVisible()) {
                 zipOption = String.valueOf(chkButton.getSelection());
             } else {
-                zipOption = "false";
+                zipOption = "false"; //$NON-NLS-1$
             }
 
         }
@@ -718,7 +718,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportDependencies.setLayoutData(gd);
 
             Label esbTypeLabel = new Label(left, SWT.None);
-            esbTypeLabel.setText("ESB Export type");
+            esbTypeLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.esbExportTypeLabel")); //$NON-NLS-1$
 
             esbTypeCombo = new Combo(left, SWT.PUSH);
             gd = new GridData();
@@ -730,19 +730,19 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             esbTypeCombo.select(0);
 
             Label esbServiceNameLabel = new Label(left, SWT.RIGHT);
-            esbServiceNameLabel.setText("Service Name");
+            esbServiceNameLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.esbServiceNameLabel")); //$NON-NLS-1$
 
             esbServiceName = new Text(left, SWT.BORDER);
-            esbServiceName.setText("DefaultServiceName");
+            esbServiceName.setText("DefaultServiceName"); //$NON-NLS-1$
             gd = new GridData(GridData.FILL_HORIZONTAL);
             gd.horizontalSpan = 2;
             esbServiceName.setLayoutData(gd);
 
             Label esbCategoryLabel = new Label(left, SWT.None);
-            esbCategoryLabel.setText("Category");
+            esbCategoryLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.esbCategoryLabel")); //$NON-NLS-1$
 
             esbCategory = new Text(left, SWT.BORDER);
-            esbCategory.setText("DefaultCategory");
+            esbCategory.setText("DefaultCategory"); //$NON-NLS-1$
             gd = new GridData(GridData.FILL_HORIZONTAL);
             gd.horizontalSpan = 2;
             esbCategory.setLayoutData(gd);

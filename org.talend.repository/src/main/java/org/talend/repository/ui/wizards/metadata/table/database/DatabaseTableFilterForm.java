@@ -271,7 +271,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         // hide for the bug 7959
         if (isOracle()) {
             publicSynonymCheck = new Button(typesFilter, SWT.CHECK);
-            publicSynonymCheck.setText("ALL_SYNONYM");
+            publicSynonymCheck.setText(Messages.getString("DatabaseTableFilterForm.allSynonyms")); //$NON-NLS-1$
             publicSynonymCheck.setSelection(false);
             // ExtractMetaDataUtils.setVale(publicSynonymCheck.getSelection());
         }

@@ -52,11 +52,11 @@ public class JavaJobExportReArchieveCreator {
 
     private static final String LIB = "lib"; // lib folder //$NON-NLS-1$
 
-    private static final String DRL = "drl"; //drl folder hywang add //$NON-NLS-N$
+    private static final String DRL = "drl"; //drl folder hywang add //$NON-NLS-N$ //$NON-NLS-1$
 
-    private static final String XLS = "xls"; //xls folder hywang add //$NON-NLS-N$
+    private static final String XLS = "xls"; //xls folder hywang add //$NON-NLS-N$ //$NON-NLS-1$
 
-    private static final String RULES_ROOT = "Rules"; //ruleRoot folder hywang add //$NON-NLS-N$
+    private static final String RULES_ROOT = "Rules"; //ruleRoot folder hywang add //$NON-NLS-N$ //$NON-NLS-1$
 
     public JavaJobExportReArchieveCreator(String zipFile, String jobFolderName) {
         this.zipFile = zipFile;
@@ -128,7 +128,7 @@ public class JavaJobExportReArchieveCreator {
 
             // write all the lines before the java command
             String line = br.readLine();
-            while (line != null && !line.contains("java")) { //$NON-NLS-N$  hywang modify for 6484
+            while (line != null && !line.contains("java")) { //$NON-NLS-N$  hywang modify for 6484 //$NON-NLS-1$
                 changedContent.append(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
             }

@@ -453,7 +453,7 @@ public class ConnectionFormComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 DirectoryDialog dirDialog = new DirectoryDialog(dialog.getShell());
                 String path = dirDialog.open();
-                if (path == null || "".equals(path)) {
+                if (path == null || "".equals(path)) { //$NON-NLS-1$
                     workSpaceText.setText(getRecentWorkSpace());
                 } else {
                     //                    String cPath = path.replaceAll("\\\\", File.separator); //$NON-NLS-1$ //$NON-NLS-2$                   

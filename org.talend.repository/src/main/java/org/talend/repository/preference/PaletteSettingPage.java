@@ -54,6 +54,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.designer.components.preference.labelformat.TalendPaletteLabelProvider;
 import org.talend.designer.components.preference.labelformat.TalendPaletteTreeProvider;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.actions.ShowStandardAction;
@@ -325,10 +326,10 @@ public class PaletteSettingPage extends ProjectSettingPage {
 
         }
         if (hasUsedComponent) {
-            MessageDialog messageDialog = new MessageDialog(getShell(), "Message", null,
-                    "Some components you selected as hidden are used in this project, so they must be visible." + "\n"
-                            + "Those components will automatically be set as visible.", MessageDialog.INFORMATION,
-                    new String[] { "OK" }, 0);
+            MessageDialog messageDialog = new MessageDialog(getShell(), Messages.getString("PaletteSettingPage.paletteSettings"), null, //$NON-NLS-1$
+                    Messages.getString("PaletteSettingPage.selection1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                            + Messages.getString("PaletteSettingPage.selection2"), MessageDialog.INFORMATION, //$NON-NLS-1$
+                    new String[] { "OK" }, 0); //$NON-NLS-1$
             messageDialog.open();
         }
 

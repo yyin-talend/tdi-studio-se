@@ -101,7 +101,7 @@ public class RestoreAction extends AContextualAction {
                             if (node.getObject() != null) {
                                 if (ERepositoryObjectType.BUSINESS_PROCESS.equals(node.getObject().getType())) {
                                     IRepositoryObject svgObjectToMove = ProxyRepositoryFactory.getInstance().getLastVersion(
-                                            "svg_" + node.getObject().getId());
+                                            "svg_" + node.getObject().getId()); //$NON-NLS-1$
                                     if (svgObjectToMove != null) {
                                         ProxyRepositoryFactory.getInstance().restoreObject(svgObjectToMove, path);
                                         ;

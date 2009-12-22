@@ -60,18 +60,10 @@ import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
  */
 public class LoginDialog extends TrayDialog {
 
-    private static final int INNER_LOGIN_COMPOSITE_WIDTH = 350;
-
     private static final int DIALOG_HEIGHT = 278;
-
-    private static final int DIALOG_WIDTH = 215 + INNER_LOGIN_COMPOSITE_WIDTH + 1;
 
     /** The login composite. */
     private LoginComposite loginComposite;
-
-    private static final int MAX_TASKS = 60;
-
-    private boolean isOK = true;
 
     private ConnectionUserPerReader perReader;
 
@@ -216,9 +208,6 @@ public class LoginDialog extends TrayDialog {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
-                monitorWrap.beginTask(Messages.getString("LoginDialog.migrationRunning"), MAX_TASKS); //$NON-NLS-1$
-                monitorWrap.worked(2);
-
                 try {
                     ProxyRepositoryFactory.getInstance().logOnProject(project, monitorWrap);
                 } catch (LoginException e) {

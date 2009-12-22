@@ -67,7 +67,7 @@ public class ImportProjectAsWizard extends Wizard {
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROJECT_WIZ));
         setNeedsProgressMonitor(true);
         setDialogSettings(RepositoryPlugin.getDefault().getDialogSettings());
-        getDialogSettings().put("WizardProjectsImportPage.STORE_COPY_PROJECT_ID", true);
+        getDialogSettings().put("WizardProjectsImportPage.STORE_COPY_PROJECT_ID", true); //$NON-NLS-1$
     }
 
     /**

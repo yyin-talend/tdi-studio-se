@@ -138,7 +138,7 @@ public class PasteAction extends AContextualAction {
                         visible = true;
                         enabled = false;
                     } else {
-                        if (sourceNode.getObjectType().getKey().equals("repository.routines")) {
+                        if (sourceNode.getObjectType().getKey().equals("repository.routines")) { //$NON-NLS-1$
                             visible = true;
                             enabled = false;
                         } else {

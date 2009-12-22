@@ -45,7 +45,7 @@ import com.sforce.soap.enterprise.sobject.SObject;
  */
 public class SalesforceModuleParseEnterprise implements ISalesforceModuleParser {
 
-    final String useProxy = "useProxyBtn";
+    final String useProxy = "useProxyBtn"; //$NON-NLS-1$
 
     private String url = null;
 
@@ -182,11 +182,11 @@ public class SalesforceModuleParseEnterprise implements ISalesforceModuleParser 
                 oldProxyUser = (String) properties.get(SalesforceModuleParseAPI.HTTP_PROXY_USER);
                 oldProxyPwd = (String) properties.get(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD);
 
-                properties.put(SalesforceModuleParseAPI.HTTP_PROXY_SET, "true");
+                properties.put(SalesforceModuleParseAPI.HTTP_PROXY_SET, "true"); //$NON-NLS-1$
                 properties.put(SalesforceModuleParseAPI.HTTP_PROXY_HOST, proxyHost);
                 properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PORT, proxyPort);
-                properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, proxyUsername == null ? "" : proxyUsername);
-                properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword);
+                properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, proxyUsername == null ? "" : proxyUsername); //$NON-NLS-1$
+                properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
             }
 
         }
@@ -252,11 +252,11 @@ public class SalesforceModuleParseEnterprise implements ISalesforceModuleParser 
     private void resetHTTPParameters(String oldProxyHost, String oldProxyPort, String oldHttpProxySet, String oldProxyUser,
             String oldProxyPwd) {
         Properties properties = System.getProperties();
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_SET, oldHttpProxySet == null ? "" : oldHttpProxySet);
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost);
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort);
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, oldProxyUser == null ? "" : oldProxyUser);
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd);
+        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_SET, oldHttpProxySet == null ? "" : oldHttpProxySet); //$NON-NLS-1$
+        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
+        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
+        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
+        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
 
     }
 

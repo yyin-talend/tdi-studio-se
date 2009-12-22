@@ -397,7 +397,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                         ExceptionHandler.process(ex2);
                     }
                 }
-                if (getConnection().getEncoding() == null || "".equals(getConnection().getEncoding())) {
+                if (getConnection().getEncoding() == null || "".equals(getConnection().getEncoding())) { //$NON-NLS-1$
                     getConnection().setEncoding(encoding);
                     if (encoding != null && !("").equals(encoding)) { //$NON-NLS-1$
                         encodingCombo.setText(encoding);

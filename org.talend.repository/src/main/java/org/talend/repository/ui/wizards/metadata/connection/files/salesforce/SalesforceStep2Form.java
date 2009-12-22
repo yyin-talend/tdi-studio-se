@@ -202,7 +202,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         label.setLayoutData(new GridData(GridData.FILL | GridData.BEGINNING));
 
         alphabet = new Button(moduleViewerComposite, SWT.CHECK);
-        alphabet.setText("order the fields");
+        alphabet.setText(Messages.getString("SalesforceStep2Form.orderTheFields")); //$NON-NLS-1$
         alphabet.setLayoutData(new GridData(GridData.CENTER));
 
         createModuleDetailViewer(moduleViewerComposite);

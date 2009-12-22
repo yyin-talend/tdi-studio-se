@@ -742,7 +742,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             StringBuilder previewRows = new StringBuilder();
             BufferedReader in = null;
 
-            String pathStr = "";
+            String pathStr = ""; //$NON-NLS-1$
 
             try {
                 pathStr = getConnection().getXmlFilePath();
@@ -853,7 +853,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      */
     private void resetStatusIfNecessary() {
         String curXmlPath = getConnection().getXmlFilePath();
-        String oraginalPath = "";
+        String oraginalPath = ""; //$NON-NLS-1$
         if (xmlFilePath != null && curXmlPath != null) {
             // change xml file
             if (isContextMode()) {

@@ -360,7 +360,7 @@ public final class OtherConnectionContextUtils {
         ConnectionContextHelper.createParameters(varList, paramName, conn.getDatamodel());
 
         paramName = prefixName + EParamName.MDMURL;
-        String url = "http://" + conn.getServer() + ":" + conn.getPort() + "/talend/TalendPort";
+        String url = "http://" + conn.getServer() + ":" + conn.getPort() + "/talend/TalendPort"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ConnectionContextHelper.createParameters(varList, paramName, url);
 
         return varList;

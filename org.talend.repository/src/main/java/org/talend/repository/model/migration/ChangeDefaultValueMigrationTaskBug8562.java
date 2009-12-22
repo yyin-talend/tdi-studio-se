@@ -46,7 +46,7 @@ public class ChangeDefaultValueMigrationTaskBug8562 extends AbstractJobMigration
         if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
-        String[] componentsName = new String[] { "tSalesforceOutput" };
+        String[] componentsName = new String[] { "tSalesforceOutput" }; //$NON-NLS-1$
 
         try {
 
@@ -56,9 +56,9 @@ public class ChangeDefaultValueMigrationTaskBug8562 extends AbstractJobMigration
                         .<IComponentConversion> asList(new IComponentConversion() {
 
                             public void transform(NodeType node) {
-                                if (ComponentUtilities.getNodeProperty(node, "EXTENDINSERT") == null) {
-                                    ComponentUtilities.addNodeProperty(node, "EXTENDINSERT", "CHECK");
-                                    ComponentUtilities.getNodeProperty(node, "EXTENDINSERT").setValue("false");
+                                if (ComponentUtilities.getNodeProperty(node, "EXTENDINSERT") == null) { //$NON-NLS-1$
+                                    ComponentUtilities.addNodeProperty(node, "EXTENDINSERT", "CHECK"); //$NON-NLS-1$ //$NON-NLS-2$
+                                    ComponentUtilities.getNodeProperty(node, "EXTENDINSERT").setValue("false"); //$NON-NLS-1$ //$NON-NLS-2$
                                 }
                             }
 

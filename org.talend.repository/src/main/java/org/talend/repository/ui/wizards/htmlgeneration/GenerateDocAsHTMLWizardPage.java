@@ -475,7 +475,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      */
     protected void setDefaultDestination() {
 
-        String destinationFile = "";
+        String destinationFile = ""; //$NON-NLS-1$
         IPath path = null;
         if (getDialogSettings() != null) {
             IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
@@ -483,7 +483,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
                 destinationFile = section.get(DESTINATION_FILE);
             }
         }
-        if (destinationFile == null || "".equals(destinationFile)) {
+        if (destinationFile == null || "".equals(destinationFile)) { //$NON-NLS-1$
             if (nodes.length >= 1) {
                 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
                 path = new Path(userDir).append(getDefaultFileName() + getOutputSuffix());
