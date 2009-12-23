@@ -13,6 +13,7 @@
 package org.talend.repository.ui.actions;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
@@ -23,6 +24,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -34,6 +37,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -48,6 +52,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.CopyObjectAction;
+import org.talend.repository.ui.dialog.PastSelectorDialog;
 
 /**
  * DOC zwang class global comment. Detailled comment
@@ -59,6 +64,8 @@ public class DuplicateAction extends AContextualAction {
     private IStructuredSelection selection = null;
 
     private static final String JOB_INIT_VERSION = "0.1"; //$NON-NLS-1$
+
+    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     public DuplicateAction() {
         super();
@@ -281,14 +288,14 @@ public class DuplicateAction extends AContextualAction {
         Object currentSource = selectionInClipboard.toArray()[0];
         try {
             IPath path = RepositoryNodeUtilities.getPath(target);
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
             if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
                 Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
+                List<IRepositoryObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
                 Item newItem = factory.copy(originalItem, path, true);
-                newItem.getProperty().setVersion(JOB_INIT_VERSION);
-                newItem.getProperty().setLabel(newJobName);
-                factory.saveCopy(originalItem, newItem);
+                // newItem.getProperty().setVersion(JOB_INIT_VERSION);
+                // newItem.getProperty().setLabel(newJobName);
+                // factory.saveCopy(originalItem, newItem);
                 // qli modified to fix the bug 5400 and 6185.
                 if (newItem instanceof RoutineItem) {
                     ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
@@ -300,9 +307,27 @@ public class DuplicateAction extends AContextualAction {
                 }
                 factory.save(newItem);
 
+                // for oldversions
+                copyOldVersions(allVersion, sourceNode, newItem, path);
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
+        }
+    }
+
+    private void copyOldVersions(List<IRepositoryObject> allVersion, RepositoryNode sourceNode, Item newLastVersionItem,
+            IPath path) throws Exception {
+        if (allVersion != null && allVersion.size() > 1) {
+            PastSelectorDialog dialog = new PastSelectorDialog(Display.getCurrent().getActiveShell(), allVersion, sourceNode);
+            if (dialog.open() == Window.OK) {
+                for (IRepositoryObject object : dialog.getSelectedVersionItems()) {
+                    Item copy = factory.copy(object.getProperty().getItem(), path);
+                    copy.getProperty().setId(newLastVersionItem.getProperty().getId());
+                    copy.getProperty().setLabel(newLastVersionItem.getProperty().getLabel());
+                    factory.save(copy);
+
+                }
+            }
         }
     }
 

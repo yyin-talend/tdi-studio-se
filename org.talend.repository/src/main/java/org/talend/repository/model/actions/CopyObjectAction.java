@@ -12,7 +12,11 @@
 // ============================================================================
 package org.talend.repository.model.actions;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Display;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.Item;
@@ -30,6 +34,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.dialog.PastSelectorDialog;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -38,6 +43,8 @@ import org.talend.repository.model.RepositoryNode.EProperties;
  * 
  */
 public class CopyObjectAction {
+
+    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     private static CopyObjectAction singleton = new CopyObjectAction();
 
@@ -122,15 +129,11 @@ public class CopyObjectAction {
         }
 
         IPath path = RepositoryNodeUtilities.getPath(targetNode);
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :
             Item originalItem = sourceNode.getObject().getProperty().getItem();
-            IRepositoryObject lastVersion = factory.getLastVersion(originalItem.getProperty().getId());
-            if (lastVersion != null) {
-                Item item = lastVersion.getProperty().getItem();
-            }
+            List<IRepositoryObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
             // qli modified to fix the bug 5400 and 6185.
             Item newItem = factory.copy(originalItem, path);
             if (newItem instanceof RoutineItem) {
@@ -142,6 +145,26 @@ public class CopyObjectAction {
                 }
             }
             factory.save(newItem);
+
+            // for oldversions
+            copyOldVersions(allVersion, sourceNode, newItem, path);
+
+        }
+    }
+
+    private void copyOldVersions(List<IRepositoryObject> allVersion, RepositoryNode sourceNode, Item newLastVersionItem,
+            IPath path) throws Exception {
+        if (allVersion != null && allVersion.size() > 1) {
+            PastSelectorDialog dialog = new PastSelectorDialog(Display.getCurrent().getActiveShell(), allVersion, sourceNode);
+            if (dialog.open() == Window.OK) {
+                for (IRepositoryObject object : dialog.getSelectedVersionItems()) {
+                    Item copy = factory.copy(object.getProperty().getItem(), path);
+                    copy.getProperty().setId(newLastVersionItem.getProperty().getId());
+                    copy.getProperty().setLabel(newLastVersionItem.getProperty().getLabel());
+                    factory.save(copy);
+
+                }
+            }
         }
     }
 }

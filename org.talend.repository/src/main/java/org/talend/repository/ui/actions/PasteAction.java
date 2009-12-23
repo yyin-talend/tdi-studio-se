@@ -89,6 +89,11 @@ public class PasteAction extends AContextualAction {
                 }
             }
 
+            ERepositoryObjectType contentType = target.getContentType();
+            if (contentType == null) {
+                contentType = target.getObjectType();
+            }
+            RepositoryManager.refreshCreatedNode(contentType);
             RepositoryManager.refreshCreatedNode(target.getContentType());
         }
     }
