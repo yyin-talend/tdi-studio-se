@@ -120,7 +120,15 @@ skeleton="../templates/db_output_bulk.skeleton"
         whetherReject_<%=cid%> = false;
         <%    
         if(("INSERT").equals(dataAction)) {
-            int counter = 1;            
+            int counter = 1;   
+              
+            //start issue0010403 date type     
+			if (rejectConnName != null) {
+%>
+            try {
+<%
+			}//end issue0010403 date type
+			
             for(Column column : colStruct) {
                 if(column.isInsertable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
@@ -157,7 +165,14 @@ skeleton="../templates/db_output_bulk.skeleton"
     		<%
     		}else {    		
     		%>
+<%				
+				//start issue0010403 date type
+				if (rejectConnName == null) {
+%>
             try {
+<%
+				}//end issue0010403 date type
+%>    
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
             } catch(Exception e) {
@@ -192,6 +207,14 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
         } else if(("UPDATE").equals(dataAction)) {
             int counterCol = 1;
+            
+            //start issue0010403 date type     
+			if (rejectConnName != null) {
+%>
+            try {
+<%
+			}//end issue0010403 date type
+			
             for(Column column : colStruct) {
                 if(column.isUpdatable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
@@ -251,8 +274,14 @@ skeleton="../templates/db_output_bulk.skeleton"
     		<%
     		}else {
     		%>
-    		
+<%				
+				//start issue0010403 date type
+				if (rejectConnName == null) {
+%>
             try {
+<%
+				}//end issue0010403 date type
+%>   
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
             } catch(Exception e) {
@@ -317,6 +346,14 @@ skeleton="../templates/db_output_bulk.skeleton"
             if(checkCount_<%=cid%> > 0) {
                 <%
                 int counterCol = 1;
+                
+			//start issue0010403 date type     
+			if (rejectConnName != null) {
+%>
+            try {
+<%
+			}//end issue0010403 date type
+			
                 for(Column column : colStruct) {
                     if(column.isUpdatable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
@@ -362,7 +399,14 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                 }                
                 %>
-                try {
+<%				
+				//start issue0010403 date type
+				if (rejectConnName == null) {
+%>
+            try {
+<%
+				}//end issue0010403 date type
+%>   
                     updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
                 } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
@@ -394,6 +438,13 @@ skeleton="../templates/db_output_bulk.skeleton"
             } else {
                 <%
                 int counterInsert = 1;
+                
+			//start issue0010403 date type     
+			if (rejectConnName != null) {
+%>
+            try {
+<%
+			}//end issue0010403 date type
                 for(Column columnInsert : colStruct) {
                     if(columnInsert.isInsertable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
@@ -414,7 +465,14 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                 }                
                 %>
-                try {
+<%				
+				//start issue0010403 date type
+				if (rejectConnName == null) {
+%>
+            try {
+<%
+				}//end issue0010403 date type
+%>   
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
                 } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
@@ -452,6 +510,14 @@ skeleton="../templates/db_output_bulk.skeleton"
             int updateFlag_<%=cid%>=0;
             <%
             int counterColUpdate = 1;
+                
+			//start issue0010403 date type     
+			if (rejectConnName != null) {
+%>
+            try {
+<%
+			}//end issue0010403 date type
+			
             for(Column columnUpdate : colStruct) {
                 if(columnUpdate.isUpdatable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
@@ -497,8 +563,14 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
             %>
-        
+<%				
+				//start issue0010403 date type
+				if (rejectConnName == null) {
+%>
             try {
+<%
+				}//end issue0010403 date type
+%>   
                 updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
                 updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
             } catch(Exception e) {
@@ -537,6 +609,14 @@ skeleton="../templates/db_output_bulk.skeleton"
         		<%
         		}
                 int counter = 1;
+                
+			//start issue0010403 date type     
+			if (rejectConnName != null) {
+%>
+            try {
+<%
+			}//end issue0010403 date type
+			                
                 for(Column column : colStruct) {
                     if(column.isInsertable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
@@ -557,7 +637,14 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                 }                
                 %>
-                try {
+<%				
+				//start issue0010403 date type
+				if (rejectConnName == null) {
+%>
+            try {
+<%
+				}//end issue0010403 date type
+%>   
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate(); 
                 } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
@@ -594,6 +681,14 @@ skeleton="../templates/db_output_bulk.skeleton"
         
         } else if (("DELETE").equals(dataAction)) {
             int keyCounter = 1;
+                
+			//start issue0010403 date type     
+			if (rejectConnName != null) {
+%>
+            try {
+<%
+			}//end issue0010403 date type
+			
             for(Column column : colStruct) {
                 if(column.isDeleteKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
@@ -635,7 +730,14 @@ skeleton="../templates/db_output_bulk.skeleton"
     		<%
     		}else {
     		%>
+<%				
+				//start issue0010403 date type
+				if (rejectConnName == null) {
+%>
             try {
+<%
+				}//end issue0010403 date type
+%>   
                 deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
@@ -701,6 +803,14 @@ skeleton="../templates/db_output_bulk.skeleton"
         if (checkCount_<%=cid%> < 1) {
              <%
             int counterInsert = 1;
+                
+			//start issue0010403 date type     
+			if (rejectConnName != null) {
+%>
+            try {
+<%
+			}//end issue0010403 date type
+			
             for(Column columnInsert : colStruct) {
                 if(columnInsert.isInsertable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
@@ -719,7 +829,14 @@ skeleton="../templates/db_output_bulk.skeleton"
                 globalMap.put("<%=cid %>_QUERY", query_<%=cid%>.toString().trim());
                 <%
             }%>
-	        try {
+<%				
+				//start issue0010403 date type
+				if (rejectConnName == null) {
+%>
+            try {
+<%
+				}//end issue0010403 date type
+%>   
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
             } catch(Exception e) {
 				whetherReject_<%=cid%> = true;
@@ -778,7 +895,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
         }
             	//////////batch execute by batch size///////
-    	if ("true".equals(useBatchSize)) {
+    	if ("true".equals(useBatchSize)&& (rejectConnName==null)) {
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
