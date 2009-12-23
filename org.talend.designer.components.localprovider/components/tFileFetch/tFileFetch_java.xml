@@ -39,6 +39,7 @@ COMPATIBILITY="ALL"
     >
       <ITEMS DEFAULT="HTTP_PROTO">
         <ITEM NAME="HTTP_PROTO"   VALUE="http" />
+        <ITEM NAME="HTTPS_PROTO"   VALUE="https" />
         <ITEM NAME="FTP_PROTO"   VALUE="ftp" />
         <ITEM NAME="SAMBA_PROTO" VALUE="smb" />
       </ITEMS>
@@ -48,7 +49,7 @@ COMPATIBILITY="ALL"
   	NAME="POST"
   	FIELD="CHECK"
   	NUM_ROW="50"
-  	SHOW_IF=" PROTO == 'HTTP_PROTO'"
+  	SHOW_IF=" (PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')"
   >
   <DEFAULT>true</DEFAULT>
   </PARAMETER>
@@ -153,7 +154,7 @@ COMPATIBILITY="ALL"
      NAME="COMMON_PARAMS" 
      FIELD="TABLE" NUM_ROW="60" 
      NB_LINES="5"
-     SHOW_IF="(PROTO == 'HTTP_PROTO') AND (POST == 'true')"
+     SHOW_IF="(PROTO == 'HTTP_PROTO' or PROTO == 'HTTPS_PROTO') AND (POST == 'true')"
   >
      <ITEMS>
        <ITEM NAME="COMMON_PARAMS_NAME" />
@@ -169,7 +170,7 @@ COMPATIBILITY="ALL"
     	NAME="PRINT"
     	FIELD="CHECK"
     	NUM_ROW="8"
-    	SHOW_IF=" PROTO == 'HTTP_PROTO'"
+    	SHOW_IF=" PROTO == 'HTTP_PROTO' or PROTO == 'HTTPS_PROTO'"
     >
     </PARAMETER> 
     
@@ -178,7 +179,7 @@ COMPATIBILITY="ALL"
       FIELD="TEXT"
       REQUIRED="false"
       NUM_ROW="5"
-      SHOW_IF=" PROTO == 'HTTP_PROTO'"
+      SHOW_IF=" PROTO == 'HTTP_PROTO' or PROTO == 'HTTPS_PROTO'"
     >
       <DEFAULT>1000</DEFAULT>
     </PARAMETER>
@@ -187,7 +188,7 @@ COMPATIBILITY="ALL"
       NAME="UPLOAD"
       FIELD="CHECK"
       NUM_ROW="10"
-      SHOW_IF="(PROTO == 'HTTP_PROTO') AND (POST == 'true')"
+      SHOW_IF="(PROTO == 'HTTP_PROTO' or PROTO == 'HTTPS_PROTO') AND (POST == 'true')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER> 
@@ -197,7 +198,7 @@ COMPATIBILITY="ALL"
       FIELD="TABLE" 
       NUM_ROW="20" 
       NB_LINES="8"
-	  SHOW_IF="(PROTO == 'HTTP_PROTO') AND (POST == 'true')AND(UPLOAD == 'true')"
+	  SHOW_IF="(PROTO == 'HTTP_PROTO' or PROTO == 'HTTPS_PROTO') AND (POST == 'true') AND (UPLOAD == 'true')"
     >
       <ITEMS>
         <ITEM NAME="FILE_PARAMS_NAME" />
@@ -276,7 +277,7 @@ COMPATIBILITY="ALL"
 		FIELD="CHECK" 
 		REQUIRED="true"
 		NUM_ROW="45"
-		SHOW_IF=" PROTO == 'HTTP_PROTO'"
+		SHOW_IF="PROTO == 'HTTP_PROTO' or PROTO == 'HTTPS_PROTO'"
 		
 	 >
 		<DEFAULT>false</DEFAULT>
@@ -287,7 +288,7 @@ COMPATIBILITY="ALL"
       FIELD="TEXT"
       REQUIRED="false"
       NUM_ROW="50"
-      SHOW_IF="(PROTO == 'HTTP_PROTO') AND (NEED_AUTH == 'true')"
+      SHOW_IF="(PROTO == 'HTTP_PROTO' or PROTO == 'HTTPS_PROTO') AND (NEED_AUTH == 'true')"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
@@ -297,7 +298,7 @@ COMPATIBILITY="ALL"
       FIELD="TEXT"
       REQUIRED="false"
       NUM_ROW="50"
-      SHOW_IF="(PROTO == 'HTTP_PROTO') AND (NEED_AUTH == 'true')"
+      SHOW_IF="(PROTO == 'HTTP_PROTO' or PROTO == 'HTTPS_PROTO') AND (NEED_AUTH == 'true')"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
