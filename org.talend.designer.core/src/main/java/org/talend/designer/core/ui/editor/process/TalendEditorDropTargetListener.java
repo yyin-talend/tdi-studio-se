@@ -81,6 +81,7 @@ import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
@@ -527,7 +528,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // if component is CDC, replace by the CDC connection.
             if (node.getComponent().getName().contains("CDC")) { // to replace by a flag CDC in component? //$NON-NLS-1$
                 if (selectedNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem) {
-                    CDCConnection cdcConn = ((DatabaseConnection) connection).getCdcConns();
+                    final DatabaseConnection databaseConnection = (DatabaseConnection) connection;
+                    CDCConnection cdcConn = databaseConnection.getCdcConns();
                     if (cdcConn != null) {
                         EList cdcTypes = cdcConn.getCdcTypes();
                         if (cdcTypes != null && !cdcTypes.isEmpty()) {
@@ -556,6 +558,15 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                         CDCTypeMode.LOG_MODE.getName().equals(cdcTypeMode));
                                 list.add(logModeCmd);
                             }
+                            // set lib for as400 so far.
+                            final String name = "SOURCE_LIB"; //$NON-NLS-1$
+                            IElementParameter libParam = node.getElementParameter(name);
+                            if (libParam != null) {
+                                Command libSettingCmd = new PropertyChangeCommand(node, name, TalendTextUtils
+                                        .addQuotes(databaseConnection.getSID()));
+                                list.add(libSettingCmd);
+                            }
+
                         }
                     }
                 }
