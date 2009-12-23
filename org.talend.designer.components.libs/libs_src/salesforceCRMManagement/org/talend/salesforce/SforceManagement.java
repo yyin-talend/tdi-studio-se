@@ -39,6 +39,11 @@ public interface SforceManagement {
     public boolean login(String username, String password, String endPoint, int commitLevel, boolean exceptionForErrors,
             String errorLogFile) throws Exception;
 
+    public boolean login(SoapBindingStub binding) throws Exception;
+
+    public boolean login(SoapBindingStub binding, int commitLevel, boolean exceptionForErrors, String errorLogFile)
+            throws Exception;
+
     public void logout() throws Exception;
 
     public String[] getTables() throws Exception;

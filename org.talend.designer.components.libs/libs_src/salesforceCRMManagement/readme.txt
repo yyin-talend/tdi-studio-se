@@ -17,3 +17,5 @@ some resources:
 5. feature 3103: add retrieve insert ID and reject link. 
 
 6. feature 10325: add an ability of set null value when update/upsert.
+
+7. feature 10323: add method to set exist binding  

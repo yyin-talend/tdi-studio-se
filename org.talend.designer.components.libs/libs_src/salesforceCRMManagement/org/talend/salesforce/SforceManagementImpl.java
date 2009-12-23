@@ -207,6 +207,55 @@ public class SforceManagementImpl implements SforceManagement {
     }
 
     /**
+     * login with binding
+     */
+    public boolean login(SoapBindingStub binding) throws Exception {
+        this.commitLevel = 1;
+
+        this.deleteItems = new ArrayList<String>(commitLevel * 2);
+        this.insertItems = new ArrayList<SObject>(commitLevel * 2);
+        this.updateItems = new ArrayList<SObject>(commitLevel * 2);
+        this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
+        this.upsertKeyColumn = "";
+
+        this.binding = binding;
+
+        loggedIn = true;
+
+        return true;
+    }
+
+    /**
+     * login with binding
+     */
+    public boolean login(SoapBindingStub binding, int commitLevel, boolean exceptionForErrors, String errorLogFile)
+            throws Exception {
+
+        if (commitLevel < 0)
+            commitLevel = 1;
+        else if (commitLevel > 200)
+            commitLevel = 200;
+
+        this.commitLevel = commitLevel;
+        this.exceptionForErrors = exceptionForErrors;
+        if (errorLogFile != null && errorLogFile.trim().length() > 0) {
+            logWriter = new java.io.BufferedWriter(new java.io.FileWriter(errorLogFile));
+        }
+
+        this.deleteItems = new ArrayList<String>(commitLevel * 2);
+        this.insertItems = new ArrayList<SObject>(commitLevel * 2);
+        this.updateItems = new ArrayList<SObject>(commitLevel * 2);
+        this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
+        this.upsertKeyColumn = "";
+
+        this.binding = binding;
+
+        loggedIn = true;
+
+        return true;
+    }
+
+    /**
      * login again
      */
     private boolean login() throws Exception {

@@ -59,6 +59,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 		// if output columns are defined
 		if (nbSchemaColumns > 0 && outgoingConns != null && outgoingConns.size() > 0){
+			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			
 			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			String username = ElementParameterParser.getValue(node, "__USER__");
@@ -68,8 +70,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String columnname_delimiter = ElementParameterParser.getValue(node, "__COLUMNNAME_DELIMITER__");
 %>
 			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
+			<%if(useExistingConn){%>
+			((org.talend.salesforce.SforceManagementImpl)sfMgr_<%=cid%>).setSforceService((com.sforce.soap.partner.SforceService)globalMap.get("sforceService_<%=connection  %>"));
+			sfMgr_<%=cid%>.login((com.sforce.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
+			<%}else{%>
 			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
 			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
+			<%}%>
 			
 			
 <%			

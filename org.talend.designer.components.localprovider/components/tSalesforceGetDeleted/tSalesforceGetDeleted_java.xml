@@ -33,15 +33,31 @@
   </CONNECTORS>
 
 <PARAMETERS>
-    <PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="1"
-		REQUIRED="true">
+	<PARAMETER
+		NAME="USE_EXISTING_CONNECTION"
+		FIELD="CHECK"
+		NUM_ROW="10">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>    
+	
+	<PARAMETER
+		NAME="CONNECTION"
+		FIELD="COMPONENT_LIST"
+		FILTER="tSalesforceConnection"
+		NUM_ROW="10"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'true'"/>
+		
+    <PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="20"
+		REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<DEFAULT>"https://www.salesforce.com/services/Soap/u/16.0"</DEFAULT>
-	</PARAMETER>   
+	</PARAMETER>  
+	 
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="30"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"youremail@yourcompany.com"</DEFAULT>
     </PARAMETER>
@@ -49,33 +65,14 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="40"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
     
-	<PARAMETER
-      NAME="START_DATE"
-      FIELD="TEXT"
-      NUM_ROW="8"
-    >
-      <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
-    </PARAMETER>
-	
-	<PARAMETER
-      NAME="END_DATE"
-      FIELD="TEXT"
-      NUM_ROW="10"
-    >
-      <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
-    </PARAMETER>
-    
-	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="9">
-	 	<DEFAULT>The start date cannot be older than 30 days ago.</DEFAULT>
-	</PARAMETER>    
-  
-    <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
+    <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="50" REQUIRED="true">
        <ITEMS DEFAULT="Account">
 		<ITEM NAME="Account"   VALUE="Account" />
 		<ITEM NAME="AccountContactRole"   VALUE="AccountContactRole" />
@@ -170,14 +167,14 @@
        </ITEMS>
     </PARAMETER>
   
-  	<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="5" SHOW_IF="MODULENAME=='CustomModule'" REQUIRED="true" REPOSITORY_VALUE="CUSTOM_MODULE_NAME">
+  	<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="50" SHOW_IF="MODULENAME=='CustomModule'" REQUIRED="true" REPOSITORY_VALUE="CUSTOM_MODULE_NAME">
 			<DEFAULT>"customModuleName__c"</DEFAULT>
 	</PARAMETER>
 	
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REQUIRED="true"
     >    
       
@@ -921,14 +918,35 @@
       </TABLE>
     
    </PARAMETER>
-
+	
+	<PARAMETER
+      NAME="START_DATE"
+      FIELD="TEXT"
+      NUM_ROW="70"
+    >
+      <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="80">
+	 	<DEFAULT>The start date cannot be older than 30 days ago.</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER
+      NAME="END_DATE"
+      FIELD="TEXT"
+      NUM_ROW="90"
+    >
+      <DEFAULT>"yyyy-MM-dd HH:mm:ss"</DEFAULT>
+    </PARAMETER>
+    
    </PARAMETERS>
    <ADVANCED_PARAMETERS>
 		<PARAMETER 
 	       NAME="NEED_COMPRESSION" 
 	       FIELD="CHECK" 
 	       REQUIRED="true"
-		   NUM_ROW="10">
+		   NUM_ROW="10"
+		   SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		   <DEFAULT>false</DEFAULT>
 		</PARAMETER>
 	</ADVANCED_PARAMETERS>

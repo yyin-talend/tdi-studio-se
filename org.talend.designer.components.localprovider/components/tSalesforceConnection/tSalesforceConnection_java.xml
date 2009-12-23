@@ -1,0 +1,125 @@
+<COMPONENT>
+
+	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA"
+		COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20070312A"
+		STARTABLE="true">
+		<SIGNATURE />
+	</HEADER>
+
+  <FAMILIES>
+    <FAMILY>Business/Salesforce</FAMILY>
+  </FAMILIES>
+
+	<DOCUMENTATION>
+		<URL />
+	</DOCUMENTATION>
+
+	<CONNECTORS>
+		<CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0" />
+		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1" />
+		<CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+		<CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+		<CONNECTOR CTYPE="COMPONENT_OK" />
+		<CONNECTOR CTYPE="COMPONENT_ERROR" />
+		<CONNECTOR CTYPE="RUN_IF" />
+	</CONNECTORS>
+
+	<PARAMETERS>
+
+		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10" REQUIRED="true">
+			<DEFAULT>"https://www.salesforce.com/services/Soap/u/16.0"</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="20" REQUIRED="true">
+			<DEFAULT>"youremail@yourcompany.com"</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER NAME="PASS" FIELD="TEXT" NUM_ROW="30" REQUIRED="true">
+			<DEFAULT>"password"</DEFAULT>
+		</PARAMETER>
+	
+		<PARAMETER 
+	       NAME="NEED_COMPRESSION" 
+	       FIELD="CHECK" 
+	       REQUIRED="true"
+		   NUM_ROW="40">
+		   <DEFAULT>false</DEFAULT>
+		</PARAMETER>
+	
+		<PARAMETER 
+	       NAME="USE_PROXY" 
+	       FIELD="CHECK" 
+	       REQUIRED="true"
+		   NUM_ROW="50" 
+		   REPOSITORY_VALUE="UES_PROXY">
+		   <DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER 
+			NAME="PROXY_HOST" 
+			FIELD="TEXT"
+			NUM_ROW="60"
+			SHOW_IF="USE_PROXY == 'true'" 
+			REPOSITORY_VALUE="PROXY_HOST">
+			<DEFAULT>"61.163.92.4"</DEFAULT>
+		</PARAMETER>
+	
+		<PARAMETER 
+			NAME="PROXY_PORT" 
+			FIELD="TEXT"
+			NUM_ROW="70" 
+			SHOW_IF="USE_PROXY == 'true'" 
+			REPOSITORY_VALUE="PROXY_PORT">
+			<DEFAULT>"1080"</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER 
+			NAME="PROXY_USERNAME" 
+			FIELD="TEXT" 
+			NUM_ROW="80" 
+			SHOW_IF="USE_PROXY == 'true'" 
+			REPOSITORY_VALUE="PROXY_USERNAME">
+			<DEFAULT>""</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER 
+			NAME="PROXY_PASSWORD" 
+			FIELD="TEXT"
+			NUM_ROW="90" 
+			SHOW_IF="USE_PROXY == 'true'" 
+			REPOSITORY_VALUE="PROXY_PASSWORD">
+			<DEFAULT>""</DEFAULT>
+		</PARAMETER>
+		
+		
+	</PARAMETERS>
+  
+	<CODEGENERATION>
+		<IMPORTS>
+			<IMPORT NAME="salesforceCRM-management"
+				MODULE="salesforceCRMManagement.jar" REQUIRED="true" />
+			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true" />
+			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />
+			<IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.5.1.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="SOAP-discovery"
+				MODULE="commons-discovery-0.2.jar" REQUIRED="true" />
+			<IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="HTTP-client" MODULE="commons-httpclient-3.1.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="HTTP-codec" MODULE="commons-codec-1.3.jar"
+				REQUIRED="true" />
+				
+		</IMPORTS>
+	</CODEGENERATION>
+
+	<RETURNS/>
+	
+</COMPONENT>

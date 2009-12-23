@@ -20,6 +20,8 @@ imports="
 	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
 	boolean ceaseForError = ("true").equals(ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__"));
 	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	// if the extended insert is disabled set the commit level to 1
 	if (!extendedInsert) commitLevel = "1";
 %>       
@@ -28,5 +30,9 @@ imports="
         int nb_reject_<%=cid%> = 0;
 
         org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
+        <%if(useExistingConn){%>
+		sforceManagement_<%=cid%>.login((com.sforce.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"), <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);	
+		<%}else{%>
         sforceManagement_<%=cid%>.setNeedCompression(<%=needCompression%>);
         sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
+        <%}%>

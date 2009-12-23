@@ -61,6 +61,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__").trim();
 			module = (("CustomModule").equals(module)) ? customModulename.replaceAll("\"","") : module;
 			String endPoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 %>
 			java.text.SimpleDateFormat startdf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             java.text.SimpleDateFormat enddf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -75,9 +77,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
             java.util.GregorianCalendar endDate_<%=cid%> = (java.util.GregorianCalendar) endCal_<%=cid%>;
 	        
 	        org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
+			<%if(useExistingConn){%>
+			sfMgr_<%=cid%>.login((com.sforce.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
+			<%}else{%>
 			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
 			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endPoint%>);
-	        
+	        <%}%>
 			com.sforce.soap.partner.SoapBindingStub binding_<%=cid%> = sfMgr_<%=cid%>.getBinding();
         	
 <%

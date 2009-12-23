@@ -1,0 +1,55 @@
+<%@ jet 
+imports="
+        java.util.List
+        
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.types.JavaType
+        org.talend.core.model.metadata.types.JavaTypesManager
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+		"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+
+INode node = (INode)codeGenArgument.getArgument();
+
+	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
+	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+   	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+   	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+   	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+   	
+String cid = node.getUniqueName();
+
+if(useProxy){
+%>
+    java.util.Properties props = System.getProperties();
+    props.put("socksProxyHost",<%=proxyHost %>);  
+    props.put("socksProxyPort",<%=proxyPort %>);
+    props.put("java.net.socks.username", <%=proxyUsername %>);
+    props.put("java.net.socks.password", <%=proxyPassword %>); 
+    
+<%
+}
+%>
+
+<%
+	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+	String username = ElementParameterParser.getValue(node, "__USER__");
+	String password = ElementParameterParser.getValue(node, "__PASS__");
+	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
+%>
+	org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
+	sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
+	sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
+	
+	globalMap.put("binding_<%=cid %>", sfMgr_<%=cid%>.getBinding());
+	globalMap.put("sforceService_<%=cid %>", sfMgr_<%=cid%>.getSforceService());
+			
+			
+
