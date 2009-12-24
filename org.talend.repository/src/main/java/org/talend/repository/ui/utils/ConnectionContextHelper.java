@@ -161,7 +161,7 @@ public final class ConnectionContextHelper {
 
         ISelection selection = getRepositoryContext(contextName, false);
 
-        if (selection == null||selection.isEmpty()) {
+        if (selection == null || selection.isEmpty()) {
             return null;
         }
 
@@ -778,6 +778,21 @@ public final class ConnectionContextHelper {
             return ContextUtils.getContextTypeByName(contextItem, selectedContext, !canCancel);
         }
         return null;
+    }
+
+    /**
+     * DOC gcui Comment method "getContextTypeForJob".
+     * 
+     * @param shell
+     * @param contextManager
+     * @param canCancel
+     * @return
+     */
+    public static String getContextTypeForJob(Shell shell, IContextManager contextManager, boolean canCancel) {
+        ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(shell, contextManager, canCancel);
+        setsDialog.open();
+        String currentDefaultName = setsDialog.getSelectedContext();
+        return currentDefaultName;
     }
 
     /**

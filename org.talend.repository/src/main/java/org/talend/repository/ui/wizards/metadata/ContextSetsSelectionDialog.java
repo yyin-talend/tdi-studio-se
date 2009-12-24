@@ -29,6 +29,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -44,7 +46,7 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
 
     private static final String TITLE = Messages.getString("ContextSetsSelectionDialog.Title"); //$NON-NLS-1$
 
-    private ContextItem contextItem;
+    private Object source;
 
     private LabelledCombo combo;
 
@@ -56,9 +58,9 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
 
     private boolean canCancel = false;
 
-    public ContextSetsSelectionDialog(Shell parentShell, ContextItem contextItem, boolean canCancel) {
+    public ContextSetsSelectionDialog(Shell parentShell, Object source, boolean canCancel) {
         super(parentShell == null ? PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() : parentShell);
-        this.contextItem = contextItem;
+        this.source = source;
         this.canCancel = canCancel;
         setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
         setHelpAvailable(false);
@@ -73,14 +75,26 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void initSets() {
-        if (contextItem != null) {
-            defalutContext = contextItem.getDefaultContext();
-            for (ContextType type : (List<ContextType>) contextItem.getContext()) {
-                String name = type.getName();
-                if (name.equals(defalutContext)) {
-                    name = name + DEFAULT_FLAG;
+        if (source != null) {
+            if (source instanceof ContextItem) {
+                ContextItem contextItem = (ContextItem) source;
+                defalutContext = contextItem.getDefaultContext();
+                for (ContextType type : (List<ContextType>) contextItem.getContext()) {
+                    String name = type.getName();
+                    if (name.equals(defalutContext)) {
+                        name = name + DEFAULT_FLAG;
+                    }
+                    contextSetsList.add(name);
                 }
-                contextSetsList.add(name);
+            } else if (source instanceof IContextManager) {
+                IContextManager contextManager = (IContextManager) (source);
+                for (IContext context : contextManager.getListContext()) {
+                    String name = context.getName();
+                    if (name.equals(defalutContext)) {
+                        name = name + DEFAULT_FLAG;
+                    }
+                    contextSetsList.add(name);
+                }
             }
         }
     }
@@ -99,7 +113,9 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
     }
 
     private void createSourceArea(Composite parent) {
-        if (contextItem != null) {
+        if (source != null && source instanceof ContextItem) {
+            ContextItem contextItem = (ContextItem) source;
+
             Composite inner = new Composite(parent, SWT.NONE);
             GridLayout gridLayout = new GridLayout(2, false);
             gridLayout.marginHeight = 0;
