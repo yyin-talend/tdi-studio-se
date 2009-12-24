@@ -30,11 +30,13 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.i18n.Messages;
+import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.expressionbuilder.ExpressionPersistance;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -49,7 +51,7 @@ public class PropertiesWizard extends Wizard {
 
     private PropertiesWizardPage mainPage;
 
-    private final IRepositoryObject object;
+    private IRepositoryObject object;
 
     private final IPath path;
 
@@ -227,7 +229,25 @@ public class PropertiesWizard extends Wizard {
     public boolean performCancel() {
         if (!alreadyEditedByUser) {
             try {
-                reloadProperty();
+                Property property = object.getProperty();
+                if (property == null || property.getItem() == null) {
+                    return false;
+                }
+                // sometimes after operating on version composite eResource will lost
+                if (property.eResource() != null) {
+                    reloadProperty();
+                } else {
+                    ItemState state = property.getItem().getState();
+                    IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                            .getProxyRepositoryFactory();
+                    if (state != null && state.getPath() != null) {
+                        IRepositoryObject lastVersion = repositoryFactory.getLastVersion(ProjectManager.getInstance()
+                                .getCurrentProject(), property.getId(), state.getPath(), object.getType());
+                        lastVersion.setRepositoryNode(object.getRepositoryNode());
+                        object = lastVersion;
+                    }
+
+                }
             } catch (PersistenceException e) {
                 MessageBoxExceptionHandler.process(e);
             }
@@ -237,13 +257,8 @@ public class PropertiesWizard extends Wizard {
 
     private void reloadProperty() throws PersistenceException {
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-        if (object.getProperty() == null || object.getProperty().getItem() == null
-                || object.getProperty().getItem().getProperty() == null) {
-            return;
-        }
-        // for bug 7915
-        Property property = repositoryFactory.reload(object.getProperty().getItem().getProperty());
-        // Property property = repositoryFactory.reload(object.getProperty());
+
+        Property property = repositoryFactory.reload(object.getProperty());
         object.setProperty(property);
     }
 

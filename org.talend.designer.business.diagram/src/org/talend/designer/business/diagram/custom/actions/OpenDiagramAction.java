@@ -102,8 +102,9 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
                         enabled = true;
                     }
                 }
-                if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()
-                        || !ProjectManager.getInstance().isInCurrentMainProject(repositoryNode) || !isLastVersion(repositoryNode)) {
+                if (enabled
+                        && (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()
+                                || !ProjectManager.getInstance().isInCurrentMainProject(repositoryNode) || !isLastVersion(repositoryNode))) {
                     enabled = false;
                 }
             }
