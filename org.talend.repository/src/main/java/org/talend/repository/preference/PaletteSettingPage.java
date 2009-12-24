@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.preference;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,7 +46,6 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -120,7 +118,6 @@ public class PaletteSettingPage extends ProjectSettingPage {
     }
 
     private PaletteRoot getViewerInput() {
-        IComponentsFactory components = ComponentsFactoryProvider.getInstance();
         return ComponentUtilities.createPaletteRootWithAllComponents();
         // PaletteRoot paletteRoot = CorePlugin.getDefault().getDesignerCoreService().getAllNodeStructure(components);
         // return paletteRoot;
@@ -305,19 +302,14 @@ public class PaletteSettingPage extends ProjectSettingPage {
             retreiveAllEntry(names, entry);
         }
 
-        List<Project> projects = new ArrayList<Project>();
-        projects.add(project);
-        List<Project> refProjects = ProjectManager.getInstance().getReferencedProjects();
-        if (refProjects != null) {
-            projects.addAll(refProjects);
-        }
-        Set<String> usedComponents = ComponentUtilities.getComponentsUsedInProjects(projects, false);
+        Set<String> usedComponents = ComponentUtilities.getComponentsUsedInProject(ProjectManager.getInstance()
+                .getCurrentProject());
 
-        boolean hasUsedComponent = false;
+        boolean isUsed = false;
         for (String string : names) {
             if (!visible) {
                 if (usedComponents.contains(string)) {
-                    hasUsedComponent = true;
+                    isUsed = true;
                     continue;
                 }
 
@@ -325,8 +317,9 @@ public class PaletteSettingPage extends ProjectSettingPage {
             setComponentVisible(string, visible, !RESTORE);
 
         }
-        if (hasUsedComponent) {
-            MessageDialog messageDialog = new MessageDialog(getShell(), Messages.getString("PaletteSettingPage.paletteSettings"), null, //$NON-NLS-1$
+        if (isUsed) {
+            MessageDialog messageDialog = new MessageDialog(getShell(),
+                    Messages.getString("PaletteSettingPage.paletteSettings"), null, //$NON-NLS-1$
                     Messages.getString("PaletteSettingPage.selection1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                             + Messages.getString("PaletteSettingPage.selection2"), MessageDialog.INFORMATION, //$NON-NLS-1$
                     new String[] { "OK" }, 0); //$NON-NLS-1$
@@ -394,9 +387,6 @@ public class PaletteSettingPage extends ProjectSettingPage {
             }
             if (!restore) {
                 ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
-                if (label.equals("tLogRow")) { //$NON-NLS-1$
-                    label.getClass();
-                }
                 cs.setName(label);
                 cs.setHidden(!visible);
                 cs.setFamily(family);

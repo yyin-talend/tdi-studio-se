@@ -95,6 +95,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static Map<String, AbstractComponentsProvider> componentsAndProvider = new HashMap<String, AbstractComponentsProvider>();
 
+    private Map<String, ImageDescriptor> allComponents;
+
     // 1. only the in the directory /components ,not including /resource
     // 2. include the skeleton files and external include files
     private static List<String> skeletonList = null;
@@ -624,65 +626,67 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public Map<String, ImageDescriptor> getAllComponentsCanBeProvided() {
         List source = new ArrayList();
-        Map<String, ImageDescriptor> components = new HashMap<String, ImageDescriptor>();
-        source.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
-        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-        source.addAll(componentsProviderManager.getProviders());
-        for (int i = 0; i < source.size(); i++) {
-            String path = null;
-            Object object = source.get(i);
-            if (object instanceof String) {
-                path = (String) object;
-            } else if (object instanceof AbstractComponentsProvider) {
-                path = ((AbstractComponentsProvider) object).getComponentsLocation();
-            }
-            if (path != null) {
-                File sourceFile = getComponentsLocation(path);
-                File[] childDirectories;
+        if (allComponents == null) {
+            allComponents = new HashMap<String, ImageDescriptor>();
+            source.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+            ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+            source.addAll(componentsProviderManager.getProviders());
+            for (int i = 0; i < source.size(); i++) {
+                String path = null;
+                Object object = source.get(i);
+                if (object instanceof String) {
+                    path = (String) object;
+                } else if (object instanceof AbstractComponentsProvider) {
+                    path = ((AbstractComponentsProvider) object).getComponentsLocation();
+                }
+                if (path != null) {
+                    File sourceFile = getComponentsLocation(path);
+                    File[] childDirectories;
 
-                FileFilter fileFilter = new FileFilter() {
+                    FileFilter fileFilter = new FileFilter() {
 
-                    public boolean accept(final File file) {
-                        return file.isDirectory() && file.getName().charAt(0) != '.'
-                                && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
+                        public boolean accept(final File file) {
+                            return file.isDirectory() && file.getName().charAt(0) != '.'
+                                    && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
+                        }
+
+                    };
+                    if (sourceFile == null) {
+                        ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
+                        continue;
                     }
 
-                };
-                if (sourceFile == null) {
-                    ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
-                    continue;
-                }
-
-                childDirectories = sourceFile.listFiles(fileFilter);
-                if (childDirectories != null) {
-                    for (File currentFolder : childDirectories) {
-                        try {
-                            ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
-                        } catch (BusinessException e) {
-                            continue;
-                        }
-                        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
-                                currentFolder.getName(), getCodeLanguageSuffix()));
-                        List<String> families = getComponentsFamilyFromXML(xmlMainFile);
-                        ComponentIconLoading cil = new ComponentIconLoading(currentFolder);
-                        ImageDescriptor image32 = cil.getImage32();
-                        if (families != null) {
-                            for (String family : families) {
-                                components.put(family + FAMILY_SPEARATOR + currentFolder.getName(), image32);
-                                if (object instanceof AbstractComponentsProvider) {
-                                    if (!componentsAndProvider.containsKey(family)) {
-                                        componentsAndProvider.put(family, (AbstractComponentsProvider) object);
+                    childDirectories = sourceFile.listFiles(fileFilter);
+                    if (childDirectories != null) {
+                        for (File currentFolder : childDirectories) {
+                            try {
+                                ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
+                            } catch (BusinessException e) {
+                                continue;
+                            }
+                            File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
+                                    currentFolder.getName(), getCodeLanguageSuffix()));
+                            List<String> families = getComponentsFamilyFromXML(xmlMainFile);
+                            ComponentIconLoading cil = new ComponentIconLoading(currentFolder);
+                            ImageDescriptor image32 = cil.getImage32();
+                            if (families != null) {
+                                for (String family : families) {
+                                    allComponents.put(family + FAMILY_SPEARATOR + currentFolder.getName(), image32);
+                                    if (object instanceof AbstractComponentsProvider) {
+                                        if (!componentsAndProvider.containsKey(family)) {
+                                            componentsAndProvider.put(family, (AbstractComponentsProvider) object);
+                                        }
                                     }
                                 }
                             }
-                        }
 
+                        }
                     }
                 }
             }
 
         }
-        return components;
+        return allComponents;
     }
 
     private List<String> getComponentsFamilyFromXML(File xmlMainFile) {
@@ -690,6 +694,7 @@ public class ComponentsFactory implements IComponentsFactory {
         final String familysTag = "FAMILIES"; //$NON-NLS-1$
         final String header = "HEADER"; //$NON-NLS-1$
         final String technical = "TECHNICAL"; //$NON-NLS-1$
+
         List<String> familyNames = new ArrayList<String>();
 
         DocumentBuilder analyseur;
@@ -745,6 +750,7 @@ public class ComponentsFactory implements IComponentsFactory {
         } catch (IOException e) {
             ExceptionHandler.process(e);
         }
+
         return familyNames;
     }
 
