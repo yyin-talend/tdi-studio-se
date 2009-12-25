@@ -2371,6 +2371,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
+    public void addDuplicatedConnectionName(String uniqueConnectionName) { // hywang 10263
+        if (uniqueConnectionName != null) {
+            uniqueConnectionNameList.add(uniqueConnectionName);
+        }
+    }
+
     public void removeUniqueConnectionName(String uniqueConnectionName) {
         if (uniqueConnectionName != null) {
             uniqueConnectionNameList.remove(uniqueConnectionName);

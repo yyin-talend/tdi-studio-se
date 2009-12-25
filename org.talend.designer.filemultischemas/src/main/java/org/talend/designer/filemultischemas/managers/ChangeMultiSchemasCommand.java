@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.filemultischemas.data.IMultiSchemaConstant;
@@ -362,7 +363,12 @@ public class ChangeMultiSchemasCommand extends Command {
             IMetadataTable mappingTable = MetadataTool.getMetadataTableFromNode(node, tableLabel);
             if (mappingTable == null) { // added
                 needAddedTables.add(table);
-                process.addUniqueConnectionName(table.getTableName());
+                if (process instanceof IProcess2) { // 10263
+                    IProcess2 p = (IProcess2) process;
+                    p.addDuplicatedConnectionName(table.getTableName());
+                } else {
+                    process.addUniqueConnectionName(table.getTableName());
+                }
             } else {
                 MetadataTool.copyTable(table, mappingTable);
             }
