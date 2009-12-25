@@ -15,6 +15,7 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+boolean strictMatch = ("true").equals(ElementParameterParser.getValue( node, "__STRICT_MATCH__" ));
 String incomingConnName = null;
 List<? extends IConnection> inConns = node.getIncomingConnections();
 if(inConns != null && inConns.size() > 0) {
@@ -48,30 +49,55 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                     i++;
                     if(("null").equals(searchStr.toLowerCase())){
 %>
-					String searchStr_<%=cid %>_<%=i %> = <%=searchStr %>;
-					<%}else{%>
-					String searchStr_<%=cid %>_<%=i %> = <%=searchStr %> + "";
-					<%}%>
-                <%if(("true").equals(substitution.get("USE_GLOB"))){%>
-                    searchStr_<%=cid %>_<%=i %> = org.apache.oro.text.GlobCompiler.globToPerl5(searchStr_<%=cid %>_<%=i %>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
-                <%}%>
-                <%if(("true").equals(substitution.get("WHOLE_WORD"))){%>
-                    searchStr_<%=cid %>_<%=i %> = "^" + searchStr_<%=cid %>_<%=i %> + "$";
-                <%}%>                                
-                <%if(("false").equals(substitution.get("CASE_SENSITIVE"))){%>
-                    searchStr_<%=cid %>_<%=i %> = "(?i)" + searchStr_<%=cid %>_<%=i %>;
-                <%}%>
-                <%if(("null").equals(replaceStr.toLowerCase())){%>
-                	<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%>);
-                <%}else{%>
-                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%> + "");
-                <%}%>                    
+						String searchStr_<%=cid %>_<%=i %> = <%=searchStr %>;
 <%
+					}else{
+%>
+						String searchStr_<%=cid %>_<%=i %> = <%=searchStr %> + "";
+<%
+					}
+					if(("true").equals(substitution.get("USE_GLOB"))){
+%>
+                    	searchStr_<%=cid %>_<%=i %> = org.apache.oro.text.GlobCompiler.globToPerl5(searchStr_<%=cid %>_<%=i %>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+<%
+					}
+					//this component only support strict match from now on (Bug 10232).
+					//for old behaviour support
+                	if(!strictMatch){
+						if(("true").equals(substitution.get("WHOLE_WORD"))){
+%>
+                    		searchStr_<%=cid %>_<%=i %> = "^" + searchStr_<%=cid %>_<%=i %> + "$";
+<%						}
+						if(("false").equals(substitution.get("CASE_SENSITIVE"))){
+%>
+                    		searchStr_<%=cid %>_<%=i %> = "(?i)" + searchStr_<%=cid %>_<%=i %>;
+<%
+						}
+						if(("null").equals(replaceStr.toLowerCase())){
+%>
+	                		<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%>);
+<%
+						}else{
+%>
+		                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%> + "");
+<%
+						}
+					//for strict match
+					}else{
+						if(("null").equals(replaceStr.toLowerCase())){%>
+	              			<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAllStrictly(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%>, <%=("true").equals(substitution.get("WHOLE_WORD"))%>, <%=("true").equals(substitution.get("CASE_SENSITIVE"))%>);
+<%
+						}else{
+%>
+							<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAllStrictly(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, searchStr_<%=cid %>_<%=i %>, <%=replaceStr%> + "", <%=("true").equals(substitution.get("WHOLE_WORD"))%>, <%=("true").equals(substitution.get("CASE_SENSITIVE"))%>);
+<%
+						}
+					}
                 }
             }
-            %>
+%>
             nb_line_ok_<%=cid%>++;
-            <%
+<%
         }
     }
     

@@ -66,6 +66,15 @@
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>
+    <PARAMETER
+      NAME="STRICT_MATCH"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="100"
+      SHOW="false"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
     
    	 <PARAMETER
       NAME="ADVANCED_MODE"
