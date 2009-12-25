@@ -1034,6 +1034,13 @@
              id="org.talend.repository.model.migration.VisibleComponentSettingsMigrationTask"
              name="Migrate components to be visible in project settings">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ChangeDefaultValueBug10232"
+             description="Change check box default value to false"
+             id="org.talend.repository.model.migration.ChangeDefaultValueBug10232"
+             name="Change check box default value to false">
+       </projecttask>
        
    </extension>
    
