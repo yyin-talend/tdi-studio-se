@@ -1257,7 +1257,8 @@ public class MultiSchemasUI {
 
                     @Override
                     public void widgetSelected(SelectionEvent e) {
-                        AddRowDialog dialog = new AddRowDialog(MultiSchemasUI.this.getShell());
+                        SchemasKeyData root = (SchemasKeyData) schemaTreeViewer.getInput();
+                        AddRowDialog dialog = new AddRowDialog(MultiSchemasUI.this.getShell(), root);
                         if (Window.OK == dialog.open()) {
                             Object input = schemaTreeViewer.getInput();
                             if (input instanceof SchemasKeyData) {

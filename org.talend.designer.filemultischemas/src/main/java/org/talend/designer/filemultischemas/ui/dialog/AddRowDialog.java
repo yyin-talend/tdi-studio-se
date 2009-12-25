@@ -12,17 +12,23 @@
 // ============================================================================
 package org.talend.designer.filemultischemas.ui.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.talend.designer.filemultischemas.data.SchemasKeyData;
 
 /**
  * DOC hywang class global comment. Detailled comment
@@ -37,12 +43,27 @@ public class AddRowDialog extends Dialog {
 
     private Composite main;
 
-    public AddRowDialog(Shell parentShell) {
+    private SchemasKeyData root;
+
+    private List<String> keyNames;
+
+    private Button OK, CANCEL;
+
+    private static String TITLE = "Add new schema row";
+
+    private Shell parentShell;
+
+    public AddRowDialog(Shell parentShell, SchemasKeyData root) {
         super(parentShell);
+        this.root = root;
+        keyNames = new ArrayList<String>();
+        getAllKeysNames(this.root);
     }
 
     @Override
     protected Control createDialogArea(Composite parent) {
+        this.parentShell = parent.getShell();
+        parent.getShell().setText(TITLE);
         main = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
         GridData data = new GridData(GridData.CENTER);
@@ -61,6 +82,7 @@ public class AddRowDialog extends Dialog {
 
             public void modifyText(ModifyEvent e) {
                 keyValue = key.getText();
+                validate(keyValue);
             }
         });
 
@@ -104,6 +126,36 @@ public class AddRowDialog extends Dialog {
             return "";
         }
         return this.sepValue;
+    }
+
+    private void getAllKeysNames(SchemasKeyData root) {
+        if (root.getUniqueRecord() != null) {
+            keyNames.add(root.getUniqueRecord());
+        }
+        if (root.getChildren() != null) {
+            List<SchemasKeyData> children = root.getChildren();
+            for (SchemasKeyData child : children) {
+                getAllKeysNames(child);
+            }
+        }
+    }
+
+    private void validate(String currentName) {
+        if (!keyNames.contains(currentName)) {
+            this.OK.setEnabled(true);
+            this.parentShell.setText(TITLE);
+            this.parentShell.pack();
+        } else {
+            this.OK.setEnabled(false);
+            this.parentShell.setText("Name already exsist");
+            this.parentShell.pack();
+        }
+    }
+
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        OK = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        CANCEL = createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
 
 }
