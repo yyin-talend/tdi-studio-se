@@ -304,9 +304,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     public List<IRepositoryObject> getAllVersion(Project project, String id, String relativeFolder, ERepositoryObjectType type)
             throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = null;
-        IFolder fullFolder = (IFolder) getFolder(project, type);
-        if (fullFolder != null) { // hywang for double click folder NPE
-            fullFolder = fullFolder.getFolder(new Path(relativeFolder));
+
+        Object fullFolder = getFullFolder(project, type, relativeFolder);
+        if (fullFolder != null) {
             serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, true, false, true);
             return convert(serializableAllVersion);
         }
@@ -755,8 +755,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     public synchronized IRepositoryObject getLastVersion(Project project, String id, String relativeFolder,
             ERepositoryObjectType type) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = null;
-        IFolder fullFolder = (IFolder) getFolder(project, type);
-        fullFolder = fullFolder.getFolder(new Path(relativeFolder));
+        Object fullFolder = getFullFolder(project, type, relativeFolder);
         serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, false, false, true);
         int size = serializableAllVersion.size();
         if (size > 1) {
