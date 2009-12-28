@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -53,6 +54,8 @@ import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectA
  */
 public class EncodingTypeController extends AbstractElementPropertySectionController {
 
+    private static final String NAME_SEPARATOR = "--";
+
     @Override
     protected Command getTextCommandForHelper(String paramName, String value) {
         return new EncodingTypeChangeCommand(elem, paramName, value, false);
@@ -81,10 +84,14 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
     private Command createComboCommand(CCombo combo) {
         String value = new String(""); //$NON-NLS-1$
         String paramName = ""; //$NON-NLS-1$
+        Object data = combo.getData(PARAMETER_NAME);
+        if (data != null) {
+            paramName = data.toString();
+        }
+
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
-                paramName = param.getName();
+            if (param.getField().equals(EParameterFieldType.ENCODING_TYPE) && paramName.equals(param.getName())) {
                 IElementParameter comboParam = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
                 for (int j = 0; j < comboParam.getListItemsValue().length; j++) {
                     if (combo.getText().equals(comboParam.getListItemsDisplayName()[j])) {
@@ -110,8 +117,10 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
@@ -122,6 +131,11 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         if (elem instanceof Node) {
             combo = new CCombo(subComposite, SWT.BORDER);
             IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
+            // see 10693 ,only for component tChangeFileEncoding
+            if ("INENCODING".equals(param.getName())) {
+                addEncodingType(encodingTypeParameter);
+            }
+
             FormData data;
             String[] originalList = encodingTypeParameter.getListItemsDisplayName();
             List<String> stringToDisplay = new ArrayList<String>();
@@ -138,9 +152,11 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
                     stringToDisplay.add(originalList[i]);
                 }
             }
+
             combo.setItems(stringToDisplay.toArray(new String[0]));
             combo.setEditable(false);
             combo.setEnabled(!encodingTypeParameter.isReadOnly() && !encodingTypeParameter.isRepositoryValueUsed());
+            combo.setData(PARAMETER_NAME, param.getName());
             if (elem instanceof Node) {
                 combo.setToolTipText(VARIABLE_TOOLTIP + encodingTypeParameter.getVariableName());
             }
@@ -197,7 +213,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             }
 
             // **********************
-            hashCurControls.put(encodingTypeParameter.getName(), combo);
+            hashCurControls.put(param.getName() + NAME_SEPARATOR + encodingTypeParameter.getName(), combo);
 
             Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
             dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
@@ -205,11 +221,45 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         return lastControlUsed;
     }
 
+    private void addEncodingType(IElementParameter encodingTypeParameter) {
+        List<String> newEncodingTypes = Arrays.asList(new String[] { "ISO8859-1", "utf-16", "GB2312" });
+        String[] listItemsDisplayCodeName = encodingTypeParameter.getListItemsDisplayCodeName();
+        String[] listItemsdisplayName = encodingTypeParameter.getListItemsDisplayName();
+        Object[] listItemsValue = encodingTypeParameter.getListItemsValue();
+        List<String> newDisplayCodeName = new ArrayList<String>();
+        newDisplayCodeName.addAll(Arrays.asList(listItemsDisplayCodeName));
+        if (!newDisplayCodeName.containsAll(newEncodingTypes)) {
+            newDisplayCodeName.remove(newDisplayCodeName.size() - 1);
+            newDisplayCodeName.addAll(newEncodingTypes);
+            newDisplayCodeName.add(listItemsDisplayCodeName[listItemsDisplayCodeName.length - 1]);
+            encodingTypeParameter.setListItemsDisplayCodeName(newDisplayCodeName.toArray(new String[newDisplayCodeName.size()]));
+        }
+
+        List<String> newDisplayNames = new ArrayList<String>();
+        newDisplayNames.addAll(Arrays.asList(listItemsdisplayName));
+        if (!newDisplayNames.containsAll(newEncodingTypes)) {
+            newDisplayNames.remove(newDisplayNames.size() - 1);
+            newDisplayNames.addAll(newEncodingTypes);
+            newDisplayNames.add(listItemsdisplayName[listItemsdisplayName.length - 1]);
+            encodingTypeParameter.setListItemsDisplayName(newDisplayNames.toArray(new String[newDisplayNames.size()]));
+        }
+
+        List<Object> newValues = new ArrayList<Object>();
+        newValues.addAll(Arrays.asList(listItemsValue));
+        if (!newValues.containsAll(newEncodingTypes)) {
+            newValues.remove(newValues.size() - 1);
+            newValues.addAll(newEncodingTypes);
+            newValues.add(listItemsValue[listItemsValue.length - 1]);
+            encodingTypeParameter.setListItemsValue(newValues.toArray());
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -236,9 +286,9 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             int nbInRow, int top) {
         FormData data;
         Text labelText;
-
+        IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
-        if (param.isRequired()) {
+        if (param.isRequired() || EmfComponent.ENCODING_TYPE_CUSTOM.equals(encodingTypeParameter.getValue())) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
@@ -280,17 +330,19 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
-     * boolean)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org
+     * .talend.core.model.process.IElementParameter, boolean)
      */
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
-        CCombo combo = (CCombo) hashCurControls.get(EParameterName.ENCODING_TYPE.getName());
+        IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
+        Object value = encodingTypeParameter.getValue();
+
+        CCombo combo = (CCombo) hashCurControls.get(param.getName() + NAME_SEPARATOR + EParameterName.ENCODING_TYPE.getName());
         if (combo == null || combo.isDisposed()) {
             return;
         }
-        IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
-        Object value = encodingTypeParameter.getValue();
 
         if ((value instanceof String)
                 && ((hashCurControls.get(param.getName()) == null) || !EmfComponent.ENCODING_TYPE_CUSTOM.equals(combo.getText()))) {
