@@ -355,10 +355,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 // add for feature 10281
                 String content = null;
                 Property property = object.getProperty();
-                User user = object.getAuthor();
-                String author = null;
-                if (user != null) {
-                    author = user.getLogin();
+                User currentLoginUser = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                        .getUser();
+                String crurentLogin = null;
+                if (currentLoginUser != null) {
+                    crurentLogin = currentLoginUser.getLogin();
                 }
                 String login = null;
                 if (property != null) {
@@ -370,7 +371,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                             if (locker != null) {
                                 String lockerLogin = locker.getLogin();
                                 if (lockerLogin != null) {
-                                    if (!lockerLogin.equals(author)) {
+                                    if (!lockerLogin.equals(crurentLogin)) {
                                         login = lockerLogin;
                                     }
                                 }
