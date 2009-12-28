@@ -42,6 +42,7 @@ String dateformat = ElementParameterParser.getValue(node, "__DATE_FORMAT__");
 String timeformat = ElementParameterParser.getValue(node, "__TIME_FORMAT__");
 String timestampformat = ElementParameterParser.getValue(node, "__TIMESTAMP_FORMAT__");
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+boolean removeLoadPending = ("true").equals(ElementParameterParser.getValue(node,"__REMOVE_LODA_PENDING__"));
 
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
@@ -78,7 +79,27 @@ Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
 	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);      
 %>
+
+<%
+	//----------------------remove Load Pending
+	if (removeLoadPending) {
+%>
+		String sqlLoadPending_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
+		java.sql.CallableStatement callStmtLoadPending_<%=cid%> = conn_<%=cid%>.prepareCall(sqlLoadPending_<%=cid%>);
+        callStmtLoadPending_<%=cid%>.setString(1, "load from  /dev/null  of del terminate into \"" + tableName_<%=cid%> + "\"");
+        try {
+        	callStmtLoadPending_<%=cid%>.execute();   
+        } catch (java.sql.SQLException e) { 
+        	//when table not in load pending mode will throw exception.
+        	//and do nothing.
+        }
+        callStmtLoadPending_<%=cid%>.close();
+<%
+	}
+%>
+
 <%@ include file="../templates/_tableActionForBulk.javajet"%>
+
 <%    
 	////////////////////////////////////////////    
     if(("INSERT").equals(action) || ("REPLACE").equals(action)) {
