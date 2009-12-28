@@ -289,7 +289,7 @@ public class ComplexSAXLooper implements ISAXLooper {
             if (function == null) {
                 entryMap.get(tmpLoopPath).addPath(resultCol, column, isAsXML);
             } else {// add the exist function to the loopentry
-                entryMap.get(tmpLoopPath).addPath(column, column);
+                entryMap.get(tmpLoopPath).addPath(column, column, isAsXML);
                 entryMap.get(tmpLoopPath).addFunction(column, function);
                 function = null;
             }
