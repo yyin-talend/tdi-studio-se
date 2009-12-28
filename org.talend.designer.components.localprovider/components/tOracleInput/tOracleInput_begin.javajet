@@ -92,7 +92,7 @@ imports="
 	    
 	   	public void generateBytesResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-			tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%=currentColNo%>);
+			byte [] tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%=currentColNo%>);
 			if(tmpBytes_<%=cid%> != null) {
 				<%=firstConnName%>.<%=column.getLabel()%> = tmpBytes_<%=cid%>;
 			} else {
