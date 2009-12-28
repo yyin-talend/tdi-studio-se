@@ -140,18 +140,11 @@
 	java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getReplyTo()[0]==null?"":message_<%=cid %>.getReplyTo()[0].toString());
 	isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
 <%
-		}else if(("BeforeDate").equals(filterItem)){
+		}else {
 %>
-	java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>,"dd-MM-yyy");
-	if(date_<%=i%>_<%=cid%>!=null){
-		isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().before(date_<%=i%>_<%=cid%>));
-	}
-<%
-		}else if(("AfterDate").equals(filterItem)){
-%>
-	java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>,"dd-MM-yyy");
-	if(date_<%=i%>_<%=cid%>!=null){
-		isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().after(date_<%=i%>_<%=cid%>));
+	java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn.length() < 21 ? filterptn.substring(0, filterptn.length() - 1).concat(" 00:00:00\"") : filterptn%>, "dd-MM-yyyy HH:mm:ss");
+	if(date_<%=i%>_<%=cid%> != null){
+		isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().<%if ("BeforeDate".equals(filterItem)){%>before<%}else if("AfterDate".equals(filterItem)){%>after<%}%>(date_<%=i%>_<%=cid%>));
 	}
 <%
 		}
