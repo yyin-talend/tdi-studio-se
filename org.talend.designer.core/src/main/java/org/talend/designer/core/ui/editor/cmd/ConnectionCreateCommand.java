@@ -130,7 +130,7 @@ public class ConnectionCreateCommand extends Command {
                     public String isValid(String newText) {
                         if (newText != null) {
                             if (!source.getProcess().checkValidConnectionName(newText, creatingConnection)
-                                    || KeywordsValidator.isKeyword(newText) || KeywordsValidator.isSqlKeyword(newText)) {
+                                    || KeywordsValidator.isKeyword(newText)) {
 
                                 return Messages.getString("ConnectionCreateCommand.inputValid"); //$NON-NLS-1$
                             }
