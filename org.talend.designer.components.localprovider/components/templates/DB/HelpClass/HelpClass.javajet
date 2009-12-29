@@ -43,6 +43,12 @@ imports="
 <%
 		}
 		
+		public void createConnection(INode node) {
+%>
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,userName_<%=cid%>,password_<%=cid%>);
+<%
+		}
+		
 		public void setAutoCommit(INode node) {
 			boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
 %>

@@ -19,6 +19,12 @@ imports="
 		public String getDirverClassName(INode node){
 			return "org.sqlite.JDBC";
 		}
+			
+		public void createConnection(INode node) {
+%>
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>);
+<%
+		}
 		
 	}//end class
 

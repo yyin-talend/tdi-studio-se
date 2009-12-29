@@ -12,7 +12,17 @@ imports="
 		public void createURL(INode node) {
 			super.createURL(node);
 %>
-		String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbhost %> + ":" + <%=dbport %> + "/" + <%=dbname %>; 
+<%
+			if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+		String url_<%=cid%> = "jdbc:sybase:Tds:" + <%=dbhost %> + ":" + <%=dbport %> + "/" + <%=dbname %>; 
+<%
+			} else {
+%>
+		String url_<%=cid%> = "jdbc:sybase:Tds:" + <%=dbhost %> + ":" + <%=dbport %> + "/" + <%=dbname %> + "?" + <%=dbproperties%>;
+<%
+			}
+%>
 <%	
 		}
 	
