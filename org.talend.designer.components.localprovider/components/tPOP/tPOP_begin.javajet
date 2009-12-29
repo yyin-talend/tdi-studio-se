@@ -142,7 +142,12 @@
 <%
 		}else {
 %>
-	java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn.length() < 21 ? filterptn.substring(0, filterptn.length() - 1).concat(" 00:00:00\"") : filterptn%>, "dd-MM-yyyy HH:mm:ss");
+	java.util.Date date_<%=i%>_<%=cid%> = null;
+	try{
+	  date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>, "dd-MM-yyyy HH:mm:ss");
+	} catch (Exception e){
+	  date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>, "dd-MM-yyyy");
+	}
 	if(date_<%=i%>_<%=cid%> != null){
 		isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().<%if ("BeforeDate".equals(filterItem)){%>before<%}else if("AfterDate".equals(filterItem)){%>after<%}%>(date_<%=i%>_<%=cid%>));
 	}
