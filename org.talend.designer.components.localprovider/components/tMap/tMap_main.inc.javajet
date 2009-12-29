@@ -181,7 +181,16 @@
 
 		boolean firstLookupIsPersistentSorted = false;
 
+        boolean dieonerror = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+
+		if (!dieonerror) {
 		%>
+			try {
+		<%
+		}
+		%>
+		
+		
 		boolean hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = false;
 		<%
 
@@ -1649,7 +1658,13 @@ if(!isVirtualOut) { // T_TM_M_320
 
 <%
 } // T_TM_M_320
+	if (!dieonerror) {
 %>
-
+		} catch (Exception e) {
+			// do nothing
+	}
+<%
+	}
+%>
 
 

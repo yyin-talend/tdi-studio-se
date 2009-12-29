@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -105,6 +107,7 @@ public class FooterComposite extends Composite {
             }
 
             public void widgetSelected(SelectionEvent e) {
+                saveDieOnError();
                 uiManager.closeMapper(SWT.APPLICATION_MODAL);
             }
 
@@ -123,6 +126,7 @@ public class FooterComposite extends Composite {
             }
 
             public void widgetSelected(SelectionEvent e) {
+                saveDieOnError();
                 uiManager.closeMapper(SWT.OK);
             }
 
@@ -203,6 +207,14 @@ public class FooterComposite extends Composite {
 
     public StatusBar getStatusBar() {
         return statusBar;
+    }
+
+    private void saveDieOnError() {
+        AbstractMapComponent component = mapperManager.getAbstractMapComponent();
+        IElementParameter elementParameter = component.getElementParameter("DIE_ON_ERROR");
+        if (elementParameter != null) {
+            elementParameter.setValue(mapperManager.isDieOnError());
+        }
     }
 
 }

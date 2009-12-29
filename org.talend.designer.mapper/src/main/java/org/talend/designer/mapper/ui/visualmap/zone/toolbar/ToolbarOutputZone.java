@@ -13,13 +13,20 @@
 package org.talend.designer.mapper.ui.visualmap.zone.toolbar;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.ui.image.ImageInfo;
+import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
@@ -35,6 +42,8 @@ public class ToolbarOutputZone extends ToolbarZone {
     private ToolItem removeOutputItem;
 
     private ToolItem guessItem;
+
+    private ToolItem dieOnError;
 
     public static final String MINIMIZE_TOOLTIP = Messages.getString("ToolbarOutputZone.minimizeTooltip"); //$NON-NLS-1$
 
@@ -84,6 +93,20 @@ public class ToolbarOutputZone extends ToolbarZone {
         guessItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.mapInputAndOutput")); //$NON-NLS-1$
         guessItem.setText(Messages.getString("ToolbarOutputZone.widgetText.autoMap")); //$NON-NLS-1$
 
+        dieOnError = new ToolItem(getToolBarActions(), SWT.CHECK);
+        dieOnError.setEnabled(!getMapperManager().componentIsReadOnly());
+        dieOnError.setToolTipText("tmap die on error");
+        AbstractMapComponent component = getMapperManager().getAbstractMapComponent();
+        IElementParameter elementParameter = component.getElementParameter("DIE_ON_ERROR");
+        boolean isDieOnError = false;
+        if (elementParameter != null && elementParameter.getValue() != null) {
+            isDieOnError = Boolean.valueOf(elementParameter.getValue().toString());
+        }
+        dieOnError.setSelection(isDieOnError);
+        Image image = ImageProviderMapper.getImage(isDieOnError ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
+        dieOnError.setImage(image);
+        dieOnError.setText("Die on error");
+
     }
 
     /**
@@ -111,6 +134,26 @@ public class ToolbarOutputZone extends ToolbarZone {
 
             public void handleEvent(Event event) {
                 getMapperManager().mapAutomaticallly();
+            }
+
+        });
+
+        dieOnError.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                Image image = null;
+                if (dieOnError.getSelection()) {
+                    image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
+                } else {
+
+                    image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
+                }
+                dieOnError.setImage(image);
+                getMapperManager().setDieOnError(dieOnError.getSelection());
+                getMapperManager().setDieOnErrorValueChanged(true);
             }
 
         });

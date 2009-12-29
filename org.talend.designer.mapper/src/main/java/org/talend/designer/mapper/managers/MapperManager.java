@@ -97,6 +97,10 @@ public class MapperManager extends AbstractMapperManager {
 
     private ProblemsManager problemsManager;
 
+    private boolean isDieOnError;
+
+    private boolean isDieOnErrorValueChanged;
+
     public MapperManager(MapperComponent mapperComponent) {
         super(mapperComponent);
         tableEntriesManager = new TableEntriesManager(this);
@@ -913,7 +917,7 @@ public class MapperManager extends AbstractMapperManager {
             return true;
         }
 
-        return !originalExternalData.equals(currentExternalData);
+        return !originalExternalData.equals(currentExternalData) || isDieOnErrorValueChanged;
     }
 
     public boolean isPersistentMap() {
@@ -923,6 +927,18 @@ public class MapperManager extends AbstractMapperManager {
     public boolean isCheckSyntaxEnabled() {
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
         return preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK);
+    }
+
+    public boolean isDieOnError() {
+        return this.isDieOnError;
+    }
+
+    public void setDieOnError(boolean isDieOnError) {
+        this.isDieOnError = isDieOnError;
+    }
+
+    public void setDieOnErrorValueChanged(boolean isDieOnErrorValueChanged) {
+        this.isDieOnErrorValueChanged = isDieOnErrorValueChanged;
     }
 
 }

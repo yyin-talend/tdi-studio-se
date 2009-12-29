@@ -57,6 +57,15 @@
          <DEFAULT/>
       </PARAMETER>
       
+       <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="100"
+      SHOW="false"
+   		 >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+      
       <!-- 
       <PARAMETER NAME="MEMORY_HEAP_MAX_SIZE" FIELD="TEXT"
 			REQUIRED="false" NUM_ROW="3"
