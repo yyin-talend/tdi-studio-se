@@ -285,7 +285,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         } else {
             setReadOnly(true);
         }
-        RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+        if (processEditorInput.getItem() instanceof ProcessItem) {
+            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+        } else {
+            RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
+        }
         getSite().getWorkbenchWindow().getPartService().addPartListener(partListener);
 
     }
@@ -536,7 +540,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
-        RepositoryManager.refresh(processEditorInput.getRepositoryNode().getObjectType());
+        if (processEditorInput.getItem() instanceof ProcessItem) {
+            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+        } else {
+            RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
+        }
     }
 
     protected void updateRunJobContext() {
@@ -972,10 +980,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             ExceptionHandler.process(e);
         }
 
-        // IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        // if (viewPart != null) {
-        // viewPart.refresh(processEditorInput.getRepositoryNode());
-        // }
         RepositoryNode repositoryNode = processEditorInput.getRepositoryNode();
         if (repositoryNode == null) {
             processEditorInput.setRepositoryNode(null); // retrieve the node.
