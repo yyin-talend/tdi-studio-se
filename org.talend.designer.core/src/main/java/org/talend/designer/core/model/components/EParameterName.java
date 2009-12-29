@@ -122,7 +122,7 @@ public enum EParameterName {
     TRACES_SHOW_ENABLE("Traces show"), //$NON-NLS-1$ Hidden parameter so no translation needed
     VARIABLES("VARIABLES"), //$NON-NLS-1$
     USE_EXISTING_CONNECTION(Messages.getString("EParameterName.useExistConn")), //$NON-NLS-1$
-    USE_TRANSACTION("use_transaction"),
+    USE_TRANSACTION("use_transaction"), //$NON-NLS-1$
 
     RESUMING_CHECKPOINT("Recovery Checkpoint"), //$NON-NLS-1$
     RESUMLABEL("Label"), //$NON-NLS-1$
@@ -130,7 +130,7 @@ public enum EParameterName {
 
     // hywang add for feature7373
     COLUMNINDEX(Messages.getString("EParameterName.columnIndex")), //$NON-NLS-1$
-    CDC_TYPE_MODE("CDC Type Mode"),
+    CDC_TYPE_MODE("CDC Type Mode"), //$NON-NLS-1$
     /**
      * For stats & logs parameters.
      */
@@ -185,9 +185,9 @@ public enum EParameterName {
     DISABLE_WARNINGS(Messages.getString("EParameterName.DisableWarnings")), //$NON-NLS-1$
 
     // added by wchen for feature 6759
-    USE_MULTISEPARATORS(Messages.getString("EParameterName.useMultiSaparators")),
-    MULTI_SEPARATORS(Messages.getString("EParameterName.multiSaparators")),
-    MULTI_KEYVALUES(Messages.getString("EParameterName.multiKeyValues")),
+    USE_MULTISEPARATORS(Messages.getString("EParameterName.useMultiSaparators")), //$NON-NLS-1$
+    MULTI_SEPARATORS(Messages.getString("EParameterName.multiSaparators")), //$NON-NLS-1$
+    MULTI_KEYVALUES(Messages.getString("EParameterName.multiKeyValues")), //$NON-NLS-1$
     /*
      * PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
      * PERL_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
@@ -258,7 +258,7 @@ public enum EParameterName {
 
     // BASED_ON_INPUT_SCHEMAS
     BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS"), //$NON-NLS-1$
-
+    KEEP_CDC_DATAS(Messages.getString("EParameterName.KeepCDCDatasTitle")), //$NON-NLS-1$
     VALUES("VALUES"); //$NON-NLS-1$
 
     private String displayName;
