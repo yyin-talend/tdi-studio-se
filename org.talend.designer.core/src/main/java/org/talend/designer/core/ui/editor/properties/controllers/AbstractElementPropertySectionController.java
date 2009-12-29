@@ -68,6 +68,7 @@ import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
@@ -263,7 +264,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String[] originalList = param.getListItemsDisplayName();
         for (int i = 0; i < valuesList.length; i++) {
             if (valuesList[i].equals(value)) {
-                return originalList[i];
+                return valuesList[i].toString();
+                // return originalList[i];
             }
         }
         return ""; //$NON-NLS-1$
@@ -1351,8 +1353,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String type = getValueFromRepositoryName(elem, "TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
 
-        String dbVersion = getValueFromRepositoryName(elem, "DB_VERSION"); //$NON-NLS-1$
-        connParameters.setDbVersion(dbVersion);
+        String driverName = getValueFromRepositoryName(elem, "DB_VERSION"); //$NON-NLS-1$ 
+        String dbVersionName = EDatabaseVersion4Drivers.getDbVersionName(type, driverName);
+        connParameters.setDbVersion(dbVersionName);
 
         connParameters.setNode(elem);
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
