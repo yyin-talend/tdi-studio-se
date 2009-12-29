@@ -941,4 +941,7 @@ public class MapperManager extends AbstractMapperManager {
         this.isDieOnErrorValueChanged = isDieOnErrorValueChanged;
     }
 
+    public boolean isDieOnErrorValueChanged() {
+        return isDieOnErrorValueChanged;
+    }
 }

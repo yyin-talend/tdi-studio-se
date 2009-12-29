@@ -210,10 +210,12 @@ public class FooterComposite extends Composite {
     }
 
     private void saveDieOnError() {
-        AbstractMapComponent component = mapperManager.getAbstractMapComponent();
-        IElementParameter elementParameter = component.getElementParameter("DIE_ON_ERROR");
-        if (elementParameter != null) {
-            elementParameter.setValue(mapperManager.isDieOnError());
+        if (mapperManager.isDieOnErrorValueChanged()) {
+            AbstractMapComponent component = mapperManager.getAbstractMapComponent();
+            IElementParameter elementParameter = component.getElementParameter("DIE_ON_ERROR");
+            if (elementParameter != null) {
+                elementParameter.setValue(mapperManager.isDieOnError());
+            }
         }
     }
 
