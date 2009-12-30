@@ -315,7 +315,7 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 		row_<%=cid %> = reader_<%=cid %>.getRowRecord();
 		foundMatchingHeader_<%=cid%> = false;
 		if (row_<%=cid%> != null && row_<%=cid%>.length() > hdrEndIndex_<%=cid%>) {
-			header_<%=cid%> = row_<%=cid%>.substring(hdrStartIndex_<%=cid%>, hdrEndIndex_<%=cid%>).trim();
+			header_<%=cid%> = row_<%=cid%>.substring(hdrStartIndex_<%=cid%>, hdrEndIndex_<%=cid%>)<%=trimAll? ".trim()":""%>;
 <%
     for (IConnection conn : conns) {//_____0
     	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//_____0_____1
