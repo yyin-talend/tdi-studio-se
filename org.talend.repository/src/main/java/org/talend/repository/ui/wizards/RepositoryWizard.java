@@ -21,9 +21,12 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -109,13 +112,22 @@ public abstract class RepositoryWizard extends Wizard {
     private void reload() throws PersistenceException {
         if (repositoryObject != null) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            if (repositoryObject.getProperty() == null || repositoryObject.getProperty().getItem() == null
-                    || repositoryObject.getProperty().getItem().getProperty() == null) {
-                return;
-            }
+            if (repositoryObject.getProperty().eResource() != null) {
+                Property property = factory.reload(repositoryObject.getProperty());
+                repositoryObject.setProperty(property);
+            } else {
+                ItemState state = repositoryObject.getProperty().getItem().getState();
+                IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                        .getProxyRepositoryFactory();
+                if (state != null && state.getPath() != null) {
+                    IRepositoryObject lastVersion = repositoryFactory.getLastVersion(ProjectManager.getInstance()
+                            .getCurrentProject(), repositoryObject.getProperty().getId(), state.getPath(), repositoryObject
+                            .getType());
+                    lastVersion.setRepositoryNode(repositoryObject.getRepositoryNode());
+                    repositoryObject = lastVersion;
+                }
 
-            Property property = factory.reload(repositoryObject.getProperty().getItem().getProperty());
-            repositoryObject.setProperty(property);
+            }
         }
     }
 

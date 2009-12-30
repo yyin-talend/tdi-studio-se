@@ -27,6 +27,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.WorkbenchJob;
 import org.epic.perleditor.editors.PerlEditor;
@@ -46,6 +50,7 @@ import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -141,6 +146,20 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
                 RepositoryManager.refreshDeletedNode(null);
             } else {
                 RepositoryManager.refresh(repositoryNode.getObjectType());
+            }
+        }
+        // force clean jobsettings
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow != null) {
+            IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+            if (activePage != null) {
+                IViewPart findView = activePage.findView(IJobSettingsView.ID);
+                if (findView != null) {
+                    IJobSettingsView jobsetting = (IJobSettingsView) findView;
+                    if (!jobsetting.isCleaned()) {
+                        jobsetting.cleanDisplay();
+                    }
+                }
             }
         }
     }

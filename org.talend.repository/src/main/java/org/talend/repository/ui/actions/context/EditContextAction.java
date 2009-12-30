@@ -22,6 +22,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -73,7 +74,7 @@ public class EditContextAction extends AbstractConextAction {
             default:
                 canWork = false;
             }
-            if (canWork && (node.getObject() != null && !factory.isPotentiallyEditable(node.getObject()) || !isLastVersion(node))) {
+            if (canWork && (!ProjectManager.getInstance().isInCurrentMainProject(node) || !isLastVersion(node))) {
                 canWork = false;
             }
         }
