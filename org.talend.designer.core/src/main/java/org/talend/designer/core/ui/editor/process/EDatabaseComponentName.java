@@ -83,6 +83,7 @@ public enum EDatabaseComponentName {
     JAVADB(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB, "tJavaDBInput", "tJavaDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     INGRES(DatabaseConnectionItem.class, EDatabaseTypeName.INGRES, "tIngresInput", "tIngresOutput", true), // "INGRES"), //$NON-NLS-1$ //$NON-NLS-2$
     INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput", true), // "INTERBASE" //$NON-NLS-1$ //$NON-NLS-2$
+    EXASOL(DatabaseConnectionItem.class, EDatabaseTypeName.EXASOL, "tEXAInput", "tEXAOutput", true), // "INGRES"), //$NON-NLS-1$ //$NON-NLS-2$
     // )
     // ,
     SQLITE(DatabaseConnectionItem.class, EDatabaseTypeName.SQLITE, "tSQLiteInput", "tSQLiteOutput", true), // "SQLITE"), //$NON-NLS-1$ //$NON-NLS-2$

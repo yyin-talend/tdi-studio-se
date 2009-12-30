@@ -57,7 +57,7 @@
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="2"
-      REPOSITORY_VALUE="DATABASE:EXASolution"
+      REPOSITORY_VALUE="DATABASE:Exasol"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 
@@ -88,7 +88,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       SHOW="true"
-      REPOSITORY_VALUE="SCHEMA"
+      REPOSITORY_VALUE="SID"
 	REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -192,6 +192,16 @@
       SHOW="false"
     >       
       <DEFAULT>oracle_id</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="9"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Exasol</DEFAULT>
     </PARAMETER>
     
   </PARAMETERS>
