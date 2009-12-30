@@ -24,7 +24,6 @@ import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
-import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
@@ -32,6 +31,7 @@ import org.talend.designer.runprocess.perl.PerlProcessor;
 import org.talend.designer.runprocess.perl.PerlUtils;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.views.ProcessView;
+import org.talend.runprocess.data.PerformanceData;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

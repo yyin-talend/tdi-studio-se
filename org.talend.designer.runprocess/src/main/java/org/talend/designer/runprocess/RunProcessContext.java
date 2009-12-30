@@ -50,13 +50,13 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
-import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
+import org.talend.runprocess.data.PerformanceData;
 
 /**
  * Context of a running process. <br/>
