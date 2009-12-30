@@ -46,7 +46,17 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-
+    
+    <PARAMETER
+      NAME="SIMPLEMODE_OLDLABLE"
+      FIELD="LABEL"
+      REQUIRED="true"
+      NUM_ROW="2"
+      COLOR="0;0;0"
+      SHOW_IF="(STRICT_MATCH == 'false')"
+    >      
+      <DEFAULT>Simple mode works with regex expression(in last version)</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="SUBSTITUTIONS"
