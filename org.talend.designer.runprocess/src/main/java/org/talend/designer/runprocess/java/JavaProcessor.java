@@ -1320,6 +1320,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             String content = null;
             while (lineReader.getLineNumber() < breakLineNumber - 3) {
                 content = lineReader.readLine();
+                if (content == null) {
+                    return;
+                }
             }
             int startIndex = content.indexOf("[") + 1; //$NON-NLS-1$
             int endIndex = content.indexOf(" main ] start"); //$NON-NLS-1$
