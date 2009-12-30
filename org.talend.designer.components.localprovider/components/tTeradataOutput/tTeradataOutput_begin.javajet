@@ -79,6 +79,15 @@ Manager manager = null;
 
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+	for(Column column : stmtStructure) {
+    	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+    	if ("java.util.Date".equals(typeToGenerate)) {
+    		if ("DATE".equals(column.getColumn().getType())) {
+    			column.setSqlStmt("cast(cast(? as timestamp) as date)");
+    		} 
+    	}
+    }
+    
 }
 
 if (("true").equals(useBatchSize)) {
