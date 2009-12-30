@@ -46,6 +46,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -77,6 +78,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
     private Button displayComponentsButton;
 
     private ThreeCompositesSashForm compositesSachForm;
+
+    private boolean needCodeGen;
 
     // <name:visiblility>
     private Map<String, Boolean> statusBackup = new HashMap<String, Boolean>();
@@ -264,7 +267,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
                 setComponentVisible(hiddenViewer.getSelection(), true);
                 // getButton(IDialogConstants.OK_ID).setEnabled(true);
                 setValid(true);
-
+                needCodeGen = true;
             }
         });
         hideCompnentsButton = new Button(buttonComposite2, SWT.NONE);
@@ -415,8 +418,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
     @Override
     protected void performApply() {
         // TODO Auto-generated method stub
-        super.performApply();
-        okPressed();
+        // super.performApply();
+
     }
 
     /*
@@ -427,16 +430,22 @@ public class PaletteSettingPage extends ProjectSettingPage {
     @Override
     public boolean performOk() {
         // TODO Auto-generated method stub
+        boolean performOk = super.performOk();
         okPressed();
-        return super.performOk();
+        return performOk;
     }
 
     protected void okPressed() {
-
         IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
         try {
             prf.saveProject(project);
             ShowStandardAction.getInstance().doRun();
+            if (needCodeGen) {
+                IComponentsFactory components = ComponentsFactoryProvider.getInstance();
+                CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
+                CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+            }
+
             // ComponentUtilities.updatePalette();
         } catch (Exception ex) {
             ExceptionHandler.process(ex);
