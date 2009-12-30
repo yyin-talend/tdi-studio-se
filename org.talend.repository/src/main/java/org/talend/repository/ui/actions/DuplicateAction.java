@@ -293,8 +293,8 @@ public class DuplicateAction extends AContextualAction {
                 Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
                 List<IRepositoryObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
                 Item newItem = factory.copy(originalItem, path, true);
+                newItem.getProperty().setLabel(newJobName);
                 // newItem.getProperty().setVersion(JOB_INIT_VERSION);
-                // newItem.getProperty().setLabel(newJobName);
                 // factory.saveCopy(originalItem, newItem);
                 // qli modified to fix the bug 5400 and 6185.
                 if (newItem instanceof RoutineItem) {
