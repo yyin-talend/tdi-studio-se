@@ -105,6 +105,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private void initialize() {
         root = (ProjectRepositoryNode) view.getRoot();
+
         root.initialize();
     }
 

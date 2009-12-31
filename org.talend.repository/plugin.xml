@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="toolbar_creation" name="toolbar creation action" schema="schema/toolbar_creation.exsd"/>
    <extension-point id="projectsetting_page" name="Project Setting Page" schema="schema/projectsetting_page.exsd"/>
+   <extension-point id="repository_menu_provider" name="Repository Menu Provider" schema="schema/repository_menu_provider.exsd"/>
    <extension
          point="org.eclipse.ui.views">
       <view

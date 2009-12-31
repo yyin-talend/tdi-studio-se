@@ -267,6 +267,9 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
     }
 
     private boolean isCurrentProject(ILaunchConfiguration configuration) {
+        if (configuration == null) {
+            return false;
+        }
         try {
             String projectName = configuration.getAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, (String) null);
             return projectName.equals(ProjectManager.getInstance().getCurrentProject().getLabel());

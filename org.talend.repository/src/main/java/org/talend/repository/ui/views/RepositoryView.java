@@ -18,7 +18,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -109,6 +112,7 @@ import org.talend.repository.ui.actions.DeleteAction;
 import org.talend.repository.ui.actions.PasteAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
+import org.talend.repository.ui.actions.RepositoryMenuAction;
 
 /**
  * 
@@ -549,6 +553,18 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     private void fillLocalPullDown(IMenuManager manager) {
+        IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+                "org.talend.repository.repository_menu_provider");
+        for (IConfigurationElement elem : elems) {
+            RepositoryMenuAction createExecutableExtension;
+            try {
+                createExecutableExtension = (RepositoryMenuAction) elem.createExecutableExtension("class");
+                createExecutableExtension.initialize(this);
+                manager.add(createExecutableExtension);
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+        }
     }
 
     private void fillContextMenu(IMenuManager manager) {

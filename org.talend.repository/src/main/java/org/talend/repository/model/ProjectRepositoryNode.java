@@ -79,11 +79,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private RepositoryNode jobletNode;
 
+    private RepositoryNode svnRootNode;
+
     private RepositoryNode metadataNode;
 
     private RepositoryNode refProject;
 
     private boolean mergeRefProject;
+
+    public static String currentBranch = null;
 
     private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
@@ -231,8 +235,33 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
     }
 
+    private String showSVNRoot() {
+        String urlPath = currentBranch;
+        if ("".equals(urlPath) || urlPath == null) {
+            return null;
+        }
+        String[] urlEles = urlPath.split("/"); //$NON-NLS-1$
+        return urlEles[urlEles.length - 1];
+    }
+
     public void initialize() {
-        List<RepositoryNode> nodes = getChildren();
+        List<RepositoryNode> nodes = null;
+        String urlBranch = null;
+        if (currentBranch != null) {
+            urlBranch = showSVNRoot();
+        }
+        if ("".equals(urlBranch) || urlBranch == null) {
+            nodes = getChildren();
+        } else {
+            List<RepositoryNode> root = getChildren();
+
+            svnRootNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            svnRootNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SVN_ROOT + "(" + urlBranch + ")");
+            svnRootNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SVN_ROOT);
+            root.add(svnRootNode);
+
+            nodes = svnRootNode.getChildren();
+        }
 
         // 0. Recycle bin
         recBinNode = new BinRepositoryNode(this);
