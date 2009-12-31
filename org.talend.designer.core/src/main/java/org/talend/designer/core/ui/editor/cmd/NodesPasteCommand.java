@@ -558,12 +558,22 @@ public class NodesPasteCommand extends Command {
                     }
 
                     connections.add(pastedConnection);
-
+                    oldNameTonewNameMap.put(connection.getUniqueName(), pastedConnection.getUniqueName());
                     // pastedConnection.setActivate(pastedSourceNode.isActivate());
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         // pastedConnection.getElementParameter(param.getName())
                         // .setValue(param.getValue());
                         pastedConnection.setPropertyValue(param.getName(), param.getValue());
+                    }
+                    // reset unique name param
+                    IElementParameter uniqueNameParam = pastedConnection
+                            .getElementParameter(EParameterName.UNIQUE_NAME.getName());
+                    String newName = oldNameTonewNameMap.get(connection.getUniqueName());
+                    if (uniqueNameParam != null && newName != null) {
+                        if (!newName.equals(uniqueNameParam.getValue())) {
+                            pastedConnection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), newName);
+                        }
+
                     }
 
                     // // keep the label (bug 3778)
