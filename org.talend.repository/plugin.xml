@@ -1041,6 +1041,13 @@
              id="org.talend.repository.model.migration.ChangeDefaultValueBug10232"
              name="Change check box default value to false">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ConnectionAddUniqueNameMigrationTask"
+             description="Connection add unique name"
+             id="org.talend.repository.model.migration.ConnectionAddUniqueNameMigrationTask"
+             name="Connection add unique name">
+       </projecttask>
        
    </extension>
    
