@@ -46,13 +46,13 @@ public abstract class CheckLastVersionRepositoryWizard extends RepositoryWizard 
 
     @Override
     public boolean isRepositoryObjectEditable() {
-        if (getVersionItem() != null) {
+        if (getVersionItem() != null && !creation) {
             if (this instanceof ContextWizard || this instanceof DocumentationCreateWizard
                     || this instanceof DocumentationUpdateWizard) {
                 return super.isRepositoryObjectEditable() && isLastVersion(getVersionItem());
             }
         }
-        if (getConnectionItem() != null) {
+        if (getConnectionItem() != null && !creation) {
             return super.isRepositoryObjectEditable() && isLastVersion(getConnectionItem());
         }
         return super.isRepositoryObjectEditable();
