@@ -401,8 +401,12 @@ public class ComboController extends AbstractElementPropertySectionController {
         }
         // add by wzhang for feature 8147
         try {
-            ITDQPatternService service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(
-                    ITDQPatternService.class);
+            ITDQPatternService service = null;
+            try {
+                service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
+            } catch (RuntimeException e) {
+                // nothing to do
+            }
             if (service != null && elem instanceof Node) {
                 Node node = (Node) elem;
                 IElementParameter propertyParam = node.getElementParameter("TYPE");
