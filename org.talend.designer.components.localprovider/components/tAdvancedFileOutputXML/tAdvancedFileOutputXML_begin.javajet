@@ -208,10 +208,16 @@ if(needRoot_<%=cid %> ==false){
 					if(isCompact==true){//generate compact file
 %>
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createCompactFormat();
-					<%}else{%>
+<%
+					}else{
+%>
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
-					<%}%>
+<%
+					}
+					if(!isMerge){
+%>
 format_<%=cid %>.setTrimText(false);
+<%					}%>
 format_<%=cid %>.setEncoding(<%=encoding%>);
 
 <%
