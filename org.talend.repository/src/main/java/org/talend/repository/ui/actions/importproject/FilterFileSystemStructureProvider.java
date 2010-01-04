@@ -22,13 +22,12 @@ import java.util.List;
 
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
+import org.talend.commons.utils.io.FilesUtils;
 
 /**
  * This class provides information regarding the structure and content of specified file system File objects.
  */
 public class FilterFileSystemStructureProvider implements IImportStructureProvider {
-
-    private static final String SVN_FOLDER = ".svn"; //$NON-NLS-1$
 
     /**
      * Holds a singleton instance of this class.
@@ -51,7 +50,7 @@ public class FilterFileSystemStructureProvider implements IImportStructureProvid
         File[] files = folder.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
-                return name.lastIndexOf(SVN_FOLDER) == -1 ? true : false;
+                return !FilesUtils.isSVNFolder(name);
             }
         });
         int childrenLength = files == null ? 0 : files.length;
