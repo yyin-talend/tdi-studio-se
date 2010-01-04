@@ -161,7 +161,7 @@ public final class ConnectionContextHelper {
 
         ISelection selection = getRepositoryContext(contextName, false);
 
-        if (selection == null || selection.isEmpty()) {
+        if (selection == null) {
             return null;
         }
 
