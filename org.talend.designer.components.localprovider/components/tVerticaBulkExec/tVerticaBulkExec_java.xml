@@ -246,6 +246,10 @@
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
+       <IMPORTS>
+		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" REQUIRED="false" /> 
+		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" REQUIRED="false" /> 
+    </IMPORTS>
   </CODEGENERATION>
 
    <RETURNS />
