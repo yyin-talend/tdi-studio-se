@@ -12,14 +12,12 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-
 import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.runprocess.IPerformanceData;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.runprocess.data.HtmlFromPerformance;
 
 /**
  * Model part of connection performance.
@@ -89,33 +87,11 @@ public class ConnectionPerformance extends Element {
      * @return HTML string.
      */
     private String htmlFromPerformance(String data) {
-        StringBuffer html = new StringBuffer();
 
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IPerformanceData perf = service.createPerformanceData(data);
 
-        if (IPerformanceData.ACTION_PERF.equals(perf.getAction())) {
-            final String perfPattern = "<font color=''#4477BB''>" + "{0, number,#} rows - {1,number,#.##}s<br>" //$NON-NLS-1$ //$NON-NLS-2$
-                    + "<b>{2,number,#.##} rows/s</b>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
-            long lineCount = perf.getLineCount();
-            long processingTime = perf.getProcessingTime();
-            double avg = processingTime > 0 ? lineCount * 1000d / processingTime : 0d;
-            MessageFormat mf = new MessageFormat(perfPattern, Locale.US);
-            html.append(mf.format(new Object[] { new Long(lineCount), new Double(processingTime / 1000d), new Double(avg) }));
-        } else if (IPerformanceData.ACTION_START.equals(perf.getAction())) {
-            final String perfPattern = "<font color='#AA3322'>" + "<i>Starting</i>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            html.append(perfPattern);
-        } else if (IPerformanceData.ACTION_STOP.equals(perf.getAction())) {
-            final String perfPattern = "<font color=''#229922''>" + "{0, number,#} rows in {1,number,#.##}s<br>" //$NON-NLS-1$ //$NON-NLS-2$
-                    + "<i>{2,number,#.##} rows/s</i>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
-            long lineCount = perf.getLineCount();
-            long processingTime = perf.getProcessingTime();
-            double avg = processingTime > 0 ? lineCount * 1000d / processingTime : 0d;
-            MessageFormat mf = new MessageFormat(perfPattern);
-            html.append(mf.format(new Object[] { new Long(lineCount), new Double(processingTime / 1000d), new Double(avg) }));
-        }
-
-        return html.toString();
+        return HtmlFromPerformance.get(perf);
     }
 
     /*
