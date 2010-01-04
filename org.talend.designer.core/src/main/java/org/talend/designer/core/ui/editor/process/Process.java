@@ -880,7 +880,23 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                                     lineValues = new HashMap<String, Object>();
                                     tableValues.add(lineValues);
                                 }
-                                lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                                boolean needRemoveQuotes = false;
+                                for (Object o : param.getListItemsValue()) {
+                                    if (o instanceof IElementParameter) {
+                                        IElementParameter tableParam = (IElementParameter) o;
+                                        if (tableParam.getName().equals(elementValue.getElementRef())
+                                                && (tableParam.getField() == EParameterFieldType.CONNECTION_LIST)) {
+                                            needRemoveQuotes = true;
+                                        }
+                                    }
+                                }
+
+                                if (needRemoveQuotes) {
+                                    lineValues.put(elementValue.getElementRef(), TalendTextUtils.removeQuotes(elementValue
+                                            .getValue()));
+                                } else {
+                                    lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                                }
                                 if (elementValue.getType() != null) {
                                     lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue
                                             .getType());

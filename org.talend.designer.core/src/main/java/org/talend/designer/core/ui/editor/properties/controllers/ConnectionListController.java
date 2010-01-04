@@ -366,19 +366,37 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
                 }
             }
             connections = conns.toArray(new IConnection[conns.size()]);
+        } else if (filter.startsWith("OUTPUT:")) { //$NON-NLS-1$
+            Set<IConnection> conns = new HashSet<IConnection>();
+            conns.addAll(source.getOutgoingConnections());
+            String[] f = filter.substring("OUTPUT:".length()).split("\\|"); //$NON-NLS-1$ //$NON-NLS-2$
+            List<String> filterArray = new ArrayList<String>(f.length);
+            for (int i = 0; i < f.length; i++) {
+                filterArray.add(f[i].trim());
+            }
+
+            for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
+                IConnection con = iter.next();
+                if (!filterArray.contains(con.getLineStyle().toString())) {
+                    iter.remove();
+                }
+            }
+            connections = conns.toArray(new IConnection[conns.size()]);
         } else {
             connections = source.getProcess().getAllConnections(filter);
         }
 
-        String[] connectionNames = new String[connections.length];
-        for (int i = 0; i < connectionNames.length; i++) {
-            connectionNames[i] = connections[i].getUniqueName();
+        String[] connectionNames = new String[connections.length + 1];
+        connectionNames[0] = "";
+        for (int i = 0; i < connections.length; i++) {
+            connectionNames[i + 1] = connections[i].getUniqueName();
         }
 
         Arrays.sort(connectionNames);
 
-        String[] connectionNameList = connectionNames;
+        String[] connectionNameList = (String[]) ArrayUtils.clone(connectionNames);
         String[] connectionValueList = connectionNames;
+        connectionNameList[0] = "<Empty>";
 
         param.setListItemsDisplayName(connectionNameList);
         param.setListItemsValue(connectionValueList);
