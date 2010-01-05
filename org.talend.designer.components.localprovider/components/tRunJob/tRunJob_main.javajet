@@ -16,108 +16,112 @@ imports="
   java.util.List
 "
 %>
-  <%
-  CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-  INode node = (INode)codeGenArgument.getArgument();
-  String cid = node.getUniqueName();
-
-  List<IMetadataColumn> columns = null;
-  List<IMetadataTable> metadatas = node.getMetadataList();
-  if (metadatas != null && metadatas.size() > 0) {
-      IMetadataTable metadata = metadatas.get(0);
-      if (metadata != null) {
-          columns = metadata.getListColumns();
-      }
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataColumn> columns = null;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata != null) {
+        columns = metadata.getListColumns();
+    }
+}
+List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+  
+//if tRunJob is the first node, it can get the return values of the child job.
+//if tRunJob is middle node of the FLOW link, it will be data_auto_propagate=true 
+List< ? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
+boolean useIndependentProcess = "true".equals(ElementParameterParser.getValue(node, "__USE_INDEPENDENT_PROCESS__"));
+boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_CHILD_ERROR__"));  
+boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();  
+boolean transmitWholeContext = ("true").equals(ElementParameterParser.getValue(node, "__TRANSMIT_WHOLE_CONTEXT__"));  
+boolean printParameter = ("true").equals(ElementParameterParser.getValue(node, "__PRINT_PARAMETER__")); 
+IProcess currentProcess = node.getProcess();
+List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
+String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
+String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
+String version = ElementParameterParser.getValue(node,"__PROCESS_TYPE_VERSION__");
+String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid"};
+String[] commandLineWindows = new String[] {"<command>"};
+String[] commandLineUnix = new String[] {"<command>"};
+String[] commandLine = new String[] {"<command>"};
+String childJob = null;
+%>  
+java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
+<%
+try {
+  if(useIndependentProcess){ 
+    commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+    if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
+      int tmpSize = commandLine.length - 2;
+      String[] tmp = new String[tmpSize];
+      System.arraycopy(commandLine, 2, tmp, 0, tmpSize);
+      commandLine = tmp;
+    }
+  }else{
+    commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);  
   }
+} catch (ProcessorException e) {
+}
 
-  List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
-    
-  //if tRunJob is the first node, it can get the return values of the child job.
-  //if tRunJob is middle node of the FLOW link, it will be data_auto_propagate=true 
-  List< ? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
-  
-  boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_CHILD_ERROR__"));  
-  boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();  
-  boolean transmitWholeContext = ("true").equals(ElementParameterParser.getValue(node, "__TRANSMIT_WHOLE_CONTEXT__"));  
-  boolean printParameter = ("true").equals(ElementParameterParser.getValue(node, "__PRINT_PARAMETER__")); 
-  IProcess currentProcess = node.getProcess();
-  List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
-  String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
-  String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
-  String version = ElementParameterParser.getValue(node,"__PROCESS_TYPE_VERSION__");
-  String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid"};
-  String[] commandLineWindows = new String[] {"<command>"};
-  String[] commandLineUnix = new String[] {"<command>"};
-  String[] commandLine = new String[] {"<command>"};
-  try {
-    // for windows
-    //commandLineWindows = ProcessorUtilities.getCommandLine("win32", true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-    // for linux
-    //commandLineUnix = ProcessorUtilities.getCommandLine("linux", true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-    // for current OS
-    //commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-    commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-  } catch (ProcessorException e) {
-  }
-  String childJob = null;
-  if(commandLine.length > 0) {
-    childJob = commandLine[0];
-  }    
-  %>
-  
-  java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
-  
-  <%
-  for (int i=1; i<commandLine.length; i++) {
-    if(commandLine[i].startsWith("--context=")){
+for (int i = 0; i < commandLine.length; i++) {
+  // commandLine[i] = commandLine[i].replace("\n", "");
+  if (i == 0 && useIndependentProcess){
     %>
-      paraList_<%=cid %>.add("<%=commandLine[i] %>");
-    <%}else{%>
+    paraList_<%=cid %>.add("<%=commandLine[i]%>");
+    <%
+  } else if (i == 0 && !useIndependentProcess){
+    childJob = commandLine[0];
+  } else if (i > 0){
+    if (commandLine[i].indexOf("\"") >= 0){
+      %>
       paraList_<%=cid %>.add(<%=commandLine[i] %>);
+    <%}else{%>
+      paraList_<%=cid %>.add("<%=commandLine[i] %>");
     <%}
   }
+}%>
+
+if(resuming_logs_dir_path != null){
+  paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
+}
+String childResumePath_<%=cid %> = ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path);
+String tRunJobName_<%=cid %> = ResumeUtil.getRighttRunJob(resuming_checkpoint_path);
+if("<%=cid %>".equals(tRunJobName_<%=cid %>) && childResumePath_<%=cid %> != null){
+  paraList_<%=cid %>.add("--resuming_checkpoint_path=" + ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path));
+}
+paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %>");
+<%
+if(transmitWholeContext){
+%> 
+  context.synchronizeContext();
+  java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
+  while (propertyNames_<%=cid %>.hasMoreElements()) {
+    String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
+    Object value_<%=cid %> = (Object) context.get(key_<%=cid %>);       
+    paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
+  }
+<%}
+for (int i=0; i<contextParams.size(); i++) {
+  Map<String, String> contextParam = contextParams.get(i);
+  String name = contextParam.get("PARAM_NAME_COLUMN");
+  String value = contextParam.get("PARAM_VALUE_COLUMN");
   %>
+  paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(<%=value %>));
+<%}%>
+<%if(printParameter){%>
+  System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%=childJob %> with:\n\n" + paraList_<%=cid %> + "\n");
+<%}
   
-  if(resuming_logs_dir_path != null){
-    paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
-  }
-  String childResumePath_<%=cid %> = ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path);
-  String tRunJobName_<%=cid %> = ResumeUtil.getRighttRunJob(resuming_checkpoint_path);
-  if("<%=cid %>".equals(tRunJobName_<%=cid %>) && childResumePath_<%=cid %> != null){
-    paraList_<%=cid %>.add("--resuming_checkpoint_path=" + ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path));
-  }
-  paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %>");
-
-  <%
-  if(transmitWholeContext){
-  %> 
-    context.synchronizeContext();
-    java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
-    while (propertyNames_<%=cid %>.hasMoreElements()) {
-      String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
-      Object value_<%=cid %> = (Object) context.get(key_<%=cid %>);       
-      paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
-    }
-  <%}
-
-  for (int i=0; i<contextParams.size(); i++) {
-    Map<String, String> contextParam = contextParams.get(i);
-    String name = contextParam.get("PARAM_NAME_COLUMN");
-    String value = contextParam.get("PARAM_VALUE_COLUMN");
-    %>
-    paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(<%=value %>));
-  <%}%>
-
-  <%if(printParameter){%>
-    System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%=childJob %> with:\n\n" + paraList_<%=cid %> + "\n");
-  <%}%>
-
-  <%=childJob %> childJob_<%=cid %> = new <%=childJob %>();       
+if (!useIndependentProcess){
+%>
+  <%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
   String[][] childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
-
   <%
-  if (childJob!=null) {
-    if(isRunInMultiThread ){
+  if (childJob != null) {
+    if (isRunInMultiThread ){
     %>
       ((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=cid %>.getErrorCode());
     <%}else {%>
@@ -130,14 +134,13 @@ imports="
       globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
     }  
     globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
-    
+  
     <%if (dieOnError) { %> 
       if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
         throw new RuntimeException("Child job running failed");
       }
     <%}
   }%>
-
   <%
   String firstConnName = null; 
   if(outConns != null && outConns.size() > 0) {
@@ -147,39 +150,94 @@ imports="
       break;
     }
   }
-
   if(firstConnName != null) {//b
     if(inConns == null || inConns.size() == 0){//c
     %>
       for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
+      <%
+      int columnSize = columns.size();
+      for (int i = 0; i < columnSize; i++) {//a
+        IMetadataColumn column = columns.get(i);
+        String label = column.getLabel();
+        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+        JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+        String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+        %>		
+        if(<%=i %> < item_<%=cid %>.length){				
+           <%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
+             <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>];
+           <%} else if(javaType == JavaTypesManager.DATE) {%>
+             <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(item_<%=cid %>[<%=i %>], <%= patternValue %>);
+           <%} else if(javaType == JavaTypesManager.BYTE_ARRAY){%>							
+             <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>].getBytes();
+           <%} else {%>
+             <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>]);
+           <%}%>
+        }else{
+  	      <%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+        }
         <%
-	    int columnSize = columns.size();
-	    for (int i = 0; i < columnSize; i++) {//a
-		  IMetadataColumn column = columns.get(i);
-		  String label = column.getLabel();
-		  String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-		  JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-		  String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-          %>		
-	      if(<%=i %> < item_<%=cid %>.length){				
-            <%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
-		      <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>];
-            <%} else if(javaType == JavaTypesManager.DATE) {%>
-		      <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(item_<%=cid %>[<%=i %>], <%= patternValue %>);
-            <%} else if(javaType == JavaTypesManager.BYTE_ARRAY){%>							
-	          <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>].getBytes();
-            <%} else {%>
-		      <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>]);
-            <%}%>							
-          }else{
-    	    <%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-          }
-        <%
-	    }//a
+      }//a
     }else{//c
     //in order to match the "}" about IS_MULTIPLYING_OUTPUTS="true"
     %>
-	  {
+      {
     <%
     }
-  }//b%>
+  }//b  
+} else {
+  // use independent process to run subjob
+%>
+  Runtime runtime_<%=cid %> = Runtime.getRuntime();
+  final Process ps_<%=cid %>;
+  ps_<%=cid %> = runtime_<%=cid %>.exec((String[])paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
+
+  Thread normal_<%=cid %> = new Thread() {
+    public void run() {
+      try {
+        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getInputStream()));
+        String line = "";
+        try {
+          while((line = reader.readLine()) != null) {
+            System.out.println(line);
+          }
+        } finally {
+          reader.close();
+        }
+      } catch(java.io.IOException ioe) {
+        ioe.printStackTrace();
+      }
+    }
+  };
+  normal_<%=cid %>.start();
+
+  final StringBuffer errorMsg_<%=cid %> = new StringBuffer();
+  Thread error_<%=cid %> = new Thread() {
+    public void run() {
+      try {
+        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getErrorStream()));
+        String line = "";
+        try {
+          while((line = reader.readLine()) != null) {
+            errorMsg_<%=cid %>.append(line).append("\n");
+          }
+        } finally {
+          reader.close();
+        }
+      } catch(java.io.IOException ioe) {
+        ioe.printStackTrace();
+      }
+    }
+  };
+  error_<%=cid %>.start();
+
+  ps_<%=cid %>.waitFor();
+  normal_<%=cid %>.interrupt();
+  error_<%=cid %>.interrupt();
+
+  if(errorMsg_<%=cid %>.length() != 0){
+    throw new Exception(errorMsg_<%=cid %>.toString());
+  }
+<%
+}
+%>
