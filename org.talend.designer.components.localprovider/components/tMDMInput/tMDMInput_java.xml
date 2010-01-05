@@ -158,6 +158,7 @@
       NAME="LOOP_QUERY"
       FIELD="TEXT"
       GROUP="XMLMAPPING"
+      REPOSITORY_VALUE="XPATH_QUERY"
       NUM_ROW="20">
       <DEFAULT>"/bills/bill/line"</DEFAULT>
     </PARAMETER>

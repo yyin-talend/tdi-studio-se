@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -151,7 +152,7 @@ public class RepositoryDoubleClickAction extends Action {
      */
     private boolean isMDMTable(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-        if (nodeType == ERepositoryObjectType.MDM_CONCEPT) {
+        if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
             node = node.getParent();
             nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
             if (nodeType == ERepositoryObjectType.METADATA_MDMCONNECTION) {
@@ -201,6 +202,10 @@ public class RepositoryDoubleClickAction extends Action {
                 }
 
                 if (isSAPTable(obj) && current.getClassForDoubleClick().equals(SAPConnection.class)) {
+                    return current;
+                }
+
+                if (isMDMTable(obj) && current.getClassForDoubleClick().equals(MDMConnection.class)) {
                     return current;
                 }
 
