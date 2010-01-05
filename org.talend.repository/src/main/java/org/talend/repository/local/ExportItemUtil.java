@@ -44,6 +44,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.Item;
@@ -51,10 +52,12 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.TDQItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.tis.ITDQImportExportService;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
@@ -324,21 +327,39 @@ public class ExportItemUtil {
 
     private void computeItemFilesAndPaths(File destinationFile, Item item, boolean projectFolderStructure) {
         IPath fileNamePath = getProjectPath();
+        ITDQImportExportService service = null;
+        try {
+            service = (ITDQImportExportService) GlobalServiceRegister.getDefault().getService(ITDQImportExportService.class);
+        } catch (RuntimeException e) {
+            // nothing to do
+        }
         if (projectFolderStructure) {
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
             IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
+            if (itemType == ERepositoryObjectType.TDQ_ELEMENT) {
+                if (service != null) {
+                    typeFolderPath = service.getItemTypePath((TDQItem) item);
+                }
+            }
             if (item.getProperty().getItem().getState().getPath() == null) {
                 item.getProperty().getItem().getState().setPath(""); //$NON-NLS-1$
             }
             IPath itemDestinationPath = typeFolderPath.append(item.getProperty().getItem().getState().getPath());
             fileNamePath = fileNamePath.append(itemDestinationPath);
         }
-        fileNamePath = fileNamePath.append(ResourceFilenameHelper.getExpectedFileName(item.getProperty().getLabel(), item
-                .getProperty().getVersion()));
+        String itemFileName = ResourceFilenameHelper.getExpectedFileName(item.getProperty().getLabel(), item.getProperty()
+                .getVersion());
+        if (item instanceof TDQItem && service != null) {
+            itemFileName = service.getFileNameWithVersion((TDQItem) item);
+        }
+        fileNamePath = fileNamePath.append(itemFileName);
         propertyPath = fileNamePath.addFileExtension(FileConstants.PROPERTIES_EXTENSION);
         propertyFile = new File(destinationFile, propertyPath.toOSString());
 
         itemPath = fileNamePath.addFileExtension(FileConstants.ITEM_EXTENSION);
+        if (item instanceof TDQItem && service != null) {
+            itemPath = service.getTDQItemPath(fileNamePath, (TDQItem) item);
+        }
         itemFile = new File(destinationFile, itemPath.toOSString());
 
     }
@@ -371,14 +392,33 @@ public class ExportItemUtil {
     }
 
     private void createItemResources(Item item, Collection<EObject> copiedObjects) {
+        // tdq
+        ITDQImportExportService service = null;
+        try {
+            service = (ITDQImportExportService) GlobalServiceRegister.getDefault().getService(ITDQImportExportService.class);
+        } catch (RuntimeException e) {
+            // nothing to do
+        }
+
         propertyResource = createResource(propertyFile, false);
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getProperty());
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItemState());
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItem());
 
+        if (item instanceof TDQItem && service != null) {
+            // for TaggedValue
+            service.moveObjectsToPropertyResource(propertyResource, copiedObjects);
+
+        }
         boolean isFileItem = PropertiesPackage.eINSTANCE.getFileItem().isSuperTypeOf(item.eClass());
         itemResource = createResource(itemFile, isFileItem);
         moveObjectsToResource(itemResource, copiedObjects, null);
+
+        if (item instanceof TDQItem && service != null) {
+            // for Item
+            service.moveObjectsToItemResource(itemResource, (TDQItem) item);
+
+        }
     }
 
     private void fixItem(Item item) {
@@ -421,19 +461,30 @@ public class ExportItemUtil {
                     EList referencedEList = (EList) item.eGet(reference);
                     for (Iterator iterator = referencedEList.iterator(); iterator.hasNext();) {
                         EObject referenceEObject = (EObject) iterator.next();
-                        if (referenceEObject != null) {
+                        if (referenceEObject != null && !objects.contains(referenceEObject)) {
                             objects.add(referenceEObject);
                         }
                     }
                 } else {
                     EObject referenceEObject = (EObject) item.eGet(reference);
-                    if (referenceEObject != null) {
+                    if (referenceEObject != null && !objects.contains(referenceEObject)) {
                         objects.add(referenceEObject);
                     }
                 }
             }
         }
-
+        ITDQImportExportService service = null;
+        try {
+            service = (ITDQImportExportService) GlobalServiceRegister.getDefault().getService(ITDQImportExportService.class);
+        } catch (RuntimeException e) {
+            // nothing to do
+        }
+        if (item instanceof TDQItem && service != null) {
+            final Collection<EObject> tdqObjects = service.needCopyObjects((TDQItem) item);
+            if (tdqObjects != null) {
+                objects.addAll(tdqObjects);
+            }
+        }
         return EcoreUtil.copyAll(objects);
     }
 
