@@ -167,12 +167,22 @@ for (int i=0; i<files.size(); i++) {
  
         String currentFileName_<%=cid%> = files_<%=cid%>.getName(); 
         String currentFilePath_<%=cid%> = files_<%=cid%>.getAbsolutePath();
+        String currentFileDirectory_<%=cid%> = files_<%=cid%>.getParent();
+        String currentFileExtension_<%=cid%> = null;
+        if(files_<%=cid%>.getName().contains(".") && files_<%=cid%>.isFile()){
+        	currentFileExtension_<%=cid%> = files_<%=cid%>.getName().substring(files_<%=cid%>.getName().lastIndexOf(".") + 1);
+        }else{
+        	currentFileExtension_<%=cid%> = "";
+        }
 <%if(toSlash){%>
 		currentFilePath_<%=cid%> = currentFilePath_<%=cid%>.replaceAll("\\\\", "/");
+		currentFileDirectory_<%=cid%> = currentFileDirectory_<%=cid%>.replaceAll("\\\\", "/");
 <%}%>   
         NB_FILE<%=cid%>++;
         
         globalMap.put("<%=cid%>_CURRENT_FILE", currentFileName_<%=cid%>);
         globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+        globalMap.put("<%=cid %>_CURRENT_FILEDIRECTORY", currentFileDirectory_<%=cid%>);
+        globalMap.put("<%=cid %>_CURRENT_FILEEXTENSION", currentFileExtension_<%=cid%>);
         globalMap.put("<%=cid%>_NB_FILE", NB_FILE<%=cid%>);
         
