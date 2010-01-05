@@ -214,7 +214,7 @@ org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createComp
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 <%
 					}
-					if(!isMerge){
+					if(!isMerge || isCompact){
 %>
 format_<%=cid %>.setTrimText(false);
 <%					}%>
