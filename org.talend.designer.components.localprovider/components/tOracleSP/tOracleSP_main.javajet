@@ -139,6 +139,7 @@ if (canGenerate) {
 			String argName = spArg.get("COLUMN");
 			String argType = spArg.get("TYPE");
 			boolean isCustom = ("true").equals(spArg.get("ISCUSTOME"));
+			String customeType = spArg.get("CUSTOME_TYPE");
 			String argCustom = spArg.get("CUSTOMENAME");
 			
 			// Search Java type of argument, based on schema column
@@ -165,7 +166,7 @@ if (canGenerate) {
 				if(isCustom){
 %>
 				if (<%=inConnectionName%>.<%=argName%> == null) {
-					statement_<%=cid%>.setNull(<%=argIndex%>, java.sql.Types.STRUCT, <%=argCustom%>);
+					statement_<%=cid%>.setNull(<%=argIndex%>, java.sql.Types.<%=customeType %>, <%=argCustom%>);
 				} else {
 					statement_<%=cid%>.setObject(<%=argIndex%>,<%=inConnectionName%>.<%=argName%>);
 				}
@@ -219,7 +220,7 @@ if (canGenerate) {
 			if (("OUT").equals(argType) || ("INOUT").equals(argType) ) {
 				if(isCustom){
 %>
-				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.STRUCT,<%=argCustom %>);
+				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=customeType %>,<%=argCustom %>);
 <%
 				}else{
 %>
