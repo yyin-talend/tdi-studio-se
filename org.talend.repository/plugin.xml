@@ -1049,7 +1049,13 @@
              id="org.talend.repository.model.migration.ConnectionAddUniqueNameMigrationTask"
              name="Connection add unique name">
        </projecttask>
-       
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.MigrationTaskForIssue10862"
+             description="take custom pattern out of the pattern list, make it as a check box"
+             id="org.talend.repository.model.migration.MigrationTaskForIssue10862"
+             name="MigrationTaskForIssue10862">
+       </projecttask>
    </extension>
    
    <extension
