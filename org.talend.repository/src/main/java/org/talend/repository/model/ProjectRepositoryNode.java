@@ -237,6 +237,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private String showSVNRoot() {
         String urlPath = currentBranch;
+        if (!urlPath.contains("trunk") && !urlPath.contains("branches") && !urlPath.contains("tags")) {//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
+            return null;
+        }
         if ("".equals(urlPath) || urlPath == null) {
             return null;
         }
