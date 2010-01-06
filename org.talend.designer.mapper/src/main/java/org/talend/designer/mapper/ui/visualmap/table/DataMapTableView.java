@@ -300,7 +300,7 @@ public abstract class DataMapTableView extends Composite {
 
         if (WindowSystem.isGTK()) {
             Color systemColor = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-            setBackground(new Color(display, systemColor.getRed(), systemColor.getGreen(), systemColor.getBlue() + 1));
+            setBackground(new Color(display, systemColor.getRed(), systemColor.getGreen(), systemColor.getBlue()));
             setBackgroundMode(SWT.INHERIT_NONE);
         } else {
             Color listBackground = display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
