@@ -264,8 +264,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String[] originalList = param.getListItemsDisplayName();
         for (int i = 0; i < valuesList.length; i++) {
             if (valuesList[i].equals(value)) {
-                return valuesList[i].toString();
-                // return originalList[i];
+                if ("DB_VERSION".equals(repositoryName)) {
+                    return valuesList[i].toString();
+                }
+                return originalList[i];
             }
         }
         return ""; //$NON-NLS-1$
@@ -292,6 +294,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (!sameExtraParameter(param)) {
                 continue;
             }
+            // if ("TYPE".equals(repositoryName) && "CONNECTION_TYPE".equals(param.getName())) {
+            // return (String) param.getValue();
+            // }
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
