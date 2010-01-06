@@ -30,7 +30,7 @@ imports="
 		}
 		
 		public void createConnection(INode node) {
-			
+			super.createConnection(node);
 %>
 			conn_<%=cid%>.setAutoCommit(false);
 <%

@@ -20,7 +20,6 @@ imports="
 	class DBInputBeginUtil extends DefaultDBInputUtil{
 	    
 		public void setURL(INode node) {
-			
 %>
 			String url_<%=cid %> = "jdbc:sasiom://"+<%=dbhost%>+":"+<%=dbport%>;
 <%
@@ -31,15 +30,21 @@ imports="
 		}
 		
 		public void createConnection(INode node) {
+			dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
 			dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 			dbuser = ElementParameterParser.getValue(node, "__USER__");
 			dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 %>
+			java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
+			String dbName_<%=cid %> = <%=dbname%>;
+			String dbUser_<%=cid %> = <%=dbuser%>;
+			String dbPwd_<%=cid %> = <%=dbpwd%>;
 			java.util.Properties property_<%=cid %> = new java.util.Properties();
 			property_<%=cid %>.setProperty("librefs", dbName_<%=cid %>);
 			property_<%=cid %>.setProperty("username", dbUser_<%=cid %>);
 			property_<%=cid %>.setProperty("password", dbPwd_<%=cid %>);
-			
+			<%this.setURL(node);%>
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, property_<%=cid %>);
 <%
 			

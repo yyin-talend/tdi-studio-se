@@ -26,6 +26,21 @@ imports="
 <%
 		}
 		
+		public void createConnection(INode node) {
+			cid = node.getUniqueName();
+			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+			dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
+	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
+	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+%>
+			    java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
+				<%this.setURL(node);%>
+		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+<%
+		}
+		
 		public String getDirverClassName(INode node){
 			return "org.sqlite.JDBC";
 		}
