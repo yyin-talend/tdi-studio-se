@@ -106,4 +106,10 @@ public class FolderWizard extends Wizard {
             return false;
         }
     }
+
+    @Override
+    public boolean canFinish() {
+        return super.canFinish() && !mainPage.getName().equals(defaultLabel);
+    }
+
 }
