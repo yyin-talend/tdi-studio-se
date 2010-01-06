@@ -2031,6 +2031,14 @@ public class Node extends Element implements INode {
                         if (tableValues == null || tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        } else {
+                            for (Map<String, String> map : tableValues) {
+                                if (map != null) {
+                                    if ("".equals(map.get("QUERY")) || map.get("QUERY") == null) {//$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                                        Problems.add(ProblemStatus.ERROR, this, Messages.getString("Node.QueryLosed")); //$NON-NLS-1$
+                                    }
+                                }
+                            }
                         }
                     }
                     break;
