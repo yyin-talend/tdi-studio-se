@@ -99,7 +99,7 @@ import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.threading.AsynchronousThreading;
-import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -259,9 +259,9 @@ public abstract class DataMapTableView extends Composite {
 
     private ContentProposalAdapterExtended proposalForExpressionFilterText;
 
-    private ExecutionLimiter executionLimiterForCheckProblemsExpressionFilter;
+    private ExecutionLimiterImproved executionLimiterForCheckProblemsExpressionFilter;
 
-    private ExecutionLimiter executionLimiterForExpressionFilterSetText = null;
+    private ExecutionLimiterImproved executionLimiterForExpressionFilterSetText = null;
 
     private ContentProposalAdapterExtended expressionProposalStyledText;
 
@@ -1637,14 +1637,14 @@ public abstract class DataMapTableView extends Composite {
         });
         expressionTextEditor.addControlListener(new ControlListener() {
 
-            ExecutionLimiter executionLimiter = null;
+            ExecutionLimiterImproved executionLimiter = null;
 
             public void controlMoved(ControlEvent e) {
             }
 
             public void controlResized(ControlEvent e) {
                 if (executionLimiter == null) {
-                    executionLimiter = new ExecutionLimiter(50, true) {
+                    executionLimiter = new ExecutionLimiterImproved(50, true) {
 
                         @Override
                         public void execute(boolean isFinalExecution, Object data) {
@@ -1844,8 +1844,6 @@ public abstract class DataMapTableView extends Composite {
      * 
      * 
      * <br/>
-     * 
-     * $Id$
      * 
      */
     class ExpressionColorProvider {
@@ -2167,7 +2165,7 @@ public abstract class DataMapTableView extends Composite {
             expressionFilterText.addListener(SWT.MouseMove, showTooltipErrorListener);
 
             if (executionLimiterForExpressionFilterSetText == null) {
-                executionLimiterForExpressionFilterSetText = new ExecutionLimiter(50, true) {
+                executionLimiterForExpressionFilterSetText = new ExecutionLimiterImproved(50, true) {
 
                     @Override
                     public void execute(boolean isFinalExecution, Object data) {
@@ -2303,7 +2301,7 @@ public abstract class DataMapTableView extends Composite {
     public void checkProblemsForExpressionFilterWithDelay() {
         if (this.executionLimiterForCheckProblemsExpressionFilter == null) {
 
-            this.executionLimiterForCheckProblemsExpressionFilter = new ExecutionLimiter(2000, true) {
+            this.executionLimiterForCheckProblemsExpressionFilter = new ExecutionLimiterImproved(2000, true) {
 
                 /*
                  * (non-Javadoc)
