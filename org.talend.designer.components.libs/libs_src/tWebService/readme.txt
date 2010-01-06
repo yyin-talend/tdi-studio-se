@@ -34,3 +34,8 @@ please @see talend-ws-1.0.jar\org\talend\ws\helper\ServiceInvokerHelper.java
 
 please @see org\talend\ws\helper\ServiceDiscoveryHelper.java
 			org\talend\ws\helper\ServiceInvokerHelper.java
+			
+6.(2010-01-05 modified by bchen) fiexd bug 8674
+
+please @see org\talend\ws\helper\ServiceDiscoveryHelper.java
+			org\talend\ws\helper\ServiceInvokerHelper.java

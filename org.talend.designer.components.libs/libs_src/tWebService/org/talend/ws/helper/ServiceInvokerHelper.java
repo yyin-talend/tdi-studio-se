@@ -5,6 +5,7 @@ package org.talend.ws.helper;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import javax.wsdl.WSDLException;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.endpoint.Client;
@@ -77,11 +79,12 @@ public class ServiceInvokerHelper implements ClassMapper {
         mappers = new HashMap<Message, MessageMapper>();
     }
 
-    public ServiceInvokerHelper(String wsdlUri) throws WSDLException, IOException {
+    public ServiceInvokerHelper(String wsdlUri) throws WSDLException, IOException, TransformerException, URISyntaxException {
         this(new ServiceDiscoveryHelper(wsdlUri));
     }
 
-    public ServiceInvokerHelper(String wsdlUri, ServiceHelperConfiguration configuration) throws WSDLException, IOException {
+    public ServiceInvokerHelper(String wsdlUri, ServiceHelperConfiguration configuration) throws WSDLException, IOException,
+            TransformerException, URISyntaxException {
         this(new ServiceDiscoveryHelper(wsdlUri, configuration), configuration);
     }
 
@@ -151,8 +154,9 @@ public class ServiceInvokerHelper implements ClassMapper {
 
     protected Client createClient(QName service, QName port) {
         // bchen bug for 8674
-        Client client = dynamicClientFactory.createClient(serviceDiscoveryHelper.getWsdlUri(), service, Thread.currentThread()
-                .getContextClassLoader(), port, bindingFiles);
+
+        Client client = dynamicClientFactory.createClient(serviceDiscoveryHelper.getLocalWsdlUri(), service, Thread
+                .currentThread().getContextClassLoader(), port, bindingFiles);
         // end
         HTTPConduit conduit = (HTTPConduit) client.getConduit();
         if (configuration != null) {
