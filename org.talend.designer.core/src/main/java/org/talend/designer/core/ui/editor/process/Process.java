@@ -205,6 +205,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     byte[] innerContent = null;
 
+    private List<byte[]> externalInnerContents = new ArrayList<byte[]>();
+
     public Process(Property property) {
         this.property = property;
         contextManager = new JobContextManager();
@@ -1345,6 +1347,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         byte[] innerContent = nType.getScreenshot();
         if (nc.getExternalNode() != null && !CommonsPlugin.isHeadless()) {
             nc.getExternalNode().setScreenshot(ImageUtils.createImageFromData(innerContent));
+            externalInnerContents.add(innerContent);
         }
 
         return nc;
@@ -2937,6 +2940,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         editor = null;
         viewer = null;
         ImageUtils.disposeImages(innerContent);
+        for (byte data[] : externalInnerContents) {
+            ImageUtils.disposeImages(data);
+        }
     }
 
     // public void dispose() {
