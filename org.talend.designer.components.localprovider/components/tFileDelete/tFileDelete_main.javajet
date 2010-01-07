@@ -59,20 +59,20 @@ if(either){
 	if(path_<%=cid%>.exists()){
 		if(path_<%=cid%>.isFile()){
 	    	if(path_<%=cid%>.delete()){
-	    		globalMap.put("<%=cid %>_CURRENT_STATUS", true);
+	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
 	    	}else{
-	    		globalMap.put("<%=cid %>_CURRENT_STATUS", false);
+	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
 	    	}
 		}else if(path_<%=cid%>.isDirectory()){ 
 	    	DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
 	    	if(df<%=cid%>.delete(path_<%=cid%>)){
-	    		globalMap.put("<%=cid %>_CURRENT_STATUS", true);
+	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
 	    	}else{
-	    		globalMap.put("<%=cid %>_CURRENT_STATUS", false);
+	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
 	    	}
 		}
     }else{
-		globalMap.put("<%=cid %>_CURRENT_STATUS", false);
+		globalMap.put("<%=cid %>_CURRENT_STATUS", "File or path does not exists.");
 
 <%
 		if(("true").equals(failon)){
@@ -92,12 +92,12 @@ if(either){
 	if(file<%=cid%>.exists()&& file<%=cid%>.isDirectory()){
 		DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
 		if(df<%=cid%>.delete(file<%=cid%>)){
-    		globalMap.put("<%=cid %>_CURRENT_STATUS", true);
+    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
     	}else{
-    		globalMap.put("<%=cid %>_CURRENT_STATUS", false);
+    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
     	}
 	}else{
-		globalMap.put("<%=cid %>_CURRENT_STATUS", false);
+		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
 
 <%
 		if(("true").equals(failon)){
@@ -114,12 +114,12 @@ if(either){
     java.io.File file_<%=cid%>=new java.io.File(<%=fileName%>);
     if(file_<%=cid%>.exists()&& file_<%=cid%>.isFile()){
     	if(file_<%=cid%>.delete()){
-    		globalMap.put("<%=cid %>_CURRENT_STATUS", true);
+    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
     	}else{
-    		globalMap.put("<%=cid %>_CURRENT_STATUS", false);
+    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
     	}
     }else{
-    	globalMap.put("<%=cid %>_CURRENT_STATUS", false);
+    	globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
 <%
 		if(("true").equals(failon)){
 %>
