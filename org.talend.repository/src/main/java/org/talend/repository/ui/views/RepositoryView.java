@@ -96,6 +96,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -553,6 +554,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     private void fillLocalPullDown(IMenuManager manager) {
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        if (project.isLocal()) {
+            return;
+        }
         IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
                 "org.talend.repository.repository_menu_provider");
         for (IConfigurationElement elem : elems) {
