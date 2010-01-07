@@ -19,7 +19,12 @@
 %>
 
             }
-            fid_<%=cid %>.close();
+           	}finally{
+           		if(fid_<%=cid %>!=null){
+            		fid_<%=cid %>.close();
+            		fid_<%=cid %> = null;
+            	}
+            }
             globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
 <%
 		}
