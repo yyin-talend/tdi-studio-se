@@ -191,7 +191,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		                <% 
     		                if(flushOnRow) { 
     		                    %>
-        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
         		                out<%=cid %>.flush();
         		                }
     		                    <%
@@ -202,7 +202,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		                <% 
     		                if(flushOnRow) { 
     		                    %>
-        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
         		                out<%=cid %>.flush();
         		                }
     		                    <%
@@ -220,7 +220,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		            <% 
     		            if(flushOnRow) { 
     		                %>
-        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
         		                out<%=cid %>.flush();
         		                }
     		                <%
@@ -504,7 +504,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                         		<%}
                         		if(flushOnRow) { 
                         		    %>
-            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
             		                <%if(isInRowMode){%>
             		                out<%=cid%>.flush();
             		                <%}else{%>
@@ -523,7 +523,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
          					    <%}
          					    if(flushOnRow) { 
          					        %>
-            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
             		                <%if(isInRowMode){%>
             		                out<%=cid%>.flush();
             		                <%}else{%>
@@ -546,7 +546,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			    <%}
             			    if(flushOnRow) { 
             			        %>
-            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
             		                <%if(isInRowMode){%>
             		                out<%=cid%>.flush();
             		                <%}else{%>
