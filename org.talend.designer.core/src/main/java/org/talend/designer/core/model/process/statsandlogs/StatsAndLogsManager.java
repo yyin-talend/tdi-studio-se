@@ -437,9 +437,13 @@ public class StatsAndLogsManager {
         if (param != null) {
             processDBVersion = (String) param.getValue();
         }
+        if (processDBType.equals("Oracle OCI")) {
+            processDBSID = processDBName;
+        }
         String dbURL = DatabaseConnStrUtil.getURLString(true, processDBType, processDBVersion, processHost, processDBUser,
                 processDBPass, processDBPort, processDBSID, processDBFileName, processDBDatasouce, processDBFileName,
                 processDBAdditionParameters);
+
         return dbURL;
     }
 
@@ -487,6 +491,11 @@ public class StatsAndLogsManager {
             connectionNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
                     process.getElementParameter(EParameterName.DBNAME.getName()).getValue());
         }
+        if (connectionNode.getElementParameter(EParameterName.LOCAL_SERVICE_NAME.getName()) != null) {
+            connectionNode.getElementParameter(EParameterName.LOCAL_SERVICE_NAME.getName()).setValue(
+                    process.getElementParameter(EParameterName.LOCAL_SERVICE_NAME.getName()).getValue());
+        }
+
         // 7253
         IElementParameter elementParameter = connectionNode.getElementParameter("PROPERTY");
         if (elementParameter != null) {
@@ -897,7 +906,20 @@ public class StatsAndLogsManager {
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' )"); //$NON-NLS-1$
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' "); //$NON-NLS-1$
+        paramList.add(param);
+
+        // local service name
+        param = new ElementParameter(process);
+        param.setName(EParameterName.LOCAL_SERVICE_NAME.getName());
+        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.LOCAL_SERVICE_NAME.getName())));
+        param.setDisplayName(EParameterName.LOCAL_SERVICE_NAME.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(54);
+        param.setRepositoryValue("SID"); //$NON-NLS-1$
+        param
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and DB_TYPE =='OCLE_OCI'"); //$NON-NLS-1$ //and (DB_TYPE == 'OCLE_OCI'
         paramList.add(param);
 
         // additional parameters
@@ -912,6 +934,7 @@ public class StatsAndLogsManager {
         param
                 .setShowIf("(DB_TYPE=='SQL_SERVER' or DB_TYPE=='MYSQL' or DB_TYPE=='INFORMIX') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
+
         // schema
         param = new ElementParameter(process);
         param.setName(EParameterName.SCHEMA_DB.getName());
@@ -922,7 +945,7 @@ public class StatsAndLogsManager {
         param.setNumRow(54);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
         param
-                .setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL' or DB_TYPE=='OCLE_OCI') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+                .setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // username

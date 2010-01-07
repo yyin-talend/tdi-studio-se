@@ -310,6 +310,11 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         newParam.setField(EParameterFieldType.CHECK);
         elemParamList.add(newParam);
 
+        newParam = new ElementParameter(node);
+        newParam.setName("LOCAL_SERVICE_NAME"); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
     }
 
     protected void addFileOutputParameters(List<IElementParameter> elemParamList, INode node) {
@@ -415,6 +420,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
                 multipleComponentManager.addParam("self.DB_TYPE", "DB.DB_TYPE"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.CONNECTION_TYPE", "DB.CONNECTION_TYPE"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.USE_TRANSACTION", "DB.USE_TRANSACTION"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.LOCAL_SERVICE_NAME", "DB.LOCAL_SERVICE_NAME"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
