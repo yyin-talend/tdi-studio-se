@@ -325,10 +325,14 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         String[] curColumnValueList = null;
 
         List<String> refColumnListNamesTmp = new ArrayList<String>();
+        List<String> refColumnListNamesTmpWithSourceName = new ArrayList<String>();
         List<String> refColumnListValuesTmp = new ArrayList<String>();
+
         for (IConnection connection : refColumnLists.keySet()) {
+            String oldSourceName = connection.getSource().getUniqueName() + ".";
             String name = connection.getName() + "."; //$NON-NLS-1$
             for (String column : refColumnLists.get(connection)) {
+                refColumnListNamesTmpWithSourceName.add(oldSourceName + column);
                 refColumnListNamesTmp.add(name + column);
                 refColumnListValuesTmp.add(column);
             }
@@ -358,7 +362,19 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
+
+                // for bug 10945
                 boolean currentColumnStillExist = ArrayUtils.contains(curColumnValueList, param.getValue()); // 10155
+                if (!currentColumnStillExist) {
+                    for (int j = 0; j < refColumnListNamesTmpWithSourceName.size(); j++) {
+                        if (param.getValue().equals(refColumnListNamesTmpWithSourceName.get(j))) {
+                            param.setValue(refColumnListValuesTmp.get(j));
+                            break;
+                        }
+                    }
+                    currentColumnStillExist = ArrayUtils.contains(curColumnValueList, param.getValue());
+                }
+
                 if (curColumnNameList.length > 0 && !currentColumnStillExist) {
                     param.setValue(curColumnValueList[0]);
                 } else if (!currentColumnStillExist) {
