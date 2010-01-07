@@ -2031,7 +2031,7 @@ public class Node extends Element implements INode {
                         if (tableValues == null || tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                        } else {
+                        } else if (this.getComponent().getName().equals("tFileInputXML")) {//$NON-NLS-1$
                             for (Map<String, String> map : tableValues) {
                                 if (map != null) {
                                     if ("".equals(map.get("QUERY")) || map.get("QUERY") == null) {//$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
