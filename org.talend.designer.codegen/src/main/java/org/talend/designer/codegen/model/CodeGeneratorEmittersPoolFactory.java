@@ -355,6 +355,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @param monitorWrap
      * 
      * @return
+     * @throws JETException
      */
     private static void initializeEmittersPool(List<JetBean> components, ECodeLanguage codeLanguage, IProgressMonitor monitorWrap) {
         IProgressMonitor monitor = new NullProgressMonitor();
@@ -371,51 +372,26 @@ public final class CodeGeneratorEmittersPoolFactory {
         emitterPool = new HashMap<JetBean, JETEmitter>();
         List<JetBean> alreadyCompiledEmitters = new ArrayList<JetBean>();
 
+        // try {
+        TalendJetEmitter dummyEmitter = null;
         try {
-            TalendJetEmitter dummyEmitter = new TalendJetEmitter(null, null, sub, globalClasspath, !ComponentCompilations
-                    .getMarkers());
+            dummyEmitter = new TalendJetEmitter(null, null, sub, globalClasspath, !ComponentCompilations.getMarkers());
+        } catch (JETException e) {
+            log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.jetEmitterInitialException") + e.getMessage(), e); //$NON-NLS-1$
+        }
 
-            boolean isSkeletonChanged = JetSkeletonManager.updateSkeletonPersistenceData();
-            // if there is one skeleton changed, there need generate all jet--->java again. so, it won't load the
-            // JetPersistenceJAVA
-            if (!isSkeletonChanged) {
-                try {
-                    alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
-                            .loadEmittersPool(), components, monitorWrap);
-                    for (JetBean jetBean : alreadyCompiledEmitters) {
-                        TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
-                                jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
-                                dummyEmitter.getTalendEclipseHelper());
-                        emitter.setMethod(jetBean.getMethod());
-                        emitterPool.put(jetBean, emitter);
-                        monitorBuffer++;
-                        if (monitorBuffer % 100 == 0) {
-                            monitorWrap.worked(100);
-                            monitorBuffer = 0;
-                        }
-                    }
-                } catch (BusinessException e) {
-                    // error already loggued
-                    emitterPool = new HashMap<JetBean, JETEmitter>();
-                }
-            }
-
-            for (JetBean jetBean : components) {
-                if (!emitterPool.containsKey(jetBean)) {
-                    // System.out.println("The new file is not in JetPersistence* cache:" +
-                    // jetBean.getTemplateFullUri());
+        boolean isSkeletonChanged = JetSkeletonManager.updateSkeletonPersistenceData();
+        // if there is one skeleton changed, there need generate all jet--->java again. so, it won't load the
+        // JetPersistenceJAVA
+        if (!isSkeletonChanged) {
+            try {
+                alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
+                        .loadEmittersPool(), components, monitorWrap);
+                for (JetBean jetBean : alreadyCompiledEmitters) {
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
                             jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
                             dummyEmitter.getTalendEclipseHelper());
-                    emitter.initialize(sub);
-
-                    if (emitter.getMethod() != null) {
-                        jetBean.setMethod(emitter.getMethod());
-                        jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
-                        alreadyCompiledEmitters.add(jetBean);
-                    } else {
-                        jetFilesCompileFail.add(jetBean);
-                    }
+                    emitter.setMethod(jetBean.getMethod());
                     emitterPool.put(jetBean, emitter);
                     monitorBuffer++;
                     if (monitorBuffer % 100 == 0) {
@@ -423,16 +399,84 @@ public final class CodeGeneratorEmittersPoolFactory {
                         monitorBuffer = 0;
                     }
                 }
+            } catch (BusinessException e) {
+                // error already loggued
+                emitterPool = new HashMap<JetBean, JETEmitter>();
             }
-            monitorWrap.worked(monitorBuffer);
-        } catch (JETException e) {
-            log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.jetEmitterInitialException") + e.getMessage(), e); //$NON-NLS-1$
         }
+
+        // for (JetBean jetBean : components) {
+        // if (!emitterPool.containsKey(jetBean)) {
+        // // System.out.println("The new file is not in JetPersistence* cache:" +
+        // // jetBean.getTemplateFullUri());
+        // TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
+        // jetBean
+        // .getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(), dummyEmitter
+        // .getTalendEclipseHelper());
+        // emitter.initialize(sub);
+        //
+        // if (emitter.getMethod() != null) {
+        // jetBean.setMethod(emitter.getMethod());
+        // jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
+        // alreadyCompiledEmitters.add(jetBean);
+        // } else {
+        // jetFilesCompileFail.add(jetBean);
+        // }
+        // emitterPool.put(jetBean, emitter);
+        // monitorBuffer++;
+        // if (monitorBuffer % 100 == 0) {
+        // monitorWrap.worked(100);
+        // monitorBuffer = 0;
+        // }
+        // }
+        // }
+        synchronizedComponent(components, sub, alreadyCompiledEmitters, dummyEmitter, monitorBuffer, monitorWrap);
+
+        monitorWrap.worked(monitorBuffer);
+        // } catch (JETException e) {
+        //            log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.jetEmitterInitialException") + e.getMessage(), e); //$NON-NLS-1$
+        // }
         try {
             EmfEmittersPersistenceFactory.getInstance(codeLanguage).saveEmittersPool(
                     extractEmfPersistenData(alreadyCompiledEmitters));
         } catch (BusinessException e) {
             log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.PersitentData.Error") + e.getMessage(), e); //$NON-NLS-1$
+        }
+    }
+
+    private static void synchronizedComponent(List<JetBean> components, IProgressMonitor sub,
+            List<JetBean> alreadyCompiledEmitters, TalendJetEmitter dummyEmitter, int monitorBuffer, IProgressMonitor monitorWrap) {
+        for (JetBean jetBean : components) {
+            if (!emitterPool.containsKey(jetBean)) {
+                // System.out.println("The new file is not in JetPersistence* cache:" +
+                // jetBean.getTemplateFullUri());
+                TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(), jetBean
+                        .getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(), dummyEmitter
+                        .getTalendEclipseHelper());
+                // 10901: Component synchronization fails
+                try {
+                    emitter.initialize(sub);
+                } catch (JETException e) {
+                    log
+                            .error(
+                                    Messages.getString("CodeGeneratorEmittersPoolFactory.jetEmitterInitialException") + e.getMessage(), e); //$NON-NLS-1$
+                    continue;
+                }
+
+                if (emitter.getMethod() != null) {
+                    jetBean.setMethod(emitter.getMethod());
+                    jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
+                    alreadyCompiledEmitters.add(jetBean);
+                } else {
+                    jetFilesCompileFail.add(jetBean);
+                }
+                emitterPool.put(jetBean, emitter);
+                monitorBuffer++;
+                if (monitorBuffer % 100 == 0) {
+                    monitorWrap.worked(100);
+                    monitorBuffer = 0;
+                }
+            }
         }
     }
 
