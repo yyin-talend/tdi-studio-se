@@ -250,6 +250,9 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
 		boolean outputIsDecimal = outputJavaType == JavaTypesManager.FLOAT || outputJavaType == JavaTypesManager.DOUBLE || outputIsBigDecimal;
 		
+		boolean outputIsByte = outputJavaType == JavaTypesManager.BYTE;
+		boolean outputIsShort = outputJavaType == JavaTypesManager.SHORT;
+		
 		boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
 		boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
 		boolean inputIsBoolean = inputJavaType == JavaTypesManager.BOOLEAN;
@@ -423,8 +426,13 @@ if(inputConn != null) { // T_OutMain_AggR_501
 						%>utilClass_<%=cid %>.checkedIADD( (<%= primitiveTypeToGenerate%>) operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>, (<%= primitiveTypeToGenerate%>) <%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>, <%= checkUlp %>);
 						<%
 					}
-					%>operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
+					if(outputColumn.isNullable() && (outputIsByte || outputIsShort)){
+					%>operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = (<%=primitiveTypeToGenerate%>)(operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>.<%=primitiveTypeToGenerate%>Value() + <%=inputConn.getName() %>.<%=inputColumnName %>.<%=primitiveTypeToGenerate%>Value());
 					<%
+					}else{
+					%>operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
+<%
+					}
 				}
 			
 			} else if(function.equals(FIRST)){
