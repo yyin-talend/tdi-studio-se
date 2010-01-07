@@ -139,6 +139,11 @@ public class ProjectSettingManager extends Utils {
         if (stats == null) {
             StatsAndLogsHelper.loadPreferenceToProject(pro);
         }
+        // 10927
+        if (stats.getParameters() == null) {
+            stats.setParameters(TalendFileFactory.eINSTANCE.createParametersType());
+        }
+
         Element elem = pro.getStatsAndLog();
         if (elem == null) {
             elem = new StatsAndLogsElement();
