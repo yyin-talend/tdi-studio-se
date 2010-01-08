@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.swt.SWT;
@@ -27,32 +28,42 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.model.metadata.builder.connection.CDCConnection;
+import org.talend.core.model.metadata.builder.connection.CDCType;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -514,6 +525,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
         }
         CompoundCommand cc = new CompoundCommand();
+        initCDC(cc, repositoryConnectionItem);
         ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, repositoryConnection,
                 paramName, value);
         changeValuesFromRepository1.setMaps(dynamicProperty.getRepositoryTableMap());
@@ -550,6 +562,63 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
         return cc;
 
+    }
+
+    private void initCDC(CompoundCommand cc, ConnectionItem originalConnectionItem) {
+        if (!(elem instanceof Node)) {
+            return;
+        }
+        Node node = (Node) elem;
+
+        // ConnectionItem originalConnectionItem = repositoryConnectionItem;
+        ConnectionItem connectionItem = originalConnectionItem;
+        Connection originalConnection = connectionItem.getConnection();
+        Connection connection = connectionItem.getConnection();
+        if (node.getComponent().getName().contains("CDC")) { // to replace by a flag CDC in component? //$NON-NLS-1$
+            if (originalConnectionItem instanceof DatabaseConnectionItem) {
+                final DatabaseConnection databaseConnection = (DatabaseConnection) connection;
+                CDCConnection cdcConn = databaseConnection.getCdcConns();
+                if (cdcConn != null) {
+                    EList cdcTypes = cdcConn.getCdcTypes();
+                    if (cdcTypes != null && !cdcTypes.isEmpty()) {
+                        CDCType cdcType = (CDCType) cdcTypes.get(0);
+                        // replace property by CDC property.
+                        String propertyId = cdcType.getLinkDB();
+                        try {
+                            IRepositoryObject object = ProxyRepositoryFactory.getInstance().getLastVersion(propertyId);
+                            if (object != null) {
+                                if (object.getProperty().getItem() instanceof DatabaseConnectionItem) {
+                                    DatabaseConnectionItem dbConnItem = (DatabaseConnectionItem) object.getProperty().getItem();
+                                    // replace connection by CDC connection
+                                    connectionItem = dbConnItem;
+                                    connection = dbConnItem.getConnection();
+                                }
+                            }
+                        } catch (PersistenceException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        // set cdc type mode.
+                        IElementParameter logModeParam = node.getElementParameter(EParameterName.CDC_TYPE_MODE.getName());
+                        if (logModeParam != null) {
+                            String cdcTypeMode = ((DatabaseConnection) originalConnection).getCdcTypeMode();
+                            Command logModeCmd = new PropertyChangeCommand(node, EParameterName.CDC_TYPE_MODE.getName(),
+                                    CDCTypeMode.LOG_MODE.getName().equals(cdcTypeMode));
+                            cc.add(logModeCmd);
+                        }
+                        // set lib for as400 so far.
+                        final String name = "SOURCE_LIB"; //$NON-NLS-1$
+                        IElementParameter libParam = node.getElementParameter(name);
+                        if (libParam != null) {
+                            Command libSettingCmd = new PropertyChangeCommand(node, name, TalendTextUtils
+                                    .addQuotes(databaseConnection.getSID()));
+                            cc.add(libSettingCmd);
+                        }
+
+                    }
+                }
+            }
+
+        }
     }
 
     /*

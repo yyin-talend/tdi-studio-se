@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IEbcdicConstant;
@@ -35,11 +38,14 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -169,6 +175,41 @@ public class UpdateNodeParameterCommand extends Command {
                             Object objectValue = RepositoryToComponentProperty.getValue(
                                     (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
                                     repositoryValue);
+                            if (param.getName().equals(EParameterName.CDC_TYPE_MODE.getName())) {
+                                //
+                                String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                        .getName());
+                                Item item = null;
+                                IRepositoryObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+                                if (lastVersion != null) {
+                                    item = lastVersion.getProperty().getItem();
+                                }
+                                if (item != null && PluginChecker.isCDCPluginLoaded()) {
+                                    ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault()
+                                            .getService(ICDCProviderService.class);
+                                    if (service != null) {
+                                        try {
+                                            List<IRepositoryObject> all;
+                                            all = CorePlugin.getDefault().getProxyRepositoryFactory().getAll(
+                                                    ERepositoryObjectType.METADATA_CONNECTIONS);
+                                            for (IRepositoryObject obj : all) {
+                                                Item tempItem = obj.getProperty().getItem();
+                                                if (tempItem instanceof DatabaseConnectionItem) {
+                                                    String cdcLinkId = service
+                                                            .getCDCConnectionLinkId((DatabaseConnectionItem) tempItem);
+                                                    if (cdcLinkId != null && item.getProperty().getId().equals(cdcLinkId)) {
+                                                        objectValue = RepositoryToComponentProperty.getValue(
+                                                                ((DatabaseConnectionItem) tempItem).getConnection(),
+                                                                repositoryValue);
+                                                    }
+                                                }
+                                            }
+                                        } catch (PersistenceException e) {
+                                            ExceptionHandler.process(e);
+                                        }
+                                    }
+                                }
+                            }
                             if (objectValue != null) {
                                 if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                         && repositoryValue.equals(UpdatesConstants.TYPE)) {

@@ -24,6 +24,8 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.ui.IEditorReference;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -60,6 +62,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.AbstractUpdateManager;
 import org.talend.core.model.update.EUpdateItemType;
@@ -68,6 +71,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.utils.SAPConnectionUtils;
@@ -828,7 +832,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                             final IMetadataTable copyOfrepositoryMetadata = table.clone();
                                             // copyOfrepositoryMetadata.setTableName(uniqueName);
-                                            //copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext()
+                                            // copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext()
                                             // );
 
                                             IMetadataTable metadataTable = null;
@@ -901,8 +905,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 RulesItem repositoryRulesItem = null; // hywang add for 6484
                 LinkRulesItem repositoryLinkRulesItem = null;
                 String source = null;
+                Item item = null;
                 if (lastVersion != null) {
-                    final Item item = lastVersion.getProperty().getItem();
+                    item = lastVersion.getProperty().getItem();
                     if (item != null && item instanceof ConnectionItem) {
                         source = UpdateRepositoryUtils.getRepositorySourceName(item);
                         repositoryConnection = ((ConnectionItem) item).getConnection();
@@ -938,6 +943,34 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 continue;
                             }
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
+                            if (param.getName().equals(EParameterName.CDC_TYPE_MODE.getName())
+                                    && item instanceof DatabaseConnectionItem) {
+                                if (PluginChecker.isCDCPluginLoaded()) {
+                                    ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault()
+                                            .getService(ICDCProviderService.class);
+                                    if (service != null) {
+                                        try {
+                                            List<IRepositoryObject> all;
+                                            all = CorePlugin.getDefault().getProxyRepositoryFactory().getAll(
+                                                    ERepositoryObjectType.METADATA_CONNECTIONS);
+                                            for (IRepositoryObject obj : all) {
+                                                Item tempItem = obj.getProperty().getItem();
+                                                if (tempItem instanceof DatabaseConnectionItem) {
+                                                    String cdcLinkId = service
+                                                            .getCDCConnectionLinkId((DatabaseConnectionItem) tempItem);
+                                                    if (cdcLinkId != null && item.getProperty().getId().equals(cdcLinkId)) {
+                                                        objectValue = RepositoryToComponentProperty.getValue(
+                                                                ((DatabaseConnectionItem) tempItem).getConnection(),
+                                                                repositoryValue);
+                                                    }
+                                                }
+                                            }
+                                        } catch (PersistenceException e) {
+                                            ExceptionHandler.process(e);
+                                        }
+                                    }
+                                }
+                            }
                             Object value = param.getValue();
                             if (objectValue != null) {
                                 if ((param.getField().equals(EParameterFieldType.CLOSED_LIST) && UpdatesConstants.TYPE
@@ -998,6 +1031,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                 sameValues = false;
                                             }
                                         }
+                                    } else if (value instanceof Boolean && objectValue instanceof Boolean) {
+                                        sameValues = ((Boolean) value == (Boolean) objectValue);
                                     }
 
                                 }
@@ -1023,6 +1058,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                 sameValues = oldmap.get(UpdatesConstants.QUERY) == null;
                                             }
                                         }
+                                        if (!sameValues) {
+                                            break;
+                                        }
                                     }
                                     if (oldMaps.size() > newMaps.size()) {
                                         int size = newMaps.size();
@@ -1035,6 +1073,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     }
                                 }
                             }
+                        }
+                        if (!sameValues) {
+                            break;
                         }
                     }
                     if (onlySimpleShow || !sameValues) {
