@@ -962,6 +962,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                         objectValue = RepositoryToComponentProperty.getValue(
                                                                 ((DatabaseConnectionItem) tempItem).getConnection(),
                                                                 repositoryValue);
+                                                        break;
                                                     }
                                                 }
                                             }
@@ -1032,7 +1033,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             }
                                         }
                                     } else if (value instanceof Boolean && objectValue instanceof Boolean) {
-                                        sameValues = ((Boolean) value == (Boolean) objectValue);
+                                        sameValues = ((Boolean) value).equals((Boolean) objectValue);
                                     }
 
                                 }
