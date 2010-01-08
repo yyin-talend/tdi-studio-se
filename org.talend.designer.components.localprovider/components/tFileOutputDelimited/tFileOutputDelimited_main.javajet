@@ -150,6 +150,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 					<% 
 						}
     		        %>
+    		        nb_line_<%=cid %>++;
     		        <%
     		        // add a prerequisite useStream to support output stream feature:8873
     		        if(!useStream && split){ 
@@ -191,7 +192,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		                <% 
     		                if(flushOnRow) { 
     		                    %>
-        		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
         		                out<%=cid %>.flush();
         		                }
     		                    <%
@@ -202,7 +203,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		                <% 
     		                if(flushOnRow) { 
     		                    %>
-        		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
         		                out<%=cid %>.flush();
         		                }
     		                    <%
@@ -220,7 +221,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		            <% 
     		            if(flushOnRow) { 
     		                %>
-        		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
         		                out<%=cid %>.flush();
         		                }
     		                <%
@@ -246,7 +247,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     				<%
     					}
     		        %> 			
-    		        nb_line_<%=cid %>++;
+    		        
     		        <%
     	        }
             }
@@ -442,6 +443,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 <%
 						}
 %>
+				nb_line_<%=cid %>++;
 <%
             			if(!useStream && split){
             			    %>
@@ -504,7 +506,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                         		<%}
                         		if(flushOnRow) { 
                         		    %>
-            		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
             		                <%if(isInRowMode){%>
             		                out<%=cid%>.flush();
             		                <%}else{%>
@@ -523,7 +525,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
          					    <%}
          					    if(flushOnRow) { 
          					        %>
-            		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
             		                <%if(isInRowMode){%>
             		                out<%=cid%>.flush();
             		                <%}else{%>
@@ -546,7 +548,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			    <%}
             			    if(flushOnRow) { 
             			        %>
-            		                if(nb_line_<%=cid %>!=0 && nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
             		                <%if(isInRowMode){%>
             		                out<%=cid%>.flush();
             		                <%}else{%>
@@ -577,7 +579,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 <%
     					}
 %>
-            			nb_line_<%=cid %>++;
+            			
             			<%   		
             		}
         		
