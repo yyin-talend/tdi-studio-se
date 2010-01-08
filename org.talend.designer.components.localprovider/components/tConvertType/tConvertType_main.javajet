@@ -50,8 +50,19 @@
 	// Output Reject flow
     boolean bOutputReject = (rejectConnName != null) && (!bDieOnError);
     
+    //reset reject = null
+    boolean bResetReject = (rejectConnName != null) && (bDieOnError);
+    
+    //reset the main=null, and also consider there only have one reject link
+    boolean bResetMain = (rejectConnName == null) || (rejectConnName!=null && !rejectConnName.equals(outconnName));
+
+    //reset reject = null, when die on error and there only have one reject link, so, always reset to reject=null
+    boolean bResetalways = (bDieOnError && rejectConnName!=null && rejectConnName.equals(outconnName));
+    
     // will ignore error
     boolean bIgnoreError = (rejectConnName == null) && (!bDieOnError);
+    
+    
     
 	IMetadataTable preMetadata = inMainCon.getMetadataTable();   
 	List<IMetadataColumn> preColumns = preMetadata.getListColumns();   
@@ -59,6 +70,11 @@
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	IMetadataTable metadata = metadatas.get(0);
 	List<IMetadataColumn> columns = metadata.getListColumns();
+	if(bResetReject){
+%>
+ 	<%=rejectConnName %> = null;
+<%
+	}
 	if(bOutputReject){
 %>
 	<%=rejectConnName %> =new <%=rejectConnName %>Struct();
@@ -90,7 +106,6 @@
 	    	 	}
 %>           
 			try{
-			  if(!bHasError_<%=cid%>){
 <%
 				if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
@@ -107,7 +122,6 @@
 <%
 				}
 %>
-			  }
 			}catch(Exception e){
 			    bHasError_<%=cid%> = true;
 <%
@@ -130,13 +144,20 @@
 				}
 %>
 			}
-            if (bHasError_<%=cid%>) <%=outconnName %> = null;			
 <%			
      		}
 	 	 }//3
-		}//col:columns	
+		}//col:columns
+%>
+		<%if(bResetMain){%>
+		if (bHasError_<%=cid%>) <%=outconnName %> = null;
+		<%}%>		
+		<%if(bResetalways){%>
+			<%=outconnName %> = null;
+		<%}%>		
+<%
 	} else { // autoCast end,manual cast begin
-		for(Map<String, String> manualColumn : manualtable){
+		for(Map<String, String> manualColumn : manualtable){//111
 			String input = manualColumn.get("INPUT_COLUMN");
 			String output = manualColumn.get("OUTPUT_COLUMN");
 			IMetadataColumn in = preMetadata.getColumn(input);
@@ -155,8 +176,7 @@
 			String outPattern = out.getPattern();
 			String preLabel = in.getLabel();
 %>     
-			try{
-			  if(!bHasError_<%=cid%>){       
+			try{      
 <%
 			if((("Date").equals(outType) && ("String").equals(inType))||(("String").equals(outType)&& ("Date").equals(inType))){
 %>
@@ -173,7 +193,6 @@
 <%
 				}
 %>
-			  }
 			}catch(Exception e){
 			    bHasError_<%=cid%> = true;
 <%
@@ -197,11 +216,19 @@
 %>
 			}
 
-			if (bHasError_<%=cid%>) <%=outconnName %> = null;
 <%
-		} 
+		}//111
+	%>
+		<%if(bResetMain){%>
+		if (bHasError_<%=cid%>) <%=outconnName %> = null;
+		<%}%>		
+		<%if(bResetalways){%>
+			<%=outconnName %> = null;
+		<%}%>
+	<% 
 	}//manual end.
 %>
+			
 <% 
 	stringBuffer.append("\n");//control code format	
 	if(bOutputReject){//occure Reject
