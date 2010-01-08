@@ -790,10 +790,12 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         Object fullFolder;
         if (folder instanceof IFolder) {
             fullFolder = (IFolder) getFolder(project, itemType);
-            fullFolder = ((IFolder) fullFolder).getFolder(new Path(path));
+            if (path != null && !"".equals(path)) { //$NON-NLS-1$
+                fullFolder = ((IFolder) fullFolder).getFolder(new Path(path));
+            }
         } else {
             // FolderItem
-            if (!"".equals(path)) { //$NON-NLS-1$
+            if (path != null && !"".equals(path)) { //$NON-NLS-1$
                 // MOD mzhao feature 9207
                 if (folder == null) {
                     fullFolder = ResourceModelUtils.getProject(project).getFolder(new Path(path));
