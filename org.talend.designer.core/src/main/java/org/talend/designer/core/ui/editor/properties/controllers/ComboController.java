@@ -49,6 +49,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.tis.ITDQPatternService;
 import org.talend.designer.core.i18n.Messages;
@@ -65,6 +66,11 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  * 
  */
 public class ComboController extends AbstractElementPropertySectionController {
+
+    /**
+     * 
+     */
+    private static final String JAVA = "java";
 
     /**
      * DOC dev ColumnListController constructor comment.
@@ -410,7 +416,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                 // nothing to do
             }
             if (service != null && elem instanceof Node) {
-                String dbtype = "java";
+                String dbtype = JAVA;
 
                 Node node = (Node) elem;
 
@@ -505,6 +511,11 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
 
             if (properExpression != null) {
+                if (StringUtils.equalsIgnoreCase(dbtype, JAVA)) {
+                    properExpression = properExpression.substring(1, properExpression.length() - 1);
+                    properExpression = TalendTextUtils.addQuotes(properExpression);
+                }
+
                 patternMap.put(label, properExpression);
             }
         }
