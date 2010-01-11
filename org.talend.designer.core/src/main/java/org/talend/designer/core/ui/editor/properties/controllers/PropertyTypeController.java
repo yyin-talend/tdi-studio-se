@@ -525,7 +525,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
         }
         CompoundCommand cc = new CompoundCommand();
-        initCDC(cc, repositoryConnectionItem);
+        if (repositoryConnectionItem != null) {
+            initCDC(cc, repositoryConnectionItem);
+        }
         ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, repositoryConnection,
                 paramName, value);
         changeValuesFromRepository1.setMaps(dynamicProperty.getRepositoryTableMap());
