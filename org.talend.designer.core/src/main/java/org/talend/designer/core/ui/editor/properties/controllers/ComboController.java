@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -394,12 +395,13 @@ public class ComboController extends AbstractElementPropertySectionController {
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        CCombo combo = (CCombo) hashCurControls.get(param.getName());
+        String paramName = param.getName();
+        CCombo combo = (CCombo) hashCurControls.get(paramName);
 
         if (combo == null || combo.isDisposed()) {
             return;
         }
-        // add by wzhang for feature 8147
+        // for feature 8147
         try {
             ITDQPatternService service = null;
             try {
@@ -408,31 +410,22 @@ public class ComboController extends AbstractElementPropertySectionController {
                 // nothing to do
             }
             if (service != null && elem instanceof Node) {
+                String dbtype = "java";
+
                 Node node = (Node) elem;
+
                 IElementParameter propertyParam = node.getElementParameter("TYPE");
                 if (propertyParam != null) {
-                    String dbtype = propertyParam.getValue().toString();
+                    dbtype = propertyParam.getValue().toString();
+                }
 
-                    String[][][] tdqPatterns = service.retrieveTDQPatterns();
-                    if (tdqPatterns != null) {
-                        if (param.getName() != null && param.getName().equals("PATTERN_LIST")) { //$NON-NLS-1$
-                            Map<String, String> patternMap = new HashMap<String, String>();
+                String[][][] tdqPatterns = service.retrieveTDQPatterns();
+                if (tdqPatterns != null) {
+                    if (StringUtils.equals(paramName, "PATTERN_LIST")) { //$NON-NLS-1$
+                        Map<String, String> patternMap = retrievePattern(dbtype, tdqPatterns);
 
-                            for (String[][] pattern : tdqPatterns) {
-                                for (String[] expression : pattern) {
-                                    if (expression[2].equalsIgnoreCase(dbtype) || expression[2].equalsIgnoreCase("sql")) {
-                                        patternMap.put(expression[0], expression[1]);
-                                    }
-                                }
-                            }
-
-                            // set into paramlist
-                            param.setListItemsDisplayCodeName(patternMap.keySet().toArray(new String[patternMap.size()]));
-                            param.setListItemsValue(patternMap.values().toArray(new String[patternMap.size()]));
-                            param.setListItemsDisplayName(patternMap.keySet().toArray(new String[patternMap.size()]));
-                            param.setListItemsNotShowIf(new String[patternMap.size()]);
-                            param.setListItemsShowIf(new String[patternMap.size()]);
-                        }
+                        // set into paramlist
+                        addPatternToComponent(param, patternMap);
                     }
                 }
             }
@@ -468,6 +461,54 @@ public class ComboController extends AbstractElementPropertySectionController {
             combo.setEnabled(false);
         }
 
+    }
+
+    /**
+     * DOC bZhou Comment method "addPatternToComponent".
+     * 
+     * @param param
+     * @param patternMap
+     */
+    private void addPatternToComponent(IElementParameter param, Map<String, String> patternMap) {
+        param.setListItemsDisplayCodeName(patternMap.keySet().toArray(new String[patternMap.size()]));
+        param.setListItemsValue(patternMap.values().toArray(new String[patternMap.size()]));
+        param.setListItemsDisplayName(patternMap.keySet().toArray(new String[patternMap.size()]));
+        param.setListItemsNotShowIf(new String[patternMap.size()]);
+        param.setListItemsShowIf(new String[patternMap.size()]);
+    }
+
+    /**
+     * DOC bZhou Comment method "retrievePattern".
+     * 
+     * @param dbtype
+     * @param tdqPatterns
+     * @return
+     */
+    private Map<String, String> retrievePattern(String dbtype, String[][][] tdqPatterns) {
+        Map<String, String> patternMap = new HashMap<String, String>();
+
+        for (String[][] pattern : tdqPatterns) {
+            String properExpression = null;
+            String label = pattern[0][0];
+            for (String[] expression : pattern) {
+                if (StringUtils.equalsIgnoreCase(expression[2], dbtype)) {
+                    properExpression = expression[1];
+                }
+            }
+
+            if (properExpression == null) {
+                for (String[] expression : pattern) {
+                    if (StringUtils.equalsIgnoreCase(expression[2], "sql")) {
+                        properExpression = expression[1];
+                    }
+                }
+            }
+
+            if (properExpression != null) {
+                patternMap.put(label, properExpression);
+            }
+        }
+        return patternMap;
     }
 
     private String[] getListToDisplay(IElementParameter param) {
