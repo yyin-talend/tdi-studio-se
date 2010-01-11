@@ -43,8 +43,6 @@ import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -444,7 +442,7 @@ public abstract class AbstractForm extends Composite {
                     // refresh current UI.
                     initialize();
                     adaptFormToEditable();
-                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.CONTEXT);
+                    // RepositoryManager.refreshCreatedNode(ERepositoryObjectType.CONTEXT);
                 }
             }
         }
