@@ -31,6 +31,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
         
         String datePattern = ElementParameterParser.getValue(node,"__DATE_FORMAT__");
+        datePattern = datePattern.split(",")[0];
         String datePatternCustom = ElementParameterParser.getValue(node,"__DATE_FORMAT_CUSTOM__");                
         if ("CUSTOM".equals(datePattern))
         	datePattern = datePatternCustom.substring(1,datePatternCustom.length()-1);

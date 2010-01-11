@@ -67,24 +67,24 @@
 	</PARAMETER>
         <PARAMETER NAME="DATE_FORMAT" FIELD="CLOSED_LIST" REQUIRED="true" NUM_ROW="25">
 	   <ITEMS DEFAULT="Y4MD/">
-	    <ITEM NAME="Y4MD/" VALUE="yyyy/MM/dd" />
-      	<ITEM NAME="Y2MD/" VALUE="yy/MM/dd" />
-        <ITEM NAME="MDY4/" VALUE="MM/dd/yyyy" />
-        <ITEM NAME="MDY2/" VALUE="MM/dd/yy" />
-        <ITEM NAME="DMY4/" VALUE="dd/MM/yyyy" />
-        <ITEM NAME="DMY2/" VALUE="dd/MM/yy" />
-        <ITEM NAME="Y4MD-" VALUE="yyyy-MM-dd" />
-      	<ITEM NAME="Y2MD-" VALUE="yy-MM-dd" />
-        <ITEM NAME="MDY4-" VALUE="MM-dd-yyyy" />
-        <ITEM NAME="MDY2-" VALUE="MM-dd-yy" />
-        <ITEM NAME="DMY4-" VALUE="dd-MM-yyyy" />
-        <ITEM NAME="DMY2-" VALUE="dd-MM-yy" />
+	    <ITEM NAME="Y4MD/" VALUE="yyyy/MM/dd,Y4MD/" />
+      	<ITEM NAME="Y2MD/" VALUE="yy/MM/dd,Y2MD/" />
+        <ITEM NAME="MDY4/" VALUE="MM/dd/yyyy,MDY4/" />
+        <ITEM NAME="MDY2/" VALUE="MM/dd/yy,MDY2/" />
+        <ITEM NAME="DMY4/" VALUE="dd/MM/yyyy,DMY4/" />
+        <ITEM NAME="DMY2/" VALUE="dd/MM/yy,DMY2/" />
+        <ITEM NAME="Y4MD-" VALUE="yyyy-MM-dd,Y4MD-" />
+      	<ITEM NAME="Y2MD-" VALUE="yy-MM-dd,Y2MD-" />
+        <ITEM NAME="MDY4-" VALUE="MM-dd-yyyy,MDY4-" />
+        <ITEM NAME="MDY2-" VALUE="MM-dd-yy,MDY2-" />
+        <ITEM NAME="DMY4-" VALUE="dd-MM-yyyy,DMY4-" />
+        <ITEM NAME="DMY2-" VALUE="dd-MM-yy,DMY2-" />
         <ITEM NAME="CUSTOM" VALUE="CUSTOM" />
       </ITEMS>
 	</PARAMETER>
 	
 	<PARAMETER NAME="DATE_FORMAT_CUSTOM" FIELD="TEXT" NUM_ROW="25" SHOW_IF="DATE_FORMAT == 'CUSTOM'">
-		<DEFAULT>"yyyy/MM/dd"</DEFAULT>
+		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
 	
     <PARAMETER NAME="CREATE" FIELD="CHECK" REQUIRED="true" NUM_ROW="30">
