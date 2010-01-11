@@ -1017,8 +1017,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         } else {
             // if can't find command stack, just execute it.
             c.execute();
-            refreshDynamicProperty();
         }
+        refreshDynamicProperty();
     }
 
     private void refreshDynamicProperty() {
