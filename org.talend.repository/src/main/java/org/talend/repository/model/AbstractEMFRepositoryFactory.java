@@ -822,6 +822,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         List<IRepositoryObject> allVersion;
         if (fullFolder != null) {
             allVersion = getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true, false, true);
+            if (allVersion.size() == 0) {
+                // if no item found in current directory, look for all directory
+                allVersion = getAllVersion(project, property.getId());
+            }
         } else {
             allVersion = getAllVersion(project, property.getId());
         }
