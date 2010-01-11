@@ -135,7 +135,19 @@ if(columnList != null && columnList.size() > 0) {
 	//-----------------------dbload command
 	StringBuilder command_<%=cid %> =  new StringBuilder();
 	//-------------------------1. add dbload cmd
+<%
+	if ("Windows".equalsIgnoreCase(executionPlatform)) {
+	//this just windows 
+%>
 	command_<%=cid %>.append("dbload ");
+<%
+	} else if ("Linux".equalsIgnoreCase(executionPlatform)) {
+	//this just windows 
+%>
+	command_<%=cid %>.append("./dbload ");
+<%
+	}
+%>
 	//-------------------------2.add database name
 	command_<%=cid %>.append("-d " + dbName_<%=cid%> + " ");
 	//-------------------------3.add command file
@@ -197,7 +209,7 @@ if(columnList != null && columnList.size() > 0) {
 <%
 	} else if ("Linux".equalsIgnoreCase(executionPlatform)) {
 %>
-	final Process ps_<%=cid %> = runtime_<%=cid%>.exec(new String[]{command_<%=cid %>.toString()},
+	final Process ps_<%=cid %> = runtime_<%=cid%>.exec(command_<%=cid %>.toString(),
 								evPara_<%=cid%>.toArray(new String[]{}),dbLoadDirectory_<%=cid%>);
 <%
 	}
