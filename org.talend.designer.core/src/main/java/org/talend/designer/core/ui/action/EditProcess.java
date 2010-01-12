@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.Assert;
@@ -31,12 +29,10 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -206,7 +202,7 @@ public class EditProcess extends AContextualAction implements IIntroAction {
 
             // If the editProcess action canwork is true, then detect that the job version is the latest verison or not.
             if (canWork) {
-                canWork = isLastJobVersion(node);
+                canWork = isLastVersion(node);
             }
 
         }
@@ -217,28 +213,29 @@ public class EditProcess extends AContextualAction implements IIntroAction {
      * 
      * DOC YeXiaowei EditProcess class global comment. Detailled comment
      */
-    @SuppressWarnings("unchecked")
-    private static class IRepositoryObjectComparator implements Comparator {
-
-        public int compare(Object o1, Object o2) {
-            return VersionUtils.compareTo(((IRepositoryObject) o1).getVersion(), ((IRepositoryObject) o2).getVersion());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean isLastJobVersion(RepositoryNode repositoryObject) {
-        try {
-            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(repositoryObject.getId());
-            if (allVersion == null || allVersion.isEmpty()) {
-                return false;
-            }
-            // Collections.sort(allVersion, new IRepositoryObjectComparator());
-            IRepositoryObject lastVersion = allVersion.get(allVersion.size() - 1);
-            return lastVersion.getVersion().equals(repositoryObject.getObject().getVersion());
-        } catch (PersistenceException e) {
-            return false;
-        }
-    }
+    // @SuppressWarnings("unchecked")
+    // private static class IRepositoryObjectComparator implements Comparator {
+    //
+    // public int compare(Object o1, Object o2) {
+    // return VersionUtils.compareTo(((IRepositoryObject) o1).getVersion(), ((IRepositoryObject) o2).getVersion());
+    // }
+    // }
+    //
+    // @SuppressWarnings("unchecked")
+    // private boolean isLastJobVersion(RepositoryNode repositoryObject) {
+    // try {
+    // List<IRepositoryObject> allVersion =
+    // ProxyRepositoryFactory.getInstance().getAllVersion(repositoryObject.getId());
+    // if (allVersion == null || allVersion.isEmpty()) {
+    // return false;
+    // }
+    // // Collections.sort(allVersion, new IRepositoryObjectComparator());
+    // IRepositoryObject lastVersion = allVersion.get(allVersion.size() - 1);
+    // return lastVersion.getVersion().equals(repositoryObject.getObject().getVersion());
+    // } catch (PersistenceException e) {
+    // return false;
+    // }
+    // }
 
     /*
      * (non-Javadoc)

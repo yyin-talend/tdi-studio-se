@@ -14,7 +14,6 @@ package org.talend.designer.business.diagram.custom.actions;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.ui.image.EImage;
@@ -36,6 +35,8 @@ import org.talend.repository.ui.actions.AContextualAction;
  */
 public class ReadDiagramAction extends AContextualAction {
 
+    private RepositoryNode repositoryNode;
+
     public ReadDiagramAction() {
         super();
         setImageDescriptor(ImageProvider.getImageDesc(EImage.READ_ICON));
@@ -48,17 +49,19 @@ public class ReadDiagramAction extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     protected void doRun() {
-        ISelection selection = getSelection();
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
-        if (obj instanceof RepositoryNode) {
-            RepositoryNode repositoryNode = (RepositoryNode) obj;
-            IRepositoryObject repositoryObject = repositoryNode.getObject();
-
+        if (repositoryNode == null && getSelection() != null) {
+            Object firstElement = ((IStructuredSelection) getSelection()).getFirstElement();
+            if (firstElement instanceof RepositoryNode) {
+                repositoryNode = (RepositoryNode) firstElement;
+            }
+        }
+        RepositoryNode node = repositoryNode;
+        if (node != null) {
+            IRepositoryObject repositoryObject = node.getObject();
             if (repositoryObject instanceof RepositoryObject) {
                 RepositoryObject abstractRepositoryObject = (RepositoryObject) repositoryObject;
 
-                BusinessProcessItem businessProcessItem = (BusinessProcessItem) abstractRepositoryObject.getProperty()
-                        .getItem();
+                BusinessProcessItem businessProcessItem = (BusinessProcessItem) abstractRepositoryObject.getProperty().getItem();
                 DiagramResourceManager diagramResourceManager = new DiagramResourceManager(getActivePage(),
                         new NullProgressMonitor());
                 IFile file = diagramResourceManager.createDiagramFile();
@@ -80,9 +83,8 @@ public class ReadDiagramAction extends AContextualAction {
         if (!selection.isEmpty() && selection.size() == 1) {
             Object object = selection.getFirstElement();
             if (object instanceof RepositoryNode) {
-                RepositoryNode repositoryNode = (RepositoryNode) object;
-                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
-                        .getProperties(EProperties.CONTENT_TYPE);
+                this.repositoryNode = (RepositoryNode) object;
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
                 if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
                     if (nodeType == ERepositoryObjectType.BUSINESS_PROCESS) {
                         enabled = true;

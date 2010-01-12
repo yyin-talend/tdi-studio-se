@@ -53,7 +53,9 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.image.ImageUtils;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
@@ -79,6 +81,8 @@ import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ItemState;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
@@ -129,7 +133,6 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
 
@@ -3312,12 +3315,32 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     public boolean isLastVersion(Item item) {
         if (item.getProperty() != null) {
             try {
-                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
-                        item.getProperty().getId());
-                if (allVersion != null && !allVersion.isEmpty()) {
-                    if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {
-                        return true;
+                List<IRepositoryObject> allVersion = null;
+                ItemState state = property.getItem().getState();
+                ERepositoryObjectType type = ERepositoryObjectType.PROCESS;
+                if (item instanceof JobletProcessItem) {
+                    type = ERepositoryObjectType.JOBLET;
+                }
+
+                if (state != null && state.getPath() != null) {
+                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
+                            property.getId(), state.getPath(), type);
+                } else {
+                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
+                            property.getId());
+                }
+                if (allVersion == null || allVersion.isEmpty()) {
+                    return false;
+                }
+                String lastVersion = VersionUtils.DEFAULT_VERSION;
+
+                for (IRepositoryObject object : allVersion) {
+                    if (VersionUtils.compareTo(object.getVersion(), lastVersion) > 0) {
+                        lastVersion = object.getVersion();
                     }
+                }
+                if (VersionUtils.compareTo(property.getVersion(), lastVersion) == 0) {
+                    return true;
                 }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
