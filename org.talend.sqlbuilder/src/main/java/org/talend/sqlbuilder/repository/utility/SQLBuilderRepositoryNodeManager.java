@@ -611,6 +611,9 @@ public class SQLBuilderRepositoryNodeManager {
         // boolean isOralceWithSid = productName.equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
 
         String schema = parameters.getSchema();
+        if (EDatabaseTypeName.TERADATA.getProduct().equals(productName)) {
+            schema = parameters.getDbName();
+        }
         boolean isSchemaInValid = (schema == null) || (schema.equals("\'\'")) || (schema.equals("\"\"")) //$NON-NLS-1$ //$NON-NLS-2$
                 || (schema.trim().equals("")); //$NON-NLS-1$
         // from 616 till line 622 modified by hyWang
