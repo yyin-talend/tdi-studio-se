@@ -31,6 +31,10 @@ public class ShadowConnection extends AbstractConnection {
 
     private INode target;
 
+    private EConnectionType linetype;
+
+    private String lineName;
+
     /**
      * Constructs a new ShadowConnection.
      */
@@ -41,12 +45,24 @@ public class ShadowConnection extends AbstractConnection {
         this.target = target;
     }
 
+    public ShadowConnection(INode source, INode target, EConnectionType linetype, String lineName) {
+        super();
+
+        this.source = source;
+        this.target = target;
+        this.linetype = linetype;
+        this.lineName = lineName;
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.process.IConnection#getLineStyle()
      */
     public EConnectionType getLineStyle() {
+        if (linetype != null) {
+            return linetype;
+        }
         return EConnectionType.FLOW_MAIN;
     }
 
@@ -73,6 +89,9 @@ public class ShadowConnection extends AbstractConnection {
      * @see org.talend.core.model.process.IConnection#getName()
      */
     public String getName() {
+        if (lineName != null) {
+            return lineName;
+        }
         return "Row"; //$NON-NLS-1$
     }
 
@@ -114,6 +133,9 @@ public class ShadowConnection extends AbstractConnection {
      */
     @Override
     public String getConnectorName() {
+        if (linetype != null) {
+            return linetype.getName();
+        }
         return EConnectionType.FLOW_MAIN.getName();
     }
 }

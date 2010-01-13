@@ -129,18 +129,22 @@ public class ShadowProcess<T extends IProcessDescription> {
         SalesforceSchemaBean salesforceSchemaBean = description.getSalesforceSchemaBean();
         if (salesforceSchemaBean != null) {
             boolean uesHttp = salesforceSchemaBean.isUesHttp();
+
             if (uesHttp) {
-                String proxyHost = salesforceSchemaBean.getProxyHost();
-                String proxyPort = salesforceSchemaBean.getProxyPort();
-                String userName = salesforceSchemaBean.getProxyUsername();
-                String password = salesforceSchemaBean.getProxyPassword();
-                if (proxyHost != null && userName == null && password == null) {
-                    this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort };
-                }
-                if (proxyHost != null && userName != null && password != null) {
-                    this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort,
-                            "-Dhttp.proxyUsername=" + userName, "-Dhttp.proxyPassword=" + password };
-                }
+                this.proxyParameters = new String[] {};
+                // String proxyHost = salesforceSchemaBean.getProxyHost();
+                // String proxyPort = salesforceSchemaBean.getProxyPort();
+                // String userName = salesforceSchemaBean.getProxyUsername();
+                // String password = salesforceSchemaBean.getProxyPassword();
+                // if (proxyHost != null && userName == null && password == null) {
+                // this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" +
+                // proxyPort };
+                // }
+                // if (proxyHost != null && userName != null && password != null) {
+                // this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" +
+                // proxyPort,
+                // "-Dhttp.proxyUsername=" + userName, "-Dhttp.proxyPassword=" + password };
+                // }
             }
         }
     }
@@ -249,7 +253,21 @@ public class ShadowProcess<T extends IProcessDescription> {
             SalesforceSchemaInputNode inSalesforceNode = new SalesforceSchemaInputNode(description.getSchema(), description
                     .getSalesforceSchemaBean());
             outNode.setMetadataList(inSalesforceNode.getMetadataList());
-            ps = new FileinToDelimitedProcess<SalesforceSchemaInputNode>(inSalesforceNode, outNode);
+            SalesforceSchemaBean salesforceSchemaBean = description.getSalesforceSchemaBean();
+            boolean uesHttp = salesforceSchemaBean.isUesHttp();
+            salesforceSchemaBean.isUseProxy();
+            if (uesHttp) {
+                String proxyHost = salesforceSchemaBean.getProxyHost();
+                String proxyPort = salesforceSchemaBean.getProxyPort();
+                String userName = salesforceSchemaBean.getProxyUsername();
+                String password = salesforceSchemaBean.getProxyPassword();
+                final Prejob prejob = new Prejob("");
+                final SetProxy setProxy = new SetProxy("HTTP_PROXY", proxyHost, proxyPort, userName, password, proxyHost + "|"
+                        + proxyPort);
+                ps = new FileinToDelimitedProcess<SalesforceSchemaInputNode>(inSalesforceNode, outNode, prejob, setProxy);
+            } else {
+                ps = new FileinToDelimitedProcess<SalesforceSchemaInputNode>(inSalesforceNode, outNode);
+            }
             break;
         default:
             break;

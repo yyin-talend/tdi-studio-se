@@ -25,6 +25,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
@@ -58,6 +59,10 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
 
     private FileOutputDelimitedNode outNode;
 
+    private Prejob prejob;
+
+    private SetProxy setProxy;
+
     /**
      * Constructs a new FileinToXmlProcess.
      */
@@ -79,6 +84,26 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
         contextManager = new EmptyContextManager();
     }
 
+    public FileinToDelimitedProcess(K inNode, FileOutputDelimitedNode outNode, Prejob prejob, SetProxy setProxy) {
+        this(inNode, outNode);
+        this.prejob = prejob;
+        this.setProxy = setProxy;
+
+        setProxy.setColumnNumber(prejob.getColumnNumber());
+        ShadowConnection ok1 = new ShadowConnection(prejob, setProxy, EConnectionType.ON_COMPONENT_OK, "OnComponentOk");
+        prejob.setOutCnx(ok1);
+        setProxy.setInCnx(ok1);
+
+        inNode.setColumnNumber(inNode.getColumnNumber() + setProxy.getColumnNumber());
+        ShadowConnection ok2 = new ShadowConnection(setProxy, inNode, EConnectionType.ON_SUBJOB_OK, "OnSubjobOk");
+        setProxy.setOutCnx(ok2);
+        inNode.setInCnx(ok2);
+
+        prejob.setProcess(this);
+        setProxy.setProcess(this);
+
+    }
+
     public String getTechnicalName() {
         return name; //$NON-NLS-1$
     }
@@ -98,6 +123,9 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
      * @see org.talend.core.model.process.IProcess#getNodes()
      */
     public List<? extends INode> getGraphicalNodes() {
+        if (prejob != null && setProxy != null) {
+            return Arrays.asList(new INode[] { inNode, outNode, prejob, setProxy });
+        }
         return Arrays.asList(new INode[] { inNode, outNode });
     }
 
@@ -505,6 +533,13 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
      */
     public List<? extends INode> getNodesOfType(String componentName) {
         List<ShadowNode> matchingNodes = new ArrayList<ShadowNode>();
+        if ((prejob != null) && (prejob.getComponentName() != null) && (prejob.getComponentName().compareTo(componentName) == 0)) {
+            matchingNodes.add(prejob);
+        }
+        if ((setProxy != null) && (setProxy.getComponentName() != null)
+                && (setProxy.getComponentName().compareTo(componentName) == 0)) {
+            matchingNodes.add(setProxy);
+        }
         if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
             matchingNodes.add(inNode);
         }
@@ -541,6 +576,14 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
      */
     public IConnection[] getAllConnections(String filter) {
         Set<IConnection> matchingNodes = new HashSet<IConnection>();
+        if (prejob != null && prejob.getComponentName() != null) {
+            matchingNodes.addAll(prejob.getIncomingConnections());
+            matchingNodes.addAll(prejob.getOutgoingConnections());
+        }
+        if (setProxy != null && setProxy.getComponentName() != null) {
+            matchingNodes.addAll(setProxy.getIncomingConnections());
+            matchingNodes.addAll(setProxy.getOutgoingConnections());
+        }
         if ((inNode != null) && (inNode.getComponentName() != null)) {
             matchingNodes.addAll(inNode.getIncomingConnections());
             matchingNodes.addAll(inNode.getOutgoingConnections());
