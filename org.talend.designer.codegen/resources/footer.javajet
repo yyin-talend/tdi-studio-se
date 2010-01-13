@@ -46,7 +46,7 @@
 	private boolean globalResumeTicket = false;	 
 	    
     public boolean watch = false;	  
-    public int portStats = 3334;
+    public int portStats = -1;
     public int portTraces = 4334;
     public String clientHost;
     public String defaultClientHost = "localhost";
