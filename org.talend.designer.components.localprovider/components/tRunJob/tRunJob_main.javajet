@@ -54,6 +54,7 @@ java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 try {
   if(useIndependentProcess){ 
     commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+    // remove the frontal 2 lines
     if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
       int tmpSize = commandLine.length - 2;
       String[] tmp = new String[tmpSize];
@@ -82,6 +83,20 @@ for (int i = 0; i < commandLine.length; i++) {
       paraList_<%=cid %>.add("<%=commandLine[i] %>");
     <%}
   }
+}
+
+if (useIndependentProcess && ProcessorUtilities.isExportConfig()){
+%>
+  // exchange characters if this job runs on OS is different from exported base on
+  for(int i_<%=cid%> = 0; i_<%=cid%> < paraList_<%=cid %>.size(); i_<%=cid%>++){
+    String osName_<%=cid %> = System.getProperty("os.name");
+    if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){    
+      paraList_<%=cid %>.set(i_<%=cid%>, paraList_<%=cid %>.get(i_<%=cid%>).replace(":", ";").replace("$", "%"));
+    }else{
+      paraList_<%=cid %>.set(i_<%=cid%>, paraList_<%=cid %>.get(i_<%=cid%>).replace(";", ":").replace("%", "$"));
+    }
+  }
+<%
 }%>
 
 if(resuming_logs_dir_path != null){
