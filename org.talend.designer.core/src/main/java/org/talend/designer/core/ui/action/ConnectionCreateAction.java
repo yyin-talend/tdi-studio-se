@@ -28,6 +28,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
@@ -323,9 +324,16 @@ public class ConnectionCreateAction extends SelectionAction {
                     if (PluginChecker.isJobLetPluginLoaded()) {
                         IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                                 IJobletProviderService.class);
-                        if (service != null && service.isJobletComponent(node)
-                                && !service.isBuiltTriggerConnector(node, connector)) {
-                            toRemove.add(connector);
+                        if (service != null) {
+                            if (service.isJobletComponent(node) && !service.isBuiltTriggerConnector(node, connector)) {
+                                toRemove.add(connector);
+                            }
+                            // for bug 10973
+                            List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+                            if (service.isTriggerInputNode(node) && outgoingConnections != null
+                                    && outgoingConnections.size() >= 1) {
+                                toRemove.add(connector);
+                            }
                         }
                     }
                 }

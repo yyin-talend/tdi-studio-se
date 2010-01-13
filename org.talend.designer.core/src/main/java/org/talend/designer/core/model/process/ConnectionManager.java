@@ -126,14 +126,20 @@ public class ConnectionManager {
             if (PluginChecker.isJobLetPluginLoaded()) {
                 IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                         IJobletProviderService.class);
-                if (service != null && service.isJobletComponent(target)
-                        && !connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
-                    List<INodeConnector> freeTriggerBuiltConnectors = service.getFreeTriggerBuiltConnectors(target, connType,
-                            true);
-                    if (freeTriggerBuiltConnectors.isEmpty()) {
+                if (service != null) {
+                    if (service.isJobletComponent(target) && !connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
+                        List<INodeConnector> freeTriggerBuiltConnectors = service.getFreeTriggerBuiltConnectors(target, connType,
+                                true);
+                        if (freeTriggerBuiltConnectors.isEmpty()) {
+                            return false;
+                        }
+                        isJoblet = true;
+                    }
+                    // for bug 10973
+                    if (service.isTriggerNode(target) && target.getIncomingConnections() != null
+                            && target.getIncomingConnections().size() >= 1) {
                         return false;
                     }
-                    isJoblet = true;
                 }
             }
             if (!isJoblet && !target.isELTComponent() && !target.isSubProcessStart()) {
