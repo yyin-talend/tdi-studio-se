@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
+
 /**
  * This class is used for storing the same variable name of JAVA and Perl.
  * 
@@ -26,11 +28,11 @@ public class StatsAndLogsConstants {
 
     public static final String ORACLE_OCI = "ORACLE_OCI"; //$NON-NLS-1$
 
-    public static final String ORACLE_SID_ALIAS = "tOracleOutput_sid"; //$NON-NLS-1$
+    public static final String ORACLE_SID_ALIAS = JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS;
 
-    public static final String ORACLE_SN_ALIAS = "tOracleOutput_servername"; //$NON-NLS-1$
+    public static final String ORACLE_SN_ALIAS = JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS;
 
-    public static final String ORACLE_OCI_ALIAS = "tOracleOutput_oci"; //$NON-NLS-1$
+    public static final String ORACLE_OCI_ALIAS = JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS;
 
     private static final String MYSQL = "MYSQL"; //$NON-NLS-1$
 

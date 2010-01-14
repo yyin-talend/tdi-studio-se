@@ -29,6 +29,10 @@ public final class JobSettingsConstants {
 
     public static final String ORACLE_OUTPUT_OCI_ALIAS = "tOracleOutput_oci"; //$NON-NLS-1$
 
+    public static final String ORACLE_OUTPUT = "tOracleOutput"; //$NON-NLS-1$
+
+    public static final String ORACLE_INPUT = "tOracleInput"; //$NON-NLS-1$
+
     /**
      * 
      */

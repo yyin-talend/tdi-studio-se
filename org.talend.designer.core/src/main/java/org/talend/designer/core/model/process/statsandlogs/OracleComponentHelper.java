@@ -51,14 +51,16 @@ public final class OracleComponentHelper {
      */
     public static String filterOracleComponentName(String components) {
 
-        if (components.equals(StatsAndLogsConstants.ORACLE_SID_ALIAS) || components.equals(StatsAndLogsConstants.ORACLE_SN_ALIAS)
-                || components.equals(StatsAndLogsConstants.ORACLE_OCI_ALIAS)) {
-            return "tOracleOutput"; //$NON-NLS-1$
+        if (components.equals(JobSettingsConstants.ORACLE_OUTPUT_OCI_ALIAS)
+                || components.equals(JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS)
+                || components.equals(JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS)) {
+            return JobSettingsConstants.ORACLE_OUTPUT;
         }
 
         if (components.equals(JobSettingsConstants.ORACLE_INOUT_SN_ALIAS)
-                || components.equals(JobSettingsConstants.ORACLE_INPUT_SID_ALIAS)) {
-            return "tOracleInput"; //$NON-NLS-1$
+                || components.equals(JobSettingsConstants.ORACLE_INPUT_SID_ALIAS)
+                || components.equals(JobSettingsConstants.ORACLE_INOUT_OCI_ALIAS)) {
+            return JobSettingsConstants.ORACLE_INPUT;
         }
 
         return components;
