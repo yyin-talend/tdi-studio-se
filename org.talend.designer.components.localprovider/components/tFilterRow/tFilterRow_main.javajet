@@ -91,7 +91,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
             bPassed_<%=cid%> = bPassed_<%=cid%> <%=logical%> true;
           } else{
             bPassed_<%=cid%> = bPassed_<%=cid%> <%=logical%> false;
-            err_Msg_<%=cid%> = err_Msg_<%=cid%>.concat("|").concat("$source.compareTo($target) $operator 0".replace("$source", keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE").replace("\"", "\\\"")).replace("$operator", keyColumn.get("OPERATOR"))).concat(" Failed");
+            err_Msg_<%=cid%> = err_Msg_<%=cid%>.concat("|").concat("$source.compareTo($target) $operator 0".replace("$source", "<%=keyColumn.get("INPUT_COLUMN")%>").replace("$target", "<%=keyColumn.get("RVALUE").replace("\"", "\\\"")%>").replace("$operator", "<%=keyColumn.get("OPERATOR")%>")).concat(" Failed");
           }
         <%
         }
@@ -112,25 +112,22 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
     if (bPassed_<%=cid%>){
       <%
-      if (connsFilter != null) {
+      if (connsFilter != null && connsFilter.size() > 0) {
+      
+        for (int i = 0; i < connsFilter.size(); i++) {
+          IConnection conn = connsFilter.get(i);
 
-        if (connsFilter.size() > 0) {
-
-          for (int i = 0; i < connsFilter.size(); i++) {
-            IConnection conn = connsFilter.get(i);
-
-            if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-            %>
-              if(<%=conn.getName() %> == null){ 
-                <%=conn.getName() %> = new <%=conn.getName() %>Struct();
-              }
-              <%
-              for (IMetadataColumn column: metadata.getListColumns()) {
-              %>
-               <%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;      
-              <%
-	          }
+          if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+          %>
+            if(<%=conn.getName() %> == null){ 
+              <%=conn.getName() %> = new <%=conn.getName() %>Struct();
             }
+            <%
+            for (IMetadataColumn column: metadata.getListColumns()) {
+            %>
+              <%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;      
+            <%
+	        }
           }
         }
       }
