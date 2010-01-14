@@ -45,8 +45,8 @@ if (tmp_<%=cid%>.toLowerCase().endsWith(".xls")){
     int one_sheet_rows = sheet_<%=cid%>.getRows();
     lineCount_<%=cid %> += one_sheet_rows;
   
-    for (int i = 0; i < one_sheet_rows; i++){
-      jxl.Cell[] sheet_row = sheet_<%=cid%>.getRow(i);
+    for (int i_<%=cid%> = 0; i_<%=cid%> < one_sheet_rows; i_<%=cid%>++){
+      jxl.Cell[] sheet_row = sheet_<%=cid%>.getRow(i_<%=cid%>);
     
       boolean bIsEmptyRow = true;
       for (jxl.Cell cell: sheet_row){
