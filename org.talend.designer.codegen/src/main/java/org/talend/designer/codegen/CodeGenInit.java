@@ -54,8 +54,10 @@ public class CodeGenInit implements IApplication {
         String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
         CommonsPlugin.setHeadless(true);
         initLocalRepository();
-        init(ECodeLanguage.JAVA);
+        // need generate code for java after perl
         init(ECodeLanguage.PERL);
+        init(ECodeLanguage.JAVA);
+
         removeLinkedResources();
         addMarkersForTemplatesNextInitialization();
         saveWorkspace();
