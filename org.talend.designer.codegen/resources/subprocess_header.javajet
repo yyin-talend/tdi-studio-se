@@ -870,16 +870,22 @@ if(stat){
     for(IConnection conn : inConns){
     	EConnectionType lineStyle = conn.getLineStyle();
     	if(lineStyle == EConnectionType.RUN_IF){
-    %>	
+    %>
+if(execStat){    	
     		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "true");
+}    		
     <%	
     	}else if(lineStyle == EConnectionType.ON_SUBJOB_OK || lineStyle == EConnectionType.ON_COMPONENT_OK){
-    %>	
+    %>
+if(execStat){    	
     		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "ok");
+}    		
     <%	
     	}else if(lineStyle == EConnectionType.ON_SUBJOB_ERROR || lineStyle == EConnectionType.ON_COMPONENT_ERROR){
-    %>	
+    %>
+if(execStat){    	
     		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
+}    		
     <%	
     	}
 

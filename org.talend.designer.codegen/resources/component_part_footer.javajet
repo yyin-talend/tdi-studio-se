@@ -44,9 +44,10 @@ List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeCon
 if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
   for(IConnection con:connSet){
 %>
+if(execStat){
  runStat.updateStatOnConnection("<%=con.getUniqueName()%>"
  	+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),2, 0); 
-
+}
 <%
   }
 }
@@ -150,7 +151,9 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 			if(stat){
 %>   
    else{
+if(execStat){   
    	 runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "false");
+}   	 
    }
 <%
 			}

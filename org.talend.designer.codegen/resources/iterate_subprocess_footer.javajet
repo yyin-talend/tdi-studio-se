@@ -49,7 +49,9 @@
 				rowList = rowList.substring(0, rowList.length()-1);
 				if(stat){
 %>
+if(execStat){
 				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",2,"exec"+globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
+}				
 <%
 				}
 %>
@@ -92,7 +94,9 @@
 			}else {//3
 	      		if(stat){
 %>
+if(execStat){
 				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 2, "exec" + NB_ITERATE_<%=iterateNodeName %>);
+}				
 <%
 		  		}
 		  	}//3				

@@ -142,7 +142,9 @@ for (IConnection iterateConn : iterateConnSet) { //1
 <%
 	        	if(stat){
 %>
+if(execStat){
 				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",0,"exec"+(String)globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
+}				
 <%
 				}
 			}//3	
@@ -154,14 +156,17 @@ for (IConnection iterateConn : iterateConnSet) { //1
 <%				
 				Set<? extends IConnection> allInLineJobConns = NodeUtil.getAllInLineJobConnections(iterateConn.getTarget());
 				for (IConnection inLineConn : allInLineJobConns) {
-%>				
+%>
+if(execStat){				
            			runStat.updateStatOnConnection("<%=inLineConn.getUniqueName() %>", 3, "exec" + NB_ITERATE_<%=iterateNodeName %>);
+}           			
 <%        		
 				}
 %>        		
-
+if(execStat){
 				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 1, "exec" + NB_ITERATE_<%=iterateNodeName %>);
 				//Thread.sleep(1000);
+}				
 <%
 		  		}
 		}//2
