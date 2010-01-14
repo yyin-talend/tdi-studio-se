@@ -47,7 +47,7 @@ String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+r
 String[] commandLineWindows = new String[] {"<command>"};
 String[] commandLineUnix = new String[] {"<command>"};
 String[] commandLine = new String[] {"<command>"};
-String childJob = null;
+String childJob = ElementParameterParser.getValue(node,"__PROCESS__");;
 %>  
 java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 <%
@@ -246,13 +246,44 @@ if (!useIndependentProcess){
   };
   error_<%=cid %>.start();
 
-  ps_<%=cid %>.waitFor();
-  normal_<%=cid %>.interrupt();
-  error_<%=cid %>.interrupt();
+  //0 indicates normal termination	
+  int result_<%=cid %> = ps_<%=cid %>.waitFor();
+  normal_<%=cid %>.join(10000);
+  error_<%=cid %>.join(10000);
 
-  if(errorMsg_<%=cid %>.length() != 0){
-    throw new Exception(errorMsg_<%=cid %>.toString());
+ 
+  if(result_<%=cid %> != 0){
+	<%if (dieOnError) { %>  
+	    throw new RuntimeException("Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
+	<%}else{%>
+		System.err.println("Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
+	<%}%>
   }
+
+
+<%
+  String firstConnName = null; 
+  if(outConns != null && outConns.size() > 0) {
+    for (IConnection conn : outConns) {
+      if(!conn.isActivate()) continue;
+      firstConnName = conn.getName(); //get the first available flow link
+      break;
+    }
+  }
+  if(firstConnName != null) {//b
+    if(inConns == null || inConns.size() == 0){//c
+    %>
+      {
+      	System.err.println("when tRunJob runs in an independent process, it can't extract datas from tBufferOutput of child job."); 
+    <%}else{//c
+    //in order to match the "}" about IS_MULTIPLYING_OUTPUTS="true"
+    %>
+      {
+    <%
+    }//c
+  }//b  
+%>
+  
 <%
 }
 %>
