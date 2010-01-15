@@ -85,6 +85,12 @@
     <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="100">
+		<DEFAULT>*Note "CURRENT_STATUS" including:
+"File (or path) deleted."
+"No file (or path) deleted."
+"File (or path) does not exists or is invalid."</DEFAULT>
+	</PARAMETER>
   </PARAMETERS>
    <CODEGENERATION/>
   <RETURNS>
