@@ -140,12 +140,12 @@ public class NewProjectWizardPage extends WizardPage {
         gridLayout.marginHeight = 0;
         radioContainer.setLayout(gridLayout);
 
-        languagePerlRadio = new Button(radioContainer, SWT.RADIO);
-        languagePerlRadio.setText(ECodeLanguage.PERL.getName());
-
         languageJavaRadio = new Button(radioContainer, SWT.RADIO);
         languageJavaRadio.setText(ECodeLanguage.JAVA.getName());
         languageJavaRadio.setSelection(true);
+
+        languagePerlRadio = new Button(radioContainer, SWT.RADIO);
+        languagePerlRadio.setText(ECodeLanguage.PERL.getName());
 
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
