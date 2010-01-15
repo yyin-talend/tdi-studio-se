@@ -151,13 +151,19 @@
     	}else{
     		isChildJob = true;
     	}
-    	
+
+<%
+		if (stats) {
+%>    	
         // portStats = -1; //for testing
         if (portStats < 0 || portStats > 65535) {
             // issue:10869, the portStats is invalid, so this client socket can't open
             System.err.println("The statistics socket port " + portStats + " is invalid.");
             execStat = false;
         }    	
+<%
+		}
+%>
     	
     	//Resume: init the resumeUtil
     	resumeEntryMethodName = ResumeUtil.getResumeEntryMethodName(resuming_checkpoint_path);
