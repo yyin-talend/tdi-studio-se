@@ -14,7 +14,9 @@ package org.talend.repository.ui.views;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
@@ -146,6 +148,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private Action refreshAction;
 
     private Listener dragDetectListener;
+
+    private MenuManager rootMenu = null;
 
     public RepositoryView() {
 
@@ -575,14 +579,47 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private void fillContextMenu(IMenuManager manager) {
         IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
 
+        final MenuManager[] menuManagerGroups = org.talend.core.ui.actions.ActionsHelper.getRepositoryContextualsActionGroups();
+        // find group
+        Set<String> processedGroupIds = new HashSet<String>();
         for (ITreeContextualAction action : contextualsActions) {
             action.init(getViewer(), sel);
             if (action.isVisible() && action.isEnabled()) {
-                manager.add(action);
+                IMenuManager groupMenu = findMenuManager(menuManagerGroups, action.getGroupId(), true); // find root
+                if (groupMenu != null) { // existed
+                    final String rootId = groupMenu.getId();
+                    if (!processedGroupIds.contains(rootId)) {
+                        manager.add(groupMenu);
+                        processedGroupIds.add(rootId);
+                    }
+                }
+                groupMenu = findMenuManager(menuManagerGroups, action.getGroupId(), false); // find last child
+                if (groupMenu != null) { // existed
+                    groupMenu.add(action);
+                } else { // child
+                    manager.add(action);
+                }
             }
         }
-
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+    }
+
+    private MenuManager findMenuManager(final MenuManager[] menuManagerGroups, String groupId, boolean findParent) {
+        for (MenuManager groupMenu : menuManagerGroups) {
+            if (groupMenu.getId().equals(groupId)) {
+                if (findParent) {
+                    final MenuManager parent = (MenuManager) groupMenu.getParent();
+                    if (parent == null) {
+                        return groupMenu;
+                    } else {
+                        return findMenuManager(menuManagerGroups, parent.getId(), findParent);
+                    }
+                } else {
+                    return groupMenu;
+                }
+            }
+        }
+        return null;
     }
 
     private void fillLocalToolBar(IToolBarManager manager) {
