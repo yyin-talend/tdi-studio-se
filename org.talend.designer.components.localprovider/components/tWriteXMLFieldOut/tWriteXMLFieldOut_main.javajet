@@ -141,7 +141,33 @@ class GenerateToolByDom4j{
 	}
 	private void createElement(String currEleName, XMLNode node, String parentName){
 		int index = node.name.indexOf(":");
-		if(index>0 && node.parent!=null){
+		if(5==(node.special & 5)){
+			int currPos = node.getCurrGroupPos();
+			if(index>0 && node.parent!=null){
+%>
+		org.dom4j.Element <%=currEleName%>_<%=cid%>;
+		if (<%=parentName%>_<%=cid%>.getNamespaceForPrefix("<%=node.name.substring(0,index)%>") == null) {
+            <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createElement("<%=node.name.substring(index+1)%>");
+        } else {
+        	<%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createElement("<%=node.name%>");
+        }
+<%
+			}else{
+%>
+		org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createElement("<%=node.name%>");
+<%
+			}
+%>
+        if(orders_<%=cid %>[<%=currPos %>]==0){
+        	orders_<%=cid %>[<%=currPos %>] = <%=node.getNodeInsertIndex() %>;
+        }
+        if(<%=currPos +1 %> < orders_<%=cid %>.length){
+        		orders_<%=cid %>[<%=currPos +1 %>] = 0;
+        }
+        <%=parentName%>_<%=cid%>.elements().add(orders_<%=cid %>[<%=currPos %>]++,<%=currEleName%>_<%=cid%>);
+<%
+		}else{
+			if(index>0 && node.parent!=null){
 %>
 		org.dom4j.Element <%=currEleName%>_<%=cid%>;
 		if (<%=parentName%>_<%=cid%>.getNamespaceForPrefix("<%=node.name.substring(0,index)%>") == null) {
@@ -150,10 +176,11 @@ class GenerateToolByDom4j{
         	<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
         }
 <%
-		}else{
+			}else{
 %>
 		org.dom4j.Element <%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
 <%
+			}
 		}
 		if(0!=(node.special & 2)){
 %>
@@ -193,6 +220,10 @@ class GenerateToolByDom4j{
 <%
 				}
 			}
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+		nestXMLTool_<%=cid %>.parseAndAdd(<%=currEleName %>_<%=cid %>,"<%=node.defaultValue %>");
+<%
 		}
 	}
 	private void addAttribute(String currEleName, XMLNode node){
@@ -201,6 +232,10 @@ class GenerateToolByDom4j{
 		if(<%tool.getValue(node);%>!=null){
 			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>",<%tool.getValue(node);%>);
 		}
+<%
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", "<%=node.defaultValue %>");
 <%
 		}
 	}
@@ -219,6 +254,16 @@ class GenerateToolByDom4j{
 %>
 		}
 <%
+		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+%>
+			<%=currEleName %>_<%=cid %>.addNamespace("<%=node.path %>",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"));
+<%
+			if(node.path ==null || node.path.length()==0){
+%>
+        	<%=currEleName %>_<%=cid %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>_<%=cid %>.getName(),
+        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>"))));
+<%
+			}
 		}
 	}
 }
@@ -236,17 +281,47 @@ class GenerateToolByNull{
 		if(("ELEMENT").equals(node.type)){
 			startElement(node,emptySpace);
 			setText(node);
-			XMLNode mainNode = null;
+			XMLNode mainChild = null;
 			for(XMLNode child:node.elements){
+				if(child.isMainNode()){ //loop dosen't have a main child node
+					mainChild = child;
+					break;
+				}
+			}
+			for(XMLNode child:node.elements){
+				if(mainChild!=null && mainChild.order<=child.order){ //loop dosen't have a main child node
+					if(1==(node.special & 1)){ // group
+%>
+    	// buffer the start tabs to group buffer
+    	groupBuffer_<%=cid%>[<%=node.getCurrGroupPos()%>] = buf_<%=cid%>.toString();
+        buf_<%=cid%> = new StringBuffer();
+<%
+					}else{// root
+    					int num = node.path.split("/").length-2;
+    					if(!outputAsXSD && !allowEmpty){
+%>
+		startTabs_<%=cid%>[<%=num%>] = buf_<%=cid%>.toString();
+        buf_<%=cid%> = new StringBuffer();
+<%
+						}else{
+%>
+		out_<%=cid%>.write(buf_<%=cid%>.toString());
+        buf_<%=cid%> = new StringBuffer();
+<%
+						}
+					}
+					mainChild = null;
+				}
 				if(!child.isMainNode()){ //make the main node output last
-					if(!outputAsXSD && !allowEmpty && (child.relatedColumn != null || child.childrenColumnList.size()>0)){
+					if(!outputAsXSD && !allowEmpty && (child.relatedColumn != null || child.childrenColumnList.size()>0 || child.hasDefaultValue == true)){
 %>
 		if( false
 <%
                     	for(IMetadataColumn column : child.childrenColumnList){
                     		%> || valueMap_<%=cid%>.get("<%=column.getLabel()%>") != null<%
                     	}
-%>
+                    	if(child.hasDefaultValue == true){%> || true 
+                    	<%}%>
 		){
 <%
 						generateCode(child,emptySpace+"  ");
@@ -321,6 +396,10 @@ class GenerateToolByNull{
 		}
 <%
 			}
+		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
+%>
+		buf_<%=cid %>.append("<%=node.defaultValue %>");
+<%
 		}
 	}
 	private void addAttribute(XMLNode node){
@@ -329,6 +408,10 @@ class GenerateToolByNull{
 		if(<%tool.getValue(node);%>!=null){
 			buf_<%=cid%>.append(" <%=node.path%>=\""+TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>)+"\"");
 		}
+<%
+		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
+%>
+		buf_<%=cid%>.append(" <%=node.path%>=\""+TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>")+"\"");
 <%
 		}
 	}
@@ -349,6 +432,16 @@ class GenerateToolByNull{
 %>
 		}
 <%
+		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
+			if(node.path ==null || node.path.length()==0){
+%>
+        	buf_<%=cid%>.append(" xmlns=\""+TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>")+"\"");
+<%
+			}else{
+%>
+			buf_<%=cid%>.append(" xmlns:<%=node.path%>=\""+TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>")+"\"");
+<%
+			}
 		}
 	}
 }
@@ -511,6 +604,9 @@ if(("Dom4j").equals(mode)){
 %>
 		    doc_<%=cid %>.clearContent();
 			needRoot_<%=cid %> = true;
+			for(int i_<%=cid %>=0;i_<%=cid %><orders_<%=cid %>.length;i_<%=cid %>++){
+				orders_<%=cid %>[i_<%=cid %>] = 0;
+			}
 			strCompCache_<%=cid %>=strTemp_<%=cid %>;
 <%
 		if(inputKeysColumns.size() !=0){
@@ -643,12 +739,18 @@ else if(("Null").equals(mode)){
 	
 	        if (preUnNullMaxIndex_<%=cid%> < preNewTabIndex_<%=cid %> ) {
 				for (int i_<%=cid %> = preNewTabIndex_<%=cid%> - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
+                	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
+                		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
+                	}                	
 	                out_<%=cid %>.newLine();
 	                out_<%=cid %>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
 	            }
 	        } else {
 	            for (int i_<%=cid %> = preUnNullMaxIndex_<%=cid %>; i_<%=cid%> >= 0; i_<%=cid%>--) {
-	                out_<%=cid%>.newLine();
+                	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
+                		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
+                	}
+                	out_<%=cid%>.newLine();
 	                out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
 	            }
 	        }
@@ -658,6 +760,9 @@ else if(("Null").equals(mode)){
 			if(loopTable.size()>0){
 %>
 		for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
+        	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
+        		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
+        	}
 	        out_<%=cid%>.newLine();
 	        out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
 	    }
@@ -665,6 +770,11 @@ else if(("Null").equals(mode)){
 			}
 		}
 %>
+		for (int i_<%=cid%> = 0; i_<%=cid%> < endTabs_<%=cid %>.length; i_<%=cid%>++) {
+			startTabs_<%=cid%>[i_<%=cid%>] = null;
+			endTabs_<%=cid %>[i_<%=cid%>] = null;
+		}
+//		endTabStrs_<%=cid%>.clear();
 		out_<%=cid%>.newLine();
 		out_<%=cid%>.close();
 		listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
@@ -717,16 +827,12 @@ else if(("Null").equals(mode)){
 		}
 <%
 			}
-%>
-		startTabs_<%=cid%>[<%=i%>] = buf_<%=cid%>.toString();
-        buf_<%=cid%> = new StringBuffer();
-<%
-		}else{
-%>
-		out_<%=cid%>.write(buf_<%=cid%>.toString());
-        buf_<%=cid%> = new StringBuffer();
-<%
 		}
+%>
+		endTabs_<%=cid %>[<%=i%>] = buf_<%=cid%>.toString();
+		buf_<%=cid%> = new StringBuffer();
+<%
+
 	}
 %>
 	}
@@ -740,6 +846,7 @@ else if(("Null").equals(mode)){
 	int newTabIndex_<%=cid%> = -1;
 	//Buffer all group tab XML, then set to startTabBuffer.
     String[] groupBuffer_<%=cid%> = new String[<%=groupList.size()%>];
+    String[] groupEndBuffer_<%=cid%> = new String[<%=groupList.size()%>];
 <%
 	}
 	for(int i=0;i<groupList.size();i++){
@@ -807,8 +914,8 @@ else if(("Null").equals(mode)){
 			}
 		}
 %>
-	// buffer the start tabs to group buffer
-	groupBuffer_<%=cid%>[<%=i%>] = buf_<%=cid%>.toString();
+	// buffer the end tabs to group buffer
+	groupEndBuffer_<%=cid%>[<%=i%>] = buf_<%=cid%>.toString();
     buf_<%=cid%> = new StringBuffer();
 <%
 	}//End of groupList loop
@@ -850,6 +957,10 @@ else if(("Null").equals(mode)){
         if (preUnNullMaxIndex_<%=cid%> >= preNewTabIndex_<%=cid%>
             && preUnNullMaxIndex_<%=cid%> >= <%=mainList.size()%> + newTabIndex_<%=cid%>) {
             for (int i_<%=cid%> = preUnNullMaxIndex_<%=cid%>; i_<%=cid%> >= <%=mainList.size()%> + newTabIndex_<%=cid%>; i_<%=cid%>--) {
+            	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
+            		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
+            	}
+            	endTabs_<%=cid %>[i_<%=cid%>] = null;
                 out_<%=cid%>.newLine();
                 out_<%=cid%>.write(endTabStrs_<%=cid%>
                         .get(i_<%=cid%>));
@@ -859,6 +970,10 @@ else if(("Null").equals(mode)){
 		}
 %>
             for (int i_<%=cid%> = preNewTabIndex_<%=cid%> - 1; i_<%=cid%> >= <%=mainList.size()%> + newTabIndex_<%=cid%>; i_<%=cid%>--) {
+            	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
+            		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
+            	}
+            	endTabs_<%=cid %>[i_<%=cid%>] = null;
                 out_<%=cid%>.newLine();
                 out_<%=cid%>.write(endTabStrs_<%=cid%>
                         .get(i_<%=cid%>));
@@ -878,6 +993,7 @@ else if(("Null").equals(mode)){
         // when newTabIndex is null, must use the perNewTabIndex
         if (i_<%=cid%> >= preNewTabIndex_<%=cid%> - <%=mainList.size()%>) {
             startTabs_<%=cid%>[i_<%=cid%> + <%=mainList.size()%>] = groupBuffer_<%=cid%>[i_<%=cid%>];
+            endTabs_<%=cid%>[i_<%=cid%> + <%=mainList.size()%>] = groupEndBuffer_<%=cid%>[i_<%=cid%>];
         }
     }
 <%
@@ -908,7 +1024,8 @@ else if(("Null").equals(mode)){
     	for(IMetadataColumn column : loop.childrenColumnList){
     		%> || valueMap_<%=cid%>.get("<%=column.getLabel()%>") != null<%
     	}
-%>
+    	if(loop.hasDefaultValue == true){%> || true 
+    	<%}%>
 		){
 <%
 	}

@@ -13,6 +13,12 @@ public class CLASS {
         public String type = null;
 
         public String column = null;
+        
+        public String defaultValue = null;
+        
+        public int order = 0;
+        
+        public boolean hasDefaultValue = false;
 
         // special node
         public int special = 0; // 1 is subtree root, 2 is subtree root parent, 4 is main
@@ -31,11 +37,13 @@ public class CLASS {
 
         public List<XMLNode> elements = new LinkedList<XMLNode>(); // the main element is the last element
 
-        public XMLNode(String path, String type, XMLNode parent, String column) {
+        public XMLNode(String path, String type, XMLNode parent, String column, String value, int order) {
+        	this.order = order;
             this.path = path;
             this.parent = parent;
             this.type = type;
             this.column = column;
+            this.defaultValue = value;
             if (type.equals("ELEMENT")) {
                 this.name = path.substring(path.lastIndexOf("/") + 1);
             } else {
@@ -53,6 +61,33 @@ public class CLASS {
         
         public boolean isSubTreeParent(){
             return 2 == (special & 2);
+        }
+    
+        public int getNodeInsertIndex(){
+        	int insertIndex =0;
+        	if(5==(special & 5)){//group and loop main node
+        		if(parent!=null && parent.elements!=null){
+            		for(XMLNode tmpNode: parent.elements){
+            			if(order <= tmpNode.order){
+            				break;
+            			}
+            			insertIndex++;
+            		}
+        		}
+        	}
+        	return insertIndex;
+        }
+        
+        public int getCurrGroupPos(){
+        	int currPos =0;
+        	if(5==(special & 5)){//group and loop main node
+    			XMLNode tmpNode = parent;
+    			while(tmpNode!=null && (5==(tmpNode.special & 5))){
+    				currPos++;
+    				tmpNode = tmpNode.parent;
+    			}
+        	}
+        	return currPos;
         }
     }
 
@@ -75,21 +110,29 @@ public class CLASS {
         if (loopTable == null || loopTable.size() == 0) {
             return null;
         }
+        int index =0;
+        int currOrder = 0;
         String mainPath = loopTable.get(0).get("PATH");
         for (List<Map<String, String>> tmpTable : tables) {
             tmpParent = tmpMainNode;
             for (Map<String, String> tmpMap : tmpTable) {
+            	index++;
+            	if(tmpMap.get("ORDER")!=null && !"".equals(tmpMap.get("ORDER").trim())){
+            		currOrder = Integer.parseInt(tmpMap.get("ORDER"));
+            	}else{
+            		currOrder = index;
+            	}
                 XMLNode tmpNew = null;
                 if (tmpMap.get("ATTRIBUTE").equals("attri")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"), currOrder);
                     tmpParent.attributes.add(tmpNew);
                 } else if (tmpMap.get("ATTRIBUTE").equals("ns")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"), currOrder);
                     tmpParent.namespaces.add(tmpNew);
                 } else {
                     if (tmpParent == null) {
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
-                        tmpNew.special |= 1;
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"), currOrder);
+//                        tmpNew.special |= 1;
                         root = tmpNew;
                         mains.add(root);
                     } else {
@@ -97,7 +140,7 @@ public class CLASS {
                         while (tmpParent != null && !tmpParentPath.equals(tmpParent.path)) {
                             tmpParent = tmpParent.parent;
                         }
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"), currOrder);
                         tmpParent.elements.add(tmpNew);
                         if (tmpMap.get("ATTRIBUTE").equals("main")) {
                             if (tmpTable == groupTable) {
@@ -120,9 +163,23 @@ public class CLASS {
                     tmpParent = tmpNew;
                 }
                 setIMetadataColumn(tmpNew, colList);
+                setDefaultValues(tmpNew);//add by wliu
             }
         }
         return new Object[] { mains, groups, loop };
+    }
+    
+    private void setDefaultValues(XMLNode node){
+    	if(node.defaultValue != null && !"".equals(node.defaultValue)){
+    		XMLNode tmp = node;
+    		while(tmp !=null){
+    			tmp.hasDefaultValue = true;
+    			if(tmp.isMainNode()){
+    				break;
+    			}
+    			tmp = tmp.parent;
+    		}
+    	}
     }
 
     private void setIMetadataColumn(XMLNode node, List<IMetadataColumn> colList) {
@@ -169,7 +226,8 @@ public class CLASS {
     public XMLNode removeEmptyElement(XMLNode root) {
         List<XMLNode> removeNodes = new LinkedList<XMLNode>();
         for (XMLNode attri : root.attributes) {
-            if (attri.column == null || attri.column.length() == 0) {
+            if ((attri.column == null || attri.column.length() == 0) && 
+            		(attri.defaultValue == null || "".equals(attri.defaultValue)) ) {
                 attri.parent = null;
                 removeNodes.add(attri);
             }
@@ -178,7 +236,8 @@ public class CLASS {
 
         removeNodes.clear();
         for (XMLNode ns : root.namespaces) {
-            if (ns.column == null || ns.column.length() == 0) {
+            if ( (ns.column == null || ns.column.length() == 0)
+            		&& (ns.defaultValue == null || "".equals(ns.defaultValue)) ) {
                 ns.parent = null;
                 removeNodes.add(ns);
             }
@@ -192,7 +251,8 @@ public class CLASS {
         root.elements.removeAll(removeNodes);
 
         if (root.attributes.size() == 0 && root.namespaces.size() == 0 && root.elements.size() == 0
-                && (root.column == null || root.column.length() == 0)) {
+                && (root.column == null || root.column.length() == 0)
+                && (root.defaultValue == null || "".equals(root.defaultValue)) ) {
             return root;
         } else {
             return null;

@@ -202,11 +202,17 @@ if(nb_line_<%=cid %> > 0){
 
         if (preUnNullMaxIndex_<%=cid%> < preNewTabIndex_<%=cid%> ) {
 			for (int i_<%=cid%> = preNewTabIndex_<%=cid%> - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
+			    if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
+            		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
+            	}
                 out_<%=cid%>.newLine();
                 out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
             }
         } else {
             for (int i_<%=cid%> = preUnNullMaxIndex_<%=cid%>; i_<%=cid%> >= 0; i_<%=cid%>--) {
+            	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
+            		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
+            	}
                 out_<%=cid%>.newLine();
                 out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
             }
@@ -216,9 +222,14 @@ if(nb_line_<%=cid %> > 0){
 		}else{
 			if(loopTable.size()>0){
 %>
-	for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
-        out_<%=cid%>.newLine();
-        out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
+	if(nb_line_<%=cid%> > 0){
+    	for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
+        	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
+        		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
+        	}
+            out_<%=cid%>.newLine();
+            out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
+        }
     }
 <%
 			}

@@ -104,8 +104,17 @@ org.dom4j.Document doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 format_<%=cid%>.setTrimText(false);
 format_<%=cid%>.setEncoding(<%=encoding%>);
-
-//java.io.StringWriter strWriter_<%=cid%> = new java.io.StringWriter();
+<%
+					int groupSize = 0;
+					if(groupTable!=null && groupTable.size()>0){
+						for(java.util.Map<String, String> tmpMap : groupTable){
+							if(tmpMap.get("ATTRIBUTE").equals("main")){
+								groupSize++;
+							}
+						}
+					}
+%>
+int[] orders_<%=cid %> = new int[<%=groupSize + 1%>];
 <%
 				}else if(("Null").equals(mode)){
 %>
@@ -128,6 +137,7 @@ startTabStrs_<%=cid%>.add("\n<%=emptyspace%><<%=endTabs[len]%>>");
 int preUnNullMaxIndex_<%=cid%> = -1;
 int preNewTabIndex_<%=cid%> = -1;
 String[] startTabs_<%=cid%> = new String[endTabStrs_<%=cid%>.size()];
+String[] endTabs_<%=cid %> = new String[endTabStrs_<%=cid%>.size()];
 java.io.StringWriter strWriter_<%=cid%> = new java.io.StringWriter();
 java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(strWriter_<%=cid%>);
 <%
