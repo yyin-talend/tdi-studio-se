@@ -31,12 +31,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	String jasperFile_<%=cid%> = <%=tempDirectory%>+jrxmlName_<%=cid%>+ ".jasper";
     String reportFile_<%=cid%> = <%=destinationDirectory%>+"/"+<%=outFileName %>+".<%=reportType%>";
     
-    net.sf.jasperreports.engine.xml.JRXmlDigester digester_<%=cid%> = new net.sf.jasperreports.engine.xml.JRXmlDigester();
-    net.sf.jasperreports.engine.xml.JRXmlDigesterFactory.configureDigester(digester_<%=cid%>);
-    net.sf.jasperreports.engine.xml.JRXmlLoader xmlLoader_<%=cid%> = new net.sf.jasperreports.engine.xml.JRXmlLoader(
-            digester_<%=cid%>);
-    net.sf.jasperreports.engine.design.JasperDesign jasperDesign_<%=cid%> = xmlLoader_<%=cid%>
-            .loadXML(new java.io.FileInputStream(<%=filename%>));
+    net.sf.jasperreports.engine.design.JasperDesign jasperDesign_<%=cid%> = net.sf.jasperreports.engine.xml.JRXmlLoader.load(<%=filename%>);
+    
     jasperDesign_<%=cid%>.setLanguage(net.sf.jasperreports.engine.design.JasperDesign.LANGUAGE_JAVA);
     net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(jasperDesign_<%=cid%>, jasperFile_<%=cid%>);
 
