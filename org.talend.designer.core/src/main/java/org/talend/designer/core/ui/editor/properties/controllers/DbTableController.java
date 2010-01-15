@@ -50,6 +50,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.core.CorePlugin;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -58,6 +59,7 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBa
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorDialog;
@@ -259,15 +261,13 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createOpenSQLCommand(Button button, IContextManager contextManager) {
         final Button btn = button;
         SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-
         initConnectionParameters();
-
         DatabaseConnection connt = manager.createConnection(connParameters);
-        IMetadataConnection iMetadataConnection = null;
         boolean isStatus = false;
         if (connt != null) {
-            iMetadataConnection = ConvertionHelper.convert(connt);
-            isStatus = checkConnection(iMetadataConnection);
+            IMetadataConnection metadataConnection = null;
+            metadataConnection = ConvertionHelper.convert(connt);
+            isStatus = checkConnection(metadataConnection, contextManager);
         }
 
         if (isStatus) {
@@ -525,6 +525,51 @@ public class DbTableController extends AbstractElementPropertySectionController 
                             Messages.getString("DbTableController.connectionError"), Messages.getString("DbTableController.setParameter")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+    }
+
+    /**
+     * nma Comment method "checkConnection".
+     * 
+     * @param metadataConnection, IContextManager
+     */
+    protected boolean checkConnection(IMetadataConnection metadataConnection, IContextManager contextManager) {
+        try {
+            String DBType = ContextParameterUtils.parseScriptContextCode(metadataConnection.getDbType(), contextManager);
+            String userName = ContextParameterUtils.parseScriptContextCode(metadataConnection.getUsername(), contextManager);
+            String password = ContextParameterUtils.parseScriptContextCode(metadataConnection.getPassword(), contextManager);
+            String schema = ContextParameterUtils.parseScriptContextCode(metadataConnection.getSchema(), contextManager);
+            String driveClass = ContextParameterUtils.parseScriptContextCode(metadataConnection.getDriverClass(), contextManager);
+            String driverJarPath = ContextParameterUtils.parseScriptContextCode(metadataConnection.getDriverJarPath(),
+                    contextManager);
+            String dbVersion = ContextParameterUtils.parseScriptContextCode(metadataConnection.getDbVersionString(),
+                    contextManager);
+            // specially used for URL
+            String server = ContextParameterUtils.parseScriptContextCode(metadataConnection.getServerName(), contextManager);
+            String port = ContextParameterUtils.parseScriptContextCode(metadataConnection.getPort(), contextManager);
+            String sidOrDatabase = ContextParameterUtils.parseScriptContextCode(metadataConnection.getDatabase(), contextManager);
+            String filePath = ContextParameterUtils.parseScriptContextCode(metadataConnection.getFileFieldName(), contextManager);
+            String datasource = ContextParameterUtils.parseScriptContextCode(metadataConnection.getDataSourceName(),
+                    contextManager);
+            String dbRootPath = ContextParameterUtils.parseScriptContextCode(metadataConnection.getDbRootPath(), contextManager);
+            String additionParam = ContextParameterUtils.parseScriptContextCode(metadataConnection.getAdditionalParams(),
+                    contextManager);
+
+            String newURL = DatabaseConnStrUtil.getURLString(DBType, dbVersion, server, userName, password, port, sidOrDatabase,
+                    filePath.toLowerCase(), datasource, dbRootPath, additionParam);
+
+            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(DBType, newURL, userName, password,
+                    schema, driveClass, driverJarPath, dbVersion);
+            connParameters.setConnectionComment(testConnection.getMessageException());
+
+            if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType())) {
+                return true;
+            }
+
+            return testConnection.getResult();
+        } catch (Exception e) {
+            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return false;
     }
 
     /**
