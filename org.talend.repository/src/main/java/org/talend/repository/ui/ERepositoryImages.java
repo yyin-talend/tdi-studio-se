@@ -29,7 +29,13 @@ public enum ERepositoryImages implements IImage {
     DELETE_PROJECT_ACTION("/icons/delete.gif"), //$NON-NLS-1$
     PROJECT_ICON("/icons/project.gif"), //$NON-NLS-1$
     FOLDER_ICON("/icons/folder.gif"), //$NON-NLS-1$
-    OPEN_PROJECT_ICON("/icons/bullet_go.png"); //$NON-NLS-1$
+    OPEN_PROJECT_ICON("/icons/bullet_go.png"), //$NON-NLS-1$
+    ADD_ICON("/icons/add.gif"), //$NON-NLS-N$
+    DEFAULT_COMPONENT_ICON("/icons/default-32.png"), //$NON-NLS-N$
+    DEFAULT_PROCESS_ICON("/icons/process_icon.gif"), //$NON-NLS-N$
+    MODIFIED_ICON("/icons/refresh.gif"), //$NON-NLS-N$
+    SCHEMA_ICON("/icons/table.gif"), //$NON-NLS-N$
+    CONNECTOR_ICON("/icons/connection.gif"); //$NON-NLS-N$
 
     private String path;
 

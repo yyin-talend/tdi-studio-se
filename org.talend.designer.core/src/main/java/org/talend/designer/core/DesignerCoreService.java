@@ -86,7 +86,8 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
- * Detailled comment <br/>.
+ * Detailled comment <br/>
+ * .
  * 
  * $Id: DesignerCoreService.java 1 2006-12-19 上午10:25:42 bqian
  * 
@@ -131,7 +132,8 @@ public class DesignerCoreService implements IDesignerCoreService {
         if (createdProcessMap.size() > 50) {
             createdProcessMap.clear();
         }
-        String id = processItem.getProperty().getModificationDate() + processItem.getProperty().getId();
+        String id = processItem.getProperty().getModificationDate() + processItem.getProperty().getId()
+                + processItem.getProperty().getVersion();
         if (createdProcessMap.get(id) == null) {
             process = new Process(processItem.getProperty());
             process.loadXmlFile();

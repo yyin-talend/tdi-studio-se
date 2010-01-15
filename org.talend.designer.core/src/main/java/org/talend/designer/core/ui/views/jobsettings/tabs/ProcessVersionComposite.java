@@ -445,4 +445,9 @@ public class ProcessVersionComposite extends AbstractTabComposite {
     public void setParentWizard(IWizardPage parentWizard) {
         this.wizardPage = parentWizard;
     }
+
+    public TableViewer getTableViewer() {
+        return this.tableViewer;
+    }
+
 }
