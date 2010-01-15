@@ -18,7 +18,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.IToolViewer;
 import org.eclipse.gef.EditDomain;
@@ -32,9 +31,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -43,6 +40,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.components.ComponentUtilities;
@@ -143,21 +141,12 @@ public class TalendPaletteViewer extends PaletteViewer implements IToolViewer {
         toolbar.setLayout(toolbarLayout);
 
         Image clearImage = ImageProvider.getImage(ECoreImage.PALETTE_CLEAR_ICON);
-        Rectangle bounds = clearImage.getBounds();
-        ToolItem okItem = new ToolItem(toolbar, SWT.NONE);
+        Image findImage = ImageProvider.getImage(EImage.FIND_ICON);
 
-        int offset = 0;
-        if (SystemUtils.IS_OS_LINUX) {
-            offset = 4;
-        }
-
-        Image okImage = new Image(Display.getDefault(), bounds.width + offset, bounds.height + offset);
-        GC gc = new GC(okImage);
-        gc.setBackground(toolbar.getBackground());
-        gc.drawText("OK", 0, 0, false); //$NON-NLS-1$
-        gc.dispose();
-        okItem.setImage(okImage);
-        okItem.addSelectionListener(new SelectionAdapter() {
+        ToolItem findItem = new ToolItem(toolbar, SWT.NONE);
+        findItem.setImage(findImage);
+        findItem.setToolTipText("Search");
+        findItem.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 startFiltering(text);
@@ -178,7 +167,6 @@ public class TalendPaletteViewer extends PaletteViewer implements IToolViewer {
                 startFiltering(text);
             }
         });
-        okImage.dispose();
         return container;
     }
 
