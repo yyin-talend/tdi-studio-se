@@ -50,9 +50,11 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SVGBusinessProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ILastVersionChecker;
@@ -241,8 +243,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             }
 
             Item item = repositoryEditorInput.getItem();
-            // IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-            return isLastVersion(item);
+            IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+            return repositoryFactory.isEditableAndLockIfPossible(item) && isLastVersion(item);
         }
         return super.isEditable();
     }
@@ -456,12 +458,29 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     public boolean isLastVersion(Item item) {
         if (item.getProperty() != null) {
             try {
-                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
-                        item.getProperty().getId());
-                if (allVersion != null && !allVersion.isEmpty()) {
-                    if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {
-                        return true;
+                List<IRepositoryObject> allVersion = null;
+                ItemState state = item.getState();
+                ERepositoryObjectType type = ERepositoryObjectType.BUSINESS_PROCESS;
+
+                if (state != null && state.getPath() != null) {
+                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
+                            item.getProperty().getId(), state.getPath(), type);
+                } else {
+                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
+                            item.getProperty().getId());
+                }
+                if (allVersion == null || allVersion.isEmpty()) {
+                    return false;
+                }
+                String lastVersion = VersionUtils.DEFAULT_VERSION;
+
+                for (IRepositoryObject object : allVersion) {
+                    if (VersionUtils.compareTo(object.getVersion(), lastVersion) > 0) {
+                        lastVersion = object.getVersion();
                     }
+                }
+                if (VersionUtils.compareTo(item.getProperty().getVersion(), lastVersion) == 0) {
+                    return true;
                 }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
