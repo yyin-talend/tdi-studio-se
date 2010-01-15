@@ -749,6 +749,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> globalMap) throws TalendException {
 	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 0);
 
+ final boolean execStat = this.execStat;
 <%
 	boolean isParallelize = false;
 	for (INode node : subTree.getNodes()) {
