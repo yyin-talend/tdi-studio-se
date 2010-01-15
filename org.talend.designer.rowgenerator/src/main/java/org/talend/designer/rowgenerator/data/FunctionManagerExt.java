@@ -63,6 +63,7 @@ public class FunctionManagerExt extends FunctionManager {
         Function currentFun = new Function();
         List<Function> functions = getFunctionByName(talendType);
         String[] arrayTalendFunctions2 = new String[functions.size()];
+        List<String> list = new ArrayList<String>();
         if (functions.isEmpty()) {
             currentFun.setDescription(""); //$NON-NLS-1$
             currentFun.setPreview(""); //$NON-NLS-1$
@@ -70,7 +71,17 @@ public class FunctionManagerExt extends FunctionManager {
             bean.setArrayFunctions(arrayTalendFunctions2);
         } else {
             for (int i = 0; i < functions.size(); i++) {
-                arrayTalendFunctions2[i] = functions.get(i).getName();
+                String name = functions.get(i).getName();
+                if (list.contains(name)) {
+                    int indexOf = list.indexOf(name);
+                    arrayTalendFunctions2[indexOf] = functions.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
+
+                    String className = functions.get(i).getClassName();
+                    arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
+                } else {
+                    arrayTalendFunctions2[i] = name;
+                    list.add(name);
+                }
             }
             currentFun = (Function) functions.get(0).clone();
             bean.setArrayFunctions(arrayTalendFunctions2);
@@ -201,16 +212,18 @@ public class FunctionManagerExt extends FunctionManager {
     public static String getOneColData(MetadataColumnExt bean) {
         if (bean != null && bean.getFunction() != null) {
             String newValue = addPreSuffix ? PERL_FUN_PREFIX : ""; //$NON-NLS-1$
-            if (bean.getFunction().getName().equals(PURE_PERL_NAME)) {
+            String name = bean.getFunction().getName();
+            if (name.equals(PURE_PERL_NAME)) {
                 newValue = ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
             } else {
-                if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
+                if (name == null || "".equals(name)) { //$NON-NLS-1$
                     return ""; //$NON-NLS-1$
                 }
                 final List<Parameter> parameters = bean.getFunction().getParameters();
                 if (UIManager.isJavaProject()) {
-                    String fullName = JavaFunctionParser.getTypeMethods().get(
-                            bean.getTalendType() + "." + bean.getFunction().getName()); //$NON-NLS-1$
+                    String className = bean.getFunction().getClassName();
+                    String fullName = className + "." + name;//$NON-NLS-1$
+                    //                    String fullName = JavaFunctionParser.getTypeMethods().get(bean.getTalendType() + "." + name); //$NON-NLS-1$
                     newValue = fullName + "("; //$NON-NLS-1$
                     for (Parameter pa : parameters) {
                         newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
@@ -221,7 +234,7 @@ public class FunctionManagerExt extends FunctionManager {
                     newValue += ")"; //$NON-NLS-1$
 
                 } else {
-                    newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
+                    newValue += name + "("; //$NON-NLS-1$
                     for (Parameter pa : parameters) {
                         newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
                     }

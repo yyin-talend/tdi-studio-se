@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.editor;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -271,8 +273,14 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                     if (getTable() != null) {
                         generatorUI.updateFunParameter(getTable());
                     }
-                    functComboBox.setItems(bean.getArrayFunctions());
-                    return bean.getFunction().getName();
+                    String[] arrayFunctions = bean.getArrayFunctions();
+                    functComboBox.setItems(arrayFunctions);
+                    String name = bean.getFunction().getName();
+                    List<String> asList = Arrays.asList(arrayFunctions);
+                    if (asList != null && !asList.contains(name)) {
+                        return bean.getFunction().getClassName() + "." + name;//$NON-NLS-1$
+                    }
+                    return name;
                 }
                 return ""; //$NON-NLS-1$
             }
@@ -702,15 +710,19 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     private Function getFunnctionByName(String talendType, String value) {
         Function func = null;
-        for (Function fun : functionManager.getFunctionByName(talendType)) {
+        for (Function fun : functionManager.getFunctionByName(talendType)) {           
             // see bug 8055,remove the getLastName() method in TDQ,it has the same name as in TIS.
-            if (fun.getName().equals(value)) {
-                // if (value.equals("getLastName")) {
-                // if (fun.getClassName().equals("DataQuality")) {
-                // continue;
-                // }
-                // }
-                func = (Function) fun.clone();
+            String name = fun.getName();
+            if (value.contains(name)) {
+                if (name.equals(value)) {
+                    func = (Function) fun.clone();
+                    break;
+                } else {
+                    if (value.contains(fun.getClassName())) {
+                        func = (Function) fun.clone();
+                        break;
+                    }
+                }
             }
         }
         return func;

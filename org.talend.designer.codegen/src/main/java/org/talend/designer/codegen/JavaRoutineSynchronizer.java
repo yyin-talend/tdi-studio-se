@@ -68,13 +68,15 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             List<URL> urls = jms.getTalendRoutinesFolder();
 
             for (URL systemModuleURL : urls) {
-                String fileName = systemModuleURL.getPath();
-                if (fileName.startsWith("/")) { //$NON-NLS-1$
-                    fileName = fileName.substring(1);
-                }
-                File f = new File(systemModuleURL.getPath());
-                if (f.isDirectory()) {
-                    syncModule(f.listFiles());
+                if (systemModuleURL != null) {
+                    String fileName = systemModuleURL.getPath();
+                    if (fileName.startsWith("/")) { //$NON-NLS-1$
+                        fileName = fileName.substring(1);
+                    }
+                    File f = new File(systemModuleURL.getPath());
+                    if (f.isDirectory()) {
+                        syncModule(f.listFiles());
+                    }
                 }
             }
         } catch (IOException e) {
