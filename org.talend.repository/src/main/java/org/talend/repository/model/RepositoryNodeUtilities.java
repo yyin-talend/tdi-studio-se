@@ -541,7 +541,7 @@ public class RepositoryNodeUtilities {
             // fixed for the opened job and lost the selected node.
             if (object != null) {
 
-                selectedRepositoryNode = getRepositoryNode(object);
+                selectedRepositoryNode = getRepositoryNode(object, false);
 
             }
             if (selectedRepositoryNode != null) {
