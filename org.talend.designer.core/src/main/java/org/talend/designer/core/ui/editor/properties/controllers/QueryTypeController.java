@@ -65,8 +65,10 @@ public class QueryTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createControl(org.eclipse
+     * .swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
@@ -124,7 +126,9 @@ public class QueryTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createButtonCommand(org.eclipse.swt.widgets.Button)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createButtonCommand(org
+     * .eclipse.swt.widgets.Button)
      */
     @Override
     protected Command createButtonCommand(Button button) {
@@ -217,14 +221,22 @@ public class QueryTypeController extends AbstractRepositoryController {
             node = ((org.talend.designer.core.ui.editor.connections.Connection) elem).getSource();
         }
 
-        newRepositoryMetadata = node.getMetadataList().get(0);
+        List<IMetadataTable> metadataList = node.getMetadataList();
+        newRepositoryMetadata = metadataList.get(0);
+        // for tInformixRow
+        if (newRepositoryMetadata.getListColumns().size() == 0 && metadataList.size() > 1) {
+            newRepositoryMetadata = metadataList.get(1);
+        }
 
         if (newRepositoryMetadata == null) {
             String schemaSelected = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
             if (repositoryTableMap != null && schemaSelected != null && repositoryTableMap.containsKey(schemaSelected)) {
                 // repositoryMetadata = repositoryTableMap.get(schemaSelected);
             } else if (newRepositoryMetadata == null) {
-                MessageDialog.openWarning(new Shell(), Messages.getString("QueryTypeController.alert"), Messages.getString("QueryTypeController.nothingToGuess")); //$NON-NLS-1$ //$NON-NLS-2$
+                MessageDialog
+                        .openWarning(
+                                new Shell(),
+                                Messages.getString("QueryTypeController.alert"), Messages.getString("QueryTypeController.nothingToGuess")); //$NON-NLS-1$ //$NON-NLS-2$
                 return cmd;
             }
         }
@@ -239,7 +251,9 @@ public class QueryTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createComboCommand(org.eclipse.swt.custom.CCombo)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createComboCommand(org
+     * .eclipse.swt.custom.CCombo)
      */
     @Override
     protected Command createComboCommand(CCombo combo) {
@@ -268,9 +282,9 @@ public class QueryTypeController extends AbstractRepositoryController {
                 if (repositoryQueryStoreMap.containsKey(querySelected)) {
                     repositoryQuery = repositoryQueryStoreMap.get(querySelected);
                 }/*
-                     * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
-                     * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
-                     */
+                  * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
+                  * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
+                  */
 
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);
@@ -290,7 +304,9 @@ public class QueryTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryChoiceParamName()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryChoiceParamName
+     * ()
      */
     @Override
     protected String getRepositoryChoiceParamName() {
@@ -300,7 +316,9 @@ public class QueryTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryTypeParamName()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryTypeParamName
+     * ()
      */
     @Override
     protected String getRepositoryTypeParamName() {
