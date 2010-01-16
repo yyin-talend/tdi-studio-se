@@ -32,7 +32,7 @@ public class StatsAndLogsConstants {
 
     public static final String ORACLE_SN_ALIAS = JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS;
 
-    public static final String ORACLE_OCI_ALIAS = JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS;
+    public static final String ORACLE_OCI_ALIAS = JobSettingsConstants.ORACLE_OUTPUT_OCI_ALIAS;
 
     private static final String MYSQL = "MYSQL"; //$NON-NLS-1$
 
