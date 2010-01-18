@@ -14,10 +14,7 @@ package org.talend.designer.core.ui.editor.connections;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.Element;
-import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.runprocess.IPerformanceData;
-import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.runprocess.data.HtmlFromPerformance;
+import org.talend.runprocess.data.CommonPerformance;
 
 /**
  * Model part of connection performance.
@@ -87,11 +84,7 @@ public class ConnectionPerformance extends Element {
      * @return HTML string.
      */
     private String htmlFromPerformance(String data) {
-
-        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        IPerformanceData perf = service.createPerformanceData(data);
-
-        return HtmlFromPerformance.get(perf);
+        return new CommonPerformance().getBaseLabel(data);
     }
 
     /*

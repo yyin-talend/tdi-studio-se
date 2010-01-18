@@ -12,30 +12,14 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.talend.designer.runprocess.IPerformanceData;
+import org.talend.runprocess.data.IteratePerformance;
 
 /**
  * Control the statistical message that display on iterate link.
  */
 public class IterateConnectionPerformance extends ConnectionPerformance {
 
-    private static final String COLOR_FINISHED = "#229922"; //$NON-NLS-1$
-
-    private static final String COLOR_RUNNING = "#AA3322"; //$NON-NLS-1$
-
-    /**
-     * store the ids of exec that have already stopped.
-     */
-    private Set<String> stoppeddExecutionId = new HashSet<String>();
-
-    /**
-     * store the ids of exec that are running now.
-     */
-    private Set<String> runningExecutionId = new HashSet<String>();
+    private IteratePerformance iteratePerformance = new IteratePerformance();
 
     /**
      * DOC hcw IterateConnectionPerformance constructor comment.
@@ -48,69 +32,13 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
 
     @Override
     public void resetStatus() {
-        stoppeddExecutionId.clear();
-        runningExecutionId.clear();
+        iteratePerformance.resetStatus();
     }
 
     @Override
     public void setLabel(String msg) {
-        if (StringUtils.isEmpty(msg)) {
-            // handle by super class
-            super.setLabel(msg);
-            return;
-        }
-        String[] part = msg.split("\\|"); //$NON-NLS-1$
-        if (part != null && part.length == 3) {
-            // update process status
-            if (part[2].equals(IPerformanceData.ACTION_START)) {
-                runningExecutionId.add(part[1]);
-            } else if (part[2].equals(IPerformanceData.ACTION_STOP)) {
-                stoppeddExecutionId.add(part[1]);
-                runningExecutionId.remove(part[1]);
-            }
-            // update label
-            String oldLabel = label;
-            label = createHtmlText();
-            firePropertyChange(LABEL_PROP, oldLabel, label);
-
-        } else if (part != null && part.length == 2) { // iterate1.0|exec0, it means running.
-            runningExecutionId.add(part[1]);
-
-            // update label
-            String oldLabel = label;
-            label = createHtmlText();
-            firePropertyChange(LABEL_PROP, oldLabel, label);
-        }
+        String oldLabel = label;
+        label = iteratePerformance.getLabel(msg);
+        firePropertyChange(LABEL_PROP, oldLabel, label);
     }
-
-    /**
-     * DOC hcw Comment method "createHtmlText".
-     * 
-     * @return
-     */
-    private String createHtmlText() {
-        StringBuilder html = new StringBuilder(150);
-
-        String pattern = "<font color='%1$s'>%2$s %3$s</font><br>"; //$NON-NLS-1$
-        if (runningExecutionId.size() > 0) {
-            if (runningExecutionId.size() == 1) {
-                html.append(String.format(pattern, COLOR_RUNNING, runningExecutionId.size(), "exec running")); //$NON-NLS-1$
-            } else {
-                // plural forms
-                html.append(String.format(pattern, COLOR_RUNNING, runningExecutionId.size(), "execs running")); //$NON-NLS-1$
-            }
-        }
-
-        if (stoppeddExecutionId.size() > 0) {
-            if (stoppeddExecutionId.size() == 1) {
-                html.append(String.format(pattern, COLOR_FINISHED, stoppeddExecutionId.size(), "exec finished")); //$NON-NLS-1$
-            } else {
-                // plural forms
-                html.append(String.format(pattern, COLOR_FINISHED, stoppeddExecutionId.size(), "execs finished")); //$NON-NLS-1$
-            }
-        }
-
-        return html.toString();
-    }
-
 }

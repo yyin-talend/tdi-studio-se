@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.connections;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.runprocess.data.LiteralPerformance;
 
 /**
  * DOC xtan Control the statistical message that display on "OnComponentOK/OnComponentError/OnSubJobOK/OnSubJobError/If"
@@ -20,13 +21,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LiteralConnectionPerformance extends ConnectionPerformance {
 
-    private static final String COLOR_OK = "#229922"; //$NON-NLS-1$
-
-    private static final String COLOR_ERROR = "#AA3322"; //$NON-NLS-1$
-
-    private static final String COLOR_TRUE = "#229922"; //$NON-NLS-1$
-
-    private static final String COLOR_FALSE = "#AA3322"; //$NON-NLS-1$
+    private LiteralPerformance literalPerformance = new LiteralPerformance();
 
     /**
      * DOC xtan LiteralConnectionPerformance constructor comment.
@@ -57,31 +52,9 @@ public class LiteralConnectionPerformance extends ConnectionPerformance {
         if (part != null && part.length == 3) {
             // update label
             String oldLabel = label;
-            label = createHtmlText(part[1]);
+            label = literalPerformance.createHtmlText(part[1]);
             firePropertyChange(LABEL_PROP, oldLabel, label);
 
         }
-
-    }
-
-    private String createHtmlText(String literal) {
-        StringBuilder html = new StringBuilder();
-        String pattern = "<font color='%1$s'>%2$s</font><br>"; //$NON-NLS-1$
-        html.append(String.format(pattern, getColorStatus(literal), literal));
-        return html.toString();
-    }
-
-    private String getColorStatus(String status) {
-        if ("true".equalsIgnoreCase(status)) { //$NON-NLS-1$
-            return COLOR_TRUE;
-        } else if ("false".equalsIgnoreCase(status)) { //$NON-NLS-1$
-            return COLOR_FALSE;
-        } else if ("ok".equalsIgnoreCase(status)) { //$NON-NLS-1$
-            return COLOR_OK;
-        } else if ("error".equalsIgnoreCase(status)) { //$NON-NLS-1$
-            return COLOR_ERROR;
-        }
-
-        return COLOR_FALSE;
     }
 }
