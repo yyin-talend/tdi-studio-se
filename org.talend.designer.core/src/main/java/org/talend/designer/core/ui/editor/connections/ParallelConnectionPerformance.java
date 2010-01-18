@@ -38,11 +38,10 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
 
     @Override
     public void setLabel(String msg) {
-        offset = parallelPerformance.computeLabelOffset();
         // update label
         String oldLabel = label;
         label = parallelPerformance.getLabel(connection.getLineStyle(), msg);
+        offset = parallelPerformance.computeLabelOffset();
         firePropertyChange(LABEL_PROP, oldLabel, label);
     }
-
 }
