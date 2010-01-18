@@ -138,6 +138,8 @@ public class ConnectionParameters {
 
     private String schema = ""; //$NON-NLS-1$
 
+    private String localServiceName = ""; //$NON-NLS-1$
+
     private boolean isShowDialog = false;
 
     // add this flag for double-click this Query in Repository.
@@ -172,6 +174,27 @@ public class ConnectionParameters {
      */
     public void setConnectionComment(String connectionComment) {
         this.connectionComment = connectionComment;
+    }
+
+    /**
+     * Getter for schema.
+     * 
+     * @return the schema
+     */
+    public String getLocalServiceName() {
+        return this.localServiceName;
+    }
+
+    /**
+     * Sets the schema.
+     * 
+     * @param schema the schema to set
+     */
+    public void setLocalServiceName(String localServiceName) {
+        this.localServiceName = TextUtil.removeQuots(localServiceName);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(localServiceName);
+        }
     }
 
     /**

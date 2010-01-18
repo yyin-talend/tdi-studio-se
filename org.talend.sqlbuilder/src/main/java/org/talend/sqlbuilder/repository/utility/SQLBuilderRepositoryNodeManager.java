@@ -639,12 +639,15 @@ public class SQLBuilderRepositoryNodeManager {
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
-
-        connection.setSID(parameters.getDbName());
+        if (dbType != null && dbType.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())) {
+            connection.setSID(parameters.getLocalServiceName());
+        } else {
+            connection.setSID(parameters.getDbName());
+        }
         connection.setLabel(parameters.getDbName());
         connection.setDatasourceName(parameters.getDatasource());
         if ("".equals(connection.getLabel())) { //$NON-NLS-1$
-            connection.setLabel(parameters.getDatasource());
+                connection.setLabel(parameters.getDatasource());
         }
         final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
         connection.setProductId(product);

@@ -422,6 +422,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     iMetadataConnection = ConvertionHelper.convert(connt);
                     isStatus = checkConnection(iMetadataConnection);
                 }
+                final String dbType = iMetadataConnection.getDbType();
                 if (!monitor.isCanceled()) {
                     try {
                         if (isStatus) {
@@ -432,7 +433,9 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                 public void run() {
                                     final DbTableSelectorObject object = new DbTableSelectorObject();
                                     DbTableSelectorObject connO = new DbTableSelectorObject();
-                                    if ("".equals(connParameters.getDbName())) { //$NON-NLS-1$
+                                    if (dbType != null && dbType.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())) {
+                                        connO.setLabel(connParameters.getLocalServiceName());
+                                    } else if ("".equals(connParameters.getDbName())) { //$NON-NLS-1$
                                         connO.setLabel(connParameters.getDatasource());
                                     } else {
                                         connO.setLabel(connParameters.getDbName());

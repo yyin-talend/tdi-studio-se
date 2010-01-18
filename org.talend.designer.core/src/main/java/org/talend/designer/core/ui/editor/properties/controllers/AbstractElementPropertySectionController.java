@@ -1234,11 +1234,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String port = getValueFromRepositoryName(element, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
-
-        // qli modified to fix the bug "7364".
+        if (type.equals("Oracle OCI")) {
+            String localServiceName = (String) elem.getPropertyValue(EParameterName.LOCAL_SERVICE_NAME.getName());
+            // String localServiceName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
+            connParameters.setLocalServiceName(localServiceName);
+        }
 
         String datasource = getValueFromRepositoryName(element, EConnectionParameterName.DATASOURCE.getName());
         connParameters.setDatasource(datasource);
+
+        // qli modified to fix the bug "7364".
 
         String dbName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
         connParameters.setDbName(dbName);
@@ -1436,8 +1441,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
         addConnectionParameter(element, connParameters, EConnectionParameterName.FILE.getName());
 
         addConnectionParameter(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
-
-        // General jdbc
 
         addConnectionParameter(element, connParameters, EConnectionParameterName.URL.getName());
 
