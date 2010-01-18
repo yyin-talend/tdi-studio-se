@@ -103,6 +103,22 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="SET_INPUT_TEMP_DIR"
+      FIELD="CHECK"
+      NUM_ROW="61"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="INPUT_TEMP_DIR"
+      FIELD="DIRECTORY"
+      NUM_ROW="61"
+      SHOW_IF="SET_INPUT_TEMP_DIR == 'true'"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="SORT_CMDPATH"
       FIELD="FILE"
       NUM_ROW="70"
