@@ -605,27 +605,33 @@ int nb_line_data_<%=cid %> = 0;
 int nb_line_bad_<%=cid %> = 0;
 int nb_line_inserted_<%=cid %> = 0;
 
+/*	1.get log file all lines count	
+	2.get "Total logical records read" line number from file end.	
+	3.get "Total logical records read" and "Total logical records rejected" count. */
 String tempLine_<%=cid %> = "";
-while (!tempLine_<%=cid %>.contains("Total logical records read")) {
-	tempLine_<%=cid %> = lr_<%=cid %>.readLine();
-	if (tempLine_<%=cid %> == null) {
-		break;
-	}
+int countLines_<%=cid %> =0;//log file lines count
+//1
+while ((tempLine_<%=cid %> = lr_<%=cid %>.readLine() )!= null) {
+	countLines_<%=cid %>++;
 }
+lr_<%=cid %>.close();
+//need new instance to readLine .
+lr_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(logf_<%=cid %>));
+//2
+for (int i_<%=cid %>=0; i_<%=cid %><= countLines_<%=cid %> - 10; i_<%=cid %>++) {
+	lr_<%=cid %>.readLine();
+}
+//3.Total logical records read
+tempLine_<%=cid %> = lr_<%=cid %>.readLine();
 if (tempLine_<%=cid %> != null) {
 	nb_line_data_<%=cid %> = Integer.parseInt(tempLine_<%=cid %>.substring(tempLine_<%=cid %>.indexOf(":") + 1).trim());
 }
-
-tempLine_<%=cid %> = "";
-while (!tempLine_<%=cid %>.contains("Total logical records rejected")) {
-	tempLine_<%=cid %> = lr_<%=cid %>.readLine();
-	if (tempLine_<%=cid %> == null) {
-		break;
-	}
-}
+//3.Total logical records rejected
+tempLine_<%=cid %> = lr_<%=cid %>.readLine();
 if (tempLine_<%=cid %> != null) {
 	nb_line_bad_<%=cid %> = Integer.parseInt(tempLine_<%=cid %>.substring(tempLine_<%=cid %>.indexOf(":") + 1).trim());
 }
+lr_<%=cid %>.close();
 
 nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %>;
 
