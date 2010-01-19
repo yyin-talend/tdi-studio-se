@@ -1,16 +1,16 @@
 <%@ jet 
 imports="
-	org.talend.core.model.process.ElementParameterParser
-	org.talend.core.model.metadata.IMetadataTable
-	org.talend.core.model.metadata.IMetadataColumn
-    org.talend.core.model.process.INode  
-    org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.process.IConnectionCategory
-    org.talend.core.model.process.IConnection
-    java.util.List
-    java.util.Map
-    org.talend.core.model.metadata.types.JavaTypesManager
-	org.talend.core.model.metadata.types.JavaType
+  org.talend.core.model.process.ElementParameterParser
+  org.talend.core.model.metadata.IMetadataTable
+  org.talend.core.model.metadata.IMetadataColumn
+  org.talend.core.model.process.INode  
+  org.talend.designer.codegen.config.CodeGeneratorArgument
+  org.talend.core.model.process.IConnectionCategory
+  org.talend.core.model.process.IConnection
+  java.util.List
+  java.util.Map
+  org.talend.core.model.metadata.types.JavaTypesManager
+  org.talend.core.model.metadata.types.JavaType
 "
 %>
 
@@ -18,144 +18,143 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
 String connName = null;
-if (node.getIncomingConnections().size()==1) {
-	IConnection conn = node.getIncomingConnections().get(0);
-	connName = conn.getName();
-}
 
+if (node.getIncomingConnections().size() == 1) {
+  IConnection conn = node.getIncomingConnections().get(0);
+  connName = conn.getName();
+}
 List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null && connName != null) {
+
+if ((metadatas != null) && (metadatas.size() > 0)) {
+  IMetadataTable metadata = metadatas.get(0);
+
+  if (metadata!=null && connName != null) {
+    String logical = ElementParameterParser.getValue(node,"__LOGICAL_OP__");    
+    List<? extends IConnection> conns = node.getOutgoingSortedConnections();
+    List<? extends IConnection> connsFilter = node.getOutgoingConnections("FILTER");
+    List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
+    boolean use_advanced = ("true").equals(ElementParameterParser.getValue(node, "__USE_ADVANCED__"));
+    String advancedCondition = ElementParameterParser.getValue(node, "__ADVANCED_COND__");    
+    List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,  "__CONDITIONS__");
     
-    	String logical = ElementParameterParser.getValue(node,"__LOGICAL_OP__");
-    
-		List<? extends IConnection> conns = node.getOutgoingSortedConnections();
-		List<? extends IConnection> connsFilter = node.getOutgoingConnections("FILTER");
-		List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
-        boolean use_advanced = ("true").equals(ElementParameterParser.getValue(node,"__USE_ADVANCED__"));
-        String advancedCondition = ElementParameterParser.getValue(node,"__ADVANCED_COND__");
-		
-		List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONDITIONS__");
-		
-%>
-<%
-	if (conns!=null) {
-		if (conns.size()>0) {
-			for (int i=0;i<conns.size();i++) {
-				IConnection conn = conns.get(i);
-				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-			    	 %>
-			    	 <%=conn.getName() %> = null;			
-<%					 
-				}
-			}
-		}
-	}
-%>
+    if (conns != null && conns.size() > 0) {
+       
+      for (int i = 0; i < conns.size(); i++) {
+        IConnection conn = conns.get(i);
+        if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+        %>
+          <%=conn.getName() %> = null;      
+        <%
+        }
+      }
+    }
+    %>
 
+    if (
+      <% 
+      if (keyColumns.size() > 0 || use_advanced) { //111
+        int ii = 0;
 
-	if (
-<% 
-	if(keyColumns.size()>0 || use_advanced) { //111
-%>		
-		
-<%		
-	int ii = 0;
-	for(Map<String, String> keyColumn:keyColumns){
-		ii++;	
-%>	
-		<%=ii==1? "":logical %>(
-<% 
-		if(!("").equals(keyColumn.get("FUNCTION"))) {
-%>		
-		<%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
-<%
-		}else {	
-        	IMetadataColumn rightColumn = metadata.getColumn(keyColumn.get("INPUT_COLUMN"));
-        	JavaType javaType = JavaTypesManager.getJavaTypeFromId(rightColumn.getTalendType()); 
-        	if (!javaType.isPrimitive()) {	
-%>
-	
-<%
-//this is only for bug:8133, when "Oject" type, and "Empty" function, and compare with "null"
-if(keyColumn.get("RVALUE")!=null && keyColumn.get("RVALUE").equals("null")){%>	
-	<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
-<%}else{%>
-	<%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
-<%}%>
+        for (Map<String, String> keyColumn : keyColumns){ // 222 -> 
+          ii++;
+          %>
 
-<%
-			} else {
-%>	
-	<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
-<%
-			}
-		}
-%>
-	)
-<%
-   	}
-%>
-		<%=use_advanced? (keyColumns.size()<1 ? "":logical) + advancedCondition.replace("input_row", connName) : ""%>
-<% 
-     } else { //111 
-%>
-		true
-<%
-	} //111
-%>			
-	) 
-	
-	{
-<%
-	if (connsFilter!=null) {
-		if (connsFilter.size()>0) {
-			for (int i=0;i<connsFilter.size();i++) {
-				IConnection conn = connsFilter.get(i);
-				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-%>
-                    if(<%=conn.getName() %> == null){ 
-                    	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
-                    }
-<%
-			    	 for (IMetadataColumn column: metadata.getListColumns()) {
-			    	 %>
-			    	 <%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;			
-<%					 }
-				}
-			}
-		}
-	}
-%>		
-					nb_line_ok_<%=cid%>++;
-	} else {
-<%
-	if (connsReject!=null) {
-		if (connsReject.size()>0) {
-			for (int i=0;i<connsReject.size();i++) {
-				IConnection conn = connsReject.get(i);
-				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-				%>
-                    if(<%=conn.getName() %> == null){ 
-                    	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
-                    }				
-<%
-			    	 for (IMetadataColumn column: metadata.getListColumns()) {
-			    	 %>
-			    	 <%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;			
-<%					 }
-				}
-			}
-		}
-	}
-%>
-                    nb_line_reject_<%=cid%>++;
-	}
-<%
-	}
+          <%= ii == 1 ? "" : logical %>(
+
+            <% 
+            if (!("").equals(keyColumn.get("FUNCTION"))) {
+            %>    
+              <%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+            <%
+            }else {
+              IMetadataColumn rightColumn = metadata.getColumn(keyColumn.get("INPUT_COLUMN"));
+              JavaType javaType = JavaTypesManager.getJavaTypeFromId(rightColumn.getTalendType());
+
+              if (!javaType.isPrimitive()) {
+                //this is only for bug:8133, when "Oject" type, and "Empty" function, and compare with "null"
+                if (keyColumn.get("RVALUE") != null && keyColumn.get("RVALUE").equals("null")){
+	            %>
+	              <%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+                <%}else{%>
+                  <%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+                <%
+	            }
+              } else {
+              %>  
+                <%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+              <%
+	          }
+            }
+            %>
+          )
+        <%
+        } // <- 222
+        %>
+
+        <%=use_advanced? (keyColumns.size() < 1 ? "" : logical) + advancedCondition.replace("input_row", connName) : ""%>
+      <% 
+      } else { //111 
+      %>
+        true
+      <%
+      } //111
+      %>      
+    ){
+      <%
+      if (connsFilter != null) {
+
+        if (connsFilter.size() > 0) {
+
+          for (int i = 0; i < connsFilter.size(); i++) {
+            IConnection conn = connsFilter.get(i);
+
+            if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            %>
+              if(<%=conn.getName() %> == null){ 
+                <%=conn.getName() %> = new <%=conn.getName() %>Struct();
+              }
+              <%
+
+              for (IMetadataColumn column: metadata.getListColumns()) {
+              %>
+               <%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;      
+              <%
+	          }
+            }
+          }
+        }
+      }
+      %>    
+      nb_line_ok_<%=cid%>++;
+
+    } else {
+      <%
+      if (connsReject != null && connsReject.size() > 0) {
+       
+        for (int i = 0; i < connsReject.size(); i++) {
+          IConnection conn = connsReject.get(i);
+
+          if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+          %>
+            if (<%=conn.getName() %> == null){
+              <%=conn.getName() %> = new <%=conn.getName() %>Struct();
+            }      
+            <%
+            for (IMetadataColumn column: metadata.getListColumns()) {
+            %>
+              <%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;      
+            <%
+	        }
+          }
+        }
+      }
+      %>
+      nb_line_reject_<%=cid%>++;
+    }
+  <%
+  }
 }
 %>
-					nb_line_<%=cid%>++;
+
+nb_line_<%=cid%>++;

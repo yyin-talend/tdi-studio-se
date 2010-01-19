@@ -55,8 +55,8 @@
 						<ITEM NAME="ABS_VALUE"	VALUE="Math.abs($source) $operator $target" SHOW_IF="(CONDITIONS.INPUT_COLUMN.TYPE == 'int') or (CONDITIONS.INPUT_COLUMN.TYPE == 'long') or (CONDITIONS.INPUT_COLUMN.TYPE == 'float') or (CONDITIONS.INPUT_COLUMN.TYPE == 'double')" />
 						<ITEM NAME="LC"		 	VALUE="$source == null? false : $source.toLowerCase().compareTo($target) $operator 0" SHOW_IF="CONDITIONS.INPUT_COLUMN.TYPE == 'String'" />
 						<ITEM NAME="UC"		 	VALUE="$source == null? false : $source.toUpperCase().compareTo($target) $operator 0" SHOW_IF="CONDITIONS.INPUT_COLUMN.TYPE == 'String'" />
-						<ITEM NAME="LCFIRST" 	VALUE="$source == null? false : $source.toLowerCase().charAt(0).compareTo($target) $operator 0" SHOW_IF="CONDITIONS.INPUT_COLUMN.TYPE == 'String'" />
-						<ITEM NAME="UCFIRST" 	VALUE="$source == null? false : $source.toUpperCase().charAt(0).compareTo($target) $operator 0" SHOW_IF="CONDITIONS.INPUT_COLUMN.TYPE == 'String'" />
+						<ITEM NAME="LCFIRST" 	VALUE="$source == null? false : $source.toLowerCase().charAt(0) $operator $target" SHOW_IF="CONDITIONS.INPUT_COLUMN.TYPE == 'String'" />
+						<ITEM NAME="UCFIRST" 	VALUE="$source == null? false : $source.toUpperCase().charAt(0) $operator $target" SHOW_IF="CONDITIONS.INPUT_COLUMN.TYPE == 'String'" />
 						<ITEM NAME="LENGTH"  	VALUE="$source == null? false : $source.length() $operator $target" SHOW_IF="CONDITIONS.INPUT_COLUMN.TYPE == 'String'" />
 						<ITEM NAME="MATCH"    	VALUE="$source == null? false : $source.matches($target) $operator true" SHOW_IF="CONDITIONS.INPUT_COLUMN.TYPE == 'String'" />
 					</ITEMS>
