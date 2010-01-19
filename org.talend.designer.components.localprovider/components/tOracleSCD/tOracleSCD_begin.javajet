@@ -48,6 +48,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+    String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
     String dbType = ORACLE;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -90,8 +91,25 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         }
         %>
         String schema_<%=cid%> = <%=ElementParameterParser.getValue(node, "__SCHEMA_DB__")%>;
-        java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
-        <%        
+<%
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+		java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+<%
+		} else {
+%>
+		String atnParams_<%=cid%> = <%=dbproperties%>;
+		atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+		java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+		atnParamsPrope_<%=cid%>.put("user",<%=dbuser%>);
+		atnParamsPrope_<%=cid%>.put("password",<%=dbpwd%>);
+		atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+		java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, atnParamsPrope_<%=cid%>);
+<%
+		}
+%>
+        
+<%        
     }
     %>
     String tableName_<%=cid%> = null;

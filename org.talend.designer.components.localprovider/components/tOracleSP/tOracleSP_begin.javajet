@@ -22,6 +22,7 @@ String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
 boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 
 if (useExistingConnection) {
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
@@ -48,7 +49,25 @@ if (useExistingConnection) {
 	    <%
 	}
 	%>
+	
+<%
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
 	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+<%
+	} else {
+%>
+	String atnParams_<%=cid%> = <%=dbproperties%>;
+	atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+	atnParamsPrope_<%=cid%>.put("user",<%=dbuser%>);
+	atnParamsPrope_<%=cid%>.put("password",<%=dbpwd%>);
+	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, atnParamsPrope_<%=cid%>);
+<%
+	}
+%>
+	
 	<%
 }
 

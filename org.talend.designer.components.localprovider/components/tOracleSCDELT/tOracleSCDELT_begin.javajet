@@ -52,6 +52,7 @@ if(columnList != null && columnList.size() > 0) {
         String dbuser= ElementParameterParser.getValue(node, "__USER__");   
         String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
         String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+        String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
         %>
         java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
         <%
@@ -72,7 +73,24 @@ if(columnList != null && columnList.size() > 0) {
         %>
         String dbUser_<%=cid %> = <%=dbuser%>;
         String dbPwd_<%=cid %> = <%=dbpwd%>;
-        java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+<%
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+<%
+	} else {
+%>
+	String atnParams_<%=cid%> = <%=dbproperties%>;
+	atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+	atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+	atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+<%
+	}
+%>
+        
         String schema_<%=cid%> = <%=schema%>;
         <%
     }

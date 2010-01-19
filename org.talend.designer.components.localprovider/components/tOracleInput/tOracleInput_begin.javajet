@@ -48,6 +48,37 @@ imports="
 			return "oracle.jdbc.driver.OracleDriver";
 		}
 		
+		public void createConnection(INode node) {
+			cid = node.getUniqueName();
+			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+			dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
+	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
+	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+%>
+			java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
+			<%this.setURL(node);%>
+	        String dbUser_<%=cid %> = <%=dbuser%>;
+	        String dbPwd_<%=cid %> = <%=dbpwd%>;
+<%
+			if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+			} else {
+%>
+			String atnParams_<%=cid%> = <%=dbproperties%>;
+			atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+			java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+			atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+			atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+			atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+<%
+			}
+		}
+		
 		public void createStatement(INode node) {
 			super.createStatement(node);
 			String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");

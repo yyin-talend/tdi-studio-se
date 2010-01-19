@@ -36,6 +36,7 @@ String use_existing_ctl_file = ElementParameterParser.getValue(node, "__USE_EXIS
 String inputIntoTableClause = ElementParameterParser.getValue(node, "__INPUT_INTO_TABLE_CLAUSE__");
 String useDatePattern = ElementParameterParser.getValue(node, "__USE_DATE_PATTERN__");
 boolean convertToUppercase = ("true").equals(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String columns = "";//if schema is defined, use this option in ctl file
 List<IMetadataColumn> columnList = getColumnList(node);
 
@@ -151,8 +152,25 @@ if(useExistingConnection) {
     }
     %>
     java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
-    conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,username_<%=cid %>,password_<%=cid %>);
-    <%
+<%
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,username_<%=cid %>,password_<%=cid %>);
+<%
+	} else {
+%>
+	String atnParams_<%=cid%> = <%=dbproperties%>;
+	atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+	atnParamsPrope_<%=cid%>.put("user",username_<%=cid %>);
+	atnParamsPrope_<%=cid%>.put("password",password_<%=cid%>);
+	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+<%
+	}
+%>
+    
+<%
 }
 
 //table action begin

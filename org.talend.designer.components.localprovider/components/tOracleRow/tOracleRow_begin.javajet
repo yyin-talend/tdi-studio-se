@@ -24,6 +24,7 @@ imports="
     	   dbquery = dbquery.replaceAll("\r"," ");
     
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 %>
 
 java.sql.Connection conn_<%=cid%> = null;
@@ -57,9 +58,25 @@ if(("true").equals(useExistingConn)) {
 
 	String dbUser_<%=cid %> = <%=dbuser%>;
 	String dbPwd_<%=cid %> = <%=dbpwd%>;
-
+<%
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-	<%
+<%
+	} else {
+%>
+	String atnParams_<%=cid%> = <%=dbproperties%>;
+	atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+	atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+	atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+<%
+	}
+%>
+	
+<%
 }
 %>
 
