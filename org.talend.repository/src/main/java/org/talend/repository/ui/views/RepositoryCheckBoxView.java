@@ -72,4 +72,7 @@ public class RepositoryCheckBoxView extends RepositoryView {
     protected void hookDoubleClickAction() {
     }
 
+    @Override
+    public void addFilters() {
+    }
 }

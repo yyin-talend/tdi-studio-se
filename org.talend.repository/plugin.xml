@@ -1260,5 +1260,11 @@
             title="%projectsetting.Security">
       </page>        
    </extension>
+   <extension
+         point="org.talend.repository.repository_menu_provider">
+      <RepositoryMenuAction
+            class="org.talend.repository.ui.actions.RepositoryFilterAction">
+      </RepositoryMenuAction>
+   </extension>
 
 </plugin>

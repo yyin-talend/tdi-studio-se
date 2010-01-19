@@ -1384,7 +1384,19 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     }
 
     public RepositoryNode getContextNode() {
-        return this.getContextNode();
+        return this.contextNode;
+    }
+
+    public RepositoryNode getBusinessProcessNode() {
+        return this.businessProcessNode;
+    }
+
+    public RepositoryNode getRoutineNode() {
+        return this.routineNode;
+    }
+
+    public RepositoryNode getSQLPatternNode() {
+        return this.sqlPatternNode;
     }
 
     /*

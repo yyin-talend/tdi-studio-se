@@ -14,6 +14,7 @@ package org.talend.repository.ui.views;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.internal.ui.util.StringMatcher;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -41,6 +43,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
@@ -95,6 +99,8 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
@@ -129,6 +135,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public final static String ID = "org.talend.repository.views.repository"; //$NON-NLS-1$
 
+    private static final String SEPARATOR = ":";
+
     private static Logger log = Logger.getLogger(RepositoryView.class);
 
     private TreeViewer viewer;
@@ -152,7 +160,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private MenuManager rootMenu = null;
 
     public RepositoryView() {
-
     }
 
     /**
@@ -216,6 +223,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         IViewSite viewSite = getViewSite();
         viewer.setInput(viewSite);
         getSite().setSelectionProvider(viewer);
+
+        addFilters();
 
         // This only tree listener aim is to change open/close icons on folders :
         viewer.addTreeListener(new ITreeViewerListener() {
@@ -326,6 +335,123 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             });
         }
+    }
+
+    public void addFilters() {
+        // filter by node : filter stable talend elements
+        viewer.addFilter(new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                String[] uncheckedNodesFromFilter = RepositoryManager
+                        .getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
+
+                RepositoryNode node = (RepositoryNode) element;
+                ERepositoryObjectType contentType = node.getContentType();
+                if (uncheckedNodesFromFilter == null || contentType == null || node.isBin()) {
+                    return true;
+                }
+                String technicalLabel = node.getRoot().getProject().getEmfProject().getTechnicalLabel();
+                String uniqueSymbol = technicalLabel + SEPARATOR;
+                // sql patterns like Generic ,Mysql
+                if (contentType != null && ERepositoryObjectType.SQLPATTERNS.equals(contentType) && node.getId() != "-1") {
+                    uniqueSymbol = uniqueSymbol + contentType.name() + SEPARATOR + node.getProperties(EProperties.LABEL);
+                } else {
+                    uniqueSymbol = uniqueSymbol + contentType.name();
+                    if (node instanceof ProjectRepositoryNode) {
+                        uniqueSymbol = uniqueSymbol + SEPARATOR + "ROOT";//$NON-NLS-1$
+                    }
+
+                }
+                List<String> filters = Arrays.asList(uncheckedNodesFromFilter);
+                if (filters.contains(uniqueSymbol)) {
+                    return false;
+                }
+                return true;
+            }
+
+        });
+
+        // filter by status and users: filter user created nodes REPOSITORY_ELEMENT
+        viewer.addFilter(new ViewerFilter() {
+
+            private StringMatcher[] matchers;
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                String[] statusFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_STATUS);
+                String[] userFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_USER);
+
+                List items = new ArrayList();
+                if (statusFilter != null && statusFilter.length > 0) {
+                    items.addAll(Arrays.asList(statusFilter));
+                }
+                if (userFilter != null && userFilter.length > 0) {
+                    items.addAll(Arrays.asList(userFilter));
+                }
+                boolean visible = true;
+                RepositoryNode node = (RepositoryNode) element;
+                if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
+                    String label = (String) node.getProperties(EProperties.LABEL);
+                    if (node.getObject() != null) {
+                        Property property = node.getObject().getProperty();
+                        User author = node.getObject().getAuthor();
+                        String statusCode = "";
+                        if (property != null) {
+                            statusCode = property.getStatusCode();
+                        }
+                        String user = "";
+                        if (author != null) {
+                            user = author.getLogin();
+                        }
+                        if (items.contains(statusCode) || items.contains(user)) {
+                            visible = false;
+                        }
+                    }
+                    // filter by name
+                    if (isMatchNameFilterPattern(label)) {
+                        visible = false;
+                    }
+                }
+
+                return visible;
+            }
+
+            private boolean isMatchNameFilterPattern(String label) {
+                boolean enable = RepositoryManager.getPreferenceStore().getBoolean(
+                        IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED);
+                if (!enable) {
+                    return false;
+                }
+                if (label != null && label.length() > 0) {
+                    StringMatcher[] testMatchers = getMatchers();
+                    if (testMatchers != null) {
+                        for (int i = 0; i < testMatchers.length; i++) {
+                            if (testMatchers[i].match(label))
+                                return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            private StringMatcher[] getMatchers() {
+                String userFilterPattern = RepositoryManager.getPreferenceStore().getString(
+                        IRepositoryPrefConstants.FILTER_BY_NAME);
+                String[] newPatterns = null;
+                if (userFilterPattern != null && !"".equals(userFilterPattern)) {
+                    newPatterns = RepositoryManager.convertFromString(userFilterPattern, RepositoryManager.PATTERNS_SEPARATOR);
+                }
+                if (newPatterns != null) {
+                    matchers = new StringMatcher[newPatterns.length];
+                    for (int i = 0; i < newPatterns.length; i++) {
+                        matchers[i] = new StringMatcher(newPatterns[i], true, false);
+                    }
+                }
+                return matchers;
+            }
+        });
+
     }
 
     /*
