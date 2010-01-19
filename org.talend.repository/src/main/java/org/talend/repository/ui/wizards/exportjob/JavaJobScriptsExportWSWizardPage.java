@@ -398,6 +398,22 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (section == null) {
                 section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$ 
             }
+            if (exportDependencies != null && !exportDependencies.isDisposed()) {
+                exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
+            }
+            if (jobScriptButton != null && !jobScriptButton.isDisposed()) {
+                jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            }
+            if (contextButton != null && !contextButton.isDisposed()) {
+                contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
+            }
+            if (applyToChildrenButton != null && !applyToChildrenButton.isDisposed()) {
+                applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
+            }
+            if (jobItemButton != null && !jobItemButton.isDisposed()) {
+                jobItemButton.setSelection(settings.getBoolean(STORE_JOB_ID));
+            }
+
             if (section.get(ESB_EXPORT_TYPE) != null) {
                 esbTypeCombo.setText(section.get(ESB_EXPORT_TYPE));
                 if (section.get(ESB_SERVICE_NAME) != null) {
@@ -410,7 +426,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                     this.esbQueueMessageName.setText(section.get(QUERY_MESSAGE_NAME));
                 }
             }
-
         }
 
         if (process.length > 0 && contextCombo != null) {
@@ -569,18 +584,24 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (applyToChildrenButton != null) {
                 settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             }
-            if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
+            if (jobScriptButton != null && !jobScriptButton.isDisposed()) {
                 settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
+            }
+            if (jobItemButton != null && !jobItemButton.isDisposed()) {
+                settings.put(STORE_JOB_ID, jobItemButton.getSelection());
+            }
+            if (exportDependencies != null && !exportDependencies.isDisposed()) {
+                settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
+            }
+
+            if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
                 settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
                 settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
                 settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
                 settings.put(STORE_MODEL_ID, modelButton.getSelection());
-                settings.put(STORE_JOB_ID, jobItemButton.getSelection());
-                settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
                 return;
             } else if (getCurrentExportType().equals(EXPORTTYPE_WSZIP)) {
-                settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
                 settings.put(STORE_WEBXML_ID, webXMLButton.getSelection());
                 settings.put(STORE_CONFIGFILE_ID, configFileButton.getSelection());
                 settings.put(STORE_AXISLIB_ID, axisLibButton.getSelection());
