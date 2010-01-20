@@ -495,7 +495,7 @@ public class ComboController extends AbstractElementPropertySectionController {
 
         for (String[][] pattern : tdqPatterns) {
             String properExpression = null;
-            String label = pattern[0][0];
+            String label = pattern[0][3] + pattern[0][0];
             for (String[] expression : pattern) {
                 if (StringUtils.equalsIgnoreCase(expression[2], dbtype)) {
                     properExpression = expression[1];
