@@ -834,7 +834,16 @@ public class RunProcessContext {
                     InputStream in = processSocket.getInputStream();
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     while (!stopThread) {
-                        final String data = reader.readLine();
+
+                        String line = reader.readLine();
+                        // "GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
+                        if (line != null && line.trim().length() > 20) {
+                            String temp = line.substring(21);
+                            line = temp;
+                        }
+                        final String data = line;
+
+                        // final String data = reader.readLine();
                         if (data == null) {
                             stopThread = true;
                         } else {
