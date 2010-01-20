@@ -84,7 +84,10 @@ for (int i = 0; i < commandLine.length; i++) {
     <%}
   }
 }
-
+%>
+//for feature:10589
+paraList_<%=cid %>.add("--stat_port=" + portStats);
+<%
 if (useIndependentProcess && ProcessorUtilities.isExportConfig()){
 %>
   // exchange characters if this job runs on OS is different from exported base on
