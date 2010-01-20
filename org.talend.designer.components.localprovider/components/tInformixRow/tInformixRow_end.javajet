@@ -14,6 +14,7 @@ imports="
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
 	boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 
 if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
 %>
@@ -27,8 +28,16 @@ if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 <%
 }
 %>
-stmt_<%=cid %>.close();
+<%		
+	if (usePrepareStatement) {
+%>
+		pstmt_<%=cid %>.close();	
 <%
+	} else {
+%>
+		stmt_<%=cid %>.close();
+<%
+	}
 if (!useExistingConnection) {
 	%>
 	conn_<%=cid%> .close();

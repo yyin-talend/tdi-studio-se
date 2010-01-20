@@ -10,7 +10,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
+	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
@@ -25,5 +25,16 @@ if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 <%
 }
 %>
-stmt_<%=cid %>.close();
+
+<%		
+	if(usePrepareStatement){
+%>
+		pstmt_<%=cid %>.close();	
+<%
+	}else{
+%>
+		stmt_<%=cid %>.close();
+<%
+	}
+%>
 conn_<%=cid %> .close();

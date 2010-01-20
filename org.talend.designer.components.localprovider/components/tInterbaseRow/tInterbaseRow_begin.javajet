@@ -24,7 +24,10 @@ imports="
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
 	
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-    
+    String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+	       dbquery = dbquery.replaceAll("\n"," ");
+    	   dbquery = dbquery.replaceAll("\r"," ");
+    boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
     String javaDbDriver   = "interbase.interclient.Driver";  
     
     String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
@@ -57,6 +60,17 @@ imports="
         }
     }
     %>
-    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();    
-    String query_<%=cid %> = "";
+
+<%
+	if (usePrepareStatement ) {
+%>
+	java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);	
+<%
+	} else {
+%>
+	java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+<%
+	}
+%>
+String query_<%=cid %> = <%=dbquery%>;
     boolean whetherReject_<%=cid%> = false;   

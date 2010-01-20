@@ -18,6 +18,10 @@
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+    String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+	       dbquery = dbquery.replaceAll("\n"," ");
+    	   dbquery = dbquery.replaceAll("\r"," ");
+	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 %>
 java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 
@@ -27,8 +31,6 @@ String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-
-java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
 
 boolean whetherReject_<%=cid%> = false;
 
@@ -44,4 +46,16 @@ conn_<%=cid%>.setAutoCommit(false);
 <%
 }
 %>
-String query_<%=cid %> = "";
+
+<%
+	if(usePrepareStatement){
+%>
+		java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);	
+<%
+	}else{
+%>
+		java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+<%
+	}
+%>
+String query_<%=cid %> = <%=dbquery%>;

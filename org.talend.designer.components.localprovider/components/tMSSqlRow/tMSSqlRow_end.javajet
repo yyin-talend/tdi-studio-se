@@ -16,14 +16,24 @@ imports="
 		
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
+	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 	if(("true").equals(identityInsert)) {
 	    %>
 	    stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] OFF");
 	    <%
 	}
 	%>
+
+<%		
+	if (usePrepareStatement) {
+%>
+	pstmt_<%=cid %>.close();	
+<%
+	} else {
+%>
 	stmt_<%=cid%>.close();
-	<%
+<%
+	}
 	if(!("true").equals(useExistingConn)) {
 	    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
 	        %>

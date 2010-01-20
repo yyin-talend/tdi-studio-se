@@ -7,7 +7,8 @@ imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
         org.talend.core.model.process.IConnectionCategory		
-		java.util.List	
+		java.util.List
+		java.util.Map
 "
 %>
 
@@ -20,6 +21,8 @@ String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String propagateRecordset = ElementParameterParser.getValue(node,"__PROPAGATE_RECORD_SET__");
 String recordsetColumn = ElementParameterParser.getValue(node,"__RECORD_SET_COLUMN__");
 boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
+List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SET_PREPAREDSTATEMENT_PARAMETERS__");
 String incomingConnName = null;
 
 List<IMetadataColumn> columnList = null;
@@ -49,11 +52,6 @@ for(IConnection conn : outgoingConns) {
 		<%      
     }   
 }
-
-String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-       dbquery = dbquery.replaceAll("\n"," ");
-	   dbquery = dbquery.replaceAll("\r"," ");
-
 %>
 whetherReject_<%=cid%> = false;
 
@@ -74,7 +72,6 @@ if(!hasOutgoingDataConnection || columnList == null || columnList.size() < 1){
 	propagateRecordset = "false";
 }
 %>
-query_<%=cid %> = <%=dbquery%>;
 globalMap.put("<%=cid %>_QUERY",query_<%=cid %>);
 <%
 if(("true").equals(propagateRecordset)){
@@ -84,15 +81,42 @@ if(("true").equals(propagateRecordset)){
 }
 %>
 try {
-    <%
-	if(("true").equals(propagateRecordset)){
-	    %>
+<%		
+	if (usePrepareStatement) {
+	
+		for (Map<String, String> param : prepareStatementParameters) {
+			
+			if ("Date".equals(param.get("PARAMETER_TYPE"))) {
+%>
+			pstmt_<%=cid %>.setTimestamp(<%=param.get("PARAMETER_INDEX")%>,new java.sql.Timestamp(<%=param.get("PARAMETER_VALUE")%>.getTime()));
+<%
+			} else {
+%>
+			pstmt_<%=cid %>.set<%=param.get("PARAMETER_TYPE")%>(<%=param.get("PARAMETER_INDEX")%>,<%=param.get("PARAMETER_VALUE")%>);
+<%
+			}
+		}
+		
+		if(("true").equals(propagateRecordset)){
+%>
+		rs_<%=cid %> = pstmt_<%=cid %>.executeQuery();
+<%
+		} else {
+%>
+    	pstmt_<%=cid %>.execute();
+    	<%
+		}
+		
+	} else {
+		if(("true").equals(propagateRecordset)){
+%>
 		rs_<%=cid %> = stmt_<%=cid %>.executeQuery(query_<%=cid %>);
 		<%
 	} else {
 	    %>
     	stmt_<%=cid %>.execute(query_<%=cid %>);
     	<%
+		}
 	}
     %>
     } catch(Exception e) {

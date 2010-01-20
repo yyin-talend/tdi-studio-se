@@ -24,6 +24,11 @@ String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT
 String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+	dbquery = dbquery.replaceAll("\n"," ");
+    	dbquery = dbquery.replaceAll("\r"," ");
+    
+boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 if(useExistingConn) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
@@ -69,7 +74,17 @@ if (dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
 	tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%>;
 }
 
-java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+<%
+	if (usePrepareStatement ) {
+%>
+	java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);	
+<%
+	} else {
+%>
+	java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+<%
+	}
+%>
 <%
 if(("true").equals(identityInsert)){
     %>
@@ -77,5 +92,5 @@ if(("true").equals(identityInsert)){
     <%
 }
 %>
-String query_<%=cid %> = "";
+String query_<%=cid %> = <%=dbquery%>;
 boolean whetherReject_<%=cid%> = false;
