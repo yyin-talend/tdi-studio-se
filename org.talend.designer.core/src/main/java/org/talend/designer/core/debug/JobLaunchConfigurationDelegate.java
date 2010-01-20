@@ -69,7 +69,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
 
         final IProcess p = process;
         // Run job
-        Display.getDefault().syncExec(new Runnable() {
+        Display.getDefault().asyncExec(new Runnable() {
 
             public void run() {
                 IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
