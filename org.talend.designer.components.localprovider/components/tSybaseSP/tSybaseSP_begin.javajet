@@ -22,6 +22,7 @@ String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
 boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 if(useExistingConn){
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
@@ -31,7 +32,17 @@ if(useExistingConn){
 } else {       
     %>
     java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-    String connectionString_<%=cid%> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+		 String connectionString_<%=cid%> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%
+	} else {
+%>
+		 String connectionString_<%=cid%> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
+<%
+	}
+%>
     java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
     <%
 }

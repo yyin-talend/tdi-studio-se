@@ -47,6 +47,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+    String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
     String dbType = SYBASE;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -72,7 +73,17 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     } else {
         %>
         java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-        String connectionString_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+		String connectionString_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%
+		} else {
+%>
+		String connectionString_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
+<%
+		}
+%>
         java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);    
         <%
     }

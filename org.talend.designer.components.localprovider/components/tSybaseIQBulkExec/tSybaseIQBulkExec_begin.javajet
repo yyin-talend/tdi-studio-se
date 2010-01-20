@@ -27,6 +27,7 @@ String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String tableName = ElementParameterParser.getValue(node, "__TABLE__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 
 String lines_separator = ElementParameterParser.getValue(node, "__LINES_TERMINATED_BY__") ;
 String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") ;
@@ -47,7 +48,18 @@ if(useExistingConn) {
 }else{
 	if ("jconn3.jar".equals(dbVersion)) {//sybase IQ 12
 %>
-		 String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=host %> + ":" + <%=port %> + "/" + <%=dbName %>;
+
+<%
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+			String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=host %> + ":" + <%=port %> + "/" + <%=dbName %>;
+<%
+		} else {
+%>
+			String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=host %> + ":" + <%=port %> + "/" + <%=dbName %> + "?" + <%=dbproperties%>;
+<%
+		}
+%>
 		 String dirverName = "com.sybase.jdbc3.jdbc.SybDriver";
 <%	
 	} else {//sybase IQ 15

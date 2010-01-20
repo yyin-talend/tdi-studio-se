@@ -23,6 +23,7 @@ String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 if(useExistingConn) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
@@ -32,7 +33,18 @@ if(useExistingConn) {
 } else {
     %>
     java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-    String url_<%=cid %> = "jdbc:sybase:Tds:"+<%=dbServer%>+":"+<%=dbport%>+"/"+<%=dbname%>; 
+    
+<%
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+		String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>; 
+<%
+	} else {
+%>
+		String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
+<%
+	}
+%>
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);

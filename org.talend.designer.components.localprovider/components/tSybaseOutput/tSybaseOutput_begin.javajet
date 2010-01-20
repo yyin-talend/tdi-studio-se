@@ -60,6 +60,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	
 	String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	
 %>
 
@@ -130,7 +131,17 @@ if(useExistingConn){
     String dbUser_<%=cid %> = <%=dbuser %>;
     String dbPwd_<%=cid %> = <%=dbpwd %>;
     java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-    String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>; 
+<%
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+		String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>; 
+<%
+	} else {
+%>
+		String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
+<%
+	}
+%>
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%
 }

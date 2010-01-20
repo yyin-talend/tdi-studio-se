@@ -64,6 +64,7 @@ imports="
     String dbpwd = null;
     String encoding = null;
     boolean useExistingConn = false;
+    String dbproperties = null;
     if(previousNode != null) {
         dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
         dbport = ElementParameterParser.getValue(previousNode, "__PORT__");
@@ -72,6 +73,7 @@ imports="
         dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
         encoding = ElementParameterParser.getValue(previousNode, "__ENCODING__");
         useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
+        dbproperties = ElementParameterParser.getValue(previousNode, "__PROPERTIES__");
     }
 
 //        String tableAction = ElementParameterParser.getValue(
@@ -93,7 +95,17 @@ imports="
 	} else {
 %>
     java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-    String url_<%=cid %> = "jdbc:sybase:Tds:"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
+<%
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+			String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbhost %> + ":" + <%=dbport %> + "/" + <%=dbname %>;
+<%
+		} else {
+%>
+			String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbhost %> + ":" + <%=dbport %> + "/" + <%=dbname %> + "?" + <%=dbproperties%>;
+<%
+		}
+%>
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);    

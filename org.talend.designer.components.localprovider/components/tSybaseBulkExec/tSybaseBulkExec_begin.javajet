@@ -40,6 +40,7 @@ List<IMetadataColumn> columnList = getColumnList(node);
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 boolean convertToUppercase = false; // not active this function
 %>
 int deletedCount_<%=cid%>=0;
@@ -81,7 +82,17 @@ if(useExistingConnection) {
     String db_<%=cid%> = <%=database%>;
     String user_<%=cid%> = <%=user%>;
     String pass_<%=cid%> = <%=pwd%>;
-    String url_<%=cid %> = "jdbc:sybase:Tds:" + host_<%=cid%> + ":" + port_<%=cid%> + "/" + db_<%=cid%>;
+<%
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+%>
+		String url_<%=cid %> = "jdbc:sybase:Tds:" + host_<%=cid%> + ":" + port_<%=cid%> + "/" + db_<%=cid%>;
+<%
+	} else {
+%>
+		String url_<%=cid %> = "jdbc:sybase:Tds:" + host_<%=cid%> + ":" + port_<%=cid%> + "/" + db_<%=cid%> + "?" + <%=dbproperties%>;
+<%
+	}
+%>
     java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
     java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, user_<%=cid%>, pass_<%=cid%>);
     <%
