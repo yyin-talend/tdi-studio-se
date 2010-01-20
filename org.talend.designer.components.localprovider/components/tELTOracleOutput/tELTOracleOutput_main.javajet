@@ -402,7 +402,7 @@ if (useHintOptions) {
 
 	if(("INSERT").equals(dataAction)){
 %>	
-	String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" ("+select_query+")";
+	String insertQuery = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>) ("+select_query+")";
 <%	   
 		if (useHintOptions && hintsValues.get("INSERT") != null){ 
 %>	
@@ -440,7 +440,7 @@ if (useHintOptions) {
 	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 	%>
 
-String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" ("+select_query+")";
+String insertQuery = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>) ("+select_query+")";
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
@@ -461,7 +461,7 @@ String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toStri
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 				
-String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" ("+select_query+")";
+String insertQuery = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>) ("+select_query+")";
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 	<%

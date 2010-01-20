@@ -307,7 +307,7 @@ imports="
 
 		if(("INSERT").equals(dataAction)){
 %>	
-		String insertQuery = "INSERT INTO <%=dbtable%> "+select_query+"";
+		String insertQuery = "INSERT INTO <%=dbtable%> (<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 <%
 		} else if (("UPDATE").equals(dataAction)) {
@@ -326,7 +326,7 @@ imports="
 <%		
 		}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 %>
-		String insertQuery = "INSERT INTO <%=dbtable%> ("+select_query+")";
+		String insertQuery = "INSERT INTO <%=dbtable%> (<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 		String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
@@ -354,7 +354,7 @@ imports="
 		;
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 						
-		String insertQuery = "INSERT INTO <%=dbtable%> ("+select_query+")";
+		String insertQuery = "INSERT INTO <%=dbtable%> (<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 <%
 		}else if (("DELETE").equals(dataAction)){
