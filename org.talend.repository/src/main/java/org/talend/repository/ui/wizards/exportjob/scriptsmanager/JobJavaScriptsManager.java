@@ -477,8 +477,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
             };
             List<URL> javaFileUrls = new ArrayList<URL>();
-            for (File curFile : path.toFile().listFiles(filter)) {
-                javaFileUrls.add(FileLocator.toFileURL(curFile.toURL()));
+            File file = path.toFile();
+            if (file.exists() && file.isDirectory()) {
+                for (File curFile : file.listFiles(filter)) {
+                    javaFileUrls.add(FileLocator.toFileURL(curFile.toURL()));
+                }
             }
 
             resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName,
@@ -574,12 +577,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // prevent circle
             return;
         }
-        // try { //won't reload ref project if the job is in ref project
-        // process = (ProcessItem)
-        // ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()).getItem();
-        // } catch (PersistenceException e) {
-        // e.printStackTrace();
-        // }
+        try {
+            process = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()).getItem();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
         processedJob.add(process);
         addJobItem(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needJobItem), resource);
         addDependencies(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needDependencies), resource);

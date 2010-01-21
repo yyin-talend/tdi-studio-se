@@ -47,6 +47,7 @@ import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
@@ -812,23 +813,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     public Property getUptodateProperty(Project project, Property property) throws PersistenceException {
 
-        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(property.getItem());
-
-        Object fullFolder = getFullFolder(project, itemType, property.getItem().getState().getPath());
-        if (fullFolder == null) {
-            return null;
-        }
-
-        List<IRepositoryObject> allVersion;
-        if (fullFolder != null) {
-            allVersion = getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true, false, true);
-            if (allVersion.size() == 0) {
-                // if no item found in current directory, look for all directory
-                allVersion = getAllVersion(project, property.getId());
-            }
-        } else {
-            allVersion = getAllVersion(project, property.getId());
-        }
+        List<IRepositoryObject> allVersion = new ArrayList<IRepositoryObject>();
+        getAllVersions(project, property, allVersion);
         for (IRepositoryObject repositoryObject : allVersion) {
             Property uptodateProperty = repositoryObject.getProperty();
             if (uptodateProperty.getVersion().equals(property.getVersion())) {
@@ -836,6 +822,33 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             }
         }
         return null;
+    }
+
+    private void getAllVersions(Project project, Property property, List<IRepositoryObject> allVersion)
+            throws PersistenceException {
+        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(property.getItem());
+
+        Object fullFolder = getFullFolder(project, itemType, property.getItem().getState().getPath());
+        if (fullFolder != null) {
+            allVersion.addAll(getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true, false, true));
+            if (allVersion.size() == 0) {
+                // if no item found in current directory, look for all directory
+                allVersion.addAll(getAllVersion(project, property.getId()));
+            }
+        } else {
+            allVersion.addAll(getAllVersion(project, property.getId()));
+        }
+        if (allVersion.size() == 0 && project.getEmfProject().getReferencedProjects().size() > 0) {
+            for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getEmfProject()
+                    .getReferencedProjects()) {
+                org.talend.core.model.properties.Project emfProject = refProject.getReferencedProject();
+                getAllVersions(new Project(emfProject), property, allVersion);
+                if (allVersion.size() > 0) {
+                    break;
+                }
+            }
+        }
+
     }
 
     public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete) throws PersistenceException {
