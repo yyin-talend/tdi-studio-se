@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.runprocess.data.LiteralPerformance;
 
 /**
@@ -43,19 +42,8 @@ public class LiteralConnectionPerformance extends ConnectionPerformance {
      */
     @Override
     public void setLabel(String msg) {
-        if (StringUtils.isEmpty(msg)) {
-            // handle by super class
-            super.setLabel(msg);
-            return;
-        }
-
-        String[] part = msg.split("\\|"); //$NON-NLS-1$
-        if (part != null && part.length == 3) {
-            // update label
-            String oldLabel = label;
-            label = literalPerformance.createHtmlText(part[1]);
-            firePropertyChange(LABEL_PROP, oldLabel, label);
-
-        }
+        String oldLabel = label;
+        label = literalPerformance.getLabel(msg);
+        firePropertyChange(LABEL_PROP, oldLabel, label);
     }
 }
