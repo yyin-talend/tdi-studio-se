@@ -213,6 +213,31 @@ public class QueryGuessCommand extends Command {
                 newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, dbType, schema,
                         realTableName, b));
             }
+        } else if (dbType != null && (dbType.equals("NETEZZA") || dbType.equals("Netezza"))) { //$NON-NLS-1$
+            if (propertyType.equals(EmfComponent.REPOSITORY)) {
+                IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+                List<ConnectionItem> metadataConnectionsItem = null;
+                try {
+                    metadataConnectionsItem = factory.getMetadataConnectionsItem();
+
+                } catch (PersistenceException e) {
+                    throw new RuntimeException(e);
+                }
+                boolean standardSyntax = false;
+                if (metadataConnectionsItem != null) {
+                    for (ConnectionItem connectionItem : metadataConnectionsItem) {
+                        String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
+                        if (value.equals(node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                            standardSyntax = getConnection(connectionItem).isStandardSQL();
+                            newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable,
+                                    dbType, schema, realTableName, standardSyntax));
+                        }
+                    }
+                }
+            } else {
+                newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, dbType, schema,
+                        realTableName, true));
+            }
         } else {
             realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
             if (realTableName.startsWith(TalendTextUtils.QUOTATION_MARK)
