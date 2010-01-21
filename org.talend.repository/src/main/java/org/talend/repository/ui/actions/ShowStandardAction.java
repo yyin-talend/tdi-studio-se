@@ -62,7 +62,8 @@ public class ShowStandardAction extends Action {
 
     public void doSetEnable() {
         setEnabled(false);
-        getShowF().setEnabled(true);
+        if (getShowF() != null)
+            getShowF().setEnabled(true);
         if (!this.isEnabled()) {
             setDisabledImageDescriptor(ImageProvider.getImageDesc(ECoreImage.STANDARD_ICON));
         }
