@@ -84,8 +84,8 @@ if (outputConns!=null && outputConns.size()>0) {
     							 } else {
 %>
 									if(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>)!=null){
-    									<%=outputConnName%>.<%=column.getLabel() %> =
-                   							re_<%=cid%>.getDate(<%=tmpMap.get("VALUE")%>);
+    									<%=outputConnName%>.<%=column.getLabel() %> = 
+    										new java.util.Date(re_<%=cid %>.getTimestamp(<%=tmpMap.get("VALUE")%>).getTime());
        								 }else{
     									<%=outputConnName%>.<%=column.getLabel() %> = null;
         							}
