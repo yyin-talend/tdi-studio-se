@@ -84,7 +84,7 @@ public class ConnectionPerformance extends Element {
      * @return HTML string.
      */
     private String htmlFromPerformance(String data) {
-        return new CommonPerformance().getBaseLabel(data);
+        return new CommonPerformance(connection.getLineStyle()).getLabel(data);
     }
 
     /*

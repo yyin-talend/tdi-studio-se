@@ -21,7 +21,7 @@ import org.talend.runprocess.data.LiteralPerformance;
  */
 public class LiteralConnectionPerformance extends ConnectionPerformance {
 
-    private LiteralPerformance literalPerformance = new LiteralPerformance();
+    private LiteralPerformance literalPerformance;
 
     /**
      * DOC xtan LiteralConnectionPerformance constructor comment.
@@ -30,6 +30,7 @@ public class LiteralConnectionPerformance extends ConnectionPerformance {
      */
     public LiteralConnectionPerformance(Connection conn) {
         super(conn);
+        this.literalPerformance = new LiteralPerformance(conn.getLineStyle());
     }
 
     @Override

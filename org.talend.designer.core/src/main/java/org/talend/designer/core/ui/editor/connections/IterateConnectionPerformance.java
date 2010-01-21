@@ -19,7 +19,7 @@ import org.talend.runprocess.data.IteratePerformance;
  */
 public class IterateConnectionPerformance extends ConnectionPerformance {
 
-    private IteratePerformance iteratePerformance = new IteratePerformance();
+    private IteratePerformance iteratePerformance;
 
     /**
      * DOC hcw IterateConnectionPerformance constructor comment.
@@ -28,6 +28,7 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
      */
     public IterateConnectionPerformance(Connection conn) {
         super(conn);
+        this.iteratePerformance = new IteratePerformance(conn.getLineStyle());
     }
 
     @Override

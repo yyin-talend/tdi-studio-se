@@ -20,7 +20,7 @@ import org.talend.runprocess.data.ParallelPerformance;
  */
 public class ParallelConnectionPerformance extends ConnectionPerformance {
 
-    private ParallelPerformance parallelPerformance = new ParallelPerformance();
+    private ParallelPerformance parallelPerformance;
 
     /**
      * ParallelConnectionPerformance constructor.
@@ -29,6 +29,7 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
      */
     public ParallelConnectionPerformance(Connection conn) {
         super(conn);
+        this.parallelPerformance = new ParallelPerformance(conn.getLineStyle());
     }
 
     @Override
@@ -40,7 +41,7 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
     public void setLabel(String msg) {
         // update label
         String oldLabel = label;
-        label = parallelPerformance.getLabel(connection.getLineStyle(), msg);
+        label = parallelPerformance.getLabel(msg);
         offset = parallelPerformance.computeLabelOffset();
         firePropertyChange(LABEL_PROP, oldLabel, label);
     }
