@@ -1388,6 +1388,13 @@ public class DatabaseForm extends AbstractForm {
         sqlModeLabel.setVisible(isTeradata);
         button1.setVisible(isTeradata);
         button2.setVisible(isTeradata);
+        if (isTeradata) {
+            button1.setSelection(!isTeradata);
+            button2.setSelection(isTeradata);
+        } else {
+            button1.setSelection(getConnection().isSQLMode());
+            button2.setSelection(!getConnection().isSQLMode());
+        }
 
         if (isContextMode()) {
             return true;
