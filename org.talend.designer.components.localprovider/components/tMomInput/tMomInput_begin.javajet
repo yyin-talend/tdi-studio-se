@@ -332,7 +332,7 @@ class="MomInput"
 <%		
 		if ("Text".equals(msgBobyType)) {
 %>
-			String msg_<%=cid%>=inMessage<%=cid%>.readString(inMessage<%=cid%>.getMessageLength());
+			String msg_<%=cid%>=inMessage<%=cid%>.readStringOfCharLength(inMessage<%=cid%>.getMessageLength());
 <%
 		} else if ("Bytes".equals(msgBobyType)) {
 %>
@@ -345,8 +345,11 @@ class="MomInput"
 			java.util.Map msg_<%=cid%> = (java.util.Map)inMessage<%=cid%>.readObject();			  
 <%
 		}
+		if("true".equals(ElementParameterParser.getValue(node, "__COMMIT__"))){
 %>
+			qMgr<%=cid%>.commit();
 <%
+		}
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	List<IMetadataColumn> columnList = metadata.getListColumns();
 	for(IConnection conn:conns){
