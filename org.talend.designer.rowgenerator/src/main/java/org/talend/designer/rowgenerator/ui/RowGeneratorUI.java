@@ -241,8 +241,20 @@ public class RowGeneratorUI {
                 MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
                 List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
                 String[] arrayTalendFunctions2 = new String[funs.size()];
+                List<String> list = new ArrayList<String>();
+                // for feature 10676
                 for (int i = 0; i < funs.size(); i++) {
-                    arrayTalendFunctions2[i] = funs.get(i).getName();
+                    String name = funs.get(i).getName();
+                    if (list.contains(name)) {
+                        int indexOf = list.indexOf(name);
+                        arrayTalendFunctions2[indexOf] = funs.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
+
+                        String className = funs.get(i).getClassName();
+                        arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
+                    } else {
+                        arrayTalendFunctions2[i] = name;
+                        list.add(name);
+                    }
                 }
                 ext.setArrayFunctions(arrayTalendFunctions2);
                 if (!funs.isEmpty()) {
