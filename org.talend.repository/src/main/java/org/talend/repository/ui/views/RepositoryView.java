@@ -121,6 +121,7 @@ import org.talend.repository.ui.actions.DeleteAction;
 import org.talend.repository.ui.actions.PasteAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
+import org.talend.repository.ui.actions.RepositoryFilterAction;
 import org.talend.repository.ui.actions.RepositoryMenuAction;
 
 /**
@@ -685,15 +686,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private void fillLocalPullDown(IMenuManager manager) {
         Project project = ProjectManager.getInstance().getCurrentProject();
-        if (project.isLocal()) {
-            return;
-        }
+
         IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
                 "org.talend.repository.repository_menu_provider");
         for (IConfigurationElement elem : elems) {
             RepositoryMenuAction createExecutableExtension;
             try {
                 createExecutableExtension = (RepositoryMenuAction) elem.createExecutableExtension("class");
+                if (project.isLocal() && !(createExecutableExtension instanceof RepositoryFilterAction)) {
+                    continue;
+                }
                 createExecutableExtension.initialize(this);
                 manager.add(createExecutableExtension);
             } catch (CoreException e) {
