@@ -281,7 +281,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             if (repFactory.getStatus(repositoryEditorInput.getItem()) == ERepositoryStatus.DELETED) {
                 RepositoryManager.refreshDeletedNode(null);
             } else {
-                RepositoryManager.refresh(repositoryNode.getObjectType());
+                RepositoryManager.refreshSavedNode(repositoryNode);
             }
         }
     }
