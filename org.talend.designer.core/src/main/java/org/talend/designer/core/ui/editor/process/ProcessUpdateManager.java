@@ -487,6 +487,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             if (repValue.equals(list[i])) {
                                                 found = true;
                                             }
+                                            if (repValue.toString().equals("Oracle")) {
+                                                if (list[i].equals("ORACLE_SID")) {
+                                                    found = true;
+                                                }
+                                            }
                                         }
                                         if (!found) {
                                             sameValues = false;
