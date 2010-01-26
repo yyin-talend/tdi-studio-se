@@ -41,8 +41,6 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.DateDialog;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.MetadataTalendType;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.ui.context.DefaultCellEditorFactory;
@@ -294,7 +292,9 @@ public class PromptDialog extends Dialog {
                     }
                     String open = d.open();
                     if (open != null) {
-                        text.setText(DefaultCellEditorFactory.getAddQuoteString(PathUtils.getPortablePath(open)));
+                        open = PathUtils.getPortablePath(open);
+                        open += "/"; //$NON-NLS-1$
+                        text.setText(DefaultCellEditorFactory.getAddQuoteString(open));
                     }
                 }
 
