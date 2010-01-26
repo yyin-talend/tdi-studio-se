@@ -31,8 +31,12 @@ public class SimpleSAXLoopHandler extends DefaultHandler {
 
     private String currentPath = "";
 
-    public SimpleSAXLoopHandler(XMLNodes nodes) {
+    private DataBufferCache bufferCache = null;
+
+    public SimpleSAXLoopHandler(XMLNodes nodes, DataBufferCache bcache) {
+        super();
         this.nodes = nodes;
+        this.bufferCache = bcache;
     }
 
     /*
@@ -51,7 +55,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler {
      */
     public void endDocument() throws SAXException {
         // DataCache.getInstance().setReadEnd(true);
-        DataBufferCache.getInstance().setIsEnd();
+        bufferCache.setIsEnd();
     }
 
     /*
@@ -158,7 +162,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler {
                     // System.out.print("" + node.getTextValue() + "#");
                     // ---------------------------------------------
                 }
-                DataBufferCache.getInstance().writeData(map);
+                bufferCache.writeData(map);
                 // System.out.println();
 
             }

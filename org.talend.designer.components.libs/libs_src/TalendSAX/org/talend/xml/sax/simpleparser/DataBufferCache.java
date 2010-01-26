@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class DataBufferCache {
 
-    private static DataBufferCache instance = new DataBufferCache();
+    // private static DataBufferCache instance = new DataBufferCache();
 
     private long bufferSize = 5000;
 
@@ -38,9 +38,7 @@ public class DataBufferCache {
     }
 
     public static DataBufferCache getInstance() {
-        if (instance == null)
-            instance = new DataBufferCache();
-        return instance;
+        return new DataBufferCache();
     }
 
     public void setIsEnd() {

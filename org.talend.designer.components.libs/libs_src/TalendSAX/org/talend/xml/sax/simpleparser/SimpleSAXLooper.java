@@ -33,6 +33,8 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
 
     private XMLNodes nodes = new XMLNodes();
 
+    private DataBufferCache bcache;
+
     public SimpleSAXLooper(String loopPath, String[] nodePaths, boolean[] asXMLs) {
 
         for (int i = 0; i < nodePaths.length; i++) {
@@ -46,6 +48,8 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
     }
 
     private void initLoopEntry() {
+
+        bcache = DataBufferCache.getInstance();
 
         // parse the node path to loopEntry
         for (XMLNode node : nodes.getNodes().values()) {
@@ -90,7 +94,8 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
 
     public void run() {
         try {
-            DefaultHandler hd = new SimpleSAXLoopHandler(nodes);
+
+            DefaultHandler hd = new SimpleSAXLoopHandler(nodes, bcache);
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             if (fileURL != null)
                 saxParser.parse(fileURL, hd);
@@ -154,7 +159,7 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
      */
     public Iterator<Map<String, String>> iterator() {
         // TODO Auto-generated method stub
-        return new SimpleSAXIterator();
+        return new SimpleSAXIterator(this.bcache);
     }
 
     /*

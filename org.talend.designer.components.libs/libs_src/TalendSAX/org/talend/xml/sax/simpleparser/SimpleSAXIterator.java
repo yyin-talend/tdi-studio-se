@@ -20,7 +20,11 @@ import java.util.Map;
  */
 public class SimpleSAXIterator implements Iterator<Map<String, String>> {
 
-    private DataBufferCache cache = DataBufferCache.getInstance();
+    private DataBufferCache cache;
+
+    public SimpleSAXIterator(DataBufferCache bcache) {
+        this.cache = bcache;
+    }
 
     /*
      * (non-Javadoc)
