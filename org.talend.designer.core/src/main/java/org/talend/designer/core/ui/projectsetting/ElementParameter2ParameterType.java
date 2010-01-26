@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.common.util.EList;
@@ -251,6 +252,48 @@ public class ElementParameter2ParameterType {
                     UpdateTheJobsActionsOnTable.isClear = false;
                 }
             }
+        }
+    }
+
+    /**
+     * 
+     * load project settings to no-opened process
+     * 
+     * @param elemParam
+     * @param projectPaType
+     */
+    public static void loadElementParameters(ParametersType processType, ParametersType projectPaType, EParameterName paramName) {
+        EList listParamType = projectPaType.getElementParameter();
+        for (int j = 0; j < listParamType.size(); j++) {
+            ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+            EList processParameters = processType.getElementParameter();
+            ElementParameterType processParam = null;
+            for (int i = 0; i < processParameters.size(); i++) {
+                ElementParameterType paramType = (ElementParameterType) processParameters.get(i);
+                if (paramType.getName().equals(pType.getName()) && paramType.getField().equals(pType.getField())) {
+                    processParam = paramType;
+                } else if (pType.getName().contains(":")) {
+                    StringTokenizer token = new StringTokenizer(pType.getName(), ":"); //$NON-NLS-1$
+                    String parentId = token.nextToken();
+                    String childId = token.nextToken();
+                    String[] split = paramType.getName().split(":");
+                    if (split.length != 2) {
+                        continue;
+                    }
+                    String complexName = paramName + ":" + childId;
+                    if (complexName.equals(paramType.getName())) {
+                        processParam = paramType;
+                    }
+
+                }
+                if (processParam != null) {
+                    break;
+                }
+            }
+            if (processParam != null) {
+                processParam.setValue(pType.getValue());
+            }
+
         }
     }
 

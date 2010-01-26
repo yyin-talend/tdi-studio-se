@@ -194,6 +194,13 @@ public class ProjectSettingManager extends Utils {
         // changeImplicitContextRepositoryItem(process, extraComposite);
     }
 
+    public static void reloadImplicitValuesFromProjectSettings(ParametersType processType, Project pro) {
+        createImplicitContextLoadElement(pro);
+        ParametersType implicitType = pro.getEmfProject().getImplicitContextSettings().getParameters();
+        ElementParameter2ParameterType.loadElementParameters(processType, implicitType,
+                EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS);
+    }
+
     static void changeImplicitContextRepositoryItem(Element process, ExtraComposite extraComposite) {
         // change repository item
         String propertyType = (String) ElementParameter2ParameterType.getParameterValue(process, JobSettingsConstants

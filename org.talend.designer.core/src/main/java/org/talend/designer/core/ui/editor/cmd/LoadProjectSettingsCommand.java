@@ -15,10 +15,8 @@ package org.talend.designer.core.ui.editor.cmd;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.general.Project;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
-import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.repository.ProjectManager;
 
 /**
@@ -49,18 +47,9 @@ public class LoadProjectSettingsCommand extends Command {
         // ElementParameter2ParameterType.setParameterValue(process, paramName, isUseProjectSettings);
         if (isUseProjectSettings) {
             if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-                ParametersType implicitType = pro.getEmfProject().getImplicitContextSettings().getParameters();
-                if (implicitType != null) {
-                    ElementParameter2ParameterType.loadElementParameters(process, implicitType, JobSettingsConstants
-                            .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName())
-                            + ":" + EParameterName.PROPERTY_TYPE.getName());//$NON-NLS-N$
-                }
+                ProjectSettingManager.reloadImplicitValuesFromProjectSettings(process, pro, null);
             } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-                ParametersType stats = pro.getEmfProject().getStatAndLogsSettings().getParameters();
-                if (stats != null) {
-                    ElementParameter2ParameterType.loadElementParameters(process, stats, EParameterName.PROPERTY_TYPE.getName()
-                            + ":" + EParameterName.PROPERTY_TYPE.getName());//$NON-NLS-N$
-                }
+                ProjectSettingManager.reloadStatsAndLogFromProjectSettings(process, pro, null);
             }
 
         }
