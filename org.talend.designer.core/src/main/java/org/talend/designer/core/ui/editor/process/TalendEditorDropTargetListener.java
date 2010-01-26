@@ -658,7 +658,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     list.add(command3);
                 }
             } else {
-                if (connection instanceof DatabaseConnection) {
+                if (connection instanceof DatabaseConnection && hasQuery(node)) {
                     DatabaseConnection connection2 = (DatabaseConnection) connection;
                     String schema = connection2.getSchema();
                     String dbType = connection2.getDatabaseType();
@@ -715,6 +715,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
         }
         return list;
+    }
+
+    public boolean hasQuery(Node node) {
+        IElementParameter elementParameter = node.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
+        if (elementParameter == null) {
+            return false;
+        }
+        return true;
     }
 
     /**
