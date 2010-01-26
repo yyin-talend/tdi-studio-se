@@ -454,8 +454,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				%>
 				if(operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>.length() > 0) {
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>.append(<%= listDelimiter %>);
-				}
-				
+				} 
 				<%
 				if(inputIsByteArray) {
 				%>
@@ -464,8 +463,13 @@ if(inputConn != null) { // T_OutMain_AggR_501
 					}
 				<%
 				} else {
-				%>
+				%>else if(operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>_firstEmpty){
+					operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>.append(<%= listDelimiter %>);
+				}
 					if(operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> != null) {
+						if(operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>_firstEmpty==false && ("").equals(String.valueOf(<%=inputConn.getName() %>.<%=inputColumnName  %>))){
+							operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>_firstEmpty = true;
+						}
 						operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> = operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>.append(String.valueOf(<%=inputConn.getName() %>.<%=inputColumnName  %>));
 					}
 				<%

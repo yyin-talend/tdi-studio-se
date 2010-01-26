@@ -509,6 +509,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
            		} else if(LIST.equals(function)) {
            			
            			%>StringBuilder <%=funin[OUTPUT_COLUMN] %>_<%=LIST %> = new StringBuilder();
+           			boolean <%=funin[OUTPUT_COLUMN] %>_<%=LIST %>_firstEmpty = false;
            			<%
            			
            		 } else if(LIST_OBJECT.equals(function)) {
