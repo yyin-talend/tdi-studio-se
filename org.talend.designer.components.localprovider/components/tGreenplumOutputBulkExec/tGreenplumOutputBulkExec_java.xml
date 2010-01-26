@@ -44,6 +44,7 @@
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="2"
+      REQUIRED="true"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>"localhost"</DEFAULT>
@@ -53,6 +54,7 @@
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="2"
+      REQUIRED="true"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>"5432"</DEFAULT>
@@ -62,6 +64,7 @@
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="3"
+      REQUIRED="true"
       REPOSITORY_VALUE="SID"
     >
       <DEFAULT>""</DEFAULT>
@@ -80,6 +83,7 @@
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="4"
+      REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -89,6 +93,7 @@
       NAME="PASS"
       FIELD="TEXT"
       NUM_ROW="4"
+      REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>""</DEFAULT>

@@ -86,6 +86,7 @@
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="40"
+      REQUIRED="true"
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_OCI')"
     >
@@ -96,6 +97,7 @@
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="40"
+      REQUIRED="true"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_OCI')" 
     >
@@ -106,6 +108,7 @@
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="50"
+      REQUIRED="true"
       REPOSITORY_VALUE="SID"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_OCI')" 
 	> 
@@ -137,6 +140,7 @@
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="60"
+      REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -147,6 +151,7 @@
       NAME="PASS"
       FIELD="TEXT"
       NUM_ROW="60"
+      REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -187,7 +192,7 @@
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="CREATE" FIELD="CHECK" REQUIRED="true"
+    <PARAMETER NAME="CREATE" FIELD="CHECK" REQUIRED="false"
 			NUM_ROW="81">
 			<DEFAULT>true</DEFAULT>
 	</PARAMETER>
@@ -198,7 +203,7 @@
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="85"
-      REQUIRED="true"
+      REQUIRED="false"
        SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
     >
       <ITEMS DEFAULT="INSERT">

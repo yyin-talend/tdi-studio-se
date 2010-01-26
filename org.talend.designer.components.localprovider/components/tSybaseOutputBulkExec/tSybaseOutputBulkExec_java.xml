@@ -62,7 +62,7 @@
       NAME="SERVER"
       FIELD="TEXT"
       NUM_ROW="3"
-      REQUIRED="false"
+      REQUIRED="true"
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -73,6 +73,7 @@
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="3"
+      REQUIRED="true"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -83,7 +84,7 @@
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="3"
-      REQUIRED="false"
+      REQUIRED="true"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
