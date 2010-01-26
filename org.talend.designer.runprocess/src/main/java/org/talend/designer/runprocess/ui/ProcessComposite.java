@@ -1168,10 +1168,10 @@ public class ProcessComposite extends Composite {
         processContext.setMonitorPerf(perfBtn.getSelection());
         processContext.setMonitorTrace(traceBtn.getSelection());
 
-        checkSaveBeforeRunSelection();
-
         processContext.setSelectedContext(contextComposite.getSelectedContext());
         processContext.exec(getShell());
+
+        checkSaveBeforeRunSelection();
 
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
         ILaunch[] launches = manager.getLaunches();
