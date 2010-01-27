@@ -82,14 +82,19 @@ public class ConnectionAddUniqueNameMigrationTask extends AbstractJobMigrationTa
                         } else if (connectionType.equals(EConnectionType.ITERATE)) {
                             baseName = "iterate";
                         } else if (connectionType.equals(EConnectionType.TABLE)) {
-                            baseName = "table";
+                            baseName = null;
                         } else if (connectionType.equals(EConnectionType.SYNCHRONIZE)
                                 || connectionType.equals(EConnectionType.PARALLELIZE)) {
                             baseName = null;
                         } else {
                             baseName = connectionType.getDefaultLinkName();
                         }
-                        String uniqueName = currentConnection.getLabel();
+                        String uniqueName = "";
+                        if (connectionType.equals(EConnectionType.TABLE)) {
+                            uniqueName = currentConnection.getMetaname();
+                        } else {
+                            uniqueName = currentConnection.getLabel();
+                        }
                         if (baseName != null && !"".equals(baseName)) {
                             uniqueName = generateUniqueConnectionName(baseName);
                         }
