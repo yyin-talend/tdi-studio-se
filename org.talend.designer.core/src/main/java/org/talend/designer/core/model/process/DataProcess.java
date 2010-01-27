@@ -875,6 +875,7 @@ public class DataProcess {
                 incomingConnections = new ArrayList<IConnection>();
                 hashNode.setIncomingConnections(incomingConnections);
                 hashNode.setOutgoingConnections(outgoingConnections);
+                hashNode.setVirtualGenerateNode(true);
 
                 addDataNode(hashNode);
 

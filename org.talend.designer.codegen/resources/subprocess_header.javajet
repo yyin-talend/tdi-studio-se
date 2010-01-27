@@ -93,6 +93,12 @@
 										hashableColumnsNames.add(column.getLabel());
 									}
 								}
+								
+								//for feature:11325
+								if("tAdvancedHash".equals(conn.getTarget().getComponent().getName())){
+									isLookup = true;
+								}
+								
 							}
 						}
 						boolean hasAtLeastOneKey = hashableColumnsNames.size() > 0;
