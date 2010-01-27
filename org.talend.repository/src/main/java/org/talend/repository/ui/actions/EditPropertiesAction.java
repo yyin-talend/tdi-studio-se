@@ -57,6 +57,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
@@ -96,6 +97,7 @@ public class EditPropertiesAction extends AContextualAction {
         PropertiesWizard wizard = new PropertiesWizard(node, path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {
+            RepositoryManager.refreshEditorPropertiesNode(ERepositoryObjectType.ROUTINES);
             refresh(node);
             // refresh the corresponding editor's name
             IEditorPart part = getCorrespondingEditor(node);
