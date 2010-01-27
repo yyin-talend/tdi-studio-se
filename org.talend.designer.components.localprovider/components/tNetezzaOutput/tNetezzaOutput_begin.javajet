@@ -42,6 +42,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 
 <%
+getManager(dbmsId, cid, node);
+
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {

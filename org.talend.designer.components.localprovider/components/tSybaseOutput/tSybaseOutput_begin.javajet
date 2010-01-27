@@ -79,6 +79,9 @@ String dbschema_<%=cid%>= <%=dbschema%>;
 
 
 <%
+
+getManager(dbmsId, cid, node);
+
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {

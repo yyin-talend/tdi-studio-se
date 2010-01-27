@@ -72,6 +72,8 @@ int insertedCount_<%=cid%>=0;
 String tableName_<%=cid%> = <%=table%>;
 boolean whetherReject_<%=cid%> = false;
 <%
+getManager(dbmsId, cid, node);
+
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 Manager manager = null;

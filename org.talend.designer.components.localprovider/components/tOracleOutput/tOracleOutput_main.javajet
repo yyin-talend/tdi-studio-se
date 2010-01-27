@@ -46,6 +46,11 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+	
+	//feature:2880
+    getManager(dbmsId, cid, node);
+    boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
+	
 	String incomingConnName = null;
 	List<IMetadataColumn> columnList = getColumnList(node);
 	
@@ -191,6 +196,22 @@ skeleton="../templates/db_output_bulk.skeleton"
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
                     %>
+                    
+					<% 
+                    //#############for feature:2880 and 6980
+                    if(whereSupportNull && column.getColumn().isNullable()) { %>
+                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%  
+					if(isEnableDebug) {
+                        %>
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
+                        <%
+                    }
+                    	counterCol++;
+                       }
+                     //#############                      
+                    %>  
+                    
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
                     if(isEnableDebug) {
@@ -264,6 +285,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
                     %>
+					<% 
+                    //#############for feature:2880 and 6980
+                    if(whereSupportNull && column.getColumn().isNullable()) { %>
+                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%  
+                    	columnIndex++;
+                       }
+                     //#############                      
+                    %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
                     columnIndex++;
@@ -299,6 +329,20 @@ skeleton="../templates/db_output_bulk.skeleton"
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                         String dbType = column.getColumn().getType();
                         %>
+                        <% 
+	                    //#############for feature:2880
+	                    if(whereSupportNull && column.getColumn().isNullable()) { %>
+	                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
+	                    <%  
+		                     if(isEnableDebug) {
+	                        %>
+	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
+	                        <%
+	                    	} 
+	                    	counterCol++;
+	                       }
+	                     //#############                      
+	                    %>
                         <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
                         <%
                         if(isEnableDebug) {
@@ -429,6 +473,21 @@ skeleton="../templates/db_output_bulk.skeleton"
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
                     String dbType = columnUpdate.getColumn().getType();
                     %>
+					<% 
+                    //#############for feature:2880 and 6980
+                    if(whereSupportNull && columnUpdate.getColumn().isNullable()) { %>
+                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
+                    <%  
+	                    if(isEnableDebug) {
+	                        %>
+	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_", "(("+incomingConnName+"."+columnUpdate.getName()+"==null)?1:0)")%>;
+	                        <%
+	                    	}
+                    	counterColUpdate++;
+                       }
+                     //#############                      
+                    %>
+                    
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
                     <%
                     if(isEnableDebug) {
@@ -548,6 +607,20 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(column.isDeleteKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
+                    %>
+					<% 
+                    //#############for feature:2880 and 6980
+                    if(whereSupportNull && column.getColumn().isNullable()) { %>
+                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%  
+	                    if(isEnableDebug) {
+	                        %>
+	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
+	                        <%
+	                    	}
+                    	 keyCounter++;
+                       }
+                     //#############                      
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
                     <%

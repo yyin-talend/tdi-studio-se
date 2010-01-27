@@ -68,6 +68,9 @@ boolean whetherReject_<%=cid%> = false;
 String url_<%=cid %> = "jdbc:ingres://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 
 <%
+
+getManager(dbmsId, cid, node);
+
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {

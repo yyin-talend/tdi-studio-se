@@ -62,6 +62,8 @@ String tableName_<%=cid%> = <%=tableName%>;
 boolean whetherReject_<%=cid%> = false;
 
 <%
+getManager(dbmsId, cid, node);
+
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {

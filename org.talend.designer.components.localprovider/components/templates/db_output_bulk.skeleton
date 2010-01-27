@@ -876,6 +876,8 @@ public class CLASS {
             }
             return setStmt.toString();
         }
+        
+        // @Deprecated : see bug8551
         public String retrieveSQL(String generatedType, Column column, String incomingConnName, String cid, String stmt) {
             String replaceStr = null;
             if(generatedType.equals("char") || generatedType.equals("Character")) {
@@ -927,13 +929,23 @@ public class CLASS {
             		return stmt + cid + ".append(" + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ").append("+sqlSplit+cid+"["+index+"])";
             	}
             }
-            
-                
+        }
+        
+        //feature:2880 @6980 in debug mode
+        public String retrieveSQL(String generatedType, Column column, String incomingConnName, String cid, String stmt, int index, String sqlSplit, String replaceFixedStr) {
+        	if (index == 1) {
+        		return stmt + cid + ".append("+sqlSplit+cid+"[0]).append(" +replaceFixedStr+ ").append("+sqlSplit+cid+"["+index+"])";
+        	} else {
+        		return stmt + cid + ".append(" +replaceFixedStr+").append("+sqlSplit+cid+"["+index+"])";
+        	}
         }
         
         //extract a method for feature:2880, it is a default implement, need every tDBOutput to implement it, if it really want to support the "whereNULL" issue
         //@see: the implement of MSSQLManager
-        //feature:2880
+        //feature:2880 @6980
+        //i.e: 
+        //1.select * FROM user where ((true = true AND name is NULL) OR name = ?);
+        //2.select * FROM user where ((true = false AND name is NULL) OR name = ?);
         private void whereStmtSupportNull(StringBuilder updateWhereStmt, Column column) {
             boolean whereSupportNull = false;
 
@@ -943,7 +955,7 @@ public class CLASS {
             }
             if (whereSupportNull && column.getColumn().isNullable()) {
                 updateWhereStmt.append("((" + getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName())
-                        + " IS NULL AND 0x1 " + column.getOperator() + " " + column.getSqlStmt() + ") ");
+                        + " IS NULL AND " + getColumnIsNullCondition() +" " + column.getOperator() + " " + column.getSqlStmt() + ") ");
                 updateWhereStmt.append("OR " + getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName())
                         + column.getOperator() + column.getSqlStmt() + ")");
             } else {
@@ -951,6 +963,12 @@ public class CLASS {
                 updateWhereStmt.append(getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName()) + " "
                         + column.getOperator() + " " + column.getSqlStmt());
             }
+        }
+        
+        //feature:2880 @6980
+        //need all db to implement, return the column whether is null(in java) prefix condition.
+        protected String getColumnIsNullCondition() {
+        	return "1";
         }
         
         // for feature:2880, it will consider the "whereNULL" issue in the generated code.
@@ -979,8 +997,10 @@ public class CLASS {
             return setStmt.toString();
         }
 
-        // for feature:2880, generate the "set boolean" java code. 
-        private String generateSetBooleanForNullableKeyStmt(Column column, int index, String incomingConnName, String cid,
+        // for feature:2880 @6980, generate the "set XXXX" java code.thie code is about  the column whether is null(in java) prefix condition.
+        //@see:getColumnIsNullCondition()
+        //need all db to implement.
+        protected String generateSetBooleanForNullableKeyStmt(Column column, int index, String incomingConnName, String cid,
                 int actionType) {
             String prefix = null;
             if (actionType == NORMAL_TYPE) {
@@ -991,10 +1011,11 @@ public class CLASS {
                 prefix = "pstmtUpdate_";
             }
             StringBuilder setStmt = new StringBuilder();
-            setStmt.append(prefix + cid + ".setBoolean(" + index + ", (" + incomingConnName + "." + column.getName()
-                    + "==null));\r\n");
+            //TODO generate setXXXX code according to each db .
+            setStmt.append(prefix + cid + ".setInt(" + index + ",  ((" + incomingConnName + "." + column.getName() + "==null)?1:0));\r\n");
             return setStmt.toString();
-        }        
+        }     
+        
     }
     
     public class AS400Manager extends Manager {
@@ -1010,6 +1031,31 @@ public class CLASS {
         protected String getRProtectedChar() {
             return "";
         }
+        
+        //feature:2880 @6980
+        //need all db to implement, return the column whether is null(in java) prefix condition.
+        protected String getColumnIsNullCondition() {
+        	return "1";
+        }
+        
+        // for feature:2880 @6980, generate the "set XXXX" java code.thie code is about  the column whether is null(in java) prefix condition.
+        //@see:getColumnIsNullCondition()
+        //need all db to implement.
+        protected String generateSetBooleanForNullableKeyStmt(Column column, int index, String incomingConnName, String cid,
+                int actionType) {
+            String prefix = null;
+            if (actionType == NORMAL_TYPE) {
+                prefix = "pstmt_";
+            } else if (actionType == INSERT_TYPE) {
+                prefix = "pstmtInsert_";
+            } else if (actionType == UPDATE_TYPE) {
+                prefix = "pstmtUpdate_";
+            }
+            StringBuilder setStmt = new StringBuilder();
+            setStmt.append(prefix + cid + ".setInt(" + index + ",  ((" + incomingConnName + "." + column.getName()
+                    + "==null)?1:0));\r\n");
+            return setStmt.toString();
+        } 
     }
     
     public class AccessManager extends Manager {
@@ -1109,6 +1155,32 @@ public class CLASS {
             }
             return setStmt.toString();
         }
+        
+        //feature:2880 @6980
+        //need all db to implement, return the column whether is null(in java) prefix condition.
+        protected String getColumnIsNullCondition() {
+        	return "1";
+        }
+        
+        // for feature:2880 @6980, generate the "set XXXX" java code.thie code is about  the column whether is null(in java) prefix condition.
+        //@see:getColumnIsNullCondition()
+        //need all db to implement.
+        protected String generateSetBooleanForNullableKeyStmt(Column column, int index, String incomingConnName, String cid,
+                int actionType) {
+            String prefix = null;
+            if (actionType == NORMAL_TYPE) {
+                prefix = "pstmt_";
+            } else if (actionType == INSERT_TYPE) {
+                prefix = "pstmtInsert_";
+            } else if (actionType == UPDATE_TYPE) {
+                prefix = "pstmtUpdate_";
+            }
+            StringBuilder setStmt = new StringBuilder();
+            setStmt.append(prefix + cid + ".setInt(" + index + ",  ((" + incomingConnName + "." + column.getName()
+                    + "==null)?1:0));\r\n");
+            return setStmt.toString();
+        } 
+        
     }
     
     public class DB2Manager extends Manager {
@@ -1180,6 +1252,31 @@ public class CLASS {
             
             return updateBulkSQL.append(updateSetStmt).append(updateSetSelectStmt).append(updateWhereSubStmt).append(updateWhereMainStmt).append(updateWhereSubStmt).toString();
         }
+        
+        //feature:2880 @6980
+        //need all db to implement, return the column whether is null(in java) prefix condition.
+        protected String getColumnIsNullCondition() {
+        	return "1";
+        }
+        
+        // for feature:2880 @6980, generate the "set XXXX" java code.thie code is about  the column whether is null(in java) prefix condition.
+        //@see:getColumnIsNullCondition()
+        //need all db to implement.
+        protected String generateSetBooleanForNullableKeyStmt(Column column, int index, String incomingConnName, String cid,
+                int actionType) {
+            String prefix = null;
+            if (actionType == NORMAL_TYPE) {
+                prefix = "pstmt_";
+            } else if (actionType == INSERT_TYPE) {
+                prefix = "pstmtInsert_";
+            } else if (actionType == UPDATE_TYPE) {
+                prefix = "pstmtUpdate_";
+            }
+            StringBuilder setStmt = new StringBuilder();
+            setStmt.append(prefix + cid + ".setInt(" + index + ",  ((" + incomingConnName + "." + column.getName()
+                    + "==null)?1:0));\r\n");
+            return setStmt.toString();
+        } 
         
     }
     
@@ -1362,6 +1459,25 @@ public class CLASS {
             return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();            
         } 
        
+        protected String getColumnIsNullCondition() {
+        	return "0x1";
+        }
+        
+        protected String generateSetBooleanForNullableKeyStmt(Column column, int index, String incomingConnName, String cid,
+                int actionType) {
+            String prefix = null;
+            if (actionType == NORMAL_TYPE) {
+                prefix = "pstmt_";
+            } else if (actionType == INSERT_TYPE) {
+                prefix = "pstmtInsert_";
+            } else if (actionType == UPDATE_TYPE) {
+                prefix = "pstmtUpdate_";
+            }
+            StringBuilder setStmt = new StringBuilder();
+            setStmt.append(prefix + cid + ".setBoolean(" + index + ", (" + incomingConnName + "." + column.getName()
+                    + "==null));\r\n");
+            return setStmt.toString();
+        } 
     }
     
     public class MysqlManager extends Manager {
@@ -1586,6 +1702,7 @@ public class CLASS {
             
             return updateBulkSQL.append(updateSetStmt).append(updateSetSelectStmt).append(updateWhereSubStmt).append(updateWhereMainStmt).append(updateWhereSubStmt).toString();
         }        
+        
     }
     
     public class PostgreManager extends Manager {

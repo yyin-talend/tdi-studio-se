@@ -41,6 +41,8 @@ boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__
 %>
 
 <%
+getManager(dbmsId, cid, node);
+
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {

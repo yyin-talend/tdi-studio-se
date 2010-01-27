@@ -80,6 +80,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 
 <%
+getManager(dbmsId, cid, node);
+
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 Manager manager = null;

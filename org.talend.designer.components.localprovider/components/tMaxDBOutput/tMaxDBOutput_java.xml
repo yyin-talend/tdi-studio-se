@@ -250,7 +250,15 @@
   	  FIELD="CHECK"
 	  NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>                  
+	</PARAMETER>      
+
+	<PARAMETER 
+		NAME="SUPPORT_NULL_WHERE" 
+		FIELD="CHECK"
+		NUM_ROW="20">
+		  <DEFAULT>false</DEFAULT>
+	</PARAMETER>
+		            
   </ADVANCED_PARAMETERS> 
     
   <CODEGENERATION>
