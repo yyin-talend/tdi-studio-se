@@ -85,6 +85,8 @@ public class RepositoryFilterDialog extends Dialog {
 
     private Button enableUserPatternBtn;
 
+    private Button allUsersBtn;
+
     private Set<String> uncheckedNode = new HashSet<String>();
 
     private Set<String> uncheckedStatus = new HashSet<String>();
@@ -206,12 +208,23 @@ public class RepositoryFilterDialog extends Dialog {
         patternInfo.setEnabled(enabled);
 
         // filter by user
-        Label filterByUser = new Label(parent, SWT.NONE);
+        Composite userTop = new Composite(parent, SWT.NONE);
+        userTop.setLayout(new GridLayout(2, false));
+        userTop.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Label filterByUser = new Label(userTop, SWT.NONE);
         filterByUser.setText("Filter By User :");
+
+        allUsersBtn = new Button(userTop, SWT.CHECK | SWT.LEFT);
+        allUsersBtn.setText("All Users");
+        boolean userTableEnable = RepositoryManager.getPreferenceStore().getBoolean(
+                IRepositoryPrefConstants.USER_FILTER_TABLE_ENABLED);
+        allUsersBtn.setSelection(!userTableEnable);
+
         userTable = new Table(parent, SWT.BORDER | SWT.CHECK);
         userTable.setLayoutData(new GridData(GridData.FILL_BOTH));
         userTable.setHeaderVisible(true);
         userTable.setLinesVisible(true);
+        userTable.setEnabled(!allUsersBtn.getSelection());
 
         TableColumn login = new TableColumn(userTable, SWT.NONE);
         login.setWidth(100);
@@ -232,8 +245,8 @@ public class RepositoryFilterDialog extends Dialog {
         for (User user : users) {
             TableItem item = new TableItem(userTable, SWT.NONE);
             item.setText(0, user.getLogin());
-            item.setText(1, user.getFirstName());
-            item.setText(2, user.getLastName());
+            item.setText(1, user.getFirstName() == null ? "" : user.getFirstName());
+            item.setText(2, user.getLastName() == null ? "" : user.getLastName());
             if (!uncheckedUser.contains(user.getLogin())) {
                 item.setChecked(true);
             }
@@ -474,6 +487,18 @@ public class RepositoryFilterDialog extends Dialog {
             }
 
         });
+
+        allUsersBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                userTable.setEnabled(!allUsersBtn.getSelection());
+                if (allUsersBtn.getSelection()) {
+                    uncheckedUser.clear();
+                }
+            }
+
+        });
     }
 
     private void processNodeAndChild(RepositoryNode node, Set<String> set) {
@@ -530,6 +555,8 @@ public class RepositoryFilterDialog extends Dialog {
         preferenceStore.setValue(IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED, this.enableUserPatternBtn
                 .getSelection()
                 && canUserFilterEnable);
+
+        preferenceStore.setValue(IRepositoryPrefConstants.USER_FILTER_TABLE_ENABLED, !allUsersBtn.getSelection());
         super.okPressed();
     }
 
