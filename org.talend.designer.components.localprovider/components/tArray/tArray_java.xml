@@ -42,11 +42,13 @@
       <DEFAULT/> 
     </PARAMETER>
 
+	<!-- This parameter is no use, tArray is a alone component, it won't be used as a virtual component. -->
     <PARAMETER
       NAME="DESTINATION"
       FIELD="TEXT"
       NUM_ROW="2"
       REQUIRED="true"
+      SHOW="false"
     >
       <DEFAULT>array_tArray_1</DEFAULT>
     </PARAMETER>

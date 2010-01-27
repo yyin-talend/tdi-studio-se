@@ -18,11 +18,35 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
+    
+    	boolean linkwith = ("true").equals(ElementParameterParser.getValue(node, "__LINK_WITH__"));
+		String linkedtHashOutput = ElementParameterParser.getValue(node, "__LIST__");
+		String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+		String originKey = origin; 
+		String originStructSuffix = origin; 
+		INode rootNode = node;
+		
+		//if tArrayIn works with tArray together, get the real tArray node. 
+		if(linkwith){
+    		List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
+    		for(INode n : nodeList){
+    			if(n.getUniqueName().equals(linkedtHashOutput)){
+    				rootNode = n;
+    				break;
+    			}
+    		}
+    		if(rootNode != node){
+    			//don't get key from the DESTINATION, use the node UniqueName as key.
+    			//origin = ElementParameterParser.getValue(rootNode, "__DESTINATION__");
+    			origin = rootNode.getUniqueName();
+    			originStructSuffix = "";
+    		}
+		}
 
         //get the input connection
         IConnection inputConn = null;
         String inComingName = "";  
-        List< ? extends IConnection> connsIn = node.getIncomingConnections();     
+        List< ? extends IConnection> connsIn = rootNode.getIncomingConnections();     
         for (IConnection conn : connsIn) {//3
 			inputConn = conn;
 			break; //only get the first connection
@@ -30,17 +54,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         if(inputConn != null){
         	inComingName = inputConn.getName();
-        }
-            
-        String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+        }        
+        
         %>
         
         int nb_line_<%= cid %> = 0;
-        java.util.List<<%=inComingName %>Struct<%=origin %>> list_<%=cid%> = (java.util.List<<%=inComingName %>Struct<%=origin %>>)globalMap.get("<%=origin %>");
+        java.util.List<<%=inComingName %>Struct<%=originStructSuffix %>> list_<%=cid%> = (java.util.List<<%=inComingName %>Struct<%=originStructSuffix %>>)globalMap.get("<%=originKey %>");
         if(list_<%=cid%> == null) {
-            list_<%=cid%> = new java.util.ArrayList<<%=inComingName %>Struct<%=origin %>>();
+            list_<%=cid%> = new java.util.ArrayList<<%=inComingName %>Struct<%=originStructSuffix %>>();
         }        
-        for(<%=inComingName %>Struct<%=origin %> row_<%=cid %> : list_<%=cid%>){
+        for(<%=inComingName %>Struct<%=originStructSuffix %> row_<%=cid %> : list_<%=cid%>){
         
             <%
             //begin
