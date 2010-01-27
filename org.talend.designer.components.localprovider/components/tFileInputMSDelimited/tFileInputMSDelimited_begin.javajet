@@ -49,6 +49,8 @@ String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
 String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
 String columnIndex = ElementParameterParser.getValue(node,"__COLUMNINDEX__");
 
+boolean trimAll = ("true").equals(ElementParameterParser.getValue(node,"__TRIMALL__"));
+
 boolean useMulSeprators = "true".equals(ElementParameterParser.getValue(node,"__USE_MULTISEPARATORS__"));
 
 if (hasDataLink) {//FIM_000
@@ -132,7 +134,7 @@ while (fid_<%=cid %>.nextRecord()) {
 		Map<String, String> schema = schemas.get(i);
 		String record = schema.get("RECORD");
 %>
-	<%=(i==0) ? "" : "else " %>if(fid_<%=cid %>.get(Integer.parseInt(<%=columnIndex %>)).equals(<%=record %>)){
+	<%=(i==0) ? "" : "else " %>if(fid_<%=cid %>.get(Integer.parseInt(<%=columnIndex %>))<%=trimAll?".trim()":""%>.equals(<%=record %>)){
 <%
 		String schemaName = schema.get("SCHEMA");
 		boolean keyUpdated = false;
@@ -152,7 +154,7 @@ while (fid_<%=cid %>.nextRecord()) {
 <%
 					}else{
 %>
-		key_<%=schemaName %>_<%=cid %> = fid_<%=cid %>.get(<%=keyIndex%>);
+		key_<%=schemaName %>_<%=cid %> = fid_<%=cid %>.get(<%=keyIndex%>)<%=trimAll?".trim()":""%>;
 <%
 					}
 				}//FIM_003_1
@@ -208,7 +210,7 @@ while (fid_<%=cid %>.nextRecord()) {
 <%
 					}else{
 %>
-		<%=connection %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>);
+		<%=connection %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=trimAll?".trim()":""%>;
 <%
 					}
 				}else{ //FIM_006
@@ -218,7 +220,7 @@ while (fid_<%=cid %>.nextRecord()) {
 <%
 					}else{
 %>
-		temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>);
+		temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=trimAll?".trim()":""%>;
 <%
 					}
 %>
@@ -369,7 +371,6 @@ if ( ((String)<%=rowSeparator1%>).length() > 0 ){
 }
 		
 com.csvreader.CsvReader <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader( new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=useMulSeprators?"';'" : "fieldSeparator_"+cid+"[0]" %>);
-                
 if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
 	<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
 
@@ -413,9 +414,18 @@ String[] row<%=cid %>=null;
 String temp_<%=cid %> = null;
 
 while ( <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.readRecord() ) {
-<%if(useMulSeprators==false){%>
+<%
+if(useMulSeprators==false){
+%>
 	row<%=cid %>=csvReader<%=cid %>.getValues();
-<%}else{%>
+	<%if(trimAll){%>
+	for(int ii_<%=cid %>=0;ii_<%=cid %> < row<%=cid%>.length;ii_<%=cid %>++){
+		row<%=cid %>[ii_<%=cid %>] = row<%=cid %>[ii_<%=cid %>].trim(); 
+	}
+	<%}%>
+<%
+}else{
+%>
 	tmp<%=cid %> = <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.getRawRecord();
 	for(int i_<%=cid %>=0; i_<%=cid %><delim_<%=cid %>.length; i_<%=cid %>++){ //NS000
 		com.csvreader.CsvReader csvReader<%=cid %> = new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
@@ -455,6 +465,11 @@ while ( <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.readRecord() ) {
 		}
 		
 		row<%=cid %> = csvReader<%=cid %>.getValues();
+    	<%if(trimAll){%>
+    	for(int ii_<%=cid %>=0;ii_<%=cid %> < row<%=cid%>.length;ii_<%=cid %>++){
+    		row<%=cid %>[ii_<%=cid %>] = row<%=cid %>[ii_<%=cid %>].trim(); 
+    	}
+    	<%}%>
 		if (row<%=cid %> == null
 				|| row<%=cid %>.length <= index_<%=cid %>) {
 			continue;
