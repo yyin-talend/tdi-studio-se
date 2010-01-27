@@ -1,0 +1,383 @@
+<%@ jet 
+    imports="
+        org.talend.core.model.process.INode 
+        org.talend.core.model.process.ElementParameterParser 
+        org.talend.core.model.metadata.IMetadataTable 
+        org.talend.core.model.metadata.IMetadataColumn 
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.core.model.metadata.types.JavaTypesManager
+        org.talend.core.model.metadata.types.JavaType
+        java.util.List 
+        java.util.Map
+    " 
+%>
+<% 
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+boolean bindHostname = ("true").equals(ElementParameterParser.getValue(node,"__BIND_HOSTNAME__"));
+String hostname = ElementParameterParser.getValue(node,"__SERVERHOSTNAME__");
+String port = ElementParameterParser.getValue(node,"__PORT__");
+boolean isNoValidate = ("true").equals(ElementParameterParser.getValue(node,"__NOVALIDATE__"));
+
+String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
+
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
+List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+
+List< ? extends IConnection> connections = node.getOutgoingSortedConnections();
+
+if(connections!=null && connections.size()>0){
+%> 
+System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+
+class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
+
+//    private static final ca.uhn.log.HapiLog log = ca.uhn.log.HapiLogFactory.getHapiLog(MinLLPReader.class);
+    
+    private java.io.BufferedReader myReader;
+
+    private static final char END_MESSAGE = '\u001c'; //character indicating the
+                                              //termination of an HL7 message
+    private static final char START_MESSAGE = '\u000b';//character indicating the
+                                               //start of an HL7 message
+    private static final char LAST_CHARACTER = 13; //the final character of
+        //a message: a carriage return
+
+    //NB: The above is as per the minimal lower layer protocol.
+    
+    /** Creates a MinLLPReader which reads from the given InputStream. The stream
+        is assumed to be an ASCII bit stream.
+    */
+    public TalendHL7Reader_<%=cid %>(java.io.InputStream in, String charsetName) throws IOException
+    {
+        setInputStream(in, charsetName);
+    }
+
+    /**
+     * Sets the InputStream from which to read messages.  The InputStream must be set 
+     * before any calls to <code>getMessage()</code>.
+     */
+    public synchronized void setInputStream(java.io.InputStream in, String charsetName) throws IOException 
+    {
+     	myReader = new java.io.BufferedReader(new java.io.InputStreamReader(in, charsetName));
+    }
+
+	@Override
+	public void setInputStream(java.io.InputStream arg0)
+			throws IOException {
+	}
+
+    /** Calls the same method in the underlying BufferedReader. */
+    /**private int read(char[] parm1, int parm2, int parm3) throws java.io.IOException
+    {
+        return myReader.read(parm1, parm2, parm3);
+    }*/
+
+    /** Reads an HL7 encoded message from this Reader's InputStream.
+        @return The message, in string format, without the lower level
+        protocol delimeters. Returns null if a -1 is received on the initial
+         read.
+     */
+    public synchronized String getMessage() throws ca.uhn.hl7v2.llp.LLPException, java.io.IOException 
+    {
+        StringBuffer s_buffer = new StringBuffer();
+
+        boolean end_of_message = false;
+                        
+            int c = 0;
+            try {
+                c = myReader.read();                
+            } catch (java.net.SocketException e) {
+                return null;
+            }
+
+            //trying to read when there is no data (stream may have been closed at other end)
+            if (c == -1) {
+                return null; 
+            }
+
+            if (c != START_MESSAGE)
+            {
+                throw new ca.uhn.hl7v2.llp.LLPException("Message violates the "+
+                    "minimal lower layer protocol: no start of message indicator "+
+                    "received.");
+            }
+
+            while (! end_of_message)
+            {
+                c = myReader.read();
+
+                if (c == -1)
+                {
+                    throw new ca.uhn.hl7v2.llp.LLPException("Message violates the "+
+                        "minimal lower protocol: message terminated without "+
+                        "a terminating character.");
+                }
+                
+                if (c == END_MESSAGE)
+                {
+                    //subsequent character should be a carriage return
+                    c = myReader.read();
+                    if (c != LAST_CHARACTER)
+                    {
+                        throw new ca.uhn.hl7v2.llp.LLPException("Message "+
+                            "violates the minimal lower layer protocol: "+
+                            "message terminator not followed by a return "+
+                            "character.");
+                    }
+                    end_of_message = true;
+                }
+                else
+                {
+                    s_buffer.append((char) c);
+                }
+            } //end while
+
+        return s_buffer.toString();
+    }
+
+    /** 
+     * Closes the underlying BufferedReader.
+     */
+    public synchronized void close() throws java.io.IOException
+    {
+        myReader.close();
+    }
+}
+
+class TalendSegment_<%=cid %>{
+
+	public List<ca.uhn.hl7v2.model.Segment> result = new java.util.ArrayList<ca.uhn.hl7v2.model.Segment>();
+	
+	public void findAllSegment(ca.uhn.hl7v2.model.Group messParent){
+        String[] childNames = messParent.getNames();
+        for (int i = 0; i < childNames.length; i++) {
+            try {
+                ca.uhn.hl7v2.model.Structure[] childReps = messParent.getAll(childNames[i]);
+                for (int j = 0; j < childReps.length; j++) {
+                	if (childReps[j] instanceof ca.uhn.hl7v2.model.Group) {
+                		findAllSegment((ca.uhn.hl7v2.model.Group)childReps[j]);
+                	}else if (childReps[j] instanceof ca.uhn.hl7v2.model.Segment) {
+                		result.add((ca.uhn.hl7v2.model.Segment)childReps[j]);
+                	}
+                }
+            } catch (ca.uhn.hl7v2.HL7Exception e) {
+                e.printStackTrace();
+            }
+        }
+	}
+	public List<ca.uhn.hl7v2.model.Segment> getResult(){
+		return this.result;
+	}
+
+	public int[] getIndices(String strSpec){
+		int[] result = new int[4];
+		java.util.StringTokenizer tok = new java.util.StringTokenizer(strSpec, "-", false);
+		if(tok.hasMoreTokens())
+			tok.nextToken();
+		int i=1;
+		while(tok.hasMoreTokens()){
+			String tmp = tok.nextToken();
+			if(i==1){ // find the rep
+				if(tmp.indexOf("(")>0 && tmp.indexOf(")")>tmp.indexOf("(")){
+					result[0] = Integer.parseInt(tmp.substring(0, tmp.indexOf("(")));
+					result[i] = Integer.parseInt(tmp.substring(tmp.indexOf("(")+1, tmp.indexOf(")")));
+				}else{
+					result[0] = Integer.parseInt(tmp);
+					result[1] = 0;
+				}
+			}else{					
+				result[i]=Integer.parseInt(tmp);
+			}
+			i++;
+		}
+		
+		if(result[2]==0){
+			result[2]=1;
+		}
+		if(result[3]==0){
+			result[3]=1;
+		}
+		
+		return result;
+	}
+	
+} 
+
+int nb_line_<%=cid %>=0;
+
+java.net.ServerSocket ss<%=cid%>;
+java.net.Socket socket<%=cid%>;
+
+<%if(bindHostname){%>
+ss<%=cid%> = new java.net.ServerSocket(<%=port%>, 0, java.net.InetAddress.getByName(<%=hostname %>));
+<%}else{%>
+ss<%=cid%> = new java.net.ServerSocket(<%=port%>);
+<%}
+if(isNoValidate){%>
+ca.uhn.hl7v2.validation.impl.NoValidation noValid_<%=cid %> = new ca.uhn.hl7v2.validation.impl.NoValidation();
+<%}%>
+
+<%if(!("").equals(timeout)){%>
+    ss<%=cid%>.setSoTimeout(<%=timeout%>);
+<%}%>
+boolean done<%=cid%> = true;
+while (done<%=cid%>) {
+   	socket<%=cid%> = ss<%=cid%>.accept();
+   	System.out.println("socket connected");
+   	
+   	ca.uhn.hl7v2.parser.Parser parser_<%=cid %> = new ca.uhn.hl7v2.parser.PipeParser();
+<%
+if(isNoValidate){
+%>
+	parser_<%=cid %>.setValidationContext(noValid_<%=cid %>);
+<%
+}
+%>
+      //READ DATA
+	TalendHL7Reader_<%=cid %> reader_<%=cid %> = new TalendHL7Reader_<%=cid %>(socket<%=cid%>.getInputStream(),<%=encoding %>);	
+	
+	String str_<%=cid %> = null;
+	int[] index_<%=cid %> = null;
+	
+	while((str_<%=cid %> = reader_<%=cid %>.getMessage())!=null){
+	
+    	ca.uhn.hl7v2.model.Message message_<%=cid %> = parser_<%=cid %>.parse(str_<%=cid %>);
+    	ca.uhn.hl7v2.util.Terser terser_<%=cid %> = new ca.uhn.hl7v2.util.Terser(message_<%=cid %>);
+    	
+    	TalendSegment_<%=cid %> talendSeg_<%=cid %> = new TalendSegment_<%=cid %>();
+    	talendSeg_<%=cid %>.findAllSegment(message_<%=cid %>);
+    	java.util.Iterator<ca.uhn.hl7v2.model.Segment> iterSeg_<%=cid %> = talendSeg_<%=cid %>.getResult().iterator();
+    	
+    	while(iterSeg_<%=cid %>.hasNext()){
+			ca.uhn.hl7v2.model.Segment seg_<%=cid %> = iterSeg_<%=cid %>.next();
+<%
+for(IConnection conn : connections){
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+		Map<String, String> mapping = null;
+		for(Map<String, String> schemaMap : schemas){
+			if(schemaMap.get("SCHEMA").equals(conn.getName())){
+				mapping = schemaMap;
+				break;
+			}
+		}
+		IMetadataTable metadata = conn.getMetadataTable();
+		if(metadata!=null){
+%>
+    		<%=conn.getName() %> = null;
+    		
+    		if("<%=conn.getName() %>".equals(seg_<%=cid %>.getName())){
+    			<%=conn.getName() %> = new <%=conn.getName() %>Struct();
+<%
+			List<IMetadataColumn> columns = metadata.getListColumns();
+			int sizeListColumns = columns.size();
+			String[] arrXpath = ((String)mapping.get("MAPPING")).split(",");
+
+			boolean noStringTypeExist = false;
+
+    		for (int valueN=0; valueN<sizeListColumns; valueN++) {
+    			IMetadataColumn column = columns.get(valueN);
+    			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+    			}else{
+    				noStringTypeExist = true;
+    				break;
+    			}
+    		}
+    		boolean hasStringDefault = false;
+    		for (int valueM=0; valueM<sizeListColumns; valueM++) {
+    			IMetadataColumn column = columns.get(valueM);
+    			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+    				if(hasStringDefault==false && column.getDefault()!=null && column.getDefault().length() > 0 ){
+    					hasStringDefault = true;
+    					break;
+    				}
+    			}
+    		}
+    		if(noStringTypeExist || hasStringDefault){
+%>
+	String temp_<%=cid %> = ""; 
+<%
+			}
+			for (int i=0;i < arrXpath.length;i++) {
+				String query = arrXpath[i];
+				if(i < sizeListColumns){
+					IMetadataColumn column = columns.get(i);
+					
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					
+                    if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+                    	String defaultValue = column.getDefault();
+                    	if(defaultValue!=null && defaultValue.length()>0){
+%>
+	index_<%=cid %> = talendSeg_<%=cid %>.getIndices(<%=arrXpath[i] %>);
+	temp_<%=cid %>=ca.uhn.hl7v2.util.Terser.get(seg_<%=cid %>,index_<%=cid%>[0],index_<%=cid%>[1],index_<%=cid%>[2],index_<%=cid%>[3]);
+	if(temp_<%=cid %>.length() > 0){
+		<%=conn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>;
+	}else{
+	<%=conn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+	}
+<%
+                    	}else{%>
+	index_<%=cid %> = talendSeg_<%=cid %>.getIndices(<%=arrXpath[i] %>);
+	<%=conn.getName() %>.<%=column.getLabel() %>=ca.uhn.hl7v2.util.Terser.get(seg_<%=cid %>,index_<%=cid%>[0],index_<%=cid%>[1],index_<%=cid%>[2],index_<%=cid%>[3]);
+<%
+						}
+					}else{
+%>
+	index_<%=cid %> = talendSeg_<%=cid %>.getIndices(<%=arrXpath[i] %>);
+	temp_<%=cid %>=ca.uhn.hl7v2.util.Terser.get(seg_<%=cid %>,index_<%=cid%>[0],index_<%=cid%>[1],index_<%=cid%>[2],index_<%=cid%>[3]);
+	if(temp_<%=cid %>.length() > 0) {
+<%
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%><%=conn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
+<%
+					}else if(javaType == JavaTypesManager.DATE) { 
+%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+					}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+<%
+					} else { 
+%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+<%
+					}
+%>
+	} else {
+<%
+					String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+					if(defaultValue == null) {
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=conn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
+<%
+					} else {
+%><%=conn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%
+					}
+%>
+	}
+<%
+                    }
+				}
+			}
+		}
+%>
+		}
+<%
+	}
+}
+%>
+<%
+}
+%>
