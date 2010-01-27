@@ -21,7 +21,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     if (metadata!=null) {//2
     
         String cid = node.getUniqueName();
-        String hashName = "";
+        String keyOfBuffer = "";
 
         //get the input Main and Lookup connection
         IConnection inMainCon = null;
@@ -35,10 +35,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         	{
         		inRefCon = conn;
         		lookupConName = inRefCon.getName();
-        		hashName = lookupConName;
+        		keyOfBuffer = lookupConName;
         		if (conn.getSource().getComponent().isHashComponent()) {
-        			hashName = ElementParameterParser.getValue(conn.getSource(), "__LIST__");
-        			lookupConName = "row2";
+        			
+            		String linkedtHashOutput = ElementParameterParser.getValue(conn.getSource(), "__LIST__");
+            		INode rootNode = node;
+            		
+            		//@see tArrayIn_begin.javajet
+            		//if tHashInput link to tJoin 
+            		if(true){
+                		List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
+                		for(INode n : nodeList){
+                			if(n.getUniqueName().equals(linkedtHashOutput)){
+                				rootNode = n;
+                				break;
+                			}
+                		}
+                		
+                		if(rootNode != node){
+                            //get the input connection
+                            IConnection inputConnA = null;
+                            String inComingNameA = "";  
+                            List< ? extends IConnection> connsInA = rootNode.getIncomingConnections();     
+                            for (IConnection connA : connsInA) {//3
+                    			inputConnA = connA;
+                    			break; //only get the first connection
+                            }//3 
+                            
+                            if(inputConnA != null){
+                            	inComingNameA = inputConnA.getName();
+                            }
+                                            		
+                			lookupConName = inComingNameA;
+                			keyOfBuffer = inComingNameA;
+                		}
+            		}        			
         		}
         	}
         }//3 
@@ -51,7 +82,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         
         List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JOIN_KEY__");
 %>
-    final java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct> tHash_<%=cid %> = (java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=hashName %>");
+    final java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct> tHash_<%=cid %> = (java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=keyOfBuffer %>");
     
     class Util_<%=cid %>
     {
