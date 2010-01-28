@@ -27,6 +27,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
     			String removeHeader = ElementParameterParser.getValue(node, "__REMOVE_HEADER__"); // add for feature7788
         		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+				boolean isAllowEmpty = ("true").equals(ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__"));
+                boolean expandEmptyElm = ("true").equals(ElementParameterParser.getValue(node, "__EXPAND_EMPTY_ELM__"));
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
         		List<Map<String, String>> rootTable = 
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
@@ -104,6 +106,7 @@ org.dom4j.Document doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 format_<%=cid%>.setTrimText(false);
 format_<%=cid%>.setEncoding(<%=encoding%>);
+<%if(isAllowEmpty && expandEmptyElm){%>format_<%=cid%>.setExpandEmptyElements(true);<%}%>
 <%
 					int groupSize = 0;
 					if(groupTable!=null && groupTable.size()>0){
