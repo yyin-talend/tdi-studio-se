@@ -113,7 +113,7 @@ imports="
 %>
 									<%dbInputBeginUtil.generateTimestampResultSet(firstConnName, column, currentColNo);%>
 <%
-		                         } else if(("Date").equals(typeToGenerate)) {//Teradata
+		                         } else if(("Date").equals(typeToGenerate)) {//JDBCInput
 %>
                      	          <%dbInputBeginUtil.generateDateResultSet(firstConnName, column, currentColNo);%>
 <%

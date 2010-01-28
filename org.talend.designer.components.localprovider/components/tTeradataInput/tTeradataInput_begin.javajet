@@ -30,32 +30,6 @@ imports="
 			return "com.ncr.teradata.TeraDriver";
 		}
 		
-		public String mappingType(String typeToGenerate) {
-	        if(("byte[]").equals(typeToGenerate)) {
- 	           return "Bytes";
- 	        } else if(("java.util.Date").equals(typeToGenerate)) {
- 	            return "Date";
- 	        } else if(("java.sql.Timestamp").equals(typeToGenerate)) {
- 	            return "Timestamp";
- 	        } else if(("Integer").equals(typeToGenerate)) {
- 	            return "Int";
- 	        } else {
- 	            return typeToGenerate.substring(0,1).toUpperCase() + typeToGenerate.substring(1);
- 	        }
-			
-		}
-		
-		//-----------according schema type to generate ResultSet
-	   	public void generateDateResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
-%>
-			if(rs_<%=cid %>.getDate(<%=currentColNo%>) != null) {
-				<%=firstConnName%>.<%=column.getLabel()%>=new java.util.Date(rs_<%=cid %>.getDate(<%=currentColNo%>).getTime());
-			} else {
-				<%=firstConnName%>.<%=column.getLabel()%> =  null;
-			}
-<%
-	    }
-	    //---------end according schema type to generate ResultSet
 	}//end class
 	
 	dbInputBeginUtil = new DBInputBeginUtil();
