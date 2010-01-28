@@ -32,6 +32,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.tools.DirectEditManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
@@ -50,6 +51,7 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -126,6 +128,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 if (selectionManager.getSelectionType() == ETalendSelectionType.SINGLE) {
                     ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
                     compSettings.setElement((Node) getModel());
+                    if (((Node) getModel()).getComponent() instanceof DummyComponent) {
+                        MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning",
+                                "Some Components in this job are not loadded");
+                        return;
+                    }
+
                     CodeView.refreshCodeView((Node) getModel());
                 } else if (!viewer.isCleaned() && selectionManager.getSelectionType() == ETalendSelectionType.MULTIPLE) {
                     ComponentSettingsView compSettings = (ComponentSettingsView) viewer;

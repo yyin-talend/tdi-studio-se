@@ -44,6 +44,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
@@ -94,6 +95,7 @@ import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -1273,7 +1275,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    private List<String> unloadedNodeNames = null;
+    private List<NodeType> unloadedNodeNames = null;
 
     protected void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
         EList nodeList;
@@ -1283,20 +1285,43 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         EList listParamType;
 
-        unloadedNodeNames = new ArrayList<String>();
+        unloadedNodeNames = new ArrayList<NodeType>();
         for (int i = 0; i < nodeList.size(); i++) {
             nType = (NodeType) nodeList.get(i);
             listParamType = nType.getElementParameter();
             IComponent component = ComponentsFactoryProvider.getInstance().get(nType.getComponentName());
             if (component == null) {
-                unloadedNodeNames.add(nType.getComponentName());
+                unloadedNodeNames.add(nType);
                 continue;
             }
             nc = loadNode(nType, component, nodesHashtable, listParamType);
+
         }
         if (!unloadedNodeNames.isEmpty()) {
-            throw new PersistenceException(Messages.getString("Process.componentsUnloaded")); //$NON-NLS-1$
+            String message = "Some Component are not loaded:\n";
+            for (int i = 0; i < unloadedNodeNames.size(); i++) {
+                message = message + unloadedNodeNames.get(i).getComponentName() + "\n";
+            }
+            MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning", message);
         }
+        for (int i = 0; i < unloadedNodeNames.size(); i++) {
+            createDummyNode(unloadedNodeNames.get(i), nodesHashtable);
+        }
+    }
+
+    protected Node createDummyNode(NodeType nType, Hashtable<String, Node> nodesHashtable) {
+        DummyComponent component = new DummyComponent(nType);
+        Node nc;
+        nc = new Node(component, this);
+        nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
+        Point offset = new Point(nType.getOffsetLabelX(), nType.getOffsetLabelY());
+        nc.getNodeLabel().setOffset(offset);
+        if (nType.isSetSizeX()) {
+            nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
+        }
+        addNodeContainer(new NodeContainer(nc));
+        nodesHashtable.put(nc.getUniqueName(), nc);
+        return nc;
     }
 
     /**
@@ -1464,8 +1489,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             errorMessage = Messages.getString("Process.component.notloaded", unloadedNodeNames.get(0)); //$NON-NLS-1$
         } else {
             StringBuilder curentName = new StringBuilder();
-            for (String componentName : unloadedNodeNames) {
-                curentName.append(componentName).append(","); //$NON-NLS-1$
+            for (NodeType component : unloadedNodeNames) {
+                curentName.append(component.getComponentName()).append(","); //$NON-NLS-1$
             }
             curentName.deleteCharAt(curentName.length() - 1);
 

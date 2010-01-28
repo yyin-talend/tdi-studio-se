@@ -646,8 +646,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         if (connection != null) {
             IMetadataTable table = connection.getMetadataTable();
-            for (IMetadataColumn column : table.getListColumns()) {
-                columnList.add(column.getLabel());
+            if (table != null) {
+                for (IMetadataColumn column : table.getListColumns()) {
+                    columnList.add(column.getLabel());
+                }
             }
         }
 
