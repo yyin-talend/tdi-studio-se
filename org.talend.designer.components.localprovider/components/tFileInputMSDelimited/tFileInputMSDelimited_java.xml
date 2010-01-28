@@ -32,12 +32,12 @@
         
 		<PARAMETER NAME="SCHEMAS" FIELD="TABLE" NUM_ROW="5" NB_LINES="6" SHOW="true">
               <ITEMS>
-                <ITEM NAME="SCHEMA" FIELD="SCHEMA_TYPE" READONLY="true"/>
-                <ITEM NAME="RECORD" FIELD="TEXT" READONLY="true"/>
+                <ITEM NAME="SCHEMA" FIELD="SCHEMA_TYPE" />
+                <ITEM NAME="RECORD" FIELD="TEXT" />
                 <ITEM NAME="PARENT_RECORD" FIELD="TEXT" SHOW_IF="false"/>
                 <ITEM NAME="KEY_COLUMN_INDEX" FIELD="TEXT" SHOW_IF="false" />
                 <ITEM NAME="CARDINALITY" FIELD="TEXT" SHOW_IF="false" />
-                <ITEM NAME="FIELDDELIMITED" FIELD="TEXT" READONLY="true"></ITEM>
+                <ITEM NAME="FIELDDELIMITED" FIELD="TEXT" ></ITEM>
               </ITEMS>
         </PARAMETER>
         
