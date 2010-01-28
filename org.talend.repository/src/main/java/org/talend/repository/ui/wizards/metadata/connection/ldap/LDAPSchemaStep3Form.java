@@ -606,10 +606,16 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         newCon.referralType = "ignore";//$NON-NLS-1$
         newCon.version = 3;
         newCon.useGSSAPI = false;
-        newCon.userDN = talendLDAPConnection.getBindPrincipal();
-        newCon.pwd = talendLDAPConnection.getBindPassword().toCharArray();
+        newCon.userDN = talendLDAPConnection.getBindPrincipal(); 
+        String bindPassword = talendLDAPConnection.getBindPassword();
+        if (bindPassword != null) {
+            newCon.pwd = bindPassword.toCharArray();
+        }
         newCon.useSSL = false;
-        newCon.baseDN = (String) talendLDAPConnection.getBaseDNs().get(0);
+        EList baseDNs = talendLDAPConnection.getBaseDNs();
+        if (baseDNs != null) {
+            newCon.baseDN = (String) baseDNs.get(0);
+        }
         if (EEncryptionMethod.SSL_ENCRYPTION_METHOD.getName().equals(talendLDAPConnection.getEncryptionMethodName())) {
             String keystorePath = System.getProperty("java.home") + "\\lib\\security\\cacerts"; //$NON-NLS-1$ //$NON-NLS-2$
             newCon.cacerts = keystorePath;

@@ -428,10 +428,18 @@ public class ShadowProcessHelper {
         bean.setEncryMethod(TalendTextUtils.addQuotes(connection.getEncryptionMethodName()));
         bean.setAuthen(connection.isUseAuthen());
         bean.setAuthMethod(TalendTextUtils.addQuotes(connection.getProtocol()));
-        bean.setUser(TalendTextUtils.addQuotes(connection.getBindPrincipal().replaceAll("\\\\", "\\\\\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
-        bean.setPasswd(TalendTextUtils.addQuotes(connection.getBindPassword().replaceAll("\\\\", "\\\\\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
-
-        bean.setBaseDN(TalendTextUtils.addQuotes(connection.getSelectedDN().replaceAll("\\\\", "\\\\\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
+        String bindPrincipal = connection.getBindPrincipal();
+        if (bindPrincipal != null) {
+            bean.setUser(TalendTextUtils.addQuotes(bindPrincipal.replaceAll("\\\\", "\\\\\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        String bindPassword = connection.getBindPassword();
+        if (bindPassword != null) {
+            bean.setPasswd(TalendTextUtils.addQuotes(bindPassword.replaceAll("\\\\", "\\\\\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        String selectedDN = connection.getSelectedDN();
+        if (selectedDN != null) {
+            bean.setBaseDN(TalendTextUtils.addQuotes(selectedDN.replaceAll("\\\\", "\\\\\\\\"))); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
         bean.setReferrals(connection.getReferrals());
 
