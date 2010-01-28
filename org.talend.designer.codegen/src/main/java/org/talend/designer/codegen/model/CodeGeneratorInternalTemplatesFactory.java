@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.io.FilesUtils;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.additionaljet.AbstractJetFileProvider;
 import org.talend.designer.codegen.additionaljet.CustomizeJetFilesProviderManager;
@@ -80,11 +81,7 @@ public class CodeGeneratorInternalTemplatesFactory {
                 }
             };
 
-            // FilesUtils.copyFolder(stubForder, installationFolder, false, sourceFolderFilter, null, true);
-            org.apache.commons.io.FileUtils.copyFileToDirectory(new File(stubForder, EInternalTemplate.HEADER_ADDITIONAL
-                    + ".javajet"), installationFolder);
-            org.apache.commons.io.FileUtils.copyFileToDirectory(new File(stubForder, EInternalTemplate.HEADER_ADDITIONAL
-                    + ".perljet"), installationFolder);
+            FilesUtils.copyFolder(stubForder, installationFolder, false, sourceFolderFilter, null, true);
 
         } catch (IOException e) {
             ExceptionHandler.process(e);
