@@ -503,11 +503,6 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void loadIcons(File folder, IComponent component) {
-        if (component.isTechnical() || CommonsPlugin.isHeadless()) {
-            // technical component's icon is never displayed, so no need to load it.
-            // in commandline no need to load any icon.
-            return;
-        }
         ComponentIconLoading cil = new ComponentIconLoading(folder);
 
         component.setIcon32(cil.getImage32());
