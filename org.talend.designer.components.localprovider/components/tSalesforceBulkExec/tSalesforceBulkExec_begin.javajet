@@ -1,0 +1,140 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType	
+		org.talend.core.model.utils.TalendTextUtils	
+		java.util.List
+		"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();    	
+	
+	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+	String apiVersion = ElementParameterParser.getValue(node, "__API_VERSION__");
+	String username = ElementParameterParser.getValue(node, "__USER__");
+	String password = ElementParameterParser.getValue(node, "__PASS__");
+	
+	String sObject = ElementParameterParser.getValue(node, "__MODULENAME__");
+	String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__");
+	if ("CustomModule".equals(sObject)) {
+		//modulename = customModulename; 
+		sObject = customModulename.replaceAll("\"","");
+	}
+	
+	String action = ElementParameterParser.getValue(node, "__ACTION__");
+	String externalId = ElementParameterParser.getValue(node, "__UPSERT_KEY_COLUMN__");
+	//String contentType = ElementParameterParser.getValue(node, "__CONTENTTYPE__");
+	String contentType = "csv";
+	String bulkFileName = ElementParameterParser.getValue(node, "__BULKFILENAME__").trim();
+	
+	String maxBytes = ElementParameterParser.getValue(node,"__COMMIT_LEVEL_BYTES__");
+	String maxRows = ElementParameterParser.getValue(node,"__COMMIT_LEVEL_ROWS__");
+	
+	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
+	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+   	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+   	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+   	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+	
+	
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	
+%>
+	int nb_line_<%=cid %> = 0;
+    int nb_success_<%=cid%> = 0;
+    int nb_reject_<%=cid%> = 0;
+	
+	org.talend.salesforceBulk.SalesforceBulkAPI sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI();
+	<%if(useProxy){%>
+	sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
+	<%}%>
+	<%if(useExistingConn){%>
+	sforceBulk_<%=cid%>.login((com.sforce.async.RestConnection)globalMap.get("conn_<%=connection %>"));
+	<%}else{%>
+	sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
+	<%}%>
+	
+
+sforceBulk_<%=cid%>.executeBulk("<%=sObject%>","<%=action%>",<%=externalId%>,"<%=contentType%>",<%=bulkFileName%>,<%=maxBytes%>,<%=maxRows%>);
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+%>
+int batchCount_<%=cid%> = sforceBulk_<%=cid%>.getBatchCount();
+for(int i = 0; i < batchCount_<%=cid%>; i++){
+	java.util.List<java.util.Map<String,String>> resultListMessage_<%=cid%> = sforceBulk_<%=cid%>.getBatchLog(i);
+	for(java.util.Map<String,String> resultMessage_<%=cid%> : resultListMessage_<%=cid%>){
+<%
+List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+if(outgoingConns!=null){
+	for (int i=0;i<outgoingConns.size();i++) {
+    IConnection outgoingConn = outgoingConns.get(i);
+    	if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+
+	<%=outgoingConn.getName() %> = null;			
+<%
+    	}
+    }
+}
+    	
+List<? extends IConnection> connsSuccess = node.getOutgoingConnections("MAIN");
+List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
+
+%>	
+		if("true".equals(resultMessage_<%=cid%>.get("Success"))){
+<%
+			if (connsSuccess != null && connsSuccess.size() == 1) {
+				IConnection connSuccess = connsSuccess.get(0);
+				if (connSuccess.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+			nb_success_<%=cid %>++;
+			<%=connSuccess.getName() %> = new <%=connSuccess.getName() %>Struct();
+
+			<%=connSuccess.getName() %>.salesforce_created = resultMessage_<%=cid%>.get("Created");
+			<%=connSuccess.getName() %>.salesforce_id = resultMessage_<%=cid%>.get("Id");
+<%
+					for (IMetadataColumn column: metadata.getListColumns()) {
+%>			
+		    <%=connSuccess.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");			
+<%					 
+					}
+				}
+			}
+%>
+		}else{
+<%
+			if (connsReject != null && connsReject.size() == 1) {
+				IConnection connReject = connsReject.get(0);
+				if (connReject.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+			nb_reject_<%=cid %>++;
+			<%=connReject.getName() %> = new <%=connReject.getName() %>Struct();
+			<%=connReject.getName() %>.error = resultMessage_<%=cid%>.get("Error");
+			
+<%
+					for (IMetadataColumn column: metadata.getListColumns()) {
+%>			
+		    <%=connReject.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");					
+<%					 
+					}
+				}
+			}
+	}//2
+}//1
+%>
+		}
+				
