@@ -193,7 +193,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                     if (connector.isMultiSchema()) {
                         action = new ConnectionCreateAction(part, connector);
                         ((ConnectionCreateAction) action).update();
-                        if (action.isEnabled()) {
+                        if (action.isEnabled() && connector.isShow()) {
                             List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
                             for (int i = 0; i < menuList.size(); i++) {
                                 action = new ConnectionCreateAction(part, connector);
@@ -205,7 +205,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                     } else {
                         action = new ConnectionCreateAction(part, connector);
                         ((ConnectionCreateAction) action).update();
-                        if (action.isEnabled()) {
+                        if (action.isEnabled() && connector.isShow()) {
                             ((ConnectionCreateAction) action).setText(connector.getMenuName());
                             subMenu.add(action);
                         }
@@ -215,7 +215,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 if (connectors.size() == 1) {
                     action = new ConnectionCreateAction(part, connectors.get(0));
                     ((ConnectionCreateAction) action).update();
-                    if (action.isEnabled()) {
+                    if (action.isEnabled() && connectors.get(0).isShow()) {
                         List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
                         for (int i = 0; i < menuList.size(); i++) {
                             action = new ConnectionCreateAction(part, connectors.get(0));

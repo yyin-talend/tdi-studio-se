@@ -13,6 +13,7 @@
 package org.talend.designer.core.model.components;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.RGB;
@@ -60,6 +61,12 @@ public class NodeConnector implements INodeConnector {
     private boolean multiSchema = false;
 
     private INode parentNode;
+
+    private String notShowIf = null;
+
+    private String showIf = null;
+
+    private boolean show = true;
 
     private boolean mergeAllowDifferentSchema;
 
@@ -347,6 +354,14 @@ public class NodeConnector implements INodeConnector {
         this.multiSchema = multiSchema;
     }
 
+    public String getNotShowIf() {
+        return this.notShowIf;
+    }
+
+    public void setNotShowIf(String notShowIf) {
+        this.notShowIf = notShowIf;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -363,5 +378,30 @@ public class NodeConnector implements INodeConnector {
      */
     public void setMergeAllowDifferentSchema(boolean mergeOption) {
         this.mergeAllowDifferentSchema = mergeOption;
+    }
+
+    public boolean isShow() {
+        String notShowIf = getNotShowIf();
+        String showIf = getShowIf();
+        if (notShowIf != null && !("".equals(notShowIf))) {
+            List<? extends IElementParameter> listParam = parentNode.getElementParameters();
+            show = !Expression.evaluate(notShowIf, listParam, null);
+        } else if (showIf != null && !("".equals(showIf))) {
+            List<? extends IElementParameter> listParam = parentNode.getElementParameters();
+            show = Expression.evaluate(showIf, listParam, null);
+        }
+        return this.show;
+    }
+
+    public void setShow(boolean show) {
+        this.show = show;
+    }
+
+    public String getShowIf() {
+        return this.showIf;
+    }
+
+    public void setShowIf(String showIf) {
+        this.showIf = showIf;
     }
 }

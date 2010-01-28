@@ -104,8 +104,8 @@ import org.talend.repository.model.ExternalNodesFactory;
 
 /**
  * 
- * Component manager that read each information in a xml file with Emf. <br/> $Id: EmfComponent.java 30440 2009-09-29
- * 05:11:41Z nrousseau $
+ * Component manager that read each information in a xml file with Emf. <br/>
+ * $Id$
  */
 public class EmfComponent implements IComponent {
 
@@ -1878,6 +1878,17 @@ public class EmfComponent implements IComponent {
                 int b = Integer.parseInt(colorCode.substring(4, 6), 16);
                 rgb = new RGB(r, g, b);
             }
+
+            String notShowIf = connType.getNOTSHOWIF();
+            if (notShowIf != null && !("".equals(notShowIf))) {
+                nodeConnector.setNotShowIf(notShowIf);
+            }
+
+            String showIf = connType.getSHOWIF();
+            if (showIf != null && !("".equals(showIf))) {
+                nodeConnector.setShowIf(showIf);
+            }
+
             nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
             if (connType.getCOLOR() != null) {
                 // force RGB color (need code review, as this shouldn't be needed here)
