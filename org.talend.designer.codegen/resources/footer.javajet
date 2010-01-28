@@ -89,6 +89,7 @@
 %>
   
     private java.util.Properties context_param = new java.util.Properties();
+    public java.util.Map<String, Object> parentContextMap = new java.util.HashMap<String, Object>();
     
     public String status= "";
     
@@ -261,6 +262,23 @@
     		System.err.println("Could not load context "+contextStr);
     		ie.printStackTrace();
     	}
+    	
+    	
+		// get context value from parent directly
+		if (parentContextMap != null && !parentContextMap.isEmpty()) {
+		<% for (IContextParameter ctxParam :params){
+			//about the type, they are same as header.javajet
+			String typeToGenerate = "String";
+			if(ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory")){
+				typeToGenerate = "String";
+			}else{			 
+				typeToGenerate = JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
+			}
+		%>if (parentContextMap.containsKey("<%=ctxParam.getName()%>")) {
+				context.<%=ctxParam.getName()%> = (<%=typeToGenerate %>) parentContextMap.get("<%=ctxParam.getName()%>");
+			}<%}%>
+		}    	
+    	
 
 <%
 		if (stats) {

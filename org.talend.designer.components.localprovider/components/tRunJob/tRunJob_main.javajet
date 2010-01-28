@@ -12,6 +12,7 @@ imports="
   org.talend.designer.runprocess.ProcessorUtilities
   org.talend.designer.runprocess.ProcessorException
   org.talend.core.model.process.IProcess
+  org.talend.core.model.process.IContextParameter
   java.util.Map
   java.util.List
 "
@@ -111,8 +112,10 @@ if("<%=cid %>".equals(tRunJobName_<%=cid %>) && childResumePath_<%=cid %> != nul
   paraList_<%=cid %>.add("--resuming_checkpoint_path=" + ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path));
 }
 paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %>");
+
+java.util.Map<String, Object> parentContextMap_<%=cid %> = new java.util.HashMap<String, Object>();
 <%
-if(transmitWholeContext){
+if(transmitWholeContext){//111111
 %> 
   context.synchronizeContext();
   java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
@@ -121,21 +124,36 @@ if(transmitWholeContext){
     Object value_<%=cid %> = (Object) context.get(key_<%=cid %>);       
     paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
   }
-<%}
+  
+<%
+ List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
+    for (IContextParameter ctxParam :params){
+    	String ctxParamName = ctxParam.getName();
+ %>  
+    parentContextMap_<%=cid %>.put("<%=ctxParamName %>", context.<%=ctxParamName %>);
+ <%}
+
+}//111111
+
 for (int i=0; i<contextParams.size(); i++) {
   Map<String, String> contextParam = contextParams.get(i);
   String name = contextParam.get("PARAM_NAME_COLUMN");
   String value = contextParam.get("PARAM_VALUE_COLUMN");
   %>
   paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(<%=value %>));
+  parentContextMap_<%=cid %>.put("<%=name %>", <%=value %>);
 <%}%>
 <%if(printParameter){%>
   System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%=childJob %> with:\n\n" + paraList_<%=cid %> + "\n");
 <%}
-  
-if (!useIndependentProcess){
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+if (!useIndependentProcess){//AAAAAAAAAAAA
 %>
   <%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
+  childJob_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
+  
   String[][] childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
   <%
   if (childJob != null) {
@@ -202,8 +220,12 @@ if (!useIndependentProcess){
       {
     <%
     }
+    
   }//b  
-} else {
+  
+} else { //AAAAAAAAAAAA
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
   // use independent process to run subjob
 %>
   Runtime runtime_<%=cid %> = Runtime.getRuntime();
@@ -288,5 +310,5 @@ if (!useIndependentProcess){
 %>
   
 <%
-}
+}//AAAAAAAAAAAA
 %>
