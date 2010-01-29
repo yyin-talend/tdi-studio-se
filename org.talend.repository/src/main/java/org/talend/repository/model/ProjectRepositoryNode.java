@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
@@ -544,6 +546,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         recBinNode);
             } else if (parent == refProject) {
                 if (!getMergeRefProject()) {
+                    try {
+                        (((ProxyRepositoryFactory) factory).getRepositoryFactoryFromProvider()).beforeLogon(newProject);
+                    } catch (LoginException e) {
+                        ExceptionHandler.process(e);
+                    }
                     handleReferenced(refProject);
                 }
             } else if (parent == recBinNode) {
