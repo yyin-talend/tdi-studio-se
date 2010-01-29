@@ -13,6 +13,7 @@ imports="
   org.talend.designer.runprocess.ProcessorException
   org.talend.core.model.process.IProcess
   org.talend.core.model.process.IContextParameter
+  org.talend.core.model.process.IConnectionCategory
   java.util.Map
   java.util.List
 "
@@ -29,7 +30,7 @@ if (metadatas != null && metadatas.size() > 0) {
         columns = metadata.getListColumns();
     }
 }
-List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
   
 //if tRunJob is the first node, it can get the return values of the child job.
 //if tRunJob is middle node of the FLOW link, it will be data_auto_propagate=true 
@@ -181,9 +182,10 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
   String firstConnName = null; 
   if(outConns != null && outConns.size() > 0) {
     for (IConnection conn : outConns) {
-      if(!conn.isActivate()) continue;
-      firstConnName = conn.getName(); //get the first available flow link
-      break;
+      if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+      	firstConnName = conn.getName(); //get the first available flow link
+      	break;
+      }
     }
   }
   if(firstConnName != null) {//b
@@ -290,9 +292,10 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
   String firstConnName = null; 
   if(outConns != null && outConns.size() > 0) {
     for (IConnection conn : outConns) {
-      if(!conn.isActivate()) continue;
-      firstConnName = conn.getName(); //get the first available flow link
-      break;
+      if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+      	firstConnName = conn.getName(); //get the first available flow link
+      	break;
+      }
     }
   }
   if(firstConnName != null) {//b
