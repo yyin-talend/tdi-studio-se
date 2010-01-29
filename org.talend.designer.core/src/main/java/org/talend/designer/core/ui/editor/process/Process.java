@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.process;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -3346,8 +3347,17 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 if (item instanceof JobletProcessItem) {
                     type = ERepositoryObjectType.JOBLET;
                 }
-
-                if (state != null && state.getPath() != null) {
+                boolean pathExist = false;
+                if (state != null) {
+                    String path = state.getPath();
+                    if (path != null) {
+                        File f = new File(path);
+                        if (f.exists()) {
+                            pathExist = true;
+                        }
+                    }
+                }
+                if (pathExist) {
                     allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
                             property.getId(), state.getPath(), type);
                 } else {
