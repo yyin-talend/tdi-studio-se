@@ -42,6 +42,8 @@
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
+      NOT_SHOW_IF="PARALLELIZE == 'true'"
+      SHOW="false"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM
