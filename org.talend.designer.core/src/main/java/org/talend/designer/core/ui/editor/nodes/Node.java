@@ -1240,15 +1240,7 @@ public class Node extends Element implements INode {
      * @return List of Connection
      */
     public List<? extends IConnection> getOutgoingConnections() {
-
-        // for bug 11229
-        List<IConnection> outPutConnections = new ArrayList<IConnection>();
-        for (IConnection connection : this.outputs) {
-            if (connection.getSource() == this) {
-                outPutConnections.add(connection);
-            }
-        }
-        return outPutConnections;
+        return this.outputs;
     }
 
     /**
