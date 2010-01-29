@@ -482,6 +482,7 @@ public class ExportItemUtil {
         if (item instanceof TDQItem && service != null) {
             final Collection<EObject> tdqObjects = service.needCopyObjects((TDQItem) item);
             if (tdqObjects != null) {
+                objects.clear();
                 objects.addAll(tdqObjects);
             }
         }
