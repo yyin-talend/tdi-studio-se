@@ -17,3 +17,4 @@ String cid = node.getUniqueName();
 
 Long currentTime<%=cid%> = System.currentTimeMillis();
 globalMap.put("<%=cid%>",currentTime<%=cid%>);
+globalMap.put("<%=cid%>_STARTTIME", currentTime<%=cid%>);
