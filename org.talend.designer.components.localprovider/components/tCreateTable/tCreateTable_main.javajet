@@ -996,6 +996,18 @@ class TeradataManager extends Manager {
     protected String getRProtectedChar() {
         return "\\\"";
     }
+    
+	protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append("String tableName_" + cid + " = null;\r\n");
+        javaCode.append("String dbname_" + cid + " = " + dbName + ";\r\n");
+        javaCode.append("if ( dbname_" + cid + " == null || dbname_" + cid + ".trim().length() == 0) { \r\n");
+        javaCode.append("\t tableName_" + cid + " = " + tableName + ";\r\n");
+        javaCode.append(" } else { \r\n");
+		javaCode.append("\t tableName_" + cid + " = dbname_" + cid + " + \"\\\".\\\"\" + " + tableName + ";\r\n");
+		javaCode.append("}\r\n");
+        return javaCode.toString();
+    }
 }
 class StringUtil {
     public String getString(String source) {
@@ -1156,6 +1168,13 @@ class ManagerFactory {
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new SybaseManager(host, port, dbName, tableName, userName, password, cid);
+        } else if(("TERADATA").equals(dbType)) {
+            String host = ElementParameterParser.getValue(node, "__HOST__");
+            String port = ElementParameterParser.getValue(node, "__PORT__");
+            String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+            String userName = ElementParameterParser.getValue(node, "__USER__");
+            String password = ElementParameterParser.getValue(node, "__PASS__");
+            manager = new TeradataManager(host, port, dbName, tableName, userName, password, cid);
         } else if(("ODBC").equals(dbType)) {
             String odbcName = ElementParameterParser.getValue(node, "__ODBCNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
