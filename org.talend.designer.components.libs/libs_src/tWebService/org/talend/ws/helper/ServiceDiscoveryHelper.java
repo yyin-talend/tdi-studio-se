@@ -54,6 +54,8 @@ public class ServiceDiscoveryHelper {
 
     private File localWsdl;
 
+    private boolean isLocal;
+
     public ServiceDiscoveryHelper(String wsdlUri) throws WSDLException, IOException, TransformerException, URISyntaxException {
         this(wsdlUri, null);
     }
@@ -101,8 +103,9 @@ public class ServiceDiscoveryHelper {
                     // set base uri for relative path in schemaLocation.
                     schemaCollection.setBaseUri(schema.getDocumentBaseURI());
 
-                    createTempImportSchemaFile(schema, localWsdl.toURI().getPath());
-
+                    if (!isLocal) {
+                        createTempImportSchemaFile(schema, localWsdl);
+                    }
                     // synthetic URI for the schemas without targetNamespace,avoid conflict error.
                     if (schema.getElement().getAttributeNode("targetNamespace") == null) {
                         tmpTNName = schema.getDocumentBaseURI() + "tmpSchema" + tmpCount;
@@ -118,38 +121,36 @@ public class ServiceDiscoveryHelper {
         // not suitable for relative path in schemaLocation(between wsdl and xsd file).
         // localWsdl = File.createTempFile("service-", ".wsdl");
         // localWsdl.deleteOnExit();
-
-        wsdlFactory.newWSDLWriter().writeWSDL(definition, new FileOutputStream(localWsdl));
+        if (!isLocal) {
+            wsdlFactory.newWSDLWriter().writeWSDL(definition, new FileOutputStream(localWsdl));
+        }
     }
 
     private void createTempWsdlFile(Definition definition) throws MalformedURLException, FileNotFoundException, WSDLException {
-        String tempDir = System.getProperty("java.io.tmpdir") + "wsdl" + String.valueOf(new Date().getTime());
-        new File(tempDir).mkdir();
-
         URL url = new URL(definition.getDocumentBaseURI());
-        String path = url.getPath();
-        if ("file".equals(url.getProtocol())) {
-            if (path.indexOf("/") != path.lastIndexOf("/")) {
-                path = path.substring(path.indexOf("/") + 1);
-                path = path.substring(path.indexOf("/"));
+        if ("http".equals(url.getProtocol()) || "https".equals(url.getProtocol())) {
+            File wsdlTmpDir = new File(System.getProperty("java.io.tmpdir"), "wsdl" + String.valueOf(new Date().getTime()));
+            if (!wsdlTmpDir.mkdir()) {
+                throw new SecurityException("Unable to create temporary directory," + wsdlTmpDir.getAbsolutePath());
             }
-        }
-        String fileName = path.substring(path.lastIndexOf("/") + 1);
-        if (path.indexOf("/") != path.lastIndexOf("/")) {
+            String path = url.getPath();
+
             path = path.substring(0, path.lastIndexOf("/"));
+
+            File parentDir = new File(wsdlTmpDir, path);
+            parentDir.mkdirs();
+            localWsdl = new File(parentDir, "mainWSDL.wsdl");
+            isLocal = false;
         } else {
-            path = "";
+            localWsdl = new File(wsdlUri); // file Protocol
+            isLocal = true;
         }
-        File mainDir = new File(tempDir + path);
-        mainDir.mkdirs();
-        localWsdl = new File(tempDir + path + "/mainWSDL.wsdl");
     }
 
     Map<String, String> importXsdMap = new HashMap<String, String>();
 
-    private void createTempImportSchemaFile(Schema schema, String baseUri) throws FileNotFoundException, TransformerException,
+    private void createTempImportSchemaFile(Schema schema, File baseFile) throws FileNotFoundException, TransformerException,
             URISyntaxException {
-        baseUri = baseUri.substring(0, baseUri.lastIndexOf("/") + 1);
         Iterator importSchemaIte = schema.getImports().values().iterator();
         while (importSchemaIte.hasNext()) {
             List importSchemaList = (List) importSchemaIte.next();
@@ -165,38 +166,20 @@ public class ServiceDiscoveryHelper {
                         FileOutputStream fileOutputStream = null;
 
                         String tempXsdPath = importSchema.getSchemaLocationURI();
-                        String tempXsdFileName = "";
-
                         URI schemaLocationUri = new URI(tempXsdPath);
                         if (!schemaLocationUri.isAbsolute()) {
-                            if (tempXsdPath.indexOf("/") != -1) {
-                                tempXsdFileName = tempXsdPath.substring(tempXsdPath.lastIndexOf("/") + 1);
-                                if (tempXsdPath.indexOf("/") != tempXsdPath.lastIndexOf("/")) {
-                                    tempXsdPath = tempXsdPath.substring(0, tempXsdPath.lastIndexOf("/"));
-                                } else {
-                                    tempXsdPath = "";
-                                }
-                            } else {
-                                tempXsdFileName = tempXsdPath;
-                                tempXsdPath = "";
-                            }
+                            File xsdFile = new File(baseFile.getParentFile(), tempXsdPath);
+                            xsdFile.getParentFile().mkdirs();
 
-                        }
+                            fileOutputStream = new FileOutputStream(xsdFile);
+                            StreamResult streamResult = new StreamResult(fileOutputStream);
+                            TransformerFactory tf = TransformerFactory.newInstance();
+                            Transformer transformer = tf.newTransformer();
+                            transformer.transform(domSource, streamResult);
 
-                        if (!"".equals(tempXsdPath)) {
-                            tempXsdPath = tempXsdPath + "/";
+                            importXsdMap.put(ns, "true");
+                            createTempImportSchemaFile(refSchema, xsdFile);
                         }
-                        File xsdDir = new File(baseUri + tempXsdPath);
-                        xsdDir.mkdirs();
-                        String xsdFilePath = baseUri + tempXsdPath + tempXsdFileName;
-                        File xsdFile = new File(xsdFilePath);
-                        fileOutputStream = new FileOutputStream(xsdFile);
-                        StreamResult streamResult = new StreamResult(fileOutputStream);
-                        TransformerFactory tf = TransformerFactory.newInstance();
-                        Transformer transformer = tf.newTransformer();
-                        transformer.transform(domSource, streamResult);
-                        importXsdMap.put(ns, "true");
-                        createTempImportSchemaFile(refSchema, xsdFilePath);
                     }
                 }
             }
