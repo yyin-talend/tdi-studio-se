@@ -254,10 +254,9 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 					try{
 <%
     				if (!useFasteDateChecker) {
-%>
-						java.text.DateFormat df_<%=cid%> = new java.text.SimpleDateFormat(<%=pattern%>); 
-						df_<%=cid%>.setLenient(false);
-						df_<%=cid%>.parse((<%=incomingConnName%>.<%=metadataColumn.getLabel()%>).toString()); 
+%>						
+						if (!TalendDate.isDate((<%=incomingConnName%>.<%=metadataColumn.getLabel()%>).toString(), <%=pattern%>))
+						  throw new IllegalArgumentException("Data format not matches");
 <%
 					} else {
 %>
