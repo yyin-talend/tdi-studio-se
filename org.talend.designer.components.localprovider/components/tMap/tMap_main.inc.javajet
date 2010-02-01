@@ -43,7 +43,10 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
 	
-	
+	//for feature:11325
+	System.out.println(codeGenArgument.getCodePart());	
+	Map<String, String> feature11325Map = processtHashInputLookupCase_Begin(node,stringBuffer);
+		
 	boolean stats = codeGenArgument.isStatistics(); 
 
 	String tMapInName = "TMAP_IN";
@@ -1665,6 +1668,10 @@ if(!isVirtualOut) { // T_TM_M_320
 	}
 <%
 	}
+	
+
+//for feature:11325		
+processtHashInputLookupCase_End(node, feature11325Map);	
 %>
 
 
