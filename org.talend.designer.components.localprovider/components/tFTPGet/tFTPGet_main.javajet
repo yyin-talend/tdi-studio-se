@@ -42,8 +42,7 @@
         	mask_<%=cid %> = mask_<%=cid %>.substring(i_<%=cid %>+1);  
         }
         
-      	mask_<%=cid %> = mask_<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-
+		mask_<%=cid %> = org.apache.oro.text.GlobCompiler.globToPerl5(mask_<%=cid %>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
 		if (dir_<%=cid %>!=null && !"".equals(dir_<%=cid %>)){ 
 			if((".*").equals(mask_<%=cid %>)){
         		getter_<%=cid %>.getAllFiles(dir_<%=cid %>, localdir_<%=cid %>);
