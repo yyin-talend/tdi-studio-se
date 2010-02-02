@@ -185,7 +185,7 @@ if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
 if(("UPDATE").equals(data_action)) {
     %>
     String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-    tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;  
+    tableName_<%=cid%> = tableName_<%=cid%> + "_" + pid;  
     <%
 }
 %>
