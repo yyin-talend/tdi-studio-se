@@ -23,7 +23,7 @@
 	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
 
 	//for feature:11325
-	System.out.println(codeGenArgument.getCodePart());	
+	//System.out.println(codeGenArgument.getCodePart());	
 	Map<String, String> feature11325Map = processtHashInputLookupCase_Begin(node,stringBuffer);
 
 	boolean stats = codeGenArgument.isStatistics();

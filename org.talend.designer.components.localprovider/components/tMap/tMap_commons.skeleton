@@ -172,7 +172,7 @@ public class CLASS {
                                     returnMap.put(oldName, inComingName);
                                 }else{
                                     //in order to void the 2 tHashInput link to the same tMap
-                                    stringBuffer.append("Design job error:\nCan't support this case: 2 tHashInput link to the same tHashOutput are 2 lookup tables of tMap.");
+                                    stringBuffer.append("Design job error:\nCan't support this case: 2 tHashInput with the same tHashOutput link to one tMap.");
                                     break outer; 
                                 }
                                 
