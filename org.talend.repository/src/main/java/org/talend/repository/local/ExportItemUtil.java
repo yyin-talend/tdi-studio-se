@@ -110,7 +110,7 @@ public class ExportItemUtil {
 
     public void exportItems(File destination, Collection<Item> items, IProgressMonitor progressMonitor) throws Exception {
         // bug 11301 :export 0 items
-        if (items.size() == 0) {
+        if (items == null || items.size() == 0) {
             return;
         }
 
