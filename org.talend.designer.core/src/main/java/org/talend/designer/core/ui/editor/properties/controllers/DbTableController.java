@@ -45,6 +45,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
@@ -59,20 +60,26 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBa
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorDialog;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject.ObjectType;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -260,14 +267,24 @@ public class DbTableController extends AbstractElementPropertySectionController 
      */
     protected void createOpenSQLCommand(Button button, IContextManager contextManager) {
         final Button btn = button;
+
         SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-        initConnectionParameters();
-        DatabaseConnection connt = manager.createConnection(connParameters);
+        DatabaseConnection connection = getExistConnection();
+        if (connection == null) {
+            initConnectionParameters();
+            connection = manager.createConnection(connParameters);
+        }
         boolean isStatus = false;
-        if (connt != null) {
-            IMetadataConnection metadataConnection = null;
-            metadataConnection = ConvertionHelper.convert(connt);
-            isStatus = checkConnection(metadataConnection, contextManager);
+
+        if (connection != null) {
+            String contextId = connection.getContextId();
+            if (contextId == null || "".equals(contextId)) {//$NON-NLS-N$
+                IMetadataConnection metadataConnection = null;
+                metadataConnection = ConvertionHelper.convert(connection);
+                isStatus = checkConnection(metadataConnection, contextManager);
+            } else {
+                isStatus = true;
+            }
         }
 
         if (isStatus) {
@@ -292,6 +309,36 @@ public class DbTableController extends AbstractElementPropertySectionController 
             });
 
         }
+    }
+
+    /**
+     * DOC zli Comment method "getExistConnection".
+     * 
+     * @return
+     */
+    private DatabaseConnection getExistConnection() {
+        String implicitRepositoryId = getImplicitRepositoryId();
+        String statsLogPrositoryId = getStatsLogRepositoryId();
+        DatabaseConnection connection = null;
+        if (implicitRepositoryId != null || statsLogPrositoryId != null) {
+            if (implicitRepositoryId == null) {
+                implicitRepositoryId = statsLogPrositoryId;
+            }
+            IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getRepositoryService()
+                    .getProxyRepositoryFactory();
+            try {
+                IRepositoryObject lastVersion = proxyRepositoryFactory.getLastVersion(implicitRepositoryId);
+                if (implicitRepositoryId.equals(lastVersion.getId())) {
+                    Item item = lastVersion.getProperty().getItem();
+                    if (item instanceof DatabaseConnectionItem) {
+                        connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
+                    }
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return connection;
     }
 
     /**
@@ -412,14 +459,26 @@ public class DbTableController extends AbstractElementPropertySectionController 
             protected IStatus run(final IProgressMonitor monitor) {
                 monitor.beginTask(Messages.getString("DbTableController.waitingForOpen"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-                if (connParameters == null) {
-                    initConnectionParameters();
+                DatabaseConnection existConnection = getExistConnection();
+                if (existConnection == null) {
+                    if (connParameters == null) {
+                        initConnectionParameters();
+                    }
+                    existConnection = manager.createConnection(connParameters);
                 }
-                DatabaseConnection connt = manager.createConnection(connParameters);
+                final DatabaseConnection con = existConnection;
                 IMetadataConnection iMetadataConnection = null;
+                final IMetadataConnection[] iMetadata = new IMetadataConnection[1];
                 boolean isStatus = false;
-                if (connt != null) {
-                    iMetadataConnection = ConvertionHelper.convert(connt);
+                if (existConnection != null) {
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        public void run() {
+                            IMetadataConnection convert = ConvertionHelper.convert(con);
+                            iMetadata[0] = convert;
+                        }
+                    });
+                    iMetadataConnection = iMetadata[0];
                     isStatus = checkConnection(iMetadataConnection);
                 }
                 final String dbType = iMetadataConnection.getDbType();
@@ -562,6 +621,10 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(DBType, newURL, userName, password,
                     schema, driveClass, driverJarPath, dbVersion);
+            ConnectionParameters connParameters2 = new ConnectionParameters();
+            if (connParameters == null) {
+                connParameters = connParameters2;
+            }
             connParameters.setConnectionComment(testConnection.getMessageException());
 
             if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType())) {

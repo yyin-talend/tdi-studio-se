@@ -22,9 +22,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.talend.commons.ui.image.ImageProvider;
@@ -59,7 +61,7 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
     private boolean canCancel = false;
 
     public ContextSetsSelectionDialog(Shell parentShell, Object source, boolean canCancel) {
-        super(parentShell == null ? PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() : parentShell);
+        super(parentShell == null ? calcShell() : parentShell);
         this.source = source;
         this.canCancel = canCancel;
         setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
@@ -70,7 +72,52 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
     }
 
     public ContextSetsSelectionDialog(ContextItem contextItem) {
-        this(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), contextItem, false);
+        this(calcShell(), contextItem, false);
+    }
+
+    /**
+     * DOC zli Comment method "calcShell".
+     * 
+     * @return
+     */
+    protected static Shell calcShell() {
+        Shell shell = null;
+        // from Workbench
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow != null) {
+            shell = activeWorkbenchWindow.getShell();
+        }
+        // from display
+        if (shell == null) {
+            final Shell[] shells = new Shell[1];
+            Display dis = Display.getDefault();
+            if (dis == null) {
+                dis = Display.getCurrent();
+            }
+            if (dis != null) {
+                final Display tmp = dis;
+                dis.syncExec(new Runnable() {
+
+                    public void run() {
+                        Shell activeShell = tmp.getActiveShell();
+
+                        if (activeShell != null) {
+                            shells[0] = activeShell;
+                        } else {
+                            Shell shell = new Shell();
+                            shells[0] = shell;
+                        }
+                    }
+                });
+            }
+            shell = shells[0];
+        }
+        // at last, new one
+        if (shell != null) {
+
+            return shell;
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$

@@ -109,6 +109,8 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
+import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 import org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -1293,7 +1295,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
 
         // qli modified to fix the bug "7364".
-
+        if (connParameters == null) {
+            connParameters = new ConnectionParameters();
+        }
         connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
         connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context));
         connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context));
@@ -1354,6 +1358,54 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     Node connectionNode = null;
+
+    /**
+     * DOC zli Comment method "getImplicitRepositoryId".
+     * 
+     * @return
+     */
+    protected String getImplicitRepositoryId() {
+        if (elem instanceof ImplicitContextLoadElement) {
+            IElementParameter implicitContext = elem.getElementParameter("PROPERTY_TYPE_IMPLICIT_CONTEXT");//$NON-NLS-N$
+            if (implicitContext != null) {
+                Map<String, IElementParameter> childParameters = implicitContext.getChildParameters();
+                if (childParameters != null) {
+                    IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-N$
+                    if (iElementParameter != null) {
+                        Object value = iElementParameter.getValue();
+                        if (value != null) {
+                            return value.toString();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * DOC zli Comment method "getStatsLogRepositoryId".
+     * 
+     * @return
+     */
+    protected String getStatsLogRepositoryId() {
+        if (elem instanceof StatsAndLogsElement) {
+            IElementParameter statsLogContext = elem.getElementParameter("PROPERTY_TYPE");//$NON-NLS-N$
+            if (statsLogContext != null) {
+                Map<String, IElementParameter> childParameters = statsLogContext.getChildParameters();
+                if (childParameters != null) {
+                    IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-N$
+                    if (iElementParameter != null) {
+                        Object value = iElementParameter.getValue();
+                        if (value != null) {
+                            return value.toString();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     protected void initConnectionParameters() {
 
