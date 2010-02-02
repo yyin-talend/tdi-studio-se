@@ -21,8 +21,10 @@ String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 String propagateRecordset = ElementParameterParser.getValue(node,"__PROPAGATE_RECORD_SET__");
 String recordsetColumn = ElementParameterParser.getValue(node,"__RECORD_SET_COLUMN__");
-
 boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
+String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+		dbquery = dbquery.replaceAll("\n"," ");
+		dbquery = dbquery.replaceAll("\r"," ");
 List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SET_PREPAREDSTATEMENT_PARAMETERS__");  
 
 String incomingConnName = null;
@@ -55,7 +57,7 @@ for(IConnection conn : outgoingConns) {
     }
 }
 %>
-
+query_<%=cid %> = <%=dbquery%>;
 whetherReject_<%=cid%> = false;
 
 <%

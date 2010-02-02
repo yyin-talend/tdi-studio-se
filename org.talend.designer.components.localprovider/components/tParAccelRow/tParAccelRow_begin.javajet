@@ -82,4 +82,4 @@ if(!("true").equals(useExistingConn))
 <%
 	}
 %>
-String query_<%=cid %> = <%=dbquery%>;
+String query_<%=cid %> = "";

@@ -78,7 +78,7 @@ if(!("true").equals(useExistingConn)) {
 <%
 	}
 %>
-String query_<%=cid %> = <%=dbquery%>;
+String query_<%=cid %> = "";
 boolean whetherReject_<%=cid%> = false;
 int nb_<%=cid%> = 0;
 globalMap.put("<%=cid %>_NB_EFFECTED",nb_<%=cid %>);

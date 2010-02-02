@@ -106,4 +106,4 @@ conn_<%=cid%>.setAutoCommit(false);
 <%
 	}
 %>
-String query_<%=cid %> = <%=dbquery%>;
+String query_<%=cid %> = "";

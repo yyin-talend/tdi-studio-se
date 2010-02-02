@@ -22,6 +22,9 @@ String propagateRecordset = ElementParameterParser.getValue(node,"__PROPAGATE_RE
 String recordsetColumn = ElementParameterParser.getValue(node,"__RECORD_SET_COLUMN__");
 boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
 boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
+String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+		dbquery = dbquery.replaceAll("\n"," ");
+		dbquery = dbquery.replaceAll("\r"," ");
 List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SET_PREPAREDSTATEMENT_PARAMETERS__");  
 String incomingConnName = null;
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
@@ -58,6 +61,7 @@ if(!useExistingConnection && useTransaction && !("").equals(commitEvery)&&!("0")
     <%
 }
 %>
+query_<%=cid %> = <%=dbquery%>;
 whetherReject_<%=cid%> = false;
 
 <%

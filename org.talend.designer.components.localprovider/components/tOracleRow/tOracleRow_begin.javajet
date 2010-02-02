@@ -105,7 +105,7 @@ if(!("true").equals(useExistingConn)) {
 <%
 	}
 %>
-String query_<%=cid %> = <%=dbquery%>;
+String query_<%=cid %> = "";
 boolean whetherReject_<%=cid%> = false;
 
 
