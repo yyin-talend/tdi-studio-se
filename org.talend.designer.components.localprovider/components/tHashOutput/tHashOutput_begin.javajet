@@ -11,34 +11,11 @@
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean clearData = ("true").equals(ElementParameterParser.getValue(node, "__CLEAR_DATA__"));
-	String comName=ElementParameterParser.getValue(node, "__COMPNAME__");
-	String cid = node.getUniqueName();
-    List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
 
-	if (connections != null && connections.size() > 0) {
-        for (IConnection connection : connections) {
-        	String connectionName = connection.getName();
+org.talend.designer.codegen.translators.technical.TAdvancedHashBeginJava begin = new org.talend.designer.codegen.translators.technical.TAdvancedHashBeginJava();
 
-%>
-            java.util.Map<<%=connectionName%>Struct, <%=connectionName%>Struct> tHash_<%=cid%> = new java.util.HashMap<<%=connectionName%>Struct, <%=connectionName%>Struct>();
-            if(<%=clearData%>)
-            {
-               if(globalMap.get("tHash_<%=cid %>") != null){
-                   tHash_<%=cid%>=(java.util.Map<<%=connectionName%>Struct, <%=connectionName%>Struct>)globalMap.get("tHash_<%=cid %>");
-                   if(!tHash_<%=cid%>.isEmpty()){
-                     tHash_<%=cid%>.clear();
-                   }
-               }
-            }
-           
-            globalMap.put("tHash_<%=cid %>", tHash_<%=cid %>);
-            
-            int nb_line_<%=cid%> = 0;
-<%
-		}
-	}
+String code = begin.generate(argument);
+
+stringBuffer.append(code);
 
 %>
