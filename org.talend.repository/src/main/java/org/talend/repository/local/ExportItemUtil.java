@@ -109,6 +109,10 @@ public class ExportItemUtil {
     private IFileExporterFullPath exporter = null;
 
     public void exportItems(File destination, Collection<Item> items, IProgressMonitor progressMonitor) throws Exception {
+        // bug 11301 :export 0 items
+        if (items.size() == 0) {
+            return;
+        }
 
         File tmpDirectory = null;
         Map<File, IPath> toExport;
