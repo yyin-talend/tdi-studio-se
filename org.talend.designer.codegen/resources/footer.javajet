@@ -287,7 +287,8 @@ if(execStat){
 	try {
 		runStat.openSocket(!isChildJob);
 		runStat.setAllPID(rootPid, fatherPid, pid);
-		runStat.startThreadStat(clientHost, portStats);
+		runStat.startThreadStat(clientHost, portStats);		
+		runStat.updateStatOnJob(RunStat.JOBSTART);	
 	} catch (java.io.IOException ioException) {
 		ioException.printStackTrace();
 	}
@@ -500,6 +501,7 @@ this.globalResumeTicket = true;//to run tPostJob
 	if (stats) {
 %>
 if (execStat) {
+	runStat.updateStatOnJob(RunStat.JOBEND);
 	runStat.stopThreadStat();
 }	
 <%	

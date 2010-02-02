@@ -843,6 +843,11 @@ public class RunProcessContext {
                         }
                         final String data = line;
 
+                        // for feature:11356
+                        if (data != null && data.split("\\|").length == 1) {
+                            continue;
+                        }
+
                         // final String data = reader.readLine();
                         if (data == null) {
                             stopThread = true;
