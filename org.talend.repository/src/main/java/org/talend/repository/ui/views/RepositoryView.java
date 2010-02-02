@@ -21,10 +21,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.internal.ui.util.StringMatcher;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -104,7 +101,6 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -121,8 +117,6 @@ import org.talend.repository.ui.actions.DeleteAction;
 import org.talend.repository.ui.actions.PasteAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
-import org.talend.repository.ui.actions.RepositoryFilterAction;
-import org.talend.repository.ui.actions.RepositoryMenuAction;
 
 /**
  * 
@@ -685,23 +679,23 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     private void fillLocalPullDown(IMenuManager manager) {
-        Project project = ProjectManager.getInstance().getCurrentProject();
-
-        IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
-                "org.talend.repository.repository_menu_provider");
-        for (IConfigurationElement elem : elems) {
-            RepositoryMenuAction createExecutableExtension;
-            try {
-                createExecutableExtension = (RepositoryMenuAction) elem.createExecutableExtension("class");
-                if (project.isLocal() && !(createExecutableExtension instanceof RepositoryFilterAction)) {
-                    continue;
-                }
-                createExecutableExtension.initialize(this);
-                manager.add(createExecutableExtension);
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-        }
+        // Project project = ProjectManager.getInstance().getCurrentProject();
+        //
+        // IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+        // "org.talend.repository.repository_menu_provider");
+        // for (IConfigurationElement elem : elems) {
+        // RepositoryMenuAction createExecutableExtension;
+        // try {
+        // createExecutableExtension = (RepositoryMenuAction) elem.createExecutableExtension("class");
+        // if (project.isLocal() && !(createExecutableExtension instanceof RepositoryFilterAction)) {
+        // continue;
+        // }
+        // createExecutableExtension.initialize(this);
+        // manager.add(createExecutableExtension);
+        // } catch (CoreException e) {
+        // ExceptionHandler.process(e);
+        // }
+        // }
     }
 
     private void fillContextMenu(IMenuManager manager) {
