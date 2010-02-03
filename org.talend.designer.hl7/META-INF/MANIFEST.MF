@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.talend.core,
  org.talend.commons.ui,
  org.talend.repository,
- org.talend.libraries.hl7;bundle-version="1.0.0",
+ org.talend.library.hl7;bundle-version="1.0.0",
  org.talend.designer.core;bundle-version="2.2.0",
  org.eclipse.core.resources;bundle-version="3.5.1"
 Bundle-ActivationPolicy: lazy
