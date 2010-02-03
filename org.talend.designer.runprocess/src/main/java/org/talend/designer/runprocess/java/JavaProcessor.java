@@ -182,6 +182,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     public JavaProcessor(IProcess process, boolean filenameFromLabel) {
         super(process);
         this.process = process;
+        ((ProcessItem) process.getProperty().getItem()).getProcess().getNode();
         this.filenameFromLabel = filenameFromLabel;
         setProcessorStates(STATES_RUNTIME);
     }
