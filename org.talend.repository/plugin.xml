@@ -1056,6 +1056,13 @@
              id="org.talend.repository.model.migration.MigrationTaskForIssue10862"
              name="MigrationTaskForIssue10862">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.AddTransmitOriginalContextFortRunJobMigrationTask"
+             description="Add a new checkbox &quot;transmit original context&quot; for tRunJob"
+             id="org.talend.repository.model.migration.AddTransmitOriginalContextFortRunJobMigrationTask"
+             name="Add a new checkbox &quot;transmit original context&quot; for tRunJob">
+       </projecttask>
    </extension>
    
    <extension

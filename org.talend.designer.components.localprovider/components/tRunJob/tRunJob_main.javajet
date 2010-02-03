@@ -40,6 +40,9 @@ boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DI
 boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();  
 boolean transmitWholeContext = ("true").equals(ElementParameterParser.getValue(node, "__TRANSMIT_WHOLE_CONTEXT__"));  
 boolean printParameter = ("true").equals(ElementParameterParser.getValue(node, "__PRINT_PARAMETER__")); 
+
+boolean originalContext = ("true").equals(ElementParameterParser.getValue(node, "__TRANSMIT_ORIGINAL_CONTEXT__")); 
+
 IProcess currentProcess = node.getProcess();
 List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
 String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
@@ -153,8 +156,9 @@ for (int i=0; i<contextParams.size(); i++) {
 if (!useIndependentProcess){//AAAAAAAAAAAA
 %>
   <%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
+<%if(originalContext){%>  
   childJob_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
-  
+<%}%>  
   String[][] childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
   <%
   if (childJob != null) {
