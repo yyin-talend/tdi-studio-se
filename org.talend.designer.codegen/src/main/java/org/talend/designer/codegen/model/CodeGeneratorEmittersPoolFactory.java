@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -388,7 +389,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
                         .loadEmittersPool(), components, monitorWrap);
                 for (JetBean jetBean : alreadyCompiledEmitters) {
-                    TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
+                    TalendJetEmitter emitter = new TalendJetEmitter(getFullTemplatePath(jetBean), jetBean.getClassLoader(),
                             jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
                             dummyEmitter.getTalendEclipseHelper());
                     emitter.setMethod(jetBean.getMethod());
@@ -444,13 +445,17 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
     }
 
+    private static String getFullTemplatePath(JetBean jetBean) {
+        return Platform.getPlugin(jetBean.getJetPluginRepository()).getDescriptor().getInstallURL().toString()
+                + jetBean.getTemplateRelativeUri();
+    }
+
     private static void synchronizedComponent(List<JetBean> components, IProgressMonitor sub,
             List<JetBean> alreadyCompiledEmitters, TalendJetEmitter dummyEmitter, int monitorBuffer, IProgressMonitor monitorWrap) {
         for (JetBean jetBean : components) {
             if (!emitterPool.containsKey(jetBean)) {
-                // System.out.println("The new file is not in JetPersistence* cache:" +
-                // jetBean.getTemplateFullUri());
-                TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(), jetBean
+                // System.out.println("The new file is not in JetPersistence* cache:" + getFullTemplatePath(jetBean));
+                TalendJetEmitter emitter = new TalendJetEmitter(getFullTemplatePath(jetBean), jetBean.getClassLoader(), jetBean
                         .getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(), dummyEmitter
                         .getTalendEclipseHelper());
                 // 10901: Component synchronization fails
@@ -491,7 +496,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         for (JetBean unit : alreadyCompiledEmitters) {
             // long unitCRC = extractTemplateHashCode(unit);
             long unitCRC = unit.getCrc();
-            toReturn.add(new LightJetBean(unit.getTemplateFullUri(), unit.getClassName(), unit.getMethod().getName(), unit
+            toReturn.add(new LightJetBean(unit.getTemplateRelativeUri(), unit.getClassName(), unit.getMethod().getName(), unit
                     .getVersion(), unit.getLanguage(), unitCRC));
         }
         return toReturn;
@@ -550,7 +555,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     monitorWrap.worked(200);
                     monitorBuffer = 0;
                 }
-                unitTemplateFullURI = unit.getTemplateFullUri();
+                unitTemplateFullURI = unit.getTemplateRelativeUri();
                 unitTemplateHashCode = unit.getCrc();
 
                 myLightJetBean = new LightJetBean(unitTemplateFullURI, unit.getVersion(), unitTemplateHashCode);
