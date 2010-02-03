@@ -25,6 +25,10 @@ String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 
+String strXMLField = ElementParameterParser.getValue(node, "__USE_XML_FIELD__");
+boolean useXMLField = (strXMLField!=null&&!("").equals(strXMLField))?("true").equals(strXMLField):false;
+String strXMLText = ElementParameterParser.getValue(node, "__XML_TEXT__");
+
 List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__"); 
 String limit = ElementParameterParser.getValue(node, "__LIMIT__");
@@ -36,7 +40,11 @@ if (("").equals(limit)) {
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
 List<IMetadataColumn> inColumns = null;
-if (node.getIncomingConnections()!=null) {
+if(useXMLField){
+%>
+	String xmlStr_<%=cid%> = <%=strXMLText %>;
+<%
+}else if (node.getIncomingConnections()!=null) {
 	for (IConnection incomingConn : node.getIncomingConnections()) {
 		if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 			inConn = incomingConn;
@@ -88,7 +96,7 @@ if(outConns!=null){
     }
 }
 
-if (inConn!=null && outConn!=null) {
+if (outConn!=null) {
 %>
 	NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
     org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
@@ -124,20 +132,22 @@ if (inConn!=null && outConn!=null) {
 %>
 	<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
-	 		for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
-    	  		if(!xmlField.equals(column.getLabel())){
-    	  			for(IMetadataColumn inColumn : inConn.getMetadataTable().getListColumns()){
-    	  				if(inColumn.getLabel().equals(column.getLabel())){
+			if(inConn!=null){
+		 		for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
+	    	  		if(!xmlField.equals(column.getLabel())){
+	    	  			for(IMetadataColumn inColumn : inConn.getMetadataTable().getListColumns()){
+	    	  				if(inColumn.getLabel().equals(column.getLabel())){
 %>
     <%=rejectConnName%>.<%=column.getLabel()%> = <%=inConn.getName() %>.<%=column.getLabel()%>;
 <%
-							break;
-    					}
-    				}
-    			}
-    	    }
+								break;
+	    					}
+	    				}
+	    			}
+	    	    }
+	    	}
 %>
-	<%=rejectConnName %>.errorXMLField = <%=inConn.getName() %>.<%=xmlField%>;
+	<%=rejectConnName %>.errorXMLField = xmlStr_<%=cid%>;
 	<%=rejectConnName %>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 <%
 		} else if(("").equals(rejectConnName)){
@@ -283,7 +293,7 @@ if(outConns!=null){
 	        			} // if S_0_0_0_0_1
 					} // if S_0_0_0_1
 				} // for S_0_0_1
-			}else{
+			}else if(inConn!=null){
 				for(IMetadataColumn inColumn:inColumns) {
 					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
 						if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
@@ -319,7 +329,7 @@ if(outConns!=null){
 <%
     	    }
 %>
-	<%=rejectConnName %>.errorXMLField = <%=inConn.getName() %>.<%=xmlField%>;
+	<%=rejectConnName %>.errorXMLField = xmlStr_<%=cid%>;
 	<%=rejectConnName %>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 	<%=firstConnName %> = null;
 <%
@@ -330,7 +340,7 @@ if(outConns!=null){
 <%
 		} else if(rejectConnName.equals(firstConnName)){
 %>
-	<%=rejectConnName %>.errorXMLField = <%=inConn.getName() %>.<%=xmlField%>;
+	<%=rejectConnName %>.errorXMLField = xmlStr_<%=cid%>;
 	<%=rejectConnName %>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 <%
 		}
