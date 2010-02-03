@@ -65,7 +65,7 @@ imports="
 			%>
 			<%=firstConnName %> = new <%=firstConnName %>Struct();
 			<%			
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//3
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
 			
 			List<IMetadataColumn> columns = metadata.getListColumns();
 			int columnSize = columns.size();
