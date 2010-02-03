@@ -286,7 +286,7 @@
 if(execStat){	
 	try {
 		runStat.openSocket(!isChildJob);
-		runStat.setAllPID(rootPid, fatherPid, pid);
+		runStat.setAllPID(rootPid, fatherPid, pid, jobName);
 		runStat.startThreadStat(clientHost, portStats);		
 		runStat.updateStatOnJob(RunStat.JOBSTART);	
 	} catch (java.io.IOException ioException) {
