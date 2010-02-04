@@ -189,7 +189,7 @@ class TalendSegment_<%=cid %>{
 			if(i==1){ // find the rep
 				if(tmp.indexOf("(")>0 && tmp.indexOf(")")>tmp.indexOf("(")){
 					result[0] = Integer.parseInt(tmp.substring(0, tmp.indexOf("(")));
-					result[i] = Integer.parseInt(tmp.substring(tmp.indexOf("(")+1, tmp.indexOf(")")));
+					result[1] = Integer.parseInt(tmp.substring(tmp.indexOf("(")+1, tmp.indexOf(")")))-1;
 				}else{
 					result[0] = Integer.parseInt(tmp);
 					result[1] = 0;
