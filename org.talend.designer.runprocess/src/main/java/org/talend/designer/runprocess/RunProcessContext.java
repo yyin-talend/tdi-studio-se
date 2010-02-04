@@ -837,18 +837,15 @@ public class RunProcessContext {
 
                         String line = reader.readLine();
                         // "GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
-                        if (line != null && line.trim().length() > 20) {
-                            String temp = line.substring(21);
+                        if (line != null && line.trim().length() > 22) {
+                            String temp = line.substring(23);
                             line = temp;
                         }
                         final String data = line;
 
                         // for feature:11356
-                        if (data != null) {
-                            String[] fields = data.split("\\|");
-                            if (fields.length == 2 && (fields[1].equals("start job") || fields[1].equals("end job"))) {
-                                continue;
-                            }
+                        if (data != null && data.split("\\|").length == 2) {
+                            continue;
                         }
 
                         // final String data = reader.readLine();
