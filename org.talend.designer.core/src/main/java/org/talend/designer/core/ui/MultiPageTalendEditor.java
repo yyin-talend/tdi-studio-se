@@ -21,7 +21,10 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.InformationLevel;
+import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.i18n.Messages;
@@ -30,9 +33,11 @@ import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 
 /**
- * This class is the main editor, the differents pages in it are: <br/><b>1)</b> {@link TalendEditor} <br/><b>2)</b>
- * {@link Text Editor on the generated code} <br/><br/> This class uses the interface ISelectionListener, it allows to
- * propage the Delete evenement to the designer. <br/>
+ * This class is the main editor, the differents pages in it are: <br/>
+ * <b>1)</b> {@link TalendEditor} <br/>
+ * <b>2)</b> {@link Text Editor on the generated code} <br/>
+ * <br/>
+ * This class uses the interface ISelectionListener, it allows to propage the Delete evenement to the designer. <br/>
  * 
  * $Id$
  * 
@@ -42,6 +47,8 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     public static final String ID = "org.talend.designer.core.ui.MultiPageTalendEditor"; //$NON-NLS-1$
 
     private String revisionNumStr;
+
+    String projectURL = null;
 
     private String getRevisionNumStr() {
         return this.revisionNumStr;
@@ -120,8 +127,19 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         String label = getEditorInput().getName();
         String jobVersion = this.getProcess().getVersion();
         // if (getActivePage() == 1) {
+        ISVNProviderService service = null;
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+            if (service.isProjectInSvnMode()) {
+                revisionBool = true;
+                revisionNumStr = service.getLastSVNRevision(this.getProcess());
+                if (revisionNumStr != null) {
+                    revisionNumStr = ".r" + revisionNumStr;
+                }
+            }
+        }
         if (revisionBool == true && revisionNumStr != null) {
-            setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + " (Revision:" + revisionNumStr + ")"); //$NON-NLS-1$
+            setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + revisionNumStr); //$NON-NLS-1$
         } else
 
             setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion)); //$NON-NLS-1$
@@ -137,6 +155,8 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         String jobVersion = this.getProcess().getVersion();
         // if (getActivePage() == 1) {
         setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + RevisionNumStr); //$NON-NLS-1$
+        revisionBool = true;
+        revisionNumStr = RevisionNumStr;
         // } else {
         // setPartName(Messages.getString("other Label??", label));
         // //$NON-NLS-1$
