@@ -113,6 +113,9 @@
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
+      <IMPORTS>
+    	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
+    </IMPORTS>
   </CODEGENERATION>
    
   <RETURNS>
