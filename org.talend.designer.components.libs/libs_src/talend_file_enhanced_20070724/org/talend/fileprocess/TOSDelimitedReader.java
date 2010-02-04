@@ -67,15 +67,17 @@ public class TOSDelimitedReader {
     public boolean splitRecord = false;
 
     /* --------------5------------------- */
-    
+    private int header = 0;
+
+    /*--------------6--------------------- */
+
     public TOSDelimitedReader(java.io.InputStream is, String encoding, String fieldDelimiter, String recordDelimiter,
             boolean needSkipEmptyRecord) throws IOException {
 
         InputStreamReader inputStreamReader = new InputStreamReader(is, encoding);
 
         init(inputStreamReader, fieldDelimiter, recordDelimiter, needSkipEmptyRecord);
-    }    
-
+    }
 
     public TOSDelimitedReader(String fileName, String encoding, String fieldDelimiter, String recordDelimiter,
             boolean needSkipEmptyRecord) throws IOException {
@@ -262,8 +264,9 @@ public class TOSDelimitedReader {
 
     private void endRecord() throws IOException {
         streamBuffer.skipRecordDelimiter();
-
-        if (skipEmptyRecord) {
+        if(this.header>0){
+            this.header--;
+        }else if (skipEmptyRecord) {
             if (columnsCount == 0 || (columnsCount == 1 && values[0].equals(""))) {
                 columnsCount = 0;// reset the columnsCount = 0 is a must
                 streamBuffer.columnStart = streamBuffer.currentPosition;
@@ -413,6 +416,7 @@ public class TOSDelimitedReader {
      * 
      */
     public void skipHeaders(int header) throws IOException {
+        this.header = header;
         checkClosed();
         if (header <= 0) {
             return;

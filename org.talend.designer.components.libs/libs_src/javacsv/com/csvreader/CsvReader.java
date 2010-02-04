@@ -1601,7 +1601,7 @@ public class CsvReader {
             UseComments = false;
             EscapeMode = CsvReader.ESCAPE_MODE_DOUBLED;
             SafetySwitch = false;
-            SkipEmptyRecords = true;
+            SkipEmptyRecords = false;
             CaptureRawRecord = true;
         }
     }
