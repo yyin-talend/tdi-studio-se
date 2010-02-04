@@ -56,8 +56,8 @@
         
 		<PARAMETER NAME="SCHEMAS" FIELD="TABLE" NUM_ROW="40">
               <ITEMS>
-                <ITEM NAME="SCHEMA" FIELD="SCHEMA_TYPE" READONLY="true"/>
-                <ITEM NAME="MAPPING" FIELD="TEXT" READONLY="true"/>
+                <ITEM NAME="SCHEMA" FIELD="SCHEMA_TYPE"/>
+                <ITEM NAME="MAPPING" FIELD="TEXT"/>
               </ITEMS>
         </PARAMETER>
         
