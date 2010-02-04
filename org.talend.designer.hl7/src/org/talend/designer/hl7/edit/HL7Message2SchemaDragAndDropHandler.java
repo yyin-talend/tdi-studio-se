@@ -56,6 +56,8 @@ public class HL7Message2SchemaDragAndDropHandler {
 
     protected int dropDefaultOperation = DND.DROP_LINK;
 
+    private String defaultLabel = "newColumn"; //$NON-NLS-1$
+
     private Table targetTable;
 
     public HL7Message2SchemaDragAndDropHandler(HL7Tree2SchemaLinker linker) {
@@ -204,7 +206,8 @@ public class HL7Message2SchemaDragAndDropHandler {
                 Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
                 linker.getTree().getShell().setCursor(cursor);
                 MetadataColumn metacolumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                metacolumn.setLabel(segName);
+                String label = hl7TableEditorView.getMetadataEditor().getNextGeneratedColumnName(defaultLabel);
+                metacolumn.setLabel(label);
                 metacolumn.setOriginalField(segName);
                 hl7TableEditorView.getMetadataEditor().add(metacolumn);
                 TreeItem item = SegmentTransfer.getInstance().getDragedItem();
