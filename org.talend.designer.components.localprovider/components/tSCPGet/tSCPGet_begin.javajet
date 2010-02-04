@@ -47,12 +47,6 @@ imports="
             node,
             "__PASSPHRASE__"
         );
-        
-        List<Map<String, String>> filelist =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,
-                "__FILELIST__"
-        );
 %>
 	int nb_file_<%=cid%> = 0;
 
@@ -66,7 +60,7 @@ imports="
 	%>
 	
 	ch.ethz.ssh2.Connection conn_<%=cid %> = (ch.ethz.ssh2.Connection)globalMap.get("<%=conn %>");
-	
+
 <%}else{%>
 
 	    String hostname_<%=cid%> = <%=host%>;
@@ -127,13 +121,3 @@ imports="
 	}//if(useExistingConn)        
 %>
         ch.ethz.ssh2.SCPClient scp_<%=cid%> = new  ch.ethz.ssh2.SCPClient(conn_<%=cid%>);
-        
-        String[] sourceFileNames_<%=cid%> = new String[]{
-<%
-			for (Map<String, String> file : filelist) {
-%>
-				<%=file.get("SOURCE")%>,
-<%          
-            }
-%>
-		};

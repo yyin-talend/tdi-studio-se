@@ -18,6 +18,16 @@ imports="
         List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__FILELIST__");
 %>
 
+        String[] sourceFileNames_<%=cid%> = new String[]{
+<%
+			for (Map<String, String> file : filelist) {
+%>
+				<%=file.get("SOURCE")%>,
+<%          
+            }
+%>
+		};
+		
 java.io.File dir_<%=cid %> = null;
 java.io.File file_<%=cid %> = null;
 java.io.FileOutputStream out_<%=cid %> = null;
