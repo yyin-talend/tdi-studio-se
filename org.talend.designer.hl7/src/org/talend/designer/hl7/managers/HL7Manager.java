@@ -49,6 +49,8 @@ public class HL7Manager {
 
     private boolean hasFile;
 
+    protected String filePath;
+
     /**
      * constructor.
      */
@@ -60,7 +62,6 @@ public class HL7Manager {
     }
 
     private void readMessageContent() {
-        String filePath = null;
         filePath = hl7Component.getElementParameter(EParameterName.FILENAME.getName()).getValue().toString();
         filePath = TalendTextUtils.removeQuotes(filePath);
         File file = Path.fromOSString(filePath).toFile();
@@ -74,7 +75,13 @@ public class HL7Manager {
                 ExceptionHandler.process(e);
             }
         } else {
-            hasFile = false;
+            String content = hl7Component.getElementParameter("MESSAGE").getValue().toString();
+            if (content != null && !"".equals(content)) {
+                this.messageContent = content;
+                hasFile = true;
+            } else {
+                hasFile = false;
+            }
         }
     }
 
@@ -103,6 +110,10 @@ public class HL7Manager {
         boolean result = false;
         List<Map<String, String>> schemas = convertMetadataColumns2Propertis();
         result = hl7Component.setTableElementParameter(schemas, "SCHEMAS"); //$NON-NLS-N$
+        String messageContent = this.getUiManager().getHl7UI().getHeader().getMessageContent();
+        hl7Component.setValueToParameter("MESSAGE", messageContent);
+        String filePath = this.getUiManager().getHl7UI().getHeader().getFilePath();
+        hl7Component.setValueToParameter(EParameterName.FILENAME.getName(), filePath);
         return result;
     }
 
@@ -162,6 +173,10 @@ public class HL7Manager {
         return schemas;
     }
 
+    public void setMessageContent(String messageContent) {
+        this.messageContent = messageContent;
+    }
+
     public String getMessageContent() {
         return this.messageContent;
     }
@@ -184,6 +199,10 @@ public class HL7Manager {
 
     public boolean isHasFile() {
         return this.hasFile;
+    }
+
+    public String getFilePath() {
+        return this.filePath;
     }
 
 }

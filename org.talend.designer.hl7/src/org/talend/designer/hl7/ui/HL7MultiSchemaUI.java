@@ -87,7 +87,7 @@ public class HL7MultiSchemaUI extends HL7UI {
 
     }
 
-    protected void initSchemaCombo() {
+    public void initSchemaCombo() {
         List<SegmentModel> segments = this.contentProvider.getAllSegmentsForMessage();
         metaTableViewer.setInput(segments);
         initMappingMap(segments);

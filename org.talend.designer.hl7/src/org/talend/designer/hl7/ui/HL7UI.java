@@ -43,6 +43,7 @@ import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.model.IModel;
 import org.talend.designer.hl7.model.PrimitiveModel;
 import org.talend.designer.hl7.ui.footer.FooterComposite;
+import org.talend.designer.hl7.ui.header.HeaderComposite;
 import org.talend.designer.hl7.ui.provider.HL7MessageTreeContentProvider;
 import org.talend.designer.hl7.ui.provider.HL7MessageTreeLabelProvider;
 import org.talend.designer.hl7.ui.view.HL7MetadataEmfTableEditorView;
@@ -83,10 +84,15 @@ public class HL7UI {
 
     protected HL7MessageTreeLabelProvider labelProvider;
 
+    protected String filePath;
+
+    protected HeaderComposite header;
+
     public HL7UI(Composite parent, HL7Manager hl7Manager) {
         this.hl7Manager = hl7Manager;
         this.hl7Manager.getUiManager().setHl7UI(this);
         this.messageContent = hl7Manager.getMessageContent();
+        this.filePath = hl7Manager.getFilePath();
         externalNode = hl7Manager.getHl7Component();
         this.hl7UIParent = parent;
         hl7UIParent.setLayout(new GridLayout());
@@ -102,6 +108,8 @@ public class HL7UI {
      * @param child
      */
     private void createContent(Composite mainComposite) {
+        header = new HeaderComposite(mainComposite, SWT.NONE, this.filePath, hl7Manager);
+
         MsgToSchemaSash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         MsgToSchemaSash.setLayoutData(new GridData(GridData.FILL_BOTH));
         MsgToSchemaSash.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -127,12 +135,10 @@ public class HL7UI {
         hl7SchemaEditorView.setMetadataEditor(metadataEditor);
         linker.init(messageViewer, hl7SchemaEditorView);
         linker.setManager(hl7Manager);
-        boolean hasMessage = initMessageTree();
-        if (hasMessage) {
-            initSchemaCombo();
-            new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
-            initlinkers();
-        }
+        initMessageTree();
+        new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
+        initSchemaCombo();
+        initlinkers();
     }
 
     /**
@@ -160,9 +166,11 @@ public class HL7UI {
             }
             if (this.getMetaTableViewer().getSelection() instanceof IStructuredSelection) {
                 IStructuredSelection selection = (IStructuredSelection) this.getMetaTableViewer().getSelection();
-                String name = ((IModel) selection.getFirstElement()).getDisplayName();
-                if (name.equals(table.getLabel())) {
-                    hl7SchemaEditorView.getMetadataEditor().addAll(columns);
+                if (selection.getFirstElement() != null) {
+                    String name = ((IModel) selection.getFirstElement()).getDisplayName();
+                    if (name.equals(table.getLabel())) {
+                        hl7SchemaEditorView.getMetadataEditor().addAll(columns);
+                    }
                 }
             }
         }
@@ -171,17 +179,16 @@ public class HL7UI {
         // 2.initlinks initLinkersByPrimitiveModels(this.labelProvider.getAllPrimitives());
     }
 
-    protected boolean initMessageTree() {
-        boolean hasMessage = false;
+    public void initMessageTree() {
         Message message = getHL7MessageInput();
         if (message != null) {
-            hasMessage = true;
             messageViewer.setInput(new Message[] { message });
+        } else {
+            messageViewer.setInput(null);
         }
-        return hasMessage;
     }
 
-    protected void initSchemaCombo() {
+    public void initSchemaCombo() {
 
     }
 
@@ -229,7 +236,6 @@ public class HL7UI {
             errorBox.setMessage("The content can't be parsed correctly,please check the file"); //$NON-NLS-1$
             if (errorBox.open() == SWT.OK) {
                 errorBox.getParent().getShell().close();
-                this.getHl7UIParent().getShell().close();
             }
         }
         return message;
@@ -332,6 +338,18 @@ public class HL7UI {
 
     public MetadataEmfTableEditor getMetadataEditor() {
         return this.metadataEditor;
+    }
+
+    public String getMessageContent() {
+        return this.messageContent;
+    }
+
+    public TreeViewer getMessageViewer() {
+        return this.messageViewer;
+    }
+
+    public HeaderComposite getHeader() {
+        return this.header;
     }
 
 }

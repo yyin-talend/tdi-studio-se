@@ -22,10 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -98,31 +96,22 @@ public class HL7InputComponent extends AbstractExternalNode {
     @Override
     public int open(Display display) {
         hl7main = new HL7Main(this);
-        if (hl7main.getHl7Manager().isHasFile()) {
-            Shell shell = hl7main.createUI(display);
-            while (!shell.isDisposed()) {
-                try {
-                    if (!display.readAndDispatch()) {
-                        display.sleep();
-                    }
-                } catch (Throwable e) {
-                    if (hl7main.isStandAloneMode()) {
-                        e.printStackTrace();
-                    } else {
-                        ExceptionHandler.process(e);
-                    }
+        Shell shell = hl7main.createUI(display);
+        while (!shell.isDisposed()) {
+            try {
+                if (!display.readAndDispatch()) {
+                    display.sleep();
+                }
+            } catch (Throwable e) {
+                if (hl7main.isStandAloneMode()) {
+                    e.printStackTrace();
+                } else {
+                    ExceptionHandler.process(e);
                 }
             }
-            if (hl7main.isStandAloneMode()) {
-                display.dispose();
-            }
-        } else {
-            MessageBox message = new MessageBox(new Shell(), SWT.APPLICATION_MODAL | SWT.OK);
-            message.setText("The file is not exist"); //$NON-NLS-1$
-            message.setMessage("Please check the file path and select the file again"); //$NON-NLS-1$
-            if (message.open() == SWT.OK) {
-                message.getParent().getShell().close();
-            }
+        }
+        if (hl7main.isStandAloneMode()) {
+            display.dispose();
         }
         return hl7main.getHl7Manager().getUiManager().getUiResponse();
     }
@@ -197,6 +186,13 @@ public class HL7InputComponent extends AbstractExternalNode {
             }
         }
         return result;
+    }
+
+    public void setValueToParameter(String paraName, Object value) {
+        IElementParameter parameter = this.getElementParameter(paraName); //$NON-NLS-N$
+        if (parameter != null && value != null) {
+            parameter.setValue(value);
+        }
     }
 
 }
