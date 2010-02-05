@@ -105,6 +105,7 @@ import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IJavaProcessorStates;
@@ -182,7 +183,17 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     public JavaProcessor(IProcess process, boolean filenameFromLabel) {
         super(process);
         this.process = process;
-        ((ProcessItem) process.getProperty().getItem()).getProcess().getNode();
+
+        if (process != null && process.getProperty() != null) {
+            final ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
+            if (processItem != null) {
+                final ProcessType process2 = processItem.getProcess();
+                if (process2 != null) {
+                    // resolve the node
+                    process2.getNode();
+                }
+            }
+        }
         this.filenameFromLabel = filenameFromLabel;
         setProcessorStates(STATES_RUNTIME);
     }
