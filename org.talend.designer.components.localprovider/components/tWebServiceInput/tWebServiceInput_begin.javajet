@@ -93,12 +93,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
  		org.talend.DynamicInvoker.main(params_<%=cid %>);
  		java.util.Map result = org.talend.DynamicInvoker.getResult();
         
-        String[] results_<%=cid %> = null;
+        Object[] results_<%=cid %> = null;
 	    int nb_line_<%=cid %> = 0;
 	
         for (Object key : result.keySet()) {
         
-           results_<%=cid %> = new String[<%=listColumns.size()==0? 1 : listColumns.size()%>];
+           results_<%=cid %> = new Object[<%=listColumns.size()==0? 1 : listColumns.size()%>];
             
            Object value = result.get(key);
            if (value instanceof Object[]){
@@ -106,7 +106,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 int len_<%=cid %> = Math.min(objArr_<%=cid %>.length, results_<%=cid %>.length);
                 int k_<%=cid %> = 0;
                 for (int i_<%=cid %> = 0; i_<%=cid %> < len_<%=cid %>; i_<%=cid %>++ ) {
-                    results_<%=cid %>[k_<%=cid %>] = String.valueOf(objArr_<%=cid %>[k_<%=cid %>]);
+                    results_<%=cid %>[k_<%=cid %>] = objArr_<%=cid %>[k_<%=cid %>];
                 }
                 
           } else if (value instanceof java.util.List) {
@@ -114,7 +114,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 int len_<%=cid %> = Math.min(list_<%=cid %>.size(), results_<%=cid %>.length);
                 int k_<%=cid %> = 0;
                 for (java.util.Iterator iter_<%=cid %> = list_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
-                    results_<%=cid %>[k_<%=cid %>] = String.valueOf(iter_<%=cid %>.next());
+                    results_<%=cid %>[k_<%=cid %>] = iter_<%=cid %>.next();
                 }
                                 
             } else if (value instanceof java.util.Map) {                
@@ -123,7 +123,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 int len_<%=cid %> = Math.min(values_<%=cid %>.size(), results_<%=cid %>.length);
                 int k_<%=cid %> = 0;
                 for (java.util.Iterator iter_<%=cid %> = values_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
-                    results_<%=cid %>[k_<%=cid %>] = String.valueOf(iter_<%=cid %>.next());
+                    results_<%=cid %>[k_<%=cid %>] = iter_<%=cid %>.next();
                 }
 
             } else if (value instanceof org.w3c.dom.Element) {
@@ -137,11 +137,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 }	
                 
             } else {
-			    results_<%=cid %>[0] = String.valueOf(value);
+			    results_<%=cid %>[0] = value;
             }
             
 <%} else { %>
-        String[] results_<%=cid %> = null;
+        Object[] results_<%=cid %> = null;
 	    int nb_line_<%=cid %> = 0;
 	    
         org.talend.TalendJob talendJob_<%=cid%> = new org.talend.TalendJobProxy(<%=endpoint %>);
@@ -190,20 +190,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { //String or Object
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>];
+					<%=conn.getName() %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].toString();
 <%
 					} else if(javaType == JavaTypesManager.DATE) { //Date
-%>
-					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(results_<%=cid %>[<%=i %>], <%= patternValue %>);
+%>					
+					if(results_<%=cid %>[<%=i %>] instanceof java.util.GregorianCalendar) {
+						<%=conn.getName() %>.<%=column.getLabel() %> = ((java.util.GregorianCalendar)results_<%=cid %>[<%=i%>]).getTime();
+                   	}else{
+						<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(results_<%=cid %>[<%=i %>].toString(), <%= patternValue %>);
+					}
 <%
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { //byte[]
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].getBytes();
+					<%=conn.getName() %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].toString().getBytes();
 	
 <%
 					} else  { //other
 %>						
-					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(results_<%=cid %>[<%=i %>]);
+					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(results_<%=cid %>[<%=i %>].toString());
 <%
 					}
 %>
