@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hl7
 Bundle-SymbolicName: org.talend.libraries.hl7
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  lib/hapi-base-0.6.jar,
  lib/hapi-structures-v21-0.6.jar,
