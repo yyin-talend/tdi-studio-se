@@ -49,6 +49,9 @@ String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
 String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
 String columnIndex = ElementParameterParser.getValue(node,"__COLUMNINDEX__");
 
+String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false; 
+		
 boolean trimAll = ("true").equals(ElementParameterParser.getValue(node,"__TRIMALL__"));
 
 boolean useMulSeprators = "true".equals(ElementParameterParser.getValue(node,"__USE_MULTISEPARATORS__"));
@@ -130,6 +133,9 @@ while (fid_<%=cid %>.nextRecord()) {
 	<%=conName %> = null;
 <%
 	}
+%>
+	try{
+<%
 	for(int i=0; i<schemas.size();i++){//FIM_002
 		Map<String, String> schema = schemas.get(i);
 		String record = schema.get("RECORD");
@@ -261,7 +267,26 @@ while (fid_<%=cid %>.nextRecord()) {
 	}
 <%
 	}//FIN_002
-	
+%>
+	} catch (Exception e) {
+<%
+        if (dieOnError) {
+ %>
+            throw(e);
+            <%
+        } else {
+%>
+        System.err.println(e.getMessage());
+<%
+			for(String conName : connections){
+%>
+		<%=conName %> = null;
+<%
+			}
+        }
+%>
+	}
+<%
 }else{//FIM_0000
 //CVS OPTION
 	String delim1 = fieldSeparator;     	
@@ -475,6 +500,7 @@ if(useMulSeprators==false){
 			continue;
 		}
 <%}%>
+		try{
 <%
 	for(int i=0; i<schemas.size();i++){//FIM_002
 		Map<String, String> schema = schemas.get(i);
@@ -614,6 +640,24 @@ if(useMulSeprators==false){
 <%
 	}//FIN_002
 %>
+	} catch (Exception e) {
+<%
+        if (dieOnError) {
+ %>
+            throw(e);
+            <%
+        } else {
+%>
+        System.err.println(e.getMessage());
+<%
+			for(String conName : connections){
+%>
+		<%=conName %> = null;
+<%
+			}
+        }
+%>
+	}
 <%=useMulSeprators==true? "}":""%>
 <%
 }
