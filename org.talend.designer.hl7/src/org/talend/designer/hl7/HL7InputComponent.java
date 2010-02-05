@@ -63,37 +63,30 @@ public class HL7InputComponent extends AbstractExternalNode {
 
     }
 
-    @Override
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
         return null;
     }
 
-    @Override
     public IExternalData getExternalData() {
         return null;
     }
 
-    @Override
     public IExternalData getTMapExternalData() {
         return null;
     }
 
-    @Override
     public void initialize() {
 
     }
 
-    @Override
     public void loadDataIn(InputStream inputStream, Reader reader) throws IOException, ClassNotFoundException {
 
     }
 
-    @Override
     public void loadDataOut(OutputStream out, Writer writer) throws IOException {
 
     }
 
-    @Override
     public int open(Display display) {
         hl7main = new HL7Main(this);
         Shell shell = hl7main.createUI(display);
@@ -116,22 +109,18 @@ public class HL7InputComponent extends AbstractExternalNode {
         return hl7main.getHl7Manager().getUiManager().getUiResponse();
     }
 
-    @Override
     public int open(Composite parent) {
         return open(parent.getDisplay());
     }
 
-    @Override
     public void renameInputConnection(String oldName, String newName) {
 
     }
 
-    @Override
     public void renameOutputConnection(String oldName, String newName) {
 
     }
 
-    @Override
     public void setExternalData(IExternalData persistentData) {
 
     }

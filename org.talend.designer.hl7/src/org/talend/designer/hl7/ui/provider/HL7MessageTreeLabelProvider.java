@@ -34,12 +34,10 @@ public class HL7MessageTreeLabelProvider extends LabelProvider implements ITable
 
     private List<PrimitiveModel> allPrimitives = new ArrayList<PrimitiveModel>();
 
-    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         return null;
     }
 
-    @Override
     public String getColumnText(Object element, int columnIndex) {
 
         if (element instanceof Type) {

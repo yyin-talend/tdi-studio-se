@@ -38,7 +38,6 @@ public class HL7MessageTreeContentProvider implements ITreeContentProvider {
 
     private List<SegmentModel> allSegmentsForMessage = new ArrayList<SegmentModel>();
 
-    @Override
     public Object[] getChildren(Object parentElement) {
         List values = new ArrayList();
         if (parentElement instanceof Message) {
@@ -175,7 +174,6 @@ public class HL7MessageTreeContentProvider implements ITreeContentProvider {
         }
     }
 
-    @Override
     public Object getParent(Object element) {
         if (element instanceof Structure) {
             Structure structure = (Structure) element;
@@ -189,13 +187,11 @@ public class HL7MessageTreeContentProvider implements ITreeContentProvider {
         return null;
     }
 
-    @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);
         return children != null && children.length > 0;
     }
 
-    @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof Object[]) {
             return (Object[]) inputElement;
@@ -206,12 +202,10 @@ public class HL7MessageTreeContentProvider implements ITreeContentProvider {
         return new Object[0];
     }
 
-    @Override
     public void dispose() {
 
     }
 
-    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
     }

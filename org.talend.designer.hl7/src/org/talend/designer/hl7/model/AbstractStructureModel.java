@@ -30,7 +30,6 @@ public abstract class AbstractStructureModel implements IModel {
         return this.displayName;
     }
 
-    @Override
     public Structure getParent() {
         return this.parent;
     }
