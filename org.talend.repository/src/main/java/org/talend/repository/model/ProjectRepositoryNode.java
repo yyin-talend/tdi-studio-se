@@ -1473,6 +1473,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         case METADATA_FILE_EBCDIC:
             return this.metadataEbcdicConnectionNode;
         case METADATA_MDMCONNECTION:
+        case MDM_CONCEPT:
             return this.metadataMDMConnectionNode;
         case METADATA_SALESFORCE_SCHEMA:
             return this.metadataSalesforceSchemaNode;
@@ -1483,11 +1484,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         case METADATA_WSDL_SCHEMA:
             return this.metadataWSDLSchemaNode;
         case METADATA_FILE_RULES:
+        case METADATA_FILE_LINKRULES:
             return this.metadataRulesNode;
         case REFERENCED_PROJECTS:
             return this.refProject;
         case JOBLET:
             return this.jobletNode;
+        case SVN_ROOT:
+            return this.svnRootNode;
         default:
         }
         return null;
