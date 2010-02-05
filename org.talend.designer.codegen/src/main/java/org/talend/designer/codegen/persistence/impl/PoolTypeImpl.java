@@ -151,9 +151,7 @@ public class PoolTypeImpl extends EObjectImpl implements PoolType {
             return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(Messages.getString("PoolTypeImpl.persistentPool")); //$NON-NLS-1$
-        result.append(persistentPool);
-        result.append(')');
+        result.append(Messages.getString("PoolTypeImpl.persistentPool", persistentPool)); //$NON-NLS-1$
         return result.toString();
     }
 
