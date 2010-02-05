@@ -111,20 +111,21 @@ public class ChangeActivateStatusElementCommand extends Command {
         }
         if (nodeList != null && nodeList.size() > 0) {
             List<Connection> connIn = null;
-            List<Connection> AllConn = null;
+            List<Connection> allConn = null;
             connIn = (List<Connection>) nodeList.get(0).getIncomingConnections();
             if (nodeList.get(0).getIncomingConnections() != null && nodeList.get(0).getIncomingConnections().size() > 0) {
-                AllConn = (List<Connection>) nodeList.get(0).getIncomingConnections().get(0).getSource().getOutgoingConnections();
-                if (connIn != null && connIn.size() >= 1) {
-                    for (int i = 0; i < connIn.size(); i++) {
-                        Connection con = connIn.get(i);
-                        AllConn.remove(con);
-                        AllConn.add(con);
+                allConn = (List<Connection>) nodeList.get(0).getIncomingConnections().get(0).getSource().getOutgoingConnections();
+                if (allConn.containsAll(connIn)) {
+                    if (connIn != null && connIn.size() >= 1) {
+                        for (int i = 0; i < connIn.size(); i++) {
+                            Connection con = connIn.get(i);
+                            allConn.remove(con);
+                            allConn.add(con);
+                        }
                     }
                 }
-                AllConn.get(0).updateAllId();
+                allConn.get(0).updateAllId();
             }
-
         }
 
         Process process;
