@@ -1303,7 +1303,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             for (int i = 0; i < unloadedNodeNames.size(); i++) {
                 message = message + unloadedNodeNames.get(i).getComponentName() + "\n";
             }
-            MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning", message);
+            if (!CommonsPlugin.isHeadless() && PlatformUI.isWorkbenchRunning()) {
+                MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning", message);
+            }
         }
         for (int i = 0; i < unloadedNodeNames.size(); i++) {
             createDummyNode(unloadedNodeNames.get(i), nodesHashtable);
