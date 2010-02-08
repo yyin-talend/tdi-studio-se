@@ -185,8 +185,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         this.process = process;
 
         if (process != null && process.getProperty() != null) {
-            final ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
-            if (processItem != null) {
+            if (process.getProperty().getItem() != null && process.getProperty().getItem() instanceof ProcessItem) {
+                final ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
                 final ProcessType process2 = processItem.getProcess();
                 if (process2 != null) {
                     // resolve the node
