@@ -26,24 +26,16 @@
 	</CONNECTORS>
 
 	<PARAMETERS>
-		<PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="5" SHOW_IF="false">
+		<PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="5">
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
 		</PARAMETER>
 		
-	    <PARAMETER NAME="BIND_HOSTNAME" FIELD="CHECK" NUM_ROW="10">
-	    	<DEFAULT>false</DEFAULT>
+	    <PARAMETER NAME="START_MSG" FIELD="TEXT" NUM_ROW="10">
+	    	<DEFAULT>'\u000b'</DEFAULT>
 	    </PARAMETER>  
 
-	    <PARAMETER NAME="SERVERHOSTNAME" FIELD="TEXT" SHOW_IF="BIND_HOSTNAME == 'true'" NUM_ROW="12">
-	    	<DEFAULT>"127.0.0.1"</DEFAULT>
-	    </PARAMETER>
-    
-	    <PARAMETER NAME="PORT" FIELD="TEXT" NUM_ROW="15">
-	    	<DEFAULT>8888</DEFAULT>
-	    </PARAMETER>
-    
-	    <PARAMETER NAME="TIMEOUT" FIELD="TEXT" SHOW="true" NUM_ROW="20">
-	    	<DEFAULT>6000</DEFAULT>
+	    <PARAMETER NAME="END_MSG" FIELD="TEXT" NUM_ROW="12">
+	    	<DEFAULT>'\u001c'</DEFAULT>
 	    </PARAMETER>
 	    
 		<PARAMETER NAME="MESSAGE" FIELD="TEXT" NUM_ROW="25" SHOW_IF="false">
@@ -57,7 +49,7 @@
 		<PARAMETER NAME="SCHEMAS" FIELD="TABLE" NUM_ROW="40">
               <ITEMS>
                 <ITEM NAME="SCHEMA" FIELD="SCHEMA_TYPE"/>
-                <ITEM NAME="MAPPING" FIELD="TEXT"/>
+                <ITEM NAME="MAPPING" FIELD="SCHEMA_XPATH_QUERYS"/>
               </ITEMS>
         </PARAMETER>
         
@@ -91,7 +83,7 @@
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="commons_cli" MODULE="commons-cli-1.0.jar" REQUIRED="true" />
-			<IMPORT NAME="commons_lang" MODULE="commons-lang-1.1.jar" REQUIRED="true" />
+			<IMPORT NAME="commons_lang" MODULE="commons-lang-1.0.jar" REQUIRED="true" />
 			<IMPORT NAME="commons_logging" MODULE="commons-logging-1.0.4.jar" REQUIRED="true" />
 			<IMPORT NAME="hapi_base" MODULE="hapi-base-0.6.jar" REQUIRED="true" />
 			<IMPORT NAME="hapi_structures_V21" MODULE="hapi-structures-v21-0.6.jar" REQUIRED="true" />

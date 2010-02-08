@@ -18,13 +18,12 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-boolean bindHostname = ("true").equals(ElementParameterParser.getValue(node,"__BIND_HOSTNAME__"));
-String hostname = ElementParameterParser.getValue(node,"__SERVERHOSTNAME__");
-String port = ElementParameterParser.getValue(node,"__PORT__");
-boolean isNoValidate = ("true").equals(ElementParameterParser.getValue(node,"__NOVALIDATE__"));
+String startMsg = ElementParameterParser.getValue(node,"__START_MSG__");
+String endMsg = ElementParameterParser.getValue(node,"__END_MSG__");
 
-String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
+boolean isNoValidate = ("true").equals(ElementParameterParser.getValue(node,"__NOVALIDATE__"));
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
@@ -44,11 +43,11 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
     
     private java.io.BufferedReader myReader;
 
-    private static final char END_MESSAGE = '\u001c'; //character indicating the
+    private char endMsg = '\u001c'; //character indicating the
                                               //termination of an HL7 message
-    private static final char START_MESSAGE = '\u000b';//character indicating the
+    private char startMsg = '\u000b';//character indicating the
                                                //start of an HL7 message
-    private static final char LAST_CHARACTER = 13; //the final character of
+    private char LAST_CHARACTER = 13; //the final character of
         //a message: a carriage return
 
     //NB: The above is as per the minimal lower layer protocol.
@@ -59,6 +58,14 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
     public TalendHL7Reader_<%=cid %>(java.io.InputStream in, String charsetName) throws IOException
     {
         setInputStream(in, charsetName);
+    }
+    
+    public void setEndMsgChar(char endMsg){
+    	this.endMsg= endMsg;
+    }
+    
+    public void setStartMsgChar(char startMsg){
+    	this.startMsg = startMsg;
     }
 
     /**
@@ -104,7 +111,7 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
                 return null; 
             }
 
-            if (c != START_MESSAGE)
+            if (c != startMsg)
             {
                 throw new ca.uhn.hl7v2.llp.LLPException("Message violates the "+
                     "minimal lower layer protocol: no start of message indicator "+
@@ -122,7 +129,7 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
                         "a terminating character.");
                 }
                 
-                if (c == END_MESSAGE)
+                if (c == endMsg)
                 {
                     //subsequent character should be a carriage return
                     c = myReader.read();
@@ -212,38 +219,20 @@ class TalendSegment_<%=cid %>{
 	
 } 
 
-int nb_line_<%=cid %>=0;
-
-java.net.ServerSocket ss<%=cid%>;
-java.net.Socket socket<%=cid%>;
-
-<%if(bindHostname){%>
-ss<%=cid%> = new java.net.ServerSocket(<%=port%>, 0, java.net.InetAddress.getByName(<%=hostname %>));
-<%}else{%>
-ss<%=cid%> = new java.net.ServerSocket(<%=port%>);
-<%}
-if(isNoValidate){%>
-ca.uhn.hl7v2.validation.impl.NoValidation noValid_<%=cid %> = new ca.uhn.hl7v2.validation.impl.NoValidation();
-<%}%>
-
-<%if(!("").equals(timeout)){%>
-    ss<%=cid%>.setSoTimeout(<%=timeout%>);
-<%}%>
-boolean done<%=cid%> = true;
-while (done<%=cid%>) {
-   	socket<%=cid%> = ss<%=cid%>.accept();
-   	System.out.println("socket connected");
-   	
-   	ca.uhn.hl7v2.parser.Parser parser_<%=cid %> = new ca.uhn.hl7v2.parser.PipeParser();
+int nb_line_<%=cid %>=0;   	
+ca.uhn.hl7v2.parser.Parser parser_<%=cid %> = new ca.uhn.hl7v2.parser.PipeParser();
 <%
 if(isNoValidate){
 %>
-	parser_<%=cid %>.setValidationContext(noValid_<%=cid %>);
+ca.uhn.hl7v2.validation.impl.NoValidation noValid_<%=cid %> = new ca.uhn.hl7v2.validation.impl.NoValidation();
+parser_<%=cid %>.setValidationContext(noValid_<%=cid %>);
 <%
 }
 %>
       //READ DATA
-	TalendHL7Reader_<%=cid %> reader_<%=cid %> = new TalendHL7Reader_<%=cid %>(socket<%=cid%>.getInputStream(),<%=encoding %>);	
+	TalendHL7Reader_<%=cid %> reader_<%=cid %> = new TalendHL7Reader_<%=cid %>(new java.io.FileInputStream(<%=fileName%>),<%=encoding %>);
+	reader_<%=cid %>.setStartMsgChar(<%=startMsg%>);
+	reader_<%=cid %>.setEndMsgChar(<%=endMsg%>);
 	
 	String str_<%=cid %> = null;
 	int[] index_<%=cid %> = null;

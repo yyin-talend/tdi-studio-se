@@ -20,13 +20,7 @@
 %>
 		}
 	}
-	reader_<%=cid %>.close();
-    socket<%=cid %>.close();
-    done<%=cid %> = false;
-
-}
-ss<%=cid%>.close();
-globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
+	globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
 <%
 	}
 %>  
