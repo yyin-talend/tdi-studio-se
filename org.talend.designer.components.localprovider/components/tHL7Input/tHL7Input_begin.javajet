@@ -22,6 +22,7 @@ String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 String startMsg = ElementParameterParser.getValue(node,"__START_MSG__");
 String endMsg = ElementParameterParser.getValue(node,"__END_MSG__");
+boolean isCustomSep = ("true").equals(ElementParameterParser.getValue(node,"__USE_MSG_SEP__"));
 
 boolean isNoValidate = ("true").equals(ElementParameterParser.getValue(node,"__NOVALIDATE__"));
 
@@ -47,8 +48,6 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
                                               //termination of an HL7 message
     private char startMsg = '\u000b';//character indicating the
                                                //start of an HL7 message
-    private char LAST_CHARACTER = 13; //the final character of
-        //a message: a carriage return
 
     //NB: The above is as per the minimal lower layer protocol.
     
@@ -93,63 +92,49 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
         protocol delimeters. Returns null if a -1 is received on the initial
          read.
      */
-    public synchronized String getMessage() throws ca.uhn.hl7v2.llp.LLPException, java.io.IOException 
+    public synchronized String getMessage() throws java.io.IOException 
     {
-        StringBuffer s_buffer = new StringBuffer();
+		StringBuffer s_buffer = new StringBuffer();
 
-        boolean end_of_message = false;
-                        
-            int c = 0;
-            try {
-                c = myReader.read();                
-            } catch (java.net.SocketException e) {
-                return null;
-            }
+		boolean end_of_message = false;
 
-            //trying to read when there is no data (stream may have been closed at other end)
-            if (c == -1) {
-                return null; 
-            }
+		int c = 0;
+		try {
+			c = myReader.read();
+		} catch (Exception e) {
+			return null;
+		}
 
-            if (c != startMsg)
-            {
-                throw new ca.uhn.hl7v2.llp.LLPException("Message violates the "+
-                    "minimal lower layer protocol: no start of message indicator "+
-                    "received.");
-            }
+		// trying to read when there is no data (stream may have
+		// been closed at other end)
+		if (c == -1) {
+			return null;
+		}
 
-            while (! end_of_message)
-            {
-                c = myReader.read();
+		if (c != startMsg) {
+			throw new java.io.IOException(
+					"no start of message indicator was found.");
+		}
 
-                if (c == -1)
-                {
-                    throw new ca.uhn.hl7v2.llp.LLPException("Message violates the "+
-                        "minimal lower protocol: message terminated without "+
-                        "a terminating character.");
-                }
-                
-                if (c == endMsg)
-                {
-                    //subsequent character should be a carriage return
-                    c = myReader.read();
-                    if (c != LAST_CHARACTER)
-                    {
-                        throw new ca.uhn.hl7v2.llp.LLPException("Message "+
-                            "violates the minimal lower layer protocol: "+
-                            "message terminator not followed by a return "+
-                            "character.");
-                    }
-                    end_of_message = true;
-                }
-                else
-                {
-                    s_buffer.append((char) c);
-                }
-            } //end while
+		while (!end_of_message) {
+			c = myReader.read();
 
-        return s_buffer.toString();
-    }
+			if (c == -1) {
+				break;
+			}
+
+			if (c == endMsg) {
+				end_of_message = true;
+			} else {
+				s_buffer.append((char) c);
+			}
+		} // end while
+		if (s_buffer.length() > 0) {
+			return s_buffer.toString();
+		} else {
+			return null;
+		}
+	}
 
     /** 
      * Closes the underlying BufferedReader.
@@ -231,9 +216,10 @@ parser_<%=cid %>.setValidationContext(noValid_<%=cid %>);
 %>
       //READ DATA
 	TalendHL7Reader_<%=cid %> reader_<%=cid %> = new TalendHL7Reader_<%=cid %>(new java.io.FileInputStream(<%=fileName%>),<%=encoding %>);
+<%if(isCustomSep){%>
 	reader_<%=cid %>.setStartMsgChar(<%=startMsg%>);
 	reader_<%=cid %>.setEndMsgChar(<%=endMsg%>);
-	
+<%}%>
 	String str_<%=cid %> = null;
 	int[] index_<%=cid %> = null;
 	
