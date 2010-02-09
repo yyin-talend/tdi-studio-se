@@ -1194,10 +1194,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     protected void loadScreenshots() {
-        if (CommonsPlugin.isHeadless())
+        // bug 11311 : don't load anymore screenshot by default. since it's no use.
+        // code below remains the same in case we need later.
+        if (true)
             return;
+        // if (CommonsPlugin.isHeadless())
+        // return;
+
         innerContent = getProcessType().getScreenshot();
         setScreenshot(ImageUtils.createImageFromData(innerContent));
+        setScreenshot(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -2970,7 +2976,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         generatingProcess = null;
         editor = null;
         viewer = null;
-        ImageUtils.disposeImages(innerContent);
+        if (innerContent != null) {
+            ImageUtils.disposeImages(innerContent);
+        }
         for (byte data[] : externalInnerContents) {
             ImageUtils.disposeImages(data);
         }
