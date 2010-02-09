@@ -103,6 +103,14 @@ public class StatsAndLogsConstants {
     public static final String[] ORACLE_VERSION_DRIVER = new String[] { "ojdbc5-11g.jar", "ojdbc14-10g.jar", "ojdbc14-9i.jar", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             "ojdbc12-8i.jar" }; //$NON-NLS-1$
 
+    // for bug 11487
+    public static final String[] MYSQL_VERSION_DISPLAY = new String[] { "MySQL 5", "MySQL 4" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+
+    public static final String[] MYSQL_VERSION_CODE = new String[] { "MYSQL_5", "MySQL_4" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+
+    public static final String[] MYSQL_VERSION_DRIVER = new String[] {
+            "mysql-connector-java-5.1.0-bin.jar", "mysql-connector-java-3.1.14-bin.jar" };//$NON-NLS-1$ //$NON-NLS-N$
+
     public static final String[] ACCESS_VERSION_DISPLAY = new String[] { "Access 2003", "Access 2007" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     public static final String[] ACCESS_VERSION_CODE = new String[] { "ACCESS_2003", "ACCESS_2007" }; //$NON-NLS-1$ //$NON-NLS-2$ 

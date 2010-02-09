@@ -1221,6 +1221,7 @@ public class DatabaseForm extends AbstractForm {
 
         boolean isOracle = oracleVersionEnable();
         boolean isAS400 = as400VersionEnable();
+        boolean isMySQL = asMySQLVersionEnable();
 
         String selectedVersion = getConnection().getDbVersionString();
         dbVersionCombo.removeAll();
@@ -1235,6 +1236,9 @@ public class DatabaseForm extends AbstractForm {
         } else if (dbType.equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())) {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(false);
+        } else if (dbType.equals(EDatabaseConnTemplate.MYSQL.getDBDisplayName())) {
+            dbVersionCombo.getCombo().setItems(versions);
+            dbVersionCombo.setHideWidgets(!isMySQL);
         }
         if (selectedVersion != null && !"".equals(selectedVersion)) { //$NON-NLS-1$
             EDatabaseVersion4Drivers version = EDatabaseVersion4Drivers.indexOfByVersion(selectedVersion);
@@ -1616,9 +1620,12 @@ public class DatabaseForm extends AbstractForm {
 
         boolean isOracle = visible && oracleVersionEnable();
         boolean isAS400 = visible && as400VersionEnable();
+        boolean isMySQL = visible && asMySQLVersionEnable();
 
-        dbVersionCombo.setEnabled(!isReadOnly()
-                && (isOracle || isAS400 || EDatabaseConnTemplate.ACCESS.getDBTypeName().equals(dbTypeCombo.getText())));
+        dbVersionCombo
+                .setEnabled(!isReadOnly()
+                        && (isOracle || isAS400 || isMySQL || EDatabaseConnTemplate.ACCESS.getDBTypeName().equals(
+                                dbTypeCombo.getText())));
         usernameText.setEditable(visible);
         passwordText.setEditable(visible);
         serverText.setEditable(false);
@@ -1760,6 +1767,22 @@ public class DatabaseForm extends AbstractForm {
         }
         EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(dbTypeCombo.getText());
         return template != null && template == EDatabaseConnTemplate.AS400
+                && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA);
+    }
+
+    /**
+     * 
+     * DOC zli Comment method "as400VersionEnable".
+     * 
+     * @return
+     */
+    private boolean asMySQLVersionEnable() {
+       // for bug 11487
+        if (dbTypeCombo == null) {
+            return false;
+        }
+        EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(dbTypeCombo.getText());
+        return template != null && template == EDatabaseConnTemplate.MYSQL
                 && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA);
     }
 

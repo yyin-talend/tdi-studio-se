@@ -360,7 +360,7 @@ public class JobSettingsManager {
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
-        // dbVersion
+        // dbVersion for Oracle
         final String dbVersionName = JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName());
         param = new ElementParameter(process);
         param.setName(dbVersionName);
@@ -375,7 +375,26 @@ public class JobSettingsManager {
         param.setNumRow(42);
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
-        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " =='ACCESS')"); //$NON-NLS-1$ //$NON-NLS-2$
+        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " =='ACCESS') "); //$NON-NLS-1$ //$NON-NLS-2$ or " + dbTypeName + " =='MYSQL'
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // dbVersion for MySql for bug 11487
+        final String dbVersionNameForMySQL = JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName());
+        param = new ElementParameter(process);
+        param.setName(dbVersionNameForMySQL);
+        param.setValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER[1]);
+        param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
+        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
+        param.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
+        // param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
+        param.setListItemsDisplayCodeName(StatsAndLogsConstants.MYSQL_VERSION_CODE);
+        param.setNumRow(42);
+        param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
+        param.setRequired(true);
+        param.setShowIf(dbCondition + " and (" + dbTypeName + " =='MYSQL' )"); //$NON-NLS-1$ //$NON-NLS-2$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
