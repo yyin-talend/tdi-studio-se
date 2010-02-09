@@ -112,6 +112,10 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         copyServerConfigFileToTempDir();
 
+        // set export config mode now only to be sure that the libraries will be setup for an export mode, and not
+        // editor mode.
+        ProcessorUtilities.setExportConfig("java", "", ""); //$NON-NLS-1$
+
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process);
         libResource.addResources(talendLibraries);
