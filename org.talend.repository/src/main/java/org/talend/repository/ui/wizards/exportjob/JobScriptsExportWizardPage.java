@@ -916,7 +916,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected String getTempDestinationValue() {
         String idealSuffix = getOutputSuffix();
-        String destinationText = super.getDestinationValue();
+        String destinationText = getDestinationValue();
         String tempdestination = JavaJobExportReArchieveCreator.getTmpDestinationFolder();
         if (destinationText.indexOf("\\") != -1) {
             int lastIndexOf = destinationText.lastIndexOf("\\");
