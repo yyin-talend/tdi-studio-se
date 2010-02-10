@@ -106,7 +106,7 @@ public class StatsAndLogsConstants {
     // for bug 11487
     public static final String[] MYSQL_VERSION_DISPLAY = new String[] { "MySQL 5", "MySQL 4" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
-    public static final String[] MYSQL_VERSION_CODE = new String[] { "MYSQL_5", "MySQL_4" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+    public static final String[] MYSQL_VERSION_CODE = new String[] { "MYSQL_5", "MYSQL_4" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
     public static final String[] MYSQL_VERSION_DRIVER = new String[] {
             "mysql-connector-java-5.1.0-bin.jar", "mysql-connector-java-3.1.14-bin.jar" };//$NON-NLS-1$ //$NON-NLS-N$
