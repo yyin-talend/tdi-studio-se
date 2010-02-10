@@ -972,6 +972,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             elementParameter.setValue(StatsAndLogsConstants.AS400_VERSION_DRIVER[1]);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
             elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_DRIVER);
+        } else if (value.indexOf("MYSQL") != -1) {//$NON-NLS-1$
+            elementParameter.setValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER[1]);
+            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
         }
     }
 
