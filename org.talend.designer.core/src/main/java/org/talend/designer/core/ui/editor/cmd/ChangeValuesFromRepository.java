@@ -404,6 +404,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             elementParameter.setValue(value);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
             elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_DRIVER);
+        } else if (value.indexOf("MYSQL") != -1) {//$NON-NLS-1$
+            elementParameter.setValue(value);
+            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
         }
     }
 
