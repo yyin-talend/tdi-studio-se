@@ -12,7 +12,13 @@ imports="
 		public void createURL(INode node) {
 			super.createURL(node);
 %>
-		String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%> + "/" + <%=dbname%>;  
+		String dbProperties_<%=cid%> = <%=dbproperties%>;
+		String url_<%=cid%> = null;
+		if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+			url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%> + "/DATABASE=" + <%=dbname%>;     
+		} else {
+		    url_<%=cid%> = "jdbc:teradata://" + <%=dbhost%> + "/DATABASE=" + <%=dbname%> + "," + <%=dbproperties%>;
+		}       
 <%	
 		}
 	

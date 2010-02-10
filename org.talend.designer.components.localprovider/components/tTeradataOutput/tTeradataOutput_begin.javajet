@@ -57,7 +57,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 	
-	
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -148,8 +148,14 @@ if(useExistingConnection) {
 } else {
     %>
     String dbname_<%=cid%> = <%=dbname%>;
-    java.lang.Class.forName("com.ncr.teradata.TeraDriver");       
-    String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>;        
+    java.lang.Class.forName("com.ncr.teradata.TeraDriver");
+    String dbProperties_<%=cid%> = <%=dbproperties%>;
+	String url_<%=cid%> = null;
+	if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+		url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>;     
+	} else {
+	    url_<%=cid%> = "jdbc:teradata://" + <%=dbhost%> + "/" + <%=dbproperties%>;
+	}       
     String dbUser_<%=cid %> = <%=dbuser%>;        
     String dbPwd_<%=cid %> = <%=dbpwd%>;        
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);

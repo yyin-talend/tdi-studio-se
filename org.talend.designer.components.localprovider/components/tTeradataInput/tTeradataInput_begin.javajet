@@ -20,9 +20,14 @@ imports="
 	class DBInputBeginUtil extends DefaultDBInputUtil{
 	    
 		public void setURL(INode node) {
-			
 %>
-			String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%> + "/" + <%=dbname%>;
+			String dbProperties_<%=cid%> = <%=dbproperties%>;
+			String url_<%=cid%> = null;
+			if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+				url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%> + "/DATABASE=" + <%=dbname%>;    
+			} else {
+			    url_<%=cid%> = "jdbc:teradata://" + <%=dbhost%> + "/DATABASE=" + <%=dbname%> + "," + <%=dbproperties%>;
+			}       
 <%
 		}
 		
