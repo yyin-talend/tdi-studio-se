@@ -89,8 +89,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private boolean mergeRefProject;
 
-    public static String currentBranch = null;
-
     private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     private org.talend.core.model.general.Project project;
@@ -238,7 +236,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     }
 
     private String showSVNRoot() {
-        String urlPath = currentBranch;
+        String urlPath = ProjectManager.getInstance().getCurrentBranchURL(project);
         if (!urlPath.contains("trunk") && !urlPath.contains("branches") && !urlPath.contains("tags")) {//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
             return null;
         }
@@ -252,7 +250,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     public void initialize() {
         List<RepositoryNode> nodes = null;
         String urlBranch = null;
-        if (currentBranch != null) {
+        if (ProjectManager.getInstance().getCurrentBranchURL(project) != null) {
             urlBranch = showSVNRoot();
         }
         if ("".equals(urlBranch) || urlBranch == null) {

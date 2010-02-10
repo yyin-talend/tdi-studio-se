@@ -330,6 +330,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             });
         }
+        if (root.getChildren().size() == 1) {
+            viewer.setExpandedState(root.getChildren().get(0), true);
+        }
     }
 
     public void addFilters() {
@@ -798,6 +801,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
                 // unsetting the selection will prevent the propertyView from displaying dirty data
                 viewer.setSelection(new TreeSelection());
+
+                if (root.getChildren().size() == 1) {
+                    viewer.setExpandedState(root.getChildren().get(0), true);
+                }
                 timer.stop();
                 // timer.print();
             }
