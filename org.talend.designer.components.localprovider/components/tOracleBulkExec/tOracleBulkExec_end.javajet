@@ -29,7 +29,7 @@ if(("UPDATE").equals(dataAction)) {
         Manager manager = getManager(dbmsId, cid);
         %>
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
-        tmpTableName_<%=cid%> = tableName_<%=cid%> + "_" + pid;
+        tmpTableName_<%=cid%> = "tmp_<%=cid.replaceFirst("tOracleOutputBulkExec","tOOBE")%>" + "_" + pid;
         java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
         stmtUpdateBulk_<%=cid%>.close();
