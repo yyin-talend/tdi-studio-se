@@ -48,7 +48,7 @@ List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParam
 String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
 String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
 String version = ElementParameterParser.getValue(node,"__PROCESS_TYPE_VERSION__");
-String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid"};
+String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\""};
 String[] commandLineWindows = new String[] {"<command>"};
 String[] commandLineUnix = new String[] {"<command>"};
 String[] commandLine = new String[] {"<command>"};

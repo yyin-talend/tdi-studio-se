@@ -54,6 +54,7 @@
     public String pid = "0";
     public String rootPid = null;
     public String fatherPid = null;
+    public String fatherNode = null;
     public long startTime = 0;
     public boolean isChildJob = false;
     
@@ -288,7 +289,7 @@ if(execStat){
 		runStat.openSocket(!isChildJob);
 		runStat.setAllPID(rootPid, fatherPid, pid, jobName);
 		runStat.startThreadStat(clientHost, portStats);		
-		runStat.updateStatOnJob(RunStat.JOBSTART);	
+		runStat.updateStatOnJob(RunStat.JOBSTART, fatherNode);	
 	} catch (java.io.IOException ioException) {
 		ioException.printStackTrace();
 	}
@@ -501,7 +502,7 @@ this.globalResumeTicket = true;//to run tPostJob
 	if (stats) {
 %>
 if (execStat) {
-	runStat.updateStatOnJob(RunStat.JOBEND);
+	runStat.updateStatOnJob(RunStat.JOBEND, fatherNode);
 	runStat.stopThreadStat();
 }	
 <%	
@@ -544,6 +545,8 @@ if (execStat) {
     		fatherPid = arg.substring(13);
     	} else if (arg.startsWith("--root_pid=")) {
     		rootPid = arg.substring(11);
+    	} else if (arg.startsWith("--father_node=")) {
+    		fatherNode = arg.substring(14);
     	} else if (arg.startsWith("--pid=")) {
     		pid = arg.substring(6);
     	} else if (arg.startsWith("--context_param")) {   		 
