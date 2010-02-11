@@ -19,10 +19,14 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
+	String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
+	
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     
+	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+	
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
@@ -65,9 +69,10 @@ imports="
     } else { // dataAction equals "INSERT" or "UPDATE" or "DELETE" 
         %>
         
-        <%if ((rejectConnName==null  && !useExistingConn) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+        <%if ( ("true".equals(useBatchSize)) && (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
         %>
                 try {
+						if (batchSizeCounter_<%=cid%> > 0) {  // do not commit empty batch, this is a jdbc error
 						pstmt_<%=cid %>.executeBatch();                	
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
@@ -81,8 +86,17 @@ imports="
             	    	%>
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
-            	    	}%>            	    
-                }catch (java.sql.BatchUpdateException e){
+            	    	}%>
+						}
+                //}catch (java.sql.BatchUpdateException e){
+				}catch (java.sql.SQLException e){
+					<% if (isEnableDebug) { %>
+					java.sql.SQLException e2 = e;
+					while (e2 != null) {
+						System.out.println(e.getMessage());
+						e2 = e2.getNextException();
+					}
+					<% } %>
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);
@@ -99,7 +113,7 @@ imports="
         if(pstmt_<%=cid %> != null) {
 
             pstmt_<%=cid %>.close();
-            
+            pstmt_<%=cid %> = null;
         }        
         <%
     }
@@ -108,7 +122,8 @@ imports="
 	if(!useExistingConn){
 	    if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
 	        %>
-	        conn_<%=cid%>.commit();
+			if (commitCounter_<%=cid%> > 0)
+	            conn_<%=cid%>.commit();
 	        <%
 	    }
 	    %>

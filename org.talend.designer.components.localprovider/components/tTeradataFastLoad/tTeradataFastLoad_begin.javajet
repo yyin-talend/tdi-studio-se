@@ -52,7 +52,7 @@ int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
 
-java.lang.Class.forName("com.ncr.teradata.TeraDriver");
+java.lang.Class.forName("com.teradata.jdbc.TeraDriver");
 String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>+"/TYPE=FASTLOAD";
 
 <%

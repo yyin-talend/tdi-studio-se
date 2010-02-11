@@ -119,7 +119,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-    		<%if ((rejectConnName==null  && !useExistingConn) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+    		<%if ((rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     		%>
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;    		 
@@ -224,7 +224,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-    		<%if ((rejectConnName==null  && !useExistingConn) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+    		<%if ((rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     		%>
 	    		pstmt_<%=cid %>.addBatch();
 	    		nb_line_<%=cid%>++;
@@ -624,7 +624,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-    		<%if ((rejectConnName==null  && !useExistingConn) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+    		<%if ((rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     		%>
     		  pstmt_<%=cid %>.addBatch();
     		  <%if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
@@ -703,7 +703,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if ((rejectConnName==null  && !useExistingConn) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+                <%if ((rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
                 %>                                                
                 try {
 						pstmt_<%=cid %>.executeBatch();                	
@@ -749,11 +749,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
                 
-                
-                	<%if((("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ){
+                	<%if( ("true").equals(useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ){
                 	%>
 		                try {
-		                		pstmt_<%=cid %>.executeBatch();
+								if (batchSizeCounter_<%=cid%> > 0) {
+		                		    pstmt_<%=cid %>.executeBatch();
 		            	    	<%if (("INSERT").equals(dataAction)) {
 		            	    	%>
 		            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
@@ -766,7 +766,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 		            	    	%>
 		            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 		            	    	<%
-		            	    	}%>            	    
+		            	    	}%>
+								}
 		                }catch (java.sql.BatchUpdateException e){
 		                	<%if(("true").equals(dieOnError)) {
 		                	%>

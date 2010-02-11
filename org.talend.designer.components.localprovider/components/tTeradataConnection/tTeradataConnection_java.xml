@@ -136,7 +136,6 @@
    <CODEGENERATION>
      <IMPORTS>
 		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssjava.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>

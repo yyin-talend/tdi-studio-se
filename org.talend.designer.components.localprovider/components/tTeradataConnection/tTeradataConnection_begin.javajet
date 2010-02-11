@@ -23,7 +23,7 @@ imports="
 		}
 	
 		public String getDirverClassName(INode node){
-			return "com.ncr.teradata.TeraDriver";
+			return "com.teradata.jdbc.TeraDriver";
 		}
 		
 	}//end class

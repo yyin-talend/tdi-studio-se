@@ -121,7 +121,7 @@
       NUM_ROW="5"
       REQUIRED="true"
     >
-      <DEFAULT>"mytable"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -212,7 +212,7 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>10000</DEFAULT>
+      <DEFAULT>1000000</DEFAULT>
     </PARAMETER>  
   
     <PARAMETER
@@ -272,7 +272,7 @@
   	  NAME="USE_BATCH_SIZE" 
   	  FIELD="CHECK"
 	  NUM_ROW="20"
-	  SHOW_IF="(USE_EXISTING_CONNECTION != 'true') AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
+	  SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
 	  >
 	  <DEFAULT>true</DEFAULT>
 	</PARAMETER>            
@@ -281,7 +281,7 @@
   	  NAME="BATCH_SIZE" 
   	  FIELD="TEXT"
 	  NUM_ROW="20"
-	  SHOW_IF="(USE_EXISTING_CONNECTION != 'true') AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_BATCH_SIZE == 'true') "	  
+	  SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_BATCH_SIZE == 'true') "	  
 	  >
 	  <DEFAULT>10000</DEFAULT>
 	</PARAMETER>            
@@ -298,7 +298,6 @@
   <CODEGENERATION>
     <IMPORTS>
 		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssjava.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
