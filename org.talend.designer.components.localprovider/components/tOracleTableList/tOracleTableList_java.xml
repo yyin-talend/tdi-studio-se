@@ -39,6 +39,7 @@
 			FIELD="COMPONENT_LIST"
 			FILTER="tOracleConnection" 
 			NUM_ROW="5"
+			DYNAMIC_SETTINGS="true"
 		/>
 		
 		<PARAMETER NAME="WHERE_CLAUSE" FIELD="TEXT" NUM_ROW="10">

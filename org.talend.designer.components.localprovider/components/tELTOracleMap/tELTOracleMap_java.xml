@@ -57,7 +57,7 @@
 	     FILTER="tOracleConnection"
 	     NUM_ROW="2"
 	     SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-	   />
+	     DYNAMIC_SETTINGS="true"/>
 
       <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="10">
          <DEFAULT/>  

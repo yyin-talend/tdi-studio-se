@@ -37,6 +37,7 @@
       FIELD="COMPONENT_LIST"
       FILTER="tParAccelConnection"
       NUM_ROW="1"
+      DYNAMIC_SETTINGS="true"
     />
     <PARAMETER
       NAME="CLOSE"

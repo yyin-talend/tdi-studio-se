@@ -57,6 +57,7 @@
 	  FILTER="tMSSqlConnection"
 	  NUM_ROW="2"
 	  SHOW_IF="((ACTION=='INSERT') or (ACTION=='UPDATE')) and (USE_EXISTING_CONNECTION == 'true')"
+	  DYNAMIC_SETTINGS="true"
 	/>
     
     <PARAMETER

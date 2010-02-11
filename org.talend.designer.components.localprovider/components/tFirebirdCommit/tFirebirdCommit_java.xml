@@ -37,7 +37,7 @@
       FIELD="COMPONENT_LIST"
       FILTER="tFirebirdConnection"
       NUM_ROW="10"
-    />
+      DYNAMIC_SETTINGS="true"/>
     <PARAMETER
       NAME="CLOSE"
       FIELD="CHECK"

@@ -58,6 +58,7 @@
       FILTER="tNetezzaConnection"
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+      DYNAMIC_SETTINGS="true"
     />    
 	<PARAMETER
       NAME="TYPE"

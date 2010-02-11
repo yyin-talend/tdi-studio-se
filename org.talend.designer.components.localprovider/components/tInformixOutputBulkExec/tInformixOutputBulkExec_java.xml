@@ -66,6 +66,7 @@
 	  FILTER="tInformixConnection" 
 	  NUM_ROW="10"
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'" 
+	  DYNAMIC_SETTINGS="true"
 	 />
   
 

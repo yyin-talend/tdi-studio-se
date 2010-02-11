@@ -56,7 +56,8 @@
 	  FIELD="COMPONENT_LIST" 
 	  FILTER="tInterbaseConnection" 
 	  NUM_ROW="2" 
-	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'">
+	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+	  DYNAMIC_SETTINGS="true">
 	</PARAMETER>
     
 	<PARAMETER

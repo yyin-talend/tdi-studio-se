@@ -25,7 +25,7 @@
  	
  	        <PARAMETERS>
  	                <PARAMETER NAME="CONNECTION" FIELD="COMPONENT_LIST"
- 	                        FILTER="tInterbaseConnection" NUM_ROW="10" />
+ 	                        FILTER="tInterbaseConnection" NUM_ROW="10" DYNAMIC_SETTINGS="true"/>
  	                        
  	                <PARAMETER NAME="CLOSE" FIELD="CHECK"
  	      					NUM_ROW="11">

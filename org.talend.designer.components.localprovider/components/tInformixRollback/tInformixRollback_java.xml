@@ -38,6 +38,7 @@
  	      FIELD="COMPONENT_LIST"
  	      FILTER="tInformixConnection"
  	      NUM_ROW="10"
+ 	      DYNAMIC_SETTINGS="true"
  	    />
  	    
  	    <PARAMETER NAME="CLOSE" FIELD="CHECK" NUM_ROW="11">

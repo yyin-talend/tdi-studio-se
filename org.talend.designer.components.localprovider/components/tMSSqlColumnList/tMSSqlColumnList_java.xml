@@ -39,6 +39,7 @@
 			FIELD="COMPONENT_LIST"
 			FILTER="tMSSqlConnection" 
 			NUM_ROW="5"
+			DYNAMIC_SETTINGS="true"
 		/>
 		
 		<PARAMETER 

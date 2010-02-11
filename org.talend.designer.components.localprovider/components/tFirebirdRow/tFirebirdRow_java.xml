@@ -57,7 +57,7 @@
       FILTER="tFirebirdConnection"
       NUM_ROW="11"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-    />
+      DYNAMIC_SETTINGS="true"/>
 
     <PARAMETER
       NAME="HOST"

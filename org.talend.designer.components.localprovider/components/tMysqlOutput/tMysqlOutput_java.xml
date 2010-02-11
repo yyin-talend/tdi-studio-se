@@ -71,7 +71,8 @@
       FILTER="tMysqlConnection"
       NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-    />    
+      DYNAMIC_SETTINGS="true"/>
+          
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
