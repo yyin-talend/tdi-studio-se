@@ -259,10 +259,12 @@ class AccessManager extends Manager {
 class DB2Manager extends Manager {
     private String host;
     private String port;
-    public DB2Manager(String host, String port, String dbName, String tableName, String userName, String password, String cid) {
+    private String dbSchema;
+    public DB2Manager(String host, String port, String dbName, String tableName, String userName, String password, String cid, String dbSchema) {
         super(dbName, tableName, userName, password, cid);
         this.host = host;
         this.port = port;
+        this.dbSchema = dbSchema;
     }
     protected String getDriver() {
         return "com.ibm.db2.jcc.DB2Driver";
@@ -278,6 +280,16 @@ class DB2Manager extends Manager {
     }
     protected String getRProtectedChar() {
         return "\\\"";
+    }
+    
+	protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append(super.retrieveTable());
+		javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
+        javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
+        javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getLProtectedChar() + "." + getRProtectedChar() + "\" + tableName_" + cid + ";\r\n");
+        javaCode.append("}");
+        return javaCode.toString();
     }
 }
 class FirebirdManager extends Manager {
@@ -1048,7 +1060,8 @@ class ManagerFactory {
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
-            manager = new DB2Manager(host, port, dbName, tableName, userName, password, cid);
+            String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+            manager = new DB2Manager(host, port, dbName, tableName, userName, password, cid, dbSchema);
         } else if(("FIREBIRD").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_FIREBIRD__");
