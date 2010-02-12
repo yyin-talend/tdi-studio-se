@@ -476,7 +476,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 if (param.isShow(getProcess().getElementParameters()) && (repositoryValue != null)
                                         && !param.getName().equals(EParameterName.PROPERTY_TYPE.getName())) {
                                     Object repValue = RepositoryToComponentProperty.getValue(repositoryConnection,
-                                            repositoryValue);
+                                            repositoryValue, null);
                                     if (repValue == null) {
                                         continue;
                                     }
@@ -947,7 +947,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
                                 continue;
                             }
-                            Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
+                            Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue,
+                                    node.getMetadataList().get(0));
                             if (param.getName().equals(EParameterName.CDC_TYPE_MODE.getName())
                                     && item instanceof DatabaseConnectionItem) {
                                 if (PluginChecker.isCDCPluginLoaded()) {
@@ -966,7 +967,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                     if (cdcLinkId != null && item.getProperty().getId().equals(cdcLinkId)) {
                                                         objectValue = RepositoryToComponentProperty.getValue(
                                                                 ((DatabaseConnectionItem) tempItem).getConnection(),
-                                                                repositoryValue);
+                                                                repositoryValue, node.getMetadataList().get(0));
                                                         break;
                                                     }
                                                 }

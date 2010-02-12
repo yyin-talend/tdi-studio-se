@@ -176,7 +176,7 @@ public class RepositoryValueUtils {
         String aliasName = repositoryObjectType.getAlias();
         Connection connection = (Connection) connectionItem.getConnection();
         if (connection instanceof DatabaseConnection) {
-            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
             aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return aliasName;

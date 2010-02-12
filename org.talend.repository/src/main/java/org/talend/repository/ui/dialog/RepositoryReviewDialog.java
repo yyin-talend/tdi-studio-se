@@ -847,7 +847,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                 if (repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
                     ConnectionItem connectionItem = (ConnectionItem) item;
                     Connection connection = connectionItem.getConnection();
-                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
                     if (repositoryType.contains(":")) { // database //$NON-NLS-1$
                         // is
                         // specified

@@ -643,7 +643,7 @@ public final class ConnectionContextHelper {
             if (category == null || category == param.getCategory()) {
                 String repositoryValue = param.getRepositoryValue();
                 if (repositoryValue != null) {
-                    Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
+                    Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, null);
                     if (objectValue != null && objectValue instanceof String) {
                         var = ContextParameterUtils.getVariableFromCode((String) objectValue);
                         if (var != null) {

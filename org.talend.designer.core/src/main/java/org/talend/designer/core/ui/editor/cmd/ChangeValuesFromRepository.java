@@ -251,7 +251,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         objectValue = RepositoryToComponentProperty.getXmlAndXSDFileValue((XmlFileConnection) connection,
                                 repositoryValue);
                     } else {
-                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
+                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, null);
                     }
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
@@ -679,7 +679,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)) {
-                    Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
+                    Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, null);
                     if (dragAndDropAction == true && connection instanceof XmlFileConnectionImpl) {
                         objectValue = RepositoryToComponentProperty.getXmlAndXSDFileValue((XmlFileConnection) connection,
                                 repositoryValue);

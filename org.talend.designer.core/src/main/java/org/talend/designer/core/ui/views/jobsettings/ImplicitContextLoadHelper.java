@@ -89,7 +89,7 @@ public class ImplicitContextLoadHelper {
         String aliasName = repositoryObjectType.getAlias();
         org.talend.core.model.metadata.builder.connection.Connection connection = connectionItem.getConnection();
         if (connection instanceof DatabaseConnection) {
-            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
             aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return aliasName + ":" + connectionItem.getProperty().getLabel(); //$NON-NLS-1$

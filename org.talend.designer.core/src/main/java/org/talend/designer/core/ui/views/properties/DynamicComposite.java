@@ -341,7 +341,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         String aliasName = repositoryObjectType.getAlias();
         Connection connection = connectionItem.getConnection();
         if (connection instanceof DatabaseConnection) {
-            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
             aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return aliasName;
@@ -609,7 +609,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 }
                 if ((connection instanceof DatabaseConnection)
                         && (repositoryValue.startsWith(ERepositoryCategoryType.DATABASE.getName()))) {
-                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
                     if (repositoryValue.contains(":")) { // database //$NON-NLS-1$
                         // is
                         // specified

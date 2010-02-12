@@ -184,7 +184,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
      */
     private void updateDbType() {
         // update db type
-        Object value = RepositoryToComponentProperty.getValue(connectionItem.getConnection(), "TYPE"); //$NON-NLS-1$
+        Object value = RepositoryToComponentProperty.getValue(connectionItem.getConnection(), "TYPE", null); //$NON-NLS-1$
         int languageType = (language.equals(ECodeLanguage.JAVA)) ? 1 : 0;
         String[] list = StatsAndLogsConstants.REPOSITORY_ITEMS[languageType];
         for (int i = 0; i < list.length; i++) {

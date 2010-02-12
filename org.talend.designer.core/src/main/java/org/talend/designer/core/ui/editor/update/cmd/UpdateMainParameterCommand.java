@@ -87,7 +87,7 @@ public class UpdateMainParameterCommand extends Command {
                                                 && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
                                             Object objectValue = RepositoryToComponentProperty.getValue(
                                                     (org.talend.core.model.metadata.builder.connection.Connection) result
-                                                            .getParameter(), repositoryValue);
+                                                            .getParameter(), repositoryValue, null);
                                             if (objectValue != null) {
                                                 if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                                         && repositoryValue.equals(UpdatesConstants.TYPE)) {

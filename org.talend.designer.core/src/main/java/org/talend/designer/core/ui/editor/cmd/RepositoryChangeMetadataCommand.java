@@ -20,12 +20,18 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
+import org.talend.repository.UpdateRepositoryUtils;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -91,6 +97,34 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         setSAPFunctionName(node, newOutputMetadata.getLabel());
         setMDMConcept(node, newOutputMetadata.getTableName());
         super.execute();
+        String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        if (propertyType != null) {
+            if (propertyType.equals(EmfComponent.REPOSITORY)) {
+                String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+
+                IRepositoryObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+                Item item = lastVersion.getProperty().getItem();
+                if (item instanceof ConnectionItem) {
+                    for (IElementParameter param : node.getElementParameters()) {
+                        if (param.getRepositoryValue() != null && !param.getRepositoryValue().equals("")) {
+                            if (param.getField().equals(EParameterFieldType.TABLE)
+                                    && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
+                                List<Map<String, Object>> table = (List<Map<String, Object>>) node.getPropertyValue(param
+                                        .getName());
+                                IMetadataTable metaTable = node.getMetadataList().get(0);
+                                RepositoryToComponentProperty.getTableXmlFileValue(((ConnectionItem) item).getConnection(),
+                                        "XML_MAPPING", param, //$NON-NLS-1$
+                                        table, newOutputMetadata);
+                                param.setRepositoryValueUsed(true);
+                            } else {
+                                param.setValue(RepositoryToComponentProperty.getValue(((ConnectionItem) item).getConnection(),
+                                        param.getRepositoryValue(), newOutputMetadata));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override

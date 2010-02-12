@@ -174,7 +174,7 @@ public class UpdateNodeParameterCommand extends Command {
                             }
                             Object objectValue = RepositoryToComponentProperty.getValue(
                                     (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-                                    repositoryValue);
+                                    repositoryValue, node.getMetadataList().get(0));
                             if (param.getName().equals(EParameterName.CDC_TYPE_MODE.getName())) {
                                 //
                                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
@@ -200,7 +200,7 @@ public class UpdateNodeParameterCommand extends Command {
                                                     if (cdcLinkId != null && item.getProperty().getId().equals(cdcLinkId)) {
                                                         objectValue = RepositoryToComponentProperty.getValue(
                                                                 ((DatabaseConnectionItem) tempItem).getConnection(),
-                                                                repositoryValue);
+                                                                repositoryValue, node.getMetadataList().get(0));
                                                     }
                                                 }
                                             }

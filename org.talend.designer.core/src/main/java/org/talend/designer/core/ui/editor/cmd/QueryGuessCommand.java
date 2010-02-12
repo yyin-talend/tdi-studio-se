@@ -171,10 +171,10 @@ public class QueryGuessCommand extends Command {
 
                             if (isTeradata) {
                                 schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                        .getConnection(), "SID"); //$NON-NLS-1$
+                                        .getConnection(), "SID", null); //$NON-NLS-1$
                             } else {
                                 schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                        .getConnection(), "SCHEMA"); //$NON-NLS-1$
+                                        .getConnection(), "SCHEMA", null); //$NON-NLS-1$
                             }
                             schema = TalendTextUtils.removeQuotes(schema);
                         }
