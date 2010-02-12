@@ -99,18 +99,30 @@ try{
      {
        String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);
        javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart(); 
-             
+    javax.activation.FileDataSource fds_<%=cid %> = null;
+	java.io.File file_<%=cid %> = new java.io.File(filename_<%=cid %>);
     <%if (!checkAttachementOnSend) {%>       
-       java.io.File file_<%=cid %> = new java.io.File(filename_<%=cid %>);
-       if(!file_<%=cid %>.exists() || file_<%=cid %>.isDirectory()){
+       if(!file_<%=cid %>.exists()){
        		continue;
        }
     <%}%>
-               
-       javax.activation.FileDataSource fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %> );
-       mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
-       mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
-       mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
+	if(file_<%=cid%>.isDirectory()){
+		java.io.File[] subFiles_<%=cid%> = file_<%=cid%>.listFiles();
+		for(java.io.File subFile_<%=cid%> : subFiles_<%=cid%>){
+			if(subFile_<%=cid%>.isFile()){
+				fds_<%=cid %> = new javax.activation.FileDataSource(subFile_<%=cid%>.getAbsolutePath());
+				mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
+				mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
+				mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
+			}
+		}
+	}else{
+		fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %>);
+		mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
+		mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
+		mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
+		
+	}
      }    
        
      // -- set the content --   
