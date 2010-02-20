@@ -192,38 +192,37 @@ public class StateComposite extends Composite {
             step1.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
             StyleRange style = new StyleRange();
             style.start = 0;
-            style.length = 18;
+            style.length = step1.getCharCount();// 17
             style.underline = true;
             step1.setStyleRange(style);
         } else if (state.equals("step2")) {//$NON-NLS-1$
             step2.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
             StyleRange style = new StyleRange();
             style.start = 0;
-            style.length = 19;
+            style.length = step2.getCharCount();// 19
             style.underline = true;
             step2.setStyleRange(style);
         } else if (state.equals("step3")) {//$NON-NLS-1$
             step3.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
             StyleRange style = new StyleRange();
             style.start = 0;
-            style.length = 15;
+            style.length = step3.getCharCount();// 15;
             style.underline = true;
             step3.setStyleRange(style);
         } else if (state.equals("step4")) {//$NON-NLS-1$
             step4.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
             StyleRange style = new StyleRange();
             style.start = 0;
-            style.length = 16;
+            style.length = step4.getCharCount();// 16;
             style.underline = true;
             step4.setStyleRange(style);
         } else if (state.equals("step5")) {//$NON-NLS-1$
             step5.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
             StyleRange style = new StyleRange();
             style.start = 0;
-            style.length = 13;
+            style.length = step5.getCharCount();// 13;
             style.underline = true;
             step5.setStyleRange(style);
         }
     }
-
 }
