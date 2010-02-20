@@ -124,9 +124,6 @@ imports="
 <%
 	    }
 	    
-	    public void generateDateResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
-	    }
-	    
 	    public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
 %>
             tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
@@ -161,6 +158,9 @@ imports="
 <%
 	    }
 	    //---------end according schema type to generate ResultSet
+	    
+		public void afterGenertorType(String firstConnName, IMetadataColumn column, int currentColNo) {
+	    }
 	    
 		public void afterComponentProcess(INode node){
 	    }

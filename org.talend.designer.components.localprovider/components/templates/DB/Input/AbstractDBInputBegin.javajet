@@ -113,11 +113,7 @@ imports="
 %>
 									<%dbInputBeginUtil.generateTimestampResultSet(firstConnName, column, currentColNo);%>
 <%
-		                         } else if(("Date").equals(typeToGenerate)) {//JDBCInput
-%>
-                     	          <%dbInputBeginUtil.generateDateResultSet(firstConnName, column, currentColNo);%>
-<%
-                     	        }  else if (("List").equals(typeToGenerate)) {
+		                         } else if (("List").equals(typeToGenerate)) {
 %>
 		                            <%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(<%=currentColNo%>);
  <%
@@ -135,8 +131,8 @@ imports="
 <%
 		                        }
 %>
+								<%dbInputBeginUtil.afterGenertorType( firstConnName, column,  currentColNo);%>
 		                    }
- 		
 <%  
 		                    currentColNo++;
 		                }
