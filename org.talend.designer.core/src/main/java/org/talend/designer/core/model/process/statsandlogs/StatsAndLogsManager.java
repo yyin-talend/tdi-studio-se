@@ -839,40 +839,44 @@ public class StatsAndLogsManager {
         paramList.add(param);
 
         // dbVersion for Oracle
-        param = new ElementParameter(process);
-        param.setName(EParameterName.DB_VERSION.getName());
-        param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER[1]);
-        param.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
-        param.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
-        // param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
-        param.setListItemsDisplayCodeName(StatsAndLogsConstants.ORACLE_VERSION_CODE);
-        param.setNumRow(52);
-        param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
-        param.setRequired(true);
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'ACCESS' or DB_TYPE == 'OCLE_OCI' ) and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
-        paramList.add(param);
+        if (process.getElementParameter(EParameterName.DB_VERSION.getName()) == null) {
+            param = new ElementParameter(process);
+            param.setName(EParameterName.DB_VERSION.getName());
+            param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
+            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setCategory(EComponentCategory.STATSANDLOGS);
+            param.setValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER[1]);
+            param.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
+            param.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
+            // param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
+            param.setListItemsDisplayCodeName(StatsAndLogsConstants.ORACLE_VERSION_CODE);
+            param.setNumRow(52);
+            param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
+            param.setRequired(true);
+            param
+                    .setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'ACCESS' or DB_TYPE == 'OCLE_OCI' ) and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+            paramList.add(param);
+        }
 
         // dbVersion for MySQL
-        param = new ElementParameter(process);
-        param.setName(EParameterName.DB_VERSION.getName());
-        param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER[1]);
-        param.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
-        param.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
-        // param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
-        param.setListItemsDisplayCodeName(StatsAndLogsConstants.MYSQL_VERSION_CODE);
-        param.setNumRow(52);
-        param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
-        param.setRequired(true);
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (  DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
-        paramList.add(param);
+        if (process.getElementParameter(EParameterName.DB_VERSION.getName()) == null) {
+            param = new ElementParameter(process);
+            param.setName(EParameterName.DB_VERSION.getName());
+            param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
+            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setCategory(EComponentCategory.STATSANDLOGS);
+            param.setValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER[1]);
+            param.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
+            param.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
+            // param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
+            param.setListItemsDisplayCodeName(StatsAndLogsConstants.MYSQL_VERSION_CODE);
+            param.setNumRow(52);
+            param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
+            param.setRequired(true);
+            param
+                    .setShowIf("(ON_DATABASE_FLAG == 'true') and (  DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+            paramList.add(param);
+        }
 
         // host
         param = new ElementParameter(process);
