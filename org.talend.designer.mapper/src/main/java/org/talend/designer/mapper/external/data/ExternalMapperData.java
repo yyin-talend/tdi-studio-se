@@ -14,8 +14,12 @@ package org.talend.designer.mapper.external.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.IExternalMapTable;
+import org.talend.designer.abstractmap.managers.MapDataDelegateHelper;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -98,7 +102,9 @@ public class ExternalMapperData implements IExternalData {
         return cloned;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -111,7 +117,9 @@ public class ExternalMapperData implements IExternalData {
         return result;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -141,6 +149,9 @@ public class ExternalMapperData implements IExternalData {
         return true;
     }
 
-    
-    
+    public Map<IExternalMapTable, List<IExternalMapEntry>> getExpressionColumns(String expression, ExternalDataType... types) {
+        MapDataDelegateHelper delegate = new MapDataDelegateHelper(getInputTables(), getOutputTables(), getVarsTables());
+        return delegate.getExpressionColumns(expression, types);
+    }
+
 }

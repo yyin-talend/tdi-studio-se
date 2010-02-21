@@ -12,7 +12,12 @@
 // ============================================================================
 package org.talend.designer.filemultischemas.data;
 
+import java.util.List;
+import java.util.Map;
+
 import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.IExternalMapTable;
 
 /**
  * cLi class global comment. Detailled comment
@@ -22,8 +27,17 @@ public class ExternalMultiSchemasData implements IExternalData {
     private static final long serialVersionUID = 4723596595913156591L;
 
     public IExternalData clone() throws CloneNotSupportedException {
-        // TODO
         return (IExternalData) super.clone();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IExternalData#getExpressionColumns(java.lang.String,
+     * org.talend.core.model.process.IExternalData.ExternalDataType[])
+     */
+    public Map<IExternalMapTable, List<IExternalMapEntry>> getExpressionColumns(String expression, ExternalDataType... types) {
+        return null;
     }
 
 }

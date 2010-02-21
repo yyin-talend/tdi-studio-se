@@ -16,13 +16,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.IExternalMapTable;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  * $Id: ExternalMapperTable.java 898 2006-12-07 11:06:17Z amaumont $
  * 
  */
-public class ExternalDbMapTable implements Serializable, Cloneable {
+public class ExternalDbMapTable implements IExternalMapTable, Serializable, Cloneable {
 
     /**
      * 
@@ -73,6 +76,10 @@ public class ExternalDbMapTable implements Serializable, Cloneable {
 
     public List<ExternalDbMapEntry> getMetadataTableEntries() {
         return this.metadataTableEntries;
+    }
+
+    public List<? extends IExternalMapEntry> getTableEntries() {
+        return getMetadataTableEntries();
     }
 
     public void setMetadataTableEntries(List<ExternalDbMapEntry> tableEntries) {
@@ -154,8 +161,7 @@ public class ExternalDbMapTable implements Serializable, Cloneable {
             cloned.customConditionsEntries = (List<ExternalDbMapEntry>) ((ArrayList) customConditionsEntries).clone();
             int listSizecustomConditionsEntries = customConditionsEntries.size();
             for (int i = 0; i < listSizecustomConditionsEntries; i++) {
-                cloned.customConditionsEntries.set(i, (ExternalDbMapEntry) cloned.customConditionsEntries.get(i)
-                        .clone());
+                cloned.customConditionsEntries.set(i, (ExternalDbMapEntry) cloned.customConditionsEntries.get(i).clone());
             }
         }
         if (metadataTableEntries != null) {

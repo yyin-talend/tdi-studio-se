@@ -25,7 +25,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.abstractmap.model.tableentry.IExternalEntry;
+import org.talend.core.model.process.node.IExternalMapEntry;
 import org.talend.designer.abstractmap.ui.prefs.MapPrefsConstants;
 
 /**
@@ -131,7 +131,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
      * ggu Comment method "hasOrRenameEntry".
      * 
      */
-    protected boolean hasOrRenameEntry(IExternalEntry entry, String oldName, String newName, boolean renameAction) {
+    protected boolean hasOrRenameEntry(IExternalMapEntry entry, String oldName, String newName, boolean renameAction) {
         if (entry == null || oldName == null || newName == null && renameAction) {
             throw new NullPointerException();
         }

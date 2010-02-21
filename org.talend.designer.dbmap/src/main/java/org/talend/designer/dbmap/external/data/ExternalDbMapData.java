@@ -14,8 +14,12 @@ package org.talend.designer.dbmap.external.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.IExternalMapTable;
+import org.talend.designer.abstractmap.managers.MapDataDelegateHelper;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -99,6 +103,11 @@ public class ExternalDbMapData implements IExternalData {
             cloned.varsTables.set(i, (ExternalDbMapTable) cloned.varsTables.get(i).clone());
         }
         return cloned;
+    }
+
+    public Map<IExternalMapTable, List<IExternalMapEntry>> getExpressionColumns(String expression, ExternalDataType... types) {
+        MapDataDelegateHelper delegate = new MapDataDelegateHelper(getInputTables(), getOutputTables(), getVarsTables());
+        return delegate.getExpressionColumns(expression, types);
     }
 
 }

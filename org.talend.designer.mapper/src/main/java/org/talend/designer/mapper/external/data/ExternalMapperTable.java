@@ -16,13 +16,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.IExternalMapTable;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  * $Id$
  * 
  */
-public class ExternalMapperTable implements Serializable, Cloneable {
+public class ExternalMapperTable implements IExternalMapTable, Serializable, Cloneable {
 
     /**
      * 
@@ -31,14 +34,14 @@ public class ExternalMapperTable implements Serializable, Cloneable {
 
     /**
      * <code>constraintTableEntries</code> has been replaced by expressionFilter since 2.1.0 r4515
-     * <code>constraintTableEntries</code> can't be removed to keep  the ascendant compatibility.
+     * <code>constraintTableEntries</code> can't be removed to keep the ascendant compatibility.
      */
     private List<ExternalMapperTableEntry> constraintTableEntries;
 
     private List<ExternalMapperTableEntry> metadataTableEntries;
 
     private List<ExternalMapperTableEntry> globalMapKeysValues;
-    
+
     private String name;
 
     private boolean minimized;
@@ -62,7 +65,7 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     private String matchingMode;
 
     private String lookupMode;
-    
+
     /**
      * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
      */
@@ -93,20 +96,26 @@ public class ExternalMapperTable implements Serializable, Cloneable {
         return this.metadataTableEntries;
     }
 
+    public List<? extends IExternalMapEntry> getTableEntries() {
+        return getMetadataTableEntries();
+    }
+
     public void setMetadataTableEntries(List<ExternalMapperTableEntry> tableEntries) {
         this.metadataTableEntries = tableEntries;
     }
 
     /**
      * Getter for globalMapKeyValues.
+     * 
      * @return the globalMapKeyValues
      */
     public List<ExternalMapperTableEntry> getGlobalMapKeysValues() {
         return globalMapKeysValues;
     }
-    
+
     /**
      * Sets the globalMapKeyValues.
+     * 
      * @param globalMapKeyValues the globalMapKeyValues to set
      */
     public void setGlobalMapKeysValues(List<ExternalMapperTableEntry> globalMapKeyValues) {
@@ -115,9 +124,10 @@ public class ExternalMapperTable implements Serializable, Cloneable {
 
     /**
      * 
-     * DOC amaumont Comment method "getConstraintTableEntries".
-     * <code>constraintTableEntries</code> has been replaced by expressionFilter since 2.1.0 r4515
-     * <code>constraintTableEntries</code> can't be removed to keep  the ascendant compatibility.
+     * DOC amaumont Comment method "getConstraintTableEntries". <code>constraintTableEntries</code> has been replaced by
+     * expressionFilter since 2.1.0 r4515 <code>constraintTableEntries</code> can't be removed to keep the ascendant
+     * compatibility.
+     * 
      * @return
      */
     public List<ExternalMapperTableEntry> getConstraintTableEntries() {
@@ -126,9 +136,10 @@ public class ExternalMapperTable implements Serializable, Cloneable {
 
     /**
      * 
-     * DOC amaumont Comment method "setConstraintTableEntries".
-     * <code>constraintTableEntries</code> has been replaced by expressionFilter since 2.1.0 r4515
-     * <code>constraintTableEntries</code> can't be removed to keep  the ascendant compatibility.
+     * DOC amaumont Comment method "setConstraintTableEntries". <code>constraintTableEntries</code> has been replaced by
+     * expressionFilter since 2.1.0 r4515 <code>constraintTableEntries</code> can't be removed to keep the ascendant
+     * compatibility.
+     * 
      * @param constraintTableEntries
      */
     public void setConstraintTableEntries(List<ExternalMapperTableEntry> constraintTableEntries) {
@@ -245,14 +256,16 @@ public class ExternalMapperTable implements Serializable, Cloneable {
 
     /**
      * Getter for lookupMode.
+     * 
      * @return the lookupMode
      */
     public String getLookupMode() {
         return lookupMode;
     }
-    
+
     /**
      * Sets the lookupMode.
+     * 
      * @param lookupMode the lookupMode to set
      */
     public void setLookupMode(String lookupMode) {
