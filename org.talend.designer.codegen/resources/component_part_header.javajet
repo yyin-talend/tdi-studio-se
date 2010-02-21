@@ -145,7 +145,7 @@ currentComponent="<%=node.getUniqueName() %>";
 		for(IConnection con:connSet){
 %>
 if(execStat){
-	runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),0, 0);
+	runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+iterateId,0, 0);
 }	 
 <%		}
 	}
@@ -160,13 +160,13 @@ if(execStat){
 
 <%if (!node.getComponent().useMerge()) {%>
 if(execStat){
-  runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),1, 1);
+  runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+iterateId,1, 1);
  } 
 <%
 	} else if(con.getUniqueName().equals((String)codeGenArgument.getIncomingName())){
 %>
 if(execStat){
- runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),1, 1);
+ runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+iterateId,1, 1);
 } 
 <%}%>
 

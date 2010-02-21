@@ -46,7 +46,7 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
 %>
 if(execStat){
  runStat.updateStatOnConnection("<%=con.getUniqueName()%>"
- 	+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),2, 0); 
+ 	+iterateId,2, 0); 
 }
 <%
   }

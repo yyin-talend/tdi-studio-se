@@ -77,6 +77,7 @@ for (IConnection iterateConn : iterateConnSet) { //1
 
 		private java.util.Map<String, Object> globalMap = null;
 		boolean isRunning = false;
+		String iterateId = "";
 <%
 			if(!subTree.isMergeSubTree()) {
 				List< ? extends IConnection> rootConns = subTree.getRootNode().getOutgoingConnections();
@@ -125,7 +126,7 @@ for (IConnection iterateConn : iterateConnSet) { //1
 			synchronized (<%=process.getName()%>.this.obj) {
 				this.globalMap = java.util.Collections.synchronizedMap(new ThreadedMap(globalMap));
 			}
-			this.globalMap.put("PARALLEL_ITERATOR_THREAD_ID",Integer.toString(threadID));
+			iterateId = "." + threadID;
 		}
 
 		
@@ -143,7 +144,7 @@ for (IConnection iterateConn : iterateConnSet) { //1
 	        	if(stat){
 %>
 if(execStat){
-				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",0,"exec"+(String)globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
+				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",0,"exec"+iterateId);
 }				
 <%
 				}

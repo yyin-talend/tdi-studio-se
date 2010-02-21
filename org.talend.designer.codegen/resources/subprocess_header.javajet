@@ -781,6 +781,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 				super(globalMap, lockWrite);
 			}
 			boolean isRunning = false;
+			String iterateId = "";
 			
 			public void run() {
 				java.util.Map threadRunResultMap = new java.util.HashMap();
@@ -796,6 +797,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	}else{//isParallelize
 %>
 
+	String iterateId = "";
 	String currentComponent = "";
 				
 	try {
