@@ -147,8 +147,7 @@ public class DesignerCoreService implements IDesignerCoreService {
         if (item instanceof ProcessItem) {
             return getProcessFromProcessItem((ProcessItem) item);
         } else if (item instanceof JobletProcessItem) {
-            AbstractProcessProvider processProvider = AbstractProcessProvider
-                    .findProcessProviderFromPID("org.talend.designer.joblet"); //$NON-NLS-1$
+            AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
             if (processProvider != null) {
                 return processProvider.buildNewGraphicProcess(item);
             }
