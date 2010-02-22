@@ -944,7 +944,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                            if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
+                            if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath
+                                    || node.getMetadataList().isEmpty()) {
                                 continue;
                             }
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue,
