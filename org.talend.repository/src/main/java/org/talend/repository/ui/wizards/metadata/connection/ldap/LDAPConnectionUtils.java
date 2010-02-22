@@ -226,7 +226,10 @@ public class LDAPConnectionUtils {
             if (namingContextValue == null) {
                 namingContextValue = namingContexts.get("namingcontexts"); //$NON-NLS-1$
             }
-
+            if (namingContexts.size() == 0 && namingContextValue == null) {
+                list.add("Impossible to get Base DN automatically, please input Base DN manually");
+                return list;
+            }
             NamingEnumeration<Object> namingEnumeration = (NamingEnumeration<Object>) namingContextValue.getAll();
 
             while (namingEnumeration.hasMore()) {
