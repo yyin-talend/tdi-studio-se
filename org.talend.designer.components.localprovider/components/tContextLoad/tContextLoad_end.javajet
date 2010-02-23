@@ -63,3 +63,5 @@
     globalMap.put("<%=cid%>_KEY_NOT_LOADED", noAssign_<%=cid %>);
 
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+    
+	resumeUtil.addLog("NODE", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context));    

@@ -106,7 +106,7 @@ if(isRunInMultiThread){
     // create and load default properties
 	private java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
-	private class ContextProperties extends java.util.Properties {
+	public class ContextProperties extends java.util.Properties {
 	    
 	    public ContextProperties(java.util.Properties properties){
 	        super(properties);
@@ -140,20 +140,25 @@ if(isRunInMultiThread){
 <%
     for (IContextParameter ctxParam :params)
      {
-        
         if(ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory"))
         {
      %>
      public  String <%=ctxParam.getName()%>;
+     public String get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>(){
+     	return this.<%=ctxParam.getName()%>;
+     }
      <%
         }else
         {
 %>      
  public  <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%>  <%=ctxParam.getName()%>;
-  <%    }   
+ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>(){
+ 	return this.<%=ctxParam.getName()%>;
+ }
+  <%    }
      }
 %>
-	}
+	}	
 	private ContextProperties context = new ContextProperties();
 	private final String jobVersion = "<%=process.getVersion() %>";
 	private final String jobName = "<%=codeGenArgument.getJobName() %>";
@@ -419,7 +424,7 @@ private class TalendException extends Exception {
 			}
 %>
 
-resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "<%=label %>", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception));
+resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "<%=label %>", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
 
 <%			
 			for (IConnection conn : conns) {

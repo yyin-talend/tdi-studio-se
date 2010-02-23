@@ -165,15 +165,7 @@
         }    	
 <%
 		}
-%>
-    	
-    	//Resume: init the resumeUtil
-    	resumeEntryMethodName = ResumeUtil.getResumeEntryMethodName(resuming_checkpoint_path);
-    	resumeUtil = new ResumeUtil(resuming_logs_dir_path, isChildJob, rootPid);
-		resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
-    	
-    	//Resume: jobStart
-    	resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","");    	
+%>    	
     	
     	try {
     		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/Default.properties");    		
@@ -279,7 +271,14 @@
 				context.<%=ctxParam.getName()%> = (<%=typeToGenerate %>) parentContextMap.get("<%=ctxParam.getName()%>");
 			}<%}%>
 		}    	
+
+    	//Resume: init the resumeUtil
+    	resumeEntryMethodName = ResumeUtil.getResumeEntryMethodName(resuming_checkpoint_path);
+    	resumeUtil = new ResumeUtil(resuming_logs_dir_path, isChildJob, rootPid);
+		resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
     	
+    	//Resume: jobStart
+    	resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context));     	
 
 <%
 		if (stats) {
@@ -515,7 +514,7 @@ if (execStat) {
 	}	
 %>
 	
-	resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","");
+	resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","","");
     
     if(errorCode == null) {
          return status != null && status.equals("failure") ? 1 : 0;	

@@ -142,7 +142,7 @@ globalResumeTicket = true;
 	    	if(activeResume){
 	    		%>
 	    			if( resumeEntryMethodName == null || globalResumeTicket){
-	    				resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=subTree.getName() %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "");
+	    				resumeUtil.addLog("CHECKPOINT", "CONNECTION:<%=lineStyle.getName() %>:<%=subTree.getName() %>:<%=conn.getName() %><%=conn.getOutputId() > 0 ? conn.getOutputId() : "" %>", "", Thread.currentThread().getId() + "", "", "", "", "", "");
 					}	    				    			
 	    		<%
 	    	}
