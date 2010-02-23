@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,14 +57,29 @@ public class ServiceDiscoveryHelper {
 
     private boolean isLocal;
 
+    private String tempPath;
+
+    private File wsdlTmpDir;
+
     public ServiceDiscoveryHelper(String wsdlUri) throws WSDLException, IOException, TransformerException, URISyntaxException {
-        this(wsdlUri, null);
+        this(wsdlUri, null, null);
+    }
+
+    public ServiceDiscoveryHelper(String wsdlUri, String tempPath) throws WSDLException, IOException, TransformerException,
+            URISyntaxException {
+        this(wsdlUri, null, tempPath);
     }
 
     public ServiceDiscoveryHelper(String wsdlUri, ServiceHelperConfiguration configuration) throws WSDLException, IOException,
             TransformerException, URISyntaxException {
+        this(wsdlUri, configuration, null);
+    }
+
+    public ServiceDiscoveryHelper(String wsdlUri, ServiceHelperConfiguration configuration, String tempPath)
+            throws WSDLException, IOException, TransformerException, URISyntaxException {
         this.wsdlUri = wsdlUri;
         this.configuration = configuration;
+        this.tempPath = tempPath;
         init();
     }
 
@@ -129,10 +145,16 @@ public class ServiceDiscoveryHelper {
     private void createTempWsdlFile(Definition definition) throws MalformedURLException, FileNotFoundException, WSDLException {
         URL url = new URL(definition.getDocumentBaseURI());
         if ("http".equals(url.getProtocol()) || "https".equals(url.getProtocol())) {
-            File wsdlTmpDir = new File(System.getProperty("java.io.tmpdir"), "wsdl" + String.valueOf(new Date().getTime()));
+            if (tempPath != null && !"".equals(tempPath)) {
+                wsdlTmpDir = new File(tempPath, "wsdl" + String.valueOf(new Date().getTime()));
+            } else {
+                wsdlTmpDir = new File(System.getProperty("java.io.tmpdir"), "wsdl" + String.valueOf(new Date().getTime()));
+            }
+
             if (!wsdlTmpDir.mkdir()) {
                 throw new SecurityException("Unable to create temporary directory," + wsdlTmpDir.getAbsolutePath());
             }
+            wsdlTmpDir.deleteOnExit();
             String path = url.getPath();
 
             path = path.substring(0, path.lastIndexOf("/"));
@@ -140,10 +162,26 @@ public class ServiceDiscoveryHelper {
             File parentDir = new File(wsdlTmpDir, path);
             parentDir.mkdirs();
             localWsdl = new File(parentDir, "mainWSDL.wsdl");
+            targetDeleteTmpFile(localWsdl);
             isLocal = false;
         } else {
-            localWsdl = new File(wsdlUri); // file Protocol
+            localWsdl = new File(wsdlUri); // file Protocol, no need to create temp wsdl file for local.
             isLocal = true;
+        }
+    }
+
+    private void targetDeleteTmpFile(File file) {
+        List<File> fileList = new ArrayList<File>();
+        targetDeleteTmpFile(fileList, file);
+        for (int i = fileList.size() - 1; i >= 0; i--) {
+            fileList.get(i).deleteOnExit();
+        }
+    }
+
+    private void targetDeleteTmpFile(List<File> fileList, File file) {
+        if (!wsdlTmpDir.equals(file)) {
+            fileList.add(file);
+            targetDeleteTmpFile(fileList, file.getParentFile());
         }
     }
 
@@ -170,6 +208,7 @@ public class ServiceDiscoveryHelper {
                         if (!schemaLocationUri.isAbsolute()) {
                             File xsdFile = new File(baseFile.getParentFile(), tempXsdPath);
                             xsdFile.getParentFile().mkdirs();
+                            targetDeleteTmpFile(xsdFile);
 
                             fileOutputStream = new FileOutputStream(xsdFile);
                             StreamResult streamResult = new StreamResult(fileOutputStream);

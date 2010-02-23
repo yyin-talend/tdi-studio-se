@@ -83,9 +83,19 @@ public class ServiceInvokerHelper implements ClassMapper {
         this(new ServiceDiscoveryHelper(wsdlUri));
     }
 
+    public ServiceInvokerHelper(String wsdlUri, String tempPath) throws WSDLException, IOException, TransformerException,
+            URISyntaxException {
+        this(new ServiceDiscoveryHelper(wsdlUri, tempPath));
+    }
+
     public ServiceInvokerHelper(String wsdlUri, ServiceHelperConfiguration configuration) throws WSDLException, IOException,
             TransformerException, URISyntaxException {
-        this(new ServiceDiscoveryHelper(wsdlUri, configuration), configuration);
+        this(new ServiceDiscoveryHelper(wsdlUri, configuration));
+    }
+
+    public ServiceInvokerHelper(String wsdlUri, ServiceHelperConfiguration configuration, String tempPath) throws WSDLException,
+            IOException, TransformerException, URISyntaxException {
+        this(new ServiceDiscoveryHelper(wsdlUri, configuration, tempPath), configuration);
     }
 
     public ServiceInvokerHelper(ServiceDiscoveryHelper serviceDiscoveryHelper, ServiceHelperConfiguration configuration) {
