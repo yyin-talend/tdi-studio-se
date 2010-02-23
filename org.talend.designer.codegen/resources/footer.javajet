@@ -185,10 +185,10 @@
     		
     		if (contextStr.compareTo("Default")!=0) {
     			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");
-    			if (inContext!=null) {
+    			//if (inContext!=null) {
 					context.load(inContext);
 					inContext.close();
-				}
+				//}
 			}
 			
 			if(!context_param.isEmpty()) {						
