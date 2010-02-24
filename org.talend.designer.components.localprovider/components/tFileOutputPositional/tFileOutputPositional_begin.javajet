@@ -50,6 +50,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 node,
                 "__FORMATS__"
             );
+        
+        boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
 %>
 		int nb_line_<%=cid%> = 0;
 		
@@ -68,16 +70,57 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 <%
 			}
+			if(compress){// compress the dest file
+%>
+        String fullName_<%=cid%> = null;
+        String extension_<%=cid%> = null;
+        String directory_<%=cid%> = null;
+        if((fileNewName_<%=cid%>.indexOf("/") != -1)) {
+            if(fileNewName_<%=cid%>.lastIndexOf(".") < fileNewName_<%=cid%>.lastIndexOf("/")) {
+                fullName_<%=cid%> = fileNewName_<%=cid%>;
+                extension_<%=cid%> = "";
+            } else {
+                fullName_<%=cid%> = fileNewName_<%=cid%>.substring(0, fileNewName_<%=cid%>.lastIndexOf("."));
+                extension_<%=cid%> = fileNewName_<%=cid%>.substring(fileNewName_<%=cid%>.lastIndexOf("."));
+            }           
+            directory_<%=cid%> = fileNewName_<%=cid%>.substring(0, fileNewName_<%=cid%>.lastIndexOf("/"));            
+        } else {
+            if(fileNewName_<%=cid%>.lastIndexOf(".") != -1) {
+                fullName_<%=cid%> = fileNewName_<%=cid%>.substring(0, fileNewName_<%=cid%>.lastIndexOf("."));
+                extension_<%=cid%> = fileNewName_<%=cid%>.substring(fileNewName_<%=cid%>.lastIndexOf("."));
+            } else {
+                fullName_<%=cid%> = fileNewName_<%=cid%>;
+                extension_<%=cid%> = "";
+            }
+            directory_<%=cid%> = "";
+        }
+		String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
+	    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
+	    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
+	    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(createFile<%=cid%>.getName()));
+		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(zipOut_<%=cid %>,<%= encoding%>));
+<%
+			}else{
 %>
 		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
 <%
+			}
 		}else{ //the part of the output stream
+			if(compress){// compress the dest output stream
+%>
+	    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
+	    			new java.io.BufferedOutputStream(<%=outStream %>));
+	    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry("TalendOutputPositional"));
+		java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(zipOut_<%=cid %>,<%= encoding%>);
+		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);
+<%
+			}else{
 %>
 		java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>,<%= encoding%>);
 		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);  
-        
 <%
+			}
 		}
 		
 		if(isIncludeHeader){      	

@@ -84,6 +84,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		
     		boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+            
+            boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
             %>
     		int nb_line_<%=cid%> = 0;
             int splitEvery_<%=cid%> = <%=splitEvery %>;
@@ -119,12 +121,24 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     				writerClass = "java.io.BufferedWriter";
     			}
     			if(!split){
+    				if(compress){// compress the dest file
+%>
+				java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
+				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
+    		    //routines.system.Row
+    		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
+    		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
+    		    java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(zipOut_<%=cid %>,<%=encoding%>));
+<%
+    				}else{
 %>		
     		    //routines.system.Row
     		    java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(
             		new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>),<%=encoding%>));
     		    java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
 <% 
+					}
     			} else {
 %>
                 java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(
@@ -166,11 +180,22 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     			}else{
     				writerClass = "java.io.BufferedWriter";
     			}
+    			if(compress){// compress the dest output stream
  %>
+    		    //routines.system.Row
+    		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
+    		    			new java.io.BufferedOutputStream(<%=outStream %>));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry("TalendOutputDelimited"));
+    		    java.io.OutputStreamWriter writer_<%=cid %> = new java.io.OutputStreamWriter(zipOut_<%=cid %>,<%=encoding%>);
+    		    java.io.Writer out<%=cid %> = new <%=writerClass%>(writer_<%=cid %>);
+<%
+    			}else{
+%>		
     		    //routines.system.Row
     		    java.io.OutputStreamWriter writer_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>,<%=encoding%>);
     		    java.io.Writer out<%=cid %> = new <%=writerClass%>(writer_<%=cid %>);
 <%
+				}
     			if(isIncludeHeader){
     		        List<IMetadataColumn> columns = metadata.getListColumns();
     		        int sizeColumns = columns.size();
@@ -213,6 +238,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
         	boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+            
+            boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
             %>        
             int nb_line_<%=cid%> = 0;
             int splitEvery_<%=cid%> = <%=splitEvery %>;
@@ -245,21 +272,49 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     	
 	            if(!split){
 	            	if(isInRowMode){
-                %>
+    					if(compress){// compress the dest file
+%>
+				java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
+				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
+    		    //routines.system.Row
+    		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
+    		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
+                java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>));
+				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
+                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]); 
+<%
+    					}else{
+%>		
                 java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
                     new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>));
 				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]);  
+                
+                java.io.File file_<%=cid%>=new java.io.File(fileName_<%=cid%>);
                 <%
+                		}
                 	}else{
+                		if(compress){// compress the dest file
+				%>
+				java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
+				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
+    		    //routines.system.Row
+    		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
+    		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
+				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                    zipOut_<%=cid %>, <%=encoding%>)), field_Delim_<%=cid %>[0]); 
+				<%
+						}else{
 				%>
 				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                    new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)), field_Delim_<%=cid %>[0]);  
+                    new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)), field_Delim_<%=cid %>[0]);
+                
+                java.io.File file_<%=cid%>=new java.io.File(fileName_<%=cid%>);  
 				<%
+						}
                 	}
-                %>      
-                            java.io.File file_<%=cid%>=new java.io.File(fileName_<%=cid%>);   
-                <%
 	            }else{
 	            	if(isInRowMode){
                 %>
@@ -326,18 +381,41 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	    	}else{
     		//***********************the following is the part of output Stream**************************************
 	            if(isInRowMode){
+	            	if(compress){// compress the dest output stream
+%>
+    		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
+    		    			new java.io.BufferedOutputStream(<%=outStream %>));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry("TalendOutputDelimited"));
+				java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>);
+                java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(outWriter_<%=cid %>);
+				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
+                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]);  
+<%
+	            	}else{
 %>
 				java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>);
                 java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(outWriter_<%=cid %>);
 				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]);  
 <%
+					}
                 }else{
+                	if(compress){// compress the dest output stream
+%>
+    		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
+    		    			new java.io.BufferedOutputStream(<%=outStream %>));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry("TalendOutputDelimited"));
+				java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>);
+				java.io.BufferedWriter bufferWriter_<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);
+				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(bufferWriter_<%=cid %>, field_Delim_<%=cid %>[0]);
+<%
+                	}else{
 %>
 				java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>);
 				java.io.BufferedWriter bufferWriter_<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);
 				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(bufferWriter_<%=cid %>, field_Delim_<%=cid %>[0]);  
 <%
+					}
                 }
 	            List<IMetadataColumn> columns = metadata.getListColumns();
 	    	    int sizeColumns = columns.size();
