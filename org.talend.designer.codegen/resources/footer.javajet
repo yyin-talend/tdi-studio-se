@@ -169,11 +169,11 @@
     	
     	try {
     		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/Default.properties");    		
-    		if (inContext!=null) {
+    		//if (inContext!=null) {
 	    		defaultProps.load(inContext);
     			inContext.close();
 	    		context = new ContextProperties(defaultProps);
-	    	}
+	    	//}
     		
     		if (contextStr.compareTo("Default")!=0) {
     			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");
