@@ -873,4 +873,62 @@ public class ElementParameter implements IElementParameter {
     public void setColumnsBasedOnSchema(boolean columnsBasedOnSchema) {
         this.columnsBasedOnSchema = columnsBasedOnSchema;
     }
+
+    @Override
+    public IElementParameter clone() throws CloneNotSupportedException {
+        IElementParameter clone = (IElementParameter) super.clone();
+
+        final RGB bgc = getBackgroundColor();
+        if (bgc != null) {
+            clone.setBackgroundColor(new RGB(bgc.red, bgc.green, bgc.blue));
+        }
+        clone.setBasedOnSchema(isBasedOnSchema());
+        clone.setBasedOnSubjobStarts(isBasedOnSubjobStarts());
+        clone.setCategory(getCategory());
+        final RGB c = getColor();
+        if (c != null) {
+            clone.setColor(new RGB(c.red, c.green, c.blue));
+        }
+        clone.setContext(getContext());
+        clone.setContextMode(isContextMode());
+        clone.setDefaultClosedListValue(getDefaultClosedListValue()); // ?
+        clone.setDefaultValues(getDefaultValues()); // ?
+        clone.setDisplayName(getDisplayName());
+        clone.setDynamicSettings(isDynamicSettings());
+        clone.setElement(getElement()); // maybe, need reset it after.
+        clone.setField(getField());
+        clone.setFilter(getFilter());
+        clone.setGroupDisplayName(getGroupDisplayName());
+        clone.setLabelFromRepository(getLabelFromRepository());
+        clone.setLinkedRepositoryItem(getLinkedRepositoryItem());
+        clone.setListItemsDisplayCodeName(getListItemsDisplayCodeName());
+        clone.setListItemsDisplayName(getListItemsDisplayName());
+        clone.setListItemsNotReadOnlyIf(getListItemsNotReadOnlyIf());
+        clone.setListItemsNotShowIf(getListItemsNotShowIf());
+        clone.setListItemsReadOnlyIf(getListItemsReadOnlyIf());
+        clone.setListItemsShowIf(getListItemsShowIf());
+        clone.setListItemsValue(getListItemsValue()); // ?
+        clone.setListRepositoryItems(getListRepositoryItems());
+        clone.setName(getName());
+        clone.setNbLines(getNbLines());
+        clone.setNoCheck(isNoCheck());
+        clone.setNotReadOnlyIf(getNotReadOnlyIf());
+        clone.setNotShowIf(getNotShowIf());
+        clone.setNumRow(getNumRow());
+        final IElementParameter pParameter = getParentParameter();
+        if (pParameter != null) {
+            clone.setParentParameter(pParameter.clone()); // ?
+            // clone.setParentParameter(pParameter);
+        }
+        clone.setReadOnly(isReadOnly());
+        clone.setReadOnlyIf(getReadOnlyIf());
+        clone.setRepositoryValue(getRepositoryValue());
+        clone.setRepositoryValueUsed(isRepositoryValueUsed());
+        clone.setRequired(isRequired());
+        clone.setShow(isDisplayedByDefault());
+        clone.setShowIf(getShowIf());
+        clone.setValue(getValue()); // ?
+        // clone.setValueToDefault(null)
+        return clone;
+    }
 }

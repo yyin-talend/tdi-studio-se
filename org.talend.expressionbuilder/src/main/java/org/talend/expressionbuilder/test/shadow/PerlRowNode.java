@@ -18,8 +18,8 @@ import java.util.List;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.designer.rowgenerator.shadow.TextElementParameter;
 import org.talend.designer.runprocess.shadow.ShadowNode;
+import org.talend.designer.runprocess.shadow.TextElementParameter;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>

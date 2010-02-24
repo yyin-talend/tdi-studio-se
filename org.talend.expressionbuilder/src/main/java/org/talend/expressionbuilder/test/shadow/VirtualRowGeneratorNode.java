@@ -33,8 +33,8 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.rowgenerator.shadow.TextElementParameter;
 import org.talend.designer.runprocess.shadow.ObjectElementParameter;
+import org.talend.designer.runprocess.shadow.TextElementParameter;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 
 /**

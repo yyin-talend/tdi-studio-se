@@ -33,6 +33,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.managers.UIManager;
+import org.talend.designer.runprocess.shadow.TextElementParameter;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -98,8 +99,7 @@ public class LogRowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#getIncomingConnections()
      */
     public List<? extends IConnection> getIncomingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx }
-                : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx } : new IConnection[0]);
     }
 
     /*
@@ -126,8 +126,7 @@ public class LogRowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#getOutgoingConnections()
      */
     public List<? extends IConnection> getOutgoingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx }
-                : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx } : new IConnection[0]);
     }
 
     /*
