@@ -57,6 +57,7 @@ import org.talend.core.model.update.UpdateResult;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -712,6 +713,17 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     public PaletteDrawer createTalendPaletteDrawer(String family) {
         return new TalendPaletteDrawer(family);
+    }
+
+    public boolean isDummyComponent(IComponent component) {
+        if (component == null) {
+            return false;
+        }
+        if (component instanceof DummyComponent) {
+            return true;
+        }
+
+        return false;
     }
 
 }

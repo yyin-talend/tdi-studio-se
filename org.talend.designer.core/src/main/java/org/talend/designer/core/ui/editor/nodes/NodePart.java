@@ -130,7 +130,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     compSettings.setElement((Node) getModel());
                     if (((Node) getModel()).getComponent() instanceof DummyComponent) {
                         MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning",
-                                "Some Components in this job are not loadded");
+                                "Component is not loadded");
                         return;
                     }
 

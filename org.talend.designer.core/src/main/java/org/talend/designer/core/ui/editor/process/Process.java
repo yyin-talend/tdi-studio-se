@@ -1286,7 +1286,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    private List<NodeType> unloadedNodeNames = null;
+    private List<NodeType> unloadedNode = null;
 
     protected void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
         EList nodeList;
@@ -1296,29 +1296,29 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         EList listParamType;
 
-        unloadedNodeNames = new ArrayList<NodeType>();
+        unloadedNode = new ArrayList<NodeType>();
         for (int i = 0; i < nodeList.size(); i++) {
             nType = (NodeType) nodeList.get(i);
             listParamType = nType.getElementParameter();
             IComponent component = ComponentsFactoryProvider.getInstance().get(nType.getComponentName());
             if (component == null) {
-                unloadedNodeNames.add(nType);
+                unloadedNode.add(nType);
                 continue;
             }
             nc = loadNode(nType, component, nodesHashtable, listParamType);
 
         }
-        if (!unloadedNodeNames.isEmpty()) {
+        if (!unloadedNode.isEmpty()) {
             String message = "Some Component are not loaded:\n";
-            for (int i = 0; i < unloadedNodeNames.size(); i++) {
-                message = message + unloadedNodeNames.get(i).getComponentName() + "\n";
+            for (int i = 0; i < unloadedNode.size(); i++) {
+                message = message + unloadedNode.get(i).getComponentName() + "\n";
             }
             if (!CommonsPlugin.isHeadless() && PlatformUI.isWorkbenchRunning()) {
                 MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning", message);
             }
         }
-        for (int i = 0; i < unloadedNodeNames.size(); i++) {
-            createDummyNode(unloadedNodeNames.get(i), nodesHashtable);
+        for (int i = 0; i < unloadedNode.size(); i++) {
+            createDummyNode(unloadedNode.get(i), nodesHashtable);
         }
     }
 
@@ -1494,15 +1494,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @throws PersistenceException PersistenceException
      */
     public void checkLoadNodes() throws PersistenceException {
-        if (unloadedNodeNames == null || unloadedNodeNames.isEmpty()) {
+        if (unloadedNode == null || unloadedNode.isEmpty()) {
             return;
         }
         String errorMessage = null;
-        if (unloadedNodeNames.size() == 1) {
-            errorMessage = Messages.getString("Process.component.notloaded", unloadedNodeNames.get(0)); //$NON-NLS-1$
+        if (unloadedNode.size() == 1) {
+            errorMessage = Messages.getString("Process.component.notloaded", unloadedNode.get(0)); //$NON-NLS-1$
         } else {
             StringBuilder curentName = new StringBuilder();
-            for (NodeType component : unloadedNodeNames) {
+            for (NodeType component : unloadedNode) {
                 curentName.append(component.getComponentName()).append(","); //$NON-NLS-1$
             }
             curentName.deleteCharAt(curentName.length() - 1);
@@ -3396,5 +3396,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
         }
         return false;
+    }
+
+    public List<NodeType> getUnloadedNode() {
+        return this.unloadedNode;
     }
 }
