@@ -22,14 +22,29 @@
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 			String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-%>
+			
+    		boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
 
+			if(uncompress){
+%>
+            }
+            nb_line_<%=cid%>+=fid_<%=cid %>.getRowNumber();
+		}
+        if(!((Object)(<%=filename %>) instanceof java.io.InputStream)){
+        	fid_<%=cid %>.close();
+        }
+        globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
+<%
+			}else{
+%>
             }
             if(!((Object)(<%=filename %>) instanceof java.io.InputStream)){
             	fid_<%=cid %>.close();
             }
             globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
+
 <%
+			}
 		}
 	}
 %>
@@ -45,10 +60,14 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
+    		boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
+
 %>
+
 
 				nb_line_<%=cid%>++;
 			}
+			<%if(uncompress){//compress%>}<%}%>
 			if(!(filename_<%=cid %> instanceof java.io.InputStream)){
 				csvReader<%=cid %>.close();
 			}

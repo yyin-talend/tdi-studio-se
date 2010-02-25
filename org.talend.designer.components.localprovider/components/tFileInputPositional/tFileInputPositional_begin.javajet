@@ -71,7 +71,9 @@
     		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);    		  
-    		
+			
+			boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
+			
     		if(("").equals(header)){
     			header = "0";
     		}
@@ -140,6 +142,25 @@ ends_<%=cid %>[<%=i %>] = ends_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i %>];
 %>
 Object filename_<%=cid %> = <%=filename %>;
 java.io.BufferedReader in_<%=cid %> = null;
+org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = null;
+<%
+		if(uncompress){
+%>
+java.util.zip.ZipInputStream zis_<%=cid %> = null;
+if(filename_<%=cid %> instanceof java.io.InputStream){
+	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
+}else{
+	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(filename_<%=cid %>.toString())));
+}
+java.util.zip.ZipEntry entry_<%=cid %> = null;
+while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
+	if(entry_<%=cid %>.isDirectory()){ //directory
+		continue;
+	}
+	in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(zis_<%=cid %>, <%=encoding %>));
+<%
+		}else{
+%>
 if(filename_<%=cid %> instanceof java.io.InputStream){
 	in_<%=cid %> = 
 			new java.io.BufferedReader(new java.io.InputStreamReader((java.io.InputStream)filename_<%=cid %>, <%=encoding %>));
@@ -147,7 +168,9 @@ if(filename_<%=cid %> instanceof java.io.InputStream){
 	in_<%=cid %> = 
 		new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()), <%=encoding %>));
 }
+
 <%
+		}
 			if(("").equals(rowSeparator) || ("\"\"").equals(rowSeparator) ){
 %>
 int rowLength_<%=cid %> = 0;
@@ -166,11 +189,11 @@ rowLength_<%=cid %> += <%=positions[i] %>;
         			}
 				}
 %>
-org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
+reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
 <%
 			}else{
 %>
-org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, <%=rowSeparator %>, <%=removeEmptyRow %>);
+reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, <%=rowSeparator %>, <%=removeEmptyRow %>);
 <%
 			}
 %>

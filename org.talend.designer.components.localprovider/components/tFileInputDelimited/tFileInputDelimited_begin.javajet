@@ -69,9 +69,36 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		String splitRecordStr = ElementParameterParser.getValue(node, "__SPLITRECORD__");
 		boolean splitRecord = (splitRecordStr!=null&&!("").equals(splitRecordStr))?("true").equals(splitRecordStr):false;
+		
+		boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
+		
+		if(uncompress){
+%>
+int nb_line_<%=cid%> = 0;
+
+Object filename_<%=cid %> = <%=filename %>;	
+java.util.zip.ZipInputStream zis_<%=cid %> = null;
+if(filename_<%=cid %> instanceof java.io.InputStream){
+	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
+}else{
+	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(filename_<%=cid %>.toString())));
+}
+java.util.zip.ZipEntry entry_<%=cid %> = null;
+org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
+
+while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
+	if(entry_<%=cid %>.isDirectory()){ //directory
+		continue;
+	}
+	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(zis_<%=cid %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+<%
+		}else{
 %>
 org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = 
 	new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+<%
+		}
+%>
 while (fid_<%=cid %>.nextRecord()) {
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -331,7 +358,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 		
-%>		
+		boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
+%>
 		int nb_line_<%=cid%> = 0;
 		int footer_<%=cid %> = <%= footer%>;
 		int totalLine<%=cid %> = 0;
@@ -358,14 +386,35 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		Object filename_<%=cid %> = <%=filename %>;		
 		com.csvreader.CsvReader csvReader<%=cid %> = null;
-		
+
+<%
+		if(uncompress){
+%>
+        java.util.zip.ZipInputStream zis_<%=cid %> = null;
+        if(filename_<%=cid %> instanceof java.io.InputStream){
+        	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
+        }else{
+        	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(filename_<%=cid %>.toString())));
+        }
+        java.util.zip.ZipEntry entry_<%=cid %> = null;
+        
+        while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
+        	if(entry_<%=cid %>.isDirectory()){ //directory
+        		continue;
+        	}
+        	csvReader<%=cid %>=new com.csvreader.CsvReader(zis_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+<%
+		}else{
+%>
 		if(filename_<%=cid %> instanceof java.io.InputStream){
 			csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
 		}else{
 			csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
                 	new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
         }
-                
+<%
+		}
+%>
 		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
         	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
         	

@@ -115,7 +115,16 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-    
+
+    <PARAMETER
+      NAME="UNCOMPRESS"
+      FIELD="CHECK"
+      SHOW="true"
+      NUM_ROW="50" 
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
