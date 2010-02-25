@@ -1063,6 +1063,13 @@
              id="org.talend.repository.model.migration.AddTransmitOriginalContextFortRunJobMigrationTask"
              name="Add a new checkbox &quot;transmit original context&quot; for tRunJob">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.MigrationTaskForIssue11632"
+             description="Add a new checkbox to control attribute option"
+             id="org.talend.repository.model.migration.MigrationTaskForIssue11632"
+             name="Add a new checkbox to control attribute option">
+       </projecttask>
    </extension>
    
    <extension
