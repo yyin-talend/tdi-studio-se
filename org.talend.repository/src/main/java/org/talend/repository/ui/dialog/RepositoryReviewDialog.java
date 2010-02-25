@@ -232,8 +232,9 @@ public class RepositoryReviewDialog extends Dialog {
 
         repositoryView.createPartControl(viewContainer);
         repositoryView.addFilter(textFilter);
+        ProjectRepositoryNode.refProjectBool = false;
         repositoryView.refresh();
-
+        ProjectRepositoryNode.refProjectBool = true;
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
         // open it on previous selected job if exists
         if (selectedNodeName != null) {
@@ -473,6 +474,7 @@ class FakeRepositoryView extends RepositoryView {
     }
 
     private RepositoryNode getInput() {
+        getViewer().expandAll();
         RepositoryContentProvider contentProvider = (RepositoryContentProvider) getViewer().getContentProvider();
         return typeProcessor.getInputRoot(contentProvider);
     }
@@ -630,19 +632,20 @@ class RepositoryTypeProcessor implements ITypeProcessor {
      * ggu Comment method "addReferencedProjectNodes".
      * 
      */
+    List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+
     private void addReferencedProjectNodes(RepositoryContentProvider contentProvider, RepositoryNode metadataNode) {
         if (contentProvider == null || metadataNode == null) {
             return;
         }
         // referenced project.
+        nodesList.removeAll(null);
         if (contentProvider.getReferenceProjectNode() != null) {
             List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
 
-                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
                 for (RepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
-
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
 
                     RepositoryNode refMetadataNode = getMetadataNode(refProject);
@@ -650,9 +653,30 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     if (refMetadataNode != null) {
                         newProject.getChildren().add(refMetadataNode);
                         nodesList.add(newProject);
+                        this.addSubRefProjectNodes(refProject);
                     }
                 }
                 metadataNode.getChildren().addAll(nodesList);
+            }
+        }
+    }
+
+    private void addSubRefProjectNodes(ProjectRepositoryNode subRefProject) {
+        if (subRefProject.getReferenceProjectNode() == null)
+            return;
+        List<RepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
+        if (refProjects != null && !refProjects.isEmpty()) {
+            for (RepositoryNode repositoryNode : refProjects) {
+                ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+                ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                RepositoryNode refMetadataNode = getMetadataNode(refProject);
+
+                if (refMetadataNode != null) {
+                    newProject.getChildren().add(refMetadataNode);
+                    nodesList.add(newProject);
+                    this.addSubRefProjectNodes(refProject);
+                }
             }
         }
     }
@@ -845,19 +869,21 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                 }
 
                 if (repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
-                    ConnectionItem connectionItem = (ConnectionItem) item;
-                    Connection connection = connectionItem.getConnection();
-                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
-                    if (repositoryType.contains(":")) { // database //$NON-NLS-1$
-                        // is
-                        // specified
-                        // //$NON-NLS-1$
-                        String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
-                        if (hidenTypeSelection) {
-                            return true;
-                        }
-                        if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
-                            return false;
+                    if (item instanceof ConnectionItem) {
+                        ConnectionItem connectionItem = (ConnectionItem) item;
+                        Connection connection = connectionItem.getConnection();
+                        String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
+                        if (repositoryType.contains(":")) { // database //$NON-NLS-1$
+                            // is
+                            // specified
+                            // //$NON-NLS-1$
+                            String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
+                            if (hidenTypeSelection) {
+                                return true;
+                            }
+                            if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
+                                return false;
+                            }
                         }
                     }
                 }

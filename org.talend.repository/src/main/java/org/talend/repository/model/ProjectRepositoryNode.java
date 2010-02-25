@@ -89,6 +89,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private boolean mergeRefProject;
 
+    public static boolean refProjectBool = false;
+
+    public static boolean refreshBool = false;
+
     private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     private org.talend.core.model.general.Project project;
@@ -544,10 +548,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         recBinNode);
             } else if (parent == refProject) {
                 if (!getMergeRefProject()) {
-                    try {
-                        (((ProxyRepositoryFactory) factory).getRepositoryFactoryFromProvider()).beforeLogon(newProject);
-                    } catch (LoginException e) {
-                        ExceptionHandler.process(e);
+                    if (refProjectBool == true) {
+                        try {
+                            (((ProxyRepositoryFactory) factory).getRepositoryFactoryFromProvider()).beforeLogon(newProject);
+                        } catch (LoginException e) {
+                            ExceptionHandler.process(e);
+                        }
                     }
                     handleReferenced(refProject);
                 }

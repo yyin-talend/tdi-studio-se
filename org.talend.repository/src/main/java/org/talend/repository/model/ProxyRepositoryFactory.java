@@ -284,7 +284,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (contextItems == null) {
             contextItems = new ArrayList<ContextItem>();
         }
-        for (Project p : projectManager.getReferencedProjects()) {
+        for (Project p : projectManager.getAllReferencedProjects()) {
             List<ContextItem> rContextItems = getContextItem(p);
             if (rContextItems != null) {
                 contextItems.addAll(rContextItems);
