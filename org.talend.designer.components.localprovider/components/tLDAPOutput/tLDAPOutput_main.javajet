@@ -20,6 +20,7 @@ imports="
 	String separatorText=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String dnColumnName = ElementParameterParser.getValue(node, "__DN_COLUMN_NAME__");
+	boolean useAttributeOptions = "true".equals(ElementParameterParser.getValue(node, "__USE_ATTRIBUTE_OPTIONS__"));
 	List<Map<String, String>> attributeOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ATTRIBUTE_OPTIONS__");
 	String separator = separatorText;
 	if(("\"|\"").equals(separatorText)){
@@ -94,7 +95,7 @@ imports="
 						ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
 <%
 					}else if(("UPDATA").equals(insertMode)){
-					if(attributeOptions.size() > 0){
+					if(useAttributeOptions && attributeOptions.size() > 0){
 					//7631: tLDAPOutput: Add a attributes options parameter 
 %>
 						List<javax.naming.directory.ModificationItem> mfItem_<%=cid%> = new java.util.ArrayList();
