@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
@@ -133,7 +134,11 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
     @Override
     public boolean performOk() {
         save();
-        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell(), 0) {
+        Shell activeShell = Display.getCurrent().getActiveShell();
+        if (activeShell == null) {
+            activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        }
+        ProgressDialog progressDialog = new ProgressDialog(activeShell, 0) {
 
             private IProgressMonitor monitorWrap;
 

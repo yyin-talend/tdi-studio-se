@@ -148,17 +148,18 @@ public class ElementParameter2ParameterType {
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
                 if (param != null) {
+                    String name = param.getName();
                     param.setContextMode(pType.isContextMode());
                     if (param.isReadOnly()
-                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
-                                    EParameterName.VERSION.getName()))) {
+                            && !(name.equals(EParameterName.UNIQUE_NAME.getName()) || name.equals(EParameterName.VERSION
+                                    .getName()))) {
                         continue; // if the parameter is read only, don't load
                         // it (this will prevent to overwrite the
                         // value)
                     }
                     String value = null;
-                    if (param.getName().equals("STATANDLOG_USE_PROJECT_SETTINGS") //$NON-NLS-1$
-                            || param.getName().equals("IMPLICITCONTEXT_USE_PROJECT_SETTINGS")) { //$NON-NLS-1$
+                    if (name.equals("STATANDLOG_USE_PROJECT_SETTINGS") //$NON-NLS-1$
+                            || name.equals("IMPLICITCONTEXT_USE_PROJECT_SETTINGS")) { //$NON-NLS-1$
                         value = param.getValue().toString();
                     } else {
                         value = pType.getValue();
@@ -184,7 +185,7 @@ public class ElementParameter2ParameterType {
                                 elemParam.setPropertyValue(pType.getName(), param.getListItemsValue()[index]);
                             }
                         }
-                        if (!valueSet) {
+                        if (!valueSet) {                    
                             elemParam.setPropertyValue(pType.getName(), value);
                         }
                     } else if (param.getField().equals(EParameterFieldType.TABLE)) {

@@ -478,7 +478,7 @@ public class ProjectSettingManager extends Utils {
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.EXTRA);
         param.setListItemsDisplayName(StatsAndLogsConstants.DISPLAY_DBNAMES[languageType]);
-        param.setListItemsValue(JobSettingsConstants.DB_OUTPUT_COMPONENTS[languageType]);
+        param.setListItemsValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType]);
         param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
         param.setListItemsDisplayCodeName(StatsAndLogsConstants.CODE_LIST[languageType]);
         param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.DB_TYPE)));
@@ -489,7 +489,7 @@ public class ProjectSettingManager extends Utils {
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
-        // dbVersion for Oracle
+        // dbVersion
         final String dbVersionName = JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName());
         param = new ElementParameter(elem);
         param.setName(dbVersionName);
@@ -504,25 +504,8 @@ public class ProjectSettingManager extends Utils {
         param.setNumRow(42);
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
-        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " =='ACCESS')"); //$NON-NLS-1$ //$NON-NLS-2$
-        param.setGroup(IMPLICIT_GROUP);
-        paramList.add(param);
-
-        // dbVersion for MySQL for bug 11487
-        final String dbVersionNameForMySQL = JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName());
-        param = new ElementParameter(elem);
-        param.setName(dbVersionNameForMySQL);
-        param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.DB_VERSION)));
-        param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setCategory(EComponentCategory.EXTRA);
-        param.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
-        param.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
-        param.setListItemsDisplayCodeName(StatsAndLogsConstants.MYSQL_VERSION_CODE);
-        param.setNumRow(42);
-        param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
-        param.setRequired(true);
-        param.setShowIf(dbCondition + " and (" + dbTypeName + " =='MYSQL')"); //$NON-NLS-1$ //$NON-NLS-2$
+        param.setShowIf(dbCondition
+                + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " =='ACCESS' or " + dbTypeName + " =='MYSQL')"); //$NON-NLS-1$ //$NON-NLS-2$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
