@@ -18,6 +18,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -41,7 +42,9 @@ public class RefreshAction extends Action {
     }
 
     public void run() {
+        ProjectRepositoryNode.refProjectBool = true;
         view.refresh();
+        ProjectRepositoryNode.refProjectBool = false;
         // qli modified to fix the bug 6659.
         RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.ROUTINES);
         RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.JOBLET);
