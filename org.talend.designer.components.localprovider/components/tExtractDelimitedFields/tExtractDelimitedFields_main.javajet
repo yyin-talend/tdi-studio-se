@@ -111,9 +111,6 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 	<%=outConn.getName() %> = new <%=outConn.getName() %>Struct();
 <%
 	for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
-		if(outputCol.getLabel().equals(field)){
-			continue;
-		}
 		boolean isOirginalColumn = false;
 		for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
