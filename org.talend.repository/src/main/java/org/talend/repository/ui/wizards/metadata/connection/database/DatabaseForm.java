@@ -1227,7 +1227,8 @@ public class DatabaseForm extends AbstractForm {
         dbVersionCombo.removeAll();
         dbVersionCombo.setHideWidgets(true);
         if (dbType.equals(EDatabaseConnTemplate.ORACLEFORSID.getDBDisplayName())
-                || dbType.equals(EDatabaseConnTemplate.ORACLESN.getDBDisplayName())) {
+                || dbType.equals(EDatabaseConnTemplate.ORACLESN.getDBDisplayName())
+                || dbType.equals(EDatabaseConnTemplate.ORACLE_OCI.getDBDisplayName())) {
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.setHideWidgets(!isOracle);
         } else if (dbType.equals(EDatabaseConnTemplate.AS400.getDBDisplayName())) {
@@ -1585,8 +1586,11 @@ public class DatabaseForm extends AbstractForm {
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.service_name")); //$NON-NLS-1$
                 sidOrDatabaseText.setLabelWidth(65);
                 sidOrDatabase = EDBParamName.ServiceName;
-            } else {
+            } else if (EDatabaseConnTemplate.ORACLEFORSID.getDBDisplayName().equals(getConnection().getDatabaseType())) {
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.sid")); //$NON-NLS-1$
+                sidOrDatabase = EDBParamName.Sid;
+            } else if (EDatabaseConnTemplate.ORACLE_OCI.getDBDisplayName().equals(getConnection().getDatabaseType())) {
+                sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.local_service_name")); //$NON-NLS-1$
                 sidOrDatabase = EDBParamName.Sid;
             }
         } else {
@@ -1751,7 +1755,8 @@ public class DatabaseForm extends AbstractForm {
             return false;
         }
         EDatabaseConnTemplate template = EDatabaseConnTemplate.indexOfTemplate(dbTypeCombo.getText());
-        return template != null && (template == EDatabaseConnTemplate.ORACLEFORSID || template == EDatabaseConnTemplate.ORACLESN);
+        return template != null
+                && (template == EDatabaseConnTemplate.ORACLEFORSID || template == EDatabaseConnTemplate.ORACLESN || template == EDatabaseConnTemplate.ORACLE_OCI);
     }
 
     /**
@@ -1777,7 +1782,7 @@ public class DatabaseForm extends AbstractForm {
      * @return
      */
     private boolean asMySQLVersionEnable() {
-       // for bug 11487
+        // for bug 11487
         if (dbTypeCombo == null) {
             return false;
         }

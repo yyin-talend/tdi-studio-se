@@ -110,7 +110,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                     continue;
                 }
                 if (data != null && data.equals(combo.getData(PARAMETER_NAME))) {
-                    if (!elem.getPropertyValue(name).equals(((CCombo) ctrl).getText())) {
+                    if (!((CCombo) ctrl).getText().equals(elem.getPropertyValue(name))) {
 
                         String value = new String(""); //$NON-NLS-1$
                         for (int i = 0; i < elem.getElementParameters().size(); i++) {

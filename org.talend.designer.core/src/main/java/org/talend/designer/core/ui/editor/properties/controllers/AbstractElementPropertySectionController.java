@@ -1236,9 +1236,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String port = getValueFromRepositoryName(element, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
-        if (type.equals("Oracle OCI")) {
-            String localServiceName = (String) elem.getPropertyValue(EParameterName.LOCAL_SERVICE_NAME.getName());
-            // String localServiceName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
+
+        if (type.equals(EDatabaseTypeName.ORACLE_OCI.getXmlName()) || type.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())) {
+            String localServiceName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
+            if (localServiceName == null || "".equals(localServiceName) || "\"\"".equals(localServiceName)) {
+                localServiceName = (String) elem.getPropertyValue(EParameterName.LOCAL_SERVICE_NAME.getName());
+            }
+            // String localServiceName = (String) elem.getPropertyValue(EParameterName.LOCAL_SERVICE_NAME.getName());
             connParameters.setLocalServiceName(localServiceName);
         }
 

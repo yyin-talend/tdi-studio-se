@@ -33,6 +33,7 @@ public class NotReallyNeedSchemaDBS {
             needSchemaDBNames.add(EDatabaseTypeName.MSSQL.getProduct());
             needSchemaDBNames.add(EDatabaseTypeName.ORACLEFORSID.getProduct());
             needSchemaDBNames.add(EDatabaseTypeName.ORACLESN.getProduct());
+            needSchemaDBNames.add(EDatabaseTypeName.ORACLE_OCI.getProduct());
         } catch (Exception e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);

@@ -1011,6 +1011,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             } else {
                 node.setPropertyValue("CONNECTION_TYPE", "ORACLE_SERVICE_NAME");
             }
+        } else if (name == EDatabaseComponentName.DBORACLEOCI) {
+            IElementParameter p = node.getElementParameter("CONNECTION_TYPE"); //$NON-NLS-1$
+            p.setValue(p.getListItemsValue()[2]);
         }
     }
 

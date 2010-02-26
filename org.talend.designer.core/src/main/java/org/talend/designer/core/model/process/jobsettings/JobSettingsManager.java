@@ -376,8 +376,9 @@ public class JobSettingsManager {
             param.setNumRow(42);
             param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
             param.setRequired(true);
-            param.setShowIf(dbCondition
-                    + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " =='ACCESS' or " + dbTypeName + " =='MYSQL') "); //$NON-NLS-1$ //$NON-NLS-2$ or " + dbTypeName + " =='MYSQL'
+            param
+                    .setShowIf(dbCondition
+                            + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " == 'OCLE_OCI' or " + dbTypeName + " =='ACCESS' or " + dbTypeName + " =='MYSQL') "); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$//$NON-NLS-5$   
             param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }
@@ -391,7 +392,8 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
-        String dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+        String dbCon = dbTypeName
+                + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + "!='OCLE_OCI'"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$ 
         param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
@@ -405,7 +407,8 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        dbCon = dbTypeName
+                + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'" + " and " + dbTypeName + "!='OCLE_OCI'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$//$NON-NLS-6$//$NON-NLS-7$ 
         param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
@@ -419,8 +422,23 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        dbCon = dbTypeName
+                + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'" + " and " + dbTypeName + "!='OCLE_OCI'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$//$NON-NLS-6$//$NON-NLS-7$ 
         param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // local service name
+        param = new ElementParameter(process);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.LOCAL_SERVICE_NAME.getName()));
+        param.setValue(StatsAndLogsManager.addQuotes(""));
+        param.setDisplayName(EParameterName.LOCAL_SERVICE_NAME.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(44);
+        param.setRepositoryValue("SID"); //$NON-NLS-1$
+        dbCon = dbTypeName + " =='OCLE_OCI' ";
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ 
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -452,7 +470,7 @@ public class JobSettingsManager {
         param.setNumRow(44);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
         final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
-                + " =='POSTGRESQL'"); //$NON-NLS-1$
+                + " =='POSTGRESQL' or" + dbTypeName + " =='OCLE_OCI'"); //$NON-NLS-1$//$NON-NLS-2$
         param.setShowIf(schemaCondition + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
