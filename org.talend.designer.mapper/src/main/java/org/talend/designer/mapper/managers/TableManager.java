@@ -68,7 +68,12 @@ public class TableManager {
             AbstractInOutTable data = (AbstractInOutTable) tableData;
             metadataTableToAbstractDataMapTable.put(data.getMetadataTable(), data);
         }
-        getMatchedList(tableData).add(tableData);
+        if (tableData.getMapperManager() != null)
+            if (tableData.getMapperManager().ERROR_REJECT.equals(tableData.getName())) {
+                getMatchedList(tableData).add(0, tableData);
+            } else {
+                getMatchedList(tableData).add(tableData);
+            }
         if (view.getZone() == Zone.INPUTS || view.getZone() == Zone.OUTPUTS) {
             swtTableToView.put(view.getExpressionFilterText(), view);
         }

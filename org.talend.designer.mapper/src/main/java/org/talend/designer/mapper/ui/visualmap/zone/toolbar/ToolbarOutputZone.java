@@ -147,9 +147,12 @@ public class ToolbarOutputZone extends ToolbarZone {
                 Image image = null;
                 if (dieOnError.getSelection()) {
                     image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
+                    getMapperManager().removeRejectOutput();
                 } else {
-
                     image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
+                    if (!getMapperManager().hasRejectOutput(getMapperManager().getOutputTables())) {
+                        getMapperManager().addRejectOutput();
+                    }
                 }
                 dieOnError.setImage(image);
                 getMapperManager().setDieOnError(dieOnError.getSelection());

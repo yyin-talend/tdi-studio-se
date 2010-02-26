@@ -74,6 +74,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.ui.metadata.dialog.CustomTableManager;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.abstractmap.AbstractMapComponent;
@@ -355,6 +356,12 @@ public class UIManager extends AbstractUIManager {
                         dataMapTableViewer.getTable().getSelectionIndices());
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
 
+                // reject table readonly
+                if (dataMapTableView.getDataMapTable() != null
+                        && mapperManager.ERROR_REJECT.equals(dataMapTableView.getDataMapTable().getName())) {
+                    CustomTableManager.addCustomManagementToTable(getOutputMetaEditorView(), true);
+                }
+
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (IDataMapTable table : tables) {
                     DataMapTableView otherDataMapTableView = mapperManager.retrieveAbstractDataMapTableView(table);
@@ -401,7 +408,8 @@ public class UIManager extends AbstractUIManager {
             toolbar.setEnabledMinimizeTablesButton(mapperManager.getUiManager().getInputsTablesView().size() > 0);
         } else if (currentZone == Zone.OUTPUTS) {
             toolbar = getOutputsZone().getToolbar();
-            ((ToolbarOutputZone) toolbar).setEnabledRemoveTableButton(currentSelectedOutputTableView != null);
+            ((ToolbarOutputZone) toolbar).setEnabledRemoveTableButton(currentSelectedOutputTableView != null
+                    && !mapperManager.ERROR_REJECT.equals(currentSelectedOutputTableView.getDataMapTable().getName()));
             toolbar.setEnabledMinimizeTablesButton(mapperManager.getUiManager().getOutputsTablesView().size() > 0);
         }
         toolbar.setEnabledMoveTableButton(true, isTableViewMoveable(currentZone, true));

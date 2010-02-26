@@ -15,6 +15,7 @@ package org.talend.designer.mapper.managers;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -24,17 +25,24 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
+import org.talend.core.ui.metadata.dialog.CustomTableManager;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.abstractmap.managers.AbstractMapperManager;
 import org.talend.designer.abstractmap.managers.ILinkManager;
@@ -543,6 +551,90 @@ public class MapperManager extends AbstractMapperManager {
         uiManager.refreshBackground(true, false);
         tablesZoneViewOutputs.layout();
         uiManager.selectDataMapTableView(dataMapTableView, true, false);
+    }
+
+    public void addRejectOutput() {
+        String tableName = ERROR_REJECT;
+
+        IProcess process = getAbstractMapComponent().getProcess();
+        if (process instanceof IProcess2) {
+            ((IProcess2) process).addUniqueConnectionName(tableName, false);
+        }
+        MetadataTable metadataTable = new MetadataTable();
+        metadataTable.setTableName(tableName);
+        MetadataColumn errorMessageCol = new MetadataColumn();
+        errorMessageCol.setLabel("errorMessage");
+        errorMessageCol.setTalendType(CorePlugin.getDefault().getPreferenceStore().getString(
+                MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
+        errorMessageCol.setNullable(true);
+        errorMessageCol.setOriginalDbColumnName("errorMessage");
+        errorMessageCol.setReadOnly(true);
+        errorMessageCol.setCustom(true);
+        metadataTable.getListColumns().add(errorMessageCol);
+
+        MetadataColumn errorStackTrace = new MetadataColumn();
+        errorStackTrace.setLabel("errorStackTrace");
+        errorStackTrace.setTalendType(CorePlugin.getDefault().getPreferenceStore().getString(
+                MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
+        errorStackTrace.setNullable(true);
+        errorStackTrace.setOriginalDbColumnName("errorStackTrace");
+        errorStackTrace.setReadOnly(true);
+        errorStackTrace.setCustom(false);
+        metadataTable.getListColumns().add(errorStackTrace);
+
+        OutputTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);
+        abstractDataMapTable.initFromExternalData(null);
+        TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
+        DataMapTableView rejectDataMapTableView = uiManager.createNewOutputTableView(null, abstractDataMapTable,
+                tablesZoneViewOutputs);
+        tablesZoneViewOutputs.setSize(tablesZoneViewOutputs.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+        List<DataMapTableView> outputsTablesView = uiManager.getOutputsTablesView();
+        int sizeList = outputsTablesView.size();
+        for (int i = 0; i < sizeList; i++) {
+            if (i + 1 < sizeList) {
+                FormData formData = (FormData) outputsTablesView.get(i + 1).getLayoutData();
+                formData.top = new FormAttachment(outputsTablesView.get(i));
+            }
+
+        }
+        CustomTableManager.addCustomManagementToTable(uiManager.getOutputMetaEditorView(), true);
+        tablesZoneViewOutputs.setSize(tablesZoneViewOutputs.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        tablesZoneViewOutputs.layout();
+        uiManager.moveOutputScrollBarZoneToMax();
+        uiManager.refreshBackground(true, false);
+        uiManager.selectDataMapTableView(rejectDataMapTableView, true, false);
+    }
+
+    public boolean hasRejectOutput(List<OutputTable> tables) {
+        if (tables == null || tables.size() == 0) {
+            return false;
+        }
+        OutputTable outputTable = tables.get(0);
+        if (ERROR_REJECT.equals(outputTable.getName())) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public void removeRejectOutput() {
+        List<DataMapTableView> outputsTablesView = uiManager.getOutputsTablesView();
+        Iterator<DataMapTableView> iterator = outputsTablesView.iterator();
+        DataMapTableView toRemove = null;
+        while (iterator.hasNext()) {
+            toRemove = iterator.next();
+            if (ERROR_REJECT.equals(toRemove.getDataMapTable().getName())) {
+                iterator.remove();
+                break;
+            }
+        }
+        if (toRemove != null) {
+            uiManager.removeOutputTableView(toRemove);
+            uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
+            IProcess process = getAbstractMapComponent().getProcess();
+            process.removeUniqueConnectionName(ERROR_REJECT);
+        }
     }
 
     public void removeSelectedOutput() {

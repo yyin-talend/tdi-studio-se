@@ -24,6 +24,8 @@ import org.talend.designer.abstractmap.AbstractMapComponent;
  */
 public abstract class AbstractMapperManager {
 
+    public static final String ERROR_REJECT = "Error Reject";//$NON-NLS-1$
+
     private AbstractMapComponent mapperComponent;
 
     private boolean mapperChanged;

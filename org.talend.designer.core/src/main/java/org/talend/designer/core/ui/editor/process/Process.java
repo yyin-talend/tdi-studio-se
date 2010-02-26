@@ -2422,8 +2422,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     public void addUniqueConnectionName(String uniqueConnectionName) {
+        addUniqueConnectionName(uniqueConnectionName, true);
+    }
+
+    // for tmap to add a "Error Reject"
+    public void addUniqueConnectionName(String uniqueConnectionName, boolean needValidate) {
         if (uniqueConnectionName != null) {
-            if (checkValidConnectionName(uniqueConnectionName)) {
+            if (!needValidate || checkValidConnectionName(uniqueConnectionName)) {
                 uniqueConnectionNameList.add(uniqueConnectionName);
             } else {
                 throw new IllegalArgumentException("The name of the connection is not valid: " + uniqueConnectionName); //$NON-NLS-1$
