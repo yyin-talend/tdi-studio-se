@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -56,8 +57,11 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.routines.RoutineLibraryMananger;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.ITalendSynchronizer;
+import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
+import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.RepositoryPlugin;
@@ -426,7 +430,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         folderHelper.createFolder("code/routines/system"); //$NON-NLS-1$
 
         List<IRepositoryObject> repositoryObjects = getAll(project, ERepositoryObjectType.ROUTINES, false, false);
-
+        Map<String, List<String>> routineAndJars = RoutineLibraryMananger.getInstance().getRoutineAndJars();
         for (URL url : routines) {
             String[] fragments = url.toString().split("/"); //$NON-NLS-1$
             String label = fragments[fragments.length - 1];
@@ -445,7 +449,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 }
             }
             if (existingItem == null) {
-                createRoutine(url, path, routineLabel);
+                createRoutine(url, path, routineLabel, routineAndJars.get(routineLabel));
             } else {
                 updateRoutine(url, existingItem);
             }
@@ -501,7 +505,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @param url
      * @throws PersistenceException
      */
-    private void createRoutine(URL url, IPath path, String label) throws PersistenceException {
+    private void createRoutine(URL url, IPath path, String label, List<String> neededJars) throws PersistenceException {
         if (url == null) {
             throw new IllegalArgumentException();
         }
@@ -518,10 +522,24 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             stream.close();
             byteArray.setInnerContent(innerContent);
 
+            String basePath = System.getProperty("user.dir") + File.separator + "plugins";
+
             RoutineItem routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
             routineItem.setProperty(property);
             routineItem.setContent(byteArray);
             routineItem.setBuiltIn(true);
+            if (neededJars != null) {
+                for (String name : neededJars) {
+                    IMPORTType type = ComponentFactory.eINSTANCE.createIMPORTType();
+                    type.setMESSAGE("");
+                    type.setNAME(label);
+                    type.setREQUIRED(true);
+                    type.setMODULE(name);
+                    type.setUrlPath(basePath + File.separator + name);
+                    routineItem.getImports().add(type);
+                }
+            }
+
             if (!routineItem.getProperty().getLabel().equals(ITalendSynchronizer.TEMPLATE)) {
                 create(getRepositoryContext().getProject(), routineItem, path);
             }
