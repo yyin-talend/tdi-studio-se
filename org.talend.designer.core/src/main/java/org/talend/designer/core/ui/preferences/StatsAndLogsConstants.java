@@ -46,7 +46,7 @@ public class StatsAndLogsConstants {
 
     private static final String SYBASE = "SYBASE"; //$NON-NLS-1$
 
-    private static final String SQL_SERVER = "MSSQL"; //$NON-NLS-1$
+    private static final String SQL_SERVER = "SQL_SERVER"; //$NON-NLS-1$
 
     private static final String INGRES = "INGRES"; //$NON-NLS-1$
 

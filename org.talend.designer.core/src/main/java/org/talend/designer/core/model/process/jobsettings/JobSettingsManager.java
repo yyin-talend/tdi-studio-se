@@ -453,7 +453,7 @@ public class JobSettingsManager {
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(44);
             param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
-            dbCon = dbTypeName + " == 'MSSQL'" + " or " + dbTypeName + " == 'MYSQL'" + " or " + dbTypeName //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            dbCon = dbTypeName + " == 'SQL_SERVER'" + " or " + dbTypeName + " == 'MYSQL'" + " or " + dbTypeName //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     + " == 'INFORMIX'"; //$NON-NLS-1$
 
             param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ 
@@ -470,7 +470,7 @@ public class JobSettingsManager {
         param.setNumRow(44);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
         final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
-                + " =='POSTGRESQL' or" + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='MSSQL'"); //$NON-NLS-1$//$NON-NLS-2$
+                + " =='POSTGRESQL' or" + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='SQL_SERVER'"); //$NON-NLS-1$//$NON-NLS-2$
         param.setShowIf(schemaCondition + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
