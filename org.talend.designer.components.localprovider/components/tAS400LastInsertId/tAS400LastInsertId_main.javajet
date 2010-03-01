@@ -44,7 +44,7 @@ if(incomingConns != null && incomingConns.size() > 0 && incomingConns.get(0) != 
 	IConnection connection = incomingConns.get(0);
 	previousNode = connection.getSource();
 	previousCID = previousNode.getUniqueName();
-	dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+	dataAction = ElementParameterParser.getValue(previousNode,"__DATA_ACTION__");
 }
 //end feature9001 get the ouput cid
 if ( previousNode != null && ("INSERT").equals(dataAction)) {
