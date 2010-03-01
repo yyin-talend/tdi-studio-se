@@ -264,7 +264,17 @@ hc_<%=cid %>.setInstanceFollowRedirects(true);
 hc_<%=cid %>.setUseCaches(false);
 hc_<%=cid %>.setRequestProperty("Content-Type", "text/xml");
 hc_<%=cid %>.connect();
-//hc_<%=cid %>.getResponseCode();
+int responseCode_<%=cid %> = hc_<%=cid %>.getResponseCode();
+String responseMsg_<%=cid %> = hc_<%=cid %>.getResponseMessage();
+//ResponseCode
+if(responseCode_<%=cid %> == 401){
+	System.out.println("Server returned HTTP response code: 401, response message: "+ responseMsg_<%=cid %> +". Entity " + entity_<%=cid %> + " is not readable by user \"" + login_<%=cid %> + "\"");	
+}else if(responseCode_<%=cid %> == 500){
+	System.out.println("Server returned HTTP response code: 500, response message: "+ responseMsg_<%=cid %> +". The server encountered an unexpected condition which prevented it from fulfilling the request.");
+}else if(responseCode_<%=cid %> != 200){
+	System.out.println("Server returned HTTP response code: " + responseCode_<%=cid %> + ", response message: "+ responseMsg_<%=cid %> + ".");
+}else{
+
 //hc_<%=cid %>.getContentType();
 final java.io.InputStream is_<%=cid %> = hc_<%=cid %>.getInputStream();
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
