@@ -164,7 +164,7 @@ if(columnList != null && columnList.size() > 0) {
 	if(("INSERT").equals(dataAction)) {
 	    %>
 	    String insert_<%=cid%> = "INSERT INTO " + <%=table%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>, java.sql.Statement.RETURN_GENERATED_KEYS);
 	    <%
 	} else if (("UPDATE").equals(dataAction)) {
 	    %>
