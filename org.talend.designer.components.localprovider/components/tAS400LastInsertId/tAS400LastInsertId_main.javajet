@@ -39,37 +39,44 @@ if(incomingConns != null && incomingConns.size() > 0) {
 //feature9001 get the ouput cid
 INode previousNode = null;
 String previousCID = null;
+String dataAction = null;
 if(incomingConns != null && incomingConns.size() > 0 && incomingConns.get(0) != null) {
 	IConnection connection = incomingConns.get(0);
 	previousNode = connection.getSource();
 	previousCID = previousNode.getUniqueName();
+	dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 }
 //end feature9001 get the ouput cid
-
-List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-if(outgoingConns != null && outgoingConns.size() > 0) {
-    for(IConnection outgoingConn : outgoingConns) {
-        if(outgoingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-            IMetadataTable outputMetadataTable = outgoingConn.getMetadataTable();
-            List<IMetadataColumn> outputSchema = outputMetadataTable.getListColumns();
-            if(outputSchema != null && outputSchema.size() > 0) {
-                for(IMetadataColumn column : outputSchema) {
-                    if(incomingColumns.contains(column.getLabel())) {
-                        %>
-                        <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-                        <%
-                    }
-                }
-                %>
-                java.sql.ResultSet rs_<%=cid %> = pstmt_<%=previousCID %>.getGeneratedKeys();
-                if(rs_<%=cid %>.next()) {
-                    <%=outgoingConn.getName() %>.last_insert_id = rs_<%=cid %>.getInt(1);
-                }
-                nb_line_<%=cid%>++;
-                <%
-            }
-        }
-    }
+if ( previousNode != null && ("INSERT").equals(dataAction)) {
+	List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+	if(outgoingConns != null && outgoingConns.size() > 0) {
+	    for(IConnection outgoingConn : outgoingConns) {
+	        if(outgoingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+	            IMetadataTable outputMetadataTable = outgoingConn.getMetadataTable();
+	            List<IMetadataColumn> outputSchema = outputMetadataTable.getListColumns();
+	            if(outputSchema != null && outputSchema.size() > 0) {
+	                for(IMetadataColumn column : outputSchema) {
+	                    if(incomingColumns.contains(column.getLabel())) {
+	                        %>
+	                        <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+	                        <%
+	                    }
+	                }
+	                %>
+	                java.sql.ResultSet rs_<%=cid %> = pstmt_<%=previousCID %>.getGeneratedKeys();
+	                if(rs_<%=cid %>.next()) {
+	                    <%=outgoingConn.getName() %>.last_insert_id = rs_<%=cid %>.getInt(1);
+	                }
+	                nb_line_<%=cid%>++;
+	                <%
+	            }
+	        }
+	    }
+	}
+} else {
+%>
+	// when tAS400Output Action on data is Insert this component is active.
+<%
 }
 %>
 
