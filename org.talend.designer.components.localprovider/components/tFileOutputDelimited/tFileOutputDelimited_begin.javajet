@@ -17,6 +17,10 @@ String cid = node.getUniqueName();
 boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
 String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
+
+String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
+boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
+			
 if(!useStream){
 %>
 String fileName_<%=cid%> = (new java.io.File(<%=fileName%>)).getAbsolutePath().replace("\\","/");
@@ -149,6 +153,24 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     			
     			if(isIncludeHeader){
     		    %>
+				<%
+					if(codeGenArgument.getIsRunInMultiThread()){
+				%>
+				synchronized (multiThreadLockWrite) {
+				<%
+					}
+					if (codeGenArgument.subTreeContainsParallelIterate()) {
+				%>
+				synchronized (lockWrite) {
+		        <% 
+		        	}
+		        	if (isParallelize) {
+				%>
+				Object[] pLockWrite = (Object[])globalMap.get("PARALLEL_LOCK_WRITE");
+				synchronized (pLockWrite) {
+				<% 
+					}
+		        %>
     		    if(file<%=cid%>.length()==0)  
     		    {
     		        <%		
@@ -167,7 +189,25 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	    		        }
     		        %>
     		        out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+    		        out<%=cid %>.flush();
     		    }
+		        <% 
+		        	if (isParallelize) {
+				%>
+				} 
+		        <%
+		        	}
+					if (codeGenArgument.subTreeContainsParallelIterate()) {
+				%>
+				} 
+		        <%
+		        	}
+		        	if(codeGenArgument.getIsRunInMultiThread()){
+				%>
+				}
+				<%
+					}
+		        %>
 <%
     			}
 
@@ -339,25 +379,27 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     	    %>
     	    String[] headColu<%=cid%> = new String[<%=sizeColumns%>];
     	    <% 		
-	    	    if(isIncludeHeader && !isAppend)
-	    	    {
-	    	        for(int i = 0; i < sizeColumns; i++)
-	        		{
-	        			IMetadataColumn column = columns.get(i);
-        			%>
-       				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
-       				<%
-	        		}
-    	        %>
-        		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
-        			<%if(isInRowMode){%>
-        		out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
-                strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
-        			<%}
-	    	    }
-	    	    if(isIncludeHeader && isAppend)
+	    	    if(isIncludeHeader)
 	    	    {
     	        %>		   
+			<%
+				if(codeGenArgument.getIsRunInMultiThread()){
+			%>
+			synchronized (multiThreadLockWrite) {
+			<%
+				}
+				if (codeGenArgument.subTreeContainsParallelIterate()) {
+			%>
+			synchronized (lockWrite) {
+	        <% 
+	        	}
+	        	if (isParallelize) {
+			%>
+			Object[] pLockWrite = (Object[])globalMap.get("PARALLEL_LOCK_WRITE");
+			synchronized (pLockWrite) {
+			<% 
+				}
+	        %>
     	        if(file_<%=cid%>.length()==0)  
     	        {
     	            <%			
@@ -370,12 +412,30 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
          				}
     	            %>	 
     	            CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);
+    	            CsvWriter<%=cid%>.flush();
     	            	<%if(isInRowMode){%>
     	            out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+    	            out<%=cid%>.flush();
                 	strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length()); 	
                 		<%}%>
     	        }
-     
+	        <% 
+	        	if (isParallelize) {
+			%>
+			} 
+	        <%
+	        	}
+				if (codeGenArgument.subTreeContainsParallelIterate()) {
+			%>
+			} 
+	        <%
+	        	}
+	        	if(codeGenArgument.getIsRunInMultiThread()){
+			%>
+			}
+			<%
+				}
+	        %>
 <%		  
 	    	    }
 	    	}else{
