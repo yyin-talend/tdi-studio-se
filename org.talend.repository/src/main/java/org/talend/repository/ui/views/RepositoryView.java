@@ -29,6 +29,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -49,9 +50,19 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -80,6 +91,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
@@ -143,6 +155,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static ProjectRepositoryNode root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
+    private static Image refreshImange = ImageProvider.getImageDesc(EImage.REFRESH_ICON).createImage();
+
+    private static Image refreshImangeUsed = ImageProvider.getImageDesc(EImage.REFRESH_WITH_BGCOLOR_ICON).createImage();
+
+    private static Image filterImange = ImageProvider.getImageDesc(EImage.FILTER_ICON).createImage();
+
+    private static Image filterImangeUsed = ImageProvider.getImageDesc(EImage.FILTER_USED_ICON).createImage();
+
+    private IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
+
     private List<ITreeContextualAction> contextualsActions;
 
     private static boolean codeGenerationEngineInitialised;
@@ -151,11 +173,17 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private Action refreshAction;
 
-    private Action repositoryFilterAction;
+    private RepositoryFilterAction repositoryFilterAction;
 
     private Listener dragDetectListener;
 
     private MenuManager rootMenu = null;
+
+    private Label refreshBtn;
+
+    private Label filterBtn;
+
+    private boolean useFilter = false;
 
     public RepositoryView() {
     }
@@ -209,7 +237,18 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     @Override
     public void createPartControl(Composite parent) {
-        viewer = createTreeViewer(parent);
+        Composite comp = new Composite(parent, SWT.NULL);
+        GridLayout layout = new GridLayout();
+        layout.horizontalSpacing = 0;
+        layout.marginWidth = 0;
+        // layout.verticalSpacing = 0;
+        comp.setLayout(layout);
+        comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+        makeActions();
+        createActionComposite(comp);
+
+        viewer = createTreeViewer(comp);
+        viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         if (viewer instanceof ITreeViewerListener) {
             viewer.addTreeListener((ITreeViewerListener) viewer);
         }
@@ -248,9 +287,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             }
         });
         createTreeTooltip(viewer.getTree());
-        makeActions();
+
         hookContextMenu();
-        contributeToActionBars();
+        // contributeToActionBars();
         initDragAndDrop();
         hookDoubleClickAction();
 
@@ -338,12 +377,83 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         }
     }
 
+    public void createActionComposite(Composite parent) {
+        useFilter = preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER);
+        Composite toolbar = new Composite(parent, SWT.NONE);
+        toolbar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        toolbar.setLayout(new FormLayout());
+        refreshBtn = new Label(toolbar, SWT.NONE);
+        refreshBtn.setImage(refreshImange);
+        refreshBtn.setToolTipText("refresh");
+
+        filterBtn = new Label(toolbar, SWT.NONE);
+        filterBtn.setImage(filterImange);
+        filterBtn.setToolTipText("Filters..." + "\n" + "Right click to set up");
+
+        FormData thisFormData = new FormData();
+        thisFormData.left = new FormAttachment(100, -30);
+        // thisFormData.right = new FormAttachment(10, 30);
+        thisFormData.top = new FormAttachment(0, 0);
+        thisFormData.bottom = new FormAttachment(100, -10);
+
+        filterBtn.setLayoutData(thisFormData);
+
+        thisFormData = new FormData();
+        thisFormData.right = new FormAttachment(filterBtn, -2);
+        thisFormData.top = new FormAttachment(0, 0);
+
+        refreshBtn.setLayoutData(thisFormData);
+        addListeners();
+    }
+
+    private void addListeners() {
+        refreshBtn.addMouseTrackListener(new RepositoryMouseTrackListener());
+        refreshBtn.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseUp(MouseEvent e) {
+                if (refreshAction != null) {
+                    refreshAction.run();
+                }
+            }
+        });
+
+        filterBtn.addMouseTrackListener(new RepositoryMouseTrackListener());
+        filterBtn.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseUp(MouseEvent e) {
+                // right click
+                if (repositoryFilterAction != null) {
+                    if (e.button == 3) {
+                        repositoryFilterAction.openSetupDialog();
+                    } else {
+                        useFilter = !useFilter;
+                        preferenceStore.setValue(IRepositoryPrefConstants.USE_FILTER, useFilter);
+                        repositoryFilterAction.run();
+                        if (useFilter) {
+                            filterBtn.setImage(filterImangeUsed);
+                            filterBtn.setSize(new Point(18, 18));
+                        } else {
+                            filterBtn.setImage(filterImange);
+                        }
+                    }
+                }
+
+            }
+
+        });
+    }
+
     public void addFilters() {
         // filter by node : filter stable talend elements
         viewer.addFilter(new ViewerFilter() {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
+                if (!preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
+                    return true;
+                }
                 String[] uncheckedNodesFromFilter = RepositoryManager
                         .getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
 
@@ -380,6 +490,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
+
+                if (!preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
+                    return true;
+                }
+
                 String[] statusFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_STATUS);
                 String[] userFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_USER);
 
@@ -1012,5 +1127,63 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      */
     public boolean containsRepositoryType(ERepositoryObjectType type) {
         return researchRootRepositoryNode(type) != null;
+    }
+
+    /**
+     * 
+     * 
+     * 
+     * $Id$
+     * 
+     */
+    class RepositoryMouseTrackListener implements MouseTrackListener {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.events.MouseTrackListener#mouseEnter(org.eclipse.swt.events.MouseEvent)
+         */
+        public void mouseEnter(MouseEvent e) {
+            // TODO Auto-generated method stub
+
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.events.MouseTrackListener#mouseExit(org.eclipse.swt.events.MouseEvent)
+         */
+        public void mouseExit(MouseEvent e) {
+            if (e.getSource() instanceof Label) {
+                Label label = (Label) e.getSource();
+                if (label == refreshBtn) {
+                    refreshBtn.setImage(refreshImange);
+                } else if (label == filterBtn && !preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
+                    filterBtn.setImage(filterImange);
+                }
+            }
+
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.events.MouseTrackListener#mouseHover(org.eclipse.swt.events.MouseEvent)
+         */
+        public void mouseHover(MouseEvent e) {
+            if (e.getSource() instanceof Label) {
+                Label label = (Label) e.getSource();
+                if (label == refreshBtn) {
+                    refreshBtn.setImage(refreshImangeUsed);
+                    refreshBtn.setSize(new Point(18, 18));
+                } else if (label == filterBtn) {
+                    filterBtn.setImage(filterImangeUsed);
+                    filterBtn.setSize(new Point(18, 18));
+
+                }
+            }
+
+        }
+
     }
 }

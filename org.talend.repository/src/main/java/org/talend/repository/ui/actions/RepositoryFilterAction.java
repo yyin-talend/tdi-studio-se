@@ -13,9 +13,12 @@
 package org.talend.repository.ui.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.window.Window;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.ui.dialog.RepositoryFilterDialog;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -24,20 +27,27 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 public class RepositoryFilterAction extends Action {
 
-    private IRepositoryView view;
+    private IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
 
-    public RepositoryFilterAction(IRepositoryView view) {
+    private final IRepositoryView view;
+
+    public RepositoryFilterAction(IRepositoryView repositoryView) {
         // this.setText("&Filters...");
-        this.setToolTipText("Filters...");
         setImageDescriptor(ImageProvider.getImageDesc(EImage.FILTER_ICON));
-        this.view = view;
+        setId("filter_action");
+        this.view = repositoryView;
 
     }
 
     @Override
     public void run() {
+        view.getViewer().refresh();
+
+    }
+
+    public void openSetupDialog() {
         RepositoryFilterDialog dialog = new RepositoryFilterDialog(view);
-        if (dialog.open() == Window.OK) {
+        if (dialog.open() == Window.OK && preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
             view.getViewer().refresh();
         }
     }
