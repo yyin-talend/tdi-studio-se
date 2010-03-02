@@ -345,7 +345,7 @@ class="MomInput"
 			java.util.Map msg_<%=cid%> = (java.util.Map)inMessage<%=cid%>.readObject();			  
 <%
 		}
-		if("true".equals(ElementParameterParser.getValue(node, "__COMMIT__"))){
+		if("true".equals(ElementParameterParser.getValue(node, "__COMMIT__")) && ("WebSphere").equals(serverType)){
 %>
 			qMgr<%=cid%>.commit();
 <%
