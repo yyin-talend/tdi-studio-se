@@ -11,7 +11,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.talend.ws.exception.IllegalPropertyAccessException;
 import org.talend.ws.exception.InvocationTargetPropertyAccessor;
 import org.talend.ws.exception.LocalizedException;
-import org.talend.ws.exception.NoSuchPropertyException;
 
 /**
  * 
@@ -27,31 +26,18 @@ public class SimplePropertyMapper implements PropertyMapper {
 
     public SimplePropertyMapper(Class<?> clazz, TypeMapper xmlBeanMapper, String propertyName) throws LocalizedException {
         this.xmlBeanMapper = xmlBeanMapper;
-        this.propertyName = propertyName;
-        try {
-            Object newInstance = clazz.newInstance();
-            propertyDescriptor = PropertyUtils.getPropertyDescriptor(clazz.newInstance(), propertyName);
-            // bchen, try again ignore the character case
-            if (propertyDescriptor == null) {
-                PropertyDescriptor[] pds = PropertyUtils.getPropertyDescriptors(newInstance);
-                for (PropertyDescriptor pd : pds) {
-                    if (pd.getName().equalsIgnoreCase(propertyName.toLowerCase())) {
-                        propertyName = pd.getName();
-                        propertyDescriptor = pd;
-                        break;
-                    }
-                }
-                // propertyDescriptor = PropertyUtils.getPropertyDescriptor(newInstance, propertyName);
+
+        PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(clazz);
+        for (PropertyDescriptor descriptor : descriptors) {
+            if (propertyName.equalsIgnoreCase(descriptor.getName())) {
+                this.propertyName = descriptor.getName();
+                propertyDescriptor = descriptor;
+                break;
             }
-            // bchen end
-        } catch (IllegalAccessException ex) {
-            throw new IllegalPropertyAccessException(propertyName, clazz.getName(), ex);
-        } catch (InvocationTargetException ex) {
-            throw new InvocationTargetPropertyAccessor(propertyName, clazz.getName(), ex.getTargetException());
-        } catch (NoSuchMethodException ex) {
-            throw new NoSuchPropertyException(propertyName, clazz.getName(), ex);
-        } catch (InstantiationException ex) {
-            throw new LocalizedException("org.talend.ws.exception.Instantiation", new String[] { clazz.getName() }, ex);
+        }
+        if (propertyDescriptor == null) {
+            throw new IllegalArgumentException("Unable to get propertyDescriptor for bean " + xmlBeanMapper.getClazz().getName()
+                    + " and property " + propertyName);
         }
     }
 

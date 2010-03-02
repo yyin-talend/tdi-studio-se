@@ -29,26 +29,19 @@ public class ListPropertyMapper implements PropertyMapper {
     public ListPropertyMapper(Class<?> clazz, TypeMapper xmlBeanMapper, String propertyName) {
         this.xmlBeanMapper = xmlBeanMapper;
 
-        try {
-            Object newInstance = clazz.newInstance();
-            propertyDescriptor = PropertyUtils.getPropertyDescriptor(newInstance, propertyName);
-            // bchen, try again ignore the character case
-            if (propertyDescriptor == null) {
-                PropertyDescriptor[] pds = PropertyUtils.getPropertyDescriptors(newInstance);
-                for (PropertyDescriptor pd : pds) {
-                    if (pd.getName().equalsIgnoreCase(propertyName.toLowerCase())) {
-                        propertyName = pd.getName();
-                        propertyDescriptor = pd;
-                        break;
-                    }
-                }
-                // propertyDescriptor = PropertyUtils.getPropertyDescriptor(newInstance, propertyName);
+        PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(clazz);
+        for (PropertyDescriptor descriptor : descriptors) {
+            if (propertyName.equalsIgnoreCase(descriptor.getName())) {
+                this.propertyName = descriptor.getName();
+                propertyDescriptor = descriptor;
+                break;
             }
-            // bchen end
-        } catch (Exception ex) {
+        }
+        if (propertyDescriptor == null) {
             throw new IllegalArgumentException("Unable to get propertyDescriptor for bean " + xmlBeanMapper.getClazz().getName()
                     + " and property " + propertyName);
         }
+
     }
 
     public Class<?> getMappedClass() {
