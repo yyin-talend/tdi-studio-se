@@ -127,17 +127,22 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#getProcessFromProcessItem(org.talend.core.model.properties.ProcessItem
      * )
      */
-    public IProcess getProcessFromProcessItem(ProcessItem processItem) {
+    public IProcess getProcessFromProcessItem(ProcessItem processItem, boolean... loadScreenshots) {
         // achen modify to fix 0006107
         Process process = null;
-        if (createdProcessMap.size() > 50) {
+        if (createdProcessMap.size() > 10) {
+            for (IProcess curProcess : createdProcessMap.values()) {
+                if (curProcess instanceof Process) {
+                    ((Process) curProcess).dispose();
+                }
+            }
             createdProcessMap.clear();
         }
         String id = processItem.getProperty().getModificationDate() + processItem.getProperty().getId()
                 + processItem.getProperty().getVersion();
         if (createdProcessMap.get(id) == null) {
             process = new Process(processItem.getProperty());
-            process.loadXmlFile();
+            process.loadXmlFile(loadScreenshots);
             createdProcessMap.put(id, process);
         }
         process = (Process) createdProcessMap.get(id);

@@ -209,8 +209,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     protected ImageDescriptor screenshot = null;
 
-    byte[] innerContent = null;
-
     private List<byte[]> externalInnerContents = new ArrayList<byte[]>();
 
     public Process(Property property) {
@@ -599,6 +597,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     boolean processModified = true;
+
+    private boolean loadScreenshots;
 
     public boolean isProcessModified() {
         if (generatingProcess == null) {
@@ -1161,7 +1161,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * 
      * @param process
      */
-    public void loadXmlFile() {
+    public void loadXmlFile(boolean... loadScreenshots) {
+        if (loadScreenshots.length == 1) {
+            this.loadScreenshots = loadScreenshots[0];
+        } else {
+            this.loadScreenshots = false;
+        }
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
@@ -1185,7 +1190,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         loadConnections(processType, nodesHashtable);
         loadContexts(processType);
         // feature 7410
-        loadScreenshots();
         loadNotes(processType);
         loadSubjobs(processType);
         initExternalComponents();
@@ -1195,19 +1199,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         checkNodeTableParameters();
         // bug 6158
         this.updateManager.retrieveRefInformation();
-    }
-
-    protected void loadScreenshots() {
-        // bug 11311 : don't load anymore screenshot by default. since it's no use.
-        // code below remains the same in case we need later.
-        if (true)
-            return;
-        // if (CommonsPlugin.isHeadless())
-        // return;
-
-        innerContent = getProcessType().getScreenshot();
-        setScreenshot(ImageUtils.createImageFromData(innerContent));
-        setScreenshot(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -1385,12 +1376,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
 
-        byte[] innerContent = nType.getScreenshot();
-        if (nc.getExternalNode() != null && !CommonsPlugin.isHeadless()) {
-            nc.getExternalNode().setScreenshot(ImageUtils.createImageFromData(innerContent));
+        if (loadScreenshots) {
+            byte[] innerContent = nType.getScreenshot();
+            if (nc.getExternalNode() != null && !CommonsPlugin.isHeadless()) {
+                nc.getExternalNode().setScreenshot(ImageUtils.createImageFromData(innerContent));
+            }
             externalInnerContents.add(innerContent);
         }
-
         return nc;
     }
 
@@ -1565,257 +1557,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     /**
-     * have moved to UpdateManager(feature 3232).
-     * 
-     * DOC nrousseau Comment method "checkNodeSchemaFromRepository".
-     * 
-     * @param nc
-     * @param metadataTable
-     * @return true if the data have been modified
-     */
-    // private boolean checkNodeSchemaFromRepository(final Node node, final List<MetadataUpdateCheckResult> resultList)
-    // {
-    // boolean modified = false;
-    //
-    // final String uniqueName = node.getUniqueName();
-    //
-    // // check the metadata from the repository to see if it's up to date.
-    // // String schemaType = (String)
-    // // node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-    // for (IElementParameter currentParam : node.getElementParameters()) {
-    // if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-    // IElementParameter schemaParam = currentParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-    // if (schemaParam != null && ((ElementParameter) currentParam).isDisplayedByDefault()) {
-    // if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
-    // String metaRepositoryName = (String) currentParam.getChildParameters().get(
-    // EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
-    // IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(metaRepositoryName);
-    //
-    // MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
-    //
-    // if (repositoryMetadata != null) {
-    // repositoryMetadata = repositoryMetadata.clone();
-    // final IMetadataTable copyOfrepositoryMetadata = repositoryMetadata;
-    // copyOfrepositoryMetadata.setTableName(uniqueName);
-    // copyOfrepositoryMetadata.setAttachedConnector(currentParam.getContext());
-    //
-    // IMetadataTable metadataTable = node.getMetadataFromConnector(currentParam.getContext());
-    // if (!metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
-    //
-    // result.setResult(MetadataUpdateCheckResult.RepositoryType.schema,
-    // MetadataUpdateCheckResult.ResultType.change, copyOfrepositoryMetadata);
-    //
-    // modified = true;
-    // }
-    // } else {
-    //
-    // result.setResult(MetadataUpdateCheckResult.RepositoryType.schema,
-    // MetadataUpdateCheckResult.ResultType.delete, null);
-    // // if the repository connection doesn't exists then
-    // // set to built-in
-    // modified = true;
-    // }
-    //
-    // // add the check result to resultList, hold the value.
-    // if (result.getResultType() != null) {
-    // resultList.add(result);
-    // }
-    // }
-    // }
-    // }
-    // }
-    // return modified;
-    // }
-    /**
-     * have moved to UpdateManager(feature 3232).
-     * 
-     * DOC nrousseau Comment method "checkNodePropertiesFromRepository".
-     * 
-     * @param node
-     * @return true if the data have been modified
-     */
-    // private boolean checkNodePropertiesFromRepository(final Node node, final List<MetadataUpdateCheckResult>
-    // resultList) {
-    // boolean modified = false;
-    //
-    // String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
-    // if (propertyType != null) {
-    // if (propertyType.equals(EmfComponent.REPOSITORY)) {
-    // String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-    // if (propertyValue == null || "".equals(propertyValue)) {
-    // return false;
-    // }
-    // org.talend.core.model.metadata.builder.connection.Connection repositoryConnection = null;
-    // IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-    // try {
-    // IRepositoryObject lastVersion = factory.getLastVersion(propertyValue);
-    // if (lastVersion != null) {
-    // final Item item = lastVersion.getProperty().getItem();
-    // if (item != null && item instanceof ConnectionItem) {
-    // repositoryConnection = ((ConnectionItem) item).getConnection();
-    // }
-    // }
-    // } catch (PersistenceException e) {
-    // throw new RuntimeException(e);
-    // }
-    //
-    // MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
-    //
-    // if (repositoryConnection != null) {
-    // boolean sameValues = true;
-    // // if the repository connection exists then test the values
-    // for (IElementParameter param : node.getElementParameters()) {
-    // String repositoryValue = param.getRepositoryValue();
-    // if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-    // Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
-    //
-    // if (objectValue != null) {
-    // if ((param.getField().equals(EParameterFieldType.CLOSED_LIST) && "TYPE".equals(param
-    // .getRepositoryValue()))) {
-    // boolean found = false;
-    // String[] list = param.getListRepositoryItems();
-    // for (int i = 0; (i < list.length) && (!found); i++) {
-    // if (objectValue.equals(list[i])) {
-    // found = true;
-    // }
-    // }
-    // if (!found) {
-    // sameValues = false;
-    // }
-    //
-    // } else if ((param.getField().equals(EParameterFieldType.CLOSED_LIST) && "SERVER_NAME"
-    // .equals(param.getRepositoryValue()))
-    // || (param.getField().equals(EParameterFieldType.TEXT) && "SERVER_NAME".equals(param
-    // .getRepositoryValue()))) {
-    // String connectQuery = null;
-    // boolean flag = false;
-    //
-    // for (IElementParameter elementParameter : node.getElementParametersWithChildrens()) {
-    // if ("QUERYSTORE_TYPE".equals(elementParameter.getName())) {
-    // if ("BUILT_IN".equals(elementParameter.getValue())) {
-    // flag = true;
-    // break;
-    // }
-    // }
-    // }
-    //
-    // if (!flag) {
-    // for (IElementParameter elementParameter : node.getElementParametersWithChildrens()) {
-    // if ("REPOSITORY_QUERYSTORE_TYPE".equals(elementParameter.getName())) {
-    // String names[] = ((String) elementParameter.getValue()).split(" - ");
-    // if (names.length != 2) {
-    // continue;
-    // }
-    // String queryName = names[1];
-    // for (QueryImpl queryImpl : (EList<QueryImpl>) repositoryConnection.getQueries()
-    // .getQuery()) {
-    // if (queryImpl.getLabel().equals(queryName)) {
-    // connectQuery = queryImpl.getValue().replaceAll("\\s", " ").replaceAll(
-    // " {2,}", " ");
-    // }
-    // }
-    // }
-    // }
-    //
-    // if (connectQuery != null) {
-    // for (IElementParameter elementParameter : node.getElementParameters()) {
-    // if ("QUERY".equals(elementParameter.getName())) {
-    // if (!(connectQuery.equals(((String) elementParameter.getValue()).substring(1,
-    // ((String) elementParameter.getValue()).length() - 1).replaceAll(
-    // "\\s", " ").replaceAll(" {2,}", " ")))) {
-    // node.setPropertyValue(param.getName(), objectValue);
-    // CompoundCommand cc = new CompoundCommand();
-    // PropertyChangeCommand pcc = new PropertyChangeCommand(node,
-    // EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-    // cc.add(pcc);
-    // if (!cc.isEmpty()) {
-    // getCommandStack().execute(cc);
-    // }
-    // }
-    // elementParameter.setRepositoryValueUsed(true);
-    // elementParameter.setReadOnly(true);
-    // }
-    // }
-    // }
-    // }
-    // } else {
-    // // check the value
-    // if (!param.getValue().equals(objectValue)) {
-    // sameValues = false;
-    // }
-    // }
-    // } else if (param.getField().equals(EParameterFieldType.TABLE)
-    // && "XML_MAPPING".equals(repositoryValue)) {
-    // List<Map<String, Object>> newMaps = RepositoryToComponentProperty.getXMLMappingValue(
-    // repositoryConnection, node.getMetadataList().get(0));
-    // if ((param.getValue() instanceof List) && newMaps != null) {
-    // List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) param.getValue();
-    // // sameValues = oldMaps.size() == newMaps.size();
-    // for (int i = 0; i < newMaps.size() && sameValues; i++) {
-    // Map<String, Object> newmap = newMaps.get(i);
-    // Map<String, Object> oldmap = null; // oldMaps.get(i);
-    // if (i < oldMaps.size()) {
-    // oldmap = oldMaps.get(i);
-    // }
-    // // for (int j = 0; j < oldMaps.size(); j++) {
-    // // if (oldMaps.get(j).get("SCHEMA_COLUMN").equals(
-    // // newmap.get("SCHEMA_COLUMN"))) {
-    // // oldmap = oldMaps.get(j);
-    // // }
-    // // }
-    // if (oldmap != null && sameValues) {
-    // Object o = newmap.get("QUERY");
-    // if (o != null) {
-    // sameValues = newmap.get("QUERY").equals(oldmap.get("QUERY"));
-    // } else {
-    // sameValues = oldmap.get("QUERY") == null;
-    // }
-    // }
-    // }
-    // if (oldMaps.size() > newMaps.size()) {
-    // int size = newMaps.size();
-    // for (int i = size; i < oldMaps.size(); i++) {
-    // Map<String, Object> map = new HashMap<String, Object>();
-    // map.put("QUERY", "");
-    // newMaps.add(map);
-    // }
-    // sameValues = false;
-    // }
-    // }
-    // }
-    // }
-    // }
-    // if (!sameValues) {
-    //
-    // result.setResult(MetadataUpdateCheckResult.RepositoryType.property,
-    // MetadataUpdateCheckResult.ResultType.change, repositoryConnection);
-    //
-    // modified = true;
-    // } else {
-    // for (IElementParameter param : node.getElementParameters()) {
-    // String repositoryValue = param.getRepositoryValue();
-    // if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
-    // && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-    // param.setRepositoryValueUsed(true);
-    // }
-    // }
-    // }
-    // } else {
-    //
-    // result.setResult(MetadataUpdateCheckResult.RepositoryType.property,
-    // MetadataUpdateCheckResult.ResultType.delete, null);
-    // modified = true;
-    // }
-    //
-    // // add the check result to resultList, hold the value.
-    // if (result.getResultType() != null) {
-    // resultList.add(result);
-    // }
-    // }
-    // }
-    // return modified;
-    // }
-    /**
      * 
      * DOC nrousseau Comment method "checkDifferenceWithRepository".
      * 
@@ -1823,133 +1564,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      */
     public boolean checkDifferenceWithRepository() {
         return getUpdateManager().updateAll();
-        // List<MetadataUpdateCheckResult> resultList = new ArrayList<MetadataUpdateCheckResult>();
-        // boolean modified = false;
-        // for (Node node : nodes) {
-        // if (checkNodeSchemaFromRepository(node, resultList)) {
-        // modified = true;
-        // }
-        // if (checkNodePropertiesFromRepository(node, resultList)) {
-        // modified = true;
-        // }
-        // }
-        //
-        // // when modified == true, then resultList.size() > 0
-        // if (resultList.size() > 0) {
-        // MetadataUpdateCheckDialog checkDlg = new MetadataUpdateCheckDialog(PlatformUI.getWorkbench().getDisplay()
-        // .getActiveShell(), resultList, Messages.getString("Process.IfToUpgradeMetadata")); //$NON-NLS-1$
-        // checkDlg.setTitle(Messages.getString("Process.metadataModificationDetected")); //$NON-NLS-1$
-        //
-        // checkDlg.setInputElement(resultList);
-        // int ret = checkDlg.open();
-        // if (ret == IDialogConstants.OK_ID) {
-        // List<Object> selectResult = Arrays.asList(checkDlg.getResult());
-        //
-        // updateNodeswithMetadata(selectResult);
-        //
-        // modified = true;
-        //
-        // } else { // IDialogConstants.CANCEL_ID
-        // modified = false;
-        // }
-        // }
-
-        // return modified;
     }
-
-    //
-    // private void updateNodeswithMetadata(final List<Object> list) {
-    // CompoundCommand cc = new CompoundCommand();
-    //
-    // for (int k = 0; k < list.size(); k++) {
-    //
-    // MetadataUpdateCheckResult result = (MetadataUpdateCheckResult) list.get(k);
-    //
-    // Node node = result.getNode();
-    //
-    // if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.property) {
-    //
-    // if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
-    //
-    // // upgrade from repository
-    // if (result.isChecked()) {
-    // for (IElementParameter param : node.getElementParameters()) {
-    // String repositoryValue = param.getRepositoryValue();
-    // if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
-    // && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-    // Object objectValue = RepositoryToComponentProperty.getValue(
-    // (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-    // repositoryValue);
-    // if (objectValue != null) {
-    // if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-    // && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
-    // boolean found = false;
-    // String[] items = param.getListRepositoryItems();
-    // for (int i = 0; (i < items.length) && (!found); i++) {
-    // if (objectValue.equals(items[i])) {
-    // found = true;
-    // node.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
-    // }
-    // }
-    // } else {
-    // node.setPropertyValue(param.getName(), objectValue);
-    // }
-    // } else if (param.getField().equals(EParameterFieldType.TABLE)
-    // && "XML_MAPPING".equals(repositoryValue)) {
-    // RepositoryToComponentProperty.getTableXMLMappingValue(
-    // (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-    // (List<Map<String, Object>>) param.getValue(), node.getMetadataList().get(0));
-    // }
-    // param.setRepositoryValueUsed(true);
-    // }
-    // }
-    // } else { // result.isChecked() == false
-    // // don't upgrade so set to builtin
-    // node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-    // for (IElementParameter param : node.getElementParameters()) {
-    // String repositoryValue = param.getRepositoryValue();
-    // if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-    // param.setRepositoryValueUsed(false);
-    // }
-    // }
-    // }
-    // } else { // MetadataUpdateCheckResult.ResultType.delete
-    // node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-    // }
-    //
-    // } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.schema) {
-    //
-    // if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
-    //
-    // if (result.isChecked()) {
-    // IMetadataTable newTable = ((IMetadataTable) result.getParameter());
-    // // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
-    // for (INodeConnector nodeConnector : node.getListConnector()) {
-    // if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
-    // MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
-    // }
-    // }
-    // } else { // result.isChecked()==false
-    // node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-    // }
-    // } else { // MetadataUpdateCheckResult.ResultType.delete
-    //
-    // node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-    //
-    // }
-    //
-    // } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.query) {
-    // // here need to add the code the do the "query"
-    // }
-    // PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS.getName(),
-    // Boolean.TRUE);
-    // cc.add(pcc);
-    // }
-    //
-    // if (!cc.isEmpty()) { // if there is any change, send a command to apply them
-    // getCommandStack().execute(cc);
-    // }
-    // }
 
     public CommandStack getCommandStack() {
         if (getEditor() != null) {
@@ -2985,79 +2600,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         generatingProcess = null;
         editor = null;
         viewer = null;
-        if (innerContent != null) {
-            ImageUtils.disposeImages(innerContent);
-        }
         for (byte data[] : externalInnerContents) {
             ImageUtils.disposeImages(data);
         }
     }
-
-    // public void dispose() {
-    // for (Node curNode : nodes) {
-    // List<Connection> connList = new ArrayList<Connection>((List<Connection>) curNode.getOutgoingConnections());
-    // for (Connection curConnection : connList) {
-    // curConnection.disconnect();
-    // for (IElementParameter param : curConnection.getElementParametersWithChildrens()) {
-    // param.setElement(null);
-    // }
-    // curConnection.setElementParameters(null);
-    // }
-    // }
-    // for (Node curNode : new ArrayList<Node>(nodes)) {
-    // // removeNodeContainer(curNode.getNodeContainer());
-    // curNode.getNodeContainer().setSubjobContainer(null);
-    // curNode.getNodeContainer().setNode(null);
-    // curNode.getNodeContainer().setNodeLabel(null);
-    // }
-    //
-    // for (Node curNode : nodes) {
-    // if (curNode.getElementParametersWithChildrens() != null) {
-    // for (IElementParameter param : curNode.getElementParametersWithChildrens()) {
-    // param.setElement(null);
-    // }
-    // }
-    // curNode.setElementParameters(null);
-    // curNode.setProcess(null);
-    // }
-    // // for (SubjobContainer curSubjob : subjobContainers) {
-    // // // curSubjob.dispose();
-    // // }
-    // if (getElementParametersWithChildrens() != null) {
-    // for (IElementParameter param : getElementParametersWithChildrens()) {
-    // param.setElement(null);
-    // }
-    // }
-    // if (copySubjobMap != null) {
-    // copySubjobMap.clear();
-    // }
-    // // if (mapSubjobStarts != null) {
-    // // mapSubjobStarts.clear();
-    // // }
-    // setElementParameters(null);
-    // // subjobContainers = null;
-    // // nodes = null;
-    //
-    // elem = null;
-    // notes = null;
-    // processor = null;
-    // // don't empty the context manager, or can cause a NPE when close a read only job
-    // // contextManager = null;
-    // // mapSubjobStarts = null;
-    // if (this.editor != null) {
-    // CommandStack commandStack = (CommandStack) this.editor.getTalendEditor().getAdapter(CommandStack.class);
-    // if (commandStack != null) {
-    // commandStack.removeCommandStackEventListener(commandStackEventListener);
-    // }
-    // }
-    // // if ((generatingProcess != null) && (generatingProcess.getDuplicatedProcess() != null)
-    // // // && (generatingProcess.getDuplicatedProcess().getGraphicalNodes() != null )
-    // // ) {
-    // // generatingProcess.getDuplicatedProcess().dispose();
-    // // }
-    //
-    //       
-    // }
 
     /*
      * (non-Javadoc)
