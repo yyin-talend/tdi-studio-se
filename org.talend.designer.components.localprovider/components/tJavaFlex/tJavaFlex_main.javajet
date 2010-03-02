@@ -17,8 +17,6 @@
 	boolean autoPropagate = "true".equals(ElementParameterParser.getValue(node, "__DATA_AUTO_PROPAGATE__"));
 %>
 
-<%=ElementParameterParser.getValue(node, "__CODE_MAIN__") %>
-
 <%
 if(autoPropagate){//1
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -51,3 +49,5 @@ if(autoPropagate){//1
 	} //A
 } //1
 %>
+
+<%=ElementParameterParser.getValue(node, "__CODE_MAIN__") %>
