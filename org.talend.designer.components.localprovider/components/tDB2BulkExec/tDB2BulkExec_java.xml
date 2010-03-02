@@ -255,6 +255,7 @@
           <ITEMS DEFAULT="LOBS_FROM">
             <ITEM NAME="LOBS_FROM"  VALUE="LOBS FROM,1"/>
             
+            <ITEM NAME="MODIFIED_BY"    VALUE="MODIFIED BY,2"/>
             <ITEM NAME="METHOD"    VALUE="METHOD,2"/>
             <ITEM NAME="SAVECOUNT"    VALUE="SAVECOUNT,2"/>
             <ITEM NAME="ROWCOUNT"    VALUE="ROWCOUNT,2"/>

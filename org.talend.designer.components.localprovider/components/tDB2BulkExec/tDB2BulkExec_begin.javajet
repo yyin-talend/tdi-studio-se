@@ -119,7 +119,11 @@ if(columnList != null && columnList.size() > 0) {
 	        if ("1".equals(keySplit[1])) {
 	        	position1.append(keySplit[0]).append(" ").append(value).append(" ");
 	        } else if ("2".equals(keySplit[1])) {
-	        	position2.append(keySplit[0]).append(" ").append(value).append(" ");
+	        	if ("MODIFIED BY".equals(keySplit[0])) {
+	        		position2.append(" ").append(value).append(" ");
+	        	} else {
+	        		position2.append(keySplit[0]).append(" ").append(value).append(" ");
+	        	}
 	        } else if ("3".equals(keySplit[1])) {
 	        	position3.append(keySplit[0]).append(" ").append(value).append(" ");
 	        }
@@ -136,8 +140,8 @@ if(columnList != null && columnList.size() > 0) {
         String action_<%=cid%> = "<%=action%>";
         java.sql.CallableStatement callStmt_<%=cid%> = null;
         String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-        String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%> + "\" OF <%=position1.toString()%>DEL MODIFIED BY <%=position2.toString()%>COLDEL"+ <%=field_separator%> + 
-        				" dateformat=\""+ <%=dateformat%>+ "\" timeformat=\"" + <%=timeformat%>+ "\" timestampformat=\""+<%=timestampformat%> +"\" " +
+        String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%> + "\" OF <%=position1.toString()%> DEL MODIFIED BY COLDEL"+ <%=field_separator%> + 
+        				" dateformat=\""+ <%=dateformat%>+ "\" timeformat=\"" + <%=timeformat%>+ "\" timestampformat=\""+<%=timestampformat%> +"\" <%=position2.toString()%> " +
         				 action_<%=cid%> +" INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>";     			
         callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
         callStmt_<%=cid%>.setString(1, param_<%=cid%>);
@@ -168,9 +172,9 @@ if(columnList != null && columnList.size() > 0) {
                         
         	java.sql.CallableStatement callStmt_<%=cid%> = null;
         	String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-        	String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%>.replace("\\","/") + "\" OF <%=position1.toString()%>DEL MODIFIED BY <%=position2.toString()%>COLDEL" + <%=field_separator%> + 
+        	String param_<%=cid%> = "LOAD FROM \""+ fileName_<%=cid%>.replace("\\","/") + "\" OF <%=position1.toString()%> DEL MODIFIED BY COLDEL" + <%=field_separator%> + 
         							" dateformat=\""+<%=dateformat%>+"\" timeformat=\"" +<%=timeformat%>+ "\" timestampformat=\"" + <%=timestampformat%>+"\"" + 
-        							" INSERT INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>"; 	        			
+        							" <%=position2.toString()%> INSERT INTO \""  + tableName_<%=cid%> + "\" <%=position3.toString()%>"; 	        			
         	
         	callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
         	callStmt_<%=cid%>.setString(1, param_<%=cid%>);
