@@ -12,20 +12,26 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
-import org.eclipse.jdt.internal.ui.JavaPluginImages;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.ui.dialog.RepositoryFilterDialog;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC wchen class global comment. Detailled comment
  */
-public class RepositoryFilterAction extends RepositoryMenuAction {
+public class RepositoryFilterAction extends Action {
 
-    public RepositoryFilterAction() {
-        this.setText("&Filters...");
+    private IRepositoryView view;
+
+    public RepositoryFilterAction(IRepositoryView view) {
+        // this.setText("&Filters...");
         this.setToolTipText("Filters...");
-        setImageDescriptor(JavaPluginImages.DESC_ELCL_FILTER);
-        setDisabledImageDescriptor(JavaPluginImages.DESC_DLCL_FILTER);
+        setImageDescriptor(ImageProvider.getImageDesc(EImage.FILTER_ICON));
+        this.view = view;
+
     }
 
     @Override

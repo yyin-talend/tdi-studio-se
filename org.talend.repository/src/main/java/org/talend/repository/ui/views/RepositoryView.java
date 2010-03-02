@@ -117,6 +117,7 @@ import org.talend.repository.ui.actions.DeleteAction;
 import org.talend.repository.ui.actions.PasteAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
+import org.talend.repository.ui.actions.RepositoryFilterAction;
 
 /**
  * 
@@ -149,6 +150,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private Action doubleClickAction;
 
     private Action refreshAction;
+
+    private Action repositoryFilterAction;
 
     private Listener dragDetectListener;
 
@@ -630,6 +633,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         IHandler handler1 = new ActionHandler(refreshAction);
         handlerService.activateHandler(refreshAction.getActionDefinitionId(), handler1);
 
+        repositoryFilterAction = new RepositoryFilterAction(this);
+
         contextualsActions = ActionsHelper.getRepositoryContextualsActions();
         for (ITreeContextualAction action : contextualsActions) {
             action.setWorkbenchPart(this);
@@ -749,6 +754,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private void fillLocalToolBar(IToolBarManager manager) {
         manager.add(refreshAction);
+        manager.add(repositoryFilterAction);
     }
 
     @Override
