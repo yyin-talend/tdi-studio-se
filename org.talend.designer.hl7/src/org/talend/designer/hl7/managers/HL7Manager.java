@@ -32,6 +32,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
+import org.talend.designer.hl7.ui.header.TalendHL7Reader;
 
 /**
  * DOC hywang class global comment. Detailled comment <br/>
@@ -51,6 +52,10 @@ public class HL7Manager {
 
     protected String filePath;
 
+    private String startChar;
+
+    private String endChar;
+
     /**
      * constructor.
      */
@@ -63,14 +68,29 @@ public class HL7Manager {
 
     private void readMessageContent() {
         filePath = hl7Component.getElementParameter(EParameterName.FILENAME.getName()).getValue().toString();
-        filePath = TalendTextUtils.removeQuotes(filePath);
-        File file = Path.fromOSString(filePath).toFile();
+        String filePathNoQuotes = TalendTextUtils.removeQuotes(filePath);
+        File file = Path.fromOSString(filePathNoQuotes).toFile();
+        startChar = hl7Component.getElementParameter("START_MSG").getValue().toString();
+        endChar = hl7Component.getElementParameter("END_MSG").getValue().toString();
         if (file.exists()) {
             hasFile = true;
             ByteArray array = PropertiesFactory.eINSTANCE.createByteArray();
             try {
                 array.setInnerContentFromFile(file);
-                this.messageContent = new String(array.getInnerContent());
+
+                TalendHL7Reader talendHL7Reader = new TalendHL7Reader(new java.io.FileInputStream(file), "ISO-8859-15");
+                String HL7InputTem = null;
+                String messageText = "";
+                // talendHL7Reader.setStartMsgChar(startChar.getText().toCharArray()[0]);
+                // talendHL7Reader.setEndMsgChar(endChar.getText().toCharArray()[0]);
+
+                while ((HL7InputTem = talendHL7Reader.getMessage()) != null) {
+                    messageText = messageText + HL7InputTem + "\r";
+                }
+                if (messageText == null || "".equals(messageText)) {
+                    messageText = new String(array.getInnerContent());
+                }
+                this.messageContent = messageText;
             } catch (IOException e) {
                 ExceptionHandler.process(e);
             }
@@ -111,7 +131,11 @@ public class HL7Manager {
         List<Map<String, String>> schemas = convertMetadataColumns2Propertis();
         result = hl7Component.setTableElementParameter(schemas, "SCHEMAS"); //$NON-NLS-N$
         String messageContent = this.getUiManager().getHl7UI().getHeader().getMessageContent();
+        String startNsg = this.getUiManager().getHl7UI().getHeader().getStartCharValue();
+        String endNsg = this.getUiManager().getHl7UI().getHeader().getEndCharValue();
         hl7Component.setValueToParameter("MESSAGE", messageContent);
+        hl7Component.setValueToParameter("START_MSG", startNsg);
+        hl7Component.setValueToParameter("END_MSG", endNsg);
         String filePath = this.getUiManager().getHl7UI().getHeader().getFilePath();
         hl7Component.setValueToParameter(EParameterName.FILENAME.getName(), filePath);
         return result;
@@ -203,6 +227,14 @@ public class HL7Manager {
 
     public String getFilePath() {
         return this.filePath;
+    }
+
+    public String getStartChar() {
+        return this.startChar;
+    }
+
+    public String getEndChar() {
+        return this.endChar;
     }
 
 }

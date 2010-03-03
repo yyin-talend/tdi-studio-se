@@ -88,11 +88,17 @@ public class HL7UI {
 
     protected HeaderComposite header;
 
+    private String startChar;
+
+    private String endChar;
+
     public HL7UI(Composite parent, HL7Manager hl7Manager) {
         this.hl7Manager = hl7Manager;
         this.hl7Manager.getUiManager().setHl7UI(this);
         this.messageContent = hl7Manager.getMessageContent();
         this.filePath = hl7Manager.getFilePath();
+        this.startChar = hl7Manager.getStartChar();
+        this.endChar = hl7Manager.getEndChar();
         externalNode = hl7Manager.getHl7Component();
         this.hl7UIParent = parent;
         hl7UIParent.setLayout(new GridLayout());
@@ -108,7 +114,7 @@ public class HL7UI {
      * @param child
      */
     private void createContent(Composite mainComposite) {
-        header = new HeaderComposite(mainComposite, SWT.NONE, this.filePath, hl7Manager);
+        header = new HeaderComposite(mainComposite, SWT.NONE, this.filePath, startChar, endChar, hl7Manager);
 
         MsgToSchemaSash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         MsgToSchemaSash.setLayoutData(new GridData(GridData.FILL_BOTH));
