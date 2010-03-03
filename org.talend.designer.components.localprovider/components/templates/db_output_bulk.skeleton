@@ -1644,14 +1644,22 @@ public class CLASS {
             }
         	return false;
         }
+        protected boolean contaionsSpaces(String columnName) {
+        	if (columnName != null) {
+        		if (columnName.contains(" ")) {
+        			return true;
+        		}
+        	}
+        	return false;
+        }
         protected String getLProtectedChar(String keyword) {
-        	if (isOracleKeyword(keyword)){
+        	if (isOracleKeyword(keyword) || contaionsSpaces(keyword)){
         		return "\\\"";
         	}
         	return getLProtectedChar();
         }
         protected String getRProtectedChar(String keyword) {
-        	if (isOracleKeyword(keyword)){
+        	if (isOracleKeyword(keyword) || contaionsSpaces(keyword)){
         		return "\\\"";
         	}
         	return getRProtectedChar();
