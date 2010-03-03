@@ -46,6 +46,10 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
     }
     directory_<%=cid%> = "";
 }
+boolean isFileGenerated_<%=cid %> = true;
+if(new java.io.File(<%=fileName%>).exists()){
+	isFileGenerated_<%=cid %> = false;
+}
 <%
 }
 if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
@@ -314,12 +318,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	            	if(isInRowMode){
     					if(compress){// compress the dest file
 %>
-				java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
+				java.io.File file_<%=cid%> = new java.io.File(fileName_<%=cid%>);
 				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
     		    //routines.system.Row
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
-    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file_<%=cid%>.getName()));
                 java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>));
 				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>[0]); 
@@ -337,12 +341,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 	}else{
                 		if(compress){// compress the dest file
 				%>
-				java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
+				java.io.File file_<%=cid%> = new java.io.File(fileName_<%=cid%>);
 				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
     		    //routines.system.Row
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
-    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file_<%=cid%>.getName()));
 				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                     zipOut_<%=cid %>, <%=encoding%>)), field_Delim_<%=cid %>[0]); 
 				<%

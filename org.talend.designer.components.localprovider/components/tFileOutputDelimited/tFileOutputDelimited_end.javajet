@@ -19,6 +19,8 @@
 	boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__")); 
 	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
 	
+	boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
+	
 	String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 	boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
 %>
@@ -138,7 +140,11 @@
 %>
 
 <%if(!useStream && !isAppend && isDeleteEmptyFile){%>
-	if(nb_line_<%=cid %> == 0){
+	if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
+	<%if(compress){%>
+		new java.io.File(zipName_<%=cid %>).delete();
+	<%}else{%>
 		new java.io.File(<%=filename %>).delete();
+	<%}%>
 	}		
 <%}%>
