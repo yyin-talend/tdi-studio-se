@@ -62,6 +62,18 @@
 		}
 		
 		//-----------according schema type to generate ResultSet
+		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+		
+%>
+            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+            if(timestamp_<%=cid%> != null) {
+                <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
+            } else {
+                <%=firstConnName%>.<%=column.getLabel()%> =  null;
+            }
+<%
+	    } 
+	    
 	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
 %>
 			Object value_<%=cid%> = rs_<%=cid %>.getObject(<%=currentColNo%>);
