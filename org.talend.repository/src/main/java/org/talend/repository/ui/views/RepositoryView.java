@@ -241,6 +241,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         GridLayout layout = new GridLayout();
         layout.horizontalSpacing = 0;
         layout.marginWidth = 0;
+        layout.marginHeight = 0;
         // layout.verticalSpacing = 0;
         comp.setLayout(layout);
         comp.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -391,16 +392,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         filterBtn.setToolTipText("Filters..." + "\n" + "Right click to set up");
 
         FormData thisFormData = new FormData();
-        thisFormData.left = new FormAttachment(100, -30);
+        thisFormData.left = new FormAttachment(100, -20);
         // thisFormData.right = new FormAttachment(10, 30);
-        thisFormData.top = new FormAttachment(0, 0);
-        thisFormData.bottom = new FormAttachment(100, -10);
+        thisFormData.top = new FormAttachment(0, 4);
+        thisFormData.bottom = new FormAttachment(100, -2);
 
         filterBtn.setLayoutData(thisFormData);
 
         thisFormData = new FormData();
         thisFormData.right = new FormAttachment(filterBtn, -2);
-        thisFormData.top = new FormAttachment(0, 0);
+        thisFormData.top = new FormAttachment(0, 4);
 
         refreshBtn.setLayoutData(thisFormData);
         addListeners();
