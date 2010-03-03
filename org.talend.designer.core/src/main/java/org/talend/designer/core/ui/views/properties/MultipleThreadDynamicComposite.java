@@ -481,6 +481,11 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             // if the node don't contains a schema type and accept an input flow and is not synchronized
             // display a schema on the first line just the type to synchronize the schema
             synchronizeSchemaParam.setShow(!((Node) elem).isSchemaSynchronized());
+            IElementParameter schemaTypeParam = synchronizeSchemaParam.getChildParameters().get(
+                    EParameterName.SCHEMA_TYPE.getName());
+            if (schemaTypeParam != null) {
+                schemaTypeParam.setReadOnly(((Node) elem).isSchemaSynchronized());
+            }
         }
 
         generator.initController(this);
