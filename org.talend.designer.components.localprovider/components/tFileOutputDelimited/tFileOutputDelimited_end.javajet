@@ -139,7 +139,7 @@
 }
 %>
 
-<%if(!useStream && !isAppend && isDeleteEmptyFile){%>
+<%if(!useStream && isDeleteEmptyFile){%>
 	if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
 	<%if(compress){%>
 		new java.io.File(zipName_<%=cid %>).delete();
