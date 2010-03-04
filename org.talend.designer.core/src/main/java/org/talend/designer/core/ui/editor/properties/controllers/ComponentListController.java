@@ -263,15 +263,15 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                 } else {
                     displayName = uniqueName + " - " + displayName; //$NON-NLS-1$
                 }
-
-                /*
-                 * if ("tHashOutput".equals(param.getFilter())) { //$NON-NLS-1$ IElementParameter clearDataParam =
-                 * node.getElementParameter("CLEAR_DATA"); //$NON-NLS-1$ // Only allow hashOutput "CLEAR_DATA" is
-                 * enable. if (clearDataParam != null && clearDataParam.getValue() != null && (Boolean)
-                 * clearDataParam.getValue() == true) { componentUniqueNames.add(uniqueName);
-                 * componentDisplayNames.add(displayName); } } else
-                 */
-                {
+                if ("tHashOutput".equals(param.getFilter())) { //$NON-NLS-1$
+                    IElementParameter clearDataParam = node.getElementParameter("CLEAR_DATA"); //$NON-NLS-1$
+                    // Only allow hashOutput "CLEAR_DATA" is enable.
+                    if (clearDataParam != null && clearDataParam.getValue() != null
+                            && (Boolean) clearDataParam.getValue() == true) {
+                        componentUniqueNames.add(uniqueName);
+                        componentDisplayNames.add(displayName);
+                    }
+                } else {
                     componentUniqueNames.add(uniqueName);
                     componentDisplayNames.add(displayName);
                 }

@@ -94,10 +94,7 @@
 									}
 								}
 								
-								//for feature:11325
-								if("tHashOutput".equals(conn.getTarget().getComponent().getName())){
-									isLookup = true;
-								}
+
 								
 							}
 						}

@@ -11,12 +11,6 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
-
-//if tArray is not as a part of virtual component, it will use the cid as its key.
-if(!"array_tArray_1".equals(destination)){
-	destination = cid;
-}
-
 String rowName= "";
 if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0)) {
 	rowName = node.getIncomingConnections().get(0).getName();

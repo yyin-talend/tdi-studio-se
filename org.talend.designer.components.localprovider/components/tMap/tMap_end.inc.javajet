@@ -21,11 +21,6 @@
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
-
-	//for feature:11325
-	//System.out.println(codeGenArgument.getCodePart());	
-	Map<String, String> feature11325Map = processtHashInputLookupCase_Begin(node,stringBuffer);
-
 	boolean stats = codeGenArgument.isStatistics();
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,11 +112,6 @@
 	            	continue;
 	            }
 
-				//for feature:11325
-                if(!canClearBuffer(node, feature11325Map, tableName)){
-                	continue;
-                }
-
 				String lookupMode = inputTable.getLookupMode();
 				boolean isCacheOrReload = org.talend.designer.mapper.model.table.LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(lookupMode);
 
@@ -148,8 +138,5 @@
 				}
 	        }
 		}
-
-//for feature:11325		
-processtHashInputLookupCase_End(node, feature11325Map);			
 %>
 // ###############################        

@@ -1,19 +1,19 @@
 <%@ jet 
 	imports="
-        java.util.ArrayList
-        java.util.List
-        
-        org.talend.core.model.metadata.IMetadataColumn
-        org.talend.core.model.metadata.IMetadataTable
-        org.talend.core.model.process.EConnectionType
-        org.talend.core.model.process.ElementParameterParser
-        org.talend.core.model.process.IConnection
-        org.talend.core.model.process.IHashConfiguration
-        org.talend.core.model.process.IHashableColumn
-        org.talend.core.model.process.IHashableInputConnections
-        org.talend.core.model.process.IMatchingMode
-        org.talend.core.model.process.INode
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection
         org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+		java.util.ArrayList
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IHashableInputConnections
+		org.talend.core.model.process.IHashConfiguration
+		org.talend.core.model.process.IHashableColumn
+		org.talend.core.model.process.IMatchingMode
+		java.util.HashSet
+		java.util.Set
+		org.talend.core.model.process.EConnectionType
 	"
 	skeleton="tAdvancedHash_commons.skeleton"
 %>
@@ -23,12 +23,9 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 
+
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
     List<IConnection> outConnections = (List<IConnection>) node.getOutgoingConnections();
-    
-    boolean isVirtualGenerateNode = node.isVirtualGenerateNode();
-    
-if(isVirtualGenerateNode){    
     
     List<INode> graphicalNodes = (List<INode>) node.getProcess().getGraphicalNodes();
     
@@ -105,54 +102,6 @@ if(isVirtualGenerateNode){
 		} // T_AH_101
 	} // T_AH_100
 
-}else{
-//this part is only for feature:11325
-
-String keyManagement = ElementParameterParser.getValue(node, "__KEYS_MANAGEMENT__");
-//PERSISTENT, MEMORY
-String dataWriteMode = ElementParameterParser.getValue(node, "__DATA_WRITE_MODEL__");
-
-String tempDirectory = ElementParameterParser.getValue(node, "__TEMPORARY_DATA_DIRECTORY__");
-String bufferSize = ElementParameterParser.getValue(node, "__ROWS_BUFFER_SIZE__");
-
-	if (connections != null && connections.size() > 0) {//BBBBBB
-        for (IConnection connection : connections) {//111
-        	String connectionName = connection.getName();
-        	String matchingModeStr = keyManagement;
-        	boolean isAllRows = "ALL_ROWS".equals(matchingModeStr);
-        	boolean isPersistent = "PERSISTENT".equals(dataWriteMode);
-        	String rowsBufferSize = bufferSize;
-        	String tempFolder = tempDirectory;
-
-				if(isPersistent) {
-				%>
-					<%=connectionName%>Struct <%=connectionName%>_HashRow = tHash_Lookup_<%=connectionName%>.getNextFreeRow();
-	   			<%	
-	   			} else {
-	   			%>
-					<%=connectionName%>Struct <%=connectionName%>_HashRow = new <%=connectionName%>Struct();		   	   	   
-				<%
-				}
-				
-				//////////////////////////////////////////
-    			IMetadataTable metadataTable = connection.getMetadataTable();
-    			
-    			List<IMetadataColumn> listColumns = metadataTable.getListColumns();
-                for (IMetadataColumn column : listColumns) {
-                    String columnName = column.getLabel();
-    				%>
-    				<%=connectionName%>_HashRow.<%=columnName%> = <%=connectionName%>.<%=columnName%>;
-    				<%
-                } 
-    
-    
-    			%>
-    			tHash_Lookup_<%=connectionName%>.put(<%=connectionName%>_HashRow);				
-				<%
-        }//111
-    }//BBBBBB
-
-}
 %>
             
 

@@ -36,11 +36,6 @@
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
-	
-	//for feature:11325
-	//System.out.println(codeGenArgument.getCodePart());	
-	Map<String, String> feature11325Map = processtHashInputLookupCase_Begin(node,stringBuffer);	
-	
 	boolean stats = codeGenArgument.isStatistics();
 	
 	String componentName = node.getUniqueName();
@@ -912,9 +907,6 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	} // T_TM_B_103
 } // T_TM_B_101      
 
-
-//for feature:11325	
-processtHashInputLookupCase_End(node, feature11325Map);
 %>        
         
 
