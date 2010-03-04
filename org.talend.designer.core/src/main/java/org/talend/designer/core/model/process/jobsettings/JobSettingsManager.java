@@ -469,8 +469,10 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
-        final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
-                + " =='POSTGRESQL' or" + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='SQL_SERVER'"); //$NON-NLS-1$//$NON-NLS-2$
+        final String schemaCondition = JobSettingsConstants
+                .addBrackets(dbTypeName
+                        + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
+                        + " =='POSTGRESQL' or " + dbTypeName + " =='POSTGRESPLUS' or " + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='SQL_SERVER'"); //$NON-NLS-1$//$NON-NLS-2$
         param.setShowIf(schemaCondition + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
