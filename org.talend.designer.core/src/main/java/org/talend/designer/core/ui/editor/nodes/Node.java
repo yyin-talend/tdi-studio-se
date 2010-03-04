@@ -2792,7 +2792,7 @@ public class Node extends Element implements INode {
     }
 
     public Map<INode, Integer> getLinkedMergeInfo() {
-        return process.getLinkedMergeInfo(this);
+        return NodeUtil.getLinkedMergeInfo(this);
     }
 
     public List<? extends IConnection> getIncomingConnections(EConnectionType connectionType) {

@@ -85,6 +85,8 @@ public class DataProcess {
 
     private Map<INode, INode> checkFileScaleMap = null;
 
+    private Map<INode, INode> checktUniteMap = null;
+
     private List<INode> dataNodeList;
 
     private final Process process;
@@ -99,6 +101,7 @@ public class DataProcess {
         buildCheckMap = new HashMap<INode, INode>();
         checkRefList = new ArrayList<Node>();
         checkMultipleMap = new HashMap<INode, INode>();
+        checktUniteMap = new HashMap<INode, INode>();
         dataNodeList = new ArrayList<INode>();
         checkFileScaleMap = new HashMap<INode, INode>();
         buildGraphicalMap = new DualHashBidiMap();
@@ -1147,6 +1150,37 @@ public class DataProcess {
             checkUseParallelize((Node) node);
         }
 
+        // calculate the merge info for every node
+        for (INode node : dataNodeList) {
+            Map<INode, Integer> mergeInfo = NodeUtil.getLinkedMergeInfo(node);
+            if (!mergeInfo.isEmpty()) {
+                ((AbstractNode) node).setThereLinkWithMerge(true);
+                ((AbstractNode) node).setLinkedMergeInfo(mergeInfo);
+            }
+        }
+
+        // change the design subjob start as the value stored while building process is the graphical node
+        for (INode dataNode : dataNodeList) {
+            if (dataNode instanceof AbstractNode) {
+                INode graphicalNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
+                INode currentDataNode = buildCheckMap.get(graphicalNode);
+                if (currentDataNode == null || !dataNodeList.contains(currentDataNode)) {
+                    ((AbstractNode) dataNode).setDesignSubjobStartNode(null);
+                    // call the function to recalculate the subjobstart node
+                    currentDataNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
+                    // set the value with the code after the if,
+                    // so it will avoid to calculate it at each call later.
+                }
+                ((AbstractNode) dataNode).setDesignSubjobStartNode(currentDataNode);
+            }
+        }
+
+        for (INode node : newGraphicalNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                checkMergeComponents(node);
+            }
+        }
+
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceMultipleComponents(node);
@@ -1203,7 +1237,7 @@ public class DataProcess {
 
         // calculate the merge info for every node
         for (INode node : dataNodeList) {
-            Map<INode, Integer> mergeInfo = duplicatedProcess.getLinkedMergeInfo(node);
+            Map<INode, Integer> mergeInfo = NodeUtil.getLinkedMergeInfo(node);
             if (!mergeInfo.isEmpty()) {
                 ((AbstractNode) node).setThereLinkWithMerge(true);
                 ((AbstractNode) node).setLinkedMergeInfo(mergeInfo);
@@ -1224,8 +1258,168 @@ public class DataProcess {
         }
         checkRefList = null;
         checkMultipleMap = null;
+        checktUniteMap = null;
         buildCheckMap = null;
         buildGraphicalMap = null;
+    }
+
+    private void checkMergeComponents(INode node) {
+        if (checktUniteMap.containsKey(node)) {
+            // return checkMultipleMap.get(graphicalNode);
+            return;
+        }
+        // if the original component is in dummy state, no need to replace it
+        if ((node instanceof Node) && ((Node) node).isDummy() && !node.isActivate()) {
+            return;
+        }
+        AbstractNode dataNode;
+
+        dataNode = (AbstractNode) buildCheckMap.get(node);
+        checktUniteMap.put(node, dataNode);
+        if (dataNode.getComponent().useMerge()) {
+            try {
+                changeForMultipleMergeComponents(node);
+            } catch (Exception e) {
+                Exception wrapper = new Exception(Messages.getString("DataProcess.checkComponent", node.getLabel()), e); //$NON-NLS-1$
+                ExceptionHandler.process(wrapper);
+            }
+        }
+        List<IConnection> outputConnections = new ArrayList<IConnection>(node.getOutgoingConnections());
+        for (IConnection connection : outputConnections) {
+            if (connection.isActivate()) {
+                checkMergeComponents(connection.getTarget());
+            }
+        }
+    }
+
+    private void changeForMultipleMergeComponents(INode graphicalNode) {
+        String hashMergeOutput = "tArray";
+        String hashMergeInput = "tArrayIn";
+
+        INode mergeDataNode = buildCheckMap.get(graphicalNode);
+
+        IComponent hashMergeOutputComponent = ComponentsFactoryProvider.getInstance().get(hashMergeOutput);
+        IComponent hashMergeInputComponent = ComponentsFactoryProvider.getInstance().get(hashMergeInput);
+
+        if (hashMergeOutputComponent == null || hashMergeInputComponent == null) {
+            return;
+        }
+        String hashOutputUniqueName = hashMergeOutput + "_" + mergeDataNode.getUniqueName();
+
+        List mergeOutputConnections = NodeUtil.getOutgoingConnections(mergeDataNode, IConnectionCategory.FLOW);
+
+        if (mergeOutputConnections.size() == 0) {
+            return;
+        }
+
+        // Merge components should have only one output row in all case.
+        IConnection mergeOutputConnection = ((List<IConnection>) mergeOutputConnections).get(0);
+
+        DataNode hashNode = new DataNode(hashMergeOutputComponent, hashOutputUniqueName);
+        hashNode.setActivate(mergeDataNode.isActivate());
+        hashNode.setStart(false);
+        hashNode.setDesignSubjobStartNode(null);
+        hashNode.getMetadataList().remove(0);
+        IMetadataTable newMetadata = mergeDataNode.getMetadataList().get(0).clone();
+        newMetadata.setTableName(hashOutputUniqueName);
+        hashNode.getMetadataList().add(newMetadata);
+        hashNode.setSubProcessStart(false);
+        hashNode.setProcess(graphicalNode.getProcess());
+        List<IConnection> outgoingConnections = new ArrayList<IConnection>();
+        List<IConnection> incomingConnections = new ArrayList<IConnection>();
+        hashNode.setIncomingConnections(incomingConnections);
+        hashNode.setOutgoingConnections(outgoingConnections);
+        hashNode.setVirtualGenerateNode(false);
+        hashNode.getElementParameter("DESTINATION").setValue("tArray_" + mergeDataNode.getUniqueName());
+
+        addDataNode(hashNode);
+
+        incomingConnections.add(mergeOutputConnection);
+        INode oldNodeTarget = ((DataConnection) mergeOutputConnection).getTarget();
+        ((DataConnection) mergeOutputConnection).setTarget(hashNode);
+        oldNodeTarget.getIncomingConnections().remove(mergeOutputConnection);
+
+        boolean isFromSubProcessMerge = true; // set if the next component is on a main merge link or not. True if no
+        // merge also
+
+        if (((AbstractNode) mergeDataNode).isThereLinkWithMerge()) {
+            Integer[] intTab = ((AbstractNode) mergeDataNode).getLinkedMergeInfo().values().toArray(new Integer[0]);
+            isFromSubProcessMerge = intTab[intTab.length - 1] == 1;
+        }
+
+        String hashInputUniqueName = hashMergeInput + "_" + mergeDataNode.getUniqueName();
+
+        hashNode = new DataNode(hashMergeInputComponent, hashInputUniqueName);
+        hashNode.setActivate(mergeDataNode.isActivate());
+        hashNode.setStart(false);
+        hashNode.setDesignSubjobStartNode(null);
+        newMetadata = mergeDataNode.getMetadataList().get(0).clone();
+        newMetadata.setTableName(hashInputUniqueName);
+        hashNode.getMetadataList().remove(0);
+        hashNode.getMetadataList().add(newMetadata);
+        hashNode.setSubProcessStart(true);
+        hashNode.setProcess(graphicalNode.getProcess());
+        outgoingConnections = new ArrayList<IConnection>();
+        incomingConnections = new ArrayList<IConnection>();
+        hashNode.setIncomingConnections(incomingConnections);
+        hashNode.setOutgoingConnections(outgoingConnections);
+        hashNode.setVirtualGenerateNode(false);
+        hashNode.getElementParameter("LINK_WITH").setValue(Boolean.TRUE);
+        hashNode.getElementParameter("LIST").setValue(hashOutputUniqueName);
+        hashNode.getElementParameter("ORIGIN").setValue("tArray_" + mergeDataNode.getUniqueName());
+
+        // create a new connection to make tHashInput -> output component
+        DataConnection dataConnec = new DataConnection();
+        dataConnec.setActivate(mergeOutputConnection.isActivate());
+        dataConnec.setLineStyle(mergeOutputConnection.getLineStyle());
+        dataConnec.setConnectorName(mergeOutputConnection.getConnectorName());
+        dataConnec.setMetadataTable(newMetadata);
+        dataConnec.setTraceConnection(mergeOutputConnection.isTraceConnection());
+        dataConnec.setTracesCondition(mergeOutputConnection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(mergeOutputConnection.getEnabledTraceColumns());
+        dataConnec.setName(mergeOutputConnection.getName()); //$NON-NLS-1$
+        dataConnec.setSource(hashNode);
+        dataConnec.setTarget(oldNodeTarget);
+
+        ((DataConnection) mergeOutputConnection).setName(hashNode.getUniqueName() + "_" + mergeOutputConnection.getName());
+
+        int inputId = mergeOutputConnection.getInputId();
+        dataConnec.setInputId(inputId);
+        outgoingConnections.add(dataConnec);
+        ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(inputId - 1, dataConnec);
+
+        ((DataConnection) mergeOutputConnection).setLineStyle(EConnectionType.FLOW_MAIN);
+        ((DataConnection) mergeOutputConnection).setConnectorName(EConnectionType.FLOW_MAIN.getName());
+        addDataNode(hashNode);
+
+        INode afterMergeStart = hashNode.getSubProcessStartNode(false);
+        INode mergeSubNodeStart = mergeDataNode.getSubProcessStartNode(false);
+
+        if (mergeDataNode.getLinkedMergeInfo() == null || mergeDataNode.getLinkedMergeInfo().isEmpty()) {
+            INode oldStartNode = ((AbstractNode) mergeDataNode.getDesignSubjobStartNode());
+            ((AbstractNode) oldStartNode).setStart(false);
+            ((AbstractNode) afterMergeStart).setStart(true);
+            for (INode curNode : dataNodeList) {
+                if (curNode instanceof AbstractNode) {
+                    if (curNode.getDesignSubjobStartNode().equals(oldStartNode)) {
+                        ((AbstractNode) curNode).setDesignSubjobStartNode(afterMergeStart);
+                    }
+                }
+            }
+        }
+
+        dataConnec = new DataConnection();
+        dataConnec.setActivate(mergeOutputConnection.isActivate());
+        dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+        dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
+        // dataConnec.setMetadataTable(newMetadata);
+        dataConnec.setTraceConnection(false);
+        dataConnec.setName(hashNode.getUniqueName() + "_" + EConnectionType.RUN_AFTER.getDefaultLinkName()); //$NON-NLS-1$
+        dataConnec.setSource(afterMergeStart);
+        dataConnec.setTarget(mergeSubNodeStart);
+
+        ((List<IConnection>) mergeSubNodeStart.getIncomingConnections()).add(dataConnec);
+        ((List<IConnection>) afterMergeStart.getOutgoingConnections()).add(dataConnec);
     }
 
     /**
@@ -1322,6 +1516,7 @@ public class DataProcess {
         // create a new connection to make tAsyncIn -> output component
         DataConnection dataConnec = new DataConnection();
         dataConnec.setActivate(connection.isActivate());
+        dataConnec.setConnectorName(EConnectionType.FLOW_MAIN.getName());
         dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
         dataConnec.setMetadataTable(newMetadata);
         dataConnec.setTraceConnection(connection.isTraceConnection());

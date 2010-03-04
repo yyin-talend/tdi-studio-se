@@ -175,7 +175,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     protected void unregisterVisuals() {
         if (((NodeFigure) getFigure()).connection != null)
             ((NodeFigure) getFigure()).connection.disposeColors();
-        super.unregisterVisuals();
+        if (getRoot() != null) {
+            super.unregisterVisuals();
+        }
     }
 
     /*

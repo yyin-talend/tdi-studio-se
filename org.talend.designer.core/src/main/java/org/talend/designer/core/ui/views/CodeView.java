@@ -43,7 +43,6 @@ import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.ui.IJobletProviderService;
@@ -239,17 +238,6 @@ public class CodeView extends ViewPart {
 
     public void refresh() {
         if (selectedNode != null) {
-            IExternalNode externalNode = ((Node) selectedNode).getExternalNode();
-            if (externalNode != null) {
-                generatingNode = externalNode;
-                externalNode.setExternalData(((Node) selectedNode).getExternalData());
-            } else {
-                generatingNode = selectedNode;
-            }
-            if (generatingNode.getComponent().getMultipleComponentManagers().size() > 0) {
-                document.set(Messages.getString("CodeView.MultipleComponentError")); //$NON-NLS-1$
-                return;
-            }
             String generatedCode = ""; //$NON-NLS-1$
 
             // joblet or joblet node
@@ -263,6 +251,17 @@ public class CodeView extends ViewPart {
             }
             if (isJoblet) {
                 document.set(generatedCode);
+                return;
+            }
+
+            generatingNode = null;
+            for (INode node : selectedNode.getProcess().getGeneratingNodes()) {
+                if (node.getUniqueName().equals(selectedNode.getUniqueName())) {
+                    generatingNode = node;
+                }
+            }
+            if (generatingNode == null) {
+                document.set(Messages.getString("CodeView.MultipleComponentError")); //$NON-NLS-1$
                 return;
             }
             if (codeGenerator == null) {
