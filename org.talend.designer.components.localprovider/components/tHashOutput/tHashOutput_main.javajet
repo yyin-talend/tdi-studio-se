@@ -186,7 +186,7 @@ if(!isLinked){//111
 }else{//111
 	//////////////////////////////////////////////////////////////
 	//it link to another tHashOutput, it works in append model. 
-	if(incommingDataConn != null){//333
+	if(incommingDataConn != null && tHashOutput_metadata != null){//333
 		String connectionName = incommingDataConn.getName();	
         List<IMetadataColumn> columns = metadata.getListColumns();
         List<IMetadataColumn>  tHashOutputcolumns = tHashOutput_metadata.getListColumns();
