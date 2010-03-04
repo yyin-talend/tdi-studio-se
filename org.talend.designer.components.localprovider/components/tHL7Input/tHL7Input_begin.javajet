@@ -22,7 +22,6 @@ String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 String startMsg = ElementParameterParser.getValue(node,"__START_MSG__");
 String endMsg = ElementParameterParser.getValue(node,"__END_MSG__");
-boolean isCustomSep = ("true").equals(ElementParameterParser.getValue(node,"__USE_MSG_SEP__"));
 
 boolean isNoValidate = ("true").equals(ElementParameterParser.getValue(node,"__NOVALIDATE__"));
 
@@ -76,7 +75,6 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
      	myReader = new java.io.BufferedReader(new java.io.InputStreamReader(in, charsetName));
     }
 
-	@Override
 	public void setInputStream(java.io.InputStream arg0)
 			throws IOException {
 	}
@@ -216,10 +214,10 @@ parser_<%=cid %>.setValidationContext(noValid_<%=cid %>);
 %>
       //READ DATA
 	TalendHL7Reader_<%=cid %> reader_<%=cid %> = new TalendHL7Reader_<%=cid %>(new java.io.FileInputStream(<%=fileName%>),<%=encoding %>);
-<%if(isCustomSep){%>
+
 	reader_<%=cid %>.setStartMsgChar(<%=startMsg%>);
 	reader_<%=cid %>.setEndMsgChar(<%=endMsg%>);
-<%}%>
+
 	String str_<%=cid %> = null;
 	int[] index_<%=cid %> = null;
 	
