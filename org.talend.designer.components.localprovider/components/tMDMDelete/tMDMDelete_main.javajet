@@ -1,0 +1,76 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
+		java.util.List
+		java.util.Map
+		"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String numMassInsert = ElementParameterParser.getValue(node,"__COMMIT_LEVEL__");
+
+boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
+
+String dataModule = ElementParameterParser.getValue(node, "__CONCEPT__");
+List<Map<String,String>> keyValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__KEYS__");
+
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {//3
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+%>
+String[] wsIds_<%=cid %> = {
+<%
+			    for(int i=0;i<keyValues.size();i++){
+			    	String columnName=keyValues.get(i).get("KEY");
+%>
+<%=i==0?"":","%><%=conn.getName()%>.<%=columnName %>
+<%
+			    }
+%>};
+org.talend.mdm.webservice.WSItemPK wsPK_<%=cid %> = new org.talend.mdm.webservice.WSItemPK(dataCluster_<%=cid %>,<%=dataModule %>,wsIds_<%=cid %>);
+///////////////////////	
+
+try{
+	org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>);
+
+	xtentisWS_<%=cid %>.deleteItem(item_<%=cid %>);
+
+}catch(Exception e){
+<%
+if(dieOnError){
+%>
+	throw(e);
+<%
+}else{
+%>
+	System.err.println(e.getMessage());
+<%
+}
+%>
+}
+nb_line_<%=cid %>++;    			
+
+///////////////////////    			
+<%
+    		}//4
+    	}//3
+    }//2
+}//1
+%>
