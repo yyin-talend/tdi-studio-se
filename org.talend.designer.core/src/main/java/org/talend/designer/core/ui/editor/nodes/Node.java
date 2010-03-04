@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -88,6 +89,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.NodeQueryCheckUtil;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
+import org.talend.designer.core.ui.editor.properties.controllers.SynchronizeSchemaHelper;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -2568,6 +2570,22 @@ public class Node extends Element implements INode {
                     String warningMessage = Messages.getString("Node.schemaNotSame", getUniqueName()); //$NON-NLS-1$
                     Problems.add(ProblemStatus.WARNING, this, warningMessage);
                 }
+            }
+        }
+        syncSpecialSchema();
+    }
+
+    private void syncSpecialSchema() {
+        if (!isSchemaSynchronized()) { // bug 11856
+            IElementParameter synchronizeSchemaParam = getElementParameter(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
+            if (synchronizeSchemaParam != null) {
+                Command cmd = SynchronizeSchemaHelper.createCommand(this, synchronizeSchemaParam);
+                if (process != null && process.getCommandStack() != null) {
+                    process.getCommandStack().execute(cmd);
+                } else {
+                    cmd.execute();
+                }
+
             }
         }
     }

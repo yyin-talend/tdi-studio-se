@@ -13,7 +13,6 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -814,43 +813,12 @@ public class SchemaTypeController extends AbstractRepositoryController {
             String propertyName = (String) inputButton.getData(PARAMETER_NAME);
             IElementParameter param = node.getElementParameter(propertyName);
 
-            IMetadataTable meta = node.getMetadataFromConnector(param.getContext());
-            IMetadataTable metaCopy = meta.clone(true);
-
-            boolean inputFound = false;
-            for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-                if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                        || connec.getLineStyle().equals(EConnectionType.TABLE)
-                        || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-                    if (connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-                        if (connec.getInputId() == 1) {
-                            // MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
-                            MetadataTool.copyTable(meta.getDbms(), connec.getMetadataTable().clone(), metaCopy);
-                            inputFound = true;
-                            break;
-                        }
-                    } else {
-                        // MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
-                        MetadataTool.copyTable(meta.getDbms(), connec.getMetadataTable().clone(), metaCopy);
-                        inputFound = true;
-                    }
-                }
-            }
-            if (!inputFound) {
-                List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
-                for (IMetadataColumn column : metaCopy.getListColumns()) {
-                    if (!column.isCustom()) {
-                        columnsToRemove.add(column);
-                    }
-                }
-                metaCopy.getListColumns().removeAll(columnsToRemove);
-            }
-
+            final Command cmd = SynchronizeSchemaHelper.createCommand(node, param);
             if (switchParam != null) {
                 switchParam.setValue(Boolean.FALSE);
             }
 
-            return new ChangeMetadataCommand(node, param, meta, metaCopy);
+            return cmd;
         } else if (button.getData(NAME).equals(REPOSITORY_CHOICE)) {
             String paramName = (String) button.getData(PARAMETER_NAME);
             IElementParameter schemaParam = elem.getElementParameter(paramName);
