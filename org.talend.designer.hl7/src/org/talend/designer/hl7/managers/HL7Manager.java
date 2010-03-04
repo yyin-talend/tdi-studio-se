@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -44,7 +45,9 @@ public class HL7Manager {
 
     protected UIManager uiManager;
 
-    protected String messageContent;
+    private List<String> msgContentList;
+
+    private List<String> initMsgContentList = new ArrayList<String>();
 
     protected Map<String, List<MetadataColumn>> schemaRelationMap;
 
@@ -72,35 +75,35 @@ public class HL7Manager {
         File file = Path.fromOSString(filePathNoQuotes).toFile();
         startChar = hl7Component.getElementParameter("START_MSG").getValue().toString();
         endChar = hl7Component.getElementParameter("END_MSG").getValue().toString();
-        if (file.exists()) {
+
+        IElementParameter messagePara = hl7Component.getElementParameter("MESSAGE"); //$NON-NLS-1$
+        List<Map<String, String>> msgListMap = (List<Map<String, String>>) messagePara.getValue();
+        if (msgListMap != null && msgListMap.size() > 0) {
+            for (Map<String, String> msgMap : msgListMap) {
+                if (msgMap.get("MSGITEM") != null && msgMap.get("MSGITEM") instanceof String) {
+                    String msgItem = msgMap.get("MSGITEM");
+                    initMsgContentList.add(msgItem);
+
+                }
+            }
+        } else if (file.exists()) {
             hasFile = true;
             ByteArray array = PropertiesFactory.eINSTANCE.createByteArray();
             try {
                 array.setInnerContentFromFile(file);
-
                 TalendHL7Reader talendHL7Reader = new TalendHL7Reader(new java.io.FileInputStream(file), "ISO-8859-15");
                 String HL7InputTem = null;
                 String messageText = "";
-                // talendHL7Reader.setStartMsgChar(startChar.getText().toCharArray()[0]);
-                // talendHL7Reader.setEndMsgChar(endChar.getText().toCharArray()[0]);
 
                 while ((HL7InputTem = talendHL7Reader.getMessage()) != null) {
-                    messageText = messageText + HL7InputTem + "\r";
+                    initMsgContentList.add(HL7InputTem);
                 }
-                if (messageText == null || "".equals(messageText)) {
-                    messageText = new String(array.getInnerContent());
+                if (initMsgContentList == null || initMsgContentList.size() == 0) {
+                    String msgText = new String(array.getInnerContent());
+                    initMsgContentList.add(msgText);
                 }
-                this.messageContent = messageText;
             } catch (IOException e) {
                 ExceptionHandler.process(e);
-            }
-        } else {
-            String content = hl7Component.getElementParameter("MESSAGE").getValue().toString();
-            if (content != null && !"".equals(content)) {
-                this.messageContent = content;
-                hasFile = true;
-            } else {
-                hasFile = false;
             }
         }
     }
@@ -130,10 +133,29 @@ public class HL7Manager {
         boolean result = false;
         List<Map<String, String>> schemas = convertMetadataColumns2Propertis();
         result = hl7Component.setTableElementParameter(schemas, "SCHEMAS"); //$NON-NLS-N$
-        String messageContent = this.getUiManager().getHl7UI().getHeader().getMessageContent();
         String startNsg = this.getUiManager().getHl7UI().getHeader().getStartCharValue();
         String endNsg = this.getUiManager().getHl7UI().getHeader().getEndCharValue();
-        hl7Component.setValueToParameter("MESSAGE", messageContent);
+        // save message List;
+        msgContentList = this.getUiManager().getHl7UI().getHeader().getMsgContentList();
+        boolean isChange = this.getUiManager().getHl7UI().getHeader().isMsgIsChange();
+        IElementParameter MESSAGES = hl7Component.getElementParameter("MESSAGE");
+        List<Map<String, String>> messageMap = (List<Map<String, String>>) MESSAGES.getValue();
+        if (isChange) {
+            if (messageMap == null) {
+                messageMap = new ArrayList<Map<String, String>>();
+            } else {
+                messageMap.clear();
+            }
+            for (String msgItem : msgContentList) {
+
+                Map<String, String> msgItemMap = new HashMap<String, String>();
+                if (msgItem != null && !"".equals(msgItem)) {
+                    msgItemMap.put("MSGITEM", msgItem);
+                }
+                messageMap.add(msgItemMap);
+            }
+            this.getUiManager().getHl7UI().getHeader().setMsgIsChange(false);
+        }
         hl7Component.setValueToParameter("START_MSG", startNsg);
         hl7Component.setValueToParameter("END_MSG", endNsg);
         String filePath = this.getUiManager().getHl7UI().getHeader().getFilePath();
@@ -197,12 +219,16 @@ public class HL7Manager {
         return schemas;
     }
 
-    public void setMessageContent(String messageContent) {
-        this.messageContent = messageContent;
+    public List<String> getMsgContentList() {
+        return this.msgContentList;
     }
 
-    public String getMessageContent() {
-        return this.messageContent;
+    public void setMsgContentList(List<String> msgContentList) {
+        this.msgContentList = msgContentList;
+    }
+
+    public List<String> getInitMsgContentList() {
+        return this.initMsgContentList;
     }
 
     public UIManager getUiManager() {

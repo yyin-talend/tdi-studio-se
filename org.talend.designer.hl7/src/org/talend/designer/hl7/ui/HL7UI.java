@@ -12,9 +12,11 @@
 // ============================================================================
 package org.talend.designer.hl7.ui;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,31 +27,30 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
+import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
 import org.talend.designer.hl7.edit.HL7Tree2SchemaLinker;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.model.IModel;
 import org.talend.designer.hl7.model.PrimitiveModel;
 import org.talend.designer.hl7.ui.footer.FooterComposite;
+import org.talend.designer.hl7.ui.header.HL7Parse;
 import org.talend.designer.hl7.ui.header.HeaderComposite;
 import org.talend.designer.hl7.ui.provider.HL7MessageTreeContentProvider;
 import org.talend.designer.hl7.ui.provider.HL7MessageTreeLabelProvider;
 import org.talend.designer.hl7.ui.view.HL7MetadataEmfTableEditorView;
 
 import ca.uhn.hl7v2.model.Message;
-import ca.uhn.hl7v2.parser.GenericParser;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
@@ -71,7 +72,7 @@ public class HL7UI {
 
     protected HL7Tree2SchemaLinker linker;
 
-    private String messageContent;
+    private List<String> initMsgContentList;
 
     private Group schemaTargetGroup;
 
@@ -95,7 +96,7 @@ public class HL7UI {
     public HL7UI(Composite parent, HL7Manager hl7Manager) {
         this.hl7Manager = hl7Manager;
         this.hl7Manager.getUiManager().setHl7UI(this);
-        this.messageContent = hl7Manager.getMessageContent();
+        this.initMsgContentList = hl7Manager.getInitMsgContentList();
         this.filePath = hl7Manager.getFilePath();
         this.startChar = hl7Manager.getStartChar();
         this.endChar = hl7Manager.getEndChar();
@@ -186,11 +187,27 @@ public class HL7UI {
     }
 
     public void initMessageTree() {
-        Message message = getHL7MessageInput();
-        if (message != null) {
-            messageViewer.setInput(new Message[] { message });
+        HL7Parse hl7Parse = new HL7Parse();
+        List<Message> messageList = new ArrayList<Message>();
+        if (initMsgContentList != null && initMsgContentList.size() > 0) {
+            messageList = hl7Parse.doParse(initMsgContentList);
+            if (messageList != null && messageList.size() > 0) {
+                messageViewer.setInput(messageList.toArray());
+            } else {
+                messageViewer.setInput(null);
+            }
         } else {
-            messageViewer.setInput(null);
+            filePath = externalNode.getElementParameter(EParameterName.FILENAME.getName()).getValue().toString();
+            String filePathNoQuotes = TalendTextUtils.removeQuotes(filePath);
+            File file = Path.fromOSString(filePathNoQuotes).toFile();
+            if (file.exists()) {
+                messageList = hl7Parse.doParse(filePath, startChar, endChar);
+                if (messageList != null && messageList.size() > 0) {
+                    messageViewer.setInput(messageList.toArray());
+                } else {
+                    messageViewer.setInput(null);
+                }
+            }
         }
     }
 
@@ -226,25 +243,6 @@ public class HL7UI {
         labelProvider = new HL7MessageTreeLabelProvider();
         messageViewer.setContentProvider(contentProvider);
         messageViewer.setLabelProvider(labelProvider);
-    }
-
-    private Message getHL7MessageInput() {
-        GenericParser p = new GenericParser();
-        Message message = null;
-        try {
-            if (messageContent != null) {
-                message = p.parse(messageContent);
-            }
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-            MessageBox errorBox = new MessageBox(new Shell(), SWT.APPLICATION_MODAL | SWT.OK);
-            errorBox.setText("Parse error"); //$NON-NLS-1$
-            errorBox.setMessage("The content can't be parsed correctly,please check the file"); //$NON-NLS-1$
-            if (errorBox.open() == SWT.OK) {
-                errorBox.getParent().getShell().close();
-            }
-        }
-        return message;
     }
 
     public void redrawLinkers() {
@@ -346,8 +344,8 @@ public class HL7UI {
         return this.metadataEditor;
     }
 
-    public String getMessageContent() {
-        return this.messageContent;
+    public List<String> getInitMsgContentList() {
+        return this.initMsgContentList;
     }
 
     public TreeViewer getMessageViewer() {
