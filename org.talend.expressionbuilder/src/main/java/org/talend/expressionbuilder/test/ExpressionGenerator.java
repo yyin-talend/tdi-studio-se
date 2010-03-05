@@ -44,7 +44,7 @@ public class ExpressionGenerator {
             + NL
             + "//" //$NON-NLS-1$
             + NL
-            + "// Copyright (C) 2006-2007 Talend - www.talend.com" //$NON-NLS-1$
+            + "// Copyright (C) 2006-2010 Talend - www.talend.com" //$NON-NLS-1$
             + NL
             + "//" //$NON-NLS-1$
             + NL
