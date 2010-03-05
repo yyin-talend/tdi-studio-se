@@ -21,7 +21,7 @@
             value="platform:/plugin/org.talend.rcp/icons/appli_16x16.gif,platform:/plugin/org.talend.rcp/icons/appli_32x32.gif,platform:/plugin/org.talend.rcp/icons/appli_48x48.gif"/>
       <property
             name="aboutImage"
-            value="icons/about.gif"/>
+            value="icons/about.jpg"/>
       <property
             name="aboutText"
             value="%productBlurb"/>

@@ -4,7 +4,7 @@
 <product name="%productName" id="org.talend.rcp.branding.tos.product" application="org.talend.rcp.branding.tos.application" useFeatures="false">
 
    <aboutInfo>
-      <image path="icons/about.gif"/>
+      <image path="icons/about.jpg"/>
       <text>
          %productBlurb
       </text>
