@@ -126,18 +126,6 @@ class GenerateToolByDom4j{
 					generateCode(child,currEleName+"_"+index++,currEleName);
 				}
 			}
-			if(node.relatedColumn != null && (node.special & 2)==0 && (node.special & 1)==0){
-				if(!outputAsXSD && !allowEmpty){
-%>
-			if (<%=currEleName%>_<%=cid%>.content().size() == 0 
-				&& <%=currEleName%>_<%=cid%>.attributes().size() == 0 
-				&& <%=currEleName%>_<%=cid%>.declaredNamespaces().size() == 0) {
-                <%=parentName%>_<%=cid%>.remove(<%=currEleName%>_<%=cid%>);
-            }
-			
-<%
-				}
-			}
 		}
 	}
 	private void createElement(String currEleName, XMLNode node, String parentName){
@@ -791,6 +779,13 @@ if(groupTable.size()>0){					//init the generate tool.
 		}
 %>        
         nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
+<%
+		if(!("true").equals(allowEmpty)){
+%>
+		nestXMLTool_<%=cid%>.removeEmptyElement(doc_<%=cid%>.getRootElement());
+<%
+		}
+%>
         output_<%=cid%>.write(doc_<%=cid%>);
         output_<%=cid%>.close();
         doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
