@@ -30,7 +30,7 @@ if(priority.equals("1")){
 	label = "FATAL";
 }
 %>	
-	resumeUtil.addLog("USER_DEF_LOG", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "<%=label %>","",<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,"");
+	resumeUtil.addLog("USER_DEF_LOG", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "<%=label %>","",<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,"", "");
 <%
 			if (node.getProcess().getNodesOfType("tLogCatcher").size() > 0) {
 				List<INode> logCatchers = (List<INode>)node.getProcess().getNodesOfType("tLogCatcher");
