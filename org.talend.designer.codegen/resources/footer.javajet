@@ -46,7 +46,8 @@
 	private boolean globalResumeTicket = false;	 
 	    
     public boolean watch = false;	  
-    public int portStats = -1;
+	// portStats is null, it means don't execute the statistics
+	public Integer portStats = null;
     public int portTraces = 4334;
     public String clientHost;
     public String defaultClientHost = "localhost";
@@ -157,12 +158,16 @@
 <%
 		if (stats) {
 %>    	
-        // portStats = -1; //for testing
-        if (portStats < 0 || portStats > 65535) {
-            // issue:10869, the portStats is invalid, so this client socket can't open
-            System.err.println("The statistics socket port " + portStats + " is invalid.");
-            execStat = false;
-        }    	
+        if (portStats != null) {
+            // portStats = -1; //for testing
+            if (portStats < 0 || portStats > 65535) {
+                // issue:10869, the portStats is invalid, so this client socket can't open
+                System.err.println("The statistics socket port " + portStats + " is invalid.");
+                execStat = false;
+            }
+		}else{
+			execStat = false;
+		}            	
 <%
 		}
 %>    	
