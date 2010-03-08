@@ -1777,9 +1777,10 @@ if(!isVirtualOut) { // T_TM_M_320
                 	hashedMetadataTable = new HashedMetadataTable(outputConnection.getMetadataTable());
                 }                 
              %>   
-                <%=outputTableName %> = new <%=outputTableName %>Struct();
+                
                 
 <%   
+                boolean isGen = false;
                 StringBuilder sb = new StringBuilder();
                 for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
                     String outputColumnName = outputTableEntry.getName();
@@ -1809,7 +1810,9 @@ if(!isVirtualOut) { // T_TM_M_320
             			}	                        
                     
                     }
-
+					
+					isGen = true;
+                    
                     String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
                             JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName,
                             outputColumnName);
@@ -1845,11 +1848,16 @@ if(!isVirtualOut) { // T_TM_M_320
 
                 } // for entries  
                 
-                stringBuffer.append(sb.toString()); 	
+                 	
 %>                
+<%if(isGen){%>                
+                <%=outputTableName %> = new <%=outputTableName %>Struct();
+                <% stringBuffer.append(sb.toString()); %>
                 ErrorReject = ErrorReject_tmp;
                 <%=outputTableName %>.errorMessage = e.getMessage();
                 <%=outputTableName %>.errorStackTrace = ResumeUtil.getExceptionStackTrace(e);
+<%}%>                
+                
             <%    
             }
             %>			
