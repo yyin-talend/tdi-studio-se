@@ -27,6 +27,7 @@ List<IMetadataColumn> inputSchema = getInputSchema(node);
 List<IMetadataColumn> outputSchema = getOutputSchema(node);
 if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
+    boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
     if(isEnableSaveMemMode) {
         %>
         searchingStmt_<%=cid%>.close();
@@ -51,10 +52,15 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         updateForType3_<%=cid%>.close();
         <%
     }
+    
+	if (!useExistingConnection) {
     %>
     if(connection_<%=cid%> != null && !connection_<%=cid%>.isClosed()) {
         connection_<%=cid%>.close();
     }
+<%
+    }
+    %>
     globalMap.put("<%=cid %>_NB_LINE_UPDATED", nb_line_update_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_INSERTED", nb_line_inserted_<%=cid%>);
     <%

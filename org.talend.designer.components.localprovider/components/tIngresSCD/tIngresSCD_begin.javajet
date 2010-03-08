@@ -48,6 +48,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbType = INGRES;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
+     boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     %>
     <%
     if(!isEnableSaveMemMode) {    
@@ -60,9 +61,21 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     int nb_line_update_<%=cid%> = 0;
     int nb_line_inserted_<%=cid%> = 0;
     String tableName_<%=cid%> = <%=dbtable%>;
-    java.lang.Class.forName("com.ingres.jdbc.IngresDriver");
-    String connectionString_<%=cid %> = "jdbc:ingres://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
-    java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
+<%
+    if(useExistingConnection) {
+        String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+        String connectionName = "conn_" + connection;
+        %>
+        java.sql.Connection connection_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
+        <%        
+    } else {
+        %>
+    	java.lang.Class.forName("com.ingres.jdbc.IngresDriver");
+    	String connectionString_<%=cid %> = "jdbc:ingres://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+    	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
+<%        
+    }
+%>
     java.sql.Timestamp timestamp_<%=cid%> = null;
     String tmpValue_<%=cid%> = null;    
     <%

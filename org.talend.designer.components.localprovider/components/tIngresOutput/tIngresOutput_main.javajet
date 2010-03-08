@@ -37,6 +37,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+    
+    boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
 	//feature:2880
     getManager(dbmsId, cid, node);
@@ -645,19 +647,21 @@ skeleton="../templates/db_output_bulk.skeleton"
         }    
         
         ////////////commit every////////////
-        if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
-        %>
-            commitCounter_<%=cid%>++;
-            
-            if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
-            
-                conn_<%=cid%>.commit();
-                
-                commitCounter_<%=cid%>=0;
-            
-            }
-        
-        <%
-        }
+		if(!useExistingConnection) {
+	        if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+	        %>
+	            commitCounter_<%=cid%>++;
+	            
+	            if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+	            
+	                conn_<%=cid%>.commit();
+	                
+	                commitCounter_<%=cid%>=0;
+	            
+	            }
+	        
+	        <%
+	        }
+		}
     }
     %>
