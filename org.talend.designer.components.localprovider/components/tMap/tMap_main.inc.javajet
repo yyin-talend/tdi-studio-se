@@ -1451,6 +1451,14 @@ if(!isVirtualOut) { // T_TM_M_320
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexCurrentTable);
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
             String outputTableName = outputTable.getName();
+            
+            //add for feature:2445
+            if (!dieonerror){
+                if(outputTableName.equals("ErrorReject")){
+                	continue;
+                }
+            }
+            
             boolean connectionExists = true;
             IConnection outputConnection =null;
             if(outputTable.getIsJoinTableOf()==null){
@@ -1686,6 +1694,184 @@ if(!isVirtualOut) { // T_TM_M_320
 %>
 		} catch (Exception e) {
 			// do nothing
+
+        <%
+        
+        for (ExternalMapperTable varsTable : varsTables) {
+            List<ExternalMapperTableEntry> varsTableEntries = varsTable.getMetadataTableEntries();
+            if (varsTableEntries == null) {
+                continue;
+            }
+            String varsTableName = varsTable.getName();
+            String instanceVarName = varsTableName + "__" + uniqueNameComponent;
+            String className = instanceVarName + "__Struct";
+
+            %><%= cr + className + " " + varsTableName + " = " + instanceVarName + ";" %><%
+            
+            for (ExternalMapperTableEntry varsTableEntry : varsTableEntries) {
+                String varsColumnName = varsTableEntry.getName();
+                String varExpression = varsTableEntry.getExpression();
+                if (varExpression == null || varExpression.trim().length() == 0) {
+                    varExpression = JavaTypesManager.getDefaultValueFromJavaIdType(varsTableEntry.getType(),
+                            varsTableEntry.isNullable());
+                }
+                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(varExpression);
+                ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
+                for (TableEntryLocation location : entryLocations) {
+                    if (gm.isInputTable(varExpression)) {
+                        listCoupleForAddTablePrefix.add(location);
+                    }
+                }
+
+                String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
+                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName,
+                        varsColumnName);
+
+                if (checkingSyntax) {
+                    %><%= cr  + CodeGenerationUtils.buildJavaStartFieldKey(key) %><%
+                }
+
+                %><%= cr + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, varsTableName, varsColumnName, false) + " = " + varExpression
+                        + ";" %><%
+
+                if (checkingSyntax) {
+                    %><%= cr + CodeGenerationUtils.buildJavaEndFieldKey(key)%><%
+                }
+
+            }
+        }
+        
+        %>
+
+            <%
+		    Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
+		    for (IConnection outputConnection : outputConnections) {
+		        nameToOutputConnection.put(outputConnection.getName(), outputConnection);
+		    }
+		                
+            int dummyVarCounter = 0;
+            for(ExternalMapperTable outputTable : outputTables){
+            	
+            	String outputTableName = outputTable.getName(); 
+                
+                //add for feature:2445
+                if (!dieonerror){
+                    if(!outputTableName.equals("ErrorReject")){
+                    	continue;
+                    }
+                }
+                
+                List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
+                
+                boolean connectionExists = true;
+                IConnection outputConnection =null;
+                if(outputTable.getIsJoinTableOf()==null){
+                	outputConnection = nameToOutputConnection.get(outputTableName);
+                }else{
+                	outputConnection = nameToOutputConnection.get(outputTable.getIsJoinTableOf());
+                }
+                HashedMetadataTable hashedMetadataTable = null;
+                if (outputTableEntries == null || outputConnection == null) {
+                    connectionExists = false;
+                } else {
+                	hashedMetadataTable = new HashedMetadataTable(outputConnection.getMetadataTable());
+                }                 
+             %>   
+                <%=outputTableName %> = new <%=outputTableName %>Struct();
+                
+<%   
+                StringBuilder sb = new StringBuilder();
+                for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
+                    String outputColumnName = outputTableEntry.getName();
+                    //System.out.println(outputColumnName);
+                    if(outputColumnName.equals("errorMessage") || outputColumnName.equals("errorStackTrace")){
+                    	continue;
+                    }  
+                    
+                    IMetadataColumn metadataColumnFromConn = null;
+                    if(connectionExists) {
+                        metadataColumnFromConn = hashedMetadataTable.getColumn(outputColumnName);
+                    }
+                    
+                    String outputExpression = outputTableEntry.getExpression();
+                    if (outputExpression == null || outputExpression.trim().length() == 0) {
+                    	if(metadataColumnFromConn == null) {
+                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(outputTableEntry
+                                    .getType(), outputTableEntry.isNullable());
+                        } else {
+                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(metadataColumnFromConn
+                                    .getTalendType(), metadataColumnFromConn.isNullable());
+                        }
+                    } else {
+                    
+                    	if(metadataColumnFromConn == null) {
+            				continue;
+            			}	                        
+                    
+                    }
+
+                    String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
+                            JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName,
+                            outputColumnName);
+                    if (checkingSyntax) {
+                        sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
+                    }
+
+                    String assignationVar = null;
+                    if (connectionExists) {
+                    	if(outputTable.getIsJoinTableOf()==null){
+                    		assignationVar = gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName + "_tmp",outputColumnName, false);
+                    	}else {
+                        	assignationVar =gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTable.getIsJoinTableOf() + "_tmp",outputColumnName, false);
+                        }     
+                    } else {
+                    	if(metadataColumnFromConn == null) {
+                            assignationVar = JavaTypesManager.getTypeToGenerate(outputTableEntry.getType(),
+                                outputTableEntry.isNullable())
+                                + " dummyVar" + (dummyVarCounter++);
+                        } else {
+                            assignationVar = JavaTypesManager.getTypeToGenerate(metadataColumnFromConn
+                                    .getTalendType(), metadataColumnFromConn.isNullable())
+                                + " dummyVar" + (dummyVarCounter++);
+                        }
+                    }
+                    String expression = assignationVar + " = " + outputExpression + ";";
+
+                    sb.append(cr).append(expression);
+
+                    if (checkingSyntax) {
+                        sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
+                    }
+
+                } // for entries  
+                
+                stringBuffer.append(sb.toString()); 	
+%>                
+                ErrorReject = ErrorReject_tmp;
+                <%=outputTableName %>.errorMessage = e.getMessage();
+                <%=outputTableName %>.errorStackTrace = ResumeUtil.getExceptionStackTrace(e);
+            <%    
+            }
+            %>			
+			
+    
+            <%
+            //clear others branches.
+            for(ExternalMapperTable outputTable : outputTables){
+            	
+            	String outputTableName = outputTable.getName(); 
+                
+                //add for feature:2445
+                if (!dieonerror){
+                    if(outputTableName.equals("ErrorReject")){
+                    	continue;
+                    }
+                }
+             %>   
+                <%=outputTableName %> = null;
+            <%    
+            }
+            %>			
 	}
 <%
 	}
