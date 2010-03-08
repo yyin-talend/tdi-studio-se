@@ -62,7 +62,18 @@
 				<ITEM NAME="NULLABLE" FIELD="CHECK" VALUE="false" />
 				<ITEM NAME="MAX_LENGTH" FIELD="CHECK" VALUE="false" />				
 			</ITEMS>
-		</PARAMETER> 
+		</PARAMETER> 		
+		
+		<PARAMETER NAME="SUB_STRING" FIELD="CHECK" NUM_ROW="24" REQUIRED="true"
+			NOT_SHOW_IF="(CHECK_ALL == 'true' or CHECK_ANOTHER == 'true')" GROUP="MODE">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER NAME="NOTE_CUSTOMER" FIELD="LABEL" REQUIRED="true" NUM_ROW="25" COLOR="255;0;0" GROUP="MODE" SHOW_IF="CUSTOMER == 'true'">
+          <DEFAULT>Please note: 
+(1) Nullable setting in this table is more preferential than the default schema.
+(2) Length checking is base on the value of the default schema, if exceed, either trim the field if above option checked or reject the row.</DEFAULT>
+        </PARAMETER>
 		
 		<PARAMETER NAME="CHECK_ANOTHER" FIELD="RADIO" NUM_ROW="31" GROUP="MODE">
 			<DEFAULT>false</DEFAULT>
@@ -75,12 +86,7 @@
 		
 		<PARAMETER NAME="NOTE_CHECK_ANOTHER" FIELD="LABEL" REQUIRED="true" NUM_ROW="35" COLOR="255;0;0" GROUP="MODE" SHOW_IF="CHECK_ANOTHER == 'true'">
           <DEFAULT>Note: to keep the schema column's name all or part the same with the inputting schema, it only checks the same fields</DEFAULT>
-        </PARAMETER>
-		
-		<PARAMETER NAME="SUB_STRING" FIELD="CHECK" NUM_ROW="41" REQUIRED="true"
-			NOT_SHOW_IF="(CHECK_ALL == 'true' or CHECK_ANOTHER == 'true')">
-			<DEFAULT>false</DEFAULT>
-		</PARAMETER>
+        </PARAMETER>		
 		
 		<PARAMETER NAME="INFO" FIELD="LABEL" REQUIRED="true" NUM_ROW="51" COLOR="0;0;0">
           <DEFAULT>The errCode value is a summation of all error code:
