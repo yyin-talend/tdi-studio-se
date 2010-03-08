@@ -182,10 +182,12 @@
     		
     		if (contextStr.compareTo("Default")!=0) {
     			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");
-    			//if (inContext!=null) {
+    			if (inContext!=null) {
 					context.load(inContext);
 					inContext.close();
-				//}
+				}else {
+					throw new java.io.IOException("Could not find the context " + contextStr);
+				}				
 			}
 			
 			if(!context_param.isEmpty()) {						
