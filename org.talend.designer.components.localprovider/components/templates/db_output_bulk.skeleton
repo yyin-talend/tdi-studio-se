@@ -1016,6 +1016,14 @@ public class CLASS {
             return setStmt.toString();
         }     
         
+		public String getCopyFromCSVSQL(List<IMetadataColumn> columnList, 
+				String fieldDelimiter, 
+				String newLineChar,
+				String nullIndicator) {
+		return null;
+			
+		}
+        
     }
     
     public class AS400Manager extends Manager {
@@ -1363,7 +1371,46 @@ public class CLASS {
         }
         protected String getRProtectedChar() {
             return "\\\"";
-        }        
+        }  
+        
+    	public String getCopyFromCSVSQL(List<IMetadataColumn> columnList, String fieldDelimiter, 
+				String recordDelimiter, String nullIndicator) {		
+    		StringBuilder copyBulkSQL = new StringBuilder();
+			copyBulkSQL.append("COPY TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+			copyBulkSQL.append(" (\"+");	            
+			int counter = 0;
+			for(IMetadataColumn column : columnList) {
+				counter++;
+				// add each table field and separator
+				copyBulkSQL.append( 
+				"\n\"\\n" +
+				  column.getOriginalDbColumnName() 
+				+ "="
+				+ "char(0)");
+			
+				// add these only if not last entry
+				if (counter < columnList.size()){
+					copyBulkSQL.append(
+					//convertDelim(fieldDelimiter)
+					fieldDelimiter
+					+ " ,"
+					+ "\""
+					+ "+"
+					);
+				} else {
+					copyBulkSQL.append(recordDelimiter);
+					copyBulkSQL.append(")");
+				}     	
+			} 
+			return copyBulkSQL.toString();
+		} 
+
+	public String getTruncateTableSQL() {
+		StringBuilder truncateTableSQL = new StringBuilder();
+		truncateTableSQL.append("MODIFY " + getLProtectedChar() + "\" + tableName_" 
+		+ cid + " + \"\\\" TO TRUNCATED");
+		return truncateTableSQL.toString();
+		}				        
     }
     
     public class InterbaseManager extends Manager {
