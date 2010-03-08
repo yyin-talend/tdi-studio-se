@@ -1411,15 +1411,18 @@ if(!isVirtualOut) { // T_TM_M_320
                     atLeastOneReject = true;
                 }
             }
-
-			IConnection outputConnection = nameToOutputConnection.get(outputTableName);
-            if (outputConnection != null) {
-                sb.append(cr + outputTableName + " = null;");
-            }
+				IConnection outputConnection = nameToOutputConnection.get(outputTableName);
+            if (outputTable.getIsJoinTableOf() == null /* == main table */ && !hasJoinedTable(outputTableName,data) /* if main table has no joined table linked */ ) {
+            	if (outputConnection != null) {
+                	sb.append(cr + outputTableName + " = null;");
+            	}
                 if(checkingSyntax 
                 || !checkingSyntax && outputConnection != null) {
 	            	lastValidOutputTableName = outputTableName;
 	            }
+			} else if(hasJoinedTable(outputTableName,data)&& outputConnection!=null){
+				sb.append(cr + outputTableName + "_List.clear();");
+			}
 
         }
         // ///////////////////////////////////////////////////////////////////
@@ -1449,7 +1452,12 @@ if(!isVirtualOut) { // T_TM_M_320
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
             String outputTableName = outputTable.getName();
             boolean connectionExists = true;
-            IConnection outputConnection = nameToOutputConnection.get(outputTableName);
+            IConnection outputConnection =null;
+            if(outputTable.getIsJoinTableOf()==null){
+            	outputConnection = nameToOutputConnection.get(outputTableName);
+            }else{
+            	outputConnection = nameToOutputConnection.get(outputTable.getIsJoinTableOf());
+            }
             HashedMetadataTable hashedMetadataTable = null;
             if (outputTableEntries == null || outputConnection == null) {
                 connectionExists = false;
@@ -1554,6 +1562,10 @@ if(!isVirtualOut) { // T_TM_M_320
 	                    }
 	                }
 
+					if(outputTable.getIsJoinTableOf()!=null){
+						sb.append(cr).append(outputTable.getIsJoinTableOf() + "_tmp= new "+outputTable.getIsJoinTableOf() +"Struct();");
+						sb.append(cr);
+					}
 	                if (outputTableEntries != null && (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
 	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax)) {
 	                    for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
@@ -1589,8 +1601,11 @@ if(!isVirtualOut) { // T_TM_M_320
 	
 	                        String assignationVar = null;
 	                        if (connectionExists) {
-	                            assignationVar = gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName + "_tmp",
-	                                    outputColumnName, false);
+	                        	if(outputTable.getIsJoinTableOf()==null){
+	                        		assignationVar = gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName + "_tmp",outputColumnName, false);
+	                        	}else {
+	                            	assignationVar =gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTable.getIsJoinTableOf() + "_tmp",outputColumnName, false);
+	                            }     
 	                        } else {
 	                        	if(metadataColumnFromConn == null) {
 		                            assignationVar = JavaTypesManager.getTypeToGenerate(outputTableEntry.getType(),
@@ -1613,8 +1628,17 @@ if(!isVirtualOut) { // T_TM_M_320
 	                    } // for entries
 	
 	                    if (connectionExists) {
-	                        sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
+	                    	if(hasJoinedTable(outputTableName, data)){
+	                    	 	sb.append(cr + outputTableName + "_List.add(" + outputTableName + "_tmp);");
+	                    	} else if (outputTable.getIsJoinTableOf()!=null) {
+	                    		sb.append(cr + outputTable.getIsJoinTableOf() + "_List.add(" + outputTable.getIsJoinTableOf() + "_tmp);");
+	                    	} else {
+	                        	sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
+	                        }
 	                    }
+	                    
+	                    
+	                    
 
 	                }
 	                if (closeFilterOrRejectBracket) {
@@ -1666,5 +1690,3 @@ if(!isVirtualOut) { // T_TM_M_320
 <%
 	}
 %>
-
-

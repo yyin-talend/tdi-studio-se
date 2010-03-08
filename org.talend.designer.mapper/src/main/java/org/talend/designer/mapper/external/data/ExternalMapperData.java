@@ -154,4 +154,21 @@ public class ExternalMapperData implements IExternalData {
         return delegate.getExpressionColumns(expression, types);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IExternalData#getJoinTableNames(java.lang.String)
+     */
+    public List<String> getJoinedTableNames(String mainTable) {
+        List<String> joinedTableNames = new ArrayList<String>();
+        if (getOutputTables() != null) {
+            for (ExternalMapperTable table : getOutputTables()) {
+                if (table.getIsJoinTableOf() != null && table.getIsJoinTableOf().equals(mainTable)) {
+                    joinedTableNames.add(table.getName());
+                }
+            }
+        }
+        return joinedTableNames;
+    }
+
 }

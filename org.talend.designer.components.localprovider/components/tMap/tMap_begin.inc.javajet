@@ -57,6 +57,9 @@
 		
 		
 %>
+
+
+
 // ###############################
 // # Lookup's keys initialization
 <%
@@ -275,6 +278,18 @@ class  <%=className%>  {
         }
 %>
 // ###############################
+
+<%
+        for (ExternalMapperTable table : data.getOutputTables()) {
+            if (hasJoinedTable(table.getName(),data)&&nameToOutputConnection.get(table.getName())!=null) {
+%>
+		List<<%= table.getName()%>Struct> <%= table.getName()%>_List = new java.util.ArrayList<<%= table.getName()%>Struct>();
+<%
+            }
+        }
+
+%>
+
 
 
 <%

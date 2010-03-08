@@ -340,7 +340,12 @@ public abstract class DataMapTableView extends Composite {
 
         nameLabel = new Label(headerComposite, SWT.NONE);
         nameLabel.setFont(FontProviderMapper.getFont(FontInfo.FONT_SYSTEM_BOLD));
-        nameLabel.setText(abstractDataMapTable.getName());
+        if (abstractDataMapTable instanceof OutputTable && ((OutputTable) abstractDataMapTable).getIsJoinTableOf() != null) {
+            nameLabel.setText("Join Table " + abstractDataMapTable.getName() + " linked with "
+                    + ((OutputTable) abstractDataMapTable).getIsJoinTableOf());
+        } else {
+            nameLabel.setText(abstractDataMapTable.getName());
+        }
         nameLabel.setToolTipText(abstractDataMapTable.getName());
         GridData dataNameLabel = new GridData(GridData.FILL_HORIZONTAL);
         dataNameLabel.minimumWidth = nameLabel.getText().length() * 8;

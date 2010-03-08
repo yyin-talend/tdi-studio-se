@@ -403,7 +403,8 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             for (ExternalMapperTable table : outputTables) {
                 if (table.getName().equals(oldName)) {
                     table.setName(newName);
-                    break;
+                } else if (table.getIsJoinTableOf() != null && table.getIsJoinTableOf().equals(oldName)) {
+                    table.setIsJoinTableOf(newName);
                 }
             }
         }
@@ -719,4 +720,17 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#isUseLoopOnConditionalOutput(java.lang.String)
+     */
+    public boolean isUseLoopOnConditionalOutput(String outputName) {
+        for (ExternalMapperTable table : externalData.getOutputTables()) {
+            if (table.getIsJoinTableOf() != null && table.getIsJoinTableOf().equals(outputName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -110,4 +110,14 @@ public class ExternalDbMapData implements IExternalData {
         return delegate.getExpressionColumns(expression, types);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IExternalData#getJoinTableNames(java.lang.String)
+     */
+    public List<String> getJoinedTableNames(String mainTable) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

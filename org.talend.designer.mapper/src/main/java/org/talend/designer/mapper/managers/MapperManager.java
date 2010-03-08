@@ -34,6 +34,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -380,6 +381,19 @@ public class MapperManager extends AbstractMapperManager {
         return this.tableManager.getVarsTables();
     }
 
+    public OutputTable getOutputTableByName(String name) {
+        if (name == null) {
+            return null;
+        }
+        for (OutputTable table : getOutputTables()) {
+            if (name.equals(table.getName())) {
+                return table;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * DOC amaumont Comment method "renameProcessColumnName".
      * 
@@ -520,17 +534,45 @@ public class MapperManager extends AbstractMapperManager {
      * DOC amaumont Comment method "addOutput".
      */
     public void addOutput() {
+        String joinTableName = null;
+        OutputTable abstractDataMapTable = null;
 
-        String tableName = uiManager.openNewOutputCreationDialog();
-        if (tableName == null) {
+        String name = uiManager.openNewOutputCreationDialog();
+        if (name == null) {
             return;
         }
 
-        IProcess process = getAbstractMapComponent().getProcess();
-        process.addUniqueConnectionName(tableName);
+        String[] split = name.split(uiManager.NAME_SEPARATOR);
+        String tableName = split[0];
+        boolean isCreatingJoinTable = split.length == 2;
+        if (isCreatingJoinTable) {
+            joinTableName = split[1];
+        }
 
-        MetadataTable metadataTable = new MetadataTable();
-        metadataTable.setTableName(tableName);
+        IProcess process = getAbstractMapComponent().getProcess();
+        OutputTable orignalOutputTable = null;
+        if (isCreatingJoinTable) {
+            orignalOutputTable = getOutputTableByName(tableName);
+            if (orignalOutputTable != null) {
+                IMetadataTable metadataTable = orignalOutputTable.getMetadataTable();
+                if (metadataTable != null) {
+                    process.addUniqueConnectionName(joinTableName);
+                    abstractDataMapTable = new OutputTable(this, metadataTable, joinTableName);
+                    abstractDataMapTable.setIsJoinTableOf(tableName);
+                }
+            }
+
+        } else {
+            process.addUniqueConnectionName(tableName);
+            MetadataTable metadataTable = new MetadataTable();
+            metadataTable.setTableName(tableName);
+            abstractDataMapTable = new OutputTable(this, metadataTable, tableName);
+        }
+
+        if (abstractDataMapTable == null) {
+            return;
+        }
+        abstractDataMapTable.initFromExternalData(null);
 
         List<DataMapTableView> outputsTablesView = uiManager.getOutputsTablesView();
         int sizeOutputsView = outputsTablesView.size();
@@ -539,12 +581,10 @@ public class MapperManager extends AbstractMapperManager {
             lastChild = outputsTablesView.get(sizeOutputsView - 1);
         }
 
-        OutputTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);
-        abstractDataMapTable.initFromExternalData(null);
-
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
         DataMapTableView dataMapTableView = uiManager.createNewOutputTableView(lastChild, abstractDataMapTable,
                 tablesZoneViewOutputs);
+
         tablesZoneViewOutputs.setSize(tablesZoneViewOutputs.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         tablesZoneViewOutputs.layout();
         uiManager.moveOutputScrollBarZoneToMax();
@@ -639,14 +679,38 @@ public class MapperManager extends AbstractMapperManager {
 
     public void removeSelectedOutput() {
         DataMapTableView currentSelectedDataMapTableView = uiManager.getCurrentSelectedOutputTableView();
+        String append = "";
+        OutputTable outputTable = ((OutputTable) currentSelectedDataMapTableView.getDataMapTable());
+        List<DataMapTableView> relatedOutputsTableView = null;
+        if (outputTable.getIsJoinTableOf() == null) {
+            relatedOutputsTableView = uiManager.getRelatedOutputsTableView(currentSelectedDataMapTableView);
+            if (relatedOutputsTableView != null && !relatedOutputsTableView.isEmpty()) {
+                append = " and it's join table ";
+                for (DataMapTableView tableView : relatedOutputsTableView) {
+                    IDataMapTable retrieveAbstractDataMapTable = this.retrieveAbstractDataMapTable(tableView);
+                    if (retrieveAbstractDataMapTable != null) {
+                        append = append + "'" + retrieveAbstractDataMapTable.getName() + " ' ,";
+                    }
+                }
+                append = append.substring(0, append.length() - 1);
+            }
+        }
 
         if (currentSelectedDataMapTableView != null) {
             String tableName = currentSelectedDataMapTableView.getDataMapTable().getName();
             if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), Messages
                     .getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
-                    Messages.getString("MapperManager.removeOutputTableTitleMessage") + tableName + "' ?")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("MapperManager.removeOutputTableTitleMessage") + tableName + " '" + append + "?")) { //$NON-NLS-1$ //$NON-NLS-2$
                 IProcess process = getAbstractMapComponent().getProcess();
                 uiManager.removeOutputTableView(currentSelectedDataMapTableView);
+
+                // remove join table
+                if (outputTable.getIsJoinTableOf() == null && relatedOutputsTableView != null) {
+                    for (DataMapTableView view : relatedOutputsTableView) {
+                        uiManager.removeOutputTableView(view);
+                        process.removeUniqueConnectionName(view.getDataMapTable().getName());
+                    }
+                }
                 uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
                 process.removeUniqueConnectionName(currentSelectedDataMapTableView.getDataMapTable().getName());
             }

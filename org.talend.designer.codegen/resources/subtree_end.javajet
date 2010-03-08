@@ -17,6 +17,14 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	if(subTreeArgument.isSourceComponentHasConditionnalOutputs() 
 		&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
 %>
+<%
+	if (connection.getSource().isUseLoopOnConditionalOutput(connection.getName())) {
+%>
+		} // end of joined table loop
+		<%=connection.getName()%>_List.clear();
+<%
+	}
+%>
 
 } // End of branch "<%= connection.getName()%>"
 

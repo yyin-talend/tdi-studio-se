@@ -58,6 +58,11 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
      */
     private boolean rejectInnerJoin;
 
+    /**
+     * Used only for outputs.
+     */
+    private String isJoinTableOf;
+
     private String expressionFilter;
 
     private boolean activateExpressionFilter;
@@ -406,4 +411,11 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
         return true;
     }
 
+    public String getIsJoinTableOf() {
+        return this.isJoinTableOf;
+    }
+
+    public void setIsJoinTableOf(String isJoinTableOf) {
+        this.isJoinTableOf = isJoinTableOf;
+    }
 }

@@ -191,7 +191,9 @@ public class MapperMain {
         List<OutputTable> tables = mapperManager.getOutputTables();
         List<IMetadataTable> metadataTables = new ArrayList<IMetadataTable>(tables.size());
         for (OutputTable table : tables) {
-            metadataTables.add(table.getMetadataTable());
+            if (table.getIsJoinTableOf() == null) {
+                metadataTables.add(table.getMetadataTable());
+            }
         }
         return metadataTables;
     }

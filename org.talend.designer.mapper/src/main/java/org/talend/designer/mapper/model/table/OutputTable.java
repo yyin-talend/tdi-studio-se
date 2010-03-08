@@ -47,6 +47,8 @@ public class OutputTable extends AbstractInOutTable {
 
     private boolean rejectInnerJoin;
 
+    private String isJoinTableOf;
+
     private ExtendedTableModel<FilterTableEntry> tableFiltersEntriesModel;
 
     public OutputTable(MapperManager mapperManager, IMetadataTable metadataTable, String name) {
@@ -60,13 +62,12 @@ public class OutputTable extends AbstractInOutTable {
         if (externalMapperTable != null) {
             this.reject = externalMapperTable.isReject();
             this.rejectInnerJoin = externalMapperTable.isRejectInnerJoin();
-            List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable
-                    .getConstraintTableEntries();
+            this.isJoinTableOf = externalMapperTable.getIsJoinTableOf();
+            List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable.getConstraintTableEntries();
             if (externalConstraintTableEntries != null) {
                 if (!mapperManager.isAdvancedMap()) {
                     for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
-                        FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry
-                                .getExpression());
+                        FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry.getExpression());
                         // mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
                         addFilterEntry(filterTableEntry);
                     }
@@ -172,6 +173,14 @@ public class OutputTable extends AbstractInOutTable {
             }
         }
         return hasReadOnlyMetadataColumns;
+    }
+
+    public String getIsJoinTableOf() {
+        return this.isJoinTableOf;
+    }
+
+    public void setIsJoinTableOf(String isJoinTableOf) {
+        this.isJoinTableOf = isJoinTableOf;
     }
 
 }

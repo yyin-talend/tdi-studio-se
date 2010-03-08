@@ -92,8 +92,17 @@ public class CLASS {
 	
 		return subprocessStartNode;
 	}
+    public boolean hasJoinedTable(String tableNameToTest, ExternalMapperData data) {
+        for (ExternalMapperTable table : data.getOutputTables()) {
+            if (table.getIsJoinTableOf() != null && table.getIsJoinTableOf().equals(tableNameToTest)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public String generate(Object argument) {
 
-    }
+    }    
 }

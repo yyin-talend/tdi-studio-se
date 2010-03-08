@@ -3066,4 +3066,12 @@ public class Node extends Element implements INode {
         return needMultiSchema;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#isUseLoopOnConditionalOutput(java.lang.String)
+     */
+    public boolean isUseLoopOnConditionalOutput(String outputName) {
+        return false;
+    }
 }

@@ -1530,6 +1530,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
                         && checkValidConnectionName(metadataTable.getTableName())) {
                     addUniqueConnectionName(metadataTable.getTableName());
+                    // for tmap 11884
+                    if (nc.getExternalData() != null) {
+                        List<String> joinedTableNames = nc.getExternalData().getJoinedTableNames(metadataTable.getTableName());
+                        for (String joinTableName : joinedTableNames) {
+                            addUniqueConnectionName(joinTableName);
+                        }
+                    }
                 } else {
                     if (metadataTable.getTableName() == null) {
                         metadataTable.setTableName(nc.getUniqueName());
