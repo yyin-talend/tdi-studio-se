@@ -18,7 +18,8 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String numMassInsert = ElementParameterParser.getValue(node,"__COMMIT_LEVEL__");
+boolean isDropItem = ("true").equals(ElementParameterParser.getValue(node,"__USE_DROP_ITEM__"));
+String partPath = ElementParameterParser.getValue(node,"__PART_PATH__");
 
 boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 
@@ -48,10 +49,15 @@ org.talend.mdm.webservice.WSItemPK wsPK_<%=cid %> = new org.talend.mdm.webservic
 ///////////////////////	
 
 try{
+<%
+if(isDropItem){
+%>
+	org.talend.mdm.webservice.WSDropItem item_<%=cid %> = new org.talend.mdm.webservice.WSDropItem(wsPK_<%=cid %>,<%=partPath %>);
+	xtentisWS_<%=cid %>.dropItem(item_<%=cid %>);
+<%}else{%>
 	org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>);
-
 	xtentisWS_<%=cid %>.deleteItem(item_<%=cid %>);
-
+<%}%>
 }catch(Exception e){
 <%
 if(dieOnError){
