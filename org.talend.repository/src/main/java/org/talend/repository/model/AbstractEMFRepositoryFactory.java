@@ -57,6 +57,7 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.routines.RoutineLibraryMananger;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -865,6 +866,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                     break;
                 }
             }
+        }
+        // MOD mzhao Temporary return original object. In this case, the object hasn't been updated from svn server.
+        if (allVersion.size() == 0) {
+            allVersion.add(new RepositoryObject(property));
         }
 
     }
