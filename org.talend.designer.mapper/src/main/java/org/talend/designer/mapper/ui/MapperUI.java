@@ -278,7 +278,7 @@ public class MapperUI {
 
             if (uiProperties.getBoundsMapper().equals(ExternalMapperUiProperties.DEFAULT_BOUNDS_MAPPER)) {
                 mapperShell.setMaximized(true);
-                boundsMapper = display.getBounds();
+                // boundsMapper = display.getBounds(); //no need this, will cause the full problems.
             } else {
                 // // move shell at outer of display zone to avoid visual effect on loading
                 // Rectangle tmpBoundsMapper = new Rectangle(-boundsMapper.width, boundsMapper.y, boundsMapper.width,
@@ -291,8 +291,8 @@ public class MapperUI {
                 if (boundsMapper.y < 0) {
                     boundsMapper.y = 0;
                 }
+                mapperShell.setBounds(boundsMapper);
             }
-            mapperShell.setBounds(boundsMapper);
         }
         createCompositeContent(model);
         mapperShell.open();
@@ -1023,6 +1023,10 @@ public class MapperUI {
 
     public ScrolledComposite getScrolledCompositeViewOutputs() {
         return sc3;
+    }
+
+    public ScrolledComposite getScrolledCompositeViewVars() {
+        return sc2;
     }
 
     public ScrolledComposite getScrolledCompositeViewInputs() {

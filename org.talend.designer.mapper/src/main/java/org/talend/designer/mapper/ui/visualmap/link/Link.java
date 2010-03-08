@@ -97,6 +97,14 @@ public class Link implements IMapperLink {
 
         int point1yOffset = point1.y + yOffsetPoint1;
         int point2yOffset = point2.y + yOffsetPoint2;
+        // feature 11742
+        final int yOffsetConstant = 5;
+        if (point1yOffset < -yOffsetConstant) {
+            point1yOffset = -yOffsetConstant;
+        }
+        if (point2yOffset < -yOffsetConstant) {
+            point2yOffset = -yOffsetConstant;
+        }
 
         drawableLink.setPoint1(new Point(point1xForTraceLink, point1yOffset));
         drawableLink.setPoint2(new Point(point2xForTraceLink, point2yOffset));
