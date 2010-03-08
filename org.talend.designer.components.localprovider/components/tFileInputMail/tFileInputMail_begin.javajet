@@ -173,10 +173,11 @@ try{
                     
                     if (attachfileName<%=cid%>.indexOf("=?") != -1){
                       int m_<%=cid%> = 2, n_<%=cid%>;
-                      n_<%=cid%> = attachfileName<%=cid%>.indexOf(63, m_<%=cid%>); // the first ? location                      
+                      n_<%=cid%> = attachfileName<%=cid%>.indexOf(63, m_<%=cid%>); // the first ? location 
+                      String sCharSet_<%=cid%> = attachfileName<%=cid%>.substring(attachfileName<%=cid%>.indexOf("=?") + 2, n_<%=cid%>); // the character set value         
                       m_<%=cid%> = n_<%=cid%> + 1;                      
                       n_<%=cid%> = attachfileName<%=cid%>.indexOf(63, m_<%=cid%>); // the second ? location                      
-                      String flag_<%=cid%> = attachfileName<%=cid%>.substring(m_<%=cid%>, n_<%=cid%>);                      
+                      String flag_<%=cid%> = attachfileName<%=cid%>.substring(m_<%=cid%>, n_<%=cid%>);
                       m_<%=cid%> = n_<%=cid%> + 1;
                       n_<%=cid%> = attachfileName<%=cid%>.indexOf("?=", m_<%=cid%>);                      
                       String sNameCode_<%=cid%> = attachfileName<%=cid%>.substring(m_<%=cid%>, n_<%=cid%>);                  
@@ -193,7 +194,7 @@ try{
                         int k_<%=cid%> = byteArrIS_<%=cid%>.available();
                         byte[] arrByte_<%=cid%> = new byte[k_<%=cid%>];
                         k_<%=cid%> = ((java.io.InputStream) (obj_<%=cid%>)).read(arrByte_<%=cid%>, 0, k_<%=cid%>);
-                        attachfileName<%=cid%> = new String(arrByte_<%=cid%>, 0, k_<%=cid%>);
+                        attachfileName<%=cid%> = new String(arrByte_<%=cid%>, 0, k_<%=cid%>, sCharSet_<%=cid%>);
                       }
                     }
                     
