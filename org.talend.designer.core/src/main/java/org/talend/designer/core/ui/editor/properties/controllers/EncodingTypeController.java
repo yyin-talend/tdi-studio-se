@@ -128,96 +128,95 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         CCombo combo;
         Control lastControlUsed = lastControl;
 
-        if (elem instanceof Node) {
-            combo = new CCombo(subComposite, SWT.BORDER);
-            IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
-            // see 10693 ,only for component tChangeFileEncoding
-            if ("INENCODING".equals(param.getName())) {
-                addEncodingType(encodingTypeParameter);
-            }
+        combo = new CCombo(subComposite, SWT.BORDER);
+        IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
+        // see 10693 ,only for component tChangeFileEncoding
+        if ("INENCODING".equals(param.getName())) {
+            addEncodingType(encodingTypeParameter);
+        }
 
-            FormData data;
-            String[] originalList = encodingTypeParameter.getListItemsDisplayName();
-            List<String> stringToDisplay = new ArrayList<String>();
-            String[] itemsShowIf = encodingTypeParameter.getListItemsShowIf();
-            if (itemsShowIf != null) {
-                String[] itemsNotShowIf = encodingTypeParameter.getListItemsNotShowIf();
-                for (int i = 0; i < originalList.length; i++) {
-                    if (encodingTypeParameter.isShow(itemsShowIf[i], itemsNotShowIf[i], elem.getElementParameters())) {
-                        stringToDisplay.add(originalList[i]);
-                    }
-                }
-            } else {
-                for (int i = 0; i < originalList.length; i++) {
+        FormData data;
+        String[] originalList = encodingTypeParameter.getListItemsDisplayName();
+        List<String> stringToDisplay = new ArrayList<String>();
+        String[] itemsShowIf = encodingTypeParameter.getListItemsShowIf();
+        if (itemsShowIf != null) {
+            String[] itemsNotShowIf = encodingTypeParameter.getListItemsNotShowIf();
+            for (int i = 0; i < originalList.length; i++) {
+                if (encodingTypeParameter.isShow(itemsShowIf[i], itemsNotShowIf[i], elem.getElementParameters())) {
                     stringToDisplay.add(originalList[i]);
                 }
             }
-
-            combo.setItems(stringToDisplay.toArray(new String[0]));
-            combo.setEditable(false);
-            combo.setEnabled(!encodingTypeParameter.isReadOnly() && !encodingTypeParameter.isRepositoryValueUsed());
-            combo.setData(PARAMETER_NAME, param.getName());
-            if (elem instanceof Node) {
-                combo.setToolTipText(VARIABLE_TOOLTIP + encodingTypeParameter.getVariableName());
+        } else {
+            for (int i = 0; i < originalList.length; i++) {
+                stringToDisplay.add(originalList[i]);
             }
-
-            CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, encodingTypeParameter.getDisplayName());
-            data = new FormData();
-            if (lastControl != null) {
-                data.left = new FormAttachment(lastControl, 0);
-            } else {
-                data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
-            }
-            data.top = new FormAttachment(0, top);
-            labelLabel.setLayoutData(data);
-            if (numInRow != 1) {
-                labelLabel.setAlignment(SWT.RIGHT);
-            }
-            // *********************
-            data = new FormData();
-            int currentLabelWidth = STANDARD_LABEL_WIDTH;
-            GC gc = new GC(labelLabel);
-            Point labelSize = gc.stringExtent(encodingTypeParameter.getDisplayName());
-            gc.dispose();
-
-            if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
-                currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
-            }
-
-            if (numInRow == 1) {
-                if (lastControl != null) {
-                    data.left = new FormAttachment(lastControl, currentLabelWidth);
-                } else {
-                    data.left = new FormAttachment(0, currentLabelWidth);
-                }
-
-            } else {
-                data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
-            }
-            data.top = new FormAttachment(0, top);
-            combo.setLayoutData(data);
-            combo.addSelectionListener(selectionChangeListener);
-            lastControlUsed = combo;
-
-            String tempValue = (String) param.getValue();
-            tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-            tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
-
-            if (!ArrayUtils.contains(encodingTypeParameter.getListItemsValue(), tempValue)) {
-                encodingTypeParameter.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
-            }
-            String encodingType = (String) encodingTypeParameter.getValue();
-
-            if (encodingType != null && encodingType.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-                lastControlUsed = addCustomEncodingTypeText(subComposite, param, lastControlUsed, numInRow, nbInRow, top);
-            }
-
-            // **********************
-            hashCurControls.put(param.getName() + NAME_SEPARATOR + encodingTypeParameter.getName(), combo);
-
-            Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-            dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         }
+
+        combo.setItems(stringToDisplay.toArray(new String[0]));
+        combo.setEditable(false);
+        combo.setEnabled(!encodingTypeParameter.isReadOnly() && !encodingTypeParameter.isRepositoryValueUsed());
+        combo.setData(PARAMETER_NAME, param.getName());
+        if (elem instanceof Node) {
+            combo.setToolTipText(VARIABLE_TOOLTIP + encodingTypeParameter.getVariableName());
+        }
+
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, encodingTypeParameter.getDisplayName());
+        data = new FormData();
+        if (lastControl != null) {
+            data.left = new FormAttachment(lastControl, 0);
+        } else {
+            data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+        }
+        data.top = new FormAttachment(0, top);
+        labelLabel.setLayoutData(data);
+        if (numInRow != 1) {
+            labelLabel.setAlignment(SWT.RIGHT);
+        }
+        // *********************
+        data = new FormData();
+        int currentLabelWidth = STANDARD_LABEL_WIDTH;
+        GC gc = new GC(labelLabel);
+        Point labelSize = gc.stringExtent(encodingTypeParameter.getDisplayName());
+        gc.dispose();
+
+        if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
+            currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
+        }
+
+        if (numInRow == 1) {
+            if (lastControl != null) {
+                data.left = new FormAttachment(lastControl, currentLabelWidth);
+            } else {
+                data.left = new FormAttachment(0, currentLabelWidth);
+            }
+
+        } else {
+            data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
+        }
+        data.top = new FormAttachment(0, top);
+        combo.setLayoutData(data);
+        combo.addSelectionListener(selectionChangeListener);
+        lastControlUsed = combo;
+
+        String tempValue = (String) param.getValue();
+        tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+
+        if (!ArrayUtils.contains(encodingTypeParameter.getListItemsValue(), tempValue)) {
+            encodingTypeParameter.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+        }
+        String encodingType = (String) encodingTypeParameter.getValue();
+
+        if (encodingType != null && encodingType.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
+            lastControlUsed = addCustomEncodingTypeText(subComposite, param, lastControlUsed, numInRow, nbInRow, top);
+        }
+
+        // **********************
+        hashCurControls.put(param.getName() + NAME_SEPARATOR + encodingTypeParameter.getName(), combo);
+
+        Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+
         return lastControlUsed;
     }
 

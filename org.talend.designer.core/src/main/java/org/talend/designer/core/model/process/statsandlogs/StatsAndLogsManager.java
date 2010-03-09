@@ -56,6 +56,12 @@ public class StatsAndLogsManager {
 
     private static final String METER_UNIQUE_NAME = "talendMeter"; //$NON-NLS-1$
 
+    public static final String ENCODING_TYPE_UTF_8 = "UTF-8"; //$NON-NLS-1$
+
+    public static final String ENCODING_TYPE_ISO_8859_15 = "ISO-8859-15"; //$NON-NLS-1$
+
+    public static final String ENCODING_TYPE_CUSTOM = "CUSTOM"; //$NON-NLS-1$
+
     public static boolean isStatsAndLogsActivated(IProcess process) {
         String dbOutput = null;
         boolean dbFlag = ((Boolean) process.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).getValue())
@@ -1077,6 +1083,32 @@ public class StatsAndLogsManager {
         param
                 .setShowIf("((CATCH_REALTIME_STATS == 'true' or CATCH_REALTIME_STATS == 'false') and (ON_STATCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
+
+        // stats log encoding
+        ElementParameter encodingParam = new ElementParameter(process);
+        encodingParam.setName(EParameterName.ENCODING.getName()); //$NON-NLS-1$
+        encodingParam.setDisplayName(EParameterName.ENCODING.getDisplayName());//$NON-NLS-1$
+        encodingParam.setCategory(EComponentCategory.STATSANDLOGS);
+        encodingParam.setField(EParameterFieldType.ENCODING_TYPE);
+        encodingParam.setShowIf("(ON_FILES_FLAG == 'true' or ON_DATABASE_FLAG == 'true')"); //$NON-NLS-1$
+        encodingParam.setValue(ENCODING_TYPE_ISO_8859_15);
+        encodingParam.setNumRow(92);
+        paramList.add(encodingParam);
+
+        ElementParameter childPram = new ElementParameter(process);
+        childPram.setName(EParameterName.ENCODING_TYPE.getName());
+        childPram.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
+        childPram.setField(EParameterFieldType.TECHNICAL);
+        childPram.setCategory(EComponentCategory.STATSANDLOGS);
+        childPram.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+        childPram
+                .setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+        childPram.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+        childPram.setValue(ENCODING_TYPE_ISO_8859_15);
+        childPram.setNumRow(92);
+        childPram.setShowIf("(ON_FILES_FLAG == 'true' or ON_DATABASE_FLAG == 'true')"); //$NON-NLS-1$
+        childPram.setParentParameter(encodingParam);
+
     }
 
     /**
