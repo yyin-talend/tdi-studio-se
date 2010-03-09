@@ -218,7 +218,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         String[] fileNameList = file.list();
                         File[] fileList = file.listFiles();
                         for (File f : fileList) {
-                            if (f.getName().equals("net.sourceforge.sqlexplorer.nl_3.2.3.r35442.jar")) {
+                            if (f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) {
                                 jarFileMap.put("net.sourceforge.sqlexplorer.nl", f);
                             }
                             if (f.getName().endsWith(".jar") && f.getName().indexOf("nl") != -1
