@@ -155,13 +155,13 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static ProjectRepositoryNode root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
-    private static Image refreshImange = ImageProvider.getImageDesc(EImage.REFRESH_ICON).createImage();
+    private Image refreshImage = null;
 
-    private static Image refreshImangeUsed = ImageProvider.getImageDesc(EImage.REFRESH_WITH_BGCOLOR_ICON).createImage();
+    private Image refreshImageUsed = null;
 
-    private static Image filterImange = ImageProvider.getImageDesc(EImage.FILTER_ICON).createImage();
+    private Image filterImage = null;
 
-    private static Image filterImangeUsed = ImageProvider.getImageDesc(EImage.FILTER_USED_ICON).createImage();
+    private Image filterImageUsed = null;
 
     private IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
 
@@ -237,6 +237,14 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     @Override
     public void createPartControl(Composite parent) {
+        refreshImage = ImageProvider.getImageDesc(EImage.REFRESH_ICON).createImage();
+
+        refreshImageUsed = ImageProvider.getImageDesc(EImage.REFRESH_WITH_BGCOLOR_ICON).createImage();
+
+        filterImage = ImageProvider.getImageDesc(EImage.FILTER_ICON).createImage();
+
+        filterImageUsed = ImageProvider.getImageDesc(EImage.FILTER_USED_ICON).createImage();
+
         Composite comp = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout();
         layout.horizontalSpacing = 0;
@@ -384,11 +392,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         toolbar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         toolbar.setLayout(new FormLayout());
         refreshBtn = new Label(toolbar, SWT.NONE);
-        refreshBtn.setImage(refreshImange);
+        refreshBtn.setImage(refreshImage);
         refreshBtn.setToolTipText("refresh");
 
         filterBtn = new Label(toolbar, SWT.NONE);
-        filterBtn.setImage(filterImange);
+        filterBtn.setImage(filterImage);
         filterBtn.setToolTipText("Filters..." + "\n" + "Right click to set up");
 
         FormData thisFormData = new FormData();
@@ -433,10 +441,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                         preferenceStore.setValue(IRepositoryPrefConstants.USE_FILTER, useFilter);
                         repositoryFilterAction.run();
                         if (useFilter) {
-                            filterBtn.setImage(filterImangeUsed);
+                            filterBtn.setImage(filterImageUsed);
                             filterBtn.setSize(new Point(18, 18));
                         } else {
-                            filterBtn.setImage(filterImange);
+                            filterBtn.setImage(filterImage);
                         }
                     }
                 }
@@ -1158,9 +1166,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             if (e.getSource() instanceof Label) {
                 Label label = (Label) e.getSource();
                 if (label == refreshBtn) {
-                    refreshBtn.setImage(refreshImange);
+                    refreshBtn.setImage(refreshImage);
                 } else if (label == filterBtn && !preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
-                    filterBtn.setImage(filterImange);
+                    filterBtn.setImage(filterImage);
                 }
             }
 
@@ -1175,10 +1183,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             if (e.getSource() instanceof Label) {
                 Label label = (Label) e.getSource();
                 if (label == refreshBtn) {
-                    refreshBtn.setImage(refreshImangeUsed);
+                    refreshBtn.setImage(refreshImageUsed);
                     refreshBtn.setSize(new Point(18, 18));
                 } else if (label == filterBtn) {
-                    filterBtn.setImage(filterImangeUsed);
+                    filterBtn.setImage(filterImageUsed);
                     filterBtn.setSize(new Point(18, 18));
 
                 }
