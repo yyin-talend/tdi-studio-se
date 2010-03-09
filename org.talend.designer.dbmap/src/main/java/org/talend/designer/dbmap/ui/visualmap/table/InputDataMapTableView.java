@@ -90,7 +90,11 @@ public class InputDataMapTableView extends DataMapTableView {
 
             public void set(InputColumnTableEntry bean, Boolean value) {
                 bean.setJoin(value);
-                if (value && getInputTable().getJoinType().getLabel().equals("(IMPLICIT JOIN)")) {
+                boolean enable = true;
+                if (dropDownItem != null && !dropDownItem.isDisposed()) {
+                    enable = dropDownItem.isEnabled();
+                }
+                if (enable && value && getInputTable().getJoinType().getLabel().equals("(IMPLICIT JOIN)")) {
                     if (menu != null) {
                         MenuItem[] menuItems = menu.getItems();
                         menuItems[0].setImage(null);
