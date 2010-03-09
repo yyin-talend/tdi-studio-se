@@ -90,7 +90,7 @@ try {
         if (subFile_<%=cid%>.isFile()){
           fds_<%=cid %> = new javax.activation.FileDataSource(subFile_<%=cid%>.getAbsolutePath());
           mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
-          mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
+          mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
           mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
         }
       }
