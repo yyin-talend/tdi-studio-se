@@ -1,139 +1,114 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode
-		org.talend.core.model.process.ElementParameterParser
-		org.talend.designer.codegen.config.CodeGeneratorArgument	
-	"
-%>
-
-<%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
-	String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
-	String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
-	// component id
-	String cid = node.getUniqueName();
-	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
-	String importance=ElementParameterParser.getValue(node, "__IMPORTANCE__");
-	String priority=("Normal").equals(importance)?"3":(("High").equals(importance)?"1":"5");
-	boolean ifSSL = ("true").equals(ElementParameterParser.getValue(node, "__SSL__"));
-	boolean startTLS = ("true").equals(ElementParameterParser.getValue(node, "__STARTTLS__"));
-	boolean checkAttachementOnSend = ("true").equals(ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__"));
-	
-	boolean needPersonalName = ("true").equals(ElementParameterParser.getValue(node, "__NEED_PERSONAL_NAME__"));
-	String personalName = needPersonalName?ElementParameterParser.getValue(node, "__PERSONAL_NAME__"):null;
-
-	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-	String mimesubtype = ElementParameterParser.getValue(node,"__TEXT_SUBTYPE__");	
-	boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+  imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument  
+  "
 %>
 <%
- 
-    message=message.replaceAll("\r\n","\\\\n");
-    
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
+String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
+String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
+String message = ElementParameterParser.getValue(node, "__MESSAGE__").replaceAll("\r\n","\\\\n");
+String importance = ElementParameterParser.getValue(node, "__IMPORTANCE__");
+String priority = "Normal".equals(importance) ? "3" : (("High").equals(importance) ? "1" : "5");
+boolean ifSSL = "true".equals(ElementParameterParser.getValue(node, "__SSL__"));
+boolean startTLS = "true".equals(ElementParameterParser.getValue(node, "__STARTTLS__"));
+boolean checkAttachementOnSend = "true".equals(ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__"));
+boolean needPersonalName = "true".equals(ElementParameterParser.getValue(node, "__NEED_PERSONAL_NAME__"));
+String personalName = needPersonalName ? ElementParameterParser.getValue(node, "__PERSONAL_NAME__") : null;
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+String mimesubtype = ElementParameterParser.getValue(node, "__TEXT_SUBTYPE__");  
+boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 %> 
-	 String message_<%=cid %> = ((<%=message %>)==null || "".equals(<%=message %>))?"\"\"":(<%=message %>) ;
-	 java.util.Properties props_<%=cid %> = System.getProperties();     
-     props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
-     props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
-<%     
-	 if(startTLS){
-%>
-	 props_<%=cid %>.put("mail.smtp.starttls.enable","true");
-<%
-	}
-%> 
-<%
-	if(ifSSL){
-%>	
-	 java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-	 props_<%=cid %>.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-	 props_<%=cid %>.put("mail.smtp.socketFactory.fallback", "false");
-	 props_<%=cid %>.put("mail.smtp.socketFactory.port", smtpPort_<%=cid %>);
-<%
-	}
-%>     
-try{     
+String message_<%=cid %> = ((<%=message %>) == null || "".equals(<%=message %>)) ? "\"\"" : (<%=message %>) ;
+java.util.Properties props_<%=cid %> = System.getProperties();     
+props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
+props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
+props_<%=cid %>.put("mail.mime.encodefilename", "true");
 <% 
-   if ("false".equals(needAuth)) {
+if (startTLS){%>
+  props_<%=cid %>.put("mail.smtp.starttls.enable","true");
+<%
+}
+if (ifSSL){
 %>  
-     props_<%=cid %>.put("mail.smtp.auth", "false");
-     javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);    
+  java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+  props_<%=cid %>.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+  props_<%=cid %>.put("mail.smtp.socketFactory.fallback", "false");
+  props_<%=cid %>.put("mail.smtp.socketFactory.port", smtpPort_<%=cid %>);
 <%
-  } else  
-  {
-%>   
-	 props_<%=cid %>.put("mail.smtp.auth", "true");
-     javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, new  javax.mail.Authenticator ()
-        {         
-         protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-             return new javax.mail.PasswordAuthentication(<%=authUsername %>,<%=authPassword %>); 
-         }         
-       }     
-     );   
-<%
-  }
-%>
-     javax.mail.Message msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>);
-     msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>,<%=personalName%>));
-     msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.TO,javax.mail.internet.InternetAddress.parse(to_<%=cid %>, false));
-     if(cc_<%=cid %>!=null)  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.CC, javax.mail.internet.InternetAddress.parse(cc_<%=cid %>, false));
-     if(bcc_<%=cid %>!=null)  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.BCC, javax.mail.internet.InternetAddress.parse(bcc_<%=cid %>, false));
-     
-     msg_<%=cid %>.setSubject(subject_<%=cid %>);     
+}
+%>     
+try {
+  <%if ("false".equals(needAuth)) { %>  
+    props_<%=cid %>.put("mail.smtp.auth", "false");
+    javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);    
+  <%} else{%>
+    props_<%=cid %>.put("mail.smtp.auth", "true");
+    javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, new javax.mail.Authenticator(){         
+      protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+        return new javax.mail.PasswordAuthentication(<%=authUsername %>, <%=authPassword %>); 
+      }         
+    });   
+  <%}%>
+  javax.mail.Message msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>);
+  msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>, <%=personalName%>));
+  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.TO,javax.mail.internet.InternetAddress.parse(to_<%=cid %>, false));
+  if (cc_<%=cid %> != null) msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.CC, javax.mail.internet.InternetAddress.parse(cc_<%=cid %>, false));
+  if (bcc_<%=cid %> != null) msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.BCC, javax.mail.internet.InternetAddress.parse(bcc_<%=cid %>, false));
+  msg_<%=cid %>.setSubject(subject_<%=cid %>);
 
-	for (int i_<%=cid %> = 0; i_<%=cid %> < headers_<%=cid %>.size(); i_<%=cid %>++) {
-   		java.util.Map<String, String> header_<%=cid %> = headers_<%=cid %>.get(i_<%=cid %>);
-	    msg_<%=cid %>.setHeader(header_<%=cid %>.get("KEY"), header_<%=cid %>.get("VALUE"));		
-	}
-		
-     msg_<%=cid %>.setSentDate(new Date());   
-     msg_<%=cid %>.setHeader("X-Priority","<%=priority %>"); //High->1 Normal->3 Low->5
-     javax.mail.Multipart mp_<%=cid %> = new javax.mail.internet.MimeMultipart();
-     javax.mail.internet.MimeBodyPart mbpText_<%=cid %> = new javax.mail.internet.MimeBodyPart();     
-     mbpText_<%=cid %>.setText(message_<%=cid %>,<%=encoding %>,"<%=mimesubtype %>");
-	 mp_<%=cid %>.addBodyPart(mbpText_<%=cid %>);
-	 	
-     for(int i_<%=cid %> = 0; i_<%=cid %> < attachments_<%=cid %>.size(); i_<%=cid %>++)
-     {
-       String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);
-       javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart(); 
+  for (int i_<%=cid %> = 0; i_<%=cid %> < headers_<%=cid %>.size(); i_<%=cid %>++) {
+    java.util.Map<String, String> header_<%=cid %> = headers_<%=cid %>.get(i_<%=cid %>);
+    msg_<%=cid %>.setHeader(header_<%=cid %>.get("KEY"), header_<%=cid %>.get("VALUE"));    
+  }  
+  msg_<%=cid %>.setSentDate(new Date());
+  msg_<%=cid %>.setHeader("X-Priority", "<%=priority %>"); //High->1 Normal->3 Low->5
+  javax.mail.Multipart mp_<%=cid %> = new javax.mail.internet.MimeMultipart();
+  javax.mail.internet.MimeBodyPart mbpText_<%=cid %> = new javax.mail.internet.MimeBodyPart();
+  mbpText_<%=cid %>.setText(message_<%=cid %>,<%=encoding %>, "<%=mimesubtype %>");
+  mp_<%=cid %>.addBodyPart(mbpText_<%=cid %>);
+  
+  for (int i_<%=cid %> = 0; i_<%=cid %> < attachments_<%=cid %>.size(); i_<%=cid %>++){
+    String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);
+    javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
     javax.activation.FileDataSource fds_<%=cid %> = null;
-	java.io.File file_<%=cid %> = new java.io.File(filename_<%=cid %>);
-    <%if (!checkAttachementOnSend) {%>       
-       if(!file_<%=cid %>.exists()){
-       		continue;
-       }
+    java.io.File file_<%=cid %> = new java.io.File(filename_<%=cid %>);
+    <%if (!checkAttachementOnSend) {%>
+      if (!file_<%=cid %>.exists()){
+        continue;
+      }
     <%}%>
-	if(file_<%=cid%>.isDirectory()){
-		java.io.File[] subFiles_<%=cid%> = file_<%=cid%>.listFiles();
-		for(java.io.File subFile_<%=cid%> : subFiles_<%=cid%>){
-			if(subFile_<%=cid%>.isFile()){
-				fds_<%=cid %> = new javax.activation.FileDataSource(subFile_<%=cid%>.getAbsolutePath());
-				mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
-				mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
-				mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
-			}
-		}
-	}else{
-		fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %>);
-		mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
-		mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
-		mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
-		
-	}
-     }    
-       
-     // -- set the content --   
-      msg_<%=cid %>.setContent(mp_<%=cid %>);
-           
-     // -- Send the message --
-     javax.mail.Transport.send(msg_<%=cid %>);
+    if (file_<%=cid%>.isDirectory()){
+      java.io.File[] subFiles_<%=cid%> = file_<%=cid%>.listFiles();
+      
+      for(java.io.File subFile_<%=cid%> : subFiles_<%=cid%>){
+        if (subFile_<%=cid%>.isFile()){
+          fds_<%=cid %> = new javax.activation.FileDataSource(subFile_<%=cid%>.getAbsolutePath());
+          mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
+          mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
+          mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
+        }
+      }
+    }else{
+      fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %>);
+      mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>)); 
+      mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
+      mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
+    }
+  }
+  // -- set the content --
+  msg_<%=cid %>.setContent(mp_<%=cid %>);
+  // -- Send the message --
+  javax.mail.Transport.send(msg_<%=cid %>);
 } catch(Exception e){
   <%if (isDieOnError){%>
-      throw(e);
+    throw(e);
   <%}else{%>
-      System.err.println(e.toString());
+    System.err.println(e.toString());
   <%}%>
 }
