@@ -535,7 +535,10 @@ if (execStat) {
 		} else if (arg.startsWith("--watch")) {
     		watch = true;
     	} else if (arg.startsWith("--stat_port=")) {
-    		portStats = Integer.parseInt(arg.substring(12));
+			String portStatsStr = arg.substring(12);
+			if (portStatsStr != null && !portStatsStr.equals("null")) {
+				portStats = Integer.parseInt(portStatsStr);
+			}    		
     	} else if (arg.startsWith("--trace_port=")) {
     		portTraces = Integer.parseInt(arg.substring(13));
     	} else if (arg.startsWith("--client_host=")) {
