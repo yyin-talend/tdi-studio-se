@@ -159,7 +159,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 isBabiliButtonClicked = true;
                 runProgressMonitorDialog(selected);
                 if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Restart",
-                        "You need restart studio to activate the change."))
+                        "Need to restart to take effect."))
                     PlatformUI.getWorkbench().restart();
             }
 
@@ -182,7 +182,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 isBabiliButtonClicked = true;
                 runProgressMonitorDialog("Restore default");
                 if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Restart",
-                        "You need restart studio to activate the change."))
+                        "Need to restart to take effect."))
                     PlatformUI.getWorkbench().restart();
             }
         });
@@ -211,7 +211,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                     if (!zipFolderPathFile.exists()) {
                         zipFolderPathFile.mkdir();
                     }
-                    String pluginPath = System.getProperty("user.dir") + fs + "rrrr";
+                    String pluginPath = System.getProperty("user.dir") + fs + "plugins";
                     HashMap jarFileMap = new HashMap();
                     File file = new File(pluginPath);
                     if (file.isDirectory()) {
@@ -286,6 +286,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                                                 FileChannel dstChannel = new FileOutputStream(subJarf.getAbsolutePath())
                                                         .getChannel();
                                                 dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+                                                srcChannel.close();
                                                 dstChannel.close();
                                                 subfNotExistBool = false;
                                                 break;
@@ -300,6 +301,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                                             FileChannel dstChannel = new FileOutputStream(jarFiles.getAbsolutePath() + fs
                                                     + subf.getName()).getChannel();
                                             dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+                                            srcChannel.close();
                                             dstChannel.close();
                                         } catch (IOException e) {
                                             ExceptionHandler.process(e);
@@ -313,8 +315,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         }
                     }
                     updateCompleted = true;
-                    jarFolderPathFile.delete();
-                    zipFolderPathFile.delete();
+                    org.apache.commons.io.FileUtils.deleteDirectory(zipFolderPathFile);
+                    org.apache.commons.io.FileUtils.deleteDirectory(jarFolderPathFile);
                 } catch (Exception e1) {
                     ExceptionHandler.process(e1);
                 } finally {
