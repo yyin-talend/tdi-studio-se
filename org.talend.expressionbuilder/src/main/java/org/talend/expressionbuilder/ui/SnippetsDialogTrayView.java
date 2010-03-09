@@ -111,4 +111,8 @@ public class SnippetsDialogTrayView extends RepositoryView {
         LocalSelectionTransfer.getTransfer().setSelection(null);
         LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
     }
+
+    @Override
+    public void createActionComposite(Composite parent) {
+    }
 }

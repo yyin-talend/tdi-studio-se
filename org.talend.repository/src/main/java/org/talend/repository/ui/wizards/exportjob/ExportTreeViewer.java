@@ -392,5 +392,9 @@ public class ExportTreeViewer {
         public void addFilters() {
         }
 
+        @Override
+        public void createActionComposite(Composite parent) {
+        }
+
     }
 }

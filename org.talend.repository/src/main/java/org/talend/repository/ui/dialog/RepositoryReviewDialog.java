@@ -499,6 +499,10 @@ class FakeRepositoryView extends RepositoryView {
     protected void hookDoubleClickAction() {
     }
 
+    @Override
+    public void createActionComposite(Composite parent) {
+    }
+
 }
 
 /**

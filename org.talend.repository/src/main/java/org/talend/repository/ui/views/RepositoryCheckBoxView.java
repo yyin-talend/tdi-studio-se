@@ -75,4 +75,8 @@ public class RepositoryCheckBoxView extends RepositoryView {
     @Override
     public void addFilters() {
     }
+
+    @Override
+    public void createActionComposite(Composite parent) {
+    }
 }
