@@ -15,12 +15,17 @@ package org.talend.designer.core.ui.preferences;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,21 +47,19 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 import org.epic.core.preferences.LabelFieldEditor;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.i18n.BabiliInfo;
-import org.talend.commons.i18n.BabiliTool;
-import org.talend.commons.i18n.BabiliUpdateUtil;
-import org.talend.commons.i18n.ImportBabiliCancelException;
 import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.CorePreferencePage;
 import org.talend.core.prefs.ui.OneLineComboFieldEditor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.RefreshView;
+import org.talend.designer.core.utils.ZipFileUtils;
 
 /**
  * DOC wzhang class global comment. Detailled comment
@@ -64,6 +67,8 @@ import org.talend.designer.core.ui.views.RefreshView;
 public class I18nPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     private OneLineComboFieldEditor languageSelectionEditor;
+
+    private String fs = System.getProperties().getProperty("file.separator");
 
     private List<FieldEditor> fields = new ArrayList<FieldEditor>();
 
@@ -135,20 +140,27 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         LabelFieldEditor importAll = new LabelFieldEditor(Messages.getString("I18nPreferencePage.translationInformation"), //$NON-NLS-1$
                 composite);
         addField(importAll);
-        Button allUpdate = new Button(composite, SWT.FLAT);
-        allUpdate.setText(Messages.getString("I18nPreferencePage.allTranslation")); //$NON-NLS-1$
-        allUpdate.setLayoutData(new GridData());
 
-        Button validatedUpdate = new Button(composite, SWT.NONE);
-        validatedUpdate.setText(Messages.getString("I18nPreferencePage.validateTranslation")); //$NON-NLS-1$
-        validatedUpdate.setLayoutData(new GridData());
+        Button allUpdate = new Button(composite, SWT.FLAT);
+        allUpdate.setText("Import Translation from Babili"); //$NON-NLS-1$
+        allUpdate.setLayoutData(new GridData());
 
         allUpdate.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
                 // import all update from Babili
+                // select the .zip file
+                FileDialog fd = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OPEN);
+                fd.setText("Open");
+                fd.setFilterPath("C:" + fs);
+                String[] filterExtensions = { "*.zip" };
+                fd.setFilterExtensions(filterExtensions);
+                String selected = fd.open();
                 isBabiliButtonClicked = true;
-                runProgressMonitorDialog(false);
+                runProgressMonitorDialog(selected);
+                if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Restart",
+                        "You need restart studio to activate the change."))
+                    PlatformUI.getWorkbench().restart();
             }
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -156,20 +168,24 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
             }
         });
 
-        validatedUpdate.addSelectionListener(new SelectionListener() {
+        // added by nma
+        Button restoredefault = new Button(composite, SWT.FLAT);
+        restoredefault.setText("Restore Defaults"); //$NON-NLS-1$
+        restoredefault.setLayoutData(new GridData());
+        restoredefault.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
 
             public void widgetSelected(SelectionEvent e) {
-                // import validated update from Babili
                 isBabiliButtonClicked = true;
-                runProgressMonitorDialog(true);
+                runProgressMonitorDialog("Restore default");
+                if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Restart",
+                        "You need restart studio to activate the change."))
+                    PlatformUI.getWorkbench().restart();
             }
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-
         });
-
     }
 
     /**
@@ -178,47 +194,127 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
      * 
      * @param validated
      */
-    public void runProgressMonitorDialog(final boolean validated) {
+    public void runProgressMonitorDialog(final String zipFileName) {
         updateCompleted = false;
-        BabiliTool.clear();
         ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(getFieldEditorParent().getShell());
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
             public void run(IProgressMonitor monitor) {
                 try {
-                    monitor.beginTask(Messages.getString("I18nPreferencePage.loading"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                    String language = languageSelectionEditor.getFieldValue();
-                    String version = getCurrentTosVersion(true);
-                    // get list from Babili
-                    List<BabiliInfo> bList = BabiliUpdateUtil.getBabiliList(language, validated, version, monitor);
-                    for (BabiliInfo info : bList) {
-                        BabiliUpdateUtil.checkProcessCancel(monitor);
-                        // store to memory
-                        String pluginId = info.getFilepath();
-                        // for components
-                        if (pluginId.startsWith("components/")) { //$NON-NLS-1$
-                            String regexp = "((\\w)+)_messages(_.+?)?\\.properties"; //$NON-NLS-1$
-                            Pattern p = Pattern.compile(regexp);
-                            Matcher m = p.matcher(pluginId);
-                            if (m.find()) {
-                                pluginId = m.group(1);
+                    String jarFolderPath = System.getProperty("user.dir") + fs + "jarTemp";
+                    String zipFolderPath = System.getProperty("user.dir") + fs + "zipTemp";
+                    File jarFolderPathFile = new File(jarFolderPath);
+                    File zipFolderPathFile = new File(zipFolderPath);
+                    if (!jarFolderPathFile.exists()) {
+                        jarFolderPathFile.mkdir();
+                    }
+                    if (!zipFolderPathFile.exists()) {
+                        zipFolderPathFile.mkdir();
+                    }
+                    String pluginPath = System.getProperty("user.dir") + fs + "rrrr";
+                    HashMap jarFileMap = new HashMap();
+                    File file = new File(pluginPath);
+                    if (file.isDirectory()) {
+                        String[] fileNameList = file.list();
+                        File[] fileList = file.listFiles();
+                        for (File f : fileList) {
+                            if (f.getName().equals("net.sourceforge.sqlexplorer.nl_3.2.3.r35442.jar")) {
+                                jarFileMap.put("net.sourceforge.sqlexplorer.nl", f);
                             }
-                        } else {
-                            int pos = pluginId.indexOf("/"); //$NON-NLS-1$
-                            if (pos != -1) {
-                                pluginId = pluginId.substring(0, pos);
-                                if (pluginId.endsWith(".nl")) { //$NON-NLS-1$
-                                    pluginId = pluginId.replace(".nl", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                                }
+                            if (f.getName().endsWith(".jar") && f.getName().indexOf("nl") != -1
+                                    && f.getName().indexOf("talend") != -1) {
+                                String[] fileNameArr = f.getName().split("_");
+                                jarFileMap.put(fileNameArr[0], f);
                             }
                         }
-                        BabiliTool.storeBabiliTranslation(info.getKey(), pluginId, info.getLabel());
                     }
-
+                    if (zipFileName.equals("Restore default")) {
+                        Iterator iter = jarFileMap.entrySet().iterator();
+                        while (iter.hasNext()) {
+                            Map.Entry entry = (Map.Entry) iter.next();
+                            Object key = entry.getKey();
+                            File currentFileToBak = (File) entry.getValue();
+                            if (key.toString().endsWith(".nl")) {
+                                ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
+                                File jarFiles = new File(jarFolderPath + fs + currentFileToBak.getName());
+                                File[] jarSubFiles = jarFiles.listFiles();
+                                for (File subJarf : jarSubFiles) {
+                                    if (subJarf.getName().endsWith(".original")) {
+                                        String subjarfPath = subJarf.getAbsolutePath().substring(0,
+                                                subJarf.getAbsolutePath().indexOf(".original"));
+                                        File subjarfPathFile = new File(subjarfPath);
+                                        if (subjarfPathFile.exists())
+                                            subjarfPathFile.delete();
+                                        subJarf.renameTo(subjarfPathFile);
+                                    }
+                                }
+                                String writeJarFileName = jarFolderPath + fs + currentFileToBak.getName();
+                                currentFileToBak.delete();
+                                ZipFileUtils.zip(writeJarFileName, currentFileToBak.getAbsolutePath(), false);
+                            }
+                        }
+                    } else {
+                        ZipFileUtils.unZip(zipFileName, zipFolderPath);
+                        File zipFile = new File(zipFolderPath);
+                        File[] zipFiles = zipFile.listFiles()[0].listFiles();
+                        for (File f : zipFiles) {
+                            if (f.getName().endsWith(".nl")) {
+                                File writeJarFile = (File) jarFileMap.get(f.getName());
+                                if (writeJarFile == null)
+                                    continue;
+                                String jarFilePath = writeJarFile.getAbsolutePath();
+                                ZipFileUtils.unZip(writeJarFile, jarFolderPath + fs + writeJarFile.getName());
+                                File[] zipSubFiles = f.listFiles();
+                                File jarFiles = new File(jarFolderPath + fs + writeJarFile.getName());
+                                File[] jarSubFiles = jarFiles.listFiles();
+                                boolean bakBool = false;
+                                for (File subJarf : jarSubFiles) {
+                                    if (subJarf.getName().endsWith(".original")) {
+                                        bakBool = true;
+                                    }
+                                }
+                                for (File subf : zipSubFiles) {
+                                    boolean subfNotExistBool = true;
+                                    for (File subJarf : jarSubFiles) {
+                                        if (subf.getName().equals(subJarf.getName())) {
+                                            String subjarfPath = subJarf.getAbsolutePath();
+                                            File newSubJarf = new File(subjarfPath + ".original");
+                                            if (!newSubJarf.exists() && bakBool == false)
+                                                subJarf.renameTo(newSubJarf);
+                                            try {
+                                                FileChannel srcChannel = new FileInputStream(subf.getAbsoluteFile()).getChannel();
+                                                FileChannel dstChannel = new FileOutputStream(subJarf.getAbsolutePath())
+                                                        .getChannel();
+                                                dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+                                                dstChannel.close();
+                                                subfNotExistBool = false;
+                                                break;
+                                            } catch (IOException e) {
+                                                ExceptionHandler.process(e);
+                                            }
+                                        }
+                                    }
+                                    if (subfNotExistBool == true) {
+                                        try {
+                                            FileChannel srcChannel = new FileInputStream(subf.getAbsoluteFile()).getChannel();
+                                            FileChannel dstChannel = new FileOutputStream(jarFiles.getAbsolutePath() + fs
+                                                    + subf.getName()).getChannel();
+                                            dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+                                            dstChannel.close();
+                                        } catch (IOException e) {
+                                            ExceptionHandler.process(e);
+                                        }
+                                    }
+                                }
+                                String writeJarFileName = jarFolderPath + fs + writeJarFile.getName();
+                                writeJarFile.delete();
+                                ZipFileUtils.zip(writeJarFileName, jarFilePath, false);
+                            }
+                        }
+                    }
                     updateCompleted = true;
-
-                } catch (ImportBabiliCancelException e) {
-                    updateCompleted = false;
+                    jarFolderPathFile.delete();
+                    zipFolderPathFile.delete();
                 } catch (Exception e1) {
                     ExceptionHandler.process(e1);
                 } finally {
@@ -235,16 +331,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         }
 
         if (updateCompleted) {
-            Display.getDefault().asyncExec(new Runnable() {
-
-                public void run() {
-                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages
-                            .getString("I18nPreferencePage.title"), //$NON-NLS-1$
-                            Messages.getString("I18nPreferencePage.completeInfo")); //$NON-NLS-1$
-                }
-            });
         } else {
-            BabiliTool.clear();
         }
     }
 

@@ -207,3 +207,4 @@ Export-Package: org.talend.designer.core;
  org.talend.designer.core.ui.wizards,
  org.talend.designer.core.utils
 Bundle-Vendor: .Talend SA.
+Import-Package: org.apache.tools.zip
