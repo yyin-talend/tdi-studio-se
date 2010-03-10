@@ -33,6 +33,7 @@
     String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
     String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+	String conn= "conn_" + connection;
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 	boolean sftp = false;
 	if(("true").equals(useExistingConn)){
@@ -67,7 +68,7 @@ if(useProxy){
 <%
 	if(("false").equals(useExistingConn)){
 %>
-	    class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+	    class MyUserInfo_<%=cid%> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
 	    
 	    	String passphrase_<%=cid %> = <%=passPhrase %>;
 	        public String getPassphrase() { return passphrase_<%=cid %>; }
@@ -89,29 +90,7 @@ if(useProxy){
 	        }
 	    }; 
 	    
-	    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo();
-<%
-	}
-%>
-    
-    
-    class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
-
-        public void init(int op, String src, String dest, long max) {}
- 		
- 		public boolean count(long count) { return true;}
-
-        public void end() {}
-    }
-    
-<%
-	if(("true").equals(useExistingConn)){
-		String conn= "conn_" + connection;
-%>
-		com.jcraft.jsch.Session session_<%=cid%> = (com.jcraft.jsch.Session)globalMap.get("<%=conn %>");
-<%
-	}else{
-%>		
+	    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid%>();
     
 	    com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
 	    
@@ -127,6 +106,11 @@ if(useProxy){
 	    
 	    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
 	    session_<%=cid%>.connect();
+
+<%
+	}else{
+%>		
+		com.jcraft.jsch.Session session_<%=cid%> = (com.jcraft.jsch.Session)globalMap.get("<%=conn %>");
 <%
 	}
 %> 
@@ -156,7 +140,6 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
 	
 	<%
 	if(("true").equals(useExistingConn)){
-		String conn= "conn_" + connection;
 	%>
 	
 	ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");

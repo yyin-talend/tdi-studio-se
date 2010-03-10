@@ -63,7 +63,7 @@ if(useProxy){
 if(sftp){
 	if(("false").equals(useExistingConn)){
 %>
-	    class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+	    class MyUserInfo_<%=cid %> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
 	    
 	    	String passphrase_<%=cid %> = <%=passPhrase %>;
 	        public String getPassphrase() { return passphrase_<%=cid %>; }
@@ -85,13 +85,13 @@ if(sftp){
 	        }
 	    }; 
 	    
-	    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo();
+	    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid %>();
 <%
 	}
 %>
     
     
-    class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
+    class MyProgressMonitor_<%=cid%> implements com.jcraft.jsch.SftpProgressMonitor {
 
         public void init(int op, String src, String dest, long max) {}
  		
@@ -135,7 +135,7 @@ if(sftp){
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
     
-    com.jcraft.jsch.SftpProgressMonitor monitor<%=cid%> = new MyProgressMonitor();
+    com.jcraft.jsch.SftpProgressMonitor monitor<%=cid%> = new MyProgressMonitor_<%=cid%>();
     
     java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();	
 <%

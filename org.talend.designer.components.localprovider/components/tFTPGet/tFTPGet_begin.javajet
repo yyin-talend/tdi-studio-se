@@ -69,7 +69,7 @@ if(sftp){ // *** sftp *** //
 <%
 	if(("false").equals(useExistingConn)){
 %>
-	    class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+	    class MyUserInfo_<%=cid %> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
 	    
 	    	String passphrase_<%=cid %> = <%=passPhrase %>;
 	        public String getPassphrase() { return passphrase_<%=cid %>; }
@@ -91,12 +91,12 @@ if(sftp){ // *** sftp *** //
 	        }
 	    }; 
 	    
-	    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo();
+	    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid %>();
 <%
 	}
 %>
     
-    class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
+    class MyProgressMonitor_<%=cid%> implements com.jcraft.jsch.SftpProgressMonitor {
         
         private long percent = -1;
         
@@ -235,7 +235,7 @@ if(sftp){ // *** sftp *** //
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
     
-    com.jcraft.jsch.SftpProgressMonitor monitor_<%=cid%> = new MyProgressMonitor();
+    com.jcraft.jsch.SftpProgressMonitor monitor_<%=cid%> = new MyProgressMonitor_<%=cid%>();
     SFTPGetter_<%=cid%> getter_<%=cid%> = new SFTPGetter_<%=cid%>();
     getter_<%=cid%>.cnlSFTP = c_<%=cid%>;
     getter_<%=cid%>.monitor = monitor_<%=cid%>;
