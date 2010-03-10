@@ -87,6 +87,8 @@ public class DataProcess {
 
     private Map<INode, INode> checktUniteMap = null;
 
+    private List<IConnection> connectionsToIgnoreInMerge = null;
+
     private List<INode> dataNodeList;
 
     private final Process process;
@@ -105,6 +107,7 @@ public class DataProcess {
         dataNodeList = new ArrayList<INode>();
         checkFileScaleMap = new HashMap<INode, INode>();
         buildGraphicalMap = new DualHashBidiMap();
+        connectionsToIgnoreInMerge = new ArrayList<IConnection>();
     }
 
     private void copyElementParametersValue(IElement sourceElement, IElement targetElement) {
@@ -1261,6 +1264,7 @@ public class DataProcess {
         checktUniteMap = null;
         buildCheckMap = null;
         buildGraphicalMap = null;
+        connectionsToIgnoreInMerge = null;
     }
 
     private void checkMergeComponents(INode node) {
@@ -1338,14 +1342,6 @@ public class DataProcess {
         ((DataConnection) mergeOutputConnection).setTarget(hashNode);
         oldNodeTarget.getIncomingConnections().remove(mergeOutputConnection);
 
-        boolean isFromSubProcessMerge = true; // set if the next component is on a main merge link or not. True if no
-        // merge also
-
-        if (((AbstractNode) mergeDataNode).isThereLinkWithMerge()) {
-            Integer[] intTab = ((AbstractNode) mergeDataNode).getLinkedMergeInfo().values().toArray(new Integer[0]);
-            isFromSubProcessMerge = intTab[intTab.length - 1] == 1;
-        }
-
         String hashInputUniqueName = hashMergeInput + "_" + mergeDataNode.getUniqueName();
 
         hashNode = new DataNode(hashMergeInputComponent, hashInputUniqueName);
@@ -1366,7 +1362,6 @@ public class DataProcess {
         hashNode.getElementParameter("LINK_WITH").setValue(Boolean.TRUE);
         hashNode.getElementParameter("LIST").setValue(hashOutputUniqueName);
 
-        // create a new connection to make tHashInput -> output component
         DataConnection dataConnec = new DataConnection();
         dataConnec.setActivate(mergeOutputConnection.isActivate());
         dataConnec.setLineStyle(mergeOutputConnection.getLineStyle());
@@ -1395,8 +1390,8 @@ public class DataProcess {
 
         if (mergeDataNode.getLinkedMergeInfo() == null || mergeDataNode.getLinkedMergeInfo().isEmpty()) {
             INode oldStartNode = ((AbstractNode) mergeDataNode.getDesignSubjobStartNode());
+            ((AbstractNode) afterMergeStart).setStart(oldStartNode.isStart());
             ((AbstractNode) oldStartNode).setStart(false);
-            ((AbstractNode) afterMergeStart).setStart(true);
             for (INode curNode : dataNodeList) {
                 if (curNode instanceof AbstractNode) {
                     if (curNode.getDesignSubjobStartNode().equals(oldStartNode)) {
@@ -1404,17 +1399,43 @@ public class DataProcess {
                     }
                 }
             }
+
+            // move all dependency output links from source node to new start node.
+            // (EXECUTION_ORDER is enough, to keep the onComponentOk on the component the user wanted)
+            List<IConnection> depConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(oldStartNode,
+                    IConnectionCategory.EXECUTION_ORDER);
+            oldStartNode.getOutgoingConnections().removeAll(depConnections);
+            ((List<IConnection>) afterMergeStart.getOutgoingConnections()).addAll(depConnections);
+            for (IConnection curDepConnection : depConnections) {
+                ((AbstractConnection) curDepConnection).setSource(afterMergeStart);
+            }
+
+            // move all dependency input links from source node to new start node.
+            // (DEPENDENCY is needed for this one)
+            depConnections = (List<IConnection>) NodeUtil.getIncomingConnections(oldStartNode, IConnectionCategory.DEPENDENCY);
+            for (IConnection connection : connectionsToIgnoreInMerge) {
+                if (depConnections.contains(connection)) {
+                    depConnections.remove(connection);
+                }
+            }
+            oldStartNode.getIncomingConnections().removeAll(depConnections);
+            ((List<IConnection>) afterMergeStart.getIncomingConnections()).addAll(depConnections);
+            for (IConnection curDepConnection : depConnections) {
+                ((AbstractConnection) curDepConnection).setTarget(afterMergeStart);
+            }
+
         }
 
         dataConnec = new DataConnection();
         dataConnec.setActivate(mergeOutputConnection.isActivate());
         dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
         dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
-        // dataConnec.setMetadataTable(newMetadata);
         dataConnec.setTraceConnection(false);
         dataConnec.setName(hashNode.getUniqueName() + "_" + EConnectionType.RUN_AFTER.getDefaultLinkName()); //$NON-NLS-1$
         dataConnec.setSource(afterMergeStart);
         dataConnec.setTarget(mergeSubNodeStart);
+
+        connectionsToIgnoreInMerge.add(dataConnec);
 
         ((List<IConnection>) mergeSubNodeStart.getIncomingConnections()).add(dataConnec);
         ((List<IConnection>) afterMergeStart.getOutgoingConnections()).add(dataConnec);
