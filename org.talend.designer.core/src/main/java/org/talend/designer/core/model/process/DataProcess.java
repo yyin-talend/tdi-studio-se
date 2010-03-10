@@ -1293,8 +1293,8 @@ public class DataProcess {
     }
 
     private void changeForMultipleMergeComponents(INode graphicalNode) {
-        String hashMergeOutput = "tArray";
-        String hashMergeInput = "tArrayIn";
+        String hashMergeOutput = "tHashOutput";
+        String hashMergeInput = "tHashInput";
 
         INode mergeDataNode = buildCheckMap.get(graphicalNode);
 
@@ -1330,7 +1330,6 @@ public class DataProcess {
         hashNode.setIncomingConnections(incomingConnections);
         hashNode.setOutgoingConnections(outgoingConnections);
         hashNode.setVirtualGenerateNode(false);
-        hashNode.getElementParameter("DESTINATION").setValue("tArray_" + mergeDataNode.getUniqueName());
 
         addDataNode(hashNode);
 
@@ -1366,7 +1365,6 @@ public class DataProcess {
         hashNode.setVirtualGenerateNode(false);
         hashNode.getElementParameter("LINK_WITH").setValue(Boolean.TRUE);
         hashNode.getElementParameter("LIST").setValue(hashOutputUniqueName);
-        hashNode.getElementParameter("ORIGIN").setValue("tArray_" + mergeDataNode.getUniqueName());
 
         // create a new connection to make tHashInput -> output component
         DataConnection dataConnec = new DataConnection();

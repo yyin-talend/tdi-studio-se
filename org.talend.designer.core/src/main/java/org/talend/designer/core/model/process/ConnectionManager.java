@@ -88,12 +88,12 @@ public class ConnectionManager {
             return false;
         }
 
-        if (connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
-            int nbMerge = countNbMerge(source, target);
-            if (nbMerge > 1) {
-                return false;
-            }
-        }
+        // if (connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
+        // int nbMerge = countNbMerge(source, target);
+        // if (nbMerge > 1) {
+        // return false;
+        // }
+        // }
 
         // Check existing connections to avoid to have more than one link
         // no matter the type of the connection and the direction
