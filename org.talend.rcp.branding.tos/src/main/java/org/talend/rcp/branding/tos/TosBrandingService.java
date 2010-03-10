@@ -71,4 +71,8 @@ public class TosBrandingService implements IBrandingService {
         return brandingConfigure;
     }
 
+    public String getAcronym() {
+        return "tos";
+    }
+
 }
