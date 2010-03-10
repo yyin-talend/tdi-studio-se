@@ -84,6 +84,8 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsTemporaryOptionsKeeper;
 import org.talend.repository.utils.JobVersionUtils;
 
 /**
@@ -152,6 +154,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     private IStructuredSelection selection;
 
     private ExportTreeViewer treeViewer;
+
+    private String suDestinationFilePath;
+
+    public String getSuDestinationFilePath() {
+        return this.suDestinationFilePath;
+    }
+
+    public void setSuDestinationFilePath(String suDestinationFilePath) {
+        this.suDestinationFilePath = suDestinationFilePath;
+    }
 
     /**
      * Create an instance of this class.
@@ -605,7 +617,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * boolean indicating validity.
      */
     protected boolean ensureTargetIsValid() {
-        String targetPath = getDestinationValue();
+        String targetPath = null;
+        if (manager instanceof PetalsJobJavaScriptsManager) {
+            targetPath = getSuDestinationFilePath();
+        } else {
+            targetPath = getDestinationValue();
+        }
         if (this.selectedJobVersion != null && this.selectedJobVersion.equals(this.allVersions)) {
 
             if (this.originalRootFolderName == null) {
@@ -656,6 +673,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         return true;
     }
 
+    // protected String getDestinationValueSU() {
+    //        return this.suDestinationFilePath != null ? this.suDestinationFilePath : ""; //$NON-NLS-1$
+    //
+    // }
+
     /**
      * The Finish button was pressed. Try to do the required work now and answer a boolean indicating success. If false
      * is returned then the wizard will not close.
@@ -672,6 +694,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
 
         manager = createJobScriptsManager();
+        if (manager instanceof PetalsJobJavaScriptsManager) {
+            PetalsTemporaryOptionsKeeper.INSTANCE.setSelection(selection);
+        }
         manager.setMultiNodes(isMultiNodes());
         // achen modify to fix bug 0006222
         IRunnableWithProgress worker = new IRunnableWithProgress() {
@@ -775,11 +800,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             MessageBoxExceptionHandler.process(e);
             return false;
         }
-
-        if (isNotFirstTime) {
-            setTopFolder(resourcesToExport, this.originalRootFolderName);
+        if (manager instanceof PetalsJobJavaScriptsManager) {
+            setTopFolderForPetals();
         } else {
-            setTopFolder(resourcesToExport, this.getRootFolderName());
+            if (isNotFirstTime) {
+                setTopFolder(resourcesToExport, this.originalRootFolderName);
+            } else {
+                setTopFolder(resourcesToExport, this.getRootFolderName());
+            }
         }
 
         // Save dirty editors if possible but do not stop if not all are saved
@@ -865,7 +893,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     private void reBuildJobZipFile() {
         JavaJobExportReArchieveCreator creator = null;
         String zipFile = getTempDestinationValue();
-        String destinationZipFile = getDestinationValue();
+        String destinationZipFile = null;
+        if (manager instanceof PetalsJobJavaScriptsManager) {
+            destinationZipFile = getSuDestinationFilePath();
+        } else {
+            destinationZipFile = getDestinationValue();
+        }
 
         String tmpFolder = JavaJobExportReArchieveCreator.getTmpFolder();
         try {
@@ -968,7 +1001,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     private String getRootFolderName() {
-        IPath path = new Path(this.getDestinationValue());
+        IPath path = null;
+        if (manager instanceof PetalsJobJavaScriptsManager) {
+            path = new Path(getSuDestinationFilePath());
+        } else {
+            path = new Path(this.getDestinationValue());// y
+        }
+
         String subjectString = path.lastSegment();
         Pattern regex = Pattern.compile("(.*)(?=(\\.(tar|zip))\\b)", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
                 | Pattern.UNICODE_CASE);
@@ -990,6 +1029,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             String directory = fileResource.getDirectoryName();
             fileResource.setDirectoryName(topFolder + "/" + directory); //$NON-NLS-1$
         }
+    }
+
+    public void setTopFolderForPetals() {
     }
 
     /**

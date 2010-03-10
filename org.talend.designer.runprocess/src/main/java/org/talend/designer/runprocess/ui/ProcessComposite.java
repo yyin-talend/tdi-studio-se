@@ -91,11 +91,13 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ReplaceNodesInProcessProvider;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -1154,9 +1156,9 @@ public class ProcessComposite extends Composite {
         if (getProcessContext() == null) {
             return;
         }
-        // if (getProcessContext().getProcess() instanceof IProcess2) {
-        // ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
-        // }
+        if (getProcessContext().getProcess() instanceof IProcess2) {
+            ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
+        }
         CorePlugin.getDefault().getRunProcessService().saveJobBeforeRun(getProcessContext().getProcess());
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();

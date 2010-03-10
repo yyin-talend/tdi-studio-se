@@ -16,6 +16,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -56,6 +57,8 @@ public class JobScriptsManagerFactory {
                 manager = new JobJavaScriptsWSManager();
             } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_JBOSSESB)) {
                 manager = new JobJavaScriptESBManager();
+            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_PETALSESB)) {
+                manager = new PetalsJobJavaScriptsManager();
             }
 
         } else if (language == ECodeLanguage.PERL) {
