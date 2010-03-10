@@ -1519,6 +1519,7 @@ public class UIManager extends AbstractUIManager {
         dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
         dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
         dataMapTableView.loaded();
+        this.mapperUI.getOutputMouseSrolledListener().addMouseWheelListener(dataMapTableView);
         return dataMapTableView;
     }
 

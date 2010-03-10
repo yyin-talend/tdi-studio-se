@@ -1177,6 +1177,7 @@ public class UIManager extends AbstractUIManager {
         dataMapTableView.setLayoutData(formData);
         dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
         dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
+        this.mapperUI.getOutputMouseSrolledListener().addMouseWheelListener(dataMapTableView);
         return dataMapTableView;
     }
 
@@ -1190,6 +1191,7 @@ public class UIManager extends AbstractUIManager {
         dataMapTableView.setLayoutData(formData);
         dataMapTableView.minimizeTable(inputTable.isMinimized());
         dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
+        this.mapperUI.getInputMouseSrolledListener().addMouseWheelListener(dataMapTableView);
         return dataMapTableView;
     }
 

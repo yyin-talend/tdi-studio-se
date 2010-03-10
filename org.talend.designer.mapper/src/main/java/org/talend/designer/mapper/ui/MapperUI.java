@@ -60,6 +60,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.ui.MouseSrolledListener;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
@@ -113,11 +114,17 @@ public class MapperUI {
 
     private OutputTablesZoneView outputTablesZoneView;
 
-    private ScrolledComposite sc2;
-
     private ScrolledComposite sc1;
 
+    private ScrolledComposite sc2;
+
     private ScrolledComposite sc3;
+
+    private MouseSrolledListener sc1MSListener;
+
+    private MouseSrolledListener sc2MSListener;
+
+    private MouseSrolledListener sc3MSListener;
 
     private SashForm mainSashForm;
 
@@ -669,6 +676,7 @@ public class MapperUI {
         sc1.setExpandHorizontal(true);
 
         sc1.setContent(inputTablesZoneView);
+        sc1MSListener = new MouseSrolledListener(mapperManager.getUiManager(), sc1);
 
         inputTablesZoneView.initInsertionIndicator();
 
@@ -696,6 +704,8 @@ public class MapperUI {
             // dataMapTableView.fillMinimumSize(false);
         }
         inputTablesZoneView.setSize(inputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+        sc1MSListener.addMouseWheelListener(sc1);
     }
 
     /**
@@ -749,7 +759,7 @@ public class MapperUI {
             }
 
         });
-
+        sc2MSListener = new MouseSrolledListener(mapperManager.getUiManager(), sc2);
         varsTableZoneView.initInsertionIndicator();
 
         // final Composite finalTablesZoneViewVars = tablesZoneViewVars;
@@ -771,6 +781,7 @@ public class MapperUI {
         }
 
         varsTableZoneView.setSize(varsTableZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        sc2MSListener.addMouseWheelListener(sc2);
     }
 
     private void createOutputZoneWithTables(MapperModel mapperModel, final UIManager uiManager, final Display display) {
@@ -817,7 +828,7 @@ public class MapperUI {
         if (minimizeStateOfTables != null) {
             outputsZone.getToolbar().setMinimizeButtonState(minimizeStateOfTables.booleanValue());
         }
-
+        sc3MSListener = new MouseSrolledListener(mapperManager.getUiManager(), sc3);
         for (OutputTable outputTable : tables) {
 
             OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl, outputTable,
@@ -826,6 +837,14 @@ public class MapperUI {
         }
         outputTablesZoneView.setSize(outputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
+    }
+
+    public MouseSrolledListener getVarMouseSrolledListener() {
+        return this.sc2MSListener;
+    }
+
+    public MouseSrolledListener getOutputMouseSrolledListener() {
+        return this.sc3MSListener;
     }
 
     /**

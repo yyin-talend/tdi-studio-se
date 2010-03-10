@@ -67,4 +67,6 @@ public abstract class AbstractUIManager {
 
     public abstract AbstractMapperManager getAbstractMapperManager();
 
+    public abstract void refreshBackground(boolean forceRecalculate, boolean firstExecutionAfterTime);
+
 }
