@@ -1533,8 +1533,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     // for tmap 11884
                     if (nc.getExternalData() != null) {
                         List<String> joinedTableNames = nc.getExternalData().getJoinedTableNames(metadataTable.getTableName());
-                        for (String joinTableName : joinedTableNames) {
-                            addUniqueConnectionName(joinTableName);
+                        if (joinedTableNames != null) {
+                            for (String joinTableName : joinedTableNames) {
+                                addUniqueConnectionName(joinTableName);
+                            }
                         }
                     }
                 } else {
