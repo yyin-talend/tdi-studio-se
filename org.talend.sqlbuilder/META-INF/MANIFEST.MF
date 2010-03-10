@@ -47,4 +47,5 @@ Export-Package: org.talend.sqlbuilder,
  org.talend.sqlbuilder.ui.proposal,
  org.talend.sqlbuilder.util
 Bundle-ClassPath: sqlexplorer.jar,
+ squirrel.jar,
  .
