@@ -221,6 +221,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                             if (f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) {
                                 jarFileMap.put("net.sourceforge.sqlexplorer.nl", f);
                             }
+                            if (f.getName().startsWith("org.talend.designer.components.localprovider")) {
+                                jarFileMap.put("org.talend.designer.components.localprovider", f);
+                            }
                             if (f.getName().endsWith(".jar") && f.getName().indexOf("nl") != -1
                                     && f.getName().indexOf("talend") != -1) {
                                 String[] fileNameArr = f.getName().split("_");
@@ -234,7 +237,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                             Map.Entry entry = (Map.Entry) iter.next();
                             Object key = entry.getKey();
                             File currentFileToBak = (File) entry.getValue();
-                            if (key.toString().endsWith(".nl")) {
+                            if (key.toString().endsWith(".nl")
+                                    || key.toString().startsWith("org.talend.designer.components.localprovider")
+                                    || key.toString().startsWith("net.sourceforge.sqlexplorer.nl")) {
                                 ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
                                 File jarFiles = new File(jarFolderPath + fs + currentFileToBak.getName());
                                 File[] jarSubFiles = jarFiles.listFiles();
@@ -258,7 +263,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         File zipFile = new File(zipFolderPath);
                         File[] zipFiles = zipFile.listFiles()[0].listFiles();
                         for (File f : zipFiles) {
-                            if (f.getName().endsWith(".nl")) {
+                            if (f.getName().endsWith(".nl")
+                                    || f.getName().startsWith("org.talend.designer.components.localprovider")
+                                    || f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) {
                                 File writeJarFile = (File) jarFileMap.get(f.getName());
                                 if (writeJarFile == null)
                                     continue;
