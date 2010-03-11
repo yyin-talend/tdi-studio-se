@@ -85,6 +85,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
+import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForSAPCommand;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -590,6 +591,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     && PluginChecker.isEBCDICPluginLoaded()) {
                 for (MetadataTable table : (List<MetadataTable>) originalConnection.getTables()) {
                     Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS, table
+                            .getLabel(), ConvertionHelper.convert(table));
+                    list.add(ebcdicCmd);
+                }
+            }
+            // fore EBCDIC, by cli
+            if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded()) {
+                for (MetadataTable table : (List<MetadataTable>) originalConnection.getTables()) {
+                    Command ebcdicCmd = new RepositoryChangeMetadataForHL7Command(node, IEbcdicConstant.TABLE_SCHEMAS, table
                             .getLabel(), ConvertionHelper.convert(table));
                     list.add(ebcdicCmd);
                 }

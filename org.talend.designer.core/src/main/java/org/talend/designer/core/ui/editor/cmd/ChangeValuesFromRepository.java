@@ -237,8 +237,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                if (("TYPE".equals(repositoryValue) || param.isShow(elem.getElementParameters())) && (repositoryValue != null)
-                        && (!param.getName().equals(propertyTypeName))) {
+                if (("TYPE".equals(repositoryValue) || (param.isShow(elem.getElementParameters())) || elem.getElementName()
+                        .startsWith("tHL7Input"))
+                        && (repositoryValue != null) && (!param.getName().equals(propertyTypeName))) {
                     IElementParameter relatedPropertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
                             param.getCategory());
                     if (!relatedPropertyParam.getCategory().equals(currentCategory) && !repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
@@ -333,10 +334,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
                         List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
-                        IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
-                        RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
-                                table, metaTable);
-                        param.setRepositoryValueUsed(true);
+                        if (((Node) elem).getMetadataList().size() > 0) {
+                            IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
+                            RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
+                                    table, metaTable);
+                            param.setRepositoryValueUsed(true);
+                        }
                     } else if (param.getField().equals(EParameterFieldType.TABLE)
                             && param.getRepositoryValue().equals("WSDL_PARAMS") && connection != null) { //$NON-NLS-1$
                         List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
