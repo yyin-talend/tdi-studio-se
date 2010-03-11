@@ -258,10 +258,11 @@ public class ExportTreeViewer {
         }
 
         ERepositoryObjectType contentType = node.getContentType();
-        // System.out.println("contentType---" + contentType + " nodetype--" + node.getType());
         if (contentType != null) {
             switch (contentType) {
             case PROCESS: // referenced project.
+                return true;
+            case SVN_ROOT:
                 return true;
             default:
                 return false;
