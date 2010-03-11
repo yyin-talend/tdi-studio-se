@@ -30,22 +30,18 @@
             }
             nb_line_<%=cid%>+=fid_<%=cid %>.getRowNumber();
 		}
-		}finally{
-            if(!((Object)(<%=filename %>) instanceof java.io.InputStream)){
-            	fid_<%=cid %>.close();
-            }
-            globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
+        if(!((Object)(<%=filename %>) instanceof java.io.InputStream)){
+        	fid_<%=cid %>.close();
         }
+        globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid%>);
 <%
 			}else{
 %>
             }
-            }finally{
-                if(!((Object)(<%=filename %>) instanceof java.io.InputStream)){
-                	fid_<%=cid %>.close();
-                }
-                globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
+            if(!((Object)(<%=filename %>) instanceof java.io.InputStream)){
+            	fid_<%=cid %>.close();
             }
+            globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
 
 <%
 			}
@@ -72,12 +68,10 @@
 				nb_line_<%=cid%>++;
 			}
 			<%if(uncompress){//compress%>}<%}%>
-			}finally{
-    			if(!(filename_<%=cid %> instanceof java.io.InputStream)){
-    				csvReader<%=cid %>.close();
-    			}
-    			globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+			if(!(filename_<%=cid %> instanceof java.io.InputStream)){
+				csvReader<%=cid %>.close();
 			}
+			globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}
 	}
