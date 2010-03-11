@@ -272,12 +272,17 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
           maxLength = "0";
       }
     } else{
-      IMetadataColumn schemaColumn = listColumsToTest.get(iInColIndex);
-      sTestColName = schemaColumn.getLabel();
-      sTestColType = JavaTypesManager.getTypeToGenerate(schemaColumn.getTalendType(), true);
-      sTestColPattern = schemaColumn.getPattern();
-      bNullable = schemaColumn.isNullable();
-      bMaxLenLimited = false;
+      // when using another schema, it's size may less than listInColumns
+      if (iInColIndex < listColumsToTest.size()){
+        IMetadataColumn schemaColumn = listColumsToTest.get(iInColIndex);
+        sTestColName = schemaColumn.getLabel();
+        sTestColType = JavaTypesManager.getTypeToGenerate(schemaColumn.getTalendType(), true);
+        sTestColPattern = schemaColumn.getPattern();
+        bNullable = schemaColumn.isNullable();
+        bMaxLenLimited = false;
+      } else{
+        break;
+      }
     }
 
     // NULL checking
