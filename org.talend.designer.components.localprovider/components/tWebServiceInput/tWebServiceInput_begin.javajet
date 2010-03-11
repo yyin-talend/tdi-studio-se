@@ -11,6 +11,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaType
         java.util.Map
         java.util.List
+        org.talend.core.model.utils.TalendTextUtils
 " 
 %>
 
@@ -36,6 +37,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
         String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
         
+        boolean winAuth = ("true").equals(ElementParameterParser.getValue(node,"__WIN_AUTH__"));
+        String domain = ElementParameterParser.getValue(node,"__DOMAIN__");
+        
         boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__UES_PROXY__"));
         String proxuHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
         String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
@@ -55,7 +59,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if(method != null && !("\"runJob\"").equals(method.trim())) {
 %>
 /////////////////////////////////// 
-        
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
         Object[] params_<%=cid %> = new Object[] {
         <%=endpoint %>, 
         <%=method %>,      
@@ -77,9 +81,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
 <% 
 		}
-		if (needAuth) {
+		if (needAuth&&!winAuth) {
 %>        	   
         org.talend.DynamicInvoker.setAuth(true, <%=username %>, <%=password %>); 		
+<%
+  		}
+  		if (needAuth&&winAuth){
+  			String domain_username = "\""+TalendTextUtils.removeQuotes(domain)+"\\\\"+TalendTextUtils.removeQuotes(username)+"\"";
+%>
+		org.talend.DynamicInvoker.setWINAuth(true, <%=domain_username %>, <%=password %>); 	  		
 <%
   		}
 		if (useProxy) {

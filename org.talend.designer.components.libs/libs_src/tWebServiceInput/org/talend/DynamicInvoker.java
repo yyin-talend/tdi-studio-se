@@ -32,10 +32,16 @@ import javax.xml.rpc.encoding.DeserializerFactory;
 
 import org.apache.axis.AxisProperties;
 import org.apache.axis.Constants;
+import org.apache.axis.EngineConfiguration;
+import org.apache.axis.client.AxisClient;
+import org.apache.axis.configuration.EngineConfigurationFactoryFinder;
+import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.encoding.ser.ElementDeserializer;
 import org.apache.axis.encoding.ser.ElementDeserializerFactory;
 import org.apache.axis.encoding.ser.ElementSerializerFactory;
 import org.apache.axis.encoding.ser.SimpleDeserializer;
+import org.apache.axis.transport.http.CommonsHTTPSender;
+import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.axis.utils.DefaultAuthenticator;
 import org.apache.axis.wsdl.gen.Parser;
 import org.apache.axis.wsdl.symbolTable.BindingEntry;
@@ -54,6 +60,8 @@ import org.apache.axis.wsdl.symbolTable.TypeEntry;
  * @author Davanum Srinivas (dims@yahoo.com)
  */
 public class DynamicInvoker {
+
+    private static boolean needWINAuth = false;
 
     private static boolean needAuth = false;
 
@@ -131,6 +139,17 @@ public class DynamicInvoker {
         if (needAuth) {
             Authenticator.setDefault(new DefaultAuthenticator(username, password));
         }
+
+    }
+
+    public static void setWINAuth(boolean needWINAuth, String username, String password) throws Exception {
+        DynamicInvoker.needWINAuth = needWINAuth;
+        DynamicInvoker.username = username;
+        DynamicInvoker.password = password;
+
+        if (needWINAuth) {
+            Authenticator.setDefault(new DefaultAuthenticator(username, password));
+        }
     }
 
     public static void setHttpProxy(boolean useProxy, String proxyHost, String proxyPort, String proxyUser, String proxyPassword)
@@ -205,7 +224,15 @@ public class DynamicInvoker {
         // System.out.println("Preparing Axis dynamic invocation");
         Service service = selectService(serviceNS, serviceName);
         Operation operation = null;
+
         org.apache.axis.client.Service dpf = new org.apache.axis.client.Service(wsdlParser, service.getQName());
+        if (needWINAuth) {
+            EngineConfiguration defaultConfig = EngineConfigurationFactoryFinder.newFactory().getClientEngineConfig();
+            SimpleProvider config = new SimpleProvider(defaultConfig);
+            config.deployTransport(HTTPTransport.DEFAULT_TRANSPORT_NAME, new CommonsHTTPSender());
+            AxisClient axisClient = new AxisClient(config);
+            dpf.setEngine(axisClient);
+        }
 
         Vector inputs = new Vector();
         Port port = selectPort(service.getPorts(), portName);
@@ -228,7 +255,10 @@ public class DynamicInvoker {
             ((org.apache.axis.client.Call) call).setProperty(Stub.USERNAME_PROPERTY, username);
             ((org.apache.axis.client.Call) call).setProperty(Stub.PASSWORD_PROPERTY, password);
         }
-
+        if (needWINAuth) {
+            ((org.apache.axis.client.Call) call).setUsername(username);
+            ((org.apache.axis.client.Call) call).setPassword(password);
+        }
         if (useProxy) {
             AxisProperties.setProperty("http.proxyHost", proxyHost);
             AxisProperties.setProperty("http.proxyPort", proxyPort);
