@@ -20,6 +20,7 @@ import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.ExcelFileConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
+import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LDAPSchemaConnectionItem;
 import org.talend.core.model.properties.LdifFileConnectionItem;
@@ -116,6 +117,7 @@ public enum EDatabaseComponentName {
     GENERICSCHEMA(GenericSchemaConnectionItem.class, (String) null, null, "GENERICSCHEMA"), //$NON-NLS-1$
 
     FILEEBCDIC(EbcdicConnectionItem.class, "tFileInputEBCDIC", "tFileOutputEBCDIC", "EBCDIC"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    FILEHL7(HL7ConnectionItem.class, "tHL7Input", null, "HL7"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     FILEMDM(MDMConnectionItem.class, "tMDMInput", "tMDMOutput", "MDM"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 

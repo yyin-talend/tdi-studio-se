@@ -811,6 +811,15 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataMDMConnectionNode();
                 }
             }
+            if (repositoryType.equals(ERepositoryCategoryType.HL7.getName())) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider)
+                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7);
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataHL7ConnectionNode();
+                }
+            }
             // added by hyWang
             if (repositoryType.equals(ERepositoryCategoryType.RULE.getName())) {
                 if (provider instanceof RepositoryContentProvider) {
@@ -942,6 +951,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getMetadataWSDLSchemaNode());
             container.add(contentProvider.getMetadataSalesforceSchemaNode());
             container.add(contentProvider.getMetadataSAPConnectionNode());
+            container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
@@ -987,6 +997,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getMetadataWSDLSchemaNode());
                         refContainer.add(refProject.getMetadataSalesforceSchemaNode());
                         refContainer.add(refProject.getMetadataSAPConnectionNode());
+                        refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));

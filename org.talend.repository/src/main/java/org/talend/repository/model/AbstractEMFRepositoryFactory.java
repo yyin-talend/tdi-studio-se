@@ -192,6 +192,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_WSDL_SCHEMA, true);
     }
 
+    public RootContainer<String, IRepositoryObject> getMetadataHL7(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_HL7, true);
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -208,7 +212,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA,
                 ERepositoryObjectType.METADATA_WSDL_SCHEMA, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA,
                 ERepositoryObjectType.JOBLET, ERepositoryObjectType.METADATA_FILE_EBCDIC,
-                ERepositoryObjectType.METADATA_FILE_RULES, ERepositoryObjectType.METADATA_MDMCONNECTION };
+                ERepositoryObjectType.METADATA_FILE_RULES, ERepositoryObjectType.METADATA_FILE_HL7,
+                ERepositoryObjectType.METADATA_MDMCONNECTION };
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
@@ -280,7 +285,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.METADATA_FILE_EBCDIC,
                 ERepositoryObjectType.METADATA_FILE_RULES, ERepositoryObjectType.METADATA_MDMCONNECTION,
                 ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.SVG_BUSINESS_PROCESS,
-                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.SNIPPETS };
+                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_FILE_HL7 };
         // added
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);

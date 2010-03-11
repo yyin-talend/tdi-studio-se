@@ -21,6 +21,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
+import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.SAPConnectionItem;
@@ -79,6 +80,11 @@ public class ReadTableAction extends AbstractCreateTableAction {
                         }
                     }
                     if (item2 instanceof SAPConnectionItem) {
+                        setEnabled(false);
+                        return;
+                    }
+                    
+                    if (item2 instanceof HL7ConnectionItem) {
                         setEnabled(false);
                         return;
                     }

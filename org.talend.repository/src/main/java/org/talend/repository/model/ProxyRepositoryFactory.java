@@ -1996,4 +1996,24 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public RootContainer<String, IRepositoryObject> getMetadataMDM(Project project) throws PersistenceException {
         return this.repositoryFactoryFromProvider.getMetadataMDM(project);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataHL7(org.talend.core.model.general.Project)
+     */
+    @Override
+    public RootContainer<String, IRepositoryObject> getMetadataHL7(Project project) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataHL7(project);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataHL7()
+     */
+    @Override
+    public RootContainer<String, IRepositoryObject> getMetadataHL7() throws PersistenceException {
+        return getMetadataHL7(projectManager.getCurrentProject());
+    }
 }

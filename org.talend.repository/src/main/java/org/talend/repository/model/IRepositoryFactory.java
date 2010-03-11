@@ -252,6 +252,8 @@ public interface IRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getMetadataEBCDIC(Project project) throws PersistenceException;
 
+    public RootContainer<String, IRepositoryObject> getMetadataHL7(Project project) throws PersistenceException;
+
     public RootContainer<String, IRepositoryObject> getMetadataMDM(Project project) throws PersistenceException;
 
     // feature 0006484
