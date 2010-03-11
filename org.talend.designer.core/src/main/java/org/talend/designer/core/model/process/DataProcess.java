@@ -59,6 +59,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
+import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -1562,11 +1563,25 @@ public class DataProcess {
 
         Node newGraphicalNode = new Node(graphicalNode.getComponent(), process);
         newGraphicalNode.setMetadataList(graphicalNode.getMetadataList());
-        // for bug 11771
-        IExternalData externalData = graphicalNode.getExternalData();
-        if (externalData != null) {
-            newGraphicalNode.setExternalData(externalData);
+
+        // // for bug 11771
+        // IExternalData externalData = graphicalNode.getExternalData();
+        // if (externalData != null) {
+        // newGraphicalNode.setExternalData(externalData);
+        // }
+        String componentName = (String) graphicalNode.getElementParameter("COMPONENT_NAME").getValue();
+        if (componentName.equals("tMap")) {
+            if (graphicalNode.getExternalData() != null) {
+                Data data = graphicalNode.getExternalBytesData();
+                newGraphicalNode.setData(data.getBytesData(), data.getStringData());
+            }
+        } else {
+            IExternalData externalData = graphicalNode.getExternalData();
+            if (externalData != null) {
+                newGraphicalNode.setExternalData(externalData);
+            }
         }
+
         copyElementParametersValue(graphicalNode, newGraphicalNode);
         newGraphicalNode.setDummy(graphicalNode.isDummy());
 
