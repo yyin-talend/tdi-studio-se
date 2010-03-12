@@ -1775,12 +1775,16 @@ if(!isVirtualOut) { // T_TM_M_320
                     connectionExists = false;
                 } else {
                 	hashedMetadataTable = new HashedMetadataTable(outputConnection.getMetadataTable());
-                }                 
-             %>   
+                }
                 
+                //exist the ErrorReject schema, but there doesn't exist the Reject output link
+                if(!connectionExists){
+                	continue;
+                }
+             %>                
                 
 <%   
-                boolean isGen = false;
+
                 StringBuilder sb = new StringBuilder();
                 for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
                     String outputColumnName = outputTableEntry.getName();
@@ -1811,7 +1815,7 @@ if(!isVirtualOut) { // T_TM_M_320
                     
                     }
 					
-					isGen = true;
+
                     
                     String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
                             JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName,
@@ -1849,14 +1853,13 @@ if(!isVirtualOut) { // T_TM_M_320
                 } // for entries  
                 
                  	
-%>                
-<%if(isGen){%>                
-                <%=outputTableName %> = new <%=outputTableName %>Struct();
+%>            
+               
                 <% stringBuffer.append(sb.toString()); %>
                 ErrorReject = ErrorReject_tmp;
                 <%=outputTableName %>.errorMessage = e.getMessage();
                 <%=outputTableName %>.errorStackTrace = ResumeUtil.getExceptionStackTrace(e);
-<%}%>                
+              
                 
             <%    
             }
@@ -1865,7 +1868,7 @@ if(!isVirtualOut) { // T_TM_M_320
     
             <%
             //clear others branches.
-            for(ExternalMapperTable outputTable : outputTables){
+            for(ExternalMapperTable outputTable : outputTables){//111
             	
             	String outputTableName = outputTable.getName(); 
                 
@@ -1875,12 +1878,27 @@ if(!isVirtualOut) { // T_TM_M_320
                     	continue;
                     }
                 }
-             %>   
-                <%=outputTableName %> = null;
+                
+                
+                //only process the table with output link
+                if (nameToOutputConnection.get(outputTableName)!=null) {//222
+                	if(hasJoinedTable(outputTableName,data)){
+                	
+                	//feature:11884, in merge case, the mergedTable/mergingTable both clear.
+				%>	
+                		<%=outputTableName %>_List.clear();
+            	<%    
+                	}else{
+				%>					
+                		<%=outputTableName %> = null;
+                <%		
+                	}
+                }//222
+				%>
             <%    
-            }
+            }//111
             %>			
-	}
+	}//end catch
 <%
 	}
 %>
