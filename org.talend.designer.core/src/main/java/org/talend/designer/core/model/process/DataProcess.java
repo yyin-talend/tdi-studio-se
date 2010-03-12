@@ -1569,7 +1569,7 @@ public class DataProcess {
         // if (externalData != null) {
         // newGraphicalNode.setExternalData(externalData);
         // }
-        String componentName = (String) graphicalNode.getElementParameter("COMPONENT_NAME").getValue();
+        String componentName = graphicalNode.getComponent().getName();
         if (componentName.equals("tMap")) {
             if (graphicalNode.getExternalData() != null) {
                 Data data = graphicalNode.getExternalBytesData();
