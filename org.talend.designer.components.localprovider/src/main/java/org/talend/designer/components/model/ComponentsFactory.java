@@ -66,8 +66,6 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.sun.org.apache.xerces.internal.dom.DeferredElementImpl;
-
 /**
  * Component factory that look for each component and load their information. <br/>
  * 
@@ -731,8 +729,10 @@ public class ComponentsFactory implements IComponentsFactory {
                     Node family = element.item(0);
                     NodeList childNodes = family.getChildNodes();
                     for (int i = 0; i < childNodes.getLength(); i++) {
-                        if (childNodes.item(i) instanceof DeferredElementImpl) {
-                            familyNames.add(childNodes.item(i).getTextContent());
+                        final Node item = childNodes.item(i);
+                        if (item instanceof com.sun.org.apache.xerces.internal.dom.DeferredElementImpl
+                                || item instanceof org.apache.xerces.dom.DeferredElementImpl) {
+                            familyNames.add(item.getTextContent());
                         }
                     }
                 }

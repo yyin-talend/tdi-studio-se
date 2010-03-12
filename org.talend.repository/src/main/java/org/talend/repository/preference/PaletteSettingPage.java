@@ -397,7 +397,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
                 statusBackup.put(label, !visible);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
