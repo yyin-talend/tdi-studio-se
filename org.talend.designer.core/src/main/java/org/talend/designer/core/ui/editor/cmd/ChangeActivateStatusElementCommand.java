@@ -98,13 +98,11 @@ public class ChangeActivateStatusElementCommand extends Command {
                         deactiveNum = deactiveNum + 1;
                     }
                 }
-                if (!value) {
-                    outputs.remove(curConn);
-                    outputs.add(curConn);
-
-                }
+                outputs.remove(curConn);
                 if (value) {
                     outputs.add(outputs.size() - deactiveNum, (Connection) object);
+                } else {
+                    outputs.add(curConn);
                 }
                 curConn.updateAllId();
             }
