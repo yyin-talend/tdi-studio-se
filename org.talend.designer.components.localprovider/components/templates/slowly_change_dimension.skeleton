@@ -612,7 +612,9 @@ public class CLASS {
         boolean isFirstSK = true;
         for(Column sourceKey : sourceKeys) { 
             //if (JavaTypesManager.isJavaPrimitiveType(sourceKey.getJavaType(), sourceKey.isNullable())) {
-            if (sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") || sourceKey.getJavaType().equals("Object") || sourceKey.isNullable()) {
+            if (sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") 
+            		|| sourceKey.getJavaType().equals("Object") || sourceKey.getJavaType().equals("BigDecimal")
+            		|| sourceKey.isNullable()) {
                 sourceKeyClass.append("if (this." + sourceKey.getColumnName() + " == null) {\r\n");
                 sourceKeyClass.append("if (other." + sourceKey.getColumnName() + "!= null)\r\n");
                 sourceKeyClass.append("return false;\r\n");
@@ -632,7 +634,9 @@ public class CLASS {
         sourceKeyClass.append("if(hashCodeDirty) {\r\n");
         sourceKeyClass.append("int prime = 31;");
         for(Column sourceKey : sourceKeys) {
-            if(sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") || sourceKey.getJavaType().equals("Object") || sourceKey.isNullable()) {
+            if(sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") 
+            		|| sourceKey.getJavaType().equals("Object") || sourceKey.getJavaType().equals("BigDecimal") 
+            		||sourceKey.isNullable()) {
                 sourceKeyClass.append("hashCode = prime * hashCode + (" + sourceKey.getColumnName() + " == null ? 0 : " + sourceKey.getColumnName() + ".hashCode());\r\n");
             } else {
                 if(sourceKey.getJavaType().equals("long")) {
