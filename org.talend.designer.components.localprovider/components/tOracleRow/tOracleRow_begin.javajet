@@ -25,6 +25,8 @@ imports="
     
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+	
+	String use_NB_Line = ElementParameterParser.getValue(node, "__USE_NB_LINE__");
 %>
 
 java.sql.Connection conn_<%=cid%> = null;
@@ -108,6 +110,20 @@ if(!("true").equals(useExistingConn)) {
 String query_<%=cid %> = "";
 boolean whetherReject_<%=cid%> = false;
 
-
+<%	//feature 0010425
+	if ("NB_LINE_INSERTED".equals(use_NB_Line)) {
+%>
+		int nb_line_inserted_<%=cid%> = 0;
+<%
+	} else if ("NB_LINE_UPDATED".equals(use_NB_Line)) {
+%>
+		int nb_line_update_<%=cid%> = 0;
+<%
+	} else if ("NB_LINE_DELETED".equals(use_NB_Line)) {
+%>
+		int nb_line_deleted_<%=cid%> = 0;
+<%
+	}//end feature 0010425
+%>
 
 

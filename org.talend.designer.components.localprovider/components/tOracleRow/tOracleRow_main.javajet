@@ -27,6 +27,8 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 		dbquery = dbquery.replaceAll("\r"," ");
 List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SET_PREPAREDSTATEMENT_PARAMETERS__");  
 
+String use_NB_Line = ElementParameterParser.getValue(node, "__USE_NB_LINE__");
+
 String incomingConnName = null;
 
 List<IMetadataColumn> columnList = null;
@@ -124,6 +126,23 @@ try {
 		}
 	}
 %>
+
+<%	//feature 0010425
+	if ("NB_LINE_INSERTED".equals(use_NB_Line)) {
+%>
+		nb_line_inserted_<%=cid%>++;
+<%
+	} else if ("NB_LINE_UPDATED".equals(use_NB_Line)) {
+%>
+		nb_line_update_<%=cid%>++;
+<%
+	} else if ("NB_LINE_DELETED".equals(use_NB_Line)) {
+%>
+		nb_line_deleted_<%=cid%>++;
+<%
+	}//end feature 0010425
+%>
+
     } catch (Exception e) {
         whetherReject_<%=cid%> = true;
         <%
