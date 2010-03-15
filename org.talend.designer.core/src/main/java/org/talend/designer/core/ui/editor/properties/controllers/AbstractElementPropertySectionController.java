@@ -311,6 +311,31 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return ""; //$NON-NLS-1$
     }
 
+    /**
+     * DOC zli Comment method "getValueFromRepositoryName".
+     * 
+     * @param elem2
+     * @param repositoryName
+     * @param parameterName
+     * @return
+     */
+    protected String getValueFromRepositoryNameAndParameterName(Element elem2, String repositoryName, String parameterName) {
+
+        for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
+            if (!sameExtraParameter(param)) {
+                continue;
+            }
+            if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryValue().equals(repositoryName)) {
+                    if (param.getName().contains(parameterName)) {
+                        return (String) param.getValue();
+                    }
+                }
+            }
+        }
+        return ""; //$NON-NLS-1$
+    }
+
     protected String getParaNameFromRepositoryName(String repositoryName) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
             // for job settings extra.(feature 2710)
@@ -1237,12 +1262,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String port = getValueFromRepositoryName(element, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
 
-        if (type.equals(EDatabaseTypeName.ORACLE_OCI.getXmlName()) || type.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())) {
-            String localServiceName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
-            if (localServiceName == null || "".equals(localServiceName) || "\"\"".equals(localServiceName)) {
-                localServiceName = (String) elem.getPropertyValue(EParameterName.LOCAL_SERVICE_NAME.getName());
-            }
-            // String localServiceName = (String) elem.getPropertyValue(EParameterName.LOCAL_SERVICE_NAME.getName());
+        boolean isOracleOCI = type.equals(EDatabaseTypeName.ORACLE_OCI.getXmlName())
+                || type.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName());
+        if (isOracleOCI) {
+            String localServiceName = getValueFromRepositoryNameAndParameterName(element, EConnectionParameterName.SID.getName(),
+                    EParameterName.LOCAL_SERVICE_NAME.getName());
+            // sid is the repository value both for DBName and Local_service_name
             connParameters.setLocalServiceName(localServiceName);
         }
 
@@ -1374,11 +1399,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (implicitContext != null) {
                 Map<String, IElementParameter> childParameters = implicitContext.getChildParameters();
                 if (childParameters != null) {
-                    IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-N$
-                    if (iElementParameter != null) {
-                        Object value = iElementParameter.getValue();
-                        if (value != null) {
-                            return value.toString();
+                    if (childParameters.get("PROPERTY_TYPE").getValue().equals("REPOSITORY")) {//$NON-NLS-N$//$NON-NLS-N$
+                        IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-N$
+                        if (iElementParameter != null) {
+                            Object value = iElementParameter.getValue();
+                            if (value != null) {
+                                return value.toString();
+                            }
                         }
                     }
                 }
@@ -1398,11 +1425,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (statsLogContext != null) {
                 Map<String, IElementParameter> childParameters = statsLogContext.getChildParameters();
                 if (childParameters != null) {
-                    IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-N$
-                    if (iElementParameter != null) {
-                        Object value = iElementParameter.getValue();
-                        if (value != null) {
-                            return value.toString();
+                    if (childParameters.get("PROPERTY_TYPE").getValue().equals("REPOSITORY")) {//$NON-NLS-N$//$NON-NLS-N$
+                        IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-N$
+                        if (iElementParameter != null) {
+                            Object value = iElementParameter.getValue();
+                            if (value != null) {
+                                return value.toString();
+                            }
                         }
                     }
                 }
