@@ -48,6 +48,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.Problem;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -82,6 +83,7 @@ import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
+import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -731,4 +733,8 @@ public class DesignerCoreService implements IDesignerCoreService {
         return false;
     }
 
+    public void addProblems(Problem problem) {
+        Problems.add(problem);
+        Problems.refreshProblemTreeView();
+    }
 }

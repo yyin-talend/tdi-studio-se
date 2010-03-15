@@ -92,13 +92,17 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
     private Composite parent;
 
     public static ProblemsView show() {
-        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
-        try {
-            part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ID);
-        } catch (Exception e) {
+        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (activePage != null) {
+            IViewPart part = activePage.findView(ID);
+            try {
+                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ID);
+            } catch (Exception e) {
 
+            }
+            return (ProblemsView) part;
         }
-        return (ProblemsView) part;
+        return null;
     }
 
     private TreeViewer viewer;

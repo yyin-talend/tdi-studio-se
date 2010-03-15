@@ -245,7 +245,9 @@ public class Problems {
         for (IProcess process : openJobs) {
             ((Process) process).checkNodeProblems();
         }
-        getProblemView().refresh();
+        if (getProblemView() != null) {
+            getProblemView().refresh();
+        }
     }
 
     public static void refreshProcessAllNodesStatus(IProcess process) {

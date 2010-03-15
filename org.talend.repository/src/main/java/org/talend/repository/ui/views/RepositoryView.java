@@ -1008,6 +1008,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         if (rootNode != null) {
             rootNode.setInitialized(false);
             rootNode.getChildren().clear();
+            // for bug 11786
+            if (rootNode.getParent() instanceof ProjectRepositoryNode) {
+                ((ProjectRepositoryNode) rootNode.getParent()).clearNodeAndProjectCash();
+            }
             contentProvider.getChildren(rootNode); // retrieve child
             viewer.refresh(rootNode);
         }
