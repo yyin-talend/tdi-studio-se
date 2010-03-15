@@ -22,6 +22,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -46,6 +47,20 @@ public class ExpandAllAction extends AContextualAction {
     protected void doRun() {
         IRepositoryView view = getViewPart();
         ISelection selection = getSelection();
+        if (selection == null) {
+            return;
+        }
+        Object objNode = ((IStructuredSelection) selection).getFirstElement();
+        if (objNode != null) {
+            RepositoryNode node = (RepositoryNode) objNode;
+            if ((node.getProperties(EProperties.CONTENT_TYPE) != null)
+                    && (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SVN_ROOT)) {
+                view.expand(node);
+                view.getViewer().refresh();
+                return;
+            }
+        }
+
         Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             expand(view, (RepositoryNode) obj, !view.getExpandedState(obj));
