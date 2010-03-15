@@ -395,7 +395,7 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
                     factory.create(connectionItem, wsdlSchemaWizardPage0.getDestinationPath());
                 } else {
                     // update
-                    RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
+                    RepositoryUpdateManager.updateWSDLConnection(connectionItem, false, false);
 
                     factory.save(connectionItem);
                     closeLockStrategy();
