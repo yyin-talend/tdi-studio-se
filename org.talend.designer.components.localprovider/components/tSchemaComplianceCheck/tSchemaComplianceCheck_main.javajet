@@ -186,7 +186,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       <%
       } else {        
         // date type need check also (some inputting data not legal, beacause original data is not suite with pattern and has be converted)        
-        if (javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE) {
+        if (javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.STRING) {
         %>
           try{                    
             if (
@@ -211,13 +211,21 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
             errorMessage_<%=cid%> += "|wrong DATE pattern or wrong DATE data";
           }
         <%
-        } else{
-        %>  
+        }else if(javaType == JavaTypesManager.DATE){
+        	if(!metadataColumn.getPattern().equals(pattern)){
+        %>
+	          ifPassed_<%=cid%> = false;
+	          errorCode_<%=cid%> += 2;
+	          errorMessage_<%=cid%> += "|wrong DATE pattern or wrong DATE data";
+        <%
+        	}
+        }else{
+        %>
           ifPassed_<%=cid%> = false;
           errorCode_<%=cid%> += 2;
           errorMessage_<%=cid%> += "|The TYPE of inputting data is error. (one of OBJECT, STRING, DATE)";
-        <%
-        }
+<%
+		}
       }
     }
 
