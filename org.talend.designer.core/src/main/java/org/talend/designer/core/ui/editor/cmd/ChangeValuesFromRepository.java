@@ -263,6 +263,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             }
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
+                            if (objectValue.equals("MSSQL")) {
+                                objectValue = "SQL_SERVER";
+                            }
                             for (int i = 0; (i < list.length) && (!found); i++) {
                                 if (objectValue.equals(list[i])) {
                                     found = true;
@@ -395,7 +398,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (elementParameter == null || value == null) {
             return;
         }
-        if (value.indexOf("ACCESS") != -1) {//$NON-NLS-1$
+        if (value.indexOf("Access") != -1) {//$NON-NLS-1$
             elementParameter.setValue(value);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
             elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER);

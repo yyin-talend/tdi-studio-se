@@ -498,10 +498,9 @@ public class ProjectSettingManager extends Utils {
         param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.EXTRA);
-        param.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
-        param.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
-        // param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
-        param.setListItemsDisplayCodeName(StatsAndLogsConstants.ORACLE_VERSION_CODE);
+        param.setListItemsDisplayName(StatsAndLogsConstants.DB_VERSION_DISPLAY);
+        param.setListItemsValue(StatsAndLogsConstants.DB_VERSION_DRIVER);
+        param.setListItemsDisplayCodeName(StatsAndLogsConstants.DB_VERSION_CODE);
         param.setNumRow(42);
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
