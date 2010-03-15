@@ -31,19 +31,7 @@ imports="
 		}
 	}
 	
-	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 
-    String con = "conn_" + connection;
-
-	if (!connection.startsWith("tMysqlConnection")) {
-%>
-if(nb_line_<%=cid%> == 0){
-	
-	pstmt_<%=cid %> = <%=con %>.prepareStatement("SELECT LAST_INSERT_ID()");
-	
-}
-<%
-	}
 	for (IConnection conn : node.getOutgoingConnections()) {
 		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
 			IMetadataTable outputMetadataTable = conn.getMetadataTable();

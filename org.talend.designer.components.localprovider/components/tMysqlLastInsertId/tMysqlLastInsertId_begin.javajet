@@ -16,18 +16,10 @@ imports="
 
     String conn = "conn_" + connection;
 	
-	if (connection.startsWith("tMysqlConnection")) {
 %>
 
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 
 java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid %>.prepareStatement("SELECT LAST_INSERT_ID()");
-
-<%
-	}else{%>
-java.sql.PreparedStatement pstmt_<%=cid %> = null;	
-<%
-	}
-%>
 
 int nb_line_<%=cid%> = 0;
