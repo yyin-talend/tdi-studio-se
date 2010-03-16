@@ -133,9 +133,11 @@ public class ElementParameter2ParameterType {
      * @param paType
      */
     public static void loadElementParameters(Element elemParam, ParametersType paType, String repParamName) {
+        if (paType == null || elemParam == null) {
+            return;
+        }
         EList listParamType = paType.getElementParameter();
         ElementParameterType repositoryParam = null;
-
         if (repParamName != null && !repParamName.equals("")) { //$NON-NLS-N$
             repositoryParam = findElementParameterType(paType, repParamName);
         } else {
@@ -146,111 +148,130 @@ public class ElementParameter2ParameterType {
         for (int j = 0; j < listParamType.size(); j++) {
             ElementParameterType pType = (ElementParameterType) listParamType.get(j);
             if (pType != null) {
-                IElementParameter param = elemParam.getElementParameter(pType.getName());
-                if (param != null) {
-                    String name = param.getName();
-                    param.setContextMode(pType.isContextMode());
-                    if (param.isReadOnly()
-                            && !(name.equals(EParameterName.UNIQUE_NAME.getName()) || name.equals(EParameterName.VERSION
-                                    .getName()))) {
-                        continue; // if the parameter is read only, don't load
-                        // it (this will prevent to overwrite the
-                        // value)
-                    }
-                    String value = null;
-                    if (name.equals("STATANDLOG_USE_PROJECT_SETTINGS") //$NON-NLS-1$
-                            || name.equals("IMPLICITCONTEXT_USE_PROJECT_SETTINGS")) { //$NON-NLS-1$
-                        value = param.getValue().toString();
-                    } else {
-                        value = pType.getValue();
-                    }
-                    if (param.getField().equals(EParameterFieldType.CHECK) || param.getField().equals(EParameterFieldType.RADIO)) {
-                        if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
-                            Boolean boolean1 = new Boolean(value);
-                            elemParam.setPropertyValue(pType.getName(), boolean1);
+                String pTypeName = pType.getName();
+                if (pTypeName != null && !"".equals(pTypeName)) {
+                    IElementParameter param = elemParam.getElementParameter(pTypeName);
+                    if (param != null) {
+                        String name = param.getName();
+                        param.setContextMode(pType.isContextMode());
+                        if (param.isReadOnly()
+                                && !(EParameterName.UNIQUE_NAME.getName().equals(name) || EParameterName.VERSION.getName()
+                                        .equals(name))) {
+                            continue; // if the parameter is read only, don't load
+                            // it (this will prevent to overwrite the
+                            // value)
+                        }
+                        String value = null;
+                        if ("STATANDLOG_USE_PROJECT_SETTINGS".equals(name) //$NON-NLS-1$
+                                || "IMPLICITCONTEXT_USE_PROJECT_SETTINGS".equals(name)) { //$NON-NLS-1$
+                            Object value2 = param.getValue();
+                            if (value2 != null) {
+                                value = value2.toString();
+                            }
                         } else {
-                            elemParam.setPropertyValue(pType.getName(), value);
+                            value = pType.getValue();
                         }
-                        // if (EParameterName.ACTIVATE.getName().equals(param.getName())) {
-                        // if ((elemParam instanceof Node) && !boolean1) {
-                        // ((Node) elemParam).setDummy(!boolean1);
-                        // }
-                        // }
-                    } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
-                        boolean valueSet = false;
-                        if (!ArrayUtils.contains(param.getListItemsValue(), value)) {
-                            if (ArrayUtils.contains(param.getListItemsDisplayName(), value)) {
-                                valueSet = true;
-                                int index = ArrayUtils.indexOf(param.getListItemsDisplayName(), value);
-                                elemParam.setPropertyValue(pType.getName(), param.getListItemsValue()[index]);
+                        if (param.getField().equals(EParameterFieldType.CHECK)
+                                || param.getField().equals(EParameterFieldType.RADIO)) {
+                            if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
+                                Boolean boolean1 = new Boolean(value);
+                                elemParam.setPropertyValue(pTypeName, boolean1);
+                            } else {
+                                elemParam.setPropertyValue(pTypeName, value);
                             }
-                        }
-                        if (!valueSet) {                    
-                            elemParam.setPropertyValue(pType.getName(), value);
-                        }
-                    } else if (param.getField().equals(EParameterFieldType.TABLE)) {
-                        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                        String[] codeList = param.getListItemsDisplayCodeName();
-                        Map<String, Object> lineValues = null;
-                        for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
-                            boolean found = false;
-                            for (int i = 0; i < codeList.length && !found; i++) {
-                                if (codeList[i].equals(elementValue.getElementRef())) {
-                                    found = true;
+                            // if (EParameterName.ACTIVATE.getName().equals(param.getName())) {
+                            // if ((elemParam instanceof Node) && !boolean1) {
+                            // ((Node) elemParam).setDummy(!boolean1);
+                            // }
+                            // }
+                        } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                            boolean valueSet = false;
+                            if (!ArrayUtils.contains(param.getListItemsValue(), value)) {
+                                if (ArrayUtils.contains(param.getListItemsDisplayName(), value)) {
+                                    valueSet = true;
+                                    int index = ArrayUtils.indexOf(param.getListItemsDisplayName(), value);
+                                    if (index > -1) {
+                                        elemParam.setPropertyValue(pTypeName, param.getListItemsValue()[index]);
+                                    }
                                 }
                             }
-                            if (found) {
-                                if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
-                                    lineValues = new HashMap<String, Object>();
-                                    tableValues.add(lineValues);
+                            if (!valueSet) {
+                                elemParam.setPropertyValue(pTypeName, value);
+                            }
+                        } else if (param.getField().equals(EParameterFieldType.TABLE)) {
+                            List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                            String[] codeList = param.getListItemsDisplayCodeName();
+                            Map<String, Object> lineValues = null;
+                            for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
+                                boolean found = false;
+                                int length = codeList.length;
+                                if (length > 0) {
+                                    for (int i = 0; i < length && !found; i++) {
+                                        if (codeList[i].equals(elementValue.getElementRef())) {
+                                            found = true;
+                                        }
+                                    }
                                 }
-                                lineValues.put(elementValue.getElementRef(), elementValue.getValue());
-                                if (elementValue.getType() != null) {
-                                    lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue
-                                            .getType());
+                                if (found) {
+                                    if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
+                                        lineValues = new HashMap<String, Object>();
+                                        tableValues.add(lineValues);
+                                    }
+                                    lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                                    if (elementValue.getType() != null) {
+                                        lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue
+                                                .getType());
+                                    }
                                 }
                             }
-                        }
-                        elemParam.setPropertyValue(pType.getName(), tableValues);
-                    } else if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
-                        // fix for bug 2193
-                        boolean setToCustom = false;
-                        if (EmfComponent.REPOSITORY.equals(elemParam.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))
-                                && param.getRepositoryValue() != null && param.getRepositoryValue().equals("ENCODING")) { //$NON-NLS-1$
-                            setToCustom = true;
-                        }
-                        String tempValue = (String) param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName())
-                                .getValue();
-                        if (!tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-                            tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                            tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                            tempValue = TalendTextUtils.addQuotes(tempValue);
-                            if (!tempValue.equals(value)) {
+                            elemParam.setPropertyValue(pTypeName, tableValues);
+                        } else if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+                            // fix for bug 2193
+                            boolean setToCustom = false;
+                            if (EmfComponent.REPOSITORY
+                                    .equals(elemParam.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))
+                                    && param.getRepositoryValue() != null && param.getRepositoryValue().equals("ENCODING")) { //$NON-NLS-1$
                                 setToCustom = true;
                             }
-                        }
-
-                        if (setToCustom) {
-                            param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName()).setValue(
-                                    EmfComponent.ENCODING_TYPE_CUSTOM);
-                        }
-                        elemParam.setPropertyValue(pType.getName(), value);
-                        // end of fix for bug 2193
-                    } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                        if (param.getRepositoryValue() != null && !param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
-                            if (repositoryParam != null && EmfComponent.REPOSITORY.equals(repositoryParam.getValue())) {
-                                param.setRepositoryValueUsed(true);
-                            } else {
-                                param.setRepositoryValueUsed(false);
+                            String tempValue = null;
+                            IElementParameter iElementParameter = null;
+                            Map<String, IElementParameter> childParameters = param.getChildParameters();
+                            if (childParameters != null) {
+                                iElementParameter = childParameters.get(EParameterName.ENCODING_TYPE.getName());
+                                if (iElementParameter != null) {
+                                    tempValue = (String) iElementParameter.getValue();
+                                }
                             }
+                            if (tempValue != null && !tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
+                                tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                                tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                                tempValue = TalendTextUtils.addQuotes(tempValue);
+                                if (!tempValue.equals(value)) {
+                                    setToCustom = true;
+                                }
+                            }
+
+                            if (iElementParameter != null && setToCustom) {
+                                iElementParameter.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                            }
+                            elemParam.setPropertyValue(pTypeName, value);
+                            // end of fix for bug 2193
+                        } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                            if (param.getRepositoryValue() != null && !param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+                                if (repositoryParam != null && EmfComponent.REPOSITORY.equals(repositoryParam.getValue())) {
+                                    param.setRepositoryValueUsed(true);
+                                } else {
+                                    param.setRepositoryValueUsed(false);
+                                }
+                            }
+                            elemParam.setPropertyValue(pTypeName, value);
                         }
-                        elemParam.setPropertyValue(pType.getName(), value);
+                    } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pTypeName) //$NON-NLS-1$
+                            && "true".equals(pType.getValue()) //$NON-NLS-1$
+                            && "NONE".equals(elemParam.getElementParameter(Process.TABLE_ACTION).getValue())) { //$NON-NLS-1$
+                        elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR"); //$NON-NLS-1$
+                        UpdateTheJobsActionsOnTable.isClear = false;
                     }
-                } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
-                        && "true".equals(pType.getValue()) //$NON-NLS-1$
-                        && "NONE".equals(elemParam.getElementParameter(Process.TABLE_ACTION).getValue())) { //$NON-NLS-1$
-                    elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR"); //$NON-NLS-1$
-                    UpdateTheJobsActionsOnTable.isClear = false;
                 }
             }
         }
@@ -302,7 +323,8 @@ public class ElementParameter2ParameterType {
         EList listParamType = paType.getElementParameter();
         for (int j = 0; j < listParamType.size(); j++) {
             ElementParameterType pType = (ElementParameterType) listParamType.get(j);
-            if (pType.getName().equals(name)) {
+            String name2 = pType.getName();
+            if (name2 != null && name2.equals(name)) {
                 return pType;
             }
         }
