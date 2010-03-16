@@ -926,6 +926,8 @@ class SchemaTypeProcessor implements ITypeProcessor {
 
     String repositoryType;
 
+    List<RepositoryNode> nodesList = new NoNullList<RepositoryNode>();
+
     /**
      * DOC bqian RepositoryTypeProcessor constructor comment.
      * 
@@ -966,17 +968,56 @@ class SchemaTypeProcessor implements ITypeProcessor {
         return node;
     }
 
+    private void addSubReferencedProjectNodes(ProjectRepositoryNode subRefProject) {
+        if (subRefProject.getReferenceProjectNode() == null)
+            return;
+        List<RepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
+        if (refProjects != null && !refProjects.isEmpty()) {
+            for (RepositoryNode repositoryNode : refProjects) {
+                ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                List<RepositoryNode> refContainer = new ArrayList<RepositoryNode>();
+                if (repositoryType != null && repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
+                    refContainer.add(refProject.getMetadataConNode());
+                } else {
+                    refContainer.add(refProject.getMetadataFileNode());
+                    refContainer.add(refProject.getMetadataFilePositionalNode());
+                    refContainer.add(refProject.getMetadataFileRegexpNode());
+                    refContainer.add(refProject.getMetadataFileXmlNode());
+                    refContainer.add(refProject.getMetadataFileLdifNode());
+                    refContainer.add(refProject.getMetadataFileExcelNode());
+                    refContainer.add(refProject.getMetadataGenericSchemaNode());
+                    refContainer.add(refProject.getMetadataLDAPSchemaNode());
+                    refContainer.add(refProject.getMetadataWSDLSchemaNode());
+                    refContainer.add(refProject.getMetadataSalesforceSchemaNode());
+                    refContainer.add(refProject.getMetadataSAPConnectionNode());
+                    refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7));
+                    refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
+                    refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
+                    refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
+
+                    refContainer.add(refProject.getMetadataConNode());
+
+                }
+                refContainer.remove(null); // Not allow null element
+                newProject.getChildren().addAll(refContainer);
+                nodesList.add(newProject);
+                this.addSubReferencedProjectNodes(refProject);
+            }
+        }
+    }
+
     private void addReferencedProjectNodes(RepositoryContentProvider contentProvider, List<RepositoryNode> container) {
         if (contentProvider == null || container == null) {
             return;
         }
         // referenced project.
+        nodesList.removeAll(null);
         if (contentProvider.getReferenceProjectNode() != null) {
             List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
-
-                List<RepositoryNode> nodesList = new NoNullList<RepositoryNode>();
-
                 for (RepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
 
@@ -1007,8 +1048,8 @@ class SchemaTypeProcessor implements ITypeProcessor {
                     }
                     refContainer.remove(null); // Not allow null element
                     newProject.getChildren().addAll(refContainer);
-
                     nodesList.add(newProject);
+                    this.addSubReferencedProjectNodes(refProject);
                 }
                 container.addAll(nodesList);
             }
@@ -1047,6 +1088,8 @@ class SchemaTypeProcessor implements ITypeProcessor {
             public boolean select(Viewer viewer, Object parentElement, Object element) {
 
                 RepositoryNode node = (RepositoryNode) element;
+                if (node == null)
+                    return false;
                 if (node.getObject() != null && (node.getObject() instanceof Query)) {
                     return false;
                 }
@@ -1260,28 +1303,41 @@ class QueryTypeProcessor implements ITypeProcessor {
         this.repositoryType = repositoryType;
     }
 
+    List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
         RepositoryNode metadataConNode = contentProvider.getMetadataConNode();
         // referenced project.
+        nodesList.removeAll(null);
         if (contentProvider.getReferenceProjectNode() != null) {
             List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
-
-                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
-
                 for (RepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
-
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
-
                     newProject.getChildren().add(refProject.getMetadataConNode());
-
                     nodesList.add(newProject);
+                    this.addSubRefProjectNodes(refProject);
                 }
                 metadataConNode.getChildren().addAll(nodesList);
             }
         }
         return metadataConNode;
+    }
+
+    private void addSubRefProjectNodes(ProjectRepositoryNode subRefProject) {
+        if (subRefProject.getReferenceProjectNode() == null)
+            return;
+        List<RepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
+        if (refProjects != null && !refProjects.isEmpty()) {
+            for (RepositoryNode repositoryNode : refProjects) {
+                ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+                ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+                newProject.getChildren().add(refProject.getMetadataConNode());
+                nodesList.add(newProject);
+                this.addSubRefProjectNodes(refProject);
+            }
+        }
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
