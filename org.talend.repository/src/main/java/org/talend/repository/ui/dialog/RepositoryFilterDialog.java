@@ -37,12 +37,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesPackage;
@@ -285,6 +287,9 @@ public class RepositoryFilterDialog extends Dialog {
     }
 
     private boolean filterRepositoryNode(Object element) {
+        if (!(element instanceof RepositoryNode)) {
+            return false;
+        }
 
         RepositoryNode node = (RepositoryNode) element;
         if (node.isBin()) {
@@ -430,17 +435,18 @@ public class RepositoryFilterDialog extends Dialog {
         treeViewer.addCheckStateListener(new ICheckStateListener() {
 
             public void checkStateChanged(CheckStateChangedEvent event) {
-                RepositoryNode node = (RepositoryNode) event.getElement();
                 Set<String> all = new HashSet<String>();
-                if (!event.getChecked()) {
-                    processNodeAndChild(node, all);
-                    uncheckedNode.addAll(all);
-                } else {
-                    processNodeAndChild(node, all);
-                    processNodeAndParent(node, all);
-                    uncheckedNode.removeAll(all);
+                TreeItem lastClickedItem = treeViewer.getLastClickedItem();
+                if (lastClickedItem != null) {
+                    updateChildrenItems(lastClickedItem, all);
+                    if (event.getChecked()) {
+                        updateParentItems(lastClickedItem, all, true);
+                        uncheckedNode.removeAll(all);
+                    } else {
+                        updateParentItems(lastClickedItem, all, false);
+                        uncheckedNode.addAll(all);
+                    }
                 }
-
             }
         });
         statusTable.addSelectionListener(new SelectionAdapter() {
@@ -501,20 +507,55 @@ public class RepositoryFilterDialog extends Dialog {
         });
     }
 
-    private void processNodeAndChild(RepositoryNode node, Set<String> set) {
-        set.add(getUniqueSymbol(node));
-        for (RepositoryNode child : node.getChildren()) {
-            if (filterRepositoryNode(child)) {
-                processNodeAndChild(child, set);
+    private void updateChildrenItems(TreeItem parent, Set<String> set) {
+        RepositoryNode data = (RepositoryNode) parent.getData();
+        if (filterRepositoryNode(data)) {
+            String uniqueSymbol = getUniqueSymbol(data);
+            if (uniqueSymbol != null) {
+                set.add(uniqueSymbol);
+                Item[] children = parent.getItems();
+                boolean state = parent.getChecked();
+                for (int i = 0; i < children.length; i++) {
+                    TreeItem curr = (TreeItem) children[i];
+                    data = (RepositoryNode) curr.getData();
+                    if (filterRepositoryNode(data)) {
+                        uniqueSymbol = getUniqueSymbol(data);
+                        if (uniqueSymbol != null) {
+                            set.add(uniqueSymbol);
+                        }
+                    }
+                    updateChildrenItems(curr, set);
+                }
             }
+
         }
     }
 
-    private void processNodeAndParent(RepositoryNode node, Set<String> set) {
-        set.add(getUniqueSymbol(node));
-        RepositoryNode parent = node.getParent();
-        if (parent != null && filterRepositoryNode(parent)) {
-            processNodeAndParent(parent, set);
+    private void updateParentItems(TreeItem item, Set<String> set, boolean check) {
+        if (item != null) {
+            RepositoryNode data = (RepositoryNode) item.getData();
+            Item[] children = item.getItems();
+
+            if (check && filterRepositoryNode(data)) {
+                String uniqueSymbol = getUniqueSymbol(data);
+                if (uniqueSymbol != null) {
+                    set.add(uniqueSymbol);
+                }
+            } else if (!check && filterRepositoryNode(data)) {
+                boolean containsChecked = false;
+                for (int i = 0; i < children.length; i++) {
+                    TreeItem curr = (TreeItem) children[i];
+                    containsChecked |= curr.getChecked();
+                }
+                if (!containsChecked) {
+                    String uniqueSymbol = getUniqueSymbol(data);
+                    if (uniqueSymbol != null) {
+                        set.add(uniqueSymbol);
+                    }
+                }
+
+            }
+            updateParentItems(item.getParentItem(), set, check);
         }
     }
 

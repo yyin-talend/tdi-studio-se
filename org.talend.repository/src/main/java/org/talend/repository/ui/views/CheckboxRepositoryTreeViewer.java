@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TreeItem;
@@ -29,6 +31,8 @@ import org.talend.repository.model.RepositoryNode;
 public class CheckboxRepositoryTreeViewer extends ContainerCheckedTreeViewer implements ITreeViewerListener {
 
     private Map<String, Boolean> expanded = new HashMap<String, Boolean>();
+
+    private TreeItem lastClickedItem = null;
 
     public CheckboxRepositoryTreeViewer(Composite parent, int style) {
         super(parent, style);
@@ -109,6 +113,20 @@ public class CheckboxRepositoryTreeViewer extends ContainerCheckedTreeViewer imp
     private boolean idIsValid(RepositoryNode repositoryNode) {
         String id = repositoryNode.getId();
         return id != null && !RepositoryNode.NO_ID.equals(id);
+    }
+
+    @Override
+    protected void handleSelect(SelectionEvent event) {
+        lastClickedItem = null;
+        if (event.detail == SWT.CHECK) {
+            TreeItem item = (TreeItem) event.item;
+            lastClickedItem = item;
+        }
+        super.handleSelect(event);
+    }
+
+    public TreeItem getLastClickedItem() {
+        return this.lastClickedItem;
     }
 
 }
