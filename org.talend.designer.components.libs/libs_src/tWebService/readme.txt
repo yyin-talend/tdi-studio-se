@@ -43,3 +43,7 @@ please @see org\talend\ws\helper\ServiceDiscoveryHelper.java
 7.(2010-02-01 modified by bchen) fixed bug 11351
 
 8.(2010-02-23 modified by bchen) fixed bug 11351 add an ability to config temporary path for wsdl file.
+
+9.(2010-03-16 modified by bchen) fixed bug 11917 
+please @see org\talend\ws\helper\ServiceInvokerHelper.java
+			org\talend\ws\mapper\MapperFactory.java

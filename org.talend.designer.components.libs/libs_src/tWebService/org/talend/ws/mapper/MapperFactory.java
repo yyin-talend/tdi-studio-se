@@ -1,15 +1,16 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package org.talend.ws.mapper;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.wsdl.Message;
 import javax.wsdl.Part;
 import javax.xml.namespace.QName;
+
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexContent;
@@ -28,13 +29,15 @@ import org.apache.ws.commons.schema.XmlSchemaType;
 import org.talend.ws.exception.LocalizedException;
 
 /**
- *
+ * 
  * @author rlamarche
  */
 public class MapperFactory {
 
     private static final Map<String, String> BUILTIN_DATATYPES_MAP;
+
     private static final Map<String, String> BUILTIN_DATATYPES_MAP_REVERSE;
+
     private static final QName ANYTYPE_QNAME = new QName("http://www.w3.org/2001/XMLSchema", "anyType");
 
     static {
@@ -97,7 +100,9 @@ public class MapperFactory {
         BUILTIN_DATATYPES_MAP_REVERSE.put("java.lang.String", "string");
 
     }
+
     protected ClassMapper classMapper;
+
     protected XmlSchemaCollection schemaCollection;
 
     public MapperFactory(ClassMapper classMapper, XmlSchemaCollection schemaCollection) {
@@ -124,8 +129,7 @@ public class MapperFactory {
                 return createSimpleTypeMapper((XmlSchemaSimpleType) xmlSchemaType);
             }
         } else {
-            throw new IllegalArgumentException("Type " + xmlSchemaType.getClass().
-                    getName() + " is not yes supported.");
+            throw new IllegalArgumentException("Type " + xmlSchemaType.getClass().getName() + " is not yes supported.");
         }
     }
 
@@ -143,6 +147,7 @@ public class MapperFactory {
 
     /**
      * Return the message mapper or null if the message does not have any parts or is null
+     * 
      * @param message
      * @return
      */
@@ -166,7 +171,8 @@ public class MapperFactory {
                 if (elementName == null) {
                     QName typeName = part.getTypeName();
                     if (typeName == null) {
-                        throw new IllegalArgumentException("Unable to find type of part " + part.getName() + " for message " + message.getQName());
+                        throw new IllegalArgumentException("Unable to find type of part " + part.getName() + " for message "
+                                + message.getQName());
                     }
 
                     xmlSchemaType = schemaCollection.getTypeByQName(typeName);
@@ -192,7 +198,6 @@ public class MapperFactory {
     }
 
     private TypeMapper createSimpleTypeMapper(XmlSchemaSimpleType xmlSchemaSimpleType) {
-
 
         XmlSchemaSimpleTypeContent xmlSchemaSimpleTypeContent = xmlSchemaSimpleType.getContent();
 
@@ -225,18 +230,19 @@ public class MapperFactory {
     }
 
     private ComplexTypeMapper createComplexTypeMapper(XmlSchemaComplexType xmlSchemaComplexType) throws LocalizedException {
-
-        Map<String, PropertyMapper> mappers = createPropertyMappers(xmlSchemaComplexType);
+        Class<?> clazz = classMapper.getClassForType(xmlSchemaComplexType);
+        Map<String, PropertyMapper> mappers = createPropertyMappers(xmlSchemaComplexType, clazz);
 
         ListOrderedMap orderedMap = (ListOrderedMap) mappers;
 
-        return new ComplexTypeMapper(mappers, classMapper.getClassForType(xmlSchemaComplexType), orderedMap.keyList());
+        return new ComplexTypeMapper(mappers, clazz, orderedMap.keyList());
     }
 
-    private Map<String, PropertyMapper> createPropertyMappers(XmlSchemaComplexType xmlSchemaComplexType) throws LocalizedException {
-
-        Class<?> clazz = classMapper.getClassForType(xmlSchemaComplexType);
-
+    private Map<String, PropertyMapper> createPropertyMappers(XmlSchemaComplexType xmlSchemaComplexType, Class<?> clazz)
+            throws LocalizedException {
+        if (clazz == null) {
+            clazz = classMapper.getClassForType(xmlSchemaComplexType);
+        }
         XmlSchemaComplexContent xmlSchemaComplexContent = (XmlSchemaComplexContent) xmlSchemaComplexType.getContentModel();
 
         Map<String, PropertyMapper> mappers = new ListOrderedMap();
@@ -245,17 +251,15 @@ public class MapperFactory {
             XmlSchemaContent xmlSchemaContent = xmlSchemaComplexContent.getContent();
             if (xmlSchemaContent instanceof XmlSchemaComplexContentExtension) {
                 XmlSchemaComplexContentExtension xmlSchemaComplexContentExtension = (XmlSchemaComplexContentExtension) xmlSchemaContent;
-                XmlSchemaComplexType baseXmlSchemaComplexType = (XmlSchemaComplexType) schemaCollection.getTypeByQName(xmlSchemaComplexContentExtension.getBaseTypeName());
+                XmlSchemaComplexType baseXmlSchemaComplexType = (XmlSchemaComplexType) schemaCollection
+                        .getTypeByQName(xmlSchemaComplexContentExtension.getBaseTypeName());
                 // First, recursion on parent class (for properties order)
-                mappers.putAll(createPropertyMappers(baseXmlSchemaComplexType));
+                mappers.putAll(createPropertyMappers(baseXmlSchemaComplexType, clazz));
 
                 if (xmlSchemaComplexContentExtension.getParticle() instanceof XmlSchemaSequence) {
-                    mappers.putAll(createPropertyMappers((XmlSchemaSequence) xmlSchemaComplexContentExtension.getParticle(), clazz));
+                    mappers.putAll(createPropertyMappers((XmlSchemaSequence) xmlSchemaComplexContentExtension.getParticle(),
+                            clazz));
                 }
-
-
-
-
             } else if (xmlSchemaContent instanceof XmlSchemaComplexContentRestriction) {
                 throw new IllegalArgumentException("XmlSchemaComplexContentRestriction is not yet supported.");
             } else {
@@ -271,13 +275,12 @@ public class MapperFactory {
         return mappers;
     }
 
-    private Map<String, PropertyMapper> createPropertyMappers(XmlSchemaSequence xmlSchemaSequence, Class<?> clazz) throws LocalizedException {
+    private Map<String, PropertyMapper> createPropertyMappers(XmlSchemaSequence xmlSchemaSequence, Class<?> clazz)
+            throws LocalizedException {
 
         Map<String, PropertyMapper> map = new ListOrderedMap();
 
-        Iterator<XmlSchemaObject> iterator = xmlSchemaSequence.getItems().
-                getIterator();
-
+        Iterator<XmlSchemaObject> iterator = xmlSchemaSequence.getItems().getIterator();
         while (iterator.hasNext()) {
             XmlSchemaObject xmlSchemaObject = iterator.next();
             if (xmlSchemaObject instanceof XmlSchemaElement) {
@@ -293,6 +296,7 @@ public class MapperFactory {
     private static String builtInTypeToJavaType(String type) {
         return BUILTIN_DATATYPES_MAP.get(type);
     }
+
     public static QName javaTypeToBuiltInType(String type) {
         return new QName("http://www.w3.org/2001/XMLSchema", BUILTIN_DATATYPES_MAP_REVERSE.get(type));
     }

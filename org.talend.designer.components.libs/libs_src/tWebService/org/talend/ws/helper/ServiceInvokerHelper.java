@@ -3,6 +3,7 @@
  */
 package org.talend.ws.helper;
 
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -27,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.dynamic.DynamicClientFactory;
@@ -35,6 +38,15 @@ import org.apache.cxf.jaxb.JAXBUtils.IdentifierType;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaComplexContent;
+import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
+import org.apache.ws.commons.schema.XmlSchemaComplexContentRestriction;
+import org.apache.ws.commons.schema.XmlSchemaComplexType;
+import org.apache.ws.commons.schema.XmlSchemaContent;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaObject;
+import org.apache.ws.commons.schema.XmlSchemaParticle;
+import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.talend.ws.exception.LocalizedException;
 import org.talend.ws.helper.conf.ServiceHelperConfiguration;
@@ -287,6 +299,7 @@ public class ServiceInvokerHelper implements ClassMapper {
         StringBuilder sb = new StringBuilder();
         sb.append(getPackageForNamespaceURI(schemaType.getQName().getNamespaceURI()));
         sb.append(".");
+
         sb.append(getClassNameForTypeName(schemaType.getName()));
         String className = sb.toString();
 
@@ -308,9 +321,93 @@ public class ServiceInvokerHelper implements ClassMapper {
     public Class<?> getClassForType(XmlSchemaType xmlSchemaType) {
         String className = getClassNameForType(xmlSchemaType);
         try {
-            return Thread.currentThread().getContextClassLoader().loadClass(className);
+            Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+            return checkClass(xmlSchemaType, clazz);
+
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    // if class name conflict, the former will be unchanged "className" ,the latter will be add count++ in the end of
+    // the name "className1,className2"
+    private Class checkClass(XmlSchemaType xmlSchemaType, Class<?> clazz) {
+        // only check for complex type.
+        if (xmlSchemaType instanceof XmlSchemaComplexType) {
+            XmlSchemaComplexType xmlSchemaComplexType = (XmlSchemaComplexType) xmlSchemaType;
+            XmlSchemaSequence xmlSchemaSequence = null;
+            XmlSchemaComplexContent xmlSchemaComplexContent = (XmlSchemaComplexContent) xmlSchemaComplexType.getContentModel();
+            if (xmlSchemaComplexContent != null) {
+                XmlSchemaContent xmlSchemaContent = xmlSchemaComplexContent.getContent();
+                if (xmlSchemaContent instanceof XmlSchemaComplexContentExtension) {
+                    XmlSchemaComplexContentExtension xmlSchemaComplexContentExtension = (XmlSchemaComplexContentExtension) xmlSchemaContent;
+                    if (xmlSchemaComplexContentExtension.getParticle() instanceof XmlSchemaSequence) {
+                        xmlSchemaSequence = (XmlSchemaSequence) xmlSchemaComplexContentExtension.getParticle();
+                    }
+                } else if (xmlSchemaContent instanceof XmlSchemaComplexContentRestriction) {
+                    throw new IllegalArgumentException("XmlSchemaComplexContentRestriction is not yet supported.");
+                } else {
+                    throw new IllegalArgumentException("Invalid XmlSchemaContent for a XmlSchemaComplexContent.");
+                }
+            } else {
+                XmlSchemaParticle xmlSchemaParticle = xmlSchemaComplexType.getParticle();
+                if (xmlSchemaParticle instanceof XmlSchemaSequence) {
+                    xmlSchemaSequence = (XmlSchemaSequence) xmlSchemaParticle;
+                }
+            }
+            if (xmlSchemaSequence != null) {
+                Class<?> finalClazz = null;
+                boolean allCorrect = false;
+                int tempSuffix = 0;
+                while (!allCorrect) {
+                    Iterator<XmlSchemaObject> iterator = xmlSchemaSequence.getItems().getIterator();
+                    if (!iterator.hasNext()) {
+                        PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(clazz);
+                        if (descriptors.length == 1 && "class".equals(descriptors[0].getName())) {
+                            allCorrect = true;
+                        }
+                    }
+                    String propertyName = "";
+                    while (iterator.hasNext()) {
+                        XmlSchemaObject xmlSchemaObject = iterator.next();
+                        if (xmlSchemaObject instanceof XmlSchemaElement) {
+                            XmlSchemaElement xmlSchemaElement = (XmlSchemaElement) xmlSchemaObject;
+                            propertyName = xmlSchemaElement.getName();
+                            PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(clazz);
+                            for (PropertyDescriptor descriptor : descriptors) {
+                                if (propertyName.equalsIgnoreCase(descriptor.getName())) {
+                                    allCorrect = true;
+                                    break;
+                                } else {
+                                    allCorrect = false;
+                                }
+                            }
+                            if (!allCorrect) {
+                                break;
+                            }
+                        }
+                    }
+                    if (allCorrect) {
+                        finalClazz = clazz;
+                    } else {
+                        tempSuffix++;
+                        try {
+                            clazz = Thread.currentThread().getContextClassLoader().loadClass(clazz.getName() + tempSuffix);
+                        } catch (ClassNotFoundException e) {
+                            throw new IllegalArgumentException("Unable to get propertyDescriptor for bean " + clazz.getName()
+                                    + " and property " + propertyName);
+                        }
+                    }
+                }
+                if (finalClazz == null) {
+                    throw new IllegalArgumentException("Unable to get propertyDescriptor for bean " + clazz.getName());
+                }
+                return finalClazz;
+            } else {
+                return clazz;
+            }
+        } else {
+            return clazz;
         }
     }
 
