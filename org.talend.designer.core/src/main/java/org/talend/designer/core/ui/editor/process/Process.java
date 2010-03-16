@@ -2407,15 +2407,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return null;
     }
 
-    /**
-     * Return all Nodes of Component type componentName.
-     * 
-     * @param componentName the component name
-     * @return all the activated matching nodes in the process
-     */
-    public List<INode> getNodesOfType(String componentName) {
-        List<INode> generatingNodes = (List<INode>) getGeneratingNodes();
+    public List<INode> getNodesOfType(String componentName, boolean flag) {
         List<INode> matchingNodes = new ArrayList<INode>();
+        List<INode> generatingNodes = new ArrayList<INode>();
+        // wzhang added to fix bug 11621
+        if (flag) {
+            generatingNodes = (List<INode>) getGraphicalNodes();
+        } else {
+            generatingNodes = (List<INode>) getGeneratingNodes();
+        }
         for (INode node : generatingNodes) {
             if (node.isActivate()) {
                 if (componentName == null) { // means all nodes will be
@@ -2447,6 +2447,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
         }
         return matchingNodes;
+    }
+
+    /**
+     * Return all Nodes of Component type componentName.
+     * 
+     * @param componentName the component name
+     * @return all the activated matching nodes in the process
+     */
+    public List<INode> getNodesOfType(String componentName) {
+        return getNodesOfType(componentName, false);
     }
 
     /**
