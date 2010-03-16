@@ -128,18 +128,34 @@ try {
 %>
 
 <%	//feature 0010425
-	if ("NB_LINE_INSERTED".equals(use_NB_Line)) {
+	if(usePrepareStatement){
+		if ("NB_LINE_INSERTED".equals(use_NB_Line)) {
 %>
-		nb_line_inserted_<%=cid%>++;
+		nb_line_inserted_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 <%
-	} else if ("NB_LINE_UPDATED".equals(use_NB_Line)) {
+		} else if ("NB_LINE_UPDATED".equals(use_NB_Line)) {
 %>
-		nb_line_update_<%=cid%>++;
+		nb_line_update_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 <%
-	} else if ("NB_LINE_DELETED".equals(use_NB_Line)) {
+		} else if ("NB_LINE_DELETED".equals(use_NB_Line)) {
 %>
-		nb_line_deleted_<%=cid%>++;
+		nb_line_deleted_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 <%
+		}
+	} else {
+		if ("NB_LINE_INSERTED".equals(use_NB_Line)) {
+%>
+		nb_line_inserted_<%=cid%> += stmt_<%=cid %>.getUpdateCount();
+<%
+		} else if ("NB_LINE_UPDATED".equals(use_NB_Line)) {
+%>
+		nb_line_update_<%=cid%> += stmt_<%=cid %>.getUpdateCount();
+<%
+		} else if ("NB_LINE_DELETED".equals(use_NB_Line)) {
+%>
+		nb_line_deleted_<%=cid%> += stmt_<%=cid %>.getUpdateCount();
+<%
+		}
 	}//end feature 0010425
 %>
 
