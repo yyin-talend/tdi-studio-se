@@ -147,7 +147,11 @@ public class NodeReturn implements INodeReturn {
             try {
                 displayType = JavaTypesManager.getTypeToGenerate(type, true);
             } catch (Exception e) {
-                displayType = "String"; //$NON-NLS-1$
+                if (e instanceof IllegalArgumentException) {
+                    displayType = type;//$NON-NLS-1$
+                } else {
+                    displayType = "String"; //$NON-NLS-1$
+                }
             }
             return displayType;
         default:
