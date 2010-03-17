@@ -13,6 +13,7 @@
 	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.process.INode
 	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.metadata.types.JavaType
 	"
 %>
 
@@ -60,7 +61,20 @@
 <%
             //this is a inner class to process the schema issue.
             class SchemaUtil {
-
+				
+				public boolean isList(String columnName,IMetadataTable metadata){
+					List<IMetadataColumn> columns = metadata.getListColumns();
+            		int sizeColumns = columns.size();
+            		for (int i = 0; i < sizeColumns; i++) {
+                		IMetadataColumn column = columns.get(i);
+                		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                		if(columnName.equals(column.getLabel())&&javaType == JavaTypesManager.LIST){
+                			return true;
+                		}
+                	}
+                	return false;
+				}
+				
                 // keep all schema configuration
                 private List<SAPSchema> sapSchemaList = new ArrayList<SAPSchema>();
 
@@ -207,30 +221,74 @@ String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITER
 <%
         // "input_table"
         Map<String, List<SchemaUtil.SAPSchema>> input_table_map = schemaUtil.extractSchemaMap("input_table");
+        if(input_table_map.size()>0){
+%>
+        com.sap.mw.jco.JCO.Table input_table_table_<%=cid %> = null;
+<%
         for (String key : input_table_map.keySet()) {
 %>          
-		com.sap.mw.jco.JCO.Table input_table_table_<%=cid %> = importParameterList_<%=cid %>.getTable(<%=key %>);
+		input_table_table_<%=cid %> = importParameterList_<%=cid %>.getTable(<%=key %>);
         input_table_table_<%=cid %>.appendRow();
 <%          List<SchemaUtil.SAPSchema> oneTableNamelist = input_table_map.get(key);
             for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
+            	if(schemaUtil.isList(schema.getSchemaName(),metadata)){
+%>
+					if(input_table_table_<%=cid %>.getNumRows()<<%=firstDataConnName %>.<%=schema.getSchemaName() %>.size()){
+						input_table_table_<%=cid %>.appendRows(<%=firstDataConnName %>.<%=schema.getSchemaName() %>.size()-input_table_table_<%=cid %>.getNumRows());
+					}
+					input_table_table_<%=cid %>.firstRow();
+					for(int i = 0; i < <%=firstDataConnName %>.<%=schema.getSchemaName() %>.size(); i++){
+						input_table_table_<%=cid %>.setValue(<%=firstDataConnName %>.<%=schema.getSchemaName() %>.get(i).toString(), <%=schema.getSapParameterName() %>); // "input_table"--<%=schema.getSchemaName() %>
+						input_table_table_<%=cid %>.nextRow();
+					}
+<%
+            	}else{
+%>
+					input_table_table_<%=cid %>.firstRow();
+					input_table_table_<%=cid %>.setValue(<%=firstDataConnName %>.<%=schema.getSchemaName() %>, <%=schema.getSapParameterName() %>); // "input_table"--<%=schema.getSchemaName() %>
+<%
+            	}
 %>              
-		input_table_table_<%=cid %>.setValue(<%=firstDataConnName %>.<%=schema.getSchemaName() %>, <%=schema.getSapParameterName() %>); // "input_table"--<%=schema.getSchemaName() %>
-<%            }
+		
+<%      	}
+		}
         }
 %>        
-
+		
 <%       
         // "table_input"
         Map<String, List<SchemaUtil.SAPSchema>> table_input_map = schemaUtil.extractSchemaMap("table_input");
+        if(table_input_map.size()>0){
+%>
+		com.sap.mw.jco.JCO.Table table_input_table_<%=cid%>=null;        	
+<%
         for (String key : table_input_map.keySet()) {
 %>          
-		com.sap.mw.jco.JCO.Table table_input_table_<%=cid %> = tableParameterList_<%=cid %>.getTable(<%=key %>);
+		table_input_table_<%=cid %> = tableParameterList_<%=cid %>.getTable(<%=key %>);
         table_input_table_<%=cid %>.appendRow();
 <%          List<SchemaUtil.SAPSchema> oneTableNamelist = table_input_map.get(key);
             for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
+            	if(schemaUtil.isList(schema.getSchemaName(),metadata)){
+%>
+					if(table_input_table_<%=cid%>.getNumRows()<<%=firstDataConnName %>.<%=schema.getSchemaName() %>.size()){
+						table_input_table_<%=cid%>.appendRows(<%=firstDataConnName %>.<%=schema.getSchemaName() %>.size()-table_input_table_<%=cid%>.getNumRows());
+					}
+					table_input_table_<%=cid%>.firstRow();
+					for(int i = 0; i < <%=firstDataConnName %>.<%=schema.getSchemaName() %>.size(); i++){
+						table_input_table_<%=cid%>.setValue(<%=firstDataConnName %>.<%=schema.getSchemaName() %>.get(i).toString(), <%=schema.getSapParameterName() %>); // "table_input"--<%=schema.getSchemaName() %>
+						table_input_table_<%=cid%>.nextRow();
+					}
+<%
+            	}else{
+%>
+					table_input_table_<%=cid%>.firstRow();
+					table_input_table_<%=cid%>.setValue(<%=firstDataConnName %>.<%=schema.getSchemaName() %>, <%=schema.getSapParameterName() %>); // "table_input"--<%=schema.getSchemaName() %>			                 	
+<%
+            	}
 %>              
-		table_input_table_<%=cid %>.setValue(<%=firstDataConnName %>.<%=schema.getSchemaName() %>, <%=schema.getSapParameterName() %>); // "table_input"--<%=schema.getSchemaName() %>
+		
 <%          }
+        }
         }
 %>        
 
