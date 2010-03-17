@@ -75,26 +75,26 @@ public class WsdlGenerator {
     protected final String pTEXT9 = pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
             + "\t\t\t<xs:complexType name=\"inAttachments\">" + pNL + "\t\t\t\t<xs:sequence>";
 
-    protected final String ppTEXT10 = pNL + "\t\t\t\t\t\t<xs:element name=\"";
+    protected final String pTEXT10 = pNL + "\t\t\t\t\t\t<xs:element name=\"";
 
-    protected final String ppTEXT11 = "\" nillable=\"true\" type=\"tns:attachment\" />";
+    protected final String pTEXT11 = "\" nillable=\"true\" type=\"tns:attachment\" />";
 
-    protected final String ppTEXT12 = pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+    protected final String pTEXT12 = pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
             + "\t\t\t<xs:complexType name=\"inRow\">" + pNL + "\t\t\t\t<xs:sequence>";
 
-    protected final String ppTEXT13 = pNL + "\t\t\t\t\t<xs:element name=\"";
+    protected final String pTEXT13 = pNL + "\t\t\t\t\t<xs:element name=\"";
 
-    protected final String ppTEXT14 = "\" type=\"";
+    protected final String pTEXT14 = "\" type=\"";
 
-    protected final String ppTEXT15 = "\" ";
+    protected final String pTEXT15 = "\" ";
 
-    protected final String ppTEXT16 = "default=\"";
+    protected final String pTEXT16 = "default=\"";
 
-    protected final String ppTEXT17 = "\"";
+    protected final String pTEXT17 = "\"";
 
-    protected final String ppTEXT18 = "nillable=\"true\" ";
+    protected final String pTEXT18 = "nillable=\"true\" ";
 
-    protected final String ppTEXT19 = " />";
+    protected final String pTEXT19 = " />";
 
     protected final String pTEXT20 = pNL
             + "\t\t\t\t</xs:sequence>"
@@ -191,6 +191,40 @@ public class WsdlGenerator {
             + pNL
             + "\t\t\t</xs:complexType>"
             + pNL
+            + "\t\t\t"
+            + pNL
+            + "\t\t\t"
+            + pNL
+            + "\t\t\t<!-- Types for the operation with an empty result -->"
+            + pNL
+            + "\t\t\t<xs:element name=\"executeJobOnly\" type=\"tns:executeJobOnly\" />"
+            + pNL
+            + "\t\t\t<xs:complexType name=\"executeJobOnly\">"
+            + pNL
+            + "\t\t\t\t<xs:sequence>"
+            + pNL
+            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"contexts\" type=\"tns:talendContexts\" />"
+            + pNL
+            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"in-attachments\" type=\"tns:inAttachments\" />"
+            + pNL
+            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"in-data-bean\" type=\"tns:inRow\" />"
+            + pNL
+            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"talend-option\" type=\"xs:string\" />"
+            + pNL
+            + "\t\t\t\t</xs:sequence>"
+            + pNL
+            + "\t\t\t</xs:complexType>"
+            + pNL
+            + "\t\t\t"
+            + pNL
+            + "\t\t\t<xs:element name=\"executeJobOnlyResponse\" type=\"tns:executeJobOnlyResponse\" />"
+            + pNL
+            + "\t\t\t<xs:complexType name=\"executeJobOnlyResponse\">"
+            + pNL
+            + "\t\t\t\t<xs:sequence />"
+            + pNL
+            + "\t\t\t</xs:complexType>"
+            + pNL
             + "\t\t</xs:schema>"
             + pNL
             + "\t\t"
@@ -223,6 +257,10 @@ public class WsdlGenerator {
             + "\t\t<wsdl:part name=\"TalendTechnicalException\" element=\"tns:TalendTechnicalException\" />" + pNL
             + "\t</wsdl:message>" + pNL + "\t" + pNL + "\t<wsdl:message name=\"executeJobResponse\">" + pNL
             + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobResponse\" />" + pNL + "\t</wsdl:message>" + pNL + "\t"
+            + pNL + "\t<wsdl:message name=\"executeJobOnlyResponse\">" + pNL
+            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobOnlyResponse\" />" + pNL + "\t</wsdl:message>" + pNL
+            + "\t" + pNL + "\t<wsdl:message name=\"executeJobOnly\">" + pNL
+            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobOnly\" />" + pNL + "\t</wsdl:message>" + pNL + "\t"
             + pNL + "\t<wsdl:portType name=\"";
 
     protected final String pTEXT36 = "ServicePortType\">" + pNL + "\t\t<wsdl:operation name=\"executeJob\">" + pNL
@@ -230,21 +268,37 @@ public class WsdlGenerator {
             + "\t\t\t<wsdl:output name=\"executeJobResponse\" message=\"tns:executeJobResponse\" />" + pNL
             + "\t\t\t<wsdl:fault name=\"TalendBusinessException\" message=\"tns:TalendBusinessException\" />" + pNL
             + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\" message=\"tns:TalendTechnicalException\" />" + pNL
+            + "\t\t</wsdl:operation>" + pNL + "\t\t" + pNL + "\t\t<wsdl:operation name=\"executeJobOnly\">" + pNL
+            + "\t\t\t<wsdl:input name=\"executeJobOnly\" message=\"tns:executeJobOnly\" />" + pNL
+            + "\t\t\t<wsdl:output name=\"executeJobOnlyResponse\" message=\"tns:executeJobOnlyResponse\" />" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\" message=\"tns:TalendTechnicalException\" />" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendBusinessException\" message=\"tns:TalendBusinessException\" />" + pNL
             + "\t\t</wsdl:operation>" + pNL + "\t</wsdl:portType>" + pNL + "\t" + pNL + "\t<wsdl:binding name=\"";
 
     protected final String pTEXT37 = "ServiceSoapBinding\" type=\"tns:";
 
     protected final String pTEXT38 = "ServicePortType\">" + pNL
-            + "\t\t<soap:binding style=\"document\" transport=\"http://schemas.xmlsoap.org/soap/http\" />" + pNL
-            + "\t\t<wsdl:operation name=\"executeJob\">" + pNL + "\t\t\t<soap:operation soapAction=\"\" style=\"document\" />"
-            + pNL + "\t\t\t" + pNL + "\t\t\t<wsdl:input name=\"executeJob\">" + pNL + "\t\t\t\t<soap:body use=\"literal\" />"
-            + pNL + "\t\t\t</wsdl:input>" + pNL + "\t\t\t" + pNL + "\t\t\t<wsdl:output name=\"executeJobResponse\">" + pNL
+            + "\t\t<soap:binding style=\"document\" transport=\"http://schemas.xmlsoap.org/soap/http\" />" + pNL + "\t\t" + pNL
+            + "\t\t<!-- ExecuteJob (with result) -->" + pNL + "\t\t<wsdl:operation name=\"executeJob\">" + pNL
+            + "\t\t\t<soap:operation soapAction=\"\" style=\"document\" />" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<wsdl:input name=\"executeJob\">" + pNL + "\t\t\t\t<soap:body use=\"literal\" />" + pNL
+            + "\t\t\t</wsdl:input>" + pNL + "\t\t\t" + pNL + "\t\t\t<wsdl:output name=\"executeJobResponse\">" + pNL
             + "\t\t\t\t<soap:body use=\"literal\" />" + pNL + "\t\t\t</wsdl:output>" + pNL + "\t\t\t" + pNL
             + "\t\t\t<wsdl:fault name=\"TalendBusinessException\">" + pNL
             + "\t\t\t\t<soap:fault name=\"TalendBusinessException\" use=\"literal\" />" + pNL + "\t\t\t</wsdl:fault>" + pNL
             + "\t\t\t" + pNL + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\">" + pNL
+            + "\t\t\t\t<soap:fault name=\"TalendTechnicalException\" use=\"literal\" />" + pNL + "\t\t\t</wsdl:fault>\t\t\t"
+            + pNL + "\t\t</wsdl:operation>" + pNL + "\t\t" + pNL + "\t\t<!-- ExecuteJob (without any result) -->" + pNL
+            + "\t\t<wsdl:operation name=\"executeJobOnly\">" + pNL
+            + "\t\t\t<soap:operation soapAction=\"\" style=\"document\" />" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<wsdl:input name=\"executeJobOnly\">" + pNL + "\t\t\t\t<soap:body use=\"literal\" />" + pNL
+            + "\t\t\t</wsdl:input>" + pNL + "\t\t\t" + pNL + "\t\t\t<wsdl:output name=\"executeJobOnlyResponse\">" + pNL
+            + "\t\t\t\t<soap:body use=\"literal\" />" + pNL + "\t\t\t</wsdl:output>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\">" + pNL
             + "\t\t\t\t<soap:fault name=\"TalendTechnicalException\" use=\"literal\" />" + pNL + "\t\t\t</wsdl:fault>" + pNL
-            + "\t\t\t" + pNL + "\t\t</wsdl:operation>" + pNL + "\t</wsdl:binding>" + pNL + "\t" + pNL + "\t<wsdl:service name=\"";
+            + "\t\t\t" + pNL + "\t\t\t<wsdl:fault name=\"TalendBusinessException\">" + pNL
+            + "\t\t\t\t<soap:fault name=\"TalendBusinessException\" use=\"literal\" />" + pNL + "\t\t\t</wsdl:fault>\t\t\t" + pNL
+            + "\t\t</wsdl:operation>" + pNL + "\t</wsdl:binding>" + pNL + "\t" + pNL + "\t<wsdl:service name=\"";
 
     protected final String pTEXT39 = "Service\">" + pNL + "\t\t<wsdl:port name=\"";
 
@@ -292,31 +346,31 @@ public class WsdlGenerator {
         for (ContextTypeDefinition def : bean.contextDefinitions) {
             if (def.exportType == ContextExportType.IN_ATTACHMENT) {
 
-                stringBuffer.append(ppTEXT10);
+                stringBuffer.append(pTEXT10);
                 stringBuffer.append(def.definition.name);
-                stringBuffer.append(ppTEXT11);
+                stringBuffer.append(pTEXT11);
 
             }
         }
 
-        stringBuffer.append(ppTEXT12);
+        stringBuffer.append(pTEXT12);
 
         for (ElementTypeDefinition def : bean.tPetalsInputSchema) {
 
-            stringBuffer.append(ppTEXT13);
+            stringBuffer.append(pTEXT13);
             stringBuffer.append(def.name);
-            stringBuffer.append(ppTEXT14);
+            stringBuffer.append(pTEXT14);
             stringBuffer.append(def.type);
-            stringBuffer.append(ppTEXT15);
+            stringBuffer.append(pTEXT15);
 
             if (def.defaultValue != null) {
-                stringBuffer.append(ppTEXT16);
+                stringBuffer.append(pTEXT16);
                 stringBuffer.append(def.defaultValue);
-                stringBuffer.append(ppTEXT17);
+                stringBuffer.append(pTEXT17);
             } else if (def.nillable) {
-                stringBuffer.append(ppTEXT18);
+                stringBuffer.append(pTEXT18);
             }
-            stringBuffer.append(ppTEXT19);
+            stringBuffer.append(pTEXT19);
 
         } // End of "for" loop
 
