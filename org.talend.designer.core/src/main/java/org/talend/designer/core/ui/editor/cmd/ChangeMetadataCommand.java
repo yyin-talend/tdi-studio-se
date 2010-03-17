@@ -622,19 +622,6 @@ public class ChangeMetadataCommand extends Command {
         }
     }
 
-    /**
-     * hwang Comment method "setMDMConcept".
-     */
-    protected void setMDMConcept(Element curNode, String newdbTableName) {
-        if (curNode == null) {
-            return;
-        }
-        IElementParameter conceptPara = curNode.getElementParameter("CONCEPT");//$NON-NLS-1$
-        if (conceptPara != null) {
-            conceptPara.setValue(TalendTextUtils.addQuotes(newdbTableName));
-        }
-    }
-
     protected void setSAPFunctionName(Element curNode, String functionName) {
         if (functionName == null) {
             return;
