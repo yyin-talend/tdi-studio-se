@@ -31,6 +31,8 @@ import org.talend.designer.scd.ui.IDragDropDelegate;
  */
 public class DragDropManager {
 
+    static boolean dropped = false;
+
     static Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
 
     static String currentSelectionText;
@@ -45,19 +47,20 @@ public class DragDropManager {
             @Override
             public void dragStart(DragSourceEvent event) {
                 currentSelectionText = delegate.getDragItemsAsText();
+                dropped = false;
             }
 
             @Override
             public void dragSetData(DragSourceEvent event) {
                 // Get the selected items in the drag source
-                event.data = delegate.getDragItemsAsText();
+                event.data = currentSelectionText;
             }
 
             @Override
             public void dragFinished(DragSourceEvent event) {
-                if (event.detail == DND.DROP_MOVE) {
+                if (event.detail == DND.DROP_MOVE && dropped) {
                     // remove selection
-                    delegate.removeDragItems();
+                    delegate.removeDragItems(currentSelectionText);
                 }
             }
         });
@@ -90,6 +93,11 @@ public class DragDropManager {
             }
 
             @Override
+            public void dragLeave(DropTargetEvent event) {
+                event.detail = DND.DROP_NONE;
+            }
+
+            @Override
             public void dragOver(DropTargetEvent event) {
                 event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
             }
@@ -101,6 +109,7 @@ public class DragDropManager {
                     String data = (String) event.data;
                     Point point = new Point(event.x, event.y);
                     delegate.onDropItems(data, point);
+                    dropped = true;
                 }
             }
         });

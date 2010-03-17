@@ -21,7 +21,7 @@ public interface IDragDropDelegate {
 
     public String getDragItemsAsText();
 
-    public void removeDragItems();
+    public void removeDragItems(String data);
 
     public void onDropItems(String data, Point position);
 

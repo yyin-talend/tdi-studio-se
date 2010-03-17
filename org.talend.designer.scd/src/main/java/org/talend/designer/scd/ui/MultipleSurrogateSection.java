@@ -21,7 +21,6 @@ import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -481,42 +480,42 @@ public class MultipleSurrogateSection extends ScdSection {
                 text.setBackground(ERROR_COLOR);
             }
             // add drag and drop support
-            IDragDropDelegate delegate = createDragDropDelegate(key, text);
-            dragDropManager.addDragSupport(text, delegate);
-            dragDropManager.addDropSupport(text, delegate);
+            // IDragDropDelegate delegate = createDragDropDelegate(key, text);
+            // dragDropManager.addDragSupport(text, delegate);
+            // dragDropManager.addDropSupport(text, delegate);
         }
     }
 
-    private IDragDropDelegate createDragDropDelegate(final SurrogateKey key, final Label text) {
-        return new IDragDropDelegate() {
-
-            public String getDragItemsAsText() {
-                return "1|" + text.getText(); //$NON-NLS-1$
-            }
-
-            public void onDropItems(String data, Point position) {
-                String[] items = data.split("\\|"); //$NON-NLS-1$
-                text.setText(items[1]);
-                key.setComplement(items[1]);
-                text.setBackground(null);
-            }
-
-            public void removeDragItems() {
-                text.setText(""); //$NON-NLS-1$
-                key.setComplement(""); //$NON-NLS-1$
-                // display as error status, this field must not be null
-                text.setBackground(ERROR_COLOR);
-                // don't remove table item here, it can be removed by the delete button
-            }
-
-            public boolean isDropAllowed(String data) {
-                // only allow single selection
-                return StringUtils.isEmpty(key.getComplement()) && data.startsWith("1|"); //$NON-NLS-1$
-            }
-
-        };
-
-    }
+    // private IDragDropDelegate createDragDropDelegate(final SurrogateKey key, final Label text) {
+    // return new IDragDropDelegate() {
+    //
+    // public String getDragItemsAsText() {
+    //                return "1|" + text.getText(); //$NON-NLS-1$
+    // }
+    //
+    // public void onDropItems(String data, Point position) {
+    //                String[] items = data.split("\\|"); //$NON-NLS-1$
+    // text.setText(items[1]);
+    // key.setComplement(items[1]);
+    // text.setBackground(null);
+    // }
+    //
+    // public void removeDragItems() {
+    //                text.setText(""); //$NON-NLS-1$
+    //                key.setComplement(""); //$NON-NLS-1$
+    // // display as error status, this field must not be null
+    // text.setBackground(ERROR_COLOR);
+    // // don't remove table item here, it can be removed by the delete button
+    // }
+    //
+    // public boolean isDropAllowed(String data) {
+    // // only allow single selection
+    //                return StringUtils.isEmpty(key.getComplement()) && data.startsWith("1|"); //$NON-NLS-1$
+    // }
+    //
+    // };
+    //
+    // }
 
     /**
      * DOC chuang Comment method "addContextHelp".

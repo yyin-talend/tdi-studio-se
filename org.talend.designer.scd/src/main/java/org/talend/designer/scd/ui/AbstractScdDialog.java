@@ -62,6 +62,8 @@ public abstract class AbstractScdDialog extends TrayDialog {
 
     protected Type3Section type3Fields;
 
+    protected Shell shell;
+
     /**
      * DOC hcw AbstractScdDialog constructor comment.
      * 
@@ -69,6 +71,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
      */
     public AbstractScdDialog(Shell shell) {
         super(shell);
+        this.shell = shell;
         setShellStyle(SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE | SWT.APPLICATION_MODAL);
     }
 
@@ -112,7 +115,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
      * Prompt the user for saving before closing the dialog.
      */
     protected void showWarningDialog() {
-        boolean isNotSaveSetting = MessageDialog.openQuestion(getShell(), Messages.getString("UIManager.MessageBox.title"), //$NON-NLS-1$
+        boolean isNotSaveSetting = MessageDialog.openQuestion(shell, Messages.getString("UIManager.MessageBox.title"), //$NON-NLS-1$
                 Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$
         if (!isNotSaveSetting) {
             setReturnCode(OK);

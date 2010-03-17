@@ -243,12 +243,23 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * 
      * @see org.talend.designer.scd.ui.IDragDrop#removeDragItems()
      */
-    public void removeDragItems() {
+    public void removeDragItems(String data) {
         Table table = tableViewer.getTable();
-        for (TableItem item : table.getSelection()) {
-            tableModel.remove(item.getData());
+        table.getSelection();
+        TableItem[] items = table.getItems();
+        String[] toRemove = data.split("\\|"); //$NON-NLS-1$
+
+        for (int i = 1; i < toRemove.length; i++) { // skip items[0], which is the number of selected elements
+            for (TableItem item : items) {
+                if (toRemove[i].equals(item.getText())) {
+                    tableModel.remove(item.getData());
+                    break;
+                }
+            }
+
         }
         table.remove(table.getSelectionIndices());
+        tableViewer.refresh();
     }
 
     /*

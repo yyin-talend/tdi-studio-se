@@ -295,14 +295,25 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
      * 
      * @see org.talend.designer.scd.ui.IDragDropDelegate#removeDragItems()
      */
-    public void removeDragItems() {
-        TableItem[] selection = table.getSelection();
-        for (TableItem item : selection) {
-            Type3Field field = (Type3Field) item.getData();
-            tableModel.remove(field);
-            editorManager.removeEditors(item);
+    public void removeDragItems(String data) {
+        TableItem[] items = table.getItems();
+        String[] toRemove = data.split("\\|"); //$NON-NLS-1$
+
+        for (TableItem item : items) {
+            TableItem itemToRemove = null;
+            for (int i = 1; i < toRemove.length; i++) { // skip items[0], which is the number of selected elements
+                if (toRemove[i].equals(item.getText())) {
+                    itemToRemove = item;
+                    break;
+                }
+            }
+            if (itemToRemove != null) {
+                tableModel.remove((Type3Field) itemToRemove.getData());
+                editorManager.removeEditors(itemToRemove);
+            }
         }
         table.remove(table.getSelectionIndices());
+        tableViewer.refresh();
     }
 
     static class TableLabelProvider extends LabelProvider implements ITableLabelProvider {

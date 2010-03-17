@@ -317,7 +317,7 @@ public class SurrogateSection extends ScdSection {
                 text.setBackground(null);
             }
 
-            public void removeDragItems() {
+            public void removeDragItems(String data) {
                 text.setText(""); //$NON-NLS-1$
                 key.setComplement(""); //$NON-NLS-1$
                 // display as error status, this field must not be null
