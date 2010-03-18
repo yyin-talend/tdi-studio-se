@@ -105,6 +105,8 @@ import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -504,6 +506,21 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     return true;
                 }
 
+                boolean visible = true;
+                RepositoryNode node = (RepositoryNode) element;
+                if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType()) || ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
+                    visible = filterByUserStatusName(node);
+
+                }
+
+                return visible;
+            }
+
+            private boolean filterByUserStatusName(RepositoryNode node) {
+                boolean visible = true;
+                // empty folder created by current user
+                boolean emptyFolderVisible = true;
+
                 String[] statusFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_STATUS);
                 String[] userFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_USER);
 
@@ -514,29 +531,39 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 if (userFilter != null && userFilter.length > 0) {
                     items.addAll(Arrays.asList(userFilter));
                 }
-                boolean visible = true;
-                RepositoryNode node = (RepositoryNode) element;
-                if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
-                    String label = (String) node.getProperties(EProperties.LABEL);
-                    if (node.getObject() != null) {
-                        Property property = node.getObject().getProperty();
-                        User author = node.getObject().getAuthor();
-                        String statusCode = "";
-                        if (property != null) {
-                            statusCode = property.getStatusCode();
-                        }
-                        String user = "";
-                        if (author != null) {
-                            user = author.getLogin();
-                        }
-                        if (items.contains(statusCode) || items.contains(user)) {
-                            visible = false;
-                        }
+                if (node.getObject() != null) {
+                    Property property = node.getObject().getProperty();
+                    String statusCode = "";
+                    if (property != null) {
+                        statusCode = property.getStatusCode();
                     }
-                    // filter by name
-                    if (isMatchNameFilterPattern(label)) {
+                    User author = node.getObject().getAuthor();
+                    String user = "";
+                    if (author != null) {
+                        user = author.getLogin();
+                    }
+                    if ((items.contains(statusCode) || items.contains(user)) && !isStableItem(node)) {
                         visible = false;
                     }
+                    if (items.contains(user)) {
+                        emptyFolderVisible = false;
+                    }
+
+                }
+
+                // hide user created folder that has no visible children
+                if (!emptyFolderVisible && ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
+                    if (!isStableItem(node) && !hasVisibleChildren(node)) {
+                        visible = false;
+                    } else {
+                        visible = true;
+                    }
+                }
+
+                // filter by name
+                String label = (String) node.getProperties(EProperties.LABEL);
+                if (isMatchNameFilterPattern(label)) {
+                    visible = false;
                 }
 
                 return visible;
@@ -574,6 +601,43 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     }
                 }
                 return matchers;
+            }
+
+            private boolean isStableItem(RepositoryNode node) {
+                Object label = node.getProperties(EProperties.LABEL);
+                if (ENodeType.SIMPLE_FOLDER.equals(node.getType())
+                        && ERepositoryObjectType.SQLPATTERNS.equals(node.getContentType())
+                        && (label.equals("Generic") || label.equals("UserDefined") || label.equals("MySQL")
+                                || label.equals("Netezza") || label.equals("Oracle") || label.equals("ParAccel") || label
+                                .equals("Teradata"))) {
+                    return true;
+
+                } else if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType()) && node.getObject() != null) {
+                    Item item = node.getObject().getProperty().getItem();
+                    if (item instanceof SQLPatternItem) {
+                        if (((SQLPatternItem) item).isSystem()) {
+                            return true;
+                        }
+                    } else if (item instanceof RoutineItem) {
+                        if (((RoutineItem) item).isBuiltIn()) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+
+            }
+
+            private boolean hasVisibleChildren(RepositoryNode node) {
+                boolean hasVisibleChildren = false;
+                List<RepositoryNode> children = node.getChildren();
+                for (RepositoryNode childNode : children) {
+                    hasVisibleChildren = hasVisibleChildren || filterByUserStatusName(childNode) || hasVisibleChildren(childNode);
+                    if (hasVisibleChildren) {
+                        return hasVisibleChildren;
+                    }
+                }
+                return hasVisibleChildren;
             }
         });
 
