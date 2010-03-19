@@ -63,7 +63,7 @@
 		case 6:
 		// 6) Question
 %>
-		result<%=cid %> = javax.swing.JOptionPane.showInputDialog(null, <%=ElementParameterParser.getValue(node, "__QUESTION_LABEL__") %> , <%=ElementParameterParser.getValue(node, "__QUESTION_TITLE__") %>, messageIcon<%=cid %>);
+		result<%=cid %> = javax.swing.JOptionPane.showInputDialog(null, <%=ElementParameterParser.getValue(node, "__QUESTION_LABEL__") %> , title<%=cid %>, messageIcon<%=cid %>);
 <%
 			break;
 		default:

@@ -54,7 +54,7 @@
 			</ITEMS>
 		</PARAMETER>
 
-		<PARAMETER
+		<!-- <PARAMETER
 		  NAME="QUESTION_TITLE"
 		  FIELD="TEXT" 
 		  NUM_ROW="4"
@@ -63,7 +63,7 @@
 		  >
 		  <DEFAULT>"Window Title"</DEFAULT>
 		  </PARAMETER>
-		
+		 -->
 		 <PARAMETER
 		  NAME="QUESTION_LABEL"
 		  FIELD="MEMO" 
