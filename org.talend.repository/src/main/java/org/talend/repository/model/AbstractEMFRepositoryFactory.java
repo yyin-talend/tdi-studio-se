@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.repository.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -436,7 +436,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         folderHelper.createFolder("code/routines/system"); //$NON-NLS-1$
 
         List<IRepositoryObject> repositoryObjects = getAll(project, ERepositoryObjectType.ROUTINES, false, false);
-        Map<String, List<String>> routineAndJars = RoutineLibraryMananger.getInstance().getRoutineAndJars();
+        Map<String, List<URI>> routineAndJars = RoutineLibraryMananger.getInstance().getRoutineAndJars();
         for (URL url : routines) {
             String[] fragments = url.toString().split("/"); //$NON-NLS-1$
             String label = fragments[fragments.length - 1];
@@ -511,7 +511,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @param url
      * @throws PersistenceException
      */
-    private void createRoutine(URL url, IPath path, String label, List<String> neededJars) throws PersistenceException {
+    private void createRoutine(URL url, IPath path, String label, List<URI> neededJars) throws PersistenceException {
         if (url == null) {
             throw new IllegalArgumentException();
         }
@@ -528,20 +528,20 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             stream.close();
             byteArray.setInnerContent(innerContent);
 
-            String basePath = System.getProperty("user.dir") + File.separator + "plugins";
+            // String basePath = System.getProperty("user.dir") + File.separator + "plugins";
 
             RoutineItem routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
             routineItem.setProperty(property);
             routineItem.setContent(byteArray);
             routineItem.setBuiltIn(true);
             if (neededJars != null) {
-                for (String name : neededJars) {
+                for (URI jar : neededJars) {
                     IMPORTType type = ComponentFactory.eINSTANCE.createIMPORTType();
                     type.setMESSAGE("");
                     type.setNAME(label);
                     type.setREQUIRED(true);
-                    type.setMODULE(name);
-                    type.setUrlPath(basePath + File.separator + name);
+                    type.setMODULE(new Path(jar.getPath()).lastSegment());
+                    type.setUrlPath(jar.getPath());
                     routineItem.getImports().add(type);
                 }
             }
