@@ -236,13 +236,39 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             byteArray.setInnerContentFromFile(((FileEditorInput) getEditorInput()).getFile());
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+
+            // for bug 11930: Unable to save Routines.* in db project
+            refreshJobBeforeSave(repFactory);
+
             repFactory.save(item);
-            startRefreshJob(repFactory);
+            // startRefreshJob(repFactory);
 
         } catch (Exception e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
+
+    }
+
+    private void refreshJobBeforeSave(final IProxyRepositoryFactory repFactory) {
+
+        try {
+            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
+                    IncrementalProjectBuilder.AUTO_BUILD, null);
+        } catch (CoreException e1) {
+            ExceptionHandler.process(e1);
+        }
+        // check syntax error
+        addProblems();
+        try {
+            // cause it to update MaxInformationLevel
+            repFactory.save(item.getProperty());
+        } catch (Exception e) {
+        }
+        // update image in repository
+        RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
+        // update editor image
+        setTitleImage(getTitleImage());
 
     }
 

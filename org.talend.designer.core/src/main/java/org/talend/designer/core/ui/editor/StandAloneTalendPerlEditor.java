@@ -185,18 +185,35 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
             byteArray.setInnerContentFromFile(((IFileEditorInput) getEditorInput()).getFile());
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-            repFactory.save(item);
 
             ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                     ICodeGeneratorService.class);
             if (item instanceof RoutineItem) {
                 codeGenService.createPerlRoutineSynchronizer().syncRoutine((RoutineItem) item, false);
             }
-            startRefreshJob(repFactory);
+
+            refreshJobBeforeSave(repFactory);
+            repFactory.save(item);
+            // startRefreshJob(repFactory);
         } catch (Exception e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
+    }
+
+    private void refreshJobBeforeSave(final IProxyRepositoryFactory repFactory) {
+        // check syntax error
+        addProblems();
+        try {
+            // cause it to update MaxInformationLevel
+            repFactory.save(item.getProperty());
+        } catch (Exception e) {
+        }
+        // update image in repository
+        RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
+        // update editor image
+        setTitleImage(getTitleImage());
+
     }
 
     private void startRefreshJob(final IProxyRepositoryFactory repFactory) {
