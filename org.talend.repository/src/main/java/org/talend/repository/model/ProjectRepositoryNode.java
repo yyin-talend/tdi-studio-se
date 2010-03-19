@@ -865,16 +865,19 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if (parent.getType().equals(ENodeType.SYSTEM_FOLDER)) {
             for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getEmfProject()
                     .getReferencedProjects()) {
+                String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields().get(
+                        IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel());
 
-                Project emfProject = refProject.getReferencedProject();
-
-                ProjectRepositoryNode referencedProjectNode = new ProjectRepositoryNode(
-                        new org.talend.core.model.general.Project(emfProject), null, parent, this, ENodeType.REFERENCED_PROJECT);
-                referencedProjectNode.setProperties(EProperties.LABEL, emfProject.getLabel()); //$NON-NLS-1$
-                referencedProjectNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
-                parent.getChildren().add(referencedProjectNode);
-                referencedProjectNode.initialize();
-
+                if (refProject.getBranch() != null && refProject.getBranch().equals(parentBranch)) {
+                    Project emfProject = refProject.getReferencedProject();
+                    ProjectRepositoryNode referencedProjectNode = new ProjectRepositoryNode(
+                            new org.talend.core.model.general.Project(emfProject), null, parent, this,
+                            ENodeType.REFERENCED_PROJECT);
+                    referencedProjectNode.setProperties(EProperties.LABEL, emfProject.getLabel()); //$NON-NLS-1$
+                    referencedProjectNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
+                    parent.getChildren().add(referencedProjectNode);
+                    referencedProjectNode.initialize();
+                }
             }
         }
 
