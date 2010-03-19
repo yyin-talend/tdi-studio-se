@@ -55,6 +55,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
+import org.talend.core.model.metadata.IHL7Constant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.ISAPConstant;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -595,12 +596,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     list.add(ebcdicCmd);
                 }
             }
-            // fore EBCDIC, by cli
+            // fore HL7, by gcui
             if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded()) {
                 for (MetadataTable table : (List<MetadataTable>) originalConnection.getTables()) {
-                    Command ebcdicCmd = new RepositoryChangeMetadataForHL7Command(node, IEbcdicConstant.TABLE_SCHEMAS, table
+                    Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS, table
                             .getLabel(), ConvertionHelper.convert(table));
-                    list.add(ebcdicCmd);
+                    list.add(hl7Cmd);
                 }
             }
 
