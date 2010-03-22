@@ -527,6 +527,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 sheet_<%= cid %> = sheetList_<%= cid %>.get(++sheetIndex_<%= cid %>);
                 currentRows_<%= cid %> = (sheet_<%= cid %>.getLastRowNum()+1);
             }
+            globalMap.put("<%=cid %>_CURRENT_SHEET",sheet_<%=cid %>.getSheetName());
 <%
 	if(!affect){
 %>
@@ -604,7 +605,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
                                 temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
                             } else {
-                                temp_row_<%= cid %>[i] =String.valueOf(cell_<%=cid%>.getNumericCellValue());
+                                temp_row_<%= cid %>[i] =new java.math.BigDecimal(cell_<%=cid%>.getNumericCellValue()).toPlainString();
                             }
                             break;
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
