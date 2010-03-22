@@ -334,10 +334,16 @@ public class Schema2XMLDragAndDropHandler {
                 // add by xzhang
                 if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_TEXT)) {
                     if (targetNode.hasChildren()) {
-                        MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
-                                        + Messages.getString("Schema2XMLDragAndDropHandler.HasChildrenWarning")); //$NON-NLS-1$
-                        return;
+                        // add for bug 11723.
+                        List<FOXTreeNode> children = targetNode.getChildren();
+                        for (FOXTreeNode foxTreeNode : children) {
+                            if (!(foxTreeNode instanceof Attribute)) {
+                                MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+                                        "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
+                                                + Messages.getString("Schema2XMLDragAndDropHandler.HasChildrenWarning")); //$NON-NLS-1$
+                                return;
+                            }
+                        }
 
                     } else if (targetNode.getParent() == null) {
                         MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
