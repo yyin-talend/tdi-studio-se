@@ -31,6 +31,8 @@ imports="
 	String separator=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
 	String advanced=ElementParameterParser.getValue(node, "__ADVANCEDCA__");
 	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
+	String storepwd = ElementParameterParser.getValue(node, "__STORECAPWD__");
+	boolean alwaysTrust = ("true").equals(ElementParameterParser.getValue(node, "__ALWAYS_TRUST__"));
 	String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
 	String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
 	String limit =ElementParameterParser.getValue(node, "__LIMIT__");
@@ -70,16 +72,22 @@ imports="
 	env_<%=cid%>.put(javax.naming.Context.SECURITY_PROTOCOL, "ssl");
 	env_<%=cid%>.put("java.naming.ldap.factory.socket", "talend.ssl.AdvancedSocketFactory");
 <%
+	}
+	if(("LDAPS").equals(protocol) || ("TLS").equals(protocol)){
 		if(("true").equals(advanced)){
+			if(alwaysTrust) {
+%>
+	talend.ssl.AdvancedSocketFactory.alwaysTrust();
+<%
+			} else {
 %>
 	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
 <%
-		}
-    }else if(("TLS").equals(protocol)){
-    	if(("true").equals(advanced)){
-%>
-	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
+				if(storepwd !=null && storepwd.length() !=0 ){%>
+	talend.ssl.AdvancedSocketFactory.setCertStorePassword(<%=storepwd %>);
 <%
+				}
+			}
 		}
     }
 %>

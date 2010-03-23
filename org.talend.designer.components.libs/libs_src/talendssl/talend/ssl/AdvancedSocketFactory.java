@@ -36,6 +36,8 @@ public class AdvancedSocketFactory extends SSLSocketFactory {
 
     private static String certStorePwd = null;
 
+    private static final TrustManager[] ALWAYS_TRUST_MANAGER = new TrustManager[] { new AlwaysTruster() };
+    
     protected AdvancedSocketFactory() {
         factory = null;
         init(null, null);
@@ -149,5 +151,9 @@ public class AdvancedSocketFactory extends SSLSocketFactory {
 
     static {
         Security.addProvider(new Provider());
+    }
+    
+    public static void alwaysTrust() {
+        trustManagers = ALWAYS_TRUST_MANAGER;
     }
 }
