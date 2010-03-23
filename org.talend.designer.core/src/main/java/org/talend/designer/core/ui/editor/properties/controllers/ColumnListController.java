@@ -52,6 +52,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -625,7 +626,17 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         if (table != null) {
             for (IMetadataColumn column : table.getListColumns()) {
-                columnList.add(column.getLabel());
+                // add for bug 12034
+                String label = column.getLabel();
+                if (node.getComponent().getName().endsWith("tFileInputXML")) {//$NON-NLS-1$
+                    if (label.length() > 1) {
+                        String labelSub = label.substring(1);
+                        if (labelSub != null && KeywordsValidator.isKeyword(labelSub)) {
+                            label = labelSub;
+                        }
+                    }
+                }
+                columnList.add(label);
             }
         }
 
