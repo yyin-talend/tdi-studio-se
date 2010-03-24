@@ -507,9 +507,11 @@ public class MultiSchemasManager {
                             parentData.addChild(currentData);
                             // set the added column, last column.
                             List<MultiMetadataColumn> metadataColumns = currentData.getMetadataColumns();
-                            MultiMetadataColumn multiMetadataColumn = metadataColumns.get(metadataColumns.size() - 1);
-                            metadataColumns.remove(multiMetadataColumn);
-                            currentData.setAddedColumn(multiMetadataColumn);
+                            if (!metadataColumns.isEmpty()) {
+                                MultiMetadataColumn multiMetadataColumn = metadataColumns.get(metadataColumns.size() - 1);
+                                metadataColumns.remove(multiMetadataColumn);
+                                currentData.setAddedColumn(multiMetadataColumn);
+                            }
                         }
                     }
                 }
