@@ -16,13 +16,13 @@ import java.util.Iterator;
 
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -166,7 +166,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
                 InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo.getCurrentModifiedBean();
                 currentInputEntry.setOriginalExpression(null);
-                CCombo combo = (CCombo) typeComboEditor.getControl();
+                Combo combo = (Combo) typeComboEditor.getControl();
                 String selectedText = combo.getText();
                 IDbOperator operatorFromValue = operatorsManager.getOperatorFromValue(selectedText);
                 if (operatorFromValue != null && operatorFromValue.isMonoOperand()) {
@@ -188,7 +188,7 @@ public class InputDataMapTableView extends DataMapTableView {
                     if (currentInputEntry != modifiedObjectInfo.getPreviousModifiedBean()) {
                         currentInputEntry.setOriginalExpression(currentInputEntry.getExpression());
                     }
-                    CCombo combo = (CCombo) typeComboEditor.getControl();
+                    Combo combo = (Combo) typeComboEditor.getControl();
                     String selectedText = combo.getText();
                     if (!selectedText.equals("") //$NON-NLS-1$
                             && (currentInputEntry.getExpression() == null || currentInputEntry.getExpression().trim().length() == 0)) {
@@ -202,8 +202,8 @@ public class InputDataMapTableView extends DataMapTableView {
             }
 
         });
-        CCombo typeCombo = (CCombo) typeComboEditor.getControl();
-        typeCombo.setEditable(true);
+        Combo typeCombo = (Combo) typeComboEditor.getControl();
+        // typeCombo.setEditable(true);
         columnOperator.setCellEditor(typeComboEditor, CellEditorValueAdapterFactory.getComboAdapterForComboCellEditorImproved());
         columnOperator.setAlignment(ALIGNMENT.CENTER);
 
