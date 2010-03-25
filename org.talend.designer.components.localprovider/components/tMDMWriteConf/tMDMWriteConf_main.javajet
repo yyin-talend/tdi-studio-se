@@ -10,6 +10,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
+		java.util.Map
 		"
 %>
 <%
@@ -28,6 +29,7 @@ String sourceName = ElementParameterParser.getValue(node,"__SOURCE__");
 boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 String isUpdate = ElementParameterParser.getValue(node,"__ISUPDATE__");
 
+List<Map<String,String>> keysReturn = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__RETURN_IDS__");
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {//1
@@ -61,10 +63,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 			        }
 			    }
+			    if(outConnName !=null){
+%>
+<%=outConnName %> = new <%=outConnName %>Struct();
+<%=outConnName %>.<%=xmlField %> = strXmlField_<%=cid %>;
+<%
+				}
 %>
 ///////////////////////	
 input_<%=cid %> = strXmlField_<%=cid %>;
-
+org.talend.mdm.webservice.WSItemPK wspk_<%=cid %>;
 try{
 	org.talend.mdm.webservice.WSPutItem item_<%=cid %> = new org.talend.mdm.webservice.WSPutItem(dataCluster_<%=cid %>,input_<%=cid %>,dataModel_<%=cid %>, <%=isUpdate %>);
 <%
@@ -79,8 +87,16 @@ try{
 	}
 <%
 		}else{%>
-	xtentisWS_<%=cid %>.putItemWithReport(itemReport_<%=cid %>);
+	wspk_<%=cid %> = xtentisWS_<%=cid %>.putItemWithReport(itemReport_<%=cid %>);
 <%
+		}
+		if(outConnName !=null && keysReturn.size() > 0){
+			for(int i=0; i < keysReturn.size(); i++){
+				Map<String,String> map = keysReturn.get(i);
+%>
+	<%=outConnName %>.<%=map.get("OUTPUT_COLUMN")%>= wspk_<%=cid%>.getIds(<%=i %>);
+<%
+			}
 		}
 	}else{
 		if(isMassInsert){%>
@@ -91,16 +107,18 @@ try{
 	}
 <%
 		}else{%>
-	xtentisWS_<%=cid %>.putItem(item_<%=cid %>);
+	wspk_<%=cid %> = xtentisWS_<%=cid %>.putItem(item_<%=cid %>);
 <%
+    		if(outConnName !=null && keysReturn.size() > 0){
+    			for(int i=0; i < keysReturn.size(); i++){
+    				Map<String,String> map = keysReturn.get(i);
+%>
+	<%=outConnName %>.<%=map.get("OUTPUT_COLUMN")%>= wspk_<%=cid%>.getIds(<%=i %>);
+<%
+    			}
+    		}
 		}
 	}
-if(outConnName !=null){
-%>
-	<%=outConnName %> = new <%=outConnName %>Struct();
-	<%=outConnName %>.<%=xmlField %> = strXmlField_<%=cid %>;
-<%
-}
 %>
 }catch(Exception e){
 <%
