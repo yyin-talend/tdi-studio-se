@@ -562,7 +562,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
                 // filter by name
                 String label = (String) node.getProperties(EProperties.LABEL);
-                if (isMatchNameFilterPattern(label)) {
+                if (visible && isMatchNameFilterPattern(label)) {
+                    visible = true;
+                } else {
                     visible = false;
                 }
 
