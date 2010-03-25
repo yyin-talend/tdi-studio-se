@@ -1023,7 +1023,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                 sameValues = false;
                                             }
                                         }
-
                                     } else
                                     // check the value
                                     if (value instanceof String && objectValue instanceof String) {
@@ -1080,6 +1079,42 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         sameValues = false;
                                     }
                                 }
+                            } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) {
+                                objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, param.getName(), node
+                                        .getMetadataList().get(0));
+                                if (value == null) {
+                                    sameValues = false;
+                                    break;
+                                }
+                                if (objectValue == null) {
+                                    sameValues = false;
+                                    break;
+                                }
+                                List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) value;
+
+                                List repList = (List) objectValue;
+                                if (oldMaps.size() == repList.size()) {
+                                    for (Map<String, Object> line : oldMaps) {
+                                        final String sheetName = "VALUE";
+                                        Object oldValue = line.get(sheetName);
+                                        if (oldValue instanceof String && repList.get(0) instanceof String) {
+                                            boolean found = false;
+                                            for (String str : (List<String>) repList) {
+                                                Object repValue = TalendTextUtils.addQuotes(str);
+                                                if (oldValue.equals(repValue)) {
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!found) {
+                                                sameValues = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    sameValues = false;
+                                }
                             }
                         }
                         if (!sameValues) {
@@ -1127,6 +1162,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     if (contextResults != null) {
                         propertiesResults.addAll(contextResults);
                     }
+
                 } else if (repositoryRulesItem != null) { // hywang add for 6484
                     boolean isFindRules = false;
                     IElementParameter param = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());

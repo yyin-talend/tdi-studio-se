@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.eclipse.gef.commands.Command;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -45,6 +46,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.designer.core.model.components.EParameterName;
@@ -265,6 +267,24 @@ public class UpdateNodeParameterCommand extends Command {
                                 RepositoryToComponentProperty.getTableXMLMappingValue(
                                         (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
                                         (List<Map<String, Object>>) param.getValue(), node.getMetadataList().get(0));
+                            } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) {
+                                objectValue = RepositoryToComponentProperty.getValue(
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
+                                        "PARAMS", node.getMetadataList().get(0));
+                                List<Map<String, Object>> paramMaps = (List<Map<String, Object>>) param.getValue();
+                                if (paramMaps == null) {
+                                    paramMaps = new ArrayList<Map<String, Object>>();
+                                } else {
+                                    paramMaps.clear();
+                                }
+                                if (objectValue != null) {
+                                    List<String> objectValueList = (List<String>) objectValue;
+                                    for (int i = 0; i < objectValueList.size(); i++) {
+                                        Map<String, Object> map = new HashedMap();
+                                        map.put("VALUE", TalendTextUtils.addQuotes((String) objectValueList.get(i)));
+                                        paramMaps.add(map);
+                                    }
+                                }
                             }
                             param.setRepositoryValueUsed(true);
                             param.setReadOnly(true);
