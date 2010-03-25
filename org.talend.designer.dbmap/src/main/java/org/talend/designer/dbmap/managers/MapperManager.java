@@ -41,8 +41,8 @@ import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.dbmap.DbMapActivator;
 import org.talend.designer.dbmap.DbMapComponent;
+import org.talend.designer.dbmap.PluginUtils;
 import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.IDbLanguage;
@@ -596,7 +596,7 @@ public class MapperManager extends AbstractMapperManager {
      * @return
      */
     public String getPreviewFilePath() {
-        IRepositoryService service = DbMapActivator.getDefault().getRepositoryService();
+        IRepositoryService service = PluginUtils.getRepositoryService();
         return service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, getPreviewFileName()).toString();
     }
 

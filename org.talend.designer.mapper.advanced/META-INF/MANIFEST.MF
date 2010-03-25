@@ -8,7 +8,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.designer.mapper,
- org.talend.commons
+ org.talend.commons,
+ org.talend.designer.codegen
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.designer.mapper.advanced

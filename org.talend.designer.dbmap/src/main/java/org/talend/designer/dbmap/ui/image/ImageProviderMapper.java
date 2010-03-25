@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
-import org.talend.designer.dbmap.DbMapActivator;
+import org.talend.designer.dbmap.PluginUtils;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -45,7 +45,7 @@ public class ImageProviderMapper {
     }
 
     public static ImageDescriptor getImageDescriptor(ImageInfo image) {
-        return ImageDescriptor.createFromFile(DbMapActivator.class, image.getPath());
+        return ImageDescriptor.createFromFile(PluginUtils.class, image.getPath());
     }
 
     /**

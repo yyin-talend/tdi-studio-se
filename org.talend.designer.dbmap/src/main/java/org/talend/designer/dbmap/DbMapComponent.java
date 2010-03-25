@@ -209,7 +209,7 @@ public class DbMapComponent extends AbstractMapComponent {
      */
     public String getGeneratedCode() {
         try {
-            ICodeGeneratorService service = DbMapActivator.getDefault().getCodeGeneratorService();
+            ICodeGeneratorService service = PluginUtils.getCodeGeneratorService();
 
             return service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
         } catch (SystemException e) {

@@ -47,7 +47,7 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
 
         String htmlFilePath = this.tempFolderPath + File.separatorChar + this.componentName + IHTMLDocConstants.HTML_FILE_SUFFIX;
 
-        final Bundle b = Platform.getBundle(DbMapActivator.PLUGIN_ID);
+        final Bundle b = Platform.getBundle(PluginUtils.PLUGIN_ID);
 
         URL xslFileUrl = null;
         try {
