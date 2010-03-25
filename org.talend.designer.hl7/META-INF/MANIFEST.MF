@@ -4,15 +4,12 @@ Bundle-Name: Hl7
 Bundle-SymbolicName: org.talend.designer.hl7;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.designer.hl7.HL7InputComponentPlugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.talend.core,
  org.talend.commons.ui,
  org.talend.repository,
  org.talend.designer.core,
- org.eclipse.core.resources,
- org.talend.libraries.hl7,
- org.talend.designer.codegen
+ org.talend.libraries.hl7
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
 Bundle-ClassPath: .

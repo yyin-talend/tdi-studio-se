@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.1"?>
+<?pde version="3.5"?>
 
-<product name="%productName" id="org.talend.rcp.branding.tos.product" application="org.talend.rcp.branding.tos.application" useFeatures="false">
+<product name="%productName" uid="tos" id="org.talend.rcp.branding.tos.product" application="org.talend.rcp.branding.tos.application" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="icons/about.jpg"/>
@@ -10,9 +10,11 @@
       </text>
    </aboutInfo>
 
-   <configIni use="default"/>
+   <configIni use="default">
+   </configIni>
 
    <launcherArgs>
+      <vmArgs>-Xms40m -Xmx500m -XX:MaxPermSize=128m</vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.talend.rcp/icons/appli_16x16.gif" i32="/org.talend.rcp/icons/appli_32x32.gif" i48="/org.talend.rcp/icons/appli_48x48.gif"/>
@@ -32,6 +34,10 @@
    </launcher>
 
    <intro introId="org.talend.rcp.intro"/>
+
+   <vm>
+   </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>
@@ -82,7 +88,8 @@
    </plugins>
 
    <features>
-      <feature id="org.talend.rcp.branding.tos_feature" version="1.0.0"/>
+      <feature id="org.talend.rcp.branding.tos_feature" version="2.2.0.qualifier"/>
    </features>
+
 
 </product>
