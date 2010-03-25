@@ -1707,38 +1707,7 @@ if(!isVirtualOut) { // T_TM_M_320
             String className = instanceVarName + "__Struct";
 
             %><%= cr + className + " " + varsTableName + " = " + instanceVarName + ";" %><%
-            
-            for (ExternalMapperTableEntry varsTableEntry : varsTableEntries) {
-                String varsColumnName = varsTableEntry.getName();
-                String varExpression = varsTableEntry.getExpression();
-                if (varExpression == null || varExpression.trim().length() == 0) {
-                    varExpression = JavaTypesManager.getDefaultValueFromJavaIdType(varsTableEntry.getType(),
-                            varsTableEntry.isNullable());
-                }
-                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(varExpression);
-                ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
-                for (TableEntryLocation location : entryLocations) {
-                    if (gm.isInputTable(varExpression)) {
-                        listCoupleForAddTablePrefix.add(location);
-                    }
-                }
 
-                String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
-                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName,
-                        varsColumnName);
-
-                if (checkingSyntax) {
-                    %><%= cr  + CodeGenerationUtils.buildJavaStartFieldKey(key) %><%
-                }
-
-                %><%= cr + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, varsTableName, varsColumnName, false) + " = " + varExpression
-                        + ";" %><%
-
-                if (checkingSyntax) {
-                    %><%= cr + CodeGenerationUtils.buildJavaEndFieldKey(key)%><%
-                }
-
-            }
         }
         
         %>
