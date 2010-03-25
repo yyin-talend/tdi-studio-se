@@ -200,7 +200,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
             	d2 += data[i];
         	}
         
-	        return Math.sqrt((n*d1 - d2*d2)/n/n);
+	        return Math.sqrt((n*d1 - d2*d2)/n/(n-1));
 	    }
 	    
 		public void checkedIADD(byte a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
