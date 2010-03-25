@@ -159,8 +159,14 @@ try{
 			com.enterprisedt.net.ftp.FTPFile[] ftpFiles_<%=cid%> = ftp_<%=cid %>.dirDetails(".");
 			for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles_<%=cid%>) {
 				if (!ftpFile.isDir() && !ftpFile.isLink()) {
-					if (ftpFile.getName().matches(mask<%=cid %>)) {		 
-						remoteExistsFiles_<%=cid%>.add(ftpFile.getName());
+					if("".equals(map<%=cid %>.get(key<%=cid %>))){
+						if (ftpFile.getName().matches(mask<%=cid %>)) {		 
+							remoteExistsFiles_<%=cid%>.add(ftpFile.getName());
+						}
+					}else{
+						if (ftpFile.getName().matches(map<%=cid %>.get(key<%=cid %>))) {		 
+							remoteExistsFiles_<%=cid%>.add(ftpFile.getName());
+						}
 					}
 				}
 			}
@@ -170,7 +176,8 @@ try{
 		     		try{
 		      			if (listings<%=cid %>[m<%=cid %>].getName().matches(mask<%=cid %>)){   
 							java.io.File file_in_localDir = listings<%=cid %>[m<%=cid %>];
-							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));  
+							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName())); 
+							String newName_<%=cid%> = ("".equals(map<%=cid %>.get(key<%=cid %>)))?file_in_localDir.getName():map<%=cid %>.get(key<%=cid %>);
 							<%if(append){%>
 							ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),file_in_localDir.getName(), true);
 								 	
@@ -182,43 +189,43 @@ try{
 	        				globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            				
 							<%}else if(("never").equals(overwrite)){%>
-		            		if (!(remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()))){
-	        					ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),map<%=cid %>.get(key<%=cid %>));
+		            		if (!(remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>))){
+	        					ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),newName_<%=cid%>);
 	        					
 	        					// add uploading status to list which will return back to client.
 						 		msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
 	                                        + file_in_localDir.length() + " bytes upload successfully"); 
 	                            
 	        					currentStatus_<%=cid %> = "File rename OK.";
-	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
+	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 		            		}
 		            		<%}else if(("always").equals(overwrite)){%>
-	        				ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),map<%=cid %>.get(key<%=cid %>));
+	        				ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),newName_<%=cid%>);
 	        				 
 	        				// add uploading status to list which will return back to client.
 						 	msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
 	                                        + file_in_localDir.length() + " bytes upload successfully"); 
 	                        
 	        				currentStatus_<%=cid %> = "File rename OK.";
-							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
+							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 		            				 
 		            		<%}else if(("size_differ").equals(overwrite)){%>
-		            		if ((remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()))){
-		    					com.enterprisedt.net.ftp.FTPFile ftpfile<%=cid%>=ftp_<%=cid%>.fileDetails(file_in_localDir.getName());
+		            		if ((remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>))){
+		    					com.enterprisedt.net.ftp.FTPFile ftpfile<%=cid%>=ftp_<%=cid%>.fileDetails(newName_<%=cid%>);
 								long ftpSize<%=cid%>=ftpfile<%=cid%>.size();
 								long localSize<%=cid%>=file_in_localDir.length();
 								if(!(ftpSize<%=cid%>==localSize<%=cid%>)){
-	        						ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),map<%=cid %>.get(key<%=cid %>));
+	        						ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),newName_<%=cid%>);
 	        						
 	        						// add uploading status to list which will return back to client.
 						 			msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
 	                                        	+ file_in_localDir.length() + " bytes upload successfully"); 
 	                                        
 	        						currentStatus_<%=cid %> = "File rename OK.";
-	        						globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
+	        						globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(newName_<%=cid%>));
 	        					}
 		            		}else{
-	        					ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),map<%=cid %>.get(key<%=cid %>));
+	        					ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),newName_<%=cid%>);
 	        					
 	        					// add uploading status to list which will return back to client.
 						 		msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
