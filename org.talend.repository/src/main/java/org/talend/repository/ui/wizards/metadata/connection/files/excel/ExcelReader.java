@@ -23,7 +23,11 @@ import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.poi.openxml4j.opc.Package;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.util.PackageHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Assert;
@@ -79,16 +83,29 @@ public class ExcelReader {
             worksetting.setSuppressWarnings(true); //$NON-NLS-1$
             workbook = Workbook.getWorkbook(new File(excelPath), worksetting);
         } else {
-            xwb = new XSSFWorkbook(excelPath);
-            List<String> sheetlist = new ArrayList<String>();
-            for (XSSFSheet sheet : xwb) {
-                sheetlist.add(sheet.getSheetName());
+            // modify for bug 12174.
+            File file = new File(excelPath);
+            Package clone = null;
+            try {
+                Package createPackage = Package.openOrCreate(file);
+                clone = PackageHelper.clone(createPackage);
+            } catch (InvalidFormatException e) {
+                e.printStackTrace();
+            } catch (OpenXML4JException e) {
+                e.printStackTrace();
             }
-            sheetNamesForXlsx = new String[sheetlist.size()];
-            for (int i = 0; i < sheetlist.size(); i++) {
-                sheetNamesForXlsx[i] = sheetlist.get(i);
+            if (clone != null) {
+                xwb = new XSSFWorkbook(clone);
+                List<String> sheetlist = new ArrayList<String>();
+                for (XSSFSheet sheet : xwb) {
+                    sheetlist.add(sheet.getSheetName());
+                }
+                sheetNamesForXlsx = new String[sheetlist.size()];
+                for (int i = 0; i < sheetlist.size(); i++) {
+                    sheetNamesForXlsx[i] = sheetlist.get(i);
+                }
+                sheetlist.clear();
             }
-            sheetlist.clear();
         }
 
     }
@@ -122,6 +139,7 @@ public class ExcelReader {
                 res.add(contents);
             }
         } else {
+
             XSSFSheet sheet = xwb.getSheet(sheetName);
             for (int i = sheet.getFirstRowNum(); i < sheet.getPhysicalNumberOfRows(); i++) {
                 Row row = sheet.getRow(i);
