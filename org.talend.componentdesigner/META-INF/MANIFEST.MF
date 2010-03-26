@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.datatools.enablement.oda.xml,
  org.talend.core,
  org.apache.log4j,
- org.talend.libraries.dom4j
+ org.talend.libraries.dom4j,
+ org.eclipse.jet.editor
 Eclipse-LazyStart: true
 Export-Package: org.talend.componentdesigner,
  org.talend.componentdesigner.i18n,
