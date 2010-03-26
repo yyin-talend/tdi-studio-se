@@ -654,20 +654,22 @@ public class DesignerCoreService implements IDesignerCoreService {
             return;
         } else {
             List<Map<String, Object>> traceFilterValues = TracesConnectionUtils.getTraceConnectionFilterValues(conn);
-            for (String newName : changedNameColumns.keySet()) {
-                // update the column name in TRACES_CONNECTION_FILTER parameter.
-                String oldName = changedNameColumns.get(newName);
-                if (oldName != null) {
-                    Map<String, Object> foundLine = null;
-                    for (Map<String, Object> line : traceFilterValues) {
-                        Object column = line.get(IConnection.TRACE_SCHEMA_COLUMN);
-                        if (oldName.equals(column)) {// found
-                            foundLine = line;
-                            break;
+            if (traceFilterValues != null) {
+                for (String newName : changedNameColumns.keySet()) {
+                    // update the column name in TRACES_CONNECTION_FILTER parameter.
+                    String oldName = changedNameColumns.get(newName);
+                    if (oldName != null) {
+                        Map<String, Object> foundLine = null;
+                        for (Map<String, Object> line : traceFilterValues) {
+                            Object column = line.get(IConnection.TRACE_SCHEMA_COLUMN);
+                            if (oldName.equals(column)) {// found
+                                foundLine = line;
+                                break;
+                            }
                         }
-                    }
-                    if (foundLine != null) { // found, update
-                        foundLine.put(IConnection.TRACE_SCHEMA_COLUMN, newName);
+                        if (foundLine != null) { // found, update
+                            foundLine.put(IConnection.TRACE_SCHEMA_COLUMN, newName);
+                        }
                     }
                 }
             }

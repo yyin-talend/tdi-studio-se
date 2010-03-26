@@ -34,6 +34,9 @@ public class ChangeConnTextCommand extends Command {
 
     private String oldName;
 
+    // for elt component
+    private String oldMetaName;
+
     private Connection connection;
 
     /**
@@ -57,7 +60,12 @@ public class ChangeConnTextCommand extends Command {
         connection.setName(newName);
         IElementParameter elementParameter = connection.getElementParameter(EParameterName.UNIQUE_NAME.getName());
         if (elementParameter != null) {
-            connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), newName);
+            if ("TABLE".equals(connection.getConnectorName())) {
+                oldMetaName = connection.getMetaName();
+                connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), connection.getMetaName());
+            } else {
+                connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), newName);
+            }
         }
         // connection.setPropertyValue(EParameterName.LABEL.getName(), newName);
 
@@ -86,7 +94,11 @@ public class ChangeConnTextCommand extends Command {
         connection.setName(oldName);
         IElementParameter elementParameter = connection.getElementParameter(EParameterName.UNIQUE_NAME.getName());
         if (elementParameter != null) {
-            connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), oldName);
+            if ("TABLE".equals(connection.getConnectorName())) {
+                connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), oldMetaName);
+            } else {
+                connection.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), oldName);
+            }
         }
         if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
             connection.getSource().getProcess().removeUniqueConnectionName(newName);
