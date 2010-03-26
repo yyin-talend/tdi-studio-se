@@ -330,6 +330,20 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.emf.codegen.ecore"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.codegen.ecore.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.emf.ecore"
          download-size="0"
          install-size="0"
@@ -744,6 +758,13 @@
 
    <plugin
          id="org.eclipse.jet.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jet.editor"
          download-size="0"
          install-size="0"
          version="0.0.0"
