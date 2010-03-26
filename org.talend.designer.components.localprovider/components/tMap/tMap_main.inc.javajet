@@ -1693,8 +1693,8 @@ if(!isVirtualOut) { // T_TM_M_320
 	if (!dieonerror) {
 %>
 		} catch (Exception e) {
-			// do nothing
-
+			//if anohter Exception when processing an Exception
+			try{//EE
         <%
         
         for (ExternalMapperTable varsTable : varsTables) {
@@ -1866,7 +1866,42 @@ if(!isVirtualOut) { // T_TM_M_320
 				%>
             <%    
             }//111
-            %>			
+            %>
+         } catch (Exception ee) {//EE
+				ee.printStackTrace();
+            <%
+            //clear others branches.
+            for(ExternalMapperTable outputTable : outputTables){//111
+            	
+            	String outputTableName = outputTable.getName(); 
+                
+                //add for feature:2445
+                if (!dieonerror){
+                    if(outputTableName.equals("ErrorReject")){
+                    	continue;
+                    }
+                }
+                
+                
+                //only process the table with output link
+                if (nameToOutputConnection.get(outputTableName)!=null) {//222
+                	if(hasJoinedTable(outputTableName,data)){
+                	
+                	//feature:11884, in merge case, the mergedTable/mergingTable both clear.
+				%>	
+                		<%=outputTableName %>_List.clear();
+            	<%    
+                	}else{
+				%>					
+                		<%=outputTableName %> = null;
+                <%		
+                	}
+                }//222
+				%>
+            <%    
+            }//111
+            %>
+		}//EE  			
 	}//end catch
 <%
 	}
