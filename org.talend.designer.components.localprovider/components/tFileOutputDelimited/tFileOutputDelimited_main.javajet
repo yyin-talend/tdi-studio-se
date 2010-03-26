@@ -365,7 +365,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			        out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
 									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
 								strWriter<%=cid%> = new java.io.StringWriter();
-            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim<%=cid %>[0]);
+            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim());
             	                <%}else{%>
             	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
 									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim());
