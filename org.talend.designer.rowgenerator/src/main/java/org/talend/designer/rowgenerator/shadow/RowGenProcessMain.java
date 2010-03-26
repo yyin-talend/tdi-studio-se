@@ -34,8 +34,8 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.designer.rowgenerator.PluginUtils;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
-import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
@@ -186,8 +186,8 @@ public class RowGenProcessMain {
                             }
                             if (err.length() > 0) {
                                 String mainMsg = Messages.getString("RowGenPreivewCodeMain.PerlRun.Error"); //$NON-NLS-1$
-                                new ErrorDialogWidthDetailArea(Display.getCurrent().getActiveShell(),
-                                        RowGeneratorPlugin.PLUGIN_ID, mainMsg, Messages.getString(
+                                new ErrorDialogWidthDetailArea(Display.getCurrent().getActiveShell(), PluginUtils.PLUGIN_ID,
+                                        mainMsg, Messages.getString(
                                                 "RowGenProcessMain.checkParameter", err.toString())); //$NON-NLS-1$
                             }
                         } catch (Exception e) {

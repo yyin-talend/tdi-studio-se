@@ -13,7 +13,7 @@
 package org.talend.designer.mapper.language.java;
 
 import org.talend.core.language.ECodeLanguage;
-import org.talend.designer.mapper.Activator;
+import org.talend.designer.mapper.PluginUtils;
 import org.talend.designer.mapper.language.AbstractLanguage;
 import org.talend.designer.runprocess.IRunProcessService;
 
@@ -94,11 +94,8 @@ public class JavaLanguage extends AbstractLanguage {
     public JavaLanguage() {
         super(ECodeLanguage.JAVA);
 
-        Activator activator = Activator.getDefault();
-        if (activator != null) {
-            IRunProcessService service = activator.getRunProcessService();
-            this.codeChecker = service.getSyntaxChecker(ECodeLanguage.JAVA);
-        }
+        IRunProcessService service = PluginUtils.getRunProcessService();
+        this.codeChecker = service.getSyntaxChecker(ECodeLanguage.JAVA);
 
     }
 

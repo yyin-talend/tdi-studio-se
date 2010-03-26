@@ -161,7 +161,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      */
     public String getGeneratedCode() {
         try {
-            ICodeGeneratorService service = RowGeneratorPlugin.getDefault().getCodeGeneratorService();
+            ICodeGeneratorService service = PluginUtils.getCodeGeneratorService();
             return service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
         } catch (SystemException e) {
             ExceptionHandler.process(e);

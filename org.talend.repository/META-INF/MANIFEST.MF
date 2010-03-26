@@ -20,7 +20,7 @@ Require-Bundle: org.apache.axis,
  org.eclipse.ui.browser,
  org.talend.commons.ui,
  org.talend.registration;visibility:=reexport,
- org.talend.libraries.dom4j,
+ org.talend.libraries.dom4j-jaxen,
  javax.wsdl,
  org.eclipse.jdt.core.manipulation
 Export-Package: org.talend.repository,

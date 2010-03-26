@@ -55,8 +55,8 @@ import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
-import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.MapperComponent;
+import org.talend.designer.mapper.PluginUtils;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
@@ -812,7 +812,7 @@ public class MapperManager extends AbstractMapperManager {
      * @return
      */
     public String getPreviewFilePath() {
-        IRepositoryService service = Activator.getDefault().getRepositoryService();
+        IRepositoryService service = PluginUtils.getRepositoryService();
         return service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, getPreviewFileName()).toString();
     }
 

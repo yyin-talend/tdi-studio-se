@@ -7,26 +7,30 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.*;
-
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.talend.core.model.process.AbstractExternalNode;
-import org.talend.core.model.process.IComponentDocumentation;
-import org.talend.core.model.process.IConnection;
-import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
-
-import org.talend.jspss.*;
+import org.talend.core.model.process.AbstractExternalNode;
+import org.talend.core.model.process.IComponentDocumentation;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IExternalData;
+import org.talend.jspss.spss;
+import org.talend.jspss.spssfile;
+import org.talend.jspss.spssvariable;
+import org.talend.jspss.spssvariables;
 
 public class spssComponent extends AbstractExternalNode{
-	
+
+    private static Logger log = Logger.getLogger(spssComponent.class);
+
 	private String strFileName;
 	private String strTranslateLabels;
 	
@@ -43,10 +47,6 @@ public class spssComponent extends AbstractExternalNode{
     }
     
     public void initialize() {
-    	try{
-    	}catch(Exception e){
-    		spssPlugin.log(e);
-    	}
     }
     
     public IExternalData getExternalData() {
@@ -98,7 +98,7 @@ public class spssComponent extends AbstractExternalNode{
     			return SWT.CANCEL;
     		}
     	}catch(Exception e){
-    		spssPlugin.log(e);
+            log.error("", e);
     		return SWT.CANCEL;
     	}
     }
@@ -159,7 +159,7 @@ public class spssComponent extends AbstractExternalNode{
 			spssFile.close();
     		
     	}catch(Exception e){
-    		spssPlugin.log(e);
+            log.error("", e);
     	}
     }
     

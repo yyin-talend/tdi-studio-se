@@ -279,7 +279,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      */
     public String getGeneratedCode() {
         try {
-            ICodeGeneratorService service = Activator.getDefault().getCodeGeneratorService();
+            ICodeGeneratorService service = PluginUtils.getCodeGeneratorService();
 
             return service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
         } catch (SystemException e) {

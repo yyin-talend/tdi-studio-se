@@ -31,7 +31,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.rowgenerator.RowGeneratorPlugin;
+import org.talend.designer.rowgenerator.PluginUtils;
 import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.runprocess.shadow.TextElementParameter;
 
@@ -66,7 +66,7 @@ public class LogRowNode extends AbstractNode {
         this.componentName = componentName;
         this.setElementParameters(new ArrayList<IElementParameter>());
 
-        IComponentsFactory compFac = RowGeneratorPlugin.getDefault().getRepositoryService().getComponentsFactory();
+        IComponentsFactory compFac = PluginUtils.getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
         TextElementParameter param = null;
         TextElementParameter param2 = null;
@@ -191,7 +191,7 @@ public class LogRowNode extends AbstractNode {
     public String getGeneratedCode() {
         String generatedCode;
         try {
-            ICodeGeneratorService service = RowGeneratorPlugin.getDefault().getCodeGeneratorService();
+            ICodeGeneratorService service = PluginUtils.getCodeGeneratorService();
             generatedCode = service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
         } catch (SystemException e) {
             generatedCode = null;

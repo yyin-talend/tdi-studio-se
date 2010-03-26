@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.designer.rowgenerator;
 
-import org.eclipse.core.runtime.Plugin;
-import org.osgi.framework.BundleContext;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -25,59 +22,19 @@ import org.talend.repository.model.IRepositoryService;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class RowGeneratorPlugin extends Plugin {
+public final class PluginUtils {
 
+    private PluginUtils() {
+    }
     // The plug-in ID
     public static final String PLUGIN_ID = "org.talend.designer.rowgenerator"; //$NON-NLS-1$
-
-    // The shared instance
-    private static RowGeneratorPlugin plugin;
-
-    /**
-     * The constructor.
-     */
-    public RowGeneratorPlugin() {
-        plugin = this;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
-     */
-    public void start(BundleContext context) throws Exception {
-        super.start(context);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-     */
-    public void stop(BundleContext context) throws Exception {
-        plugin = null;
-        super.stop(context);
-    }
-
-    public static void log(Exception e) {
-        ExceptionHandler.process(e);
-    }
-
-    /**
-     * Returns the shared instance.
-     * 
-     * @return the shared instance
-     */
-    public static RowGeneratorPlugin getDefault() {
-        return plugin;
-    }
 
     /**
      * get a implement of CodeGeneratorService.
      * 
      * @return a implement of CodeGeneratorService
      */
-    public ICodeGeneratorService getCodeGeneratorService() {
+    public static ICodeGeneratorService getCodeGeneratorService() {
         IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
         return (ICodeGeneratorService) service;
     }
@@ -87,17 +44,17 @@ public class RowGeneratorPlugin extends Plugin {
      * 
      * @return
      */
-    public IRunProcessService getRunProcessService() {
+    public static IRunProcessService getRunProcessService() {
         IService service = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
         return (IRunProcessService) service;
     }
 
-    public IRepositoryService getRepositoryService() {
+    public static IRepositoryService getRepositoryService() {
         IService service = GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
         return (IRepositoryService) service;
     }
 
-    public IProxyRepositoryFactory getProxyRepositoryFactory() {
+    public static IProxyRepositoryFactory getProxyRepositoryFactory() {
         IRepositoryService service = getRepositoryService();
         return service.getProxyRepositoryFactory();
     }

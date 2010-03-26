@@ -13,7 +13,7 @@
 package org.talend.designer.mapper.language.perl;
 
 import org.talend.core.language.ECodeLanguage;
-import org.talend.designer.mapper.Activator;
+import org.talend.designer.mapper.PluginUtils;
 import org.talend.designer.mapper.language.AbstractLanguage;
 import org.talend.designer.runprocess.IRunProcessService;
 
@@ -111,11 +111,8 @@ public class PerlLanguage extends AbstractLanguage {
     public PerlLanguage() {
         super(ECodeLanguage.PERL);
 
-        Activator activator = Activator.getDefault();
-        if (activator != null) {
-            IRunProcessService service = activator.getRunProcessService();
-            this.codeChecker = service.getSyntaxChecker(ECodeLanguage.PERL);
-        }
+        IRunProcessService service = PluginUtils.getRunProcessService();
+        this.codeChecker = service.getSyntaxChecker(ECodeLanguage.PERL);
 
     }
 

@@ -30,8 +30,8 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.rowgenerator.PluginUtils;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
-import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.runprocess.shadow.ObjectElementParameter;
 import org.talend.designer.runprocess.shadow.TextElementParameter;
@@ -56,7 +56,7 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
      */
     public VirtualRowGeneratorNode(Function function) {
 
-        IComponentsFactory compFac = RowGeneratorPlugin.getDefault().getRepositoryService().getComponentsFactory();
+        IComponentsFactory compFac = PluginUtils.getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(ROW_GENERATOR));
 
         IMetadataTable m1 = new MetadataTable();
