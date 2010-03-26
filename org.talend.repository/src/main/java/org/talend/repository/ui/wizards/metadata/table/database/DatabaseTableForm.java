@@ -304,7 +304,10 @@ public class DatabaseTableForm extends AbstractForm {
         } else {
             typeText.setText(Messages.getString("DatabaseTableForm.typeTable")); //$NON-NLS-1$
         }
-        tableCombo.setText(metadataTable.getSourceName());
+        String sourceName = metadataTable.getSourceName();
+        tableCombo.setReadOnly(sourceName != null);
+        tableCombo.setText(sourceName);
+        updateRetreiveSchemaButton();
         nameText.forceFocus();
     }
 
@@ -397,7 +400,8 @@ public class DatabaseTableForm extends AbstractForm {
 
         // Combo Table
         tableCombo = new LabelledCombo(composite1, Messages.getString("DatabaseTableForm.table"), Messages //$NON-NLS-1$
-                .getString("DatabaseTableForm.tableTip"), itemTableName, true); //$NON-NLS-1$
+                .getString("DatabaseTableForm.tableTip"), //$NON-NLS-1$  
+                itemTableName != null ? itemTableName.toArray(new String[0]) : null, 1, true, SWT.NONE);
 
         // Button retreiveSchema
         Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(composite1, 3, false, SWT.CENTER, SWT.TOP);
@@ -617,6 +621,9 @@ public class DatabaseTableForm extends AbstractForm {
         initTreeNavigatorNodes();
         // init The Form
         initMetadataForm();
+        if (tableCombo.getItemCount() > 0) {
+            tableCombo.setEnabled(true);
+        }
     }
 
     /**
@@ -627,7 +634,12 @@ public class DatabaseTableForm extends AbstractForm {
         // checkConnectionButton.setVisible(true);
 
         tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
-        tableCombo.setReadOnly(true);
+        if (metadataTable != null) {
+            String sourceName = this.metadataTable.getSourceName();
+            tableCombo.setReadOnly(sourceName != null);
+        } else {
+            tableCombo.setReadOnly(true);
+        }
         checkConnectionButton.setVisible(false);
 
         retreiveSchemaButton.setEnabled(!isReadOnly());
@@ -651,6 +663,7 @@ public class DatabaseTableForm extends AbstractForm {
         // tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonAlert")); //$NON-NLS-1$
         // checkConnectionButton.setVisible(false);
         // }
+        updateRetreiveSchemaButton();
     }
 
     /**
@@ -852,19 +865,26 @@ public class DatabaseTableForm extends AbstractForm {
     }
 
     private void updateRetreiveSchemaButton() {
+        boolean enable = false;
+        if (tableCombo.getText() != null) {
+            int index = tableCombo.getCombo().indexOf(tableCombo.getText());
+            if (index > -1) {
+                enable = true;
+            }
+        }
         if (isReadOnly()) {
             retreiveSchemaButton.setEnabled(false);
         } else {
-            retreiveSchemaButton.setEnabled(tableCombo.getSelectionIndex() >= 0);
+            retreiveSchemaButton.setEnabled(enable);
         }
-        streamDetachCheckbox.setEnabled(tableCombo.getSelectionIndex() >= 0);
+        streamDetachCheckbox.setEnabled(enable);
         // manage infoLabel
         if (tableCombo.getItemCount() > 0) {
-            if (tableCombo.getSelectionIndex() < 0) {
+            if (!enable && tableCombo.isEnabled()) {
                 tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonAlert")); //$NON-NLS-1$
             } else if (tableEditorView.getMetadataEditor().getBeanCount() <= 0) {
                 tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonTip")); //$NON-NLS-1$
-            } else {
+            } else if (enable) {
                 tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonUse")); //$NON-NLS-1$
             }
         } else {
