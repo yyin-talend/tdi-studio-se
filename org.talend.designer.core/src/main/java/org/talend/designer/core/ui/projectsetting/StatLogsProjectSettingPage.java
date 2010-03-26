@@ -39,9 +39,11 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.StatAndLogsSettings;
@@ -52,10 +54,12 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -315,6 +319,18 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
             if (isUseProjectSettings) {
                 LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
                 exeCommand(process, command);
+
+                String id = (String) process.getElementParameter(
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()) //$NON-NLS-1$
+                        .getValue();
+                String propertyType = EParameterName.PROPERTY_TYPE.getName() + ":"
+                        + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+                ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(id);
+                Connection connection = connectionItem.getConnection();
+                ChangeValuesFromRepository cmd = new ChangeValuesFromRepository(process, connection, propertyType, id);
+                cmd.ignoreContextMode(true);
+                exeCommand(process, cmd);
+
             }
             monitor.worked(100);
         } else {

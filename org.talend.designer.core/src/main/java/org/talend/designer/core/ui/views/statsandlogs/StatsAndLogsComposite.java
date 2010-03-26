@@ -121,7 +121,7 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         PropertyChangeCommand cmd = new PropertyChangeCommand(elem, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
                 Boolean.valueOf(flag));
         getCommandStack().execute(cmd);
-
+        updateContextValue(flag);
         // hywang add for bug 7587
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {

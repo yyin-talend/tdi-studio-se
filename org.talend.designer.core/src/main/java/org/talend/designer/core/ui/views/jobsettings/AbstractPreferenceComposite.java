@@ -40,6 +40,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -47,6 +48,7 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -54,10 +56,12 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.UpdateRepositoryUtils;
 
 /**
  * Add buttons for loading and saving values between preference page and job view.
@@ -210,6 +214,21 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                 setTextEnable(children[i], editable, true);
             }
         }
+    }
+
+    protected void updateContextValue(boolean update) {
+        if (!update) {
+            return;
+        }
+        String id = (String) elem.getElementParameter(
+                EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()) //$NON-NLS-1$
+                .getValue();
+        String propertyType = EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+
+        ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(id);
+        Connection connection = connectionItem.getConnection();
+        ChangeValuesFromRepository command = new ChangeValuesFromRepository(elem, connection, propertyType, id);
+        getCommandStack().execute(command);
     }
 
     protected boolean useRepository(String paramName) {

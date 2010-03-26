@@ -116,6 +116,7 @@ public class ExtraComposite extends AbstractPreferenceComposite {
         PropertyChangeCommand cmd = new PropertyChangeCommand(elem,
                 EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), Boolean.valueOf(flag));
         getCommandStack().execute(cmd);
+        updateContextValue(flag);
         if (flag) {
             useProjectSetting();
         }
