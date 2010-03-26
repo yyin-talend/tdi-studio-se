@@ -15,58 +15,53 @@ package org.talend;
 import java.net.URL;
 import java.util.List;
 
-import com.sforce.soap.partner.LoginResult;
-import com.sforce.soap.partner.QueryResult;
-import com.sforce.soap.partner.SessionHeader;
-import com.sforce.soap.partner.SforceServiceLocator;
-import com.sforce.soap.partner.SoapBindingStub;
+import com.sforce16.soap.partner.LoginResult;
+import com.sforce16.soap.partner.QueryResult;
+import com.sforce16.soap.partner.SessionHeader;
+import com.sforce16.soap.partner.SforceServiceLocator;
+import com.sforce16.soap.partner.SoapBindingStub;
 
 public class Test4Feature8540 {
 
-	SoapBindingStub binding = null;
+    SoapBindingStub binding = null;
 
-	
+    public static void main(String[] args) throws Exception {
+        Test4Feature8540 worker = new Test4Feature8540();
+        worker.doQuery();
+    }
 
-	public static void main(String[] args) throws Exception {
-		Test4Feature8540 worker = new Test4Feature8540();
-		worker.doQuery();
-	}
+    public void doQuery() throws Exception {
 
-	public void doQuery() throws Exception {
+        binding = (SoapBindingStub) new SforceServiceLocator()
+                .getSoap(new URL("https://www.salesforce.com/services/Soap/u/16.0"));
+        binding.setTimeout(60000);
+        LoginResult loginResult = binding.login("musicatcher@gmail.com", "1234qwer");
+        binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
 
-		binding = (SoapBindingStub) new SforceServiceLocator().getSoap(new URL(
-				"https://www.salesforce.com/services/Soap/u/16.0"));
-		binding.setTimeout(60000);
-		LoginResult loginResult = binding.login("musicatcher@gmail.com",
-				"1234qwer");
-		binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY,
-				loginResult.getServerUrl());
+        SessionHeader sh = new SessionHeader();
+        sh.setSessionId(loginResult.getSessionId());
+        binding.setHeader(new SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh);
 
-		SessionHeader sh = new SessionHeader();
-		sh.setSessionId(loginResult.getSessionId());
-		binding.setHeader(new SforceServiceLocator().getServiceName()
-				.getNamespaceURI(), "SessionHeader", sh);
+        // com.sforce.soap.partner.QueryOptions qOptions = new com.sforce.soap.partner.QueryOptions();
+        // qOptions.setBatchSize(new Integer(2));
+        // binding.setHeader(
+        // new com.sforce.soap.partner.SforceServiceLocator()
+        // .getServiceName().getNamespaceURI(),
+        // "QueryOptions", qOptions);
 
-//		com.sforce.soap.partner.QueryOptions qOptions = new com.sforce.soap.partner.QueryOptions();
-//		qOptions.setBatchSize(new Integer(2));
-//		binding.setHeader(
-//				new com.sforce.soap.partner.SforceServiceLocator()
-//						.getServiceName().getNamespaceURI(),
-//				"QueryOptions", qOptions);
+        QueryResult qr = binding
+                .query("SELECT Name, Type, Phone, Account.CreatedBy.CreatedBy.CreatedBy.Email, Account.Owner.city, (SELECT Contact.LastName,  Contact.FirstName "
+                        + "FROM Account.Contacts Order By Contact.LastName), (SELECT Note.Title FROM Account.Notes), Account.Owner.Country  "
+                        + "FROM Account WHERE Name !='United Oil & Gas Corp.'");
+        // QueryResult qr = binding
+        // .query("select Name,Id,Type from Account");
 
-		QueryResult qr = binding
-				.query("SELECT Name, Type, Phone, Account.CreatedBy.CreatedBy.CreatedBy.Email, Account.Owner.city, (SELECT Contact.LastName,  Contact.FirstName "
-						+ "FROM Account.Contacts Order By Contact.LastName), (SELECT Note.Title FROM Account.Notes), Account.Owner.Country  "
-						+ "FROM Account WHERE Name !='United Oil & Gas Corp.'");
-//		QueryResult qr = binding
-//		.query("select Name,Id,Type from Account");
-		
-		TopQueryResult topqr = new TopQueryResult();
-		topqr.processTopQueryResult(qr);
-		
-		topqr.printResult();
-		
-		List<TopRecord> allTopRecords = topqr.getAllTopRecords();
+        TopQueryResult topqr = new TopQueryResult();
+        topqr.processTopQueryResult(qr);
 
-	}
+        topqr.printResult();
+
+        List<TopRecord> allTopRecords = topqr.getAllTopRecords();
+
+    }
 }

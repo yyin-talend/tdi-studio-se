@@ -18,13 +18,13 @@ import java.util.Map;
 
 import org.apache.axis.message.MessageElement;
 
-import com.sforce.soap.partner.DeleteResult;
-import com.sforce.soap.partner.Field;
-import com.sforce.soap.partner.SaveResult;
-import com.sforce.soap.partner.SforceService;
-import com.sforce.soap.partner.SoapBindingStub;
-import com.sforce.soap.partner.UpsertResult;
-import com.sforce.soap.partner.sobject.SObject;
+import com.sforce16.soap.partner.DeleteResult;
+import com.sforce16.soap.partner.Field;
+import com.sforce16.soap.partner.SaveResult;
+import com.sforce16.soap.partner.SforceService;
+import com.sforce16.soap.partner.SoapBindingStub;
+import com.sforce16.soap.partner.UpsertResult;
+import com.sforce16.soap.partner.sobject.SObject;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>

@@ -111,6 +111,7 @@
 		<IMPORTS>
 			<IMPORT NAME="salesforceCRM-management"
 				MODULE="salesforceCRMManagement.jar" REQUIRED="true" />
+			<IMPORT NAME="partner16" MODULE="partner16.jar" REQUIRED="true" />
 			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true" />
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar"
 				REQUIRED="true" />

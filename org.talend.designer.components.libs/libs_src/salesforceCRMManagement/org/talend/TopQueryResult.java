@@ -16,61 +16,61 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sforce.soap.partner.QueryResult;
-import com.sforce.soap.partner.sobject.SObject;
+import com.sforce16.soap.partner.QueryResult;
+import com.sforce16.soap.partner.sobject.SObject;
 
 public class TopQueryResult {
 
-	// Level1 means "table1 join table2 join table3", only focus to iterate the
-	// first table
-	private List<TopRecord> allTopRecords = new ArrayList<TopRecord>();
+    // Level1 means "table1 join table2 join table3", only focus to iterate the
+    // first table
+    private List<TopRecord> allTopRecords = new ArrayList<TopRecord>();
 
-	//return the final result, it normalize the "Multi-Rows" as one column.
-	public List<TopRecord> getAllTopRecords() {
-		return allTopRecords;
-	}
+    // return the final result, it normalize the "Multi-Rows" as one column.
+    public List<TopRecord> getAllTopRecords() {
+        return allTopRecords;
+    }
 
-	public void processTopQueryResult(QueryResult qr) throws Exception {
-		if(qr == null || qr.getRecords() == null){
-			return;
-		}
-		
-		for (int i = 0; i < qr.getRecords().length; i++) {
+    public void processTopQueryResult(QueryResult qr) throws Exception {
+        if (qr == null || qr.getRecords() == null) {
+            return;
+        }
 
-			SObject record = qr.getRecords()[i];
+        for (int i = 0; i < qr.getRecords().length; i++) {
 
-			// transmit the rootType to each TopRecord
-			TopRecord topRecord = new TopRecord(record.getType());
+            SObject record = qr.getRecords()[i];
 
-			topRecord.processSObject(record, record.getType());
+            // transmit the rootType to each TopRecord
+            TopRecord topRecord = new TopRecord(record.getType());
 
-			// buffer all the TopRecord in a List
-			allTopRecords.add(topRecord);
-		}
+            topRecord.processSObject(record, record.getType());
 
-	}
+            // buffer all the TopRecord in a List
+            allTopRecords.add(topRecord);
+        }
 
-	// print for debug
-	public void printResult() {
+    }
 
-		int counter = 0;
-		for (TopRecord topRecord : allTopRecords) {
-			counter++;
-			
-//			//support these 2 types ColumnName
-//			 System.out.println(topRecord.getValue("Account_Contact_LastName"));
-//			 System.out.println(topRecord.getValue("Contact_LastName"));
+    // print for debug
+    public void printResult() {
 
-			List columnNameList = topRecord.getColumnNameList();
-			Map valueMap = topRecord.getValueMap();			
-			
-			//iterate the columnNameList, it "Keep the Order".
-			for (Object columnName : columnNameList) {
-				Object value = valueMap.get(columnName);
-				System.out.println(counter + " : " + columnName + "---" + value);	
-			}		
+        int counter = 0;
+        for (TopRecord topRecord : allTopRecords) {
+            counter++;
 
-			System.out.println();	
-		}
-	}
+            // //support these 2 types ColumnName
+            // System.out.println(topRecord.getValue("Account_Contact_LastName"));
+            // System.out.println(topRecord.getValue("Contact_LastName"));
+
+            List columnNameList = topRecord.getColumnNameList();
+            Map valueMap = topRecord.getValueMap();
+
+            // iterate the columnNameList, it "Keep the Order".
+            for (Object columnName : columnNameList) {
+                Object value = valueMap.get(columnName);
+                System.out.println(counter + " : " + columnName + "---" + value);
+            }
+
+            System.out.println();
+        }
+    }
 }

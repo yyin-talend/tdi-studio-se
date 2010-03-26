@@ -27,21 +27,21 @@ import org.apache.axis.transport.http.CommonsHTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.w3c.dom.Element;
 
-import com.sforce.soap.partner.DeleteResult;
-import com.sforce.soap.partner.DescribeGlobalResult;
-import com.sforce.soap.partner.DescribeSObjectResult;
-import com.sforce.soap.partner.Error;
-import com.sforce.soap.partner.Field;
-import com.sforce.soap.partner.LoginResult;
-import com.sforce.soap.partner.QueryOptions;
-import com.sforce.soap.partner.QueryResult;
-import com.sforce.soap.partner.SaveResult;
-import com.sforce.soap.partner.SessionHeader;
-import com.sforce.soap.partner.SforceService;
-import com.sforce.soap.partner.SforceServiceLocator;
-import com.sforce.soap.partner.SoapBindingStub;
-import com.sforce.soap.partner.UpsertResult;
-import com.sforce.soap.partner.sobject.SObject;
+import com.sforce16.soap.partner.DeleteResult;
+import com.sforce16.soap.partner.DescribeGlobalResult;
+import com.sforce16.soap.partner.DescribeSObjectResult;
+import com.sforce16.soap.partner.Error;
+import com.sforce16.soap.partner.Field;
+import com.sforce16.soap.partner.LoginResult;
+import com.sforce16.soap.partner.QueryOptions;
+import com.sforce16.soap.partner.QueryResult;
+import com.sforce16.soap.partner.SaveResult;
+import com.sforce16.soap.partner.SessionHeader;
+import com.sforce16.soap.partner.SforceService;
+import com.sforce16.soap.partner.SforceServiceLocator;
+import com.sforce16.soap.partner.SoapBindingStub;
+import com.sforce16.soap.partner.UpsertResult;
+import com.sforce16.soap.partner.sobject.SObject;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>

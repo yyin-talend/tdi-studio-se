@@ -78,12 +78,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        
 	        org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			<%if(useExistingConn){%>
-			sfMgr_<%=cid%>.login((com.sforce.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
+			sfMgr_<%=cid%>.login((com.sforce16.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
 			<%}else{%>
 			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
 			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endPoint%>);
 	        <%}%>
-			com.sforce.soap.partner.SoapBindingStub binding_<%=cid%> = sfMgr_<%=cid%>.getBinding();
+			com.sforce16.soap.partner.SoapBindingStub binding_<%=cid%> = sfMgr_<%=cid%>.getBinding();
         	
 <%
 			java.lang.StringBuilder sb = new java.lang.StringBuilder();
@@ -99,12 +99,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			for(IConnection outgoingConn : outgoingConns) {
 				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>				
-			com.sforce.soap.partner.GetDeletedResult gdr_<%=cid%> = binding_<%=cid%>.getDeleted("<%=module%>", startDate_<%=cid%>, endDate_<%=cid%>);
-    		com.sforce.soap.partner.QueryResult qr_<%=cid%> = null;
-    		com.sforce.soap.partner.DeletedRecord[] drs_<%=cid%> = gdr_<%=cid%>.getDeletedRecords();
+			com.sforce16.soap.partner.GetDeletedResult gdr_<%=cid%> = binding_<%=cid%>.getDeleted("<%=module%>", startDate_<%=cid%>, endDate_<%=cid%>);
+    		com.sforce16.soap.partner.QueryResult qr_<%=cid%> = null;
+    		com.sforce16.soap.partner.DeletedRecord[] drs_<%=cid%> = gdr_<%=cid%>.getDeletedRecords();
         	java.util.List<String> idlist_<%=cid%> = new java.util.ArrayList<String>();
     		if (drs_<%=cid%> != null && drs_<%=cid%>.length > 0) {
-        		for(com.sforce.soap.partner.DeletedRecord dr_<%=cid%> : drs_<%=cid%>){
+        		for(com.sforce16.soap.partner.DeletedRecord dr_<%=cid%> : drs_<%=cid%>){
         			idlist_<%=cid%>.add(dr_<%=cid%>.getId());
         		}
         		qr_<%=cid%> = binding_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE isDeleted = true");

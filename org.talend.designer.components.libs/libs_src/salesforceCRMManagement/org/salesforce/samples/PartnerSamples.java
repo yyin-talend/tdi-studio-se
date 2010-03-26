@@ -13,67 +13,67 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import javax.xml.rpc.ServiceException;
+
 import org.apache.axis.message.MessageElement;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
-import com.sforce.soap.partner.DeleteResult;
-import com.sforce.soap.partner.DescribeGlobalResult;
-import com.sforce.soap.partner.DescribeLayout;
-import com.sforce.soap.partner.DescribeLayoutItem;
-import com.sforce.soap.partner.DescribeLayoutResult;
-import com.sforce.soap.partner.DescribeLayoutRow;
-import com.sforce.soap.partner.DescribeLayoutSection;
-import com.sforce.soap.partner.DescribeSObjectResult;
-import com.sforce.soap.partner.DescribeSoftphoneLayoutCallType;
-import com.sforce.soap.partner.DescribeSoftphoneLayoutInfoField;
-import com.sforce.soap.partner.DescribeSoftphoneLayoutItem;
-import com.sforce.soap.partner.DescribeSoftphoneLayoutResult;
-import com.sforce.soap.partner.DescribeSoftphoneLayoutSection;
-import com.sforce.soap.partner.DescribeTab;
-import com.sforce.soap.partner.DescribeTabSetResult;
-import com.sforce.soap.partner.Field;
-import com.sforce.soap.partner.FieldType;
-import com.sforce.soap.partner.GetDeletedResult;
-import com.sforce.soap.partner.GetUpdatedResult;
-import com.sforce.soap.partner.GetUserInfoResult;
-import com.sforce.soap.partner.LeadConvert;
-import com.sforce.soap.partner.LeadConvertResult;
-import com.sforce.soap.partner.LoginResult;
-import com.sforce.soap.partner.MergeRequest;
-import com.sforce.soap.partner.MergeResult;
-import com.sforce.soap.partner.PicklistEntry;
-import com.sforce.soap.partner.ProcessRequest;
-import com.sforce.soap.partner.ProcessResult;
-import com.sforce.soap.partner.ProcessSubmitRequest;
-import com.sforce.soap.partner.ProcessWorkitemRequest;
-import com.sforce.soap.partner.QueryOptions;
-import com.sforce.soap.partner.QueryResult;
-import com.sforce.soap.partner.ResetPasswordResult;
-import com.sforce.soap.partner.SaveResult;
-import com.sforce.soap.partner.SearchRecord;
-import com.sforce.soap.partner.SearchResult;
-import com.sforce.soap.partner.SessionHeader;
-import com.sforce.soap.partner.SetPasswordResult;
-import com.sforce.soap.partner.SforceServiceLocator;
-import com.sforce.soap.partner.SoapBindingStub;
-import com.sforce.soap.partner.UndeleteResult;
-import com.sforce.soap.partner.UpsertResult;
-import com.sforce.soap.partner.fault.ApiFault;
-import com.sforce.soap.partner.fault.InvalidQueryLocatorFault;
-import com.sforce.soap.partner.fault.LoginFault;
-import com.sforce.soap.partner.fault.UnexpectedErrorFault;
-import com.sforce.soap.partner.sobject.SObject;
+import com.sforce16.soap.partner.DeleteResult;
+import com.sforce16.soap.partner.DescribeGlobalResult;
+import com.sforce16.soap.partner.DescribeLayout;
+import com.sforce16.soap.partner.DescribeLayoutItem;
+import com.sforce16.soap.partner.DescribeLayoutResult;
+import com.sforce16.soap.partner.DescribeLayoutRow;
+import com.sforce16.soap.partner.DescribeLayoutSection;
+import com.sforce16.soap.partner.DescribeSObjectResult;
+import com.sforce16.soap.partner.DescribeSoftphoneLayoutCallType;
+import com.sforce16.soap.partner.DescribeSoftphoneLayoutInfoField;
+import com.sforce16.soap.partner.DescribeSoftphoneLayoutItem;
+import com.sforce16.soap.partner.DescribeSoftphoneLayoutResult;
+import com.sforce16.soap.partner.DescribeSoftphoneLayoutSection;
+import com.sforce16.soap.partner.DescribeTab;
+import com.sforce16.soap.partner.DescribeTabSetResult;
+import com.sforce16.soap.partner.Field;
+import com.sforce16.soap.partner.FieldType;
+import com.sforce16.soap.partner.GetDeletedResult;
+import com.sforce16.soap.partner.GetUpdatedResult;
+import com.sforce16.soap.partner.GetUserInfoResult;
+import com.sforce16.soap.partner.LeadConvert;
+import com.sforce16.soap.partner.LeadConvertResult;
+import com.sforce16.soap.partner.LoginResult;
+import com.sforce16.soap.partner.MergeRequest;
+import com.sforce16.soap.partner.MergeResult;
+import com.sforce16.soap.partner.PicklistEntry;
+import com.sforce16.soap.partner.ProcessRequest;
+import com.sforce16.soap.partner.ProcessResult;
+import com.sforce16.soap.partner.ProcessSubmitRequest;
+import com.sforce16.soap.partner.ProcessWorkitemRequest;
+import com.sforce16.soap.partner.QueryOptions;
+import com.sforce16.soap.partner.QueryResult;
+import com.sforce16.soap.partner.ResetPasswordResult;
+import com.sforce16.soap.partner.SaveResult;
+import com.sforce16.soap.partner.SearchRecord;
+import com.sforce16.soap.partner.SearchResult;
+import com.sforce16.soap.partner.SessionHeader;
+import com.sforce16.soap.partner.SetPasswordResult;
+import com.sforce16.soap.partner.SforceServiceLocator;
+import com.sforce16.soap.partner.SoapBindingStub;
+import com.sforce16.soap.partner.UndeleteResult;
+import com.sforce16.soap.partner.UpsertResult;
+import com.sforce16.soap.partner.fault.ApiFault;
+import com.sforce16.soap.partner.fault.InvalidQueryLocatorFault;
+import com.sforce16.soap.partner.fault.LoginFault;
+import com.sforce16.soap.partner.fault.UnexpectedErrorFault;
+import com.sforce16.soap.partner.sobject.SObject;
 
 /**
  * <p>
  * Title: sforce Login Sample
  * </p>
  * <p>
- * Description: Console application illustrating login, session management and
- * server redirection.
+ * Description: Console application illustrating login, session management and server redirection.
  * </p>
  * <p>
  * Copyright: Copyright (c) 2003
@@ -81,7 +81,7 @@ import com.sforce.soap.partner.sobject.SObject;
  * <p>
  * Company: salesforce.com
  * </p>
- *
+ * 
  * @author Dave Carroll
  * @version 4.0
  */
@@ -89,18 +89,26 @@ import com.sforce.soap.partner.sobject.SObject;
 public class PartnerSamples {
 
     private SoapBindingStub binding;
+
     private LoginResult loginResult = null;
+
     private String un = "";
+
     private String pw = "";
+
     private boolean loggedIn = false;
+
     private GetUserInfoResult userInfo = null;
+
     private String[] accounts = null;
+
     private String[] contacts = null;
+
     private String[] tasks = null;
+
     private boolean logOn = false;
 
-    static BufferedReader rdr = new BufferedReader(
-            new java.io.InputStreamReader(System.in));
+    static BufferedReader rdr = new BufferedReader(new java.io.InputStreamReader(System.in));
 
     public PartnerSamples() {
     }
@@ -124,9 +132,8 @@ public class PartnerSamples {
     }
 
     /*
-     * login sample Prompts for username and password, set class variable
-     * binding resets the url for the binding and adds the session header to the
-     * binding class variable
+     * login sample Prompts for username and password, set class variable binding resets the url for the binding and
+     * adds the session header to the binding class variable
      */
     private boolean login() {
         un = getUserInput("Enter user name: ");
@@ -142,17 +149,14 @@ public class PartnerSamples {
         System.out.println("Creating the binding to the web service...");
 
         /*
-         * There are 2 ways to get the binding, one by passing a url to the
-         * getSoap() method of the SforceServiceLocator, the other by not
-         * passing a url. In the second case the binding will use the url
+         * There are 2 ways to get the binding, one by passing a url to the getSoap() method of the
+         * SforceServiceLocator, the other by not passing a url. In the second case the binding will use the url
          * contained in the wsdl file when the proxy was generated.
          */
         try {
             binding = (SoapBindingStub) new SforceServiceLocator().getSoap();
         } catch (ServiceException ex) {
-            System.out
-                    .println("ERROR: createing binding to soap service, error was: \n"
-                            + ex.getMessage());
+            System.out.println("ERROR: createing binding to soap service, error was: \n" + ex.getMessage());
             System.out.print("Hit return to continue...");
             return false;
         }
@@ -160,8 +164,8 @@ public class PartnerSamples {
         // Time out after a minute
         binding.setTimeout(60000);
 
-        //binding._setProperty(Stub.ENDPOINT_ADDRESS_PROPERTY, "http://localhost:8080/services/Soap/u/8.0");
-        
+        // binding._setProperty(Stub.ENDPOINT_ADDRESS_PROPERTY, "http://localhost:8080/services/Soap/u/8.0");
+
         // Attempt the login giving the user feedback
         System.out.println("LOGGING IN NOW....");
         try {
@@ -181,22 +185,18 @@ public class PartnerSamples {
             return false;
         }
 
-        System.out
-                .println("\nThe session id is: " + loginResult.getSessionId());
-        System.out.println("\nThe new server url is: "
-                + loginResult.getServerUrl());
+        System.out.println("\nThe session id is: " + loginResult.getSessionId());
+        System.out.println("\nThe new server url is: " + loginResult.getServerUrl());
 
-        binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY,
-                loginResult.getServerUrl());
+        binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
 
-        //binding._setProperty(Stub.ENDPOINT_ADDRESS_PROPERTY, "http://localhost:8080/services/Soap/u/8.0");
+        // binding._setProperty(Stub.ENDPOINT_ADDRESS_PROPERTY, "http://localhost:8080/services/Soap/u/8.0");
 
         // Create a new session header object and set the session id to that
         // returned by the login
         SessionHeader sh = new SessionHeader();
         sh.setSessionId(loginResult.getSessionId());
-        binding.setHeader(new SforceServiceLocator().getServiceName()
-                .getNamespaceURI(), "SessionHeader", sh);
+        binding.setHeader(new SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh);
 
         loggedIn = true;
 
@@ -223,15 +223,12 @@ public class PartnerSamples {
             System.out.println("User Name: " + userInfo.getUserFullName());
             System.out.println("User Email: " + userInfo.getUserEmail());
             System.out.println("User Language: " + userInfo.getUserLanguage());
-            System.out.println("User Organization: "
-                    + userInfo.getOrganizationName());
+            System.out.println("User Organization: " + userInfo.getOrganizationName());
         } catch (ApiFault af) {
-            System.out.println("ERROR: getting user info.\n"
-                    + af.getExceptionMessage());
+            System.out.println("ERROR: getting user info.\n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (RemoteException ex) {
-            System.out.println("ERROR: getting user info.\n"
-                    + ex.getMessage());
+            System.out.println("ERROR: getting user info.\n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -246,18 +243,14 @@ public class PartnerSamples {
         System.out.println("\nGetting server's timestamp...");
         try {
             Calendar cal = binding.getServerTimestamp().getTimestamp();
-            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.LONG,
-                    DateFormat.LONG);
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
             df.setCalendar(cal);
-            System.out.println("Time stamp on server: "
-                    + df.format(cal.getTime()));
+            System.out.println("Time stamp on server: " + df.format(cal.getTime()));
         } catch (ApiFault af) {
-            System.out.println("ERROR: getting server timestamp.\n"
-                    + af.getExceptionMessage());
+            System.out.println("ERROR: getting server timestamp.\n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (RemoteException ex2) {
-            System.out.println("ERROR: getting server timestamp.\n"
-                    + ex2.getMessage());
+            System.out.println("ERROR: getting server timestamp.\n" + ex2.getMessage());
             getUserInput("\nHit return to continue...");
         }
 
@@ -273,46 +266,31 @@ public class PartnerSamples {
         String objectToDescribe = getUserInput("Enter the name of an object to describe the layout of: ");
         try {
             DescribeLayoutResult dlr = binding.describeLayout(objectToDescribe, null);
-            System.out.println("There are " + dlr.getLayouts().length
-                    + " layouts for the " + objectToDescribe + " object.");
+            System.out.println("There are " + dlr.getLayouts().length + " layouts for the " + objectToDescribe + " object.");
             for (int i = 0; i < dlr.getLayouts().length; i++) {
                 DescribeLayout layout = dlr.getLayouts(i);
-                System.out.println("    There are "
-                        + layout.getDetailLayoutSections().length
-                        + " detail layout sections");
+                System.out.println("    There are " + layout.getDetailLayoutSections().length + " detail layout sections");
                 for (int j = 0; j < layout.getDetailLayoutSections().length; j++) {
-                    DescribeLayoutSection dls = layout
-                            .getDetailLayoutSections(j);
-                    System.out.println(new Integer(j).toString()
-                            + "        This section has a heading of "
-                            + dls.getHeading());
+                    DescribeLayoutSection dls = layout.getDetailLayoutSections(j);
+                    System.out.println(new Integer(j).toString() + "        This section has a heading of " + dls.getHeading());
                 }
                 if (layout.getEditLayoutSections() != null) {
-                    System.out.println("    There are "
-                            + layout.getEditLayoutSections().length
-                            + " edit layout sections");
+                    System.out.println("    There are " + layout.getEditLayoutSections().length + " edit layout sections");
                     for (int j = 0; j < layout.getEditLayoutSections().length; j++) {
-                        DescribeLayoutSection els = layout
-                                .getEditLayoutSections(j);
-                        System.out.println(new Integer(j).toString()
-                                + "        This section has a heading of "
+                        DescribeLayoutSection els = layout.getEditLayoutSections(j);
+                        System.out.println(new Integer(j).toString() + "        This section has a heading of "
                                 + els.getHeading());
-                        System.out.println("This section has "
-                                + els.getLayoutRows().length + " layout rows.");
+                        System.out.println("This section has " + els.getLayoutRows().length + " layout rows.");
                         for (int k = 0; k < els.getLayoutRows().length; k++) {
                             DescribeLayoutRow lr = els.getLayoutRows(k);
-                            System.out.println("            This row has "
-                                    + lr.getNumItems() + " items.");
+                            System.out.println("            This row has " + lr.getNumItems() + " items.");
                             for (int h = 0; h < lr.getLayoutItems().length; h++) {
                                 DescribeLayoutItem li = lr.getLayoutItems(h);
-                                if(li.getLayoutComponents() != null) {
-                                    System.out.println("                "
-                                            + new Integer(h).toString() + " "
+                                if (li.getLayoutComponents() != null) {
+                                    System.out.println("                " + new Integer(h).toString() + " "
                                             + li.getLayoutComponents(0).getValue());
-                                }
-                                else {
-                                    System.out.println("                "
-                                            + new Integer(h).toString());
+                                } else {
+                                    System.out.println("                " + new Integer(h).toString());
                                 }
                             }
                         }
@@ -320,28 +298,19 @@ public class PartnerSamples {
                 }
             }
             if (dlr.getRecordTypeMappings() != null) {
-                System.out.println("There are "
-                        + dlr.getRecordTypeMappings().length
-                        + " record type mappings for the " + objectToDescribe
-                        + " object");
-            }
-            else {
-                System.out
-                .println("There are not record type mappings for the "
-                        + objectToDescribe + " object.");
+                System.out.println("There are " + dlr.getRecordTypeMappings().length + " record type mappings for the "
+                        + objectToDescribe + " object");
+            } else {
+                System.out.println("There are not record type mappings for the " + objectToDescribe + " object.");
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to describe layout for: " + objectToDescribe
-                            + ", error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to describe layout for: " + objectToDescribe + ", error message was: \n"
+                    + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to describe layout for: " + objectToDescribe
-                            + ", error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to describe layout for: " + objectToDescribe + ", error message was: \n"
+                    + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -356,41 +325,31 @@ public class PartnerSamples {
         try {
             DescribeTabSetResult[] dtsrs = binding.describeTabs();
 
-            System.out.println("There are "
-                    + new Integer(dtsrs.length).toString()
-                    + " tabsets defined.");
+            System.out.println("There are " + new Integer(dtsrs.length).toString() + " tabsets defined.");
             for (int i = 0; i < dtsrs.length; i++) {
-                System.out.println("Tabset " + new Integer(i + 1).toString()
-                        + ":");
+                System.out.println("Tabset " + new Integer(i + 1).toString() + ":");
                 DescribeTabSetResult dtsr = dtsrs[i];
                 String tabSetLabel = dtsr.getLabel();
                 String logoUrl = dtsr.getLogoUrl();
                 boolean isSelected = dtsr.isSelected();
                 DescribeTab[] tabs = dtsr.getTabs();
-                System.out.println("Label is " + tabSetLabel + " logo url is "
-                        + logoUrl + ", there are " + new Integer(tabs.length)
-                        + " tabs defined in this set.");
+                System.out.println("Label is " + tabSetLabel + " logo url is " + logoUrl + ", there are "
+                        + new Integer(tabs.length) + " tabs defined in this set.");
                 for (int j = 0; j < tabs.length; j++) {
                     DescribeTab tab = tabs[j];
                     String tabLabel = tab.getLabel();
                     String objectName = tab.getSobjectName();
                     String tabUrl = tab.getUrl();
-                    System.out.println("\tTab " + new Integer(j + 1)
-                            + ": \n\t\tLabel = " + tabLabel
-                            + "\n\t\tObject details on tab: " + objectName
-                            + "\n\t\t" + "Url to tab: " + tabUrl);
+                    System.out.println("\tTab " + new Integer(j + 1) + ": \n\t\tLabel = " + tabLabel
+                            + "\n\t\tObject details on tab: " + objectName + "\n\t\t" + "Url to tab: " + tabUrl);
                 }
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("Failed to successfully describe tabs.\n\n"
-                            + af.getExceptionMessage());
+            System.out.println("Failed to successfully describe tabs.\n\n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("Failed to successfully describe tabs.\n\n"
-                            + ex.getMessage());
+            System.out.println("Failed to successfully describe tabs.\n\n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
 
         }
@@ -404,8 +363,7 @@ public class PartnerSamples {
         }
 
         try {
-            DescribeGlobalResult describeGlobalResult = binding
-                    .describeGlobal();
+            DescribeGlobalResult describeGlobalResult = binding.describeGlobal();
             if (!(describeGlobalResult == null)) {
                 String[] types = describeGlobalResult.getTypes();
                 if (!(types == null)) {
@@ -416,14 +374,10 @@ public class PartnerSamples {
                 }
             }
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to return types, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to return types, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to return types, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to return types, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -437,8 +391,7 @@ public class PartnerSamples {
 
         try {
             DescribeSObjectResult[] describeSObjectResults = binding
-                    .describeSObjects(new String[] { "account", "contact",
-                            "lead" });
+                    .describeSObjects(new String[] { "account", "contact", "lead" });
             for (int x = 0; x < describeSObjectResults.length; x++) {
                 DescribeSObjectResult describeSObjectResult = describeSObjectResults[x];
                 // Retrieve fields from the results
@@ -458,8 +411,7 @@ public class PartnerSamples {
                         String label = field.getLabel();
                         int length = field.getLength();
                         String name = field.getName();
-                        PicklistEntry[] picklistValues = field
-                                .getPicklistValues();
+                        PicklistEntry[] picklistValues = field.getPicklistValues();
                         int precision = field.getPrecision();
                         String[] referenceTos = field.getReferenceTo();
                         int scale = field.getScale();
@@ -470,15 +422,13 @@ public class PartnerSamples {
                             System.out.println("Picklist values = ");
                             for (int j = 0; j < picklistValues.length; j++) {
                                 if (picklistValues[j].getLabel() != null) {
-                                    System.out.println(" Item: "
-                                            + picklistValues[j].getLabel());
+                                    System.out.println(" Item: " + picklistValues[j].getLabel());
                                 }
                             }
                         }
                         // Determine whether this field refers to another object
                         if (referenceTos != null && referenceTos[0] != null) {
-                            System.out
-                                    .println("Field references the following objects:");
+                            System.out.println("Field references the following objects:");
                             for (int j = 0; j < referenceTos.length; j++) {
                                 System.out.println(" " + referenceTos[j]);
                             }
@@ -488,14 +438,10 @@ public class PartnerSamples {
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to get describe multiple objects, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to get describe multiple objects, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to get describe multiple objects, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to get describe multiple objects, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -510,8 +456,7 @@ public class PartnerSamples {
         String objectToDescribe = getUserInput("\nType the name of the object to describe (try Account): ");
         try {
             DescribeSObjectResult ds;
-            DescribeSObjectResult describeSObjectResult = binding
-                    .describeSObject(objectToDescribe);
+            DescribeSObjectResult describeSObjectResult = binding.describeSObject(objectToDescribe);
             if (!(describeSObjectResult == null)) {
                 Field[] fields = describeSObjectResult.getFields();
                 String objectName = describeSObjectResult.getName();
@@ -520,40 +465,25 @@ public class PartnerSamples {
                 boolean isCustom = describeSObjectResult.isCustom();
                 boolean isDeleteable = describeSObjectResult.isDeletable();
                 boolean isQueryable = describeSObjectResult.isQueryable();
-                boolean isReplicateable = describeSObjectResult
-                        .isReplicateable();
+                boolean isReplicateable = describeSObjectResult.isReplicateable();
                 boolean isRetrieveable = describeSObjectResult.isRetrieveable();
                 boolean isSearchable = describeSObjectResult.isSearchable();
                 boolean isUndeleteable = describeSObjectResult.isUndeletable();
                 boolean isUpdateable = describeSObjectResult.isUpdateable();
-                System.out.println("Metadata for " + objectToDescribe
-                        + " object:\n");
-                System.out.println("Object name                       = "
-                        + objectName);
-                System.out.println("Number of fields                  = "
-                        + fields.length);
-                System.out.println("Object can be activated           = "
-                        + isActivateable);
-                System.out.println("Can create rows of data           = "
-                        + isCreateable);
-                System.out.println("Object is custom object           = "
-                        + isCustom);
-                System.out.println("Can delete rows of data           = "
-                        + isDeleteable);
-                System.out.println("Can query for rows of data        = "
-                        + isQueryable);
-                System.out.println("Object can be used in replication = "
-                        + isReplicateable);
-                System.out.println("Can use retrieve method on object = "
-                        + isRetrieveable);
-                System.out.println("Can use search method on object   = "
-                        + isSearchable);
-                System.out.println("Can un-delete rows of data        = "
-                        + isUndeleteable);
-                System.out.println("Can update rows of data           = "
-                        + isUpdateable);
-                System.out.println("\nField metadata for " + objectToDescribe
-                        + " object:\n");
+                System.out.println("Metadata for " + objectToDescribe + " object:\n");
+                System.out.println("Object name                       = " + objectName);
+                System.out.println("Number of fields                  = " + fields.length);
+                System.out.println("Object can be activated           = " + isActivateable);
+                System.out.println("Can create rows of data           = " + isCreateable);
+                System.out.println("Object is custom object           = " + isCustom);
+                System.out.println("Can delete rows of data           = " + isDeleteable);
+                System.out.println("Can query for rows of data        = " + isQueryable);
+                System.out.println("Object can be used in replication = " + isReplicateable);
+                System.out.println("Can use retrieve method on object = " + isRetrieveable);
+                System.out.println("Can use search method on object   = " + isSearchable);
+                System.out.println("Can un-delete rows of data        = " + isUndeleteable);
+                System.out.println("Can update rows of data           = " + isUpdateable);
+                System.out.println("\nField metadata for " + objectToDescribe + " object:\n");
 
                 if (!(fields == null)) {
                     for (int i = 0; i < fields.length; i++) {
@@ -563,8 +493,7 @@ public class PartnerSamples {
                         String label = field.getLabel();
                         int length = field.getLength();
                         String name = field.getName();
-                        PicklistEntry[] picklistValues = field
-                                .getPicklistValues();
+                        PicklistEntry[] picklistValues = field.getPicklistValues();
                         int precision = field.getPrecision();
                         String[] referenceTos = field.getReferenceTo();
                         int scale = field.getScale();
@@ -572,15 +501,12 @@ public class PartnerSamples {
                         boolean fieldIsAutoNumber = field.isAutoNumber();
                         boolean fieldIsCreateable = field.isCreateable();
                         boolean fieldIsCustom = field.isCustom();
-                        boolean fieldIsDefaultedOnCreate = field
-                                .isDefaultedOnCreate();
+                        boolean fieldIsDefaultedOnCreate = field.isDefaultedOnCreate();
                         boolean fieldIsFilterable = field.isFilterable();
                         boolean fieldIsNillable = field.isNillable();
-                        boolean fieldIsRestrictedPicklist = field
-                                .isRestrictedPicklist();
+                        boolean fieldIsRestrictedPicklist = field.isRestrictedPicklist();
                         boolean fieldIsUpdateable = field.isUpdateable();
-                        System.out
-                                .println("*************  New Field  ***************");
+                        System.out.println("*************  New Field  ***************");
                         System.out.println("Name            = " + name);
                         System.out.println("Label           = " + label);
                         System.out.println("Length          = " + length);
@@ -593,47 +519,36 @@ public class PartnerSamples {
                             System.out.println("Picklist values = ");
                             for (int j = 0; j < picklistValues.length; j++) {
                                 if (picklistValues[j].getLabel() != null) {
-                                    System.out.println("    Item:  "
-                                            + picklistValues[j].getLabel());
+                                    System.out.println("    Item:  " + picklistValues[j].getLabel());
                                 } else {
-                                    System.out.println("    Item:  "
-                                            + picklistValues[j].getValue());
+                                    System.out.println("    Item:  " + picklistValues[j].getValue());
                                 }
-                                System.out.println("        value           = "
-                                        + picklistValues[j].getValue());
-                                System.out.println("        is default      = "
-                                        + picklistValues[j].isDefaultValue());
+                                System.out.println("        value           = " + picklistValues[j].getValue());
+                                System.out.println("        is default      = " + picklistValues[j].isDefaultValue());
                             }
                         }
                         if (referenceTos != null) {
-                            System.out
-                                    .println("Field references the following objects:");
+                            System.out.println("Field references the following objects:");
                             for (int j = 0; j < referenceTos.length; j++) {
                                 System.out.println("    " + referenceTos[j]);
                             }
                         }
                         System.out.println("\n");
                     }
-                    getUserInput("\nDescribe "
-                            + objectToDescribe
-                            + " was successful.\n\nHit the enter key to conutinue....");
+                    getUserInput("\nDescribe " + objectToDescribe + " was successful.\n\nHit the enter key to conutinue....");
                 }
             }
         } catch (ApiFault af) {
-            System.out.println("\nFailed to get " + objectToDescribe
-                    + " description, error message was: \n"
+            System.out.println("\nFailed to get " + objectToDescribe + " description, error message was: \n"
                     + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out.println("\nFailed to get " + objectToDescribe
-                    + " description, error message was: \n"
-                    + ex.getMessage());
+            System.out.println("\nFailed to get " + objectToDescribe + " description, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
 
-    private MessageElement newMessageElement(String name, Object value)
-            throws Exception {
+    private MessageElement newMessageElement(String name, Object value) throws Exception {
 
         MessageElement me = new MessageElement("", name); // , value);
         me.setObjectValue(value);
@@ -662,28 +577,21 @@ public class PartnerSamples {
                 MessageElement[] account = new MessageElement[14];
                 int index = 0;
                 if (accounts == null) {
-                    account[index++] = newMessageElement("AccountNumber",
-                            "00000000");
+                    account[index++] = newMessageElement("AccountNumber", "00000000");
                 } else {
-                    account[index++] = newMessageElement("AccountNumber",
-                            "000000" + (accounts.length + 1));
+                    account[index++] = newMessageElement("AccountNumber", "000000" + (accounts.length + 1));
                 }
                 account[index++] = newMessageElement("BillingCity", "Wichita");
                 account[index++] = newMessageElement("BillingCountry", "US");
                 account[index++] = newMessageElement("BillingState", "KA");
-                account[index++] = newMessageElement("BillingStreet",
-                        "4322 Haystack Boulevard");
-                account[index++] = newMessageElement("BillingPostalCode",
-                        "87901");
-                account[index++] = newMessageElement("Description",
-                        "World class hay makers.");
+                account[index++] = newMessageElement("BillingStreet", "4322 Haystack Boulevard");
+                account[index++] = newMessageElement("BillingPostalCode", "87901");
+                account[index++] = newMessageElement("Description", "World class hay makers.");
                 account[index++] = newMessageElement("Fax", "555.555.5555");
                 account[index++] = newMessageElement("Industry", "Farming");
                 account[index++] = newMessageElement("Name", "Golden Straw");
-                account[index++] = newMessageElement("NumberOfEmployees",
-                        new java.lang.Integer(40).toString());
-                account[index++] = newMessageElement("Ownership",
-                        "Privately Held");
+                account[index++] = newMessageElement("NumberOfEmployees", new java.lang.Integer(40).toString());
+                account[index++] = newMessageElement("Ownership", "Privately Held");
                 account[index++] = newMessageElement("Phone", "666.666.6666");
                 account[index++] = newMessageElement("Website", "www.oz.com");
                 accs[j] = new SObject();
@@ -697,8 +605,7 @@ public class PartnerSamples {
             SaveResult[] sr = binding.create(accs);
             for (int j = 0; j < sr.length; j++) {
                 if (sr[j].isSuccess()) {
-                    System.out.println("An account was create with an id of: "
-                            + sr[j].getId());
+                    System.out.println("An account was create with an id of: " + sr[j].getId());
 
                     // save the account ids in a class array
                     if (accounts == null) {
@@ -718,27 +625,20 @@ public class PartnerSamples {
                     // array and write them to the screen
                     for (int i = 0; i < sr[j].getErrors().length; i++) {
                         // get the next error
-                        com.sforce.soap.partner.Error err = sr[j].getErrors()[i];
-                        System.out.println("Errors were found on item "
-                                + new Integer(j).toString());
-                        System.out.println("Error code is: "
-                                + err.getStatusCode().toString());
-                        System.out
-                                .println("Error message: " + err.getMessage());
+                        com.sforce16.soap.partner.Error err = sr[j].getErrors()[i];
+                        System.out.println("Errors were found on item " + new Integer(j).toString());
+                        System.out.println("Error code is: " + err.getStatusCode().toString());
+                        System.out.println("Error message: " + err.getMessage());
                     }
                 }
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to create account, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to create account, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.out
-                    .println("\nFailed to create account, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to create account, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
 
@@ -767,14 +667,10 @@ public class PartnerSamples {
                     try {
                         qr = binding.queryMore(qr.getQueryLocator());
                     } catch (InvalidQueryLocatorFault e) {
-                        System.out
-                                .println("\nFailed to query, error message was: \n"
-                                        + e.getExceptionMessage());
+                        System.out.println("\nFailed to query, error message was: \n" + e.getExceptionMessage());
                         getUserInput("\nHit return to continue...");
                     } catch (ApiFault af) {
-                        System.out
-                                .println("\nFailed to query, error message was: \n"
-                                        + af.getExceptionMessage());
+                        System.out.println("\nFailed to query, error message was: \n" + af.getExceptionMessage());
                         getUserInput("\nHit return to continue...");
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -805,23 +701,17 @@ public class PartnerSamples {
         QueryResult qr = null;
         QueryOptions qo = new QueryOptions();
         qo.setBatchSize(new Integer(3));
-        binding.setHeader(new SforceServiceLocator().getServiceName()
-                .getNamespaceURI(), "QueryOptions", qo);
+        binding.setHeader(new SforceServiceLocator().getServiceName().getNamespaceURI(), "QueryOptions", qo);
 
         try {
-            qr = binding
-                    .query("select id, Website, Name from Account where Name = 'Golden Straw'");
+            qr = binding.query("select id, Website, Name from Account where Name = 'Golden Straw'");
             ArrayList records = this.loadQueryResults(qr);
             if (records.size() != 0) {
                 HashMap record = (HashMap) records.get(0);
-                System.out.println("Retrieved "
-                        + new Integer(records.size()).toString()
+                System.out.println("Retrieved " + new Integer(records.size()).toString()
                         + " account(s) using Name = 'Golden Straw', String = "
-                        + (record.containsKey("id") ? record.get("id")
-                                .toString() : " ").toString()
-                        + ", website = "
-                        + (record.containsKey("website") ? record
-                                .get("website").toString() : " ").toString());
+                        + (record.containsKey("id") ? record.get("id").toString() : " ").toString() + ", website = "
+                        + (record.containsKey("website") ? record.get("website").toString() : " ").toString());
             }
             // if (qr.getSize() != 0) {
             // SObject account = qr.getRecords()[0];
@@ -837,15 +727,13 @@ public class PartnerSamples {
             int loopCount = 0;
             boolean continueLoop = true;
             while (continueLoop) {
-                System.out.println("Results set "
-                        + new Integer(loopCount++).toString() + " - ");
+                System.out.println("Results set " + new Integer(loopCount++).toString() + " - ");
                 // process the query results
                 for (int i = 0; i < qr.getRecords().length; i++) {
                     SObject con = qr.getRecords()[i];
                     String fName = "";
                     String lName = "";
-                    if (con.get_any()[0].getName().toLowerCase().equals(
-                            "firstname")) {
+                    if (con.get_any()[0].getName().toLowerCase().equals("firstname")) {
                         fName = con.get_any()[0].getValue();
                         lName = con.get_any()[1].getValue();
                     } else
@@ -854,8 +742,7 @@ public class PartnerSamples {
                     if (fName == null) {
                         System.out.println("Contact " + (i + 1) + ": " + lName);
                     } else {
-                        System.out.println("Contact " + (i + 1) + ": " + fName
-                                + " " + lName);
+                        System.out.println("Contact " + (i + 1) + ": " + fName + " " + lName);
                     }
                 }
                 // handle the loop + 1 problem by checking to see if the most
@@ -868,14 +755,10 @@ public class PartnerSamples {
             System.out.println("\nQuery succesfully executed.");
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to execute query succesfully, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to execute query succesfully, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to execute query succesfully, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to execute query succesfully, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
 
@@ -912,36 +795,24 @@ public class PartnerSamples {
                     }
                 }
                 if (contacts.size() > 0) {
-                    System.out.println("Found "
-                            + new Integer(contacts.size()).toString()
-                            + " contacts:");
+                    System.out.println("Found " + new Integer(contacts.size()).toString() + " contacts:");
                     for (int i = 0; i < contacts.size(); i++) {
                         SObject c = (SObject) contacts.get(i);
-                        System.out
-                                .println(c.getId() + " - " + c.get_any()[1]
-                                        + " " + c.get_any()[2] + " - "
-                                        + c.get_any()[0]);
+                        System.out.println(c.getId() + " - " + c.get_any()[1] + " " + c.get_any()[2] + " - " + c.get_any()[0]);
                     }
                 }
                 if (leads.size() > 0) {
-                    System.out.println("Found "
-                            + new Integer(leads.size()).toString() + " leads:");
+                    System.out.println("Found " + new Integer(leads.size()).toString() + " leads:");
                     for (int i = 0; i < leads.size(); i++) {
                         SObject l = (SObject) leads.get(i);
-                        System.out
-                                .println(l.getId() + " - " + l.get_any()[1]
-                                        + " " + l.get_any()[2] + " - "
-                                        + l.get_any()[0]);
+                        System.out.println(l.getId() + " - " + l.get_any()[1] + " " + l.get_any()[2] + " - " + l.get_any()[0]);
                     }
                 }
                 if (accounts.size() > 0) {
-                    System.out.println("Found "
-                            + new Integer(accounts.size()).toString()
-                            + " accounts:");
+                    System.out.println("Found " + new Integer(accounts.size()).toString() + " accounts:");
                     for (int i = 0; i < accounts.size(); i++) {
                         SObject a = (SObject) accounts.get(i);
-                        System.out.println(a.getId() + " - " + a.get_any()[1]
-                                + " - " + a.get_any()[0]);
+                        System.out.println(a.getId() + " - " + a.get_any()[1] + " - " + a.get_any()[0]);
                     }
                 }
             } else {
@@ -951,14 +822,10 @@ public class PartnerSamples {
             System.out.println("\nSearch succesfully executed.");
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to execute search succesfully, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to execute search succesfully, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to execute search succesfully, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to execute search succesfully, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
 
@@ -975,8 +842,7 @@ public class PartnerSamples {
 
         try {
             // Calendar deletedDate
-            GregorianCalendar cal = (GregorianCalendar) binding
-                    .getServerTimestamp().getTimestamp();
+            GregorianCalendar cal = (GregorianCalendar) binding.getServerTimestamp().getTimestamp();
             GregorianCalendar calEnd = (GregorianCalendar) cal.clone();
             cal.add(GregorianCalendar.MINUTE, -5);
 
@@ -985,24 +851,17 @@ public class PartnerSamples {
                 for (int i = 0; i < mr.getDeletedRecords().length; i++) {
                     System.out.println(mr.getDeletedRecords(i).getId()
 
-                            + " was deleted on "
-                            + mr.getDeletedRecords(i).getDeletedDate()
-                                    .getTime().toString());
+                    + " was deleted on " + mr.getDeletedRecords(i).getDeletedDate().getTime().toString());
                 }
             } else {
-                System.out
-                        .println("No deletions from contacts in the last 5 minutes.");
+                System.out.println("No deletions from contacts in the last 5 minutes.");
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to get deleted records, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to get deleted records, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to get deleted records, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to get deleted records, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -1018,8 +877,7 @@ public class PartnerSamples {
 
         try {
             // Calendar deletedDate
-            GregorianCalendar cal = (GregorianCalendar) binding
-                    .getServerTimestamp().getTimestamp();
+            GregorianCalendar cal = (GregorianCalendar) binding.getServerTimestamp().getTimestamp();
             GregorianCalendar calEnd = (GregorianCalendar) cal.clone();
             cal.add(GregorianCalendar.MINUTE, -5);
 
@@ -1029,19 +887,14 @@ public class PartnerSamples {
                     System.out.println(mr.getIds(i) + " was updated.");
                 }
             } else {
-                System.out
-                        .println("No updates to accounts in the last 5 minutes.");
+                System.out.println("No updates to accounts in the last 5 minutes.");
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to get updated records, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to get updated records, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to get updated records, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to get updated records, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -1063,34 +916,27 @@ public class PartnerSamples {
                 int index = 0;
                 if (accounts != null) {
                     contact = new MessageElement[18];
-                    contact[index++] = newMessageElement("AccountId",
-                            accounts[0]);
+                    contact[index++] = newMessageElement("AccountId", accounts[0]);
                 } else {
                     contact = new MessageElement[17];
                 }
                 contact[index++] = newMessageElement("AssistantName", "Jane");
-                contact[index++] = newMessageElement("AssistantPhone",
-                        "777.777.7777");
+                contact[index++] = newMessageElement("AssistantPhone", "777.777.7777");
                 contact[index++] = newMessageElement("Department", "Purchasing");
-                contact[index++] = newMessageElement("Description",
-                        "International IT Purchaser");
+                contact[index++] = newMessageElement("Description", "International IT Purchaser");
                 contact[index++] = newMessageElement("Email", "joeblow@isp.com");
                 contact[index++] = newMessageElement("Fax", "555.555.5555");
                 contact[index++] = newMessageElement("MailingCity", "San Mateo");
                 contact[index++] = newMessageElement("MailingCountry", "US");
                 contact[index++] = newMessageElement("MailingState", "CA");
-                contact[index++] = newMessageElement("MailingStreet",
-                        "1129 B Street");
-                contact[index++] = newMessageElement("MailingPostalCode",
-                        "94105");
-                contact[index++] = newMessageElement("MobilePhone",
-                        "888.888.8888");
+                contact[index++] = newMessageElement("MailingStreet", "1129 B Street");
+                contact[index++] = newMessageElement("MailingPostalCode", "94105");
+                contact[index++] = newMessageElement("MobilePhone", "888.888.8888");
                 contact[index++] = newMessageElement("FirstName", "Joe");
                 contact[index++] = newMessageElement("LastName", "Blow");
                 contact[index++] = newMessageElement("Salutation", "Mr.");
                 contact[index++] = newMessageElement("Phone", "999.999.9999");
-                contact[index++] = newMessageElement("Title",
-                        "Purchasing Director");
+                contact[index++] = newMessageElement("Title", "Purchasing Director");
                 cons[j] = new SObject();
                 cons[j].setType("Contact");
                 cons[j].set_any(contact);
@@ -1099,12 +945,10 @@ public class PartnerSamples {
             SaveResult[] sr = binding.create(cons);
             for (int j = 0; j < sr.length; j++) {
                 if (sr[j].isSuccess()) {
-                    System.out.println("A contact was create with an id of: "
-                            + sr[j].getId());
+                    System.out.println("A contact was create with an id of: " + sr[j].getId());
                     if (accounts != null) {
-                        System.out
-                                .println(" - the contact was associated with the account you created with an id of "
-                                        + accounts[0] + ".");
+                        System.out.println(" - the contact was associated with the account you created with an id of "
+                                + accounts[0] + ".");
 
                     }
 
@@ -1125,26 +969,19 @@ public class PartnerSamples {
                     // array and write them to the screen
                     for (int i = 0; i < sr[j].getErrors().length; i++) {
                         // get the next error
-                        com.sforce.soap.partner.Error err = sr[j].getErrors()[i];
-                        System.out.println("Errors were found on item "
-                                + new Integer(j).toString());
-                        System.out.println("Error code is: "
-                                + err.getStatusCode().toString());
-                        System.out
-                                .println("Error message: " + err.getMessage());
+                        com.sforce16.soap.partner.Error err = sr[j].getErrors()[i];
+                        System.out.println("Errors were found on item " + new Integer(j).toString());
+                        System.out.println("Error code is: " + err.getStatusCode().toString());
+                        System.out.println("Error message: " + err.getMessage());
                     }
                 }
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to create contacts, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to create contacts, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to create contacts, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to create contacts, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -1175,8 +1012,7 @@ public class PartnerSamples {
             updateAccount.setId(accounts[0]);
             // set a new value for the name property
             MessageElement[] ufields = new MessageElement[1];
-            ufields[0] = newMessageElement("Name",
-                    "New Account Name from Update Sample");
+            ufields[0] = newMessageElement("Name", "New Account Name from Update Sample");
             updateAccount.set_any(ufields);
 
             // create one that will throw an error
@@ -1186,33 +1022,23 @@ public class PartnerSamples {
             errorAccount.setFieldsToNull(new String[] { "Name" });
 
             // call the update passing an array of object
-            SaveResult[] saveResults = binding.update(new SObject[] {
-                    updateAccount, errorAccount });
+            SaveResult[] saveResults = binding.update(new SObject[] { updateAccount, errorAccount });
 
             // loop through the results, checking for errors
             for (int j = 0; j < saveResults.length; j++) {
                 System.out.println("Item: " + new Integer(j).toString());
                 if (saveResults[j].isSuccess()) {
-                    System.out.println("An account with an id of: "
-                            + saveResults[j].getId() + " was updated.\n");
+                    System.out.println("An account with an id of: " + saveResults[j].getId() + " was updated.\n");
                 } else {
-                    System.out.println("Item " + new Integer(j).toString()
-                            + " had an error updating.");
-                    System.out
-                            .println("    The error reported was: "
-                                    + saveResults[j].getErrors()[0]
-                                            .getMessage() + "\n");
+                    System.out.println("Item " + new Integer(j).toString() + " had an error updating.");
+                    System.out.println("    The error reported was: " + saveResults[j].getErrors()[0].getMessage() + "\n");
                 }
             }
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to succesfully update an account, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to succesfully update an account, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to succesfully update an account, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to succesfully update an account, error message was: \n" + ex.getMessage());
         }
         getUserInput("\nHit return to continue...");
     }
@@ -1235,12 +1061,10 @@ public class PartnerSamples {
             lead[1] = newMessageElement("City", "San Francisco");
             lead[2] = newMessageElement("Company", "Acme Anvils");
             lead[3] = newMessageElement("Country", "United States");
-            lead[4] = newMessageElement("Description",
-                    "This is a lead that can be converted.");
+            lead[4] = newMessageElement("Description", "This is a lead that can be converted.");
             String email = getUserInput("\nPlease enter an email for the lead we are creating.");
             if (email == null)
-                lead[5] = newMessageElement("Email",
-                        "some.email@some.domain.com");
+                lead[5] = newMessageElement("Email", "some.email@some.domain.com");
             else
                 lead[5] = newMessageElement("Email", email);
             lead[6] = newMessageElement("Fax", "5555555555");
@@ -1250,8 +1074,7 @@ public class PartnerSamples {
             lead[10] = newMessageElement("LeadSource", "Web");
             lead[11] = newMessageElement("MobilePhone", "4444444444");
             lead[12] = newMessageElement("NumberOfEmployees", new Integer(30));
-            lead[13] = newMessageElement("NumberofLocations__c",
-                    new Double(1.0));
+            lead[13] = newMessageElement("NumberofLocations__c", new Double(1.0));
             lead[14] = newMessageElement("Phone", "6666666666");
             lead[15] = newMessageElement("PostalCode", "94105");
             lead[16] = newMessageElement("Rating", "Hot");
@@ -1269,8 +1092,7 @@ public class PartnerSamples {
 
             for (int j = 0; j < sr.length; j++) {
                 if (sr[j].isSuccess()) {
-                    System.out.println("A lead was create with an id of: "
-                            + sr[j].getId());
+                    System.out.println("A lead was create with an id of: " + sr[j].getId());
 
                 } else {
                     // there were errors during the create call, go through the
@@ -1278,26 +1100,19 @@ public class PartnerSamples {
                     // array and write them to the screen
                     for (int i = 0; i < sr[j].getErrors().length; i++) {
                         // get the next error
-                        com.sforce.soap.partner.Error err = sr[j].getErrors()[i];
-                        System.out.println("Errors were found on item "
-                                + new Integer(j).toString());
-                        System.out.println("Error code is: "
-                                + err.getStatusCode().toString());
-                        System.out
-                                .println("Error message: " + err.getMessage());
+                        com.sforce16.soap.partner.Error err = sr[j].getErrors()[i];
+                        System.out.println("Errors were found on item " + new Integer(j).toString());
+                        System.out.println("Error code is: " + err.getStatusCode().toString());
+                        System.out.println("Error message: " + err.getMessage());
                     }
                 }
                 getUserInput("\nHit return to continue...");
             }
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to create lead succesfully, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to create lead succesfully, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to create lead succesfully, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to create lead succesfully, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -1305,23 +1120,19 @@ public class PartnerSamples {
     private SObject getUnconvertedLead() throws Exception {
         SObject leadToReturn = null;
         // get a list of leads so the user can select one
-        QueryResult qr = binding
-                .query("Select Id, FirstName, LastName from Lead where ConvertedDate = Null");
+        QueryResult qr = binding.query("Select Id, FirstName, LastName from Lead where ConvertedDate = Null");
         if (qr.getSize() == 0) { // No leads where found that have not been
-                                    // converted, so....
+            // converted, so....
             // we will create a lead and then run the query again
-            System.out
-                    .println("No unconverted leads found, will create one for you...");
+            System.out.println("No unconverted leads found, will create one for you...");
             createLeadSample();
-            qr = binding
-                    .query("Select Id, FirstName, LastName from Lead where ConvertedDate = Null");
+            qr = binding.query("Select Id, FirstName, LastName from Lead where ConvertedDate = Null");
         }
 
         if (qr.getSize() > 0) {
             for (int i = 0; i < qr.getRecords().length; i++) {
                 SObject lead = qr.getRecords()[i];
-                System.out.println(new Integer(i + 1).toString() + ": "
-                        + getFieldValue(lead.get_any(), "FirstName") + " "
+                System.out.println(new Integer(i + 1).toString() + ": " + getFieldValue(lead.get_any(), "FirstName") + " "
                         + getFieldValue(lead.get_any(), "LastName"));
             }
             String selectedLead = getUserInput("/nSelect the number of the lead to convert. ");
@@ -1330,14 +1141,12 @@ public class PartnerSamples {
                     int selLead = new Integer(selectedLead).intValue();
                     leadToReturn = qr.getRecords(selLead - 1);
                 } catch (Exception ex) {
-                    System.out
-                            .println("The number you selected is not valid, conversion failed...");
+                    System.out.println("The number you selected is not valid, conversion failed...");
                 }
             }
         }
         if (leadToReturn == null) {
-            throw new Exception(
-                    "No lead selected, required data, conversion failed");
+            throw new Exception("No lead selected, required data, conversion failed");
         } else {
             return leadToReturn;
         }
@@ -1346,21 +1155,18 @@ public class PartnerSamples {
     private SObject getContact() throws Exception {
         SObject contactToReturn = null;
         // get a list of contacts so the user can select one
-        QueryResult qr = binding
-                .query("Select Id, FirstName, LastName, AccountId from Contact Where not AccountId = null");
+        QueryResult qr = binding.query("Select Id, FirstName, LastName, AccountId from Contact Where not AccountId = null");
         if (qr.getSize() == 0) { // No leads where found that have not been
-                                    // converted, so....
+            // converted, so....
             // we will create a lead and then run the query again
             System.out.println("No contacts found, will create one for you...");
             this.createContactSample();
-            qr = binding
-                    .query("Select Id, FirstName, LastName, AccountId from Contact");
+            qr = binding.query("Select Id, FirstName, LastName, AccountId from Contact");
         }
         if (qr.getSize() > 0) {
             for (int i = 0; i < qr.getRecords().length; i++) {
                 SObject contact = qr.getRecords(i);
-                System.out.println(new Integer(i + 1).toString() + ": "
-                        + getFieldValue(contact.get_any(), "FirstName") + " "
+                System.out.println(new Integer(i + 1).toString() + ": " + getFieldValue(contact.get_any(), "FirstName") + " "
                         + getFieldValue(contact.get_any(), "LastName"));
             }
             String selectedContact = getUserInput("/nSelect the number of the contact to use. ");
@@ -1369,8 +1175,7 @@ public class PartnerSamples {
                     int selContact = new Integer(selectedContact).intValue();
                     contactToReturn = qr.getRecords(selContact - 1);
                 } catch (Exception ex) {
-                    System.out
-                            .println("The number you selected is not valid, exiting...");
+                    System.out.println("The number you selected is not valid, exiting...");
                 }
             }
         }
@@ -1393,8 +1198,7 @@ public class PartnerSamples {
         if (qr.getSize() > 0) {
             for (int i = 0; i < qr.getRecords().length; i++) {
                 SObject account = qr.getRecords(i);
-                System.out.println(new Integer(i + 1).toString() + ": "
-                        + getFieldValue(account.get_any(), "Name"));
+                System.out.println(new Integer(i + 1).toString() + ": " + getFieldValue(account.get_any(), "Name"));
             }
             String selectedAccount = getUserInput("/nSelect the number of the account to use. ");
             if (selectedAccount != null) {
@@ -1402,8 +1206,7 @@ public class PartnerSamples {
                     int selAccount = new Integer(selectedAccount).intValue();
                     accountToReturn = qr.getRecords(selAccount - 1);
                 } catch (Exception ex) {
-                    System.out
-                            .println("The number you selected is not valid, exiting...");
+                    System.out.println("The number you selected is not valid, exiting...");
                 }
             }
         }
@@ -1414,12 +1217,10 @@ public class PartnerSamples {
         }
     }
 
-    private String getAccountName(String accountId)
-            throws UnexpectedErrorFault, RemoteException {
+    private String getAccountName(String accountId) throws UnexpectedErrorFault, RemoteException {
         String aid = new String();
         aid = accountId;
-        SObject[] ret = binding.retrieve("Name", "Account",
-                new String[] { aid });
+        SObject[] ret = binding.retrieve("Name", "Account", new String[] { aid });
         if (ret != null) {
             return getFieldValue(ret[0].get_any(), "Name");
         } else {
@@ -1428,21 +1229,16 @@ public class PartnerSamples {
     }
 
     private String getLeadStatus() throws UnexpectedErrorFault, RemoteException {
-        QueryResult qr = binding
-                .query("Select Id, MasterLabel from LeadStatus Where IsConverted = true");
+        QueryResult qr = binding.query("Select Id, MasterLabel from LeadStatus Where IsConverted = true");
         if (qr.getSize() > 0) {
             System.out.println("\n");
             for (int i = 0; i < qr.getRecords().length; i++) {
-                System.out.println(new Integer(i + 1).toString()
-                        + ": "
-                        + getFieldValue(qr.getRecords(i).get_any(),
-                                "MasterLabel"));
+                System.out.println(new Integer(i + 1).toString() + ": "
+                        + getFieldValue(qr.getRecords(i).get_any(), "MasterLabel"));
             }
             String stat = getUserInput("\nEnter the number of the status to use. ");
             if (stat != null)
-                return getFieldValue(qr.getRecords(
-                        new Integer(stat).intValue() - 1).get_any(),
-                        "MasterLabel");
+                return getFieldValue(qr.getRecords(new Integer(stat).intValue() - 1).get_any(), "MasterLabel");
             else
                 return getFieldValue(qr.getRecords(0).get_any(), "MasterLabel");
 
@@ -1490,11 +1286,8 @@ public class PartnerSamples {
                 if (contact == null) {
                     summary += "  Create new contact.\n";
                 } else {
-                    summary += "  Merge with "
-                            + getFieldValue(contact.get_any(), "FirstName")
-                            + " "
-                            + getFieldValue(contact.get_any(), "LastName")
-                            + "\n";
+                    summary += "  Merge with " + getFieldValue(contact.get_any(), "FirstName") + " "
+                            + getFieldValue(contact.get_any(), "LastName") + "\n";
                     String cid = new String();
                     cid = contact.getId().substring(0, 15);
                     lc.setContactId(cid);
@@ -1502,8 +1295,7 @@ public class PartnerSamples {
                     // that of the lead,
                     // so we will query the user for that information.
                     String overWrite = getUserInput("Do you want to overwrite the contact status with the lead status (Y/N)? ");
-                    if (overWrite != null
-                            && overWrite.toLowerCase().equals("y"))
+                    if (overWrite != null && overWrite.toLowerCase().equals("y"))
                         lc.setOverwriteLeadSource(true);
                     else
                         lc.setOverwriteLeadSource(false);
@@ -1536,11 +1328,9 @@ public class PartnerSamples {
                     String accountName;
                     accountName = getAccountName(accountId);
                     if (accountName != null)
-                        summary += "  New contact will be in account '"
-                                + accountName + "'.\n";
+                        summary += "  New contact will be in account '" + accountName + "'.\n";
                     else
-                        summary += "  New contact will be in account with an String of '"
-                                + accountId + "'.\n";
+                        summary += "  New contact will be in account with an String of '" + accountId + "'.\n";
                 } else {
                     summary += "  A new account will be created.";
                 }
@@ -1556,14 +1346,12 @@ public class PartnerSamples {
                 lc.setDoNotCreateOpportunity(false);
                 String oppName = getUserInput("Enter the name of the opportunity to create.. ");
                 if (oppName == null) {
-                    System.out
-                            .println("No opportunity name given, NO opportunity will be created.");
+                    System.out.println("No opportunity name given, NO opportunity will be created.");
                     lc.setDoNotCreateOpportunity(true);
                     summary += "  No opportunity will be created.\n";
                 } else {
                     lc.setOpportunityName(oppName);
-                    summary += "  An opportunity named: " + oppName
-                            + " will be created.\n";
+                    summary += "  An opportunity named: " + oppName + " will be created.\n";
                 }
             }
 
@@ -1572,11 +1360,9 @@ public class PartnerSamples {
             // The lead needs to have it's status updated to reflect the
             // conversion operation,
             // so we will ask the user to select the status to use
-            System.out
-                    .println("Select the lead status to use to update the converted lead. ");
+            System.out.println("Select the lead status to use to update the converted lead. ");
             lc.setConvertedStatus(getLeadStatus());
-            summary += "  The converted lead will be assigned a status of "
-                    + lc.getConvertedStatus() + ".\n";
+            summary += "  The converted lead will be assigned a status of " + lc.getConvertedStatus() + ".\n";
 
             // Step 6 - Finally, we have the option of notifying the owner of
             // the lead that it
@@ -1592,23 +1378,14 @@ public class PartnerSamples {
 
             String cont;
             System.out.println("\n\nDEBUG VALUES\n");
-            System.out.println("account id: "
-                    + (lc.getAccountId() == null ? "(create new)" : lc
-                            .getAccountId()));
-            System.out.println("contact id: "
-                    + (lc.getContactId() == null ? "(create new)" : lc
-                            .getContactId()));
+            System.out.println("account id: " + (lc.getAccountId() == null ? "(create new)" : lc.getAccountId()));
+            System.out.println("contact id: " + (lc.getContactId() == null ? "(create new)" : lc.getContactId()));
             System.out.println("converted status: " + lc.getConvertedStatus());
-            System.out.println("do not create opp: "
-                    + new Boolean(lc.isDoNotCreateOpportunity()).toString());
+            System.out.println("do not create opp: " + new Boolean(lc.isDoNotCreateOpportunity()).toString());
             System.out.println("lead id: " + lc.getLeadId());
-            System.out.println("opp name: "
-                    + (lc.getOpportunityName() == null ? "(no opp)" : lc
-                            .getOpportunityName()));
-            System.out.println("overwrite lead source: "
-                    + new Boolean(lc.isOverwriteLeadSource()).toString());
-            System.out.println("send email: "
-                    + new Boolean(lc.isSendNotificationEmail()).toString());
+            System.out.println("opp name: " + (lc.getOpportunityName() == null ? "(no opp)" : lc.getOpportunityName()));
+            System.out.println("overwrite lead source: " + new Boolean(lc.isOverwriteLeadSource()).toString());
+            System.out.println("send email: " + new Boolean(lc.isSendNotificationEmail()).toString());
 
             // Get a final verification of lead conversion from the user.
             cont = getUserInput(summary + "\n Enter 'Y' to convert the lead.");
@@ -1623,44 +1400,26 @@ public class PartnerSamples {
                 for (int i = 0; i < lcr.length; i++) {
                     if (lcr[i].isSuccess()) {
                         try {
-                            System.out
-                                    .println("Conversion of lead "
-                                            + getFieldValue(lead.get_any(),
-                                                    "FirstName")
-                                            + " "
-                                            + getFieldValue(lead.get_any(),
-                                                    "LastName")
-                                            + " was successful.");
-                            if (contact != null
-                                    && contact.getId().equals(
-                                            lcr[i].getContactId()))
-                                System.out.println("  Contact with String of '"
-                                        + lcr[i].getContactId()
-                                        + "' was merged.");
+                            System.out.println("Conversion of lead " + getFieldValue(lead.get_any(), "FirstName") + " "
+                                    + getFieldValue(lead.get_any(), "LastName") + " was successful.");
+                            if (contact != null && contact.getId().equals(lcr[i].getContactId()))
+                                System.out.println("  Contact with String of '" + lcr[i].getContactId() + "' was merged.");
                             else
-                                System.out.println("  Contact with String of '"
-                                        + lcr[i].getContactId()
-                                        + "' was created.");
+                                System.out.println("  Contact with String of '" + lcr[i].getContactId() + "' was created.");
                             if (lcr[i].getOpportunityId() != null)
-                                System.out
-                                        .println("  An opportunity with an String of '"
-                                                + lcr[i].getOpportunityId()
-                                                + "' was created.");
+                                System.out.println("  An opportunity with an String of '" + lcr[i].getOpportunityId()
+                                        + "' was created.");
                             else
-                                System.out
-                                        .println("  No opportunity was created.");
-                            System.out
-                                    .println("  The contact was created in the account with an String of '"
-                                            + lcr[i].getAccountId() + "'.");
+                                System.out.println("  No opportunity was created.");
+                            System.out.println("  The contact was created in the account with an String of '"
+                                    + lcr[i].getAccountId() + "'.");
                         } catch (Exception e) {
                             getUserInput("Although the lead was converted, some error prevented the reporting of results.");
                         }
                     } else {
-                        System.out
-                                .println("One or more errors where encountered during the lead conversion process...\n");
+                        System.out.println("One or more errors where encountered during the lead conversion process...\n");
                         for (int j = 0; j < lcr[i].getErrors().length; j++) {
-                            System.out.println((j + 1) + ". "
-                                    + lcr[0].getErrors(j).getMessage());
+                            System.out.println((j + 1) + ". " + lcr[0].getErrors(j).getMessage());
                         }
                     }
                 }
@@ -1668,14 +1427,11 @@ public class PartnerSamples {
                 System.out.println("Lead conversion was aborted.");
             }
         } catch (ApiFault af) {
-            System.out
-                    .println("Errors occurred during conversion preventing any conversion to take place.\n\n"
-                            + af.getExceptionMessage());
+            System.out.println("Errors occurred during conversion preventing any conversion to take place.\n\n"
+                    + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception e) {
-            System.out
-                    .println("Errors occurred during conversion preventing any conversion to take place.\n\n"
-                            + e.getMessage());
+            System.out.println("Errors occurred during conversion preventing any conversion to take place.\n\n" + e.getMessage());
         }
     }
 
@@ -1693,8 +1449,7 @@ public class PartnerSamples {
             SObject[] taskarray = new SObject[4];
             for (int x = 0; x < 4; x++) {
                 // Declare a new task object to hold our values
-                final java.text.SimpleDateFormat ISO8601UTC = new java.text.SimpleDateFormat(
-                        "yyyy-MM-dd'T'hh:mm:ss+SSSS");
+                final java.text.SimpleDateFormat ISO8601UTC = new java.text.SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss+SSSS");
                 // Set the appropriate values on the task
                 SObject task = new SObject();
                 task.setType("Task");
@@ -1708,17 +1463,14 @@ public class PartnerSamples {
                 if (x > 1)
                     taskUbound++;
                 MessageElement[] fields = new MessageElement[taskUbound];
-                fields[index++] = newMessageElement("ActivityDate", ISO8601UTC
-                        .format(activityDate));
-                fields[index++] = newMessageElement("Description",
-                        "Get in touch with this person");
+                fields[index++] = newMessageElement("ActivityDate", ISO8601UTC.format(activityDate));
+                fields[index++] = newMessageElement("Description", "Get in touch with this person");
                 fields[index++] = newMessageElement("Priority", "Normal");
                 fields[index++] = newMessageElement("Status", "Not Started");
                 fields[index++] = newMessageElement("Subject", "Setup Call");
                 // make sure we get some errors on records 3 and 4
                 if (x > 1) {
-                    fields[index++] = newMessageElement("OwnerId",
-                            "DSF:LJKSDFLKJ");
+                    fields[index++] = newMessageElement("OwnerId", "DSF:LJKSDFLKJ");
                     // The two lines below illustrate associating an object with
                     // another object. If
                     // we have created an account and/or a contact prior to
@@ -1744,12 +1496,10 @@ public class PartnerSamples {
 
             for (int j = 0; j < sr.length; j++) {
                 if (sr[j].isSuccess()) {
-                    System.out.println("A task was create with an id of: "
-                            + sr[j].getId());
+                    System.out.println("A task was create with an id of: " + sr[j].getId());
                     if (accounts != null) {
-                        System.out
-                                .println(" - the task was associated with the account you created with an id of "
-                                        + accounts[0] + ".");
+                        System.out.println(" - the task was associated with the account you created with an id of " + accounts[0]
+                                + ".");
 
                     }
 
@@ -1770,26 +1520,19 @@ public class PartnerSamples {
                     // array and write them to the screen
                     for (int i = 0; i < sr[j].getErrors().length; i++) {
                         // get the next error
-                        com.sforce.soap.partner.Error err = sr[j].getErrors()[i];
-                        System.out.println("Errors were found on item "
-                                + new Integer(j).toString());
-                        System.out.println("Error code is: "
-                                + err.getStatusCode().toString());
-                        System.out
-                                .println("Error message: " + err.getMessage());
+                        com.sforce16.soap.partner.Error err = sr[j].getErrors()[i];
+                        System.out.println("Errors were found on item " + new Integer(j).toString());
+                        System.out.println("Error code is: " + err.getStatusCode().toString());
+                        System.out.println("Error message: " + err.getMessage());
                     }
                 }
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to succesfully create a task, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to succesfully create a task, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to succesfully create a task, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to succesfully create a task, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -1810,24 +1553,21 @@ public class PartnerSamples {
         try {
             if (tasks != null) {
                 binding.delete(tasks);
-                System.out.println("\nSuccessfully deleted " + tasks.length
-                        + " tasks.");
+                System.out.println("\nSuccessfully deleted " + tasks.length + " tasks.");
                 tasks = null;
             } else {
                 System.out.println("\nDeleted 0 tasks.");
             }
             if (contacts != null) {
                 binding.delete(contacts);
-                System.out.println("\nSuccessfully deleted " + contacts.length
-                        + " contacts.");
+                System.out.println("\nSuccessfully deleted " + contacts.length + " contacts.");
                 contacts = null;
             } else {
                 System.out.println("\nDeleted 0 contacts.");
             }
             if (accounts != null) {
                 binding.delete(accounts);
-                System.out.println("\nSuccessfully deleted " + accounts.length
-                        + " accounts.");
+                System.out.println("\nSuccessfully deleted " + accounts.length + " accounts.");
                 accounts = null;
             } else {
                 System.out.println("\nDeleted 0 accounts.");
@@ -1835,14 +1575,10 @@ public class PartnerSamples {
             System.out.println("\nDelete sample completed successfully.");
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to succesfully delete an account, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to succesfully delete an account, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (RemoteException ex) {
-            System.out
-                    .println("\nFailed to succesfully delete an account, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to succesfully delete an account, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
     }
@@ -1854,8 +1590,7 @@ public class PartnerSamples {
             }
         }
         try {
-            QueryResult qr = binding
-                    .query("select UserName, LastName, FirstName, Id from User");
+            QueryResult qr = binding.query("select UserName, LastName, FirstName, Id from User");
             if (qr.getSize() > 0) {
                 SObject[] users = qr.getRecords();
                 if (users != null) {
@@ -1863,27 +1598,20 @@ public class PartnerSamples {
                     for (int i = 0; i < users.length; i++) {
                         int printInd = i + 1;
                         SObject user = users[i];
-                        System.out.println(printInd + ". " + user.get_any()[0].getValue()
-                                + " - " + user.get_any()[2].getValue() + " "
-                                + user.get_any()[1].getValue());
+                        System.out.println(printInd + ". " + user.get_any()[0].getValue() + " - " + user.get_any()[2].getValue()
+                                + " " + user.get_any()[1].getValue());
                     }
                 }
                 String idToReset = getUserInput("\nEnter user to reset: ");
                 if (idToReset != null) {
                     int userIndex = new Integer(idToReset).intValue() - 1;
                     String verify = getUserInput("Please verify that you want to reset the password for \n"
-                            + users[userIndex].get_any()[2]
-                            + " "
-                            + users[userIndex].get_any()[1]
-                            + "\nby entering OK.");
+                            + users[userIndex].get_any()[2] + " " + users[userIndex].get_any()[1] + "\nby entering OK.");
                     if (verify.equals("OK")) {
-                        ResetPasswordResult resetPasswordResult = binding
-                                .resetPassword(users[userIndex].getId());
+                        ResetPasswordResult resetPasswordResult = binding.resetPassword(users[userIndex].getId());
                         if (resetPasswordResult != null) {
-                            System.out.println("\nThe password for user "
-                                    + users[userIndex].get_any()[2].getValue() + " "
-                                    + users[userIndex].get_any()[1].getValue()
-                                    + " has been reset to "
+                            System.out.println("\nThe password for user " + users[userIndex].get_any()[2].getValue() + " "
+                                    + users[userIndex].get_any()[1].getValue() + " has been reset to "
                                     + resetPasswordResult.getPassword());
                             getUserInput("\nHit enter to continue...");
                             return;
@@ -1892,14 +1620,10 @@ public class PartnerSamples {
                 }
             }
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to succesfully reset password, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to succesfully reset password, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (RemoteException ex) {
-            System.out
-                    .println("\nFailed to succesfully reset password, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to succesfully reset password, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
         getUserInput("No password was reset....\nHit return to continue...");
@@ -1912,8 +1636,7 @@ public class PartnerSamples {
             }
         }
         try {
-            QueryResult qr = binding
-                    .query("select UserName, LastName, FirstName, Id from User");
+            QueryResult qr = binding.query("select UserName, LastName, FirstName, Id from User");
             if (qr.getSize() > 0) {
                 SObject[] users = qr.getRecords();
                 if (users != null) {
@@ -1921,9 +1644,8 @@ public class PartnerSamples {
                     for (int i = 0; i < users.length; i++) {
                         int printInd = i + 1;
                         SObject user = users[i];
-                        System.out.println(printInd + ". " + user.get_any()[0].getValue()
-                                + " - " + user.get_any()[2].getValue() + " "
-                                + user.get_any()[1].getValue());
+                        System.out.println(printInd + ". " + user.get_any()[0].getValue() + " - " + user.get_any()[2].getValue()
+                                + " " + user.get_any()[1].getValue());
                     }
                 }
                 String idToReset = getUserInput("\nEnter user to set password for: ");
@@ -1932,20 +1654,13 @@ public class PartnerSamples {
                     String newPassword = getUserInput("Enter the new password: ");
                     if (newPassword != null) {
                         String verify = getUserInput("Please verify that you want to reset the password for \n"
-                                + users[userIndex].get_any()[2]
-                                + " "
-                                + users[userIndex].get_any()[1]
-                                + "\n to "
-                                + newPassword + " by entering OK.");
+                                + users[userIndex].get_any()[2] + " " + users[userIndex].get_any()[1] + "\n to " + newPassword
+                                + " by entering OK.");
                         if (verify.equals("OK")) {
-                            SetPasswordResult setPasswordResult = binding
-                                    .setPassword(users[userIndex].getId(),
-                                            newPassword);
+                            SetPasswordResult setPasswordResult = binding.setPassword(users[userIndex].getId(), newPassword);
                             if (setPasswordResult != null) {
-                                System.out.println("\nThe password for user "
-                                        + users[userIndex].get_any()[2].getValue()
-                                        + " " + users[userIndex].get_any()[1].getValue()
-                                        + " has been reset to " + newPassword);
+                                System.out.println("\nThe password for user " + users[userIndex].get_any()[2].getValue() + " "
+                                        + users[userIndex].get_any()[1].getValue() + " has been reset to " + newPassword);
                                 getUserInput("\nHit enter to continue...");
                                 return;
                             }
@@ -1954,14 +1669,10 @@ public class PartnerSamples {
                 }
             }
         } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to succesfully set password, error message was: \n"
-                            + af.getExceptionMessage());
+            System.out.println("\nFailed to succesfully set password, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (RemoteException ex) {
-            System.out
-                    .println("\nFailed to succesfully set password, error message was: \n"
-                            + ex.getMessage());
+            System.out.println("\nFailed to succesfully set password, error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
         getUserInput("No password was set....\nHit return to continue...");
@@ -1978,32 +1689,22 @@ public class PartnerSamples {
                     .println("To run the retrieve sample, create one or more\naccounts using the Create Accounts Sample first.\n\nHit return to continue...");
         } else {
             try {
-                SObject[] sObjects = binding
-                        .retrieve("Id, AccountNumber, Name, Website",
-                                "Account", accounts);
+                SObject[] sObjects = binding.retrieve("Id, AccountNumber, Name, Website", "Account", accounts);
                 if (sObjects != null) {
-                    System.out.println("Returning data for " + sObjects.length
-                            + " accounts: ");
+                    System.out.println("Returning data for " + sObjects.length + " accounts: ");
                     for (int i = 0; i < sObjects.length; i++) {
                         System.out.println("Account: " + sObjects[i].getId());
-                        System.out.println("    AccountNumber = "
-                                + sObjects[i].get_any()[1]);
-                        System.out.println("    Name          = "
-                                + sObjects[i].get_any()[2]);
-                        System.out.println("    Website       = "
-                                + sObjects[i].get_any()[3] + "\n");
+                        System.out.println("    AccountNumber = " + sObjects[i].get_any()[1]);
+                        System.out.println("    Name          = " + sObjects[i].get_any()[2]);
+                        System.out.println("    Website       = " + sObjects[i].get_any()[3] + "\n");
                     }
                     getUserInput("\nRetrive executed successfully, hit return to continue....");
                 }
             } catch (ApiFault af) {
-                System.out
-                        .println("\nFailed to succesfully retrieve records, error message was: \n"
-                                + af.getExceptionMessage());
+                System.out.println("\nFailed to succesfully retrieve records, error message was: \n" + af.getExceptionMessage());
                 getUserInput("\nHit return to continue...");
             } catch (RemoteException ex) {
-                System.out
-                        .println("\nFailed to succesfully retrieve records, error message was: \n"
-                                + ex.getMessage());
+                System.out.println("\nFailed to succesfully retrieve records, error message was: \n" + ex.getMessage());
                 getUserInput("\nHit return to continue...");
             }
         }
@@ -2012,18 +1713,16 @@ public class PartnerSamples {
 
     private void toggleSoapLogging() {
         if (logOn) {
-            Logger.getLogger("org.apache.axis.transport.http.HTTPSender")
-                    .setLevel(Level.OFF);
+            Logger.getLogger("org.apache.axis.transport.http.HTTPSender").setLevel(Level.OFF);
             logOn = false;
         } else {
-            Logger.getLogger("org.apache.axis.transport.http.HTTPSender")
-                    .setLevel(Level.DEBUG);
+            Logger.getLogger("org.apache.axis.transport.http.HTTPSender").setLevel(Level.DEBUG);
             logOn = true;
         }
     }
 
     private void showMenu() {
-    	
+
         System.out.println(" 1. Login Only");
         System.out.println(" 2. Create Account");
         System.out.println(" 3. Create Contact");
@@ -2055,10 +1754,10 @@ public class PartnerSamples {
         System.out.println("98. Turn Soap Logging " + (logOn ? "off" : "on"));
         System.out.println("99. Exit");
         System.out.println("   "); // (soap logging level = " +
-                                    // CommonsHTTPSender.getLoggingLevel() + ",
-                                    // compression is " +
-                                    // (CommonsHTTPSender.isZipping() ? "on":
-                                    // "off") + ")");
+        // CommonsHTTPSender.getLoggingLevel() + ",
+        // compression is " +
+        // (CommonsHTTPSender.isZipping() ? "on":
+        // "off") + ")");
         System.out.print("Enter the number of the sample to run: ");
     }
 
@@ -2098,8 +1797,8 @@ public class PartnerSamples {
                         querySample();
                         break;
                     case 6:
-                    	queryAllSample();
-                    	break;
+                        queryAllSample();
+                        break;
                     case 7:
                         retrieveSample();
                         break;
@@ -2107,23 +1806,23 @@ public class PartnerSamples {
                         updateAccountSample();
                         break;
                     case 9:
-                    	upsertSample();
-                    	break;
+                        upsertSample();
+                        break;
                     case 10:
-                    	mergeSample();
-                    	break;
+                        mergeSample();
+                        break;
                     case 11:
-                    	convertLeadSample();
-                    	break;
+                        convertLeadSample();
+                        break;
                     case 12:
                         deleteSample();
                         break;
                     case 13:
-                    	undeleteSample();
-                    	break;
+                        undeleteSample();
+                        break;
                     case 14:
-                    	processSample();
-                    	break;
+                        processSample();
+                        break;
                     case 15:
                         describeGlobalSample();
                         break;
@@ -2140,8 +1839,8 @@ public class PartnerSamples {
                         describeLayoutSample();
                         break;
                     case 20:
-                    	describeSoftphoneLayoutSample();
-                    	break;
+                        describeSoftphoneLayoutSample();
+                        break;
                     case 21:
                         setPasswordSample();
                         break;
@@ -2166,7 +1865,8 @@ public class PartnerSamples {
                     case 98:
                         toggleSoapLogging();
                     }
-                }                showMenu();
+                }
+                showMenu();
 
             } catch (Exception e) {
                 System.out.print("Enter the number of the sample to run: ");
@@ -2174,291 +1874,8 @@ public class PartnerSamples {
             choice = getUserInput();
         }
     }
-   
-	private void processSample() {
-	    // Verify that we are already authenticated, if not
-        // call the login function to do so
-        if (!loggedIn) {
-            if (!login()) {
-                return;
-            }
-        }
 
-        try {
-			//First step is to create an account that matches the approval process criteria
-			SObject acct = new SObject();
-			acct.setType("Account");
-			acct.set_any(new MessageElement[] { newMessageElement("Name", "API Approval Sample") });
-			acct.setId(binding.create(new SObject[] {acct})[0].getId());
-			
-			// Next step is to submit the account for approval using a ProcessSubmitRequest
-			ProcessSubmitRequest psr = new ProcessSubmitRequest();
-			psr.setObjectId(acct.getId());
-			psr.setComments("This approval request was initiated from the API.");
-			ProcessResult p_res = binding.process(new ProcessRequest[] { psr })[0];
-			if (p_res.isSuccess()) {
-				//Since the submission was successful we can now approve or reject it with 
-				// a ProcessWorkItmeRequest
-				ProcessWorkitemRequest pwr = new ProcessWorkitemRequest();
-			
-				pwr.setAction("Approve");
-				pwr.setComments("This request was approved from the API.");
-				pwr.setWorkitemId(p_res.getNewWorkitemIds(0));
-				p_res = binding.process(new ProcessRequest[] { pwr })[0];
-				if (p_res.isSuccess()) {
-					System.out.println("Successfully submitted and then approved an approval request.");
-				} else {
-					System.out.println("Error approving the work item: " + p_res.getErrors(0).getMessage());
-				}
-			} else {
-				System.out.println("Error submitting the account for approval: " + p_res.getErrors(0).getMessage());
-			}
-		} catch (ApiFault e) {
-			System.out.println("The API returned a fault: " + e.getExceptionMessage());
-		} catch (RemoteException e) {
-			System.out.println("There was an Axis generated error: " + e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		getUserInput("\nHit the enter key to continue...");
-	}
-	
-	private void undeleteSample() {
-		//Create and delete the account, like the queryAll sample
-		//Undelete the account
-		
-	    // Verify that we are already authenticated, if not
-        // call the login function to do so
-        if (!loggedIn) {
-            if (!login()) {
-                return;
-            }
-        }
-
-        //For this sample we will create an account and then delete it
-        //to demonstrate the power of queryAll
-        String accountName = getUserInput("\nEnter a name for a test account:");
-        if (accountName == null || accountName.length() == 0) {
-        	return;
-        }
-        String accountId = createAndDeleteAnAccount(accountName);
-        getUserInput("You can check your recycle bin now to see the deleted account.\nHit return to continue...");
-        
-        //Now, we can undelete the account
-        try {
-			UndeleteResult udr = binding.undelete(new String[] {accountId})[0];
-			if (udr.isSuccess()) {
-				System.out.println("The account was successfully undeleted.");
-				System.out.println("If you check your recycle bin you will see the account is no longer present.");
-			} else {
-				System.out.println("Undelete failed: " + udr.getErrors(0).getMessage());
-			}
-		} catch (ApiFault e) {
-			System.out.println("Error un-deleting test account: " + e.getExceptionMessage());
-		} catch (RemoteException e) {
-			System.out.println("Error from the server on create test account: " + e.getMessage());
-		}
-        getUserInput("\nHit return to continue...");
-	}
-	
-	private void mergeSample() {
-	    // Verify that we are already authenticated, if not
-        // call the login function to do so
-        if (!loggedIn) {
-            if (!login()) {
-                return;
-            }
-        }
-        
-		try {
-	        SObject masterAccount = new SObject();
-	        MessageElement masterAccountName = newMessageElement("Name", "MasterAccount");
-	        masterAccount.set_any(new MessageElement[] { masterAccountName });
-	        masterAccount.setType("Account");
-	        SaveResult masterAccountSaveResult;
-	       
-			masterAccountSaveResult = binding.create(new SObject[] {masterAccount})[0];
-			
-	        masterAccount.setId(masterAccountSaveResult.getId());
-	        MessageElement masterAccountDescription = newMessageElement("Description", "Old description");
-	        masterAccount.set_any(new MessageElement[] { masterAccountName, masterAccountDescription } );
-	
-	        SObject accountToMerge = new SObject();
-	        accountToMerge.setType("Account");
-	        MessageElement mergeAccountName = newMessageElement("Name", "AccountToMerge");
-	        MessageElement mergeAccountDesc = newMessageElement("Description", "Duplicate account");
-	        accountToMerge.set_any(new MessageElement[] { mergeAccountDesc, mergeAccountName } );
-	
-	        SaveResult accountToMergeSaveResult = binding.create(new SObject[] {accountToMerge})[0];
-	
-	        //Attach a note, which will get re-parented
-	        SObject note = new SObject();
-	        note.setType("Note");
-	        MessageElement noteParentId = newMessageElement("ParentId", accountToMergeSaveResult.getId());
-	        MessageElement noteBody = newMessageElement("Body", "This note will be moved to the MasterAccount during merge.");
-	        MessageElement noteTitle = newMessageElement("Title", "Test note to be reparented.");
-	        note.set_any(new MessageElement[] { noteBody, noteParentId, noteTitle } );
-	        
-	        @SuppressWarnings("unused")
-			SaveResult noteSave = binding.create(new SObject[] {note})[0];
-	        
-	        MergeRequest mr = new MergeRequest();
-	
-	        //Perform an update on the master record as part of the merge:
-	        masterAccountDescription = newMessageElement("Description", "Was merged");
-	        masterAccount.set_any(new MessageElement[] { masterAccountName, masterAccountDescription } );
-	        
-	        mr.setMasterRecord(masterAccount);
-	        mr.setRecordToMergeIds(new String[] {accountToMergeSaveResult.getId()});
-	        MergeResult result = binding.merge(new MergeRequest[] {mr})[0];
-	
-	        getUserInput("Merged " + result.isSuccess() + " got " + 
-	        result.getUpdatedRelatedIds().length + " updated child records\nHit return to continue.");
-
-		} catch (ApiFault e) {
-			System.out.println("Error merging account: " + e.getExceptionMessage());
-            getUserInput("\nHit return to continue...");
-		} catch (RemoteException e) {
-			System.out.println("Error from the server on the merge sample: " + e.getMessage());
-            getUserInput("\nHit return to continue...");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private HashMap<String, Field> makeFieldMap(Field[] fields) {
-		
-		HashMap<String, Field> fieldMap = new HashMap<String, Field>();
-		for (int i=0;i<fields.length;i++) {
-			Field field = fields[i];
-			fieldMap.put(field.getName(), field);
-		}
-		return fieldMap;
-	}
-	private void upsertSample() {
-		// Verify that we are already authenticated, if not
-		// call the login function to do so
-		if (!loggedIn) {
-		    if (!login()) {
-		        return;
-		    }
-		}
-		
-		try {
-			DescribeSObjectResult dsr = binding.describeSObject("Account");
-			HashMap fieldMap = makeFieldMap(dsr.getFields());
-			if (!fieldMap.containsKey("External_Id__c")) {
-				System.out.println("\n\nATTENTION: To run this sample you need to \ncreate a custom text field on the Account object \nnamed External_Id with a length of 8 characters \nand with the 'external id' checkbox checked.");
-			} else {
-				//First, we need to make sure the test accounts do not exist.
-				QueryResult qr = binding.query("Select Id From Account Where External_Id__c = '11111111' or External_Id__c = '22222222'");
-				if (qr.getSize() > 0) {
-					SObject[] accounts = qr.getRecords();
-					//Get the ids
-					String[] ids = new String[accounts.length];
-					for (int i=0;i<ids.length;i++) {
-						ids[i] = accounts[i].getId();
-					}
-					//Delete the accounts
-					binding.delete(ids);
-				}
-				
-				//Create a new account using create, we wil use this to update via upsert
-				//We will set the external id to be ones so that we can use that value for the upsert
-				SObject newAccount = new SObject();
-				newAccount.setType("Account");
-				MessageElement acctName = newMessageElement("Name", "Account to update");
-				MessageElement extId = newMessageElement("External_Id__c", "11111111");
-				newAccount.set_any(new MessageElement[] { acctName, extId });
-	
-				binding.create(new SObject[] { newAccount });
-				
-				//Now we will create an account that should be updated on insert based
-				//on the external id field.
-				SObject updateAccount = new SObject();
-				updateAccount.setType("Account");
-				MessageElement webSite = newMessageElement("Website", "http://www.website.com");
-				MessageElement extId1 = newMessageElement("External_Id__c", "11111111");
-				updateAccount.set_any(new MessageElement[] { webSite, extId1 } );
-	
-				// This account is meant to be new
-				SObject createAccount = new SObject();
-				createAccount.setType("Account");
-				MessageElement cacctName = newMessageElement("Name", "My Company, Inc");
-				MessageElement extId3 = newMessageElement("External_Id__c", "22222222");
-				createAccount.set_any(new MessageElement[] { cacctName, extId3 } );
-				
-				//We have our two accounts, one should be new, the other should be updated.
-				try {
-					// Invoke the upsert call and save the results.
-					// Use External_Id custom field for matching records
-					UpsertResult[] upsertResults = binding.upsert("External_Id__c", new SObject[] {createAccount, updateAccount });
-					for (UpsertResult result : upsertResults) {
-						if (result.isSuccess()) {
-							System.out.println("\nUpsert succeeded.");
-							System.out.println((result.isCreated() ? "Inserted" : "Updated") + " account, id is " + result.getId().toString());
-						} else {
-							System.out.println("The Upsert failed because: " + result.getErrors(0).getMessage());
-						}
-					}
-				} catch (RemoteException ex) {
-					System.out.println("An unexpected error has occurred." + ex.getMessage());
-				}
-			}
-			getUserInput("\nPress the RETURN key to continue...");
-		} catch (ApiFault e) {
-			System.out.println("Error merging account: " + e.getExceptionMessage());
-			getUserInput("\nHit return to continue...");
-		} catch (RemoteException e) {
-			System.out.println("Error from the server on the merge sample: " + e.getMessage());
-			getUserInput("\nHit return to continue...");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private String createAndDeleteAnAccount(String accountName) {
-		String returnId = null;
-        SObject acct = new SObject();
-        acct.setType("Account");
-        String acctName = (accountName == null) ? "QueryAll Sample" : accountName;
-        try {
-        	MessageElement nameField = newMessageElement("Name", acctName);
-        	acct.set_any(new MessageElement[] { nameField });
-        	//We are only creating one account so we can index the return array directly
-			SaveResult sr = binding.create(new SObject[] {acct})[0];
-			if (sr.isSuccess()) {
-				
-				
-				acct.setId(sr.getId());
-				//Ok, now we will delete that account
-				DeleteResult dr = binding.delete(new String[] {acct.getId()})[0];
-				if (!dr.isSuccess()) {
-					System.out.println("The web service would not let us delete the account: \n" + dr.getErrors(0).getMessage());
-		            getUserInput("\nHit return to continue...");
-				} else {
-					returnId = acct.getId();
-				}
-				
-				
-			} else {
-				System.out.println("The web service would not let us create the account: \n" + 
-						sr.getErrors(0).getMessage());
-	            getUserInput("\nHit return to continue...");
-			}
-		} catch (ApiFault e) {
-			System.out.println("Error creating test account: " + e.getExceptionMessage());
-            getUserInput("\nHit return to continue...");
-		} catch (RemoteException e) {
-			System.out.println("Error from the server on create test account: " + e.getMessage());
-            getUserInput("\nHit return to continue...");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return returnId;
-	}
-
-	private void queryAllSample() {
+    private void processSample() {
         // Verify that we are already authenticated, if not
         // call the login function to do so
         if (!loggedIn) {
@@ -2467,41 +1884,86 @@ public class PartnerSamples {
             }
         }
 
-        //For this sample we will create an account and then delete it
-        //to demonstrate the power of queryAll
+        try {
+            // First step is to create an account that matches the approval process criteria
+            SObject acct = new SObject();
+            acct.setType("Account");
+            acct.set_any(new MessageElement[] { newMessageElement("Name", "API Approval Sample") });
+            acct.setId(binding.create(new SObject[] { acct })[0].getId());
+
+            // Next step is to submit the account for approval using a ProcessSubmitRequest
+            ProcessSubmitRequest psr = new ProcessSubmitRequest();
+            psr.setObjectId(acct.getId());
+            psr.setComments("This approval request was initiated from the API.");
+            ProcessResult p_res = binding.process(new ProcessRequest[] { psr })[0];
+            if (p_res.isSuccess()) {
+                // Since the submission was successful we can now approve or reject it with
+                // a ProcessWorkItmeRequest
+                ProcessWorkitemRequest pwr = new ProcessWorkitemRequest();
+
+                pwr.setAction("Approve");
+                pwr.setComments("This request was approved from the API.");
+                pwr.setWorkitemId(p_res.getNewWorkitemIds(0));
+                p_res = binding.process(new ProcessRequest[] { pwr })[0];
+                if (p_res.isSuccess()) {
+                    System.out.println("Successfully submitted and then approved an approval request.");
+                } else {
+                    System.out.println("Error approving the work item: " + p_res.getErrors(0).getMessage());
+                }
+            } else {
+                System.out.println("Error submitting the account for approval: " + p_res.getErrors(0).getMessage());
+            }
+        } catch (ApiFault e) {
+            System.out.println("The API returned a fault: " + e.getExceptionMessage());
+        } catch (RemoteException e) {
+            System.out.println("There was an Axis generated error: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        getUserInput("\nHit the enter key to continue...");
+    }
+
+    private void undeleteSample() {
+        // Create and delete the account, like the queryAll sample
+        // Undelete the account
+
+        // Verify that we are already authenticated, if not
+        // call the login function to do so
+        if (!loggedIn) {
+            if (!login()) {
+                return;
+            }
+        }
+
+        // For this sample we will create an account and then delete it
+        // to demonstrate the power of queryAll
         String accountName = getUserInput("\nEnter a name for a test account:");
         if (accountName == null || accountName.length() == 0) {
-        	return;
+            return;
         }
-        createAndDeleteAnAccount(accountName);
-		
-		//Now for Query All.  Query all allows you to return items that have been moved to the recycle
-		//bin, like the account we just deleted.
-        QueryResult qr = null;
+        String accountId = createAndDeleteAnAccount(accountName);
+        getUserInput("You can check your recycle bin now to see the deleted account.\nHit return to continue...");
+
+        // Now, we can undelete the account
         try {
-            qr = binding.queryAll("select id, Name from Account where name = '" + accountName + "' and IsDeleted = true");
-            if (qr.getSize() != 0) {
-                SObject account = qr.getRecords()[0];
-                System.out.println("Retrieved the deleted account: " + getFieldValue(account.get_any(), "Name"));
+            UndeleteResult udr = binding.undelete(new String[] { accountId })[0];
+            if (udr.isSuccess()) {
+                System.out.println("The account was successfully undeleted.");
+                System.out.println("If you check your recycle bin you will see the account is no longer present.");
             } else {
-            	System.out.println("Hmm...\nDid not find the account, that's strange.");
+                System.out.println("Undelete failed: " + udr.getErrors(0).getMessage());
             }
-            System.out.println("\nQuery succesfully executed.");
-            getUserInput("\nHit return to continue...");
-        } catch (ApiFault af) {
-            System.out
-                    .println("\nFailed to execute query succesfully, error message was: \n"
-                            + af.getExceptionMessage());
-            getUserInput("\nHit return to continue...");
-        } catch (Exception ex) {
-            System.out
-                    .println("\nFailed to execute query succesfully, error message was: \n"
-                            + ex.getMessage());
-            getUserInput("\nHit return to continue...");
+        } catch (ApiFault e) {
+            System.out.println("Error un-deleting test account: " + e.getExceptionMessage());
+        } catch (RemoteException e) {
+            System.out.println("Error from the server on create test account: " + e.getMessage());
         }
-	}
-	
-	private void describeSoftphoneLayoutSample() {
+        getUserInput("\nHit return to continue...");
+    }
+
+    private void mergeSample() {
+        // Verify that we are already authenticated, if not
+        // call the login function to do so
         if (!loggedIn) {
             if (!login()) {
                 return;
@@ -2509,42 +1971,271 @@ public class PartnerSamples {
         }
 
         try {
-        	DescribeSoftphoneLayoutResult slr = binding.describeSoftphoneLayout();
-        	DescribeSoftphoneLayoutCallType[] callTypes = slr.getCallTypes();
-            System.out.println("There are " + callTypes.length
-                    + " call types.");
+            SObject masterAccount = new SObject();
+            MessageElement masterAccountName = newMessageElement("Name", "MasterAccount");
+            masterAccount.set_any(new MessageElement[] { masterAccountName });
+            masterAccount.setType("Account");
+            SaveResult masterAccountSaveResult;
+
+            masterAccountSaveResult = binding.create(new SObject[] { masterAccount })[0];
+
+            masterAccount.setId(masterAccountSaveResult.getId());
+            MessageElement masterAccountDescription = newMessageElement("Description", "Old description");
+            masterAccount.set_any(new MessageElement[] { masterAccountName, masterAccountDescription });
+
+            SObject accountToMerge = new SObject();
+            accountToMerge.setType("Account");
+            MessageElement mergeAccountName = newMessageElement("Name", "AccountToMerge");
+            MessageElement mergeAccountDesc = newMessageElement("Description", "Duplicate account");
+            accountToMerge.set_any(new MessageElement[] { mergeAccountDesc, mergeAccountName });
+
+            SaveResult accountToMergeSaveResult = binding.create(new SObject[] { accountToMerge })[0];
+
+            // Attach a note, which will get re-parented
+            SObject note = new SObject();
+            note.setType("Note");
+            MessageElement noteParentId = newMessageElement("ParentId", accountToMergeSaveResult.getId());
+            MessageElement noteBody = newMessageElement("Body", "This note will be moved to the MasterAccount during merge.");
+            MessageElement noteTitle = newMessageElement("Title", "Test note to be reparented.");
+            note.set_any(new MessageElement[] { noteBody, noteParentId, noteTitle });
+
+            @SuppressWarnings("unused")
+            SaveResult noteSave = binding.create(new SObject[] { note })[0];
+
+            MergeRequest mr = new MergeRequest();
+
+            // Perform an update on the master record as part of the merge:
+            masterAccountDescription = newMessageElement("Description", "Was merged");
+            masterAccount.set_any(new MessageElement[] { masterAccountName, masterAccountDescription });
+
+            mr.setMasterRecord(masterAccount);
+            mr.setRecordToMergeIds(new String[] { accountToMergeSaveResult.getId() });
+            MergeResult result = binding.merge(new MergeRequest[] { mr })[0];
+
+            getUserInput("Merged " + result.isSuccess() + " got " + result.getUpdatedRelatedIds().length
+                    + " updated child records\nHit return to continue.");
+
+        } catch (ApiFault e) {
+            System.out.println("Error merging account: " + e.getExceptionMessage());
+            getUserInput("\nHit return to continue...");
+        } catch (RemoteException e) {
+            System.out.println("Error from the server on the merge sample: " + e.getMessage());
+            getUserInput("\nHit return to continue...");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private HashMap<String, Field> makeFieldMap(Field[] fields) {
+
+        HashMap<String, Field> fieldMap = new HashMap<String, Field>();
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+            fieldMap.put(field.getName(), field);
+        }
+        return fieldMap;
+    }
+
+    private void upsertSample() {
+        // Verify that we are already authenticated, if not
+        // call the login function to do so
+        if (!loggedIn) {
+            if (!login()) {
+                return;
+            }
+        }
+
+        try {
+            DescribeSObjectResult dsr = binding.describeSObject("Account");
+            HashMap fieldMap = makeFieldMap(dsr.getFields());
+            if (!fieldMap.containsKey("External_Id__c")) {
+                System.out
+                        .println("\n\nATTENTION: To run this sample you need to \ncreate a custom text field on the Account object \nnamed External_Id with a length of 8 characters \nand with the 'external id' checkbox checked.");
+            } else {
+                // First, we need to make sure the test accounts do not exist.
+                QueryResult qr = binding
+                        .query("Select Id From Account Where External_Id__c = '11111111' or External_Id__c = '22222222'");
+                if (qr.getSize() > 0) {
+                    SObject[] accounts = qr.getRecords();
+                    // Get the ids
+                    String[] ids = new String[accounts.length];
+                    for (int i = 0; i < ids.length; i++) {
+                        ids[i] = accounts[i].getId();
+                    }
+                    // Delete the accounts
+                    binding.delete(ids);
+                }
+
+                // Create a new account using create, we wil use this to update via upsert
+                // We will set the external id to be ones so that we can use that value for the upsert
+                SObject newAccount = new SObject();
+                newAccount.setType("Account");
+                MessageElement acctName = newMessageElement("Name", "Account to update");
+                MessageElement extId = newMessageElement("External_Id__c", "11111111");
+                newAccount.set_any(new MessageElement[] { acctName, extId });
+
+                binding.create(new SObject[] { newAccount });
+
+                // Now we will create an account that should be updated on insert based
+                // on the external id field.
+                SObject updateAccount = new SObject();
+                updateAccount.setType("Account");
+                MessageElement webSite = newMessageElement("Website", "http://www.website.com");
+                MessageElement extId1 = newMessageElement("External_Id__c", "11111111");
+                updateAccount.set_any(new MessageElement[] { webSite, extId1 });
+
+                // This account is meant to be new
+                SObject createAccount = new SObject();
+                createAccount.setType("Account");
+                MessageElement cacctName = newMessageElement("Name", "My Company, Inc");
+                MessageElement extId3 = newMessageElement("External_Id__c", "22222222");
+                createAccount.set_any(new MessageElement[] { cacctName, extId3 });
+
+                // We have our two accounts, one should be new, the other should be updated.
+                try {
+                    // Invoke the upsert call and save the results.
+                    // Use External_Id custom field for matching records
+                    UpsertResult[] upsertResults = binding.upsert("External_Id__c",
+                            new SObject[] { createAccount, updateAccount });
+                    for (UpsertResult result : upsertResults) {
+                        if (result.isSuccess()) {
+                            System.out.println("\nUpsert succeeded.");
+                            System.out.println((result.isCreated() ? "Inserted" : "Updated") + " account, id is "
+                                    + result.getId().toString());
+                        } else {
+                            System.out.println("The Upsert failed because: " + result.getErrors(0).getMessage());
+                        }
+                    }
+                } catch (RemoteException ex) {
+                    System.out.println("An unexpected error has occurred." + ex.getMessage());
+                }
+            }
+            getUserInput("\nPress the RETURN key to continue...");
+        } catch (ApiFault e) {
+            System.out.println("Error merging account: " + e.getExceptionMessage());
+            getUserInput("\nHit return to continue...");
+        } catch (RemoteException e) {
+            System.out.println("Error from the server on the merge sample: " + e.getMessage());
+            getUserInput("\nHit return to continue...");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String createAndDeleteAnAccount(String accountName) {
+        String returnId = null;
+        SObject acct = new SObject();
+        acct.setType("Account");
+        String acctName = (accountName == null) ? "QueryAll Sample" : accountName;
+        try {
+            MessageElement nameField = newMessageElement("Name", acctName);
+            acct.set_any(new MessageElement[] { nameField });
+            // We are only creating one account so we can index the return array directly
+            SaveResult sr = binding.create(new SObject[] { acct })[0];
+            if (sr.isSuccess()) {
+
+                acct.setId(sr.getId());
+                // Ok, now we will delete that account
+                DeleteResult dr = binding.delete(new String[] { acct.getId() })[0];
+                if (!dr.isSuccess()) {
+                    System.out.println("The web service would not let us delete the account: \n" + dr.getErrors(0).getMessage());
+                    getUserInput("\nHit return to continue...");
+                } else {
+                    returnId = acct.getId();
+                }
+
+            } else {
+                System.out.println("The web service would not let us create the account: \n" + sr.getErrors(0).getMessage());
+                getUserInput("\nHit return to continue...");
+            }
+        } catch (ApiFault e) {
+            System.out.println("Error creating test account: " + e.getExceptionMessage());
+            getUserInput("\nHit return to continue...");
+        } catch (RemoteException e) {
+            System.out.println("Error from the server on create test account: " + e.getMessage());
+            getUserInput("\nHit return to continue...");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return returnId;
+    }
+
+    private void queryAllSample() {
+        // Verify that we are already authenticated, if not
+        // call the login function to do so
+        if (!loggedIn) {
+            if (!login()) {
+                return;
+            }
+        }
+
+        // For this sample we will create an account and then delete it
+        // to demonstrate the power of queryAll
+        String accountName = getUserInput("\nEnter a name for a test account:");
+        if (accountName == null || accountName.length() == 0) {
+            return;
+        }
+        createAndDeleteAnAccount(accountName);
+
+        // Now for Query All. Query all allows you to return items that have been moved to the recycle
+        // bin, like the account we just deleted.
+        QueryResult qr = null;
+        try {
+            qr = binding.queryAll("select id, Name from Account where name = '" + accountName + "' and IsDeleted = true");
+            if (qr.getSize() != 0) {
+                SObject account = qr.getRecords()[0];
+                System.out.println("Retrieved the deleted account: " + getFieldValue(account.get_any(), "Name"));
+            } else {
+                System.out.println("Hmm...\nDid not find the account, that's strange.");
+            }
+            System.out.println("\nQuery succesfully executed.");
+            getUserInput("\nHit return to continue...");
+        } catch (ApiFault af) {
+            System.out.println("\nFailed to execute query succesfully, error message was: \n" + af.getExceptionMessage());
+            getUserInput("\nHit return to continue...");
+        } catch (Exception ex) {
+            System.out.println("\nFailed to execute query succesfully, error message was: \n" + ex.getMessage());
+            getUserInput("\nHit return to continue...");
+        }
+    }
+
+    private void describeSoftphoneLayoutSample() {
+        if (!loggedIn) {
+            if (!login()) {
+                return;
+            }
+        }
+
+        try {
+            DescribeSoftphoneLayoutResult slr = binding.describeSoftphoneLayout();
+            DescribeSoftphoneLayoutCallType[] callTypes = slr.getCallTypes();
+            System.out.println("There are " + callTypes.length + " call types.");
             for (int i = 0; i < callTypes.length; i++) {
-            	DescribeSoftphoneLayoutCallType callType = callTypes[i];
-            	DescribeSoftphoneLayoutInfoField[] fields = callType.getInfoFields();
-                System.out.println("    There are "
-                        + fields.length
-                        + " info fields.");
-                for (int j=0;j<fields.length;j++) {
-                	System.out.println("\t" + fields[j].getName() + "\n");
+                DescribeSoftphoneLayoutCallType callType = callTypes[i];
+                DescribeSoftphoneLayoutInfoField[] fields = callType.getInfoFields();
+                System.out.println("    There are " + fields.length + " info fields.");
+                for (int j = 0; j < fields.length; j++) {
+                    System.out.println("\t" + fields[j].getName() + "\n");
                 }
                 DescribeSoftphoneLayoutSection[] sections = callType.getSections();
                 System.out.println("\tThere are " + sections.length + " sections on this layout.");
-                for (int j=0;j<sections.length;j++) {
-                	DescribeSoftphoneLayoutSection section = sections[j];
-                	DescribeSoftphoneLayoutItem[] items = section.getItems();
-                	for (int k=0;k<items.length;k++) {
-                		DescribeSoftphoneLayoutItem item = items[k];
-                		System.out.println("Section " + j + " - item api name: " + item.getItemApiName());
-                	}
+                for (int j = 0; j < sections.length; j++) {
+                    DescribeSoftphoneLayoutSection section = sections[j];
+                    DescribeSoftphoneLayoutItem[] items = section.getItems();
+                    for (int k = 0; k < items.length; k++) {
+                        DescribeSoftphoneLayoutItem item = items[k];
+                        System.out.println("Section " + j + " - item api name: " + item.getItemApiName());
+                    }
                 }
             }
             getUserInput("\nHit return to continue...");
         } catch (ApiFault af) {
-            System.out.println("\nFailed to describe softphone layout, error message was: \n"
-                    + af.getExceptionMessage());
+            System.out.println("\nFailed to describe softphone layout, error message was: \n" + af.getExceptionMessage());
             getUserInput("\nHit return to continue...");
         } catch (Exception ex) {
-            System.out.println("\nFailed to describe softphone layout , error message was: \n"
-                    + ex.getMessage());
+            System.out.println("\nFailed to describe softphone layout , error message was: \n" + ex.getMessage());
             getUserInput("\nHit return to continue...");
         }
 
-		
-		
-	}
+    }
 }

@@ -20,17 +20,17 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-import com.sforce.soap.partner.DescribeGlobalResult;
-import com.sforce.soap.partner.DescribeSObjectResult;
-import com.sforce.soap.partner.Field;
-import com.sforce.soap.partner.FieldType;
-import com.sforce.soap.partner.LoginResult;
-import com.sforce.soap.partner.SessionHeader;
-import com.sforce.soap.partner.SforceServiceLocator;
-import com.sforce.soap.partner.SoapBindingStub;
-import com.sforce.soap.partner.fault.InvalidIdFault;
-import com.sforce.soap.partner.fault.LoginFault;
-import com.sforce.soap.partner.fault.UnexpectedErrorFault;
+import com.sforce16.soap.partner.DescribeGlobalResult;
+import com.sforce16.soap.partner.DescribeSObjectResult;
+import com.sforce16.soap.partner.Field;
+import com.sforce16.soap.partner.FieldType;
+import com.sforce16.soap.partner.LoginResult;
+import com.sforce16.soap.partner.SessionHeader;
+import com.sforce16.soap.partner.SforceServiceLocator;
+import com.sforce16.soap.partner.SoapBindingStub;
+import com.sforce16.soap.partner.fault.InvalidIdFault;
+import com.sforce16.soap.partner.fault.LoginFault;
+import com.sforce16.soap.partner.fault.UnexpectedErrorFault;
 
 public class SObjectsToSchema {
 
