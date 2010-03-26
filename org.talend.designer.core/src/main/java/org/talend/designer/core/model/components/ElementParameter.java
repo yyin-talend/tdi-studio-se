@@ -127,6 +127,8 @@ public class ElementParameter implements IElementParameter {
 
     private boolean dynamicSettings = false;
 
+    private boolean noContextAssist;
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -874,6 +876,14 @@ public class ElementParameter implements IElementParameter {
         this.columnsBasedOnSchema = columnsBasedOnSchema;
     }
 
+    public boolean isNoContextAssist() {
+        return this.noContextAssist;
+    }
+
+    public void setNoContextAssist(boolean enable) {
+        this.noContextAssist = enable;
+    }
+
     @Override
     public IElementParameter clone() throws CloneNotSupportedException {
         IElementParameter clone = (IElementParameter) super.clone();
@@ -929,6 +939,8 @@ public class ElementParameter implements IElementParameter {
         clone.setShowIf(getShowIf());
         clone.setValue(getValue()); // ?
         // clone.setValueToDefault(null)
+        clone.setNoContextAssist(isNoContextAssist());
+
         return clone;
     }
 }

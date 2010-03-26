@@ -1221,6 +1221,7 @@ public class EmfComponent implements IComponent {
             param.setBackgroundColor(getColor(param, xmlParam.getBACKGROUND()));
             param.setColor(getColor(param, xmlParam.getCOLOR()));
             param.setContextMode(xmlParam.isCONTEXTMODE());
+            param.setNoContextAssist(xmlParam.isNOCONTEXTASSIST());
 
             switch (type) {
             case COLOR:
@@ -1645,6 +1646,7 @@ public class EmfComponent implements IComponent {
                 newParam.setNotShowIf(item.getNOTSHOWIF());
                 newParam.setReadOnlyIf(item.getREADONLYIF());
                 newParam.setNotReadOnlyIf(item.getNOTREADONLYIF());
+                newParam.setNoContextAssist(item.isNOCONTEXTASSIST());
                 if (item.isSetREADONLY()) {
                     newParam.setReadOnly(item.isREADONLY());
                 }

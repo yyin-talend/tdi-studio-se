@@ -459,7 +459,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (parameterName == null || control == null) {
                 throw new NullPointerException();
             }
-            if (!elem.getElementParameter(parameterName).isReadOnly() && !(control instanceof ReconcilerStyledText)) {
+            IElementParameter param = elem.getElementParameter(parameterName);
+            if (param != null && !param.isNoContextAssist() && !param.isReadOnly() && !(control instanceof ReconcilerStyledText)) {
 
                 IProcess process = getProcess(elem, part);
 
