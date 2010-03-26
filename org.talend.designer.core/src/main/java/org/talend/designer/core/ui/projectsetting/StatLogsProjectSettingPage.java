@@ -42,6 +42,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -52,6 +53,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
@@ -320,17 +322,22 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
                 LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
                 exeCommand(process, command);
 
-                String id = (String) process.getElementParameter(
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()) //$NON-NLS-1$
-                        .getValue();
-                String propertyType = EParameterName.PROPERTY_TYPE.getName() + ":"
-                        + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
-                ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(id);
-                Connection connection = connectionItem.getConnection();
-                ChangeValuesFromRepository cmd = new ChangeValuesFromRepository(process, connection, propertyType, id);
-                cmd.ignoreContextMode(true);
-                exeCommand(process, cmd);
-
+                Element statsAndLogElement = pro.getStatsAndLog();
+                IElementParameter propertyElem = statsAndLogElement.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
+                        .getChildParameters().get(EParameterName.PROPERTY_TYPE.getName());
+                Object proValue = propertyElem.getValue();
+                if (proValue instanceof String && ((String) proValue).equalsIgnoreCase(EmfComponent.REPOSITORY)) {
+                    IElementParameter repositoryElem = statsAndLogElement
+                            .getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    String value = (String) repositoryElem.getValue();
+                    String propertyType = EParameterName.PROPERTY_TYPE.getName() + ":" //$NON-NLS-1$ 
+                            + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+                    ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(value);
+                    Connection connection = connectionItem.getConnection();
+                    ChangeValuesFromRepository cmd = new ChangeValuesFromRepository(process, connection, propertyType, value);
+                    cmd.ignoreContextMode(true);
+                    exeCommand(process, cmd);
+                }
             }
             monitor.worked(100);
         } else {

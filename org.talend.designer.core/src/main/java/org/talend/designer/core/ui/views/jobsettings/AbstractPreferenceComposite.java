@@ -220,15 +220,21 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         if (!update) {
             return;
         }
-        String id = (String) elem.getElementParameter(
-                EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()) //$NON-NLS-1$
-                .getValue();
-        String propertyType = EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+        IElementParameter proElement = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getChildParameters().get(
+                EParameterName.PROPERTY_TYPE.getName());
+        Object value = proElement.getValue();
+        if (value instanceof String && ((String) value).equalsIgnoreCase(EmfComponent.REPOSITORY)) {
+            String id = (String) elem.getElementParameter(
+                    EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()) //$NON-NLS-1$
+                    .getValue();
+            String propertyType = EParameterName.PROPERTY_TYPE.getName() + ":"
+                    + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
 
-        ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(id);
-        Connection connection = connectionItem.getConnection();
-        ChangeValuesFromRepository command = new ChangeValuesFromRepository(elem, connection, propertyType, id);
-        getCommandStack().execute(command);
+            ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(id);
+            Connection connection = connectionItem.getConnection();
+            ChangeValuesFromRepository command = new ChangeValuesFromRepository(elem, connection, propertyType, id);
+            getCommandStack().execute(command);
+        }
     }
 
     protected boolean useRepository(String paramName) {
