@@ -51,6 +51,12 @@ import com.sforce16.soap.partner.sobject.SObject;
  */
 public class SforceManagementImpl implements SforceManagement {
 
+    private int timeout;
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
     private SoapBindingStub binding;
 
     public SoapBindingStub getBinding() {
@@ -140,7 +146,7 @@ public class SforceManagementImpl implements SforceManagement {
         binding = (SoapBindingStub) sforceService.getSoap(new URL(endPoint));
 
         // 10 minutes
-        binding.setTimeout(60000);
+        binding.setTimeout(timeout);
 
         loginResult = binding.login(username, password);
 
@@ -191,7 +197,7 @@ public class SforceManagementImpl implements SforceManagement {
         this.sforceService = createService();
         binding = (SoapBindingStub) sforceService.getSoap(new URL(endPoint));
         // 10 minutes
-        binding.setTimeout(60000);
+        binding.setTimeout(timeout);
 
         loginResult = binding.login(username, password);
 

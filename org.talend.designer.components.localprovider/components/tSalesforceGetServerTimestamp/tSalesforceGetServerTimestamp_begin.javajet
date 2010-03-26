@@ -51,6 +51,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			String username = ElementParameterParser.getValue(node, "__USER__");
 			String password = ElementParameterParser.getValue(node, "__PASS__");
+			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");		
 %>
@@ -58,6 +59,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			<%if(useExistingConn){%>
 			sfMgr_<%=cid%>.login((com.sforce16.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
 			<%}else{%>
+			sfMgr_<%=cid%>.setTimeout(<%=timeout%>);
 			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
 			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
 			<%}%>

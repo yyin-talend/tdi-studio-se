@@ -22,6 +22,7 @@ imports="
 	boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 	// if the extended insert is disabled set the commit level to 1
 	if (!extendedInsert) commitLevel = "1";
 %>       
@@ -33,6 +34,7 @@ imports="
         <%if(useExistingConn){%>
 		sforceManagement_<%=cid%>.login((com.sforce16.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"), <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);	
 		<%}else{%>
+		sforceManagement_<%=cid %>.setTimeout(<%=timeout%>);
         sforceManagement_<%=cid%>.setNeedCompression(<%=needCompression%>);
         sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
         <%}%>

@@ -59,6 +59,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 			String username = ElementParameterParser.getValue(node, "__USER__");
 			String password = ElementParameterParser.getValue(node, "__PASS__");
+			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 			String module = ElementParameterParser.getValue(node, "__MODULENAME__");
 			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__").trim();
 			module = (("CustomModule").equals(module)) ? customModulename.replaceAll("\"","") : module;
@@ -82,6 +83,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	<%if(useExistingConn){%>
 	sfMgr_<%=cid%>.login((com.sforce16.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
 	<%}else{%>
+	sfMgr_<%=cid%>.setTimeout(<%=timeout%>);
 	sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
 	sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endPoint%>);
 	<%}%>		

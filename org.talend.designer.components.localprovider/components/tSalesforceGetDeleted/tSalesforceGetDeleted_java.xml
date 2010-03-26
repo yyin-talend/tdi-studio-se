@@ -71,7 +71,13 @@
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
-    
+    <PARAMETER 
+		NAME="TIMEOUT" 
+			FIELD="TEXT"
+			NUM_ROW="45"
+			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			<DEFAULT>60000</DEFAULT>
+		</PARAMETER>
     <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="50" REQUIRED="true">
        <ITEMS DEFAULT="Account">
 		<ITEM NAME="Account"   VALUE="Account" />

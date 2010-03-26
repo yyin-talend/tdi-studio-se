@@ -65,7 +65,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			String username = ElementParameterParser.getValue(node, "__USER__");
 			String password = ElementParameterParser.getValue(node, "__PASS__");
-			
+			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 			String normalize_delimiter = ElementParameterParser.getValue(node, "__NORMALIZE_DELIMITER__");
 			String columnname_delimiter = ElementParameterParser.getValue(node, "__COLUMNNAME_DELIMITER__");
 %>
@@ -74,6 +74,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			((org.talend.salesforce.SforceManagementImpl)sfMgr_<%=cid%>).setSforceService((com.sforce16.soap.partner.SforceService)globalMap.get("sforceService_<%=connection  %>"));
 			sfMgr_<%=cid%>.login((com.sforce16.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
 			<%}else{%>
+			sfMgr_<%=cid%>.setTimeout(<%=timeout%>);
 			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
 			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
 			<%}%>

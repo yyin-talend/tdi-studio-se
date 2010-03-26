@@ -22,6 +22,7 @@ String cid = node.getUniqueName();
 String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 String username = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
+String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
 
 boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
@@ -57,6 +58,7 @@ if(bulkConnection){
 
 	org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 	sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
+	sfMgr_<%=cid%>.setTimeout(<%=timeout%>);
 	sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
 	
 	globalMap.put("binding_<%=cid %>", sfMgr_<%=cid%>.getBinding());
