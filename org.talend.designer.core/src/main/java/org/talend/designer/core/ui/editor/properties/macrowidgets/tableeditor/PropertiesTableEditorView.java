@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Color;
@@ -384,14 +385,22 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
                     break;
                 default: // TEXT
-                    TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
-                    textCellEditor.setContentProposalProvider(processProposalProvider);
+                    TextCellEditor tcEditor = null;
                     if (((i == 0) && (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()))
                             || (param.isRepositoryValueUsed()) || (param.isReadOnly()) || currentParam.isReadOnly()) {
                         // read only cell
                     } else {
                         // writable cell
-                        column.setCellEditor(textCellEditor);
+                        if (currentParam.isNoContextAssist()) {
+                            tcEditor = new TextCellEditor(table);
+                        } else {
+                            TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
+                            textCellEditor.setContentProposalProvider(processProposalProvider);
+                            tcEditor = textCellEditor;
+                        }
+                    }
+                    if (tcEditor != null) {
+                        column.setCellEditor(tcEditor);
                     }
                 }
                 // for all kinds of column, check if read only or not when edit the field.
