@@ -239,8 +239,6 @@ do {
                 	}//5
 %>
 		}//b
-	} catch (ClassCastException cce){
-		cce.printStackTrace();
 	} catch (Exception e) {
 
 <%
