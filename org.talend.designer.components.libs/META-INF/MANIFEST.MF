@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Libs Plug-in
 Bundle-SymbolicName: org.talend.designer.components.libs
 Bundle-Version: 1.0.0
-Bundle-Activator: org.talend.designer.components.libs.Activator
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
