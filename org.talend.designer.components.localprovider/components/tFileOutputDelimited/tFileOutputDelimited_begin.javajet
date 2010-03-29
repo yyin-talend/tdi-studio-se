@@ -466,6 +466,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 java.io.File file_<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
                 <%
 	            }
+	    		%>
+        	    if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
+        	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
+	    		<%
 	            List<IMetadataColumn> columns = metadata.getListColumns();
 	    	    int sizeColumns = columns.size();
     	    %>   	    
@@ -569,6 +573,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 <%
 					}
                 }
+%>
+        	    if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
+        	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
+<%
 	            List<IMetadataColumn> columns = metadata.getListColumns();
 	    	    int sizeColumns = columns.size();
     	    %>   	    	
@@ -592,8 +600,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	    	    }
 	    	}//*****************************csv mode under output stream end********************************************************
 %>
-        	    if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
-        	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
 				CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());
 				CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure());
 				CsvWriter<%=cid %>.setForceQualifier(true);

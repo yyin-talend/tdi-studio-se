@@ -370,6 +370,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
 									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim());
             	                <%}%>
+    			            	if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
+    								CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
             			        //set header.
             			        <%
             			        if(isIncludeHeader && !isAppend){
@@ -394,8 +396,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			        }
                         		%>
                         		//initialize new CsvWriter information
-    			            	if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
-    								CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
 								CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());					      		
 					      		CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure()); 
 					      		CsvWriter<%=cid %>.setForceQualifier(true); 
