@@ -4,6 +4,8 @@ imports="
     org.talend.core.model.process.ElementParameterParser 
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.process.IConnection
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnectionCategory
@@ -51,6 +53,7 @@ imports="
     env_<%=cid%>.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// "none","simple","strong"
 	env_<%=cid%>.put(javax.naming.Context.REFERRAL, "<%=referrals%>");
 	env_<%=cid%>.put("java.naming.ldap.derefAliases","<%=aliases%>");
+	env_<%=cid%>.put("java.naming.ldap.attributes.binary","objectGUID");
 <%
 	if(baseDN == null || baseDN.length()<=2){
 %>
@@ -210,10 +213,15 @@ do {
         if (attrs_<%=cid%> != null) {//b
 <%
 					for(IMetadataColumn column:columnList){//5		
-%>        	
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>
+							<%=conn.getName() %>.<%=column.getLabel() %> = (byte[])attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>").get();
+<%
+						}else{
+%>
 			javax.naming.directory.Attribute attr_<%=column.getLabel()%>_<%=cid%> = attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>");
-			if(attr_<%=column.getLabel()%>_<%=cid%> != null)
-			{
+			if(attr_<%=column.getLabel()%>_<%=cid%> != null){
     			StringBuilder attrStr_<%=cid%> = new StringBuilder();
     			for (javax.naming.NamingEnumeration e_<%=cid%> = attr_<%=column.getLabel()%>_<%=cid%>.getAll(); e_<%=cid%>.hasMore();){
     				if(attrStr_<%=cid%>.length()>0){
@@ -227,9 +235,12 @@ do {
 			}
 			
 <%
+						}
                 	}//5
 %>
 		}//b
+	} catch (ClassCastException cce){
+		cce.printStackTrace();
 	} catch (Exception e) {
 
 <%
