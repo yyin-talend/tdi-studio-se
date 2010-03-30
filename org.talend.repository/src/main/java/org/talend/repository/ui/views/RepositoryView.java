@@ -551,6 +551,18 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
                 }
 
+                // filter by name
+                String label = (String) node.getProperties(EProperties.LABEL);
+                if (visible && isMatchNameFilterPattern(label)) {
+                    visible = true;
+                } else {
+                    boolean enable = RepositoryManager.getPreferenceStore().getBoolean(
+                            IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED);
+                    if (enable && !isStableItem(node)) {
+                        visible = false;
+                    }
+                }
+
                 // hide user created folder that has no visible children
                 if (!emptyFolderVisible && ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
                     if (!isStableItem(node) && !hasVisibleChildren(node)) {
@@ -558,14 +570,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     } else {
                         visible = true;
                     }
-                }
-
-                // filter by name
-                String label = (String) node.getProperties(EProperties.LABEL);
-                if (visible && isMatchNameFilterPattern(label)) {
-                    visible = true;
-                } else {
-                    visible = false;
                 }
 
                 return visible;
@@ -611,7 +615,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                         && ERepositoryObjectType.SQLPATTERNS.equals(node.getContentType())
                         && (label.equals("Generic") || label.equals("UserDefined") || label.equals("MySQL")
                                 || label.equals("Netezza") || label.equals("Oracle") || label.equals("ParAccel") || label
-                                .equals("Teradata"))) {
+                                .equals("Teradata")) || label.equals("Hive")) {
                     return true;
 
                 } else if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType()) && node.getObject() != null) {
