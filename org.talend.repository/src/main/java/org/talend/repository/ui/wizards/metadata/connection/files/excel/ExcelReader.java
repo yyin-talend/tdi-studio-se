@@ -206,6 +206,55 @@ public class ExcelReader {
         }
     }
 
+    /**
+     * DOC zli Comment method "getColumnsTitle".
+     * 
+     * @param s
+     * @param rows
+     * @return
+     */
+    public static String[] getColumnsTitle(int index, int rows) {
+        if (index > 26 * 26 + 26 || index < 1) {
+            return null;
+        }
+        if (index == 1) {
+            return getColumnsTitle(rows);
+        }
+        String[] x = new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$ //$NON-NLS-14$ //$NON-NLS-15$ //$NON-NLS-16$ //$NON-NLS-17$ //$NON-NLS-18$
+                "S", "T", "U", "V", "W", "X", "Y", "Z" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+
+        index = index - 1;
+        int newRows = rows + index;
+
+        if (rows <= 0) {
+            return null;
+        } else if (newRows <= 26) {
+            String[] res = new String[rows];
+            System.arraycopy(x, index, res, 0, rows);
+            return res;
+
+        } else if (newRows < 26 * 26) {
+            String[] res = new String[newRows];
+            System.arraycopy(x, 0, res, 0, 26);
+            int offset = 26;
+            FirstLoop: for (String first : x) {
+                for (String second : x) {
+                    String rowName = first + second;
+                    res[offset] = rowName;
+                    offset++;
+                    if (offset == newRows) {
+                        break FirstLoop;
+                    }
+                }
+            }
+            String[] res2 = new String[rows];
+            System.arraycopy(res, index, res2, 0, rows);
+            return res2;
+        } else {
+            return null;// Too much rows
+        }
+    }
+
     @Test
     public void testReadSheet() {
         try {

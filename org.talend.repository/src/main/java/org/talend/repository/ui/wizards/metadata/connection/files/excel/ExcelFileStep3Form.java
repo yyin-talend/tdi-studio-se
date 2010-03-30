@@ -371,38 +371,44 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
 
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol.intValue()];
-
-            String[] excelStyleTitles = ExcelReader.getColumnsTitle(label.length);// Excel style column title
-            for (int i = 0; i < numberOfCol; i++) {
-                label[i] = excelStyleTitles[i];
-                if (firstRowToExtractMetadata == 1) {
-                    // String value = fields.get(i).getValue();
-                    // if (!value.equals("")) {
-                    // label[i] = value;
-                    // }
-                    if (numberOfCol <= fields.length) {// if current field size
-                        // is greater than or
-                        // equals bigest column
-                        // size
-                        if (fields[i] != null && !("").equals(fields[i])) { //$NON-NLS-1$
-                            label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-                            label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
-                        } else {
-                            label[i] = DEFAULT_LABEL + i;
-                        }
-                    } else {// current field size is less than bigest column
-                        // size
-                        if (i < fields.length) {
+            // modify for bug 11711
+            String firstColumn = getConnection().getFirstColumn();
+            Integer valueOf = Integer.valueOf(firstColumn);
+            if (valueOf != null) {
+                String[] excelStyleTitles = ExcelReader.getColumnsTitle(valueOf, label.length);// Excel style column
+                // String[] excelStyleTitles = ExcelReader.getColumnsTitle(label.length);// Excel style column title
+                for (int i = 0; i < numberOfCol; i++) {
+                    label[i] = excelStyleTitles[i];
+                    if (firstRowToExtractMetadata == 1) {
+                        // String value = fields.get(i).getValue();
+                        // if (!value.equals("")) {
+                        // label[i] = value;
+                        // }
+                        if (numberOfCol <= fields.length) {// if current field size
+                            // is greater than or
+                            // equals bigest column
+                            // size
                             if (fields[i] != null && !("").equals(fields[i])) { //$NON-NLS-1$
                                 label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+                                label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
+                            } else {
+                                label[i] = DEFAULT_LABEL + i;
+                            }
+                        } else {// current field size is less than bigest column
+                            // size
+                            if (i < fields.length) {
+                                if (fields[i] != null && !("").equals(fields[i])) { //$NON-NLS-1$
+                                    label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+                                } else {
+                                    label[i] = DEFAULT_LABEL + " " + i; //$NON-NLS-1$ 
+                                }
                             } else {
                                 label[i] = DEFAULT_LABEL + " " + i; //$NON-NLS-1$ 
                             }
-                        } else {
-                            label[i] = DEFAULT_LABEL + " " + i; //$NON-NLS-1$ 
                         }
                     }
                 }
+                // title
             }
             // fix bug 5694: column names check in FileDelimited wizard fails to
             // rename duplicate column name
