@@ -72,10 +72,4 @@
             name="%sqlBuilder">
       </page>
    </extension>
-     <extension
-         point="org.talend.core.service">
-      <Service
-      		serviceId="ISqlBuilderService" 
-      		class="org.talend.sqlbuilder.SqlBuilderService"/>
-   </extension>
 </plugin>
