@@ -27,15 +27,21 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.ExtendedButtonEvent;
 import org.talend.commons.ui.swt.extended.table.IExtendedButtonListener;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
+import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.mapper.MapperMain;
@@ -73,6 +79,8 @@ public class TabFolderEditors extends CTabFolder {
     private List<ExtendedPushButton> outputToolBarButtons;
 
     private IExtendedButtonListener beforeCommandListenerForOutputButtons;
+
+    private RemovePushButtonForExtendedTable removeButton;
 
     public TabFolderEditors(Composite parent, int style, MapperManager mapperManager) {
         super(parent, style);
@@ -186,6 +194,28 @@ public class TabFolderEditors extends CTabFolder {
 
         for (ExtendedPushButton extendedPushButton : outputToolBarButtons) {
             extendedPushButton.addListener(beforeCommandListenerForOutputButtons, true);
+            if (extendedPushButton instanceof RemovePushButton) {
+                removeButton = (RemovePushButtonForExtendedTable) extendedPushButton;
+            }
+        }
+
+        if (removeButton != null) {
+            final TableViewerCreator tableViewerCreator = removeButton.getExtendedTableViewer().getTableViewerCreator();
+            tableViewerCreator.getSelectionHelper().addAfterSelectionListener(new ILineSelectionListener() {
+
+                public void handle(LineSelectionEvent e) {
+
+                    for (TableItem item : tableViewerCreator.getTable().getSelection()) {
+                        if (item.getData() instanceof MetadataColumn) {
+                            MetadataColumn column = (MetadataColumn) item.getData();
+                            removeButton.getButton().setEnabled(!column.isCustom());
+                            break;
+                        }
+                    }
+
+                }
+
+            });
         }
 
         this.addDisposeListener(new DisposeListener() {

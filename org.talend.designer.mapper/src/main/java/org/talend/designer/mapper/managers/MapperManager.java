@@ -603,23 +603,23 @@ public class MapperManager extends AbstractMapperManager {
         MetadataTable metadataTable = new MetadataTable();
         metadataTable.setTableName(tableName);
         MetadataColumn errorMessageCol = new MetadataColumn();
-        errorMessageCol.setLabel("errorMessage");
+        errorMessageCol.setLabel(ERROR_REJECT_MESSAGE);
         errorMessageCol.setTalendType(CorePlugin.getDefault().getPreferenceStore().getString(
                 MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
         errorMessageCol.setNullable(true);
-        errorMessageCol.setOriginalDbColumnName("errorMessage");
+        errorMessageCol.setOriginalDbColumnName(ERROR_REJECT_MESSAGE);
         errorMessageCol.setReadOnly(true);
         errorMessageCol.setCustom(true);
         metadataTable.getListColumns().add(errorMessageCol);
 
         MetadataColumn errorStackTrace = new MetadataColumn();
-        errorStackTrace.setLabel("errorStackTrace");
+        errorStackTrace.setLabel(ERROR_REJECT_STACK_TRACE);
         errorStackTrace.setTalendType(CorePlugin.getDefault().getPreferenceStore().getString(
                 MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
         errorStackTrace.setNullable(true);
-        errorStackTrace.setOriginalDbColumnName("errorStackTrace");
+        errorStackTrace.setOriginalDbColumnName(ERROR_REJECT_STACK_TRACE);
         errorStackTrace.setReadOnly(true);
-        errorStackTrace.setCustom(false);
+        errorStackTrace.setCustom(true);
         metadataTable.getListColumns().add(errorStackTrace);
 
         OutputTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);

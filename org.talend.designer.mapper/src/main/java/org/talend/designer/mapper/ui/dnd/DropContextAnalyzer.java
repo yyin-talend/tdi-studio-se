@@ -31,6 +31,7 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
+import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -218,6 +219,21 @@ public class DropContextAnalyzer {
             return false;
         }
 
+        if (zoneTarget == Zone.OUTPUTS && mapperManager.ERROR_REJECT.equals(dataMapTableViewTarget.getDataMapTable().getName())) {
+            if (currentTableTarget != null && event != null) {
+                if (event.item instanceof TableItem) {
+                    Object data = event.item.getData();
+                    if (data instanceof OutputColumnTableEntry) {
+                        String label = ((OutputColumnTableEntry) data).getName();
+                        if (mapperManager.ERROR_REJECT_MESSAGE.equals(label)
+                                || mapperManager.ERROR_REJECT_STACK_TRACE.equals(label)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
         return true;
     }
 
@@ -336,9 +352,9 @@ public class DropContextAnalyzer {
                 insertionEntryMode = true;
             }
         }
-        
-//        System.out.println("insertionEntryMode="+insertionEntryMode);
-        
+
+        // System.out.println("insertionEntryMode="+insertionEntryMode);
+
         feedback = dropFeedback;
     }
 

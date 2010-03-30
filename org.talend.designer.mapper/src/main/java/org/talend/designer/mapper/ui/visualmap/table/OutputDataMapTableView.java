@@ -32,6 +32,7 @@ import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
@@ -39,6 +40,7 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
@@ -58,8 +60,9 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class OutputDataMapTableView extends DataMapTableView {
 
-    public OutputDataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable,
-            MapperManager mapperManager) {
+    private OutputTableCellModifier cellModifier;
+
+    public OutputDataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable, MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
@@ -92,8 +95,8 @@ public class OutputDataMapTableView extends DataMapTableView {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
-        expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] {
-                Zone.INPUTS, Zone.VARS }, false);
+        expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS,
+                Zone.VARS }, false);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
 
             public String get(OutputColumnTableEntry bean) {
@@ -126,6 +129,8 @@ public class OutputDataMapTableView extends DataMapTableView {
 
         });
         column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+
+        configureCellModifier(tableViewerCreatorForColumns);
     }
 
     /*
@@ -174,7 +179,9 @@ public class OutputDataMapTableView extends DataMapTableView {
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+             * @see
+             * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions
+             * (org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
              */
             @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<FilterTableEntry> newTableViewerCreator) {
@@ -225,8 +232,8 @@ public class OutputDataMapTableView extends DataMapTableView {
                 ISelection selection = event.getSelection();
                 selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
-                uiManager.selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection),
-                        false, false);
+                uiManager
+                        .selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false, false);
             }
 
         });
@@ -260,8 +267,8 @@ public class OutputDataMapTableView extends DataMapTableView {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
         column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.filterCondition")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
-        final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForFilters,
-                column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
+        final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForFilters, column,
+                new Zone[] { Zone.INPUTS, Zone.VARS }, true);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
 
             public String get(FilterTableEntry bean) {
@@ -292,13 +299,14 @@ public class OutputDataMapTableView extends DataMapTableView {
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn,
-             * java.lang.Object)
+             * @see
+             * org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend
+             * .commons.ui.swt.tableviewer.TableViewerCreatorColumn, java.lang.Object)
              */
             @Override
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
-                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
-                        extendedTableViewerForFilters.getExtendedTableModel());
+                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean, extendedTableViewerForFilters
+                        .getExtendedTableModel());
                 mapperManager.removeTableEntry((ITableEntry) bean);
                 mapperManager.executeCommand(removeCommand);
                 tableViewerCreatorForFilters.getTableViewer().refresh();
@@ -377,6 +385,57 @@ public class OutputDataMapTableView extends DataMapTableView {
         super.loaded();
         configureExpressionFilter();
         checkChangementsAfterEntryModifiedOrAdded(false);
+    }
+
+    protected void configureCellModifier(TableViewerCreator<OutputColumnTableEntry> tableViewerCreator) {
+        cellModifier = new OutputTableCellModifier(tableViewerCreator);
+        tableViewerCreator.setCellModifier(cellModifier);
+    }
+
+    /**
+     * 
+     * 
+     * $Id: OutputTableCellModifier.java
+     * 
+     */
+    class OutputTableCellModifier extends DefaultCellModifier {
+
+        /**
+         * DOC wchen OutputTableCellModifier constructor comment.
+         * 
+         * @param tableViewerCreator
+         */
+        public OutputTableCellModifier(TableViewerCreator tableViewerCreator) {
+            super(tableViewerCreator);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier#canModify(java.lang.Object,
+         * java.lang.String)
+         */
+        @Override
+        public boolean canModify(Object element, String property) {
+            if (element instanceof OutputColumnTableEntry) {
+                OutputColumnTableEntry outputColumn = (OutputColumnTableEntry) element;
+                if (getMapperManager() != null && getMapperManager().ERROR_REJECT.equals(outputColumn.getParentName())) {
+                    IMetadataColumn metadataColumn = outputColumn.getMetadataColumn();
+                    if (metadataColumn != null
+                            && (getMapperManager().ERROR_REJECT_MESSAGE.equals(metadataColumn.getLabel()) || getMapperManager().ERROR_REJECT_STACK_TRACE
+                                    .equals(metadataColumn.getLabel()))) {
+                        return false;
+
+                    }
+
+                }
+
+            }
+
+            return !mapperManager.componentIsReadOnly();
+
+        }
+
     }
 
 }

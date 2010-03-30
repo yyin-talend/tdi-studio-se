@@ -75,12 +75,12 @@ public class OutputAddDialog extends Dialog {
 
     private Button joinTableBtn;
 
-    public OutputAddDialog(Shell parentShell, MapperManager mapperManager, String tableName) {
+    public OutputAddDialog(Shell parentShell, MapperManager manager, String tableName) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         this.tableName = tableName;
-        this.mapperManager = mapperManager;
-        final IProcess process = mapperManager.getAbstractMapComponent().getProcess();
+        this.mapperManager = manager;
+        final IProcess process = manager.getAbstractMapComponent().getProcess();
 
         this.validator = new IInputValidator() {
 
@@ -89,6 +89,11 @@ public class OutputAddDialog extends Dialog {
                 if (!process.checkValidConnectionName(newText)) {
                     return Messages.getString("UIManager.tableNameIsNotValid"); //$NON-NLS-1$
                 }
+
+                if (mapperManager.ERROR_REJECT.equals(newText)) {
+                    return "Input is invalid.";
+                }
+
                 // combo
                 String selectedPhysicalTable = getTableName();
                 if ((selectedPhysicalTable == null || selectedPhysicalTable.length() == 0)) {

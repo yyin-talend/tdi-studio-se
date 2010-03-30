@@ -26,6 +26,10 @@ public abstract class AbstractMapperManager {
 
     public static final String ERROR_REJECT = "ErrorReject";//$NON-NLS-1$
 
+    public static final String ERROR_REJECT_MESSAGE = "errorMessage";
+
+    public static final String ERROR_REJECT_STACK_TRACE = "errorStackTrace";
+
     private AbstractMapComponent mapperComponent;
 
     private boolean mapperChanged;

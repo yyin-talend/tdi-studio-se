@@ -213,6 +213,20 @@ public class UIManager extends AbstractUIManager {
      * @param selectAllEntries TODO
      */
     public void selectDataMapTableView(final DataMapTableView dataMapTableView, boolean useNewCommand, boolean selectAllEntries) {
+        // reject table readonly
+        IDataMapTable dataMapTable = dataMapTableView.getDataMapTable();
+        if (dataMapTable instanceof OutputTable && mapperManager.ERROR_REJECT.equals(dataMapTable.getName())) {
+            OutputTable table = (OutputTable) dataMapTable;
+            if (table.getMetadataTable() != null) {
+                for (IMetadataColumn column : table.getMetadataTable().getListColumns()) {
+                    if (mapperManager.ERROR_REJECT_MESSAGE.equals(column.getLabel())
+                            || mapperManager.ERROR_REJECT_STACK_TRACE.equals(column.getLabel())) {
+                        column.setCustom(true);
+                    }
+                }
+            }
+            CustomTableManager.addCustomManagementToTable(getOutputMetaEditorView(), true);
+        }
 
         TabFolderEditors tabFolderEditors = mapperUI.getTabFolderEditors();
         // tabFolderEditors.setSelection(TabFolderEditors.INDEX_TAB_METADATA_EDITOR);
@@ -280,7 +294,6 @@ public class UIManager extends AbstractUIManager {
                      * @param event
                      */
                     public void handleEvent(ListenableListEvent event) {
-
                         DataMapTableView view = mapperManager.retrieveAbstractDataMapTableView(abstractDataMapTable);
                         List<DataMapTableView> relatedOutputsTableView = getRelatedOutputsTableView(dataMapTableView);
 
@@ -392,12 +405,6 @@ public class UIManager extends AbstractUIManager {
                 metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setSelection(
                         dataMapTableViewer.getTable().getSelectionIndices());
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
-
-                // reject table readonly
-                if (dataMapTableView.getDataMapTable() != null
-                        && mapperManager.ERROR_REJECT.equals(dataMapTableView.getDataMapTable().getName())) {
-                    CustomTableManager.addCustomManagementToTable(getOutputMetaEditorView(), true);
-                }
 
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (IDataMapTable table : tables) {
@@ -929,6 +936,23 @@ public class UIManager extends AbstractUIManager {
         }
         if (otherMetadataTableEditorView != null) {
             otherMetadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
+        }
+
+        TableViewerCreator tableViewerCreatorForColumns = view.getTableViewerCreatorForColumns();
+        if (tableViewerCreatorForColumns != null) {
+            final TableViewer tableViewerForEntries = tableViewerCreatorForColumns.getTableViewer();
+            if (tableViewerForEntries.getSelection() != null) {
+                List<ITableEntry> extractSelectedTableEntries = extractSelectedTableEntries(tableViewerForEntries.getSelection());
+                for (ITableEntry entry : extractSelectedTableEntries) {
+                    if (entry instanceof OutputColumnTableEntry) {
+                        if (((OutputColumnTableEntry) entry).getMetadataColumn().isCustom() && view.getZone() == Zone.OUTPUTS) {
+                            metadataTableEditorView.getExtendedToolbar().getRemoveButton().getButton().setEnabled(false);
+                            break;
+                        }
+                    }
+
+                }
+            }
         }
     }
 
