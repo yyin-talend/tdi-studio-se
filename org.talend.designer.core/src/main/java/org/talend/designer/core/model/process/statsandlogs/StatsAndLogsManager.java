@@ -199,6 +199,23 @@ public class StatsAndLogsManager {
                 logsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
                         process.getElementParameter(EParameterName.TABLE_LOGS.getName()).getValue());
             }
+            if (file) {
+                IElementParameter encodingParameter = process.getElementParameter(EParameterName.ENCODING.getName());
+                if (encodingParameter != null) {
+                    Object value = encodingParameter.getValue();
+                    if (value != null && !"".equals(value)) {
+                        IElementParameter elementParameter = logsNode.getElementParameter(EParameterName.ENCODING.getName());
+                        if (elementParameter != null) {
+                            String encoding = value.toString();
+                            if (!value.toString().startsWith(TalendTextUtils.getQuoteChar())) {
+                                encoding = TalendTextUtils.addQuotes(encoding);
+                            }
+                            elementParameter.setValue(encoding);
+                        }
+                    }
+                }
+            }
+
             logsNode.getElementParameter(EParameterName.CATCH_RUNTIME_ERRORS.getName()).setValue(
                     process.getElementParameter(EParameterName.CATCH_RUNTIME_ERRORS.getName()).getValue());
             logsNode.getElementParameter(EParameterName.CATCH_USER_ERRORS.getName()).setValue(
@@ -229,6 +246,23 @@ public class StatsAndLogsManager {
                 statsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
                         process.getElementParameter(EParameterName.TABLE_STATS.getName()).getValue());
             }
+
+            if (file) {
+                IElementParameter encodingParameter = process.getElementParameter(EParameterName.ENCODING.getName());
+                if (encodingParameter != null) {
+                    Object value = encodingParameter.getValue();
+                    if (value != null && !"".equals(value)) {
+                        IElementParameter elementParameter = statsNode.getElementParameter(EParameterName.ENCODING.getName());
+                        if (elementParameter != null) {
+                            String encoding = value.toString();
+                            if (!value.toString().startsWith(TalendTextUtils.getQuoteChar())) {
+                                encoding = TalendTextUtils.addQuotes(encoding);
+                            }
+                            elementParameter.setValue(encoding);
+                        }
+                    }
+                }
+            }
             statsNode.setProcess(process);
             nodeList.add(statsNode);
         }
@@ -253,6 +287,22 @@ public class StatsAndLogsManager {
                         process.getElementParameter(EParameterName.TABLE_METER.getName()).getValue());
             }
 
+            if (file) {
+                IElementParameter encodingParameter = process.getElementParameter(EParameterName.ENCODING.getName());
+                if (encodingParameter != null) {
+                    Object value = encodingParameter.getValue();
+                    if (value != null && !"".equals(value)) {
+                        IElementParameter elementParameter = meterNode.getElementParameter(EParameterName.ENCODING.getName());
+                        if (elementParameter != null) {
+                            String encoding = value.toString();
+                            if (!value.toString().startsWith(TalendTextUtils.getQuoteChar())) {
+                                encoding = TalendTextUtils.addQuotes(encoding);
+                            }
+                            elementParameter.setValue(encoding);
+                        }
+                    }
+                }
+            }
             meterNode.setProcess(process);
             nodeList.add(meterNode);
         }
@@ -1089,7 +1139,7 @@ public class StatsAndLogsManager {
         encodingParam.setDisplayName(EParameterName.ENCODING.getDisplayName());//$NON-NLS-1$
         encodingParam.setCategory(EComponentCategory.STATSANDLOGS);
         encodingParam.setField(EParameterFieldType.ENCODING_TYPE);
-        encodingParam.setShowIf("(ON_FILES_FLAG == 'true' or ON_DATABASE_FLAG == 'true')"); //$NON-NLS-1$
+        encodingParam.setShowIf("(ON_FILES_FLAG == 'true' )"); //$NON-NLS-1$
         encodingParam.setValue(ENCODING_TYPE_ISO_8859_15);
         encodingParam.setNumRow(92);
         paramList.add(encodingParam);
@@ -1105,7 +1155,7 @@ public class StatsAndLogsManager {
         childPram.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
         childPram.setValue(ENCODING_TYPE_ISO_8859_15);
         childPram.setNumRow(92);
-        childPram.setShowIf("(ON_FILES_FLAG == 'true' or ON_DATABASE_FLAG == 'true')"); //$NON-NLS-1$
+        childPram.setShowIf("(ON_FILES_FLAG == 'true' )"); //$NON-NLS-1$
         childPram.setParentParameter(encodingParam);
 
     }

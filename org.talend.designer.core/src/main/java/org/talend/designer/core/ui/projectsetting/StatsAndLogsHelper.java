@@ -588,7 +588,7 @@ public class StatsAndLogsHelper extends Utils {
         encodingParam.setDisplayName(EParameterName.ENCODING.getDisplayName());//$NON-NLS-1$
         encodingParam.setCategory(EComponentCategory.STATSANDLOGS);
         encodingParam.setField(EParameterFieldType.ENCODING_TYPE);
-        encodingParam.setShowIf("(ON_FILES_FLAG == 'true' or ON_DATABASE_FLAG == 'true')"); //$NON-NLS-1$
+        encodingParam.setShowIf("(ON_FILES_FLAG == 'true')"); //$NON-NLS-1$
         encodingParam.setValue(ENCODING_TYPE_ISO_8859_15);
         encodingParam.setNumRow(92);
         paramList.add(encodingParam);
@@ -604,7 +604,7 @@ public class StatsAndLogsHelper extends Utils {
         childPram.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
         childPram.setValue(ENCODING_TYPE_ISO_8859_15);
         childPram.setNumRow(92);
-        childPram.setShowIf("(ON_FILES_FLAG == 'true' or ON_DATABASE_FLAG == 'true')"); //$NON-NLS-1$
+        childPram.setShowIf("(ON_FILES_FLAG == 'true' )"); //$NON-NLS-1$
         childPram.setParentParameter(encodingParam);
     }
 
