@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
 
@@ -67,9 +68,10 @@ public class DependencyViewerProvider extends LabelProvider implements IStructur
 
             List res = new ArrayList();
             JobHierarchy hierarchy = lifeCycle.getHierarchy();
+            ProcessUtils.clearFakeProcesses(); // force to create fake list
             res.addAll(hierarchy.getContextDependencies(process));
             res.addAll(hierarchy.getMetadataDependencies(process));
-
+            ProcessUtils.clearFakeProcesses();
             return res.toArray();
         }
         return NO_ELEMENTS;
