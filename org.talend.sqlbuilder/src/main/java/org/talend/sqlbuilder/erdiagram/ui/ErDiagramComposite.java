@@ -37,6 +37,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.erdiagram.ui.editor.ErdiagramDiagramEditor;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Column;
@@ -252,6 +253,7 @@ public class ErDiagramComposite extends SashForm {
                         } else {
                             tables.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(), getCurrentDbType()));
                         }
+                        boolean oracleDbType = TextUtil.isOracleDbType(getCurrentDbType());
                         for (Object obj : tablePart.getChildren()) {
                             if (obj instanceof ColumnPart) {
                                 ColumnPart columnPart = (ColumnPart) obj;
@@ -268,7 +270,10 @@ public class ErDiagramComposite extends SashForm {
                                         Pattern pattern = Pattern.compile("\\w+"); //$NON-NLS-1$
                                         Matcher matcher = pattern.matcher(columnContent);
 
-                                        if (!matcher.matches()) {
+                                        // modify for bug 12092
+                                        boolean sqlKeyword = KeywordsValidator.isSqlKeyword(column.getElementName());
+
+                                        if (!matcher.matches() || (sqlKeyword && oracleDbType)) {
                                             columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
                                                     getCurrentDbType())
                                                     + "." //$NON-NLS-1$

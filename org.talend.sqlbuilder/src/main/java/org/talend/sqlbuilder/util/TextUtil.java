@@ -242,4 +242,21 @@ public class TextUtil {
         boolean isParaccel = dbType.equalsIgnoreCase(EDatabaseTypeName.PARACCEL.getXmlName());
         return isPostgresql || isGreenplum || isParaccel;
     }
+
+    /**
+     * DOC zli Comment method "isOracleDbType".
+     * 
+     * @param dbType
+     * @return
+     */
+    public static boolean isOracleDbType(String dbType) {
+        boolean isOracle = dbType.equalsIgnoreCase(EDatabaseTypeName.ORACLEFORSID.getXmlName())
+                || dbType.equalsIgnoreCase(EDatabaseTypeName.ORACLEFORSID.getDisplayName())
+                || dbType.equalsIgnoreCase(EDatabaseTypeName.ORACLESN.getXmlName())
+                || dbType.equalsIgnoreCase(EDatabaseTypeName.ORACLESN.getDisplayName())
+                || dbType.equalsIgnoreCase(EDatabaseTypeName.ORACLE_OCI.getXmlName())
+                || dbType.equalsIgnoreCase(EDatabaseTypeName.ORACLE_OCI.getDisplayName());
+
+        return isOracle;
+    }
 }
