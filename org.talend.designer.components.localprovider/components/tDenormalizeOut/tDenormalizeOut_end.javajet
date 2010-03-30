@@ -142,6 +142,10 @@ while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
 		if(sb_<%=cid %> == null){
 		
 			sb_<%=cid %> = new StringBuilder();
+			//bug11916_3
+			if(temp_<%=cid %> == null){
+				sb_<%=cid %> = null;
+			}else{
 <%
 					if((("java.util.Date").equals(typesMap.get(inputColumn))) && (patternsMap.get(inputColumn).length() != 0)){
 %>		
@@ -155,6 +159,7 @@ while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
 <%
 					}
 %>
+			}
 			
 		}else{
 <%
@@ -173,15 +178,16 @@ while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
 		}
 		
 	}
-	
-	denormalize_row_<%=cid %>.<%=inputColumn %> = sb_<%=cid %>.toString();
+	//bug11916_4
+	denormalize_row_<%=cid %>.<%=inputColumn %> = (sb_<%=cid %> == null)?null:(sb_<%=cid %>.toString());
 	
 	sb_<%=cid %> = null;
 	
 <%
 				}else{
 %>
-	denormalize_row_<%=cid %>.<%=inputColumn %> = denormalize_result_<%=cid %>.<%=inputColumn %>.toString();
+	//bug11916_5
+	denormalize_row_<%=cid %>.<%=inputColumn %> = (denormalize_result_<%=cid %>.<%=inputColumn %> == null)?null:(denormalize_result_<%=cid %>.<%=inputColumn %>.toString());
 	
 <%
 				}

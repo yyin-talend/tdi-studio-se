@@ -184,10 +184,14 @@ if(hash_<%=inputColumn %>_<%=cid %>.containsKey(<%=connName %>.<%=inputColumn %>
 	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(FormatterUtils.format_Date(<%=connName %>.<%=denormalizeColumn %>, <%=patternsMap.get(denormalizeColumn) %>));
 			
 <%
-				}else{
-%>		
-	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(<%=connName %>.<%=denormalizeColumn %>);
-			
+								}else{
+%>	
+									//bug11916_1 assign null
+									if(<%=connName %>.<%=denormalizeColumn %> == null){
+										denormalize_result_<%=cid %>.<%=denormalizeColumn %> = null;
+									}else{
+										denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(<%=connName %>.<%=denormalizeColumn %>);
+									}
 <%
 				}
 			}
@@ -229,8 +233,12 @@ if(denormalize_result_<%=cid %> == null){
 <%
 							}else{
 %>		
-	denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(<%=connName %>.<%=denormalizeColumn %>);
-			
+								//bug11916_2 assign null
+								if(<%=connName %>.<%=denormalizeColumn %> == null){
+									denormalize_result_<%=cid %>.<%=denormalizeColumn %> = null;
+								}else{
+									denormalize_result_<%=cid %>.<%=denormalizeColumn %>.append(<%=connName %>.<%=denormalizeColumn %>);
+								}
 <%
 							}
 						}
