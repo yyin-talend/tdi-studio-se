@@ -599,8 +599,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // fore HL7, by gcui
             if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded()) {
                 for (MetadataTable table : (List<MetadataTable>) originalConnection.getTables()) {
-                    Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS, table
-                            .getLabel(), ConvertionHelper.convert(table));
+                    Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS,
+                            table.getLabel(), ConvertionHelper.convert(table));
                     list.add(hl7Cmd);
                 }
             }
@@ -1023,7 +1023,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
         } else if (name == EDatabaseComponentName.DBORACLEOCI) {
             IElementParameter p = node.getElementParameter("CONNECTION_TYPE"); //$NON-NLS-1$
-            p.setValue(p.getListItemsValue()[2]);
+            if (p != null) {
+                Object[] obj = p.getListItemsValue();
+                if (obj.length >= 2) {
+                    p.setValue(p.getListItemsValue()[1]);
+                }
+            }
         }
     }
 
