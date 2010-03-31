@@ -883,7 +883,7 @@
 
 							if(!isPersistentSortedTable && ("UNIQUE_MATCH").equals(matchingMode)) { // T 52 
 							%>
-				           		if(tHash_Lookup_<%= tableName %>.getCount(<%= tableName %>HashKey) > 1) { // G 071
+				           		if(tHash_Lookup_<%= tableName %> != null && tHash_Lookup_<%= tableName %>.getCount(<%= tableName %>HashKey) > 1) { // G 071
 			  							
 			  						<%
 			  						StringBuilder sbMoreOneResult = new StringBuilder("\"WARNING: UNIQUE MATCH is configured for the lookup '"+ tableName +"' and it contains more one result from keys : ");
@@ -938,7 +938,7 @@
 							if (!isMultipleResultMode) { // T 600
                     		%>
 							
-								if (tHash_Lookup_<%= tableName %>.hasNext()) { // G 099
+								if (tHash_Lookup_<%= tableName %> !=null && tHash_Lookup_<%= tableName %>.hasNext()) { // G 099
 								
 							<%
 							} // T 600
