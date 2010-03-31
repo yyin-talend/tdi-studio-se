@@ -116,8 +116,12 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                                         table, newOutputMetadata);
                                 param.setRepositoryValueUsed(true);
                             } else {
-                                param.setValue(RepositoryToComponentProperty.getValue(((ConnectionItem) item).getConnection(),
-                                        param.getRepositoryValue(), newOutputMetadata));
+                                Object value = RepositoryToComponentProperty.getValue(((ConnectionItem) item).getConnection(),
+                                        param.getRepositoryValue(), newOutputMetadata);
+                                if (value != null) {
+                                    param.setValue(value);
+                                }
+
                             }
                         }
                     }
