@@ -389,6 +389,12 @@ public class UIManager extends AbstractUIManager {
                         if (event.type == TYPE.SWAPED) {
                             List<Integer> listIndexTarget = event.indicesTarget;
                             abstractDataMapTable.swapColumnElements(event.indicesOrigin, listIndexTarget);
+                            // handle related table view
+                            for (DataMapTableView tableView : relatedOutputsTableView) {
+                                AbstractDataMapTable relatedTable = (AbstractDataMapTable) tableView.getDataMapTable();
+                                relatedTable.swapColumnElements(event.indicesOrigin, listIndexTarget);
+                            }
+
                             // dataMapTableViewer.refresh();
                             refreshBackground(true, false);
                         }
