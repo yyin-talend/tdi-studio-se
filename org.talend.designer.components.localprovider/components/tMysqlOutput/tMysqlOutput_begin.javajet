@@ -8,7 +8,8 @@ imports="
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType 
 	    org.talend.core.model.metadata.MappingTypeRetriever
-	    org.talend.core.model.metadata.MetadataTalendType	    
+	    org.talend.core.model.metadata.MetadataTalendType	
+	    org.talend.core.model.process.IProcess    
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
@@ -23,6 +24,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	INode node = (INode)codeGenArgument.getArgument();
 	
 	String cid = node.getUniqueName();
+	
+	IProcess process = node.getProcess();
 	
 	String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
     
@@ -58,7 +61,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 	boolean extendedInsert = false;
 	
-	
+	String dbVersion = "" ;
 	
 	if ("INSERT".equalsIgnoreCase(dataAction)) {
 		extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));	
@@ -150,18 +153,32 @@ boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.g
 
 if(useExistingConnection) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	String conn = "conn_" + connection;;
+	String conn = "conn_" + connection;
+	List<? extends INode> nodes =  process.getNodesOfType("tMysqlConnection");
+	for (INode ne:nodes) {
+		if (connection.equals(ne.getUniqueName())) {
+			dbVersion = ElementParameterParser.getValue(ne, "__DB_VERSION__");
+		}
+	}
 	%>
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	<%
 } else {
 	String javaDbDriver   = "org.gjt.mm.mysql.Driver";
+	dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 	%>
 	String dbProperties_<%=cid%> = <%=dbproperties%>;
 	String url_<%=cid%> = null;
 	if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
-	    url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+	    url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + "rewriteBatchedStatements=true";
 	} else {
+<%
+		if (!dbproperties.contains("rewriteBatchedStatements")) {
+			StringBuffer tmp = new StringBuffer(dbproperties);
+            tmp = tmp.insert(tmp.lastIndexOf("\""), "&rewriteBatchedStatements=true");
+            dbproperties = tmp.toString();
+		}		
+%>
 	    url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
 	}
     String dbUser_<%=cid %> = <%=dbuser%>;
@@ -260,9 +277,10 @@ if(columnList != null && columnList.size() > 0) {
                 		}
                 <%}%>
 	        	        
-	        <%
+<%
 	    } else {//extended-insert mode(begin)
-	            %>	            
+	    	if ("mysql-connector-java-3.1.14-bin.jar".equals(dbVersion)) {
+%>	            
 	            class BufferLine_<%=cid%> {
     	            <% 
     	            for(Column column : stmtStructure) {
@@ -354,8 +372,18 @@ if(columnList != null && columnList.size() > 0) {
 	            
 	            String insertColName<%=cid%> = "<%=insertColName.toString()%>";
 	            String insertColValue<%=cid%> =  "<%=insertValueStmt.toString()%>"; 
-	            int rowCount<%=cid%> = 0;	            
-	    <%
+	            int rowCount<%=cid%> = 0;	 
+<%
+			} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+%>
+				String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+		        int batchSize_<%=cid%> = <%=numPerInsert%>;
+	   			int batchSizeCounter_<%=cid%>=0;
+		        <%@ include file="../templates/_hintInsert.javajet" %>
+		        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+				
+<%
+	       	} 
 	    }//extended-insert mode(end)
 	} else if (("UPDATE").equals(dataAction)) {
 	    %>

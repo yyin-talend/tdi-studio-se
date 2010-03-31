@@ -15,9 +15,14 @@ imports="
 <%
 			if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
-		String url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+		String url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + "rewriteBatchedStatements=true";
 <%
 			} else {
+				if (!dbproperties.contains("rewriteBatchedStatements")) {
+					StringBuffer tmp = new StringBuffer(dbproperties);
+                    tmp = tmp.insert(tmp.lastIndexOf("\""), "&rewriteBatchedStatements=true");
+                    dbproperties = tmp.toString();
+				}
 %>
 		String url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
 <%
