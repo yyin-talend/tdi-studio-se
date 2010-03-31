@@ -896,6 +896,7 @@ public class DataProcess {
                 dataConnec.setName(connection.getName());
                 dataConnec.setSource(refSource);
                 dataConnec.setTarget(hashNode);
+                dataConnec.setLinkNodeForHash((AbstractNode) buildCheckMap.get(connection.getTarget()));
                 dataConnec.setConnectorName(connection.getConnectorName());
 
                 IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName()); //$NON-NLS-1$
@@ -1311,13 +1312,14 @@ public class DataProcess {
         }
         String hashOutputUniqueName = hashMergeOutput + "_" + mergeDataNode.getUniqueName();
 
-        List mergeOutputConnections = NodeUtil.getOutgoingConnections(mergeDataNode, IConnectionCategory.FLOW);
+        // Merge components should have only one output row MAIN in all case, but can have a lookup row also in case of
+        // tMap just after.
+        List mergeOutputConnections = NodeUtil.getOutgoingConnections(mergeDataNode, IConnectionCategory.MAIN);
 
         if (mergeOutputConnections.size() == 0) {
             return;
         }
 
-        // Merge components should have only one output row in all case.
         IConnection mergeOutputConnection = ((List<IConnection>) mergeOutputConnections).get(0);
 
         DataNode hashNode = new DataNode(hashMergeOutputComponent, hashOutputUniqueName);
@@ -1373,14 +1375,26 @@ public class DataProcess {
         dataConnec.setEnabledTraceColumns(mergeOutputConnection.getEnabledTraceColumns());
         dataConnec.setName(mergeOutputConnection.getName()); //$NON-NLS-1$
         dataConnec.setSource(hashNode);
+        dataConnec.setLinkNodeForHash(((DataConnection) mergeOutputConnection).getLinkNodeForHash());
         dataConnec.setTarget(oldNodeTarget);
 
         ((DataConnection) mergeOutputConnection).setName(hashNode.getUniqueName() + "_" + mergeOutputConnection.getName());
 
         int inputId = mergeOutputConnection.getInputId();
+        if (inputId == 0) { // can be 0 in case of lookup just on the tUnite
+            List refOutputConnections = NodeUtil.getOutgoingConnections(mergeDataNode, EConnectionType.FLOW_REF);
+            if (refOutputConnections.size() != 0) {
+                // there can be only one.
+                IConnection refConnection = ((List<IConnection>) refOutputConnections).get(0);
+                inputId = refConnection.getInputId();
+                mergeDataNode.getOutgoingConnections().remove(refConnection);
+                ((DataConnection) refConnection).setSource(hashNode);
+                ((List<IConnection>) hashNode.getOutgoingConnections()).add(refConnection);
+            }
+        }
         dataConnec.setInputId(inputId);
         outgoingConnections.add(dataConnec);
-        ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(inputId - 1, dataConnec);
+        ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(dataConnec);
 
         ((DataConnection) mergeOutputConnection).setLineStyle(EConnectionType.FLOW_MAIN);
         ((DataConnection) mergeOutputConnection).setConnectorName(EConnectionType.FLOW_MAIN.getName());
@@ -1390,7 +1404,12 @@ public class DataProcess {
         INode mergeSubNodeStart = mergeDataNode.getSubProcessStartNode(false);
 
         if (mergeDataNode.getLinkedMergeInfo() == null || mergeDataNode.getLinkedMergeInfo().isEmpty()) {
-            INode oldStartNode = ((AbstractNode) mergeDataNode.getDesignSubjobStartNode());
+            INode oldStartNode = null;
+            if (mergeDataNode.isThereLinkWithHash()) {
+                oldStartNode = ((AbstractNode) mergeDataNode.getSubProcessStartNode(false));
+            } else {
+                oldStartNode = ((AbstractNode) mergeDataNode.getDesignSubjobStartNode());
+            }
             ((AbstractNode) afterMergeStart).setStart(oldStartNode.isStart());
             ((AbstractNode) oldStartNode).setStart(false);
             for (INode curNode : dataNodeList) {

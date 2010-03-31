@@ -2714,6 +2714,7 @@ public class Node extends Element implements INode {
     public String toString() {
         StringBuffer buff = new StringBuffer();
         buff.append(getUniqueName() + " - "); //$NON-NLS-1$
+        buff.append(" status(start=" + isStart() + ", subProcessStart=" + isSubProcessStart() + ")");
         buff.append(Messages.getString("Node.input")); //$NON-NLS-1$
         for (int i = 0; i < inputs.size(); i++) {
             buff.append(inputs.get(i).getName());

@@ -761,7 +761,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             pType.setName(param.getName());
         }
         pType.setField(param.getField().getName());
-        pType.setContextMode(param.isContextMode());
+        if (param.isContextMode()) {
+            pType.setContextMode(param.isContextMode());
+        }
         Object value = param.getValue();
         if (param.getField().equals(EParameterFieldType.TABLE) && value != null) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
@@ -822,7 +824,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
                 if (param != null) {
-                    param.setContextMode(pType.isContextMode());
+                    if (pType.isSetContextMode()) {
+                        param.setContextMode(pType.isContextMode());
+                    } else {
+                        param.setContextMode(false);
+                    }
                     if (param.isReadOnly()
                             && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
                                     EParameterName.VERSION.getName()))) {

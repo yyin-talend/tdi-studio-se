@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.core.model.process.AbstractConnection;
+import org.talend.core.model.process.IDataConnection;
+import org.talend.core.model.process.INode;
 
 /**
  * Virtual connection used for the generated code. <br/>
@@ -23,7 +25,7 @@ import org.talend.core.model.process.AbstractConnection;
  * $Id$
  * 
  */
-public class DataConnection extends AbstractConnection {
+public class DataConnection extends AbstractConnection implements IDataConnection {
 
     /**
      * feature 6355.
@@ -33,6 +35,8 @@ public class DataConnection extends AbstractConnection {
     private String tracesCondition; // if null, all will be enabled for traces.
 
     private List<String> enabledTraceColumns = new ArrayList<String>();
+
+    private INode linkedNodeForHash;
 
     public boolean isTraceConnection() {
         return this.trace;
@@ -58,6 +62,24 @@ public class DataConnection extends AbstractConnection {
     @Override
     public String getTracesCondition() {
         return this.tracesCondition;
+    }
+
+    /**
+     * Only filled if the original link is a from lookup (to tell which is tMap linked for example).
+     * 
+     * @return the linkedNodeForHash
+     */
+    public INode getLinkNodeForHash() {
+        return this.linkedNodeForHash;
+    }
+
+    /**
+     * Only filled if the original link is a from lookup (to tell which is tMap linked for example).
+     * 
+     * @param linkedNodeForHash the linkedNodeForHash to set
+     */
+    public void setLinkNodeForHash(INode linkedNodeForHash) {
+        this.linkedNodeForHash = linkedNodeForHash;
     }
 
 }

@@ -14,8 +14,8 @@
 		java.util.HashSet
 		java.util.Set
 		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IDataConnection
 	"
-	skeleton="tAdvancedHash_commons.skeleton"
 %>
 
 
@@ -33,7 +33,7 @@
         for (IConnection connection : connections) { // T_AH_101
         	String connectionName = connection.getName();
    
-			INode validTarget = searchTargetNode(connection);
+			INode validTarget = ((IDataConnection) connection).getLinkNodeForHash();
 
 			if(validTarget != null) { // T_AH_102
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;

@@ -12,8 +12,8 @@
         java.util.List
         java.util.ArrayList
         org.talend.core.model.process.EConnectionType
+        org.talend.core.model.process.IDataConnection
     "
-	skeleton="tAdvancedHash_commons.skeleton"
 %>
 
 
@@ -32,7 +32,7 @@
         for (IConnection connection : connections) {
             String connectionName = connection.getName();
 
-			INode validTarget = searchTargetNode(connection);
+			INode validTarget = ((IDataConnection) connection).getLinkNodeForHash();
 
             if(validTarget != null) {
                     IHashableInputConnections target = (IHashableInputConnections) validTarget;
