@@ -20,7 +20,9 @@ imports="
 			} else {
 %>
 		String proprtties_<%=cid%> = <%=dbproperties%>;
-		if (!proprtties_<%=cid%>.contains("rewriteBatchedStatements")) {
+		if (proprtties_<%=cid%> == null || proprtties_<%=cid%>.trim().length() == 0) {
+			proprtties_<%=cid%> += "rewriteBatchedStatements=true";
+		}else if (proprtties_<%=cid%> != null && !proprtties_<%=cid%>.contains("rewriteBatchedStatements")) {
 			proprtties_<%=cid%> += "&rewriteBatchedStatements=true";
 		}
 		
