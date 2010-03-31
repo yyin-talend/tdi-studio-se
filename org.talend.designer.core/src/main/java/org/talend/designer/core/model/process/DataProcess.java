@@ -1201,15 +1201,16 @@ public class DataProcess {
         // change the design subjob start as the value stored while building process is the graphical node
         for (INode dataNode : dataNodeList) {
             if (dataNode instanceof AbstractNode) {
-                INode graphicalNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
-                INode currentDataNode = buildCheckMap.get(graphicalNode);
-                if (currentDataNode == null || !dataNodeList.contains(currentDataNode)) {
-                    ((AbstractNode) dataNode).setDesignSubjobStartNode(null);
-                    // call the function to recalculate the subjobstart node
-                    currentDataNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
-                    // set the value with the code after the if,
-                    // so it will avoid to calculate it at each call later.
-                }
+                INode currentDataNode = null;
+                // INode graphicalNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
+                // INode currentDataNode = buildCheckMap.get(graphicalNode);
+                // if (currentDataNode == null || !dataNodeList.contains(currentDataNode)) {
+                ((AbstractNode) dataNode).setDesignSubjobStartNode(null);
+                // call the function to recalculate the subjobstart node
+                currentDataNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
+                // set the value with the code after the if,
+                // so it will avoid to calculate it at each call later.
+                // }
                 ((AbstractNode) dataNode).setDesignSubjobStartNode(currentDataNode);
             }
         }
