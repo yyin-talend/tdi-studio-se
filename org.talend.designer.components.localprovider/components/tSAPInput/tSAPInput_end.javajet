@@ -17,6 +17,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 %>
 	
 <%	
@@ -53,4 +54,6 @@
 	}
 %>
 	}
+	<%if(close){%>
 	com.sap.mw.jco.JCO.releaseClient(client_<%=cid %>);
+	<%}%>

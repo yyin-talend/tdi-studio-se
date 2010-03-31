@@ -113,7 +113,15 @@
 	</PARAMETER>
 	
   </PARAMETERS>
-  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
+      NAME="CLOSE"
+      FIELD="CHECK"
+      NUM_ROW="10"
+    >
+    <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>
   <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED="true" />       
