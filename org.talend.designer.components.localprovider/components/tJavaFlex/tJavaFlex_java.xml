@@ -41,7 +41,7 @@
       NUM_ROW="1"
     />
     
-    <PARAMETER NAME="DATA_AUTO_PROPAGATE" FIELD="CHECK" NUM_ROW="2">
+    <PARAMETER NAME="DATA_AUTO_PROPAGATE" FIELD="CHECK" NUM_ROW="2" NOT_SHOW_IF="Version_V2_0=='true'">
 		<DEFAULT>true</DEFAULT>
     </PARAMETER>
 
@@ -82,6 +82,17 @@
       <DEFAULT>// end of the component, outside/closing the loop
       </DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="Version_V2_0" FIELD="CHECK" NUM_ROW="10" SHOW="false">
+		<DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+    <PARAMETER NAME="Version_V3_2" FIELD="CHECK" NUM_ROW="10" SHOW="false">
+		<DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+    <PARAMETER NAME="Version_V4.0" FIELD="CHECK" NUM_ROW="10" SHOW="false">
+		<DEFAULT>true</DEFAULT>
+    </PARAMETER>    
+    
    </PARAMETERS>
    
    <ADVANCED_PARAMETERS>

@@ -1070,6 +1070,13 @@
              id="org.talend.repository.model.migration.MigrationTaskForIssue11632"
              name="Add a new checkbox to control attribute option">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ThreeVersionstJavaFlexForBug11754"
+             description="Support 3 versions tJavaFlex for bug11754"
+             id="org.talend.repository.model.migration.ThreeVersionstJavaFlexForBug11754"
+             name="Support 3 versions tJavaFlex for bug11754">
+       </projecttask>
    </extension>
    
    <extension

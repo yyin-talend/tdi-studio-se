@@ -19,6 +19,7 @@
 		org.talend.core.model.process.IHashableInputConnections
 		org.talend.core.model.process.IHashConfiguration
 		org.talend.core.model.process.IHashableColumn
+		org.talend.core.model.utils.NodeUtil
 	" 
 	class="SubProcessHeader"
 	skeleton="subprocess_header_java.skeleton"

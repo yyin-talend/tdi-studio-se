@@ -10,7 +10,7 @@ public class CLASS
         // declare root structs (all main outgoing connections)
         for (IConnection conn : n.getOutgoingConnections()) {
             if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-                if ((force)||(n.isSubProcessStart() || !(n.getComponent().isDataAutoPropagated()))) {
+                if ((force)||(n.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(n)))) {
                     // new Instance
                     if (!names.contains(conn.getName())) {
 	                    toReturn += conn.getName() + "Struct " + conn.getName() + " = new " + conn.getName()

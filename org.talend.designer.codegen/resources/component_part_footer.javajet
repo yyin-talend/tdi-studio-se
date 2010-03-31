@@ -12,6 +12,7 @@
   org.talend.designer.codegen.config.CodeGeneratorArgument
   org.talend.designer.codegen.config.NodesSubTree
   org.talend.core.model.process.IProcess
+  org.talend.core.model.utils.NodeUtil
   java.util.List
   java.util.Set
   java.util.HashSet
@@ -93,7 +94,7 @@ if(execStat){
    }
   }
   List<IMetadataTable> metadatas = node.getMetadataList();
-  if ((!node.isSubProcessStart())&&(node.getComponent().isDataAutoPropagated())) {
+  if ((!node.isSubProcessStart())&&(NodeUtil.isDataAutoPropagated(node))) {
    if (inputColName!=null) {
     if ((metadatas != null) && (metadatas.size() > 0)) {
      IMetadataTable metadata = metadatas.get(0);
