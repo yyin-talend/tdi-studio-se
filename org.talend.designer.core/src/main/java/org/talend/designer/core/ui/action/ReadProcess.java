@@ -28,7 +28,6 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.actions.AContextualAction;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -36,7 +35,7 @@ import org.talend.repository.ui.actions.AContextualAction;
  * $Id: EditProcess.java 1495 2007-01-18 04:31:30Z nrousseau $
  * 
  */
-public class ReadProcess extends AContextualAction {
+public class ReadProcess extends AbstractProcessAction {
 
     private static final String LABEL = Messages.getString("ReadProcess.label"); //$NON-NLS-1$
 
@@ -63,7 +62,8 @@ public class ReadProcess extends AContextualAction {
         IWorkbenchPage page = getActivePage();
 
         try {
-            ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true,true);
+            ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, true);
+            checkUnLoadedNodeForProcess(fileEditorInput);
             IEditorPart editorPart = page.findEditor(fileEditorInput);
 
             if (editorPart == null) {

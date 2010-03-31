@@ -46,7 +46,6 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.actions.AContextualAction;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -54,7 +53,7 @@ import org.talend.repository.ui.actions.AContextualAction;
  * $Id$
  * 
  */
-public class EditProcess extends AContextualAction implements IIntroAction {
+public class EditProcess extends AbstractProcessAction implements IIntroAction {
 
     private static final String EDIT_LABEL = Messages.getString("EditProcess.editJob"); //$NON-NLS-1$
 
@@ -124,6 +123,7 @@ public class EditProcess extends AContextualAction implements IIntroAction {
 
         try {
             final ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
+            checkUnLoadedNodeForProcess(fileEditorInput);
 
             IEditorPart editorPart = page.findEditor(fileEditorInput);
 

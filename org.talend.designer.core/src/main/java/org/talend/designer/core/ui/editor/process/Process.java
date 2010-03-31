@@ -45,14 +45,10 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
@@ -1302,40 +1298,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             nc = loadNode(nType, component, nodesHashtable, listParamType);
 
         }
-        if (!unloadedNode.isEmpty()) {
-            String message = "Some Component are not loaded:\n";
-            for (int i = 0; i < unloadedNode.size(); i++) {
-                message = message + unloadedNode.get(i).getComponentName() + "\n";
-            }
-            if (!CommonsPlugin.isHeadless() && PlatformUI.isWorkbenchRunning()) {
-                Display display = Display.getCurrent();
-                if (display == null) {
-                    display = Display.getDefault();
-                }
 
-                if (display != null) {
-                    final Display tmpDis = display;
-                    final String tmpMess = message;
-                    display.syncExec(new Runnable() {
-
-                        public void run() {
-                            Shell shell = null;
-                            final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                            if (activeWorkbenchWindow != null) {
-                                shell = activeWorkbenchWindow.getShell();
-                            } else {
-                                if (tmpDis != null) {
-                                    shell = tmpDis.getActiveShell();
-                                } else {
-                                    shell = new Shell();
-                                }
-                            }
-                            MessageDialog.openWarning(shell, "Warning", tmpMess);
-                        }
-                    });
-                }
-            }
-        }
         for (int i = 0; i < unloadedNode.size(); i++) {
             createDummyNode(unloadedNode.get(i), nodesHashtable);
         }

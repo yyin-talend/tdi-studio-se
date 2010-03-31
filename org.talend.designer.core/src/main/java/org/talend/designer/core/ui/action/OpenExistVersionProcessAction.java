@@ -12,9 +12,12 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
@@ -22,12 +25,21 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.wizards.OpenExistVersionProcessWizard;
+import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.EditPropertiesAction;
@@ -90,4 +102,70 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
 
     }
 
+    protected IEditorPart getCorrespondingEditor(RepositoryNode node) {
+        IEditorReference[] eidtors = getActivePage().getEditorReferences();
+
+        for (int i = 0; i < eidtors.length; i++) {
+            try {
+                IEditorInput input = eidtors[i].getEditorInput();
+                if (!(input instanceof RepositoryEditorInput)) {
+                    continue;
+                }
+
+                RepositoryEditorInput repositoryInput = (RepositoryEditorInput) input;
+                checkUnLoadedNodeForProcess(repositoryInput);
+                if (repositoryInput.getItem().equals(node.getObject().getProperty().getItem())) {
+
+                    IPath path = repositoryInput.getFile().getLocation();
+
+                    return eidtors[i].getEditor(false);
+                }
+            } catch (PartInitException e) {
+                continue;
+            }
+        }
+        return null;
+    }
+
+    private void checkUnLoadedNodeForProcess(RepositoryEditorInput fileEditorInput) {
+        if (fileEditorInput == null || fileEditorInput.getLoadedProcess() == null) {
+            return;
+        }
+        IProcess2 loadedProcess = fileEditorInput.getLoadedProcess();
+        List<NodeType> unloadedNode = loadedProcess.getUnloadedNode();
+        if (unloadedNode != null && !unloadedNode.isEmpty()) {
+
+            String message = "Some Component are not loaded:\n";
+            for (int i = 0; i < unloadedNode.size(); i++) {
+                message = message + unloadedNode.get(i).getComponentName() + "\n";
+            }
+            if (!CommonsPlugin.isHeadless() && PlatformUI.isWorkbenchRunning()) {
+                Display display = Display.getCurrent();
+                if (display == null) {
+                    display = Display.getDefault();
+                }
+                if (display != null) {
+                    final Display tmpDis = display;
+                    final String tmpMess = message;
+                    display.syncExec(new Runnable() {
+
+                        public void run() {
+                            Shell shell = null;
+                            final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                            if (activeWorkbenchWindow != null) {
+                                shell = activeWorkbenchWindow.getShell();
+                            } else {
+                                if (tmpDis != null) {
+                                    shell = tmpDis.getActiveShell();
+                                } else {
+                                    shell = new Shell();
+                                }
+                            }
+                            MessageDialog.openWarning(shell, "Warning", tmpMess);
+                        }
+                    });
+                }
+            }
+        }
+    }
 }
