@@ -16,10 +16,13 @@ public class CLASS {
     public static final String ACCESS = "access_id";
     public static final String AS400 = "as400_id";
     public static final String DB2 = "ibmdb2_id";
+    
+    
     public static final String FIREBIRD = "firebird_id";
     public static final String HSQLDB = "hsqldb_id";
     public static final String INFORMIX = "informix_id";
     public static final String INGRES = "ingres_id";
+    public static final String VECTORWISE = "vectorwise_id";
     public static final String INTERBASE = "interbase_id";
     public static final String JAVADB = "javadb_id";
     public static final String MAXDB = "maxdb_id";
@@ -404,6 +407,12 @@ public class CLASS {
                 createSQL.append(")");
             }
             createSQL.append(")");
+            
+            // add VectorWise option
+            if ("vectorwise_id".equalsIgnoreCase(getDBMSId())){
+            	createSQL.append("WITH STRUCTURE = VECTORWISE");
+            }
+            
             return createSQL.toString();
         }
         protected String getAutoIncrement(int startValue, int step) {
@@ -1403,15 +1412,24 @@ public class CLASS {
 				}     	
 			} 
 			return copyBulkSQL.toString();
-		} 
-
-	public String getTruncateTableSQL() {
-		StringBuilder truncateTableSQL = new StringBuilder();
-		truncateTableSQL.append("MODIFY " + getLProtectedChar() + "\" + tableName_" 
-		+ cid + " + \"\\\" TO TRUNCATED");
-		return truncateTableSQL.toString();
-		}				        
+		}
+			
+		public String getTruncateTableSQL() {
+			StringBuilder truncateTableSQL = new StringBuilder();
+			truncateTableSQL.append("MODIFY " + getLProtectedChar() + "\" + tableName_" 
+			+ cid + " + \"\\\" TO TRUNCATED");
+			return truncateTableSQL.toString();
+		}
     }
+    
+    public class VectorWiseManager extends IngresManager {
+		public VectorWiseManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return VECTORWISE;
+        }
+	}	
     
     public class InterbaseManager extends Manager {
         public InterbaseManager(String cid) {
@@ -2251,7 +2269,9 @@ public class CLASS {
             } else if(dbmsId.equalsIgnoreCase(INFORMIX)) {
                 manager = new InformixManager(cid);
             } else if(dbmsId.equalsIgnoreCase(INGRES)) {
-                manager = new IngresManager(cid);
+                manager = new IngresManager(cid);         
+            } else if(dbmsId.equalsIgnoreCase(VECTORWISE)) {
+                manager = new VectorWiseManager(cid);
             } else if(dbmsId.equalsIgnoreCase(INTERBASE)) {
                 manager = new InterbaseManager(cid);
             } else if(dbmsId.equalsIgnoreCase(JAVADB)) {
