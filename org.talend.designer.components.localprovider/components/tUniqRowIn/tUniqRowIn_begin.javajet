@@ -95,11 +95,11 @@ if(mode == UNIQUE){//HSS_____0
             //For second sort init end
 
             while (rowList_1_<%=cid %>.size() > 0) {
-                int minIndex = 0;
+                int minIndex_<%=cid %> = 0;
                 if (rowList_1_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_1_<%=cid %>.size(); i++) {
-                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex), rowList_1_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex_<%=cid %>), rowList_1_<%=cid %>.get(i)) > 0) {
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
@@ -121,15 +121,15 @@ if(mode == UNIQUE){//HSS_____0
 
                     rowsInBuffer_2_<%=cid %> = 0;
                 }
-                rowStruct_<%=cid %> minItem = rowList_1_<%=cid %>.get(minIndex);
+                rowStruct_<%=cid %> minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
                 buffer_2_<%=cid %>[rowsInBuffer_2_<%=cid %>++] = minItem;
-                FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+                FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_1_<%=cid %>.set(minIndex, fri.next());
+                    rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_1_<%=cid %>.remove(minIndex);
-                    rowList_1_<%=cid %>.remove(minIndex);
+                    rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
 
                 //skip duplicates....begin-->this case is suitable for no duplicate connection
@@ -193,27 +193,27 @@ if(mode == UNIQUE){//HSS_____0
 
             int nb_uniq_<%=cid %> = 0;
             while (rowList_2_<%=cid %>.size() > 0) {
-                int minIndex = 0;
+                int minIndex_<%=cid %> = 0;
                 if (rowList_2_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_2_<%=cid %>.size(); i++) {
-                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex), rowList_2_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex_<%=cid %>), rowList_2_<%=cid %>.get(i)) > 0) {
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
 
                 // /////////////
 
-                rowStruct_<%=cid %> current = rowList_2_<%=cid %>.get(minIndex);
+                rowStruct_<%=cid %> current = rowList_2_<%=cid %>.get(minIndex_<%=cid %>);
 
                 // ////////////
-                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex);
+                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_2_<%=cid %>.set(minIndex, fri.next());
+                    rowList_2_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_2_<%=cid %>.remove(minIndex);
-                    rowList_2_<%=cid %>.remove(minIndex);
+                    rowFileList_2_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
 <%
     for(IMetadataColumn column : columnList){//HSS_____0_____1
@@ -267,12 +267,12 @@ if(mode == UNIQUE){//HSS_____0
             // For second sort duplicate init end
 
             while (rowList_1_<%=cid %>.size() > 0) {
-                int minIndex = 0;
+                int minIndex_<%=cid %> = 0;
                 if (rowList_1_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_1_<%=cid %>.size(); i++) {
-                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex),
+                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_1_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
@@ -296,15 +296,15 @@ if(mode == UNIQUE){//HSS_____0
 
                     rowsInBuffer_2_<%=cid %> = 0;
                 }
-                rowStruct_<%=cid %> minItem = rowList_1_<%=cid %>.get(minIndex);
+                rowStruct_<%=cid %> minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
                 buffer_2_<%=cid %>[rowsInBuffer_2_<%=cid %>++] = minItem;
-                FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+                FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_1_<%=cid %>.set(minIndex, fri.next());
+                    rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_1_<%=cid %>.remove(minIndex);
-                    rowList_1_<%=cid %>.remove(minIndex);
+                    rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
 
                 // get duplicates....begin
@@ -448,46 +448,46 @@ if(mode == UNIQUE){//HSS_____0
             int nb_duplicate_<%=cid %> = 0;
             rowStruct_<%=cid %> uniq_<%=cid %> = null;
             rowStruct_<%=cid %> duplicate_<%=cid %> = null;
-            int minIndex = 0;
+            int minIndex_<%=cid %> = 0;
             /////////////////////
             if(rowList_2_<%=cid %>.size() > 0){
-                minIndex = 0;
+                minIndex_<%=cid %> = 0;
                 if (rowList_2_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_2_<%=cid %>.size(); i++) {
-                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex),
+                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_2_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
-                uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex);
-                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex);
+                uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex_<%=cid %>);
+                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_2_<%=cid %>.set(minIndex, fri.next());
+                    rowList_2_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_2_<%=cid %>.remove(minIndex);
-                    rowList_2_<%=cid %>.remove(minIndex);
+                    rowFileList_2_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
             }
             if(rowList_3_<%=cid %>.size() > 0){
-                minIndex = 0;
+                minIndex_<%=cid %> = 0;
                 if (rowList_3_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_3_<%=cid %>.size(); i++) {
-                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex),
+                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_3_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
-                duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex);
-                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex);
+                duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex_<%=cid %>);
+                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_3_<%=cid %>.set(minIndex, fri.next());
+                    rowList_3_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_3_<%=cid %>.remove(minIndex);
-                    rowList_3_<%=cid %>.remove(minIndex);
+                    rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
             }
             while (true) {
@@ -509,23 +509,23 @@ if(mode == UNIQUE){//HSS_____0
                     	nb_duplicate_<%=cid %>++;
                         duplicate_<%=cid %> = null;
                         if(rowList_3_<%=cid %>.size() > 0){
-                            minIndex = 0;
+                            minIndex_<%=cid %> = 0;
                             if (rowList_3_<%=cid %>.size() > 1) {
                                 for (int i = 1; i < rowList_3_<%=cid %>.size(); i++) {
-                                    if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex),
+                                    if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex_<%=cid %>),
                                             rowList_3_<%=cid %>.get(i)) > 0) {
-                                        minIndex = i;
+                                        minIndex_<%=cid %> = i;
                                     }
                                 }
                             }
-                            duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex);
-                            FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex);
+                            duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex_<%=cid %>);
+                            FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex_<%=cid %>);
                             if (fri.hasNext()) {
-                                rowList_3_<%=cid %>.set(minIndex, fri.next());
+                                rowList_3_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                             } else {
                                 fri.close();
-                                rowFileList_3_<%=cid %>.remove(minIndex);
-                                rowList_3_<%=cid %>.remove(minIndex);
+                                rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
+                                rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                             }
                         }
                     }
@@ -545,23 +545,23 @@ if(mode == UNIQUE){//HSS_____0
                         uniq_<%=cid %> = null;
                         
                         if(rowList_2_<%=cid %>.size() > 0){
-                            minIndex = 0;
+                            minIndex_<%=cid %> = 0;
                             if (rowList_2_<%=cid %>.size() > 1) {
                                 for (int i = 1; i < rowList_2_<%=cid %>.size(); i++) {
-                                    if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex),
+                                    if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex_<%=cid %>),
                                             rowList_2_<%=cid %>.get(i)) > 0) {
-                                        minIndex = i;
+                                        minIndex_<%=cid %> = i;
                                     }
                                 }
                             }
-                            uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex);
-                            FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex);
+                            uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex_<%=cid %>);
+                            FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex_<%=cid %>);
                             if (fri.hasNext()) {
-                                rowList_2_<%=cid %>.set(minIndex, fri.next());
+                                rowList_2_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                             } else {
                                 fri.close();
-                                rowFileList_2_<%=cid %>.remove(minIndex);
-                                rowList_2_<%=cid %>.remove(minIndex);
+                                rowFileList_2_<%=cid %>.remove(minIndex_<%=cid %>);
+                                rowList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                             }
                         }
                         
@@ -582,23 +582,23 @@ if(mode == UNIQUE){//HSS_____0
                             uniq_<%=cid %> = null;
                             
                             if(rowList_2_<%=cid %>.size() > 0){
-                                minIndex = 0;
+                                minIndex_<%=cid %> = 0;
                                 if (rowList_2_<%=cid %>.size() > 1) {
                                     for (int i = 1; i < rowList_2_<%=cid %>.size(); i++) {
-                                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex),
+                                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex_<%=cid %>),
                                                 rowList_2_<%=cid %>.get(i)) > 0) {
-                                            minIndex = i;
+                                            minIndex_<%=cid %> = i;
                                         }
                                     }
                                 }
-                                uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex);
-                                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex);
+                                uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex_<%=cid %>);
+                                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex_<%=cid %>);
                                 if (fri.hasNext()) {
-                                    rowList_2_<%=cid %>.set(minIndex, fri.next());
+                                    rowList_2_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                                 } else {
                                     fri.close();
-                                    rowFileList_2_<%=cid %>.remove(minIndex);
-                                    rowList_2_<%=cid %>.remove(minIndex);
+                                    rowFileList_2_<%=cid %>.remove(minIndex_<%=cid %>);
+                                    rowList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                                 }
                             }
                         }else{
@@ -613,23 +613,23 @@ if(mode == UNIQUE){//HSS_____0
 							nb_duplicate_<%=cid %>++;
                             duplicate_<%=cid %> = null;
                             if(rowList_3_<%=cid %>.size() > 0){
-                                minIndex = 0;
+                                minIndex_<%=cid %> = 0;
                                 if (rowList_3_<%=cid %>.size() > 1) {
                                     for (int i = 1; i < rowList_3_<%=cid %>.size(); i++) {
-                                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex),
+                                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex_<%=cid %>),
                                                 rowList_3_<%=cid %>.get(i)) > 0) {
-                                            minIndex = i;
+                                            minIndex_<%=cid %> = i;
                                         }
                                     }
                                 }
-                                duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex);
-                                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex);
+                                duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex_<%=cid %>);
+                                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex_<%=cid %>);
                                 if (fri.hasNext()) {
-                                    rowList_3_<%=cid %>.set(minIndex, fri.next());
+                                    rowList_3_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                                 } else {
                                     fri.close();
-                                    rowFileList_3_<%=cid %>.remove(minIndex);
-                                    rowList_3_<%=cid %>.remove(minIndex);
+                                    rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
+                                    rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                                 }
                             }
                         }
@@ -681,19 +681,19 @@ if(mode == UNIQUE){//HSS_____0
             boolean forDuplicateFlag_<%=cid %> = false;
             rowStruct_<%=cid %> minItem = null;
             while (rowList_1_<%=cid %>.size() > 0) {
-                int minIndex = 0;
+                int minIndex_<%=cid %> = 0;
                 if (rowList_1_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_1_<%=cid %>.size(); i++) {
-                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex),
+                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_1_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
 
                 // /////////////
                 if(forDuplicateFlag_<%=cid %>){
-                	if(!rowList_1_<%=cid %>.get(minIndex).duplicateTo(minItem)){
+                	if(!rowList_1_<%=cid %>.get(minIndex_<%=cid %>).duplicateTo(minItem)){
                 		if (rowsInBuffer_2_<%=cid %> >= bufferSize_2_<%=cid %>) {
 
 	                        java.util.Arrays.<rowStruct_<%=cid %>> sort(buffer_2_<%=cid %>, 0,
@@ -712,15 +712,15 @@ if(mode == UNIQUE){//HSS_____0
 	
 	                        rowsInBuffer_2_<%=cid %> = 0;
 	                    }
-	                    minItem = rowList_1_<%=cid %>.get(minIndex);
+	                    minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
 	                    buffer_2_<%=cid %>[rowsInBuffer_2_<%=cid %>++] = minItem;
-	                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+	                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
 	                    if (fri.hasNext()) {
-	                        rowList_1_<%=cid %>.set(minIndex, fri.next());
+	                        rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
 	                    } else {
 	                        fri.close();
-	                        rowFileList_1_<%=cid %>.remove(minIndex);
-	                        rowList_1_<%=cid %>.remove(minIndex);
+	                        rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+	                        rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
 	                    }	
                 	}else{
 	                    if (rowsInBuffer_3_<%=cid %> >= bufferSize_3_<%=cid %>) {
@@ -741,15 +741,15 @@ if(mode == UNIQUE){//HSS_____0
 	
 	                        rowsInBuffer_3_<%=cid %> = 0;
 	                    }
-	                    minItem = rowList_1_<%=cid %>.get(minIndex);
+	                    minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
 	                    buffer_3_<%=cid %>[rowsInBuffer_3_<%=cid %>++] = minItem;
-	                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+	                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
 	                    if (fri.hasNext()) {
-	                        rowList_1_<%=cid %>.set(minIndex, fri.next());
+	                        rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
 	                    } else {
 	                        fri.close();
-	                        rowFileList_1_<%=cid %>.remove(minIndex);
-	                        rowList_1_<%=cid %>.remove(minIndex);
+	                        rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+	                        rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
 	                    }
 	                    
 	                    forDuplicateFlag_<%=cid %> = false;
@@ -799,15 +799,15 @@ if(mode == UNIQUE){//HSS_____0
 
                         rowsInBuffer_2_<%=cid %> = 0;
                     }
-                    minItem = rowList_1_<%=cid %>.get(minIndex);
+                    minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
                     buffer_2_<%=cid %>[rowsInBuffer_2_<%=cid %>++] = minItem;
-                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
                     if (fri.hasNext()) {
-                        rowList_1_<%=cid %>.set(minIndex, fri.next());
+                        rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                     } else {
                         fri.close();
-                        rowFileList_1_<%=cid %>.remove(minIndex);
-                        rowList_1_<%=cid %>.remove(minIndex);
+                        rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+                        rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
                     }
                     
                     forDuplicateFlag_<%=cid %> = true;
@@ -884,46 +884,46 @@ if(mode == UNIQUE){//HSS_____0
             int nb_duplicate_<%=cid %> = 0;
             rowStruct_<%=cid %> uniq_<%=cid %> = null;
             rowStruct_<%=cid %> duplicate_<%=cid %> = null;
-            int minIndex = 0;
+            int minIndex_<%=cid %> = 0;
             /////////////////////
             if(rowList_2_<%=cid %>.size() > 0){
-                minIndex = 0;
+                minIndex_<%=cid %> = 0;
                 if (rowList_2_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_2_<%=cid %>.size(); i++) {
-                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex),
+                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_2_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
-                uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex);
-                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex);
+                uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex_<%=cid %>);
+                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_2_<%=cid %>.set(minIndex, fri.next());
+                    rowList_2_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_2_<%=cid %>.remove(minIndex);
-                    rowList_2_<%=cid %>.remove(minIndex);
+                    rowFileList_2_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
             }
             if(rowList_3_<%=cid %>.size() > 0){
-                minIndex = 0;
+                minIndex_<%=cid %> = 0;
                 if (rowList_3_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_3_<%=cid %>.size(); i++) {
-                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex),
+                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_3_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
-                duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex);
-                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex);
+                duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex_<%=cid %>);
+                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_3_<%=cid %>.set(minIndex, fri.next());
+                    rowList_3_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_3_<%=cid %>.remove(minIndex);
-                    rowList_3_<%=cid %>.remove(minIndex);
+                    rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
             }
             while (true) {
@@ -945,23 +945,23 @@ if(mode == UNIQUE){//HSS_____0
                     	nb_duplicate_<%=cid %>++;
                         duplicate_<%=cid %> = null;
                         if(rowList_3_<%=cid %>.size() > 0){
-                            minIndex = 0;
+                            minIndex_<%=cid %> = 0;
                             if (rowList_3_<%=cid %>.size() > 1) {
                                 for (int i = 1; i < rowList_3_<%=cid %>.size(); i++) {
-                                    if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex),
+                                    if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex_<%=cid %>),
                                             rowList_3_<%=cid %>.get(i)) > 0) {
-                                        minIndex = i;
+                                        minIndex_<%=cid %> = i;
                                     }
                                 }
                             }
-                            duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex);
-                            FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex);
+                            duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex_<%=cid %>);
+                            FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex_<%=cid %>);
                             if (fri.hasNext()) {
-                                rowList_3_<%=cid %>.set(minIndex, fri.next());
+                                rowList_3_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                             } else {
                                 fri.close();
-                                rowFileList_3_<%=cid %>.remove(minIndex);
-                                rowList_3_<%=cid %>.remove(minIndex);
+                                rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
+                                rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                             }
                         }
                     }
@@ -981,23 +981,23 @@ if(mode == UNIQUE){//HSS_____0
                         uniq_<%=cid %> = null;
                         
                         if(rowList_2_<%=cid %>.size() > 0){
-                            minIndex = 0;
+                            minIndex_<%=cid %> = 0;
                             if (rowList_2_<%=cid %>.size() > 1) {
                                 for (int i = 1; i < rowList_2_<%=cid %>.size(); i++) {
-                                    if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex),
+                                    if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex_<%=cid %>),
                                             rowList_2_<%=cid %>.get(i)) > 0) {
-                                        minIndex = i;
+                                        minIndex_<%=cid %> = i;
                                     }
                                 }
                             }
-                            uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex);
-                            FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex);
+                            uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex_<%=cid %>);
+                            FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex_<%=cid %>);
                             if (fri.hasNext()) {
-                                rowList_2_<%=cid %>.set(minIndex, fri.next());
+                                rowList_2_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                             } else {
                                 fri.close();
-                                rowFileList_2_<%=cid %>.remove(minIndex);
-                                rowList_2_<%=cid %>.remove(minIndex);
+                                rowFileList_2_<%=cid %>.remove(minIndex_<%=cid %>);
+                                rowList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                             }
                         }
                         
@@ -1018,23 +1018,23 @@ if(mode == UNIQUE){//HSS_____0
                             uniq_<%=cid %> = null;
                             
                             if(rowList_2_<%=cid %>.size() > 0){
-                                minIndex = 0;
+                                minIndex_<%=cid %> = 0;
                                 if (rowList_2_<%=cid %>.size() > 1) {
                                     for (int i = 1; i < rowList_2_<%=cid %>.size(); i++) {
-                                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex),
+                                        if (comparator_2_<%=cid %>.compare(rowList_2_<%=cid %>.get(minIndex_<%=cid %>),
                                                 rowList_2_<%=cid %>.get(i)) > 0) {
-                                            minIndex = i;
+                                            minIndex_<%=cid %> = i;
                                         }
                                     }
                                 }
-                                uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex);
-                                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex);
+                                uniq_<%=cid %> = rowList_2_<%=cid %>.get(minIndex_<%=cid %>);
+                                FileRowIterator_<%=cid %> fri = rowFileList_2_<%=cid %>.get(minIndex_<%=cid %>);
                                 if (fri.hasNext()) {
-                                    rowList_2_<%=cid %>.set(minIndex, fri.next());
+                                    rowList_2_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                                 } else {
                                     fri.close();
-                                    rowFileList_2_<%=cid %>.remove(minIndex);
-                                    rowList_2_<%=cid %>.remove(minIndex);
+                                    rowFileList_2_<%=cid %>.remove(minIndex_<%=cid %>);
+                                    rowList_2_<%=cid %>.remove(minIndex_<%=cid %>);
                                 }
                             }
                         }else{
@@ -1049,23 +1049,23 @@ if(mode == UNIQUE){//HSS_____0
 							nb_duplicate_<%=cid %>++;
                             duplicate_<%=cid %> = null;
                             if(rowList_3_<%=cid %>.size() > 0){
-                                minIndex = 0;
+                                minIndex_<%=cid %> = 0;
                                 if (rowList_3_<%=cid %>.size() > 1) {
                                     for (int i = 1; i < rowList_3_<%=cid %>.size(); i++) {
-                                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex),
+                                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex_<%=cid %>),
                                                 rowList_3_<%=cid %>.get(i)) > 0) {
-                                            minIndex = i;
+                                            minIndex_<%=cid %> = i;
                                         }
                                     }
                                 }
-                                duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex);
-                                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex);
+                                duplicate_<%=cid %> = rowList_3_<%=cid %>.get(minIndex_<%=cid %>);
+                                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex_<%=cid %>);
                                 if (fri.hasNext()) {
-                                    rowList_3_<%=cid %>.set(minIndex, fri.next());
+                                    rowList_3_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                                 } else {
                                     fri.close();
-                                    rowFileList_3_<%=cid %>.remove(minIndex);
-                                    rowList_3_<%=cid %>.remove(minIndex);
+                                    rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
+                                    rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                                 }
                             }
                         }
@@ -1107,25 +1107,25 @@ if(mode == UNIQUE){//HSS_____0
             // For second sort duplicate init end
 
             while (rowList_1_<%=cid %>.size() > 0) {
-                int minIndex = 0;
+                int minIndex_<%=cid %> = 0;
                 if (rowList_1_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_1_<%=cid %>.size(); i++) {
-                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex),
+                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_1_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
 
                 // /////////////
-                rowStruct_<%=cid %> minItem = rowList_1_<%=cid %>.get(minIndex);
-                FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+                rowStruct_<%=cid %> minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
+                FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_1_<%=cid %>.set(minIndex, fri.next());
+                    rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_1_<%=cid %>.remove(minIndex);
-                    rowList_1_<%=cid %>.remove(minIndex);
+                    rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
 
                 // get duplicates....begin
@@ -1234,28 +1234,28 @@ if(mode == UNIQUE){//HSS_____0
             rowStruct_<%=cid %> duplicate_<%=cid %> = null;
             
             while (rowList_3_<%=cid %>.size() > 0) {
-                int minIndex = 0;
+                int minIndex_<%=cid %> = 0;
                 if (rowList_3_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_3_<%=cid %>.size(); i++) {
-                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex),
+                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_3_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
 
                 // /////////////
 
-                rowStruct_<%=cid %> current = rowList_3_<%=cid %>.get(minIndex);
+                rowStruct_<%=cid %> current = rowList_3_<%=cid %>.get(minIndex_<%=cid %>);
 
                 // ////////////
-                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex);
+                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_3_<%=cid %>.set(minIndex, fri.next());
+                    rowList_3_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_3_<%=cid %>.remove(minIndex);
-                    rowList_3_<%=cid %>.remove(minIndex);
+                    rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
 <%
     for(IMetadataColumn column : columnList){//HSS_____0_____1
@@ -1303,27 +1303,27 @@ if(mode == UNIQUE){//HSS_____0
             rowStruct_<%=cid %> minItem = null;
             
             while (rowList_1_<%=cid %>.size() > 0) {
-                int minIndex = 0;
+                int minIndex_<%=cid %> = 0;
                 if (rowList_1_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_1_<%=cid %>.size(); i++) {
-                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex),
+                        if (comparator_1_<%=cid %>.compare(rowList_1_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_1_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
 
                 // /////////////
                 if(forDuplicateFlag_<%=cid %>){
-                	if(!minItem.duplicateTo(rowList_1_<%=cid %>.get(minIndex))){
-                		minItem = rowList_1_<%=cid %>.get(minIndex);
-	                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+                	if(!minItem.duplicateTo(rowList_1_<%=cid %>.get(minIndex_<%=cid %>))){
+                		minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
+	                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
 	                    if (fri.hasNext()) {
-	                        rowList_1_<%=cid %>.set(minIndex, fri.next());
+	                        rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
 	                    } else {
 	                        fri.close();
-	                        rowFileList_1_<%=cid %>.remove(minIndex);
-	                        rowList_1_<%=cid %>.remove(minIndex);
+	                        rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+	                        rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
 	                    }
                 	}else{
                 	
@@ -1345,15 +1345,15 @@ if(mode == UNIQUE){//HSS_____0
 	
 	                        rowsInBuffer_3_<%=cid %> = 0;
 	                    }
-	                    minItem = rowList_1_<%=cid %>.get(minIndex);
+	                    minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
 	                    buffer_3_<%=cid %>[rowsInBuffer_3_<%=cid %>++] = minItem;
-	                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+	                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
 	                    if (fri.hasNext()) {
-	                        rowList_1_<%=cid %>.set(minIndex, fri.next());
+	                        rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
 	                    } else {
 	                        fri.close();
-	                        rowFileList_1_<%=cid %>.remove(minIndex);
-	                        rowList_1_<%=cid %>.remove(minIndex);
+	                        rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+	                        rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
 	                    }
 	                    
 	                    forDuplicateFlag_<%=cid %> = false;
@@ -1385,14 +1385,14 @@ if(mode == UNIQUE){//HSS_____0
 	                    // skip duplicates....end
                     }
                 }else{
-                    minItem = rowList_1_<%=cid %>.get(minIndex);
-                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex);
+                    minItem = rowList_1_<%=cid %>.get(minIndex_<%=cid %>);
+                    FileRowIterator_<%=cid %> fri = rowFileList_1_<%=cid %>.get(minIndex_<%=cid %>);
                     if (fri.hasNext()) {
-                        rowList_1_<%=cid %>.set(minIndex, fri.next());
+                        rowList_1_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                     } else {
                         fri.close();
-                        rowFileList_1_<%=cid %>.remove(minIndex);
-                        rowList_1_<%=cid %>.remove(minIndex);
+                        rowFileList_1_<%=cid %>.remove(minIndex_<%=cid %>);
+                        rowList_1_<%=cid %>.remove(minIndex_<%=cid %>);
                     }
                     forDuplicateFlag_<%=cid %> = true;
                 }
@@ -1432,28 +1432,28 @@ if(mode == UNIQUE){//HSS_____0
             int nb_duplicate_<%=cid %> = 0;
 
             while (rowList_3_<%=cid %>.size() > 0) {
-                int minIndex = 0;
+                int minIndex_<%=cid %> = 0;
                 if (rowList_3_<%=cid %>.size() > 1) {
                     for (int i = 1; i < rowList_3_<%=cid %>.size(); i++) {
-                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex),
+                        if (comparator_3_<%=cid %>.compare(rowList_3_<%=cid %>.get(minIndex_<%=cid %>),
                                 rowList_3_<%=cid %>.get(i)) > 0) {
-                            minIndex = i;
+                            minIndex_<%=cid %> = i;
                         }
                     }
                 }
 
                 // /////////////
 
-                rowStruct_<%=cid %> current = rowList_3_<%=cid %>.get(minIndex);
+                rowStruct_<%=cid %> current = rowList_3_<%=cid %>.get(minIndex_<%=cid %>);
 
                 // ////////////
-                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex);
+                FileRowIterator_<%=cid %> fri = rowFileList_3_<%=cid %>.get(minIndex_<%=cid %>);
                 if (fri.hasNext()) {
-                    rowList_3_<%=cid %>.set(minIndex, fri.next());
+                    rowList_3_<%=cid %>.set(minIndex_<%=cid %>, fri.next());
                 } else {
                     fri.close();
-                    rowFileList_3_<%=cid %>.remove(minIndex);
-                    rowList_3_<%=cid %>.remove(minIndex);
+                    rowFileList_3_<%=cid %>.remove(minIndex_<%=cid %>);
+                    rowList_3_<%=cid %>.remove(minIndex_<%=cid %>);
                 }
 <%
     for(IMetadataColumn column : columnList){//HSS_____0_____1
