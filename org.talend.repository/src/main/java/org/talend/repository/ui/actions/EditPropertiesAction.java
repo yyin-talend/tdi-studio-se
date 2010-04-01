@@ -98,7 +98,6 @@ public class EditPropertiesAction extends AContextualAction {
         PropertiesWizard wizard = new PropertiesWizard(node, path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {
-            RepositoryManager.refreshEditorPropertiesNode(ERepositoryObjectType.ROUTINES);
             refresh(node);
             // refresh the corresponding editor's name
             IEditorPart part = getCorrespondingEditor(node);
@@ -117,6 +116,10 @@ public class EditPropertiesAction extends AContextualAction {
                     IJobSettingsView.ID);
             if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
                 ((IJobSettingsView) jobSettingView).refreshCurrentViewTab();
+            }
+
+            if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
+                RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.ROUTINES);
             }
         }
     }
