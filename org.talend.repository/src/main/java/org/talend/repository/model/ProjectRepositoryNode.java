@@ -491,19 +491,23 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private void getRefProject(Project project, Object parent) {
         for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getReferencedProjects()) {
-            Project p = refProject.getReferencedProject();
-            List<Project> list = nodeAndProject.get(parent);
-            if (list == null) {
-                list = new ArrayList<Project>();
-                nodeAndProject.put(parent, list);
+            String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields().get(
+                    IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel());
+            if (refProject.getBranch() != null && refProject.getBranch().equals(parentBranch)) {
+                Project p = refProject.getReferencedProject();
+                List<Project> list = nodeAndProject.get(parent);
+                if (list == null) {
+                    list = new ArrayList<Project>();
+                    nodeAndProject.put(parent, list);
+                }
+                if (list.contains(p)) {
+                    return;
+                } else {
+                    list.add(p);
+                }
+                initializeChildren(new org.talend.core.model.general.Project(p), parent);
+                getRefProject(p, parent);
             }
-            if (list.contains(p)) {
-                return;
-            } else {
-                list.add(p);
-            }
-            initializeChildren(new org.talend.core.model.general.Project(p), parent);
-            getRefProject(p, parent);
         }
 
     }
