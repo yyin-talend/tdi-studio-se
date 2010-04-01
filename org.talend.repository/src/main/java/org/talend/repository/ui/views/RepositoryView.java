@@ -53,7 +53,6 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -157,14 +156,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static ProjectRepositoryNode root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
-    private Image refreshImage = null;
-
-    private Image refreshImageUsed = null;
-
-    private Image filterImage = null;
-
-    private Image filterImageUsed = null;
-
     private IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
 
     private List<ITreeContextualAction> contextualsActions;
@@ -185,7 +176,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private Label filterBtn;
 
-    private boolean useFilter = false;
+    // private boolean useFilter = false;
 
     public RepositoryView() {
     }
@@ -239,13 +230,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     @Override
     public void createPartControl(Composite parent) {
-        refreshImage = ImageProvider.getImageDesc(EImage.REFRESH_ICON).createImage();
-
-        refreshImageUsed = ImageProvider.getImageDesc(EImage.REFRESH_WITH_BGCOLOR_ICON).createImage();
-
-        filterImage = ImageProvider.getImageDesc(EImage.FILTER_ICON).createImage();
-
-        filterImageUsed = ImageProvider.getImageDesc(EImage.FILTER_USED_ICON).createImage();
 
         Composite comp = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout();
@@ -389,17 +373,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public void createActionComposite(Composite parent) {
-        useFilter = preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER);
         Composite toolbar = new Composite(parent, SWT.NONE);
         toolbar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         toolbar.setLayout(new FormLayout());
         refreshBtn = new Label(toolbar, SWT.NONE);
-        refreshBtn.setImage(refreshImage);
+        refreshBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
         refreshBtn.setToolTipText("refresh");
 
         filterBtn = new Label(toolbar, SWT.NONE);
-        filterBtn.setImage(filterImage);
         filterBtn.setToolTipText("Filters..." + "\n" + "Right click to set up");
+        updateFilterImage();
 
         FormData thisFormData = new FormData();
         thisFormData.left = new FormAttachment(100, -20);
@@ -439,21 +422,24 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     if (e.button == 3) {
                         repositoryFilterAction.openSetupDialog();
                     } else {
-                        useFilter = !useFilter;
-                        preferenceStore.setValue(IRepositoryPrefConstants.USE_FILTER, useFilter);
+                        boolean useFilter = preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER);
+                        preferenceStore.setValue(IRepositoryPrefConstants.USE_FILTER, !useFilter);
                         repositoryFilterAction.run();
-                        if (useFilter) {
-                            filterBtn.setImage(filterImageUsed);
-                            filterBtn.setSize(new Point(18, 18));
-                        } else {
-                            filterBtn.setImage(filterImage);
-                        }
+                        updateFilterImage();
                     }
                 }
 
             }
 
         });
+    }
+
+    private void updateFilterImage() {
+        if (preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
+            filterBtn.setImage(ImageProvider.getImage(EImage.FILTER_ACTIVED_ICON));
+        } else {
+            filterBtn.setImage(ImageProvider.getImage(EImage.FILTER_DEACTIVED_ICON));
+        }
     }
 
     public void addFilters() {
@@ -1240,9 +1226,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             if (e.getSource() instanceof Label) {
                 Label label = (Label) e.getSource();
                 if (label == refreshBtn) {
-                    refreshBtn.setImage(refreshImage);
-                } else if (label == filterBtn && !preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
-                    filterBtn.setImage(filterImage);
+                    refreshBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+                    refreshBtn.pack();
+                } else if (label == filterBtn) {
+                    updateFilterImage();
+                    filterBtn.pack();
                 }
             }
 
@@ -1257,12 +1245,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             if (e.getSource() instanceof Label) {
                 Label label = (Label) e.getSource();
                 if (label == refreshBtn) {
-                    refreshBtn.setImage(refreshImageUsed);
-                    refreshBtn.setSize(new Point(18, 18));
+                    refreshBtn.setImage(ImageProvider.getImage(EImage.REFRESH_WITH_BGCOLOR_ICON));
+                    refreshBtn.setSize(new Point(19, 19));
                 } else if (label == filterBtn) {
-                    filterBtn.setImage(filterImageUsed);
-                    filterBtn.setSize(new Point(18, 18));
-
+                    filterBtn.setSize(new Point(19, 19));
+                    updateFilterImage();
                 }
             }
 

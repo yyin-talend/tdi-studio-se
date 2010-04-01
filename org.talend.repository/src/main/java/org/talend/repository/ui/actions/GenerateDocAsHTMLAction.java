@@ -75,7 +75,7 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
         super();
         this.setText(GENERATE_DOC_AS_HTML);
         this.setToolTipText(GENERATE_DOC_AS_HTML);
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
+        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_HTML_ICON));
     }
 
     /*

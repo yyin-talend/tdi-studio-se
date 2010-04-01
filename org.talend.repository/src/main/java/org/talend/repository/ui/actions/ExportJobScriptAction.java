@@ -70,7 +70,7 @@ public class ExportJobScriptAction extends AContextualAction {
         super();
         this.setText(EXPORTJOBSCRIPTS);
         this.setToolTipText(EXPORTJOBSCRIPTS);
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
+        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_JOB_ICON));
     }
 
     protected void doRun() {

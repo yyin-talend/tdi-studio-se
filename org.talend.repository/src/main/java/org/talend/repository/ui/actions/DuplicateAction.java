@@ -70,7 +70,7 @@ public class DuplicateAction extends AContextualAction {
     public DuplicateAction() {
         super();
         this.setText(Messages.getString("DuplicateAction.thisText.duplicate")); //$NON-NLS-1$
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.COPY_ICON));
+        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.DUPLICATE_ICON));
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {

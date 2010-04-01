@@ -33,7 +33,7 @@ public class RepositoryFilterAction extends Action {
 
     public RepositoryFilterAction(IRepositoryView repositoryView) {
         // this.setText("&Filters...");
-        setImageDescriptor(ImageProvider.getImageDesc(EImage.FILTER_ICON));
+        setImageDescriptor(ImageProvider.getImageDesc(EImage.FILTER_DEACTIVED_ICON));
         setId("filter_action");
         this.view = repositoryView;
 
