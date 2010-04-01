@@ -233,7 +233,6 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         }
     }
 
-
     /*
      * (non-Javadoc)
      * 
@@ -549,7 +548,11 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         bean.setProxyPort(originalValueConnection.getProxyPort());
         bean.setProxyUsername(originalValueConnection.getProxyUsername());
         bean.setProxyPassword(originalValueConnection.getProxyPassword());
-
+        try {
+            bean.setTimeOut(Integer.parseInt(originalValueConnection.getTimeOut()));
+        } catch (NumberFormatException e) {
+            // use default
+        }
         processDescription.setSalesforceSchemaBean(bean);
 
         IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(), bean

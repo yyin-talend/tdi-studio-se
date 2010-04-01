@@ -60,6 +60,7 @@ public final class OtherConnectionContextUtils {
         UserName,
         Password,
         BatchSize,
+        TimeOut,
         QueryCondition,
 
         // LDAP
@@ -312,6 +313,9 @@ public final class OtherConnectionContextUtils {
         paramName = prefixName + EParamName.BatchSize;
         ConnectionContextHelper.createParameters(varList, paramName, ssConn.getBatchSize());
 
+        paramName = prefixName + EParamName.TimeOut;
+        ConnectionContextHelper.createParameters(varList, paramName, ssConn.getTimeOut());
+
         paramName = prefixName + EParamName.QueryCondition;
         ConnectionContextHelper.createParameters(varList, paramName, ssConn.getQueryCondition());
 
@@ -385,6 +389,9 @@ public final class OtherConnectionContextUtils {
         paramName = prefixName + EParamName.BatchSize;
         ssConn.setBatchSize(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
+        paramName = prefixName + EParamName.TimeOut;
+        ssConn.setTimeOut(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
         paramName = prefixName + EParamName.QueryCondition;
         ssConn.setQueryCondition(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
     }
@@ -419,12 +426,14 @@ public final class OtherConnectionContextUtils {
         String userName = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getUserName());
         String password = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getPassword());
         String batchSize = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getBatchSize());
+        String timeOut = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getTimeOut());
         String queryCondition = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getQueryCondition());
 
         cloneConn.setWebServiceUrl(url);
         cloneConn.setUserName(userName);
         cloneConn.setPassword(password);
         cloneConn.setBatchSize(batchSize);
+        cloneConn.setTimeOut(timeOut);
         cloneConn.setQueryCondition(queryCondition);
 
         ConnectionContextHelper.cloneConnectionProperties(ssConn, cloneConn);

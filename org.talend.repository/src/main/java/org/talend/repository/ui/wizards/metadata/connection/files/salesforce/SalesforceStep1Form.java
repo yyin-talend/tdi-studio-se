@@ -44,6 +44,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.preview.SalesforceSchemaBean;
 import org.talend.repository.ui.swt.utils.AbstractSalesforceStepForm;
 
 import com.sforce.soap.enterprise.DescribeGlobalResult;
@@ -70,11 +71,11 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private LabelledText batchSizeText = null;
 
+    private LabelledText timeOutText = null;
+
     private LabelledCombo moduleNameCombo = null;
 
     private UtilsButton cancelButton = null;
-
-    private String defaultBatchSize = "250";//$NON-NLS-1$
 
     final String useProxy = "useProxyBtn";//$NON-NLS-1$
 
@@ -170,6 +171,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         passwordText.getTextControl().setEchoChar(pwdEhcoChar);
 
         batchSizeText = new LabelledText(group, Messages.getString("SalesforceStep1Form.BatchSize"), 2); //$NON-NLS-1$
+        timeOutText = new LabelledText(group, Messages.getString("SalesforceStep1Form.TimeOutTitle"), 2); //$NON-NLS-1$
 
         Group proxyGroup = Form.createGroup(group, 4, Messages.getString("SalesforceStep1Form.SocksProxyParam")); //$NON-NLS-1$
         GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
@@ -290,6 +292,26 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     loginOk = false;
                     checkFieldsValue();
                     getConnection().setBatchSize(batchSizeText.getText());
+                    setCheckEnable();
+                }
+            }
+        });
+        timeOutText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (!isContextMode()) {
+                    loginOk = false;
+                    checkFieldsValue();
+                    String timeOutStr = timeOutText.getText();
+                    if (!"".equals(timeOutStr)) { //$NON-NLS-1$
+                        try {
+                            Integer.parseInt(timeOutStr);
+                            getConnection().setTimeOut(timeOutStr);
+                        } catch (NumberFormatException e1) {
+                            updateStatus(IStatus.ERROR, Messages.getString("SalesforceStep1Form.TimeOutErrorMessage")); //$NON-NLS-1$
+                        }
+                    }
+
                     setCheckEnable();
                 }
             }
@@ -654,13 +676,17 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         setTextValue(getConnection().getUserName(), userNameText);
         setTextValue(getConnection().getPassword(), passwordText);
         String batchSize2 = getConnection().getBatchSize();
-        setTextValue((batchSize2 != null && !"".equals(batchSize2)) ? batchSize2 : defaultBatchSize, batchSizeText); //$NON-NLS-1$
+        setTextValue((batchSize2 != null && !"".equals(batchSize2)) ? batchSize2 : String //$NON-NLS-1$
+                .valueOf(SalesforceSchemaBean.DEFAULT_BATCH_SIZE), batchSizeText); //$NON-NLS-1$
         useProxyBtn.setSelection(getConnection().isUseProxy());
         useHttpBtn.setSelection(getConnection().isUseHttpProxy());
         setTextValue(getConnection().getProxyHost(), proxyHostText);
         setTextValue(getConnection().getProxyPort(), proxyPortText);
         setTextValue(getConnection().getProxyUsername(), proxyUsernameText);
         setTextValue(getConnection().getProxyPassword(), proxyPasswordText);
+        String timeOutStr = getConnection().getTimeOut();
+        setTextValue((timeOutStr != null && !"".equals(timeOutStr)) ? timeOutStr : String //$NON-NLS-1$
+                .valueOf(SalesforceSchemaBean.DEFAULT_TIME_OUT), timeOutText);
 
         if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
             moduleNameCombo.setText(getConnection().getModuleName());
@@ -688,6 +714,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         userNameText.setEditable(!isContextMode());
         passwordText.setEditable(!isContextMode());
         batchSizeText.setEditable(!isContextMode());
+        timeOutText.setEditable(!isContextMode());
         proxyHostText.setEditable(!isContextMode());
         proxyPortText.setEditable(!isContextMode());
         proxyUsernameText.setEditable(!isContextMode());
