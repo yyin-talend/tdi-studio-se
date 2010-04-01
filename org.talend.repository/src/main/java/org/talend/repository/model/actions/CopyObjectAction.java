@@ -132,7 +132,8 @@ public class CopyObjectAction {
 
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :
-            Item originalItem = sourceNode.getObject().getProperty().getItem();
+            // wzhang modified to fix bug 12349 and 11535
+            Item originalItem = factory.getUptodateProperty(sourceNode.getObject().getProperty()).getItem();
             List<IRepositoryObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
             // qli modified to fix the bug 5400 and 6185.
             Item newItem = factory.copy(originalItem, path);
