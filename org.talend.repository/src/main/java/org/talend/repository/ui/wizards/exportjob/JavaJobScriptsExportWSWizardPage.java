@@ -1270,6 +1270,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 this.setPageComplete(false);
                 noError = false;
             }
+            noError = validateOptionsGroup();
         }
         if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
             if (this.isMultiNodes()) {

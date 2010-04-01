@@ -122,8 +122,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             addSourceCode(process, processItem, needSource, srcResource, selectedJobVersion);
             resources.add(srcResource);
 
-            // Contexts must be placed into a jar file
-            ExportFileResource contextResource = jarContexts(processItem, selectedJobVersion);
+            // Contexts
+            ExportFileResource contextResource = new ExportFileResource(processItem, null);
+            addContextScripts(contextResource, selectedJobVersion, NEED_CONTEXT);
             resources.add(contextResource);
 
             // Job children: order elements in the same "categories"
@@ -384,7 +385,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
      * @param item
      * @param selectedJobVersion
      * @return
+     * @deprecated
      */
+    @Deprecated
     private ExportFileResource jarContexts(ProcessItem item, String selectedJobVersion) {
 
         // Prepare the parameters
