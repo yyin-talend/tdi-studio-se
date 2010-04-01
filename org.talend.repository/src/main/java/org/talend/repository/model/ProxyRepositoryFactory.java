@@ -118,6 +118,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
+    private boolean fullLogonFinished;
+
     private ProjectManager projectManager;
 
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
@@ -1549,6 +1551,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException {
         try {
+            fullLogonFinished = false;
             monitorWrap.beginTask(Messages.getString("ProxyRepositoryFactory.logonInProgress"), MAX_TASKS); //$NON-NLS-1$
             LanguageManager.reset();
             getRepositoryContext().setProject(project);
@@ -1626,6 +1629,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             if (designerCoreService != null) {
                 designerCoreService.createStatsLogAndImplicitParamter(project);
             }
+            fullLogonFinished = true;
 
         } catch (LoginException e) {
             logOffProject();
@@ -1642,6 +1646,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void logOffProject() {
         // getRepositoryContext().setProject(null);
         repositoryFactoryFromProvider.logOffProject();
+        fullLogonFinished = false;
     }
 
     public boolean setAuthorByLogin(Item item, String login) throws PersistenceException {
@@ -2013,5 +2018,23 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public RootContainer<String, IRepositoryObject> getMetadataHL7() throws PersistenceException {
         return getMetadataHL7(projectManager.getCurrentProject());
+    }
+
+    /**
+     * Getter for fullLogonFinished.
+     * 
+     * @return the fullLogonFinished
+     */
+    public boolean isFullLogonFinished() {
+        return this.fullLogonFinished;
+    }
+
+    /**
+     * Sets the fullLogonFinished.
+     * 
+     * @param fullLogonFinished the fullLogonFinished to set
+     */
+    public void setFullLogonFinished(boolean fullLogonFinished) {
+        this.fullLogonFinished = fullLogonFinished;
     }
 }
