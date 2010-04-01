@@ -72,8 +72,6 @@ public class ExportItemUtil {
 
     private static final String EXPORTUSER_TALEND_COM = "exportuser@talend.com"; //$NON-NLS-1$
 
-    private ResourceSet resourceSet;
-
     private Resource projectResource;
 
     private Resource propertyResource;
@@ -116,36 +114,55 @@ public class ExportItemUtil {
 
     private IFileExporterFullPath exporter = null;
 
-    public void exportItems(File destination, Collection<Item> items, IProgressMonitor progressMonitor) throws Exception {
+    /**
+     * export the sected TOS model elements to the destination
+     * 
+     * @param destination zip file or folder to store the exported elements
+     * @param items, the items to be exported
+     * @param exportAllVersions whether all the versions are export or only the selected once
+     * @param progressMonitor, to show the progress during export
+     * @throws Exception in case of problem
+     */
+    public void exportItems(File destination, Collection<Item> items, boolean exportAllVersions, IProgressMonitor progressMonitor)
+            throws Exception {
         // bug 11301 :export 0 items
         if (items == null || items.size() == 0) {
             return;
         }
-
-        File tmpDirectory = null;
-        Map<File, IPath> toExport;
-
-        if (destination.getName().endsWith(".tar")) { //$NON-NLS-1$
-            createFolder(destination.getParentFile());
-            exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), false);
-        } else if (destination.getName().endsWith(".tar.gz")) { //$NON-NLS-1$
-            createFolder(destination.getParentFile());
-            exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), true);
-        } else if (destination.getName().endsWith(".zip")) { //$NON-NLS-1$
-            createFolder(destination.getParentFile());
-            exporter = new ZipFileExporterFullPath(destination.getAbsolutePath(), true);
-        } else {
-            createFolder(destination);
-        }
-
+        // ADDED sgandon 31/03/2010 bug 12229: memory optimisation with handling other version items.
+        // create a copy into a list so that we can add other versions if necessary
+        List<Item> exportedItems = new ArrayList<Item>(items);
+        Collection<Item> otherVersions = new ArrayList<Item>();
+        // get all versions of the exported items if wanted
+        if (exportAllVersions) {
+            otherVersions = getOtherVersions(exportedItems);
+            exportedItems.addAll(otherVersions);
+        }// else keep current items version only
         try {
+
+            File tmpDirectory = null;
+            Map<File, IPath> toExport;
+
+            if (destination.getName().endsWith(".tar")) { //$NON-NLS-1$
+                createFolder(destination.getParentFile());
+                exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), false);
+            } else if (destination.getName().endsWith(".tar.gz")) { //$NON-NLS-1$
+                createFolder(destination.getParentFile());
+                exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), true);
+            } else if (destination.getName().endsWith(".zip")) { //$NON-NLS-1$
+                createFolder(destination.getParentFile());
+                exporter = new ZipFileExporterFullPath(destination.getAbsolutePath(), true);
+            } else {
+                createFolder(destination);
+            }
+
             if (exporter != null) {
                 tmpDirectory = createTmpDirectory();
             }
 
             try {
                 if (exporter != null) {
-                    toExport = exportItems(items, tmpDirectory, true, progressMonitor);
+                    toExport = exportItems(exportedItems, tmpDirectory, true, progressMonitor);
 
                     // in case of .tar.gz we remove extension twice
                     IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
@@ -154,7 +171,7 @@ public class ExportItemUtil {
                         exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
                     }
                 } else {
-                    toExport = exportItems(items, destination, true, progressMonitor);
+                    toExport = exportItems(exportedItems, destination, true, progressMonitor);
                 }
             } catch (Exception e) {
                 throw e;
@@ -163,8 +180,6 @@ public class ExportItemUtil {
                     deleteTmpDirectory(tmpDirectory);
                 }
             }
-        } catch (Exception e) {
-            throw e;
         } finally {
             if (exporter != null) {
                 try {
@@ -173,10 +188,25 @@ public class ExportItemUtil {
                     ExceptionHandler.process(e);
                 }
             }
+            // ADDED sgandon 31/03/2010 bug 12229: remove the resource associated with other versions items from the
+            // global resource
+            for (Item tobeRemoved : otherVersions) {
+                Resource eResource = tobeRemoved.eResource();
+                eResource.getResourceSet().getResources().remove(eResource);
+            }
         }
     }
 
-    public Collection<Item> getAllVersions(Collection<Item> items) throws PersistenceException {
+    /**
+     * return a collection of items that have the same id as the input items params and a different version. <br>
+     * WARNING : when calling this method the global TOS model will be updated with all the items versions
+     * 
+     * @param items all the items to get the different version of.
+     * @return list of all the items with same id as input items and different versions
+     * @throws PersistenceException if could not load some items //MOD sgandon 31/03/2010 bug 12229: changed
+     * getAllVersions into getOtherVersions.
+     */
+    private Collection<Item> getOtherVersions(Collection<Item> items) throws PersistenceException {
         Collection<Item> itemsVersions = new ArrayList<Item>();
         for (Item item : items) {
             org.talend.core.model.general.Project itemProject = new org.talend.core.model.general.Project(pManager
@@ -184,7 +214,10 @@ public class ExportItemUtil {
             List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(itemProject,
                     item.getProperty().getId());
             for (IRepositoryObject repositoryObject : allVersion) {
-                itemsVersions.add(repositoryObject.getProperty().getItem());
+                Item anyVersionItem = repositoryObject.getProperty().getItem();
+                if (!anyVersionItem.equals(item)) {
+                    itemsVersions.add(anyVersionItem);
+                }// else same item so ignor it
             }
         }
         return itemsVersions;
@@ -235,9 +268,9 @@ public class ExportItemUtil {
         Map<File, IPath> toExport = new HashMap<File, IPath>();
 
         progressMonitor.beginTask("Export Items", items.size() + 1); //$NON-NLS-1$
+        ResourceSetImpl resourceSet = new ResourceSetImpl();
 
         try {
-            init();
             // store item and its corresponding project
             Map<Item, Project> itemProjectMap = new HashMap<Item, Project>();
 
@@ -248,7 +281,7 @@ public class ExportItemUtil {
 
                 computeProjectFileAndPath(destinationDirectory);
                 if (!toExport.containsKey(projectFile)) {
-                    createProjectResource(items);
+                    createProjectResource(resourceSet, items);
                     toExport.put(projectFile, projectPath);
                 }
                 if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
@@ -257,7 +290,7 @@ public class ExportItemUtil {
                     Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE.getItem());
                     fixItem(copiedItem);
                     computeItemFilesAndPaths(destinationDirectory, copiedItem, projectFolderStructure);
-                    createItemResources(copiedItem, copiedObjects);
+                    createItemResources(copiedItem, copiedObjects, resourceSet);
                     fixItemUserReferences(copiedItem);
                     fixItemLockState();
                     toExport.put(propertyFile, propertyPath);
@@ -289,15 +322,15 @@ public class ExportItemUtil {
             }
 
             if (!isTDQ()) {
-                dereferenceNotContainedObjects();
+                dereferenceNotContainedObjects(resourceSet);
             }
-            saveResources();
+            saveResources(resourceSet);
             progressMonitor.worked(1);
 
         } catch (Exception e) {
             throw e;
         } finally {
-            cleanResources();
+            cleanResources(resourceSet);
         }
 
         return toExport;
@@ -373,12 +406,12 @@ public class ExportItemUtil {
 
     }
 
-    private void init() {
-        resourceSet = new ResourceSetImpl();
-    }
+    // private void init() {
+    // resourceSet = new ResourceSetImpl();
+    // }
 
-    private void createProjectResource(Collection<Item> items) {
-        projectResource = createResource(projectFile, false);
+    private void createProjectResource(ResourceSetImpl resourceSet, Collection<Item> items) {
+        projectResource = createResource(projectFile, false, resourceSet);
 
         EObject projectCopy = EcoreUtil.copy(project);
         projectResource.getContents().add(projectCopy);
@@ -400,9 +433,9 @@ public class ExportItemUtil {
         }
     }
 
-    private void createItemResources(Item item, Collection<EObject> copiedObjects) {
+    private void createItemResources(Item item, Collection<EObject> copiedObjects, ResourceSetImpl resourceSet) {
 
-        propertyResource = createResource(propertyFile, false);
+        propertyResource = createResource(propertyFile, false, resourceSet);
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getProperty());
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItemState());
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItem());
@@ -413,7 +446,7 @@ public class ExportItemUtil {
 
         }
         boolean isFileItem = PropertiesPackage.eINSTANCE.getFileItem().isSuperTypeOf(item.eClass());
-        itemResource = createResource(itemFile, isFileItem);
+        itemResource = createResource(itemFile, isFileItem, resourceSet);
         moveObjectsToResource(itemResource, copiedObjects, null);
 
         if (item instanceof TDQItem && isTDQ()) {
@@ -427,7 +460,7 @@ public class ExportItemUtil {
         item.getProperty().setLabel(item.getProperty().getLabel().replace(' ', '_'));
     }
 
-    private Resource createResource(File file, boolean byteArrayResource) {
+    private Resource createResource(File file, boolean byteArrayResource, ResourceSet resourceSet) {
         URI uri = URI.createFileURI(file.getAbsolutePath());
         if (byteArrayResource) {
             Resource resource = new ByteArrayResource(uri);
@@ -438,13 +471,13 @@ public class ExportItemUtil {
         }
     }
 
-    private void saveResources() throws IOException, PersistenceException {
+    private void saveResources(ResourceSet resourceSet) throws IOException, PersistenceException {
         for (Resource resource : resourceSet.getResources()) {
             EmfHelper.saveResource(resource);
         }
     }
 
-    private void cleanResources() {
+    private void cleanResources(ResourceSet resourceSet) {
         for (Resource resource : resourceSet.getResources()) {
             resource.unload();
         }
@@ -519,7 +552,7 @@ public class ExportItemUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private void dereferenceNotContainedObjects() {
+    private void dereferenceNotContainedObjects(ResourceSet resourceSet) {
         Map<EObject, Collection<Setting>> externalObjects = ExternalCrossReferencer.find(resourceSet);
 
         for (EObject object : externalObjects.keySet()) {
