@@ -46,18 +46,6 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
 
     public static final String ID = "org.talend.designer.core.ui.MultiPageTalendEditor"; //$NON-NLS-1$
 
-    private String revisionNumStr;
-
-    String projectURL = null;
-
-    private String getRevisionNumStr() {
-        return this.revisionNumStr;
-    }
-
-    private void setRevisionNumStr(String revisionNumStr) {
-        this.revisionNumStr = revisionNumStr;
-    }
-
     public MultiPageTalendEditor() {
         super();
         designerEditor = new TalendEditor();
@@ -140,9 +128,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         }
         if (revisionBool == true && revisionNumStr != null) {
             setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + revisionNumStr); //$NON-NLS-1$
-        } else
-
+        } else {
             setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion)); //$NON-NLS-1$
+        }
         // } else {
         // setPartName(Messages.getString("other Label??", label));
         // //$NON-NLS-1$

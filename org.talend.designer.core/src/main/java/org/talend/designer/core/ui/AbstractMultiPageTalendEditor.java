@@ -178,9 +178,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     public boolean revisionBool = false;
 
-    private void setRevisionBool(boolean revisionBool) {
-        this.revisionBool = revisionBool;
-    }
+    public String revisionNumStr;
 
     private IPartListener partListener = new IPartListener() {
 
