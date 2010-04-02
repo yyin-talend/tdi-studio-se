@@ -639,7 +639,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
                         process[0].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
             ProcessItem item = (ProcessItem) process[0].getItem();
             try {

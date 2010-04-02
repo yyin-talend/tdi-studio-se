@@ -577,11 +577,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // prevent circle
             return;
         }
-        try {
-            process = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()).getItem();
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
         processedJob.add(process);
         addJobItem(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needJobItem), resource);
         addDependencies(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needDependencies), resource);
