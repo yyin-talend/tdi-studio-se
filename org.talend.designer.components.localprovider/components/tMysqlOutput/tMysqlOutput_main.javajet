@@ -1121,11 +1121,11 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
         }	
         	//////////batch execute by batch size///////
-    	if (extendedInsert && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+    	if (extendedInsert && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && ("INSERT").equals(dataAction)) {
     		if(numPerInsert != 0) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if ( (rejectConnName==null) && ("INSERT").equals(dataAction)) {
+                <%if ( (rejectConnName==null)) {
                 %>                                                
                 try {
 						pstmt_<%=cid %>.executeBatch();                	
