@@ -472,7 +472,7 @@ public class JobSettingsManager {
         final String schemaCondition = JobSettingsConstants
                 .addBrackets(dbTypeName
                         + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
-                        + " =='POSTGRESQL' or " + dbTypeName + " =='POSTGRESPLUS' or " + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='SQL_SERVER'"); //$NON-NLS-1$//$NON-NLS-2$
+                        + " =='POSTGRESQL' or " + dbTypeName + " =='POSTGRESPLUS' or " + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='SQL_SERVER' or " + dbTypeName + " =='INFORMIX'"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
         param.setShowIf(schemaCondition + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
