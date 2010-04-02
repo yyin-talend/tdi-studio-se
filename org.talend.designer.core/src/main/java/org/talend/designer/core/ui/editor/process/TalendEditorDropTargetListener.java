@@ -73,6 +73,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.FileItem;
+import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkRulesItem;
@@ -755,7 +756,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (!"".equals(etlSchema)) {
                     IElementParameter e = node.getElementParameter("ELT_SCHEMA_NAME");
                     if (e != null) {
-                        e.setValue("\"" + etlSchema + "\"");
+                        e.setValue(TalendTextUtils.addQuotes(etlSchema));
                     }
                     // node.getElementParameter("ELT_SCHEMA_NAME").setValue("\"" + etlSchema + "\"");
                 }
@@ -792,6 +793,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS, table
                         .getLabel(), ConvertionHelper.convert(table));
                 return ebcdicCmd;
+            }
+            if (PluginChecker.isHL7PluginLoaded() && connectionItem instanceof HL7ConnectionItem) {
+                Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IEbcdicConstant.TABLE_SCHEMAS, table
+                        .getLabel(), ConvertionHelper.convert(table));
+                return hl7Cmd;
             }
             if (schemaParam == null) {
                 return null;
