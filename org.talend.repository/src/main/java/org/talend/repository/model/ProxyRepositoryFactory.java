@@ -553,7 +553,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             BusinessException {
         checkAvailability(objToDelete);
         this.repositoryFactoryFromProvider.deleteObjectLogical(project, objToDelete);
-        unlock(objToDelete);
+        // unlock(objToDelete);
         // i18n
         // log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
         String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$ //$NON-NLS-2$
@@ -679,7 +679,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // log.debug("Move [" + objToMove + "] to \"" + path + "\".");
         String str[] = new String[] { objToMove + "", targetPath + "" }; //$NON-NLS-1$ //$NON-NLS-2$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.move", str)); //$NON-NLS-1$
-        unlock(getItem(objToMove));
+        // unlock(getItem(objToMove));
         if (objToMove.getType() == ERepositoryObjectType.PROCESS) {
             if (sourcePath != null && sourcePath.length == 1) {
                 fireRepositoryPropertyChange(ERepositoryActionName.JOB_MOVE.getName(), objToMove, new IPath[] { sourcePath[0],
@@ -697,7 +697,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     // TODO SML Renommer et finir la m�thode et la plugger dans toutes les m�thodes
     private void checkAvailability(IRepositoryObject objToMove) throws BusinessException {
-        if (!isEditableAndLockIfPossible(objToMove) || ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        if (!isPotentiallyEditable(objToMove) || ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
     }

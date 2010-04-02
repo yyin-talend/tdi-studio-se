@@ -195,7 +195,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     public RootContainer<String, IRepositoryObject> getMetadataHL7(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_HL7, true);
     }
-    //MOD sgandon 31/03/2010 : moved from local variable to static variable for optimisation purpose.
+
+    // MOD sgandon 31/03/2010 : moved from local variable to static variable for optimisation purpose.
     static final ERepositoryObjectType[] REPOSITORY_OBJECT_TYPE_LIST = new ERepositoryObjectType[] {
             ERepositoryObjectType.PROCESS, ERepositoryObjectType.JOBLET, ERepositoryObjectType.METADATA_CONNECTIONS,
             ERepositoryObjectType.METADATA_SAPCONNECTIONS, ERepositoryObjectType.SQLPATTERNS,
@@ -320,6 +321,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         Object fullFolder = getFullFolder(project, type, relativeFolder);
         if (fullFolder != null) {
             serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, true, false, true);
+            if (serializableAllVersion.isEmpty()) {
+                // look in all folders
+                serializableAllVersion = getSerializable(project, id, true);
+            }
             return convert(serializableAllVersion);
         }
         serializableAllVersion = new ArrayList<IRepositoryObject>();
@@ -783,7 +788,12 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         List<IRepositoryObject> serializableAllVersion = null;
         Object fullFolder = getFullFolder(project, type, relativeFolder);
         serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, false, false, true);
+        if (serializableAllVersion.isEmpty()) {
+            // look in all folders
+            serializableAllVersion = getSerializable(project, id, true);
+        }
         int size = serializableAllVersion.size();
+
         if (size > 1) {
             String message = getItemsMessages(serializableAllVersion, size);
 
