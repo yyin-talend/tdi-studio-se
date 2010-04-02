@@ -110,8 +110,8 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
         ElementParameter2ParameterType.loadElementParameters(elem, stats.getParameters(), EParameterName.PROPERTY_TYPE.getName()
                 + ":" + EParameterName.PROPERTY_TYPE.getName());
         // create StatsAndLogs control base on the statsAndLogsElement
-        mComposite = new MultipleThreadDynamicComposite(composite, SWT.V_SCROLL | SWT.BORDER, EComponentCategory.STATSANDLOGS,
-                elem, true);
+        mComposite = new ProjectSettingMultipleThreadDynamicComposite(composite, SWT.V_SCROLL | SWT.BORDER,
+                EComponentCategory.STATSANDLOGS, elem, true);
         mComposite.setLayoutData(createFormData());
         return composite;
     }

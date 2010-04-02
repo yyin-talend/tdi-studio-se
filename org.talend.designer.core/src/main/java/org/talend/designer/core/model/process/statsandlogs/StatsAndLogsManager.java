@@ -802,6 +802,33 @@ public class StatsAndLogsManager {
         param.setRequired(true);
         param.setNumRow(14);
         paramList.add(param);
+
+        // stats log encoding
+        ElementParameter encodingParam = new ElementParameter(process);
+        encodingParam.setName(EParameterName.ENCODING.getName()); //$NON-NLS-1$
+        encodingParam.setDisplayName(EParameterName.ENCODING.getDisplayName());//$NON-NLS-1$
+        encodingParam.setCategory(EComponentCategory.STATSANDLOGS);
+        encodingParam.setField(EParameterFieldType.ENCODING_TYPE);
+        encodingParam
+                .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        encodingParam.setValue(ENCODING_TYPE_ISO_8859_15);
+        encodingParam.setNumRow(15);
+        paramList.add(encodingParam);
+
+        ElementParameter childPram = new ElementParameter(process);
+        childPram.setName(EParameterName.ENCODING_TYPE.getName());
+        childPram.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
+        childPram.setField(EParameterFieldType.TECHNICAL);
+        childPram.setCategory(EComponentCategory.STATSANDLOGS);
+        childPram.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+        childPram
+                .setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+        childPram.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+        childPram.setValue(ENCODING_TYPE_ISO_8859_15);
+        childPram.setNumRow(15);
+        childPram
+                .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        childPram.setParentParameter(encodingParam);
     }
 
     private static void statsAndLogsParametersDBPart(IProcess process) {
@@ -1132,31 +1159,6 @@ public class StatsAndLogsManager {
         param
                 .setShowIf("((CATCH_REALTIME_STATS == 'true' or CATCH_REALTIME_STATS == 'false') and (ON_STATCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
-
-        // stats log encoding
-        ElementParameter encodingParam = new ElementParameter(process);
-        encodingParam.setName(EParameterName.ENCODING.getName()); //$NON-NLS-1$
-        encodingParam.setDisplayName(EParameterName.ENCODING.getDisplayName());//$NON-NLS-1$
-        encodingParam.setCategory(EComponentCategory.STATSANDLOGS);
-        encodingParam.setField(EParameterFieldType.ENCODING_TYPE);
-        encodingParam.setShowIf("(ON_FILES_FLAG == 'true' )"); //$NON-NLS-1$
-        encodingParam.setValue(ENCODING_TYPE_ISO_8859_15);
-        encodingParam.setNumRow(92);
-        paramList.add(encodingParam);
-
-        ElementParameter childPram = new ElementParameter(process);
-        childPram.setName(EParameterName.ENCODING_TYPE.getName());
-        childPram.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
-        childPram.setField(EParameterFieldType.TECHNICAL);
-        childPram.setCategory(EComponentCategory.STATSANDLOGS);
-        childPram.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
-        childPram
-                .setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
-        childPram.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
-        childPram.setValue(ENCODING_TYPE_ISO_8859_15);
-        childPram.setNumRow(92);
-        childPram.setShowIf("(ON_FILES_FLAG == 'true' )"); //$NON-NLS-1$
-        childPram.setParentParameter(encodingParam);
 
     }
 

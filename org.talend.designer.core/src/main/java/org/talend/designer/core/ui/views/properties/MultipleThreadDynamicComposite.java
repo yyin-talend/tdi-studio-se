@@ -1148,7 +1148,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @return
      */
-    protected CommandStack getCommandStack() {
+    public CommandStack getCommandStack() {
         if (part != null && part.getTalendEditor() != null) {
             Object adapter = part.getTalendEditor().getAdapter(CommandStack.class);
             return (CommandStack) adapter;

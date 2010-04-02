@@ -101,8 +101,8 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
                 .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName())
                 + ":" + EParameterName.PROPERTY_TYPE.getName());
         // create implicitContextLoad Control base on the ImplicitContextLoadElement
-        mComposite = new MultipleThreadDynamicComposite(composite, SWT.V_SCROLL | SWT.BORDER, EComponentCategory.EXTRA, elem,
-                true);
+        mComposite = new ProjectSettingMultipleThreadDynamicComposite(composite, SWT.V_SCROLL | SWT.BORDER,
+                EComponentCategory.EXTRA, elem, true);
         mComposite.setLayoutData(createFormData());
         return composite;
     }

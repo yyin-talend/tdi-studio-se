@@ -115,6 +115,7 @@ import org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.core.utils.UpgradeParameterHelper;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -1027,6 +1028,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return
      */
     protected CommandStack getCommandStack() {
+        if (dynamicProperty != null && dynamicProperty instanceof MultipleThreadDynamicComposite) {
+            CommandStack commandStack = ((MultipleThreadDynamicComposite) dynamicProperty).getCommandStack();
+            if (commandStack != null) {
+                return commandStack;
+            }
+        }
         if (part == null) {
             return null;
         }
