@@ -38,6 +38,7 @@
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
       NUM_ROW="1"
+      SHOW = "false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -47,6 +48,7 @@
       FIELD="COMPONENT_LIST"
       FILTER="tEXAConnection"
       NUM_ROW="1"
+      SHOW = "false"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"/>
 
