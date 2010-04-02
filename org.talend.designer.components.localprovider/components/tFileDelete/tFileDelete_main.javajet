@@ -62,13 +62,6 @@ if(either){
 	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
 	    	}else{
 	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
-<%
-				if(("true").equals(failon)){
-%>
-    				throw new RuntimeException("No file deleted.");
-<%
-				}
-%>
 	    	}
 		}else if(path_<%=cid%>.isDirectory()){ 
 	    	DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
@@ -76,13 +69,6 @@ if(either){
 	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "Path deleted.");
 	    	}else{
 	    		globalMap.put("<%=cid %>_CURRENT_STATUS", "No path deleted.");
-<%
-				if(("true").equals(failon)){
-%>
-    				throw new RuntimeException("No path deleted.");
-<%
-				}
-%>
 	    	}
 		}
     }else{
@@ -109,13 +95,6 @@ if(either){
     		globalMap.put("<%=cid %>_CURRENT_STATUS", "Path deleted.");
     	}else{
     		globalMap.put("<%=cid %>_CURRENT_STATUS", "No path deleted.");
-<%
-				if(("true").equals(failon)){
-%>
-    				throw new RuntimeException("No path deleted.");
-<%
-				}
-%>
     	}
 	}else{
 		globalMap.put("<%=cid %>_CURRENT_STATUS", "Path does not exists or is invalid.");
@@ -138,13 +117,6 @@ if(either){
     		globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
     	}else{
     		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
-<%
-			if(("true").equals(failon)){
-%>
-				throw new RuntimeException("No file deleted.");
-<%
-			}
-%>
     	}
     }else{
     	globalMap.put("<%=cid %>_CURRENT_STATUS", "File does not exists or is invalid.");
