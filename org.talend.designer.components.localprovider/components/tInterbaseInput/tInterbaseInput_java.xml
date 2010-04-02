@@ -140,7 +140,7 @@
  	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
-      NUM_ROW="10"
+      NUM_ROW="9"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
