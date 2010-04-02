@@ -1422,6 +1422,10 @@ if(!isVirtualOut) { // T_TM_M_320
 	            }
 			} else if(hasJoinedTable(outputTableName,data)&& outputConnection!=null){
 				sb.append(cr + outputTableName + "_List.clear();");
+                if(checkingSyntax 
+                || !checkingSyntax && outputConnection != null) {
+	            	lastValidOutputTableName = outputTableName;
+	            }
 			}
 
         }
