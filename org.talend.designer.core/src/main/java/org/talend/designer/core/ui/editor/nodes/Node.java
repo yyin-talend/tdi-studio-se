@@ -204,6 +204,8 @@ public class Node extends Element implements INode {
 
     private boolean errorFlag;
 
+    private boolean compareFlag;
+
     private String errorInfo;
 
     private boolean checkProperty;
@@ -234,6 +236,14 @@ public class Node extends Element implements INode {
 
     public void setErrorFlag(boolean errorFlag) {
         this.errorFlag = errorFlag;
+    }
+
+    public boolean isCompareFlag() {
+        return this.compareFlag;
+    }
+
+    public void setCompareFlag(boolean compareFlag) {
+        this.compareFlag = compareFlag;
     }
 
     public String getErrorInfo() {
@@ -1473,6 +1483,8 @@ public class Node extends Element implements INode {
 
     public void setErrorInfoChange(final String id, Object value) {
         if (id.equals("ERRORINFO")) { //$NON-NLS-1$
+            firePropertyChange(UPDATE_STATUS, null, null);
+        } else if (id.equals("COMPAREINFO")) {
             firePropertyChange(UPDATE_STATUS, null, null);
         }
     }

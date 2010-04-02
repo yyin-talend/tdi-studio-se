@@ -1527,6 +1527,7 @@ public class ProcessComposite extends Composite {
                             IProcessMessage messPro = errorMessMap.get(nodeUniqueName);
                             Node node = (Node) inode;
                             node.setErrorFlag(true);
+                            node.setCompareFlag(false);
                             node.setErrorInfo(messPro.getContent());
                             node.getNodeError().updateState("UPDATE_STATUS", true); //$NON-NLS-1$
                             if (node.isFileScaleComponent()) {
@@ -1546,6 +1547,7 @@ public class ProcessComposite extends Composite {
                                     String des = en.getValue().toString();
                                     if (node == no) {
                                         node.setErrorFlag(true);
+                                        node.setCompareFlag(false);
                                         node.setErrorInfo(befor + des);
                                         node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                                         node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
@@ -1554,6 +1556,7 @@ public class ProcessComposite extends Composite {
                             } else {
                                 if (node.isErrorFlag() == true) {
                                     node.setErrorFlag(false);
+                                    node.setCompareFlag(false);
                                     node.setErrorInfo(null);
                                     node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
                                 }

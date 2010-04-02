@@ -638,6 +638,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 if (errorNode.isCheckProperty()) {
                     errorNode.setCheckProperty(false);
                     errorNode.setErrorFlag(false);
+                    errorNode.setCompareFlag(false);
                     errorNode.setErrorInfo(null);
                     errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                     errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
@@ -799,6 +800,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if (errorNode.isCheckProperty() == false) {
                             errorNode.setCheckProperty(true);
                             errorNode.setErrorFlag(true);
+                            errorNode.setCompareFlag(false);
                             errorNode.setErrorInfo(errorMessage.toString());
                             errorNode.getNodeError().updateState("UPDATE_STATUS", true);//$NON-NLS-1$
                             errorNode.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
@@ -807,6 +809,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if (errorNode.isCheckProperty()) {
                             errorNode.setCheckProperty(false);
                             errorNode.setErrorFlag(false);
+                            errorNode.setCompareFlag(false);
                             errorNode.setErrorInfo(null);
                             errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                             errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
@@ -818,6 +821,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                         errorNode.setCheckProperty(false);
                         errorNode.setErrorFlag(false);
+                        errorNode.setCompareFlag(false);
                         errorNode.setErrorInfo(null);
                         errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                         errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
@@ -858,6 +862,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if ((!"".equals(errorMessage)) && errorMessage != null) {//$NON-NLS-1$
                             errorNode.setCheckProperty(true);
                             errorNode.setErrorFlag(true);
+                            errorNode.setCompareFlag(false);
                             errorNode.setErrorInfo(errorMessage.toString());
                             errorNode.getNodeError().updateState("UPDATE_STATUS", true);//$NON-NLS-1$
                             errorNode.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
@@ -868,6 +873,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                         errorNode.setCheckProperty(false);
                         errorNode.setErrorFlag(false);
+                        errorNode.setCompareFlag(false);
                         errorNode.setErrorInfo(null);
                         errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                         errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$

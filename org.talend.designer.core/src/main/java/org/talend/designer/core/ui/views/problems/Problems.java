@@ -715,6 +715,7 @@ public class Problems {
                                                 //                                                if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
                                                 if (node.isErrorFlag() == true) {
                                                     node.setErrorFlag(false);
+                                                    node.setCompareFlag(false);
                                                     node.setErrorInfo(befor + tProblem.getDescription());
                                                     node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                                                     node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
@@ -730,6 +731,7 @@ public class Problems {
                                     } else {
                                         if (node.isErrorFlag() == true) {
                                             node.setErrorFlag(false);
+                                            node.setCompareFlag(false);
                                             node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                                         } else {
                                             continue;
@@ -743,6 +745,7 @@ public class Problems {
                             //                            if (node.getErrorInfo() == null || "".equals(node.getErrorInfo())) {//$NON-NLS-1$
                             if (node.isErrorFlag() == true) {
                                 node.setErrorFlag(false);
+                                node.setCompareFlag(false);
                                 node.setErrorInfo(null);
                                 node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                                 node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
@@ -767,6 +770,7 @@ public class Problems {
 
             if (node.isErrorFlag() == false) {
                 node.setErrorFlag(true);
+                node.setCompareFlag(false);
                 node.setErrorInfo(befor + des);
                 node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                 node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$

@@ -23,6 +23,7 @@ import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
@@ -36,6 +37,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 
@@ -74,9 +76,14 @@ public class NodeContainerFigure extends Figure {
 
     private Image errorMarkImage = ImageProvider.getImage(EImage.Error_Mark);
 
+    private boolean showCompareMark;
+
+    private final Node node;
+
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
         this.setLayoutManager(new FreeformLayout());
+        this.node = nodeContainer.getNode();
         // this.setOpaque(true);
         // this.setBackgroundColor(new Color(null, new RGB(200, 100, 200)));
         rectFig = new RoundedRectangle() {
@@ -84,6 +91,9 @@ public class NodeContainerFigure extends Figure {
             @Override
             protected void fillShape(Graphics graphics) {
                 graphics.setLineWidth(4);
+                if (node.isCompareFlag() && !node.isErrorFlag()) {
+                    graphics.setLineStyle(SWT.LINE_DOT);
+                }
                 graphics.drawRoundRectangle(getBounds(), corner.width, corner.height);
             }
 
@@ -285,7 +295,12 @@ public class NodeContainerFigure extends Figure {
         this.disposeColors();
         rectFig.setLocation(new Point(rectangle.x, rectangle.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height));
-        rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(255, 102, 102)));
+        if (isShowCompareMark()) {
+            rectFig.setVisible(true);
+            rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(204, 153, 255)));
+        } else {
+            rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(255, 102, 102)));
+        }
         markFigure.setSize(errorMarkImage.getImageData().width, errorMarkImage.getImageData().height);
     }
 
@@ -336,6 +351,14 @@ public class NodeContainerFigure extends Figure {
         // }
         //
         // });
+    }
+
+    public boolean isShowCompareMark() {
+        return this.showCompareMark;
+    }
+
+    public void setShowCompareMark(boolean showCompareMark) {
+        this.showCompareMark = showCompareMark;
     }
 
 }
