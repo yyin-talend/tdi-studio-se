@@ -253,9 +253,9 @@
 				<ITEM NAME="MAX"    VALUE="max"/>
 				<ITEM NAME="AVG"    VALUE="avg"/>
 				<ITEM NAME="SUM"    VALUE="sum"/>
-				<ITEM NAME="FIRST"    VALUE="first"/>
-				<ITEM NAME="LAST"    VALUE="last"/>
-				<ITEM NAME="LIST"    VALUE="list"/>
+				<ITEM NAME="FIRST"    VALUE="first" SHOW_IF="DBTYPE!='MYSQL'"/>
+				<ITEM NAME="LAST"    VALUE="last" SHOW_IF="DBTYPE!='MYSQL'"/>
+				<ITEM NAME="LIST"    VALUE="list" SHOW_IF="DBTYPE!='MYSQL'"/>
 				<ITEM NAME="DISTINCT"    VALUE="distinct"/>            
 			  </ITEMS>
 			</ITEM>
