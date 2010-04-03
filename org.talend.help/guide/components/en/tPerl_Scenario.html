@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:02">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:02">
     <title>Scenario: Displaying a number of processed lines</title>
   </head>
 
@@ -40,7 +40,7 @@ This scenario is a three-component job showing in the Log the number of rows bei
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1558750"> </a><div class="pSmartList2"><li>Drop three components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tFileOutputExcel</b>, <b class="cBold">tPerl</b></li></div>
 <a name="wp1558766"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tFileInputDelimited</b> and connect it to <b class="cBold">tFileOutputExcel</b> using a main <b class="cBold">Row</b>.</li></div>
-<a name="wp1558773"> </a><div class="pSmartList2"><li>Right-click again <b class="cBold">tFileInputDelimited</b> and link it to <b class="cBold">tPerl </b>using a <b class="cBold">Trigger &gt; ThenRun </b>link. This link means that, following the arrow direction, the first component (<b class="cBold">tFileDelimited</b>) will run before the second component (<b class="cBold">tPerl</b>).</li></div>
+<a name="wp1558773"> </a><div class="pSmartList2"><li>Right-click again <b class="cBold">tFileInputDelimited</b> and link it to <b class="cBold">tPerl </b>using a <b class="cBold">Trigger &gt; OnSubjobOk </b>link. This link means that, following the arrow direction, the first component (<b class="cBold">tFileDelimited</b>) will run before the second component (<b class="cBold">tPerl</b>).</li></div>
 <a name="wp1558786"> </a><div class="pSmartList2"><li>Click once on <b class="cBold">tFileInputDelimited</b> and select the <b class="cBold">Basic settings</b> tab to define the component properties.</li></div>
 </ul></div>
 </ul></div>

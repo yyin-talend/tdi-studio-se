@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
     <title>Scenario: Displaying DB output </title>
   </head>
 
@@ -49,9 +49,9 @@ This following scenario is a three-component Job aiming at creating a new table 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1202033"> </a><div class="pSmartList2"><li>And also, if your schema is already loaded in the Repository, select <b class="cBold">Repository</b> as <b class="cBold">Schema type</b> and choose the relevant metadata entry in the list. If you haven&#39;t defined the schema already, define the data structure in the built-in schema you edit.</li></div>
+<a name="wp1202033"> </a><div class="pSmartList2"><li>And also, if your schema is already loaded in the Repository, select <b class="cBold">Repository</b> as <b class="cBold">Schema</b> and choose the relevant metadata entry in the list. If you haven&#39;t defined the schema already, define the data structure in the built-in schema you edit.</li></div>
 <a name="wp1202039"> </a><div class="pSmartList2"><li>Restrict the extraction to 10 lines, for this example.</li></div>
-<a name="wp1202045"> </a><div class="pSmartList2"><li>Then define the <b class="cBold">tDBOutput</b> component to configure the output flow. Select the database to connect to. Note that you can store all the database connection details in different context variables. For more information about how to create and use context variables <em class="cEmphasis">Defining Contexts and variables</em> in <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
+<a name="wp1202045"> </a><div class="pSmartList2"><li>Then define the <b class="cBold">tDBOutput</b> component to configure the output flow. Select the database to connect to. Note that you can store all the database connection details in different context variables. For more information about how to create and use context variables <em class="cEmphasis">Defining Contexts and variables</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1202057"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -64,7 +64,7 @@ This following scenario is a three-component Job aiming at creating a new table 
 <a name="wp1202066"> </a><div class="pSmartList2"><li>Fill in the table name in the <b class="cBold">Table</b> field. Then select the operations to be performed:</li></div>
 <a name="wp1202075"> </a><div class="pSmartList2"><li>As <b class="cBold">Action on table</b>, select <b class="cBold">Drop and create table</b> in the list. This allows you to overwrite the possible existing table with the new selected data. Alternatively you can insert only extra rows into an existing table, but note that duplicate management is not supported natively. See <a href="tUniqRow_Prop.html#wp1449711"><em class="cEmphasis">tUniqRow Properties</em></a> for further information.</li></div>
 <a name="wp1233707"> </a><div class="pSmartList2"><li>As <b class="cBold">Action on data</b>, select <b class="cBold">Insert</b>. The data flow incoming as input will be thus added to the selected table.</li></div>
-<a name="wp1202092"> </a><div class="pSmartList2"><li>To view the output flow easily, connect the DBOuput component to an tLogRow component. Define the field separator as a pipe symbol. Press <b class="cBold">F6</b> to execute the Job.</li></div>
+<a name="wp1202092"> </a><div class="pSmartList2"><li>To view the output flow easily, connect the <b class="cBold">DBOuput</b> component to an <b class="cBold">tLogRow</b> component. Define the field separator as a pipe symbol. Press <b class="cBold">F6</b> to execute the Job.</li></div>
 <a name="wp1202102"> </a><div class="pSmartList2"><li>As the processing can take some time to reach the <b class="cBold">tLogRow</b> component, we recommend you to enable the <b class="cBold">Statistics</b> functionality on the<b class="cBold"> Run</b> console.</li></div>
 </ul></div>
 </ul></div>

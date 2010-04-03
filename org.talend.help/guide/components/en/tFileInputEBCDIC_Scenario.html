@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
+    <meta name="LASTUPDATED" content="04/02/10 19:19:03">
     <title>Scenario: Extracting data from an EBCDIC file and populating a database</title>
   </head>
 
@@ -22,10 +22,10 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2090402"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2759690"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2090407"> </a><h2 class="pHeading2">
+<a name="wp2759694"> </a><h2 class="pHeading2">
 Scenario: Extracting data from an EBCDIC file and populating a database
 </h2>
 <a name="wp2188631"> </a><p class="pBodyRelative">
@@ -46,12 +46,12 @@ This Java scenario uses the EBCDIC Connection wizard to set up a connection to t
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2188956"> </a><div class="pSmartList2"><li>Create a connection to the Copybook file, which describes the structure of your EBCDIC file. In this scenario, the Copybook connection is called EBCDIC. For more information on how to set up a Copybook connection<em class="cEmphasis">Setting up a Copybook connection</em> of Talend Open Studio User Guide.</li></div>
-<a name="wp2189146"> </a><div class="pSmartList2"><li>Retrieve the file schemas. For more information on how to retrieve schemas from the Copybook file, see <em class="cEmphasis">Step&#160;4: collecting the schemas</em> of Talend Open Studio User Guide.</li></div>
+<a name="wp2188956"> </a><div class="pSmartList2"><li>Create a connection to the Copybook file, which describes the structure of your EBCDIC file. In this scenario, the Copybook connection is called EBCDIC. For more information on how to set up a Copybook connection<em class="cEmphasis">Setting up a Copybook connection</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.</li></div>
+<a name="wp2189146"> </a><div class="pSmartList2"><li>Retrieve the file schemas. For more information on how to retrieve schemas from the Copybook file, see <em class="cEmphasis">Step&#160;4: collecting the schemas</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2189249"> </a><p class="pIndented1">
-Once the Copybook connection has been created and the schemas retrieved, using the EBCDIC and Schema wizards, the new schemas appear under the node <b class="cBold">Metadata</b> &gt; <b class="cBold">Copybook</b>. They are called <em class="cEmphasis">01</em>, <em class="cEmphasis">04</em> and <em class="cEmphasis">05</em>.
+Once the Copybook connection has been created and the schemas retrieved, using the EBCDIC and Schema wizards, the new schemas appear under the node <b class="cBold">Metadata</b> &gt; <b class="cBold">Copybook</b>. They are called <em class="cEmphasis">Schema01</em>, <em class="cEmphasis">Schema04</em> and <em class="cEmphasis">Schema05</em>.
 </p>
 <a name="wp2090492"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -59,7 +59,7 @@ Once the Copybook connection has been created and the schemas retrieved, using t
 
 </div>
 <a name="wp2752538"> </a><p class="pIndented1">
-In order to retrieve the different file structures and to use them in <b class="cBold">Talend Open Studio</b>:
+In order to retrieve the different file structures and to use them in <b class="cBold">Talend Integration Suite Studio</b>:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -78,7 +78,7 @@ The metadata is automatically defined in the <b class="cBold">Property Type</b>,
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2751103"> </a><div class="pSmartList2"><li>In the design workspace, right-click <b class="cBold">tFileInputEBCDIC</b>, select <b class="cBold">Row</b> &gt; <b class="cBold">row_01_1</b> from the menu, then click <b class="cBold">tMysqlOutput</b> to connect the components together.</li></div>
+<a name="wp2751103"> </a><div class="pSmartList2"><li>In the design workspace, right-click <b class="cBold">tFileInputEBCDIC</b>, select <b class="cBold">Row</b> &gt; <b class="cBold">row_Schema01_1</b> from the menu, then click <b class="cBold">tMysqlOutput</b> to connect the components together.</li></div>
 <a name="wp2751167"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tMysqlOutput</b> to display the <b class="cBold">Basic settings</b> view, then define the component properties.</li></div>
 </ul></div>
 </ul></div>
@@ -95,7 +95,7 @@ The metadata is automatically defined in the <b class="cBold">Property Type</b>,
 </ul></div>
 </ul></div>
 <a name="wp2191115"> </a><p class="pIndented1">
-At this stage, the Job retrieves the schema 01 from the EBCDIC file and transfers it, as well as the corresponding data, to the database. We now need to retrieve, from the EBCDIC file, the schema 04 and its data, then transform and transmit the data to the same database. To do this:
+At this stage, the Job retrieves the schema <em class="cEmphasis">Schema01</em> from the EBCDIC file and transfers it, as well as the corresponding data, to the database. We now need to retrieve, from the EBCDIC file, the schema 04 and its data, then transform and transmit the data to the same database. To do this:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -111,10 +111,10 @@ At this stage, the Job retrieves the schema 01 from the EBCDIC file and transfer
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2192086"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema(s)</b> field, click the plus button to add a line.</li></div>
-<a name="wp2751533"> </a><div class="pSmartList2"><li>Click in this line and then click the three-dot button that displays to open a dialog box. Select the <b class="cBold">Create schema from repository</b> button to retrieve the schema defined in the EBCDIC metadata, then select 04 from the drop-down list. </li></div>
+<a name="wp2751533"> </a><div class="pSmartList2"><li>Click in this line and then click the three-dot button that displays to open a dialog box. Select the <b class="cBold">Create schema from repository</b> button to retrieve the schema defined in the EBCDIC metadata, then select <em class="cEmphasis">Shema04</em> from the drop-down list. </li></div>
 <a name="wp2751979"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
-<a name="wp2192296"> </a><div class="pSmartList2"><li>If you did not retrieve the schema from the <b class="cBold">Repository</b> tree view, select <b class="cBold">Create schema for built-in</b> and manually enter the name and description of your schema.<br />The two schemas 01 and 04 appear in the Schema(s) field of the <b class="cBold">tFileInputEBCDIC</b> component. </li></div>
-<a name="wp2752095"> </a><div class="pSmartList2"><li>In order to connect these two components, right-click <b class="cBold">tFileInputEBCDIC</b>, select <b class="cBold">Row</b> &gt; <b class="cBold">row_04_1</b> in the menu and click the<b class="cBold"> tMap</b> component. Then right-click <b class="cBold">tMap</b>, drag a link over to <b class="cBold">tMysqlOutputBulkExec</b> and release the right-click button. In the dialog box that opens up, fill in the name of the <em class="cEmphasis">ebcdic_04</em> output file.</li></div>
+<a name="wp2192296"> </a><div class="pSmartList2"><li>If you did not retrieve the schema from the <b class="cBold">Repository</b> tree view, select <b class="cBold">Create schema for built-in</b> and manually enter the name and description of your schema.<br />The two schemas <em class="cEmphasis">Shema01</em> and <em class="cEmphasis">Schema04</em> appear in the Schema(s) field of the <b class="cBold">tFileInputEBCDIC</b> component. </li></div>
+<a name="wp2752095"> </a><div class="pSmartList2"><li>In order to connect these two components, right-click <b class="cBold">tFileInputEBCDIC</b>, select <b class="cBold">Row</b> &gt; <b class="cBold">row_Schema04_1</b> in the menu and click the<b class="cBold"> tMap</b> component. Then right-click <b class="cBold">tMap</b>, drag a link over to <b class="cBold">tMysqlOutputBulkExec</b> and release the right-click button. In the dialog box that opens up, fill in the name of the <em class="cEmphasis">ebcdic_04</em> output file.</li></div>
 <a name="wp2752075"> </a><div class="pSmartList2"><li>Double-click<b class="cBold"> tMap</b> to open up the <b class="cBold">tMap Editor</b>. </li></div>
 </ul></div>
 </ul></div>
@@ -125,9 +125,9 @@ At this stage, the Job retrieves the schema 01 from the EBCDIC file and transfer
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2192471"> </a><div class="pSmartList2"><li>Select all the columns from the <b class="cBold">row_04_1</b> table and drag them towards the <b class="cBold">ebcdic_04</b> table.</li></div>
+<a name="wp2192471"> </a><div class="pSmartList2"><li>Select all the columns from the <b class="cBold">row_Schema04_1</b> table and drag them towards the <b class="cBold">ebcdic_04</b> table.</li></div>
 <a name="wp2192472"> </a><div class="pSmartList2"><li>In the table <b class="cBold">ebcdic_04</b>, located in the <b class="cBold">Schema editor</b> area at the bottom of the editor, click the <b class="cBold">plus</b> button to add a column to the schema. Name this column <em class="cEmphasis">SUM_AG_NUMBER</em>.</li></div>
-<a name="wp2192473"> </a><div class="pSmartList2"><li>In the table <b class="cBold">row_04_1</b>, to the left of the editor, press <b class="cBold">Ctrl</b> and select the <b class="cBold">CC01404_L_11_MENAG_1_1</b> and <b class="cBold">CC01404_AG_CAM_1_1</b> columns. Drag them to the new column <em class="cEmphasis">SUM_AG_NUMBER</em> in table <b class="cBold">ebcdic_04</b>. Add the sign + between the two concatenated columns so that you have: <code class="cCode">row_04_1.CC01404_L_11_MENAG_1_1&#160;+&#160;row_04_1.CC01404_AG_CAM_1_1</code>.</li></div>
+<a name="wp2192473"> </a><div class="pSmartList2"><li>In the table <b class="cBold">row_Schema04_1</b>, to the left of the editor, press <b class="cBold">Ctrl</b> and select the <b class="cBold">CC01404_L_11_MENAG_1_1</b> and <b class="cBold">CC01404_AG_CAM_1_1</b> columns. Drag them to the new column <em class="cEmphasis">SUM_AG_NUMBER</em> in table <b class="cBold">ebcdic_04</b>. Add the sign + between the two concatenated columns so that you have: <code class="cCode">row_04_1.CC01404_L_11_MENAG_1_1&#160;+&#160;row_04_1.CC01404_AG_CAM_1_1</code>.</li></div>
 <a name="wp2192475"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b>. to validate your changes and close the editor.</li></div>
 <a name="wp2192476"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tMysqlOutputBulkExec</b> to display the <b class="cBold">Basic settings</b> view, then define the component properties:</li></div>
 </ul></div>
@@ -148,7 +148,7 @@ The two tables are created in the database. They contain the structure, as well 
 </p>
 <a name="wp2090947"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Components-08-20-081.jpg" height="227" width="626" id="wp2090941" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Components-08-24-132.jpg" height="227" width="626" id="wp2090941" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
     </blockquote>

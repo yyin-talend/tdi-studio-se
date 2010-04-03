@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:24:28">
+    <meta name="LASTUPDATED" content="04/02/10 19:20:13">
     <title>tContextLoad</title>
   </head>
 
@@ -47,7 +47,7 @@ Misc
 </div>
 </td>
     <td><a name="wp1404484"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-12-10-05.jpg" height="59" width="112" id="wp1404480" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-11-10-06.jpg" height="59" width="112" id="wp1404480" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -73,12 +73,12 @@ Misc
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1404518"> </a><div class="pCellBody">
+    <td><a name="wp1404518"> </a><div class="pCellHeading">
 <em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp1404523"> </a><div class="pCellBody">
-In the tContextLoad use, the schema must be made of two columns, including the parameter name and the parameter value to be loaded.<br />A schema is a row description, i.e., it defines the fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.
+In <b class="cBold">tContextLoad</b>, the schema must be made of two columns, including the parameter name and the parameter value to be loaded.<br />A schema is a row description, i.e., it defines the fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.
 </div>
 </td>
 </tr>
@@ -91,7 +91,7 @@ In the tContextLoad use, the schema must be made of two columns, including the p
 </div>
 </td>
     <td><a name="wp2082641"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -104,7 +104,33 @@ In the tContextLoad use, the schema must be made of two columns, including the p
 </div>
 </td>
     <td><a name="wp2082732"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2753899"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2753903"> </a><div class="pCellHeading">
+<em class="cEmphasis">If a variable loaded, but not in the context</em>
+</div>
+</td>
+    <td><a name="wp2753906"> </a><div class="pCellBody">
+If a variable is loaded but does not appear in the context, select how the notification must be displayed. In the shape of an <b class="cBold">Error</b>, a <b class="cBold">warning</b> ou an information (<b class="cBold">info</b>).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2753917"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2753921"> </a><div class="pCellHeading">
+<em class="cEmphasis">If a variable in the context, but not loaded</em>
+</div>
+</td>
+    <td><a name="wp2753924"> </a><div class="pCellBody">
+If a variable appears in the context but is not loaded, select how the notification must be displayed. In the shape of an <b class="cBold">Error</b>, a <b class="cBold">warning</b> ou an information (<b class="cBold">info</b>)
 </div>
 </td>
 </tr>
@@ -112,7 +138,7 @@ In the tContextLoad use, the schema must be made of two columns, including the p
 &#160;
 </div>
 </td>
-    <td><a name="wp1404554"> </a><div class="pCellBody">
+    <td><a name="wp1404554"> </a><div class="pCellHeading">
 <em class="cEmphasis">Print operations</em>
 </div>
 </td>
@@ -121,7 +147,72 @@ Select this check box to display the context parameters set in the <b class="cBo
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1404564"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2754086"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2754091"> </a><div class="pCellHeading">
+<em class="cEmphasis">Disable errors</em>
+</div>
+</td>
+    <td><a name="wp2754093"> </a><div class="pCellBody">
+Select this check box to prevent the error from displaying.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2754095"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2754100"> </a><div class="pCellHeading">
+<em class="cEmphasis">Disable warnings</em>
+</div>
+</td>
+    <td><a name="wp2754102"> </a><div class="pCellBody">
+Select this check box to prevent the warning from displaying.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2754104"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2754109"> </a><div class="pCellHeading">
+<em class="cEmphasis">Disable infos</em>
+</div>
+</td>
+    <td><a name="wp2754111"> </a><div class="pCellBody">
+Select this check box to prevent the information from displaying.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2754209"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2754212"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp2754215"> </a><div class="pCellBody">
+This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2754187"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2754197"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2754201"> </a><div class="pCellBody">
+Select this check box to gather the job processing metadata at a job level as well as at each component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1404564"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -130,7 +221,7 @@ This component relies on the data flow to load the context values to be used, th
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1404573"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1404573"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

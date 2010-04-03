@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
+    <meta name="LASTUPDATED" content="04/02/10 19:19:03">
     <title>tFileInputPositional </title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components08-27.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputPositional_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFileInputMSXML_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputPositional_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,7 +22,7 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2651463"> </a><h2 class="pHeading1">
+<a name="wp2941074"> </a><h2 class="pHeading1">
 tFileInputPositional 
 </h2>
 <a name="wp2651472"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -47,7 +47,7 @@ File/Input
 </div>
 </td>
     <td><a name="wp2651498"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-08-28-003.jpg" height="59" width="112" id="wp2651494" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-08-39-004.jpg" height="59" width="112" id="wp2651494" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -73,7 +73,7 @@ This component opens a file and reads it row by row to split them up into fields
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2651529"> </a><div class="pCellBody">
+    <td><a name="wp2651529"> </a><div class="pCellHeading">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
@@ -112,12 +112,12 @@ Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 &#160;
 </div>
 </td>
-    <td><a name="wp2651562"> </a><div class="pCellBody">
-<em class="cEmphasis">File Name</em>
+    <td><a name="wp2651562"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name/Stream</em>
 </div>
 </td>
     <td><a name="wp2651566"> </a><div class="pCellBody">
-Name of the file to be processed. Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide
+<b class="cBold">File name</b>: Path and name of the output file and/or variable to be used<br /><b class="cBold">Stream</b>: Data flow to be processed. The data must be added to the flow so that it can be collected by <b class="cBold">tFileInputPositional</b> via the <em class="cEmphasis">INPUT_STREAM</em> variable in the autocompletion list (<b class="cBold">Ctrl+Space</b>).<br /> <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>
 </div>
 </td>
 </tr>
@@ -125,7 +125,7 @@ Name of the file to be processed. Related topic:<em class="cEmphasis">Defining v
 &#160;
 </div>
 </td>
-    <td><a name="wp2651577"> </a><div class="pCellBody">
+    <td><a name="wp2651577"> </a><div class="pCellHeading">
 <em class="cEmphasis">Row separator</em>
 </div>
 </td>
@@ -138,12 +138,12 @@ String (ex: &quot;\n&quot;on Unix) to distinguish rows.
 &#160;
 </div>
 </td>
-    <td><a name="wp2651586"> </a><div class="pCellBody">
+    <td><a name="wp2651586"> </a><div class="pCellHeading">
 <em class="cEmphasis">Customize</em>
 </div>
 </td>
     <td><a name="wp2651588"> </a><div class="pCellBody">
-Select this check box to customize the data format of the positional file and define the table columns:<br /><b class="cBold">Column</b>: Select the column you want to customize.<br /><b class="cBold">Size</b>: Enter the column size.<br /><b class="cBold">Padding char</b>: Type in between quotes the padding characters used. A space by default.<br /><b class="cBold">Alignment</b>: Select the appropriate alignment parameter.
+Select this check box to customize the data format of the positional file and define the table columns:<br /><b class="cBold">Column</b>: Select the column you want to customize.<br /><b class="cBold">Size</b>: Enter the column size.<br /><b class="cBold">Padding char</b>: Type in between inverted commas the padding character used in order for it to be removed from the field. A space by default.<br /><b class="cBold">Alignment</b>: Select the appropriate alignment parameter.
 </div>
 </td>
 </tr>
@@ -151,7 +151,7 @@ Select this check box to customize the data format of the positional file and de
 &#160;
 </div>
 </td>
-    <td><a name="wp2651607"> </a><div class="pCellBody">
+    <td><a name="wp2651607"> </a><div class="pCellHeading">
 <em class="cEmphasis">Pattern</em>
 </div>
 </td>
@@ -164,7 +164,7 @@ Length values separated by commas, interpreted as a string between quotes. Make 
 &#160;
 </div>
 </td>
-    <td><a name="wp2651616"> </a><div class="pCellBody">
+    <td><a name="wp2651616"> </a><div class="pCellHeading">
 <em class="cEmphasis">Skip empty rows</em>
 </div>
 </td>
@@ -177,12 +177,12 @@ select this check box to skip empty rows.
 &#160;
 </div>
 </td>
-    <td><a name="wp2651625"> </a><div class="pCellBody">
+    <td><a name="wp2651625"> </a><div class="pCellHeading">
 <em class="cEmphasis">Die on error</em>
 </div>
 </td>
     <td><a name="wp2651627"> </a><div class="pCellBody">
-Clear this check box to skip the row on error and complete the process for error-free rows.
+This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows. If needed, you can retrieve the rows on error via a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link.
 </div>
 </td>
 </tr>
@@ -190,7 +190,7 @@ Clear this check box to skip the row on error and complete the process for error
 &#160;
 </div>
 </td>
-    <td><a name="wp2651634"> </a><div class="pCellBody">
+    <td><a name="wp2651634"> </a><div class="pCellHeading">
 <em class="cEmphasis">Header</em>
 </div>
 </td>
@@ -203,7 +203,7 @@ Number of rows to be skipped in the beginning of file
 &#160;
 </div>
 </td>
-    <td><a name="wp2651643"> </a><div class="pCellBody">
+    <td><a name="wp2651643"> </a><div class="pCellHeading">
 <em class="cEmphasis">Footer</em>
 </div>
 </td>
@@ -216,7 +216,7 @@ Number of rows to be skipped at the end of the file.
 &#160;
 </div>
 </td>
-    <td><a name="wp2651652"> </a><div class="pCellBody">
+    <td><a name="wp2651652"> </a><div class="pCellHeading">
 <em class="cEmphasis">Limit</em>
 </div>
 </td>
@@ -229,8 +229,8 @@ Maximum number of rows to be processed. If Limit = 0, no row is read or processe
 &#160;
 </div>
 </td>
-    <td><a name="wp2651663"> </a><div class="pCellBody">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2651663"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp2651666"> </a><div class="pCellBody">
@@ -247,7 +247,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2651675"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -260,7 +260,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2651690"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -268,7 +268,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
-    <td><a name="wp2651705"> </a><div class="pCellBody">
+    <td><a name="wp2651705"> </a><div class="pCellHeading">
 <em class="cEmphasis">Needed to process rows longer than 100 000 characters</em>
 </div>
 </td>
@@ -281,7 +281,7 @@ Select this check box if the rows to be processed in the input file are longer t
 &#160;
 </div>
 </td>
-    <td><a name="wp2651715"> </a><div class="pCellBody">
+    <td><a name="wp2651715"> </a><div class="pCellHeading">
 <em class="cEmphasis">Advanced separator</em>
 </div>
 </td>
@@ -294,7 +294,7 @@ Select this check box to change the expected data separator.
 &#160;
 </div>
 </td>
-    <td><a name="wp2651724"> </a><div class="pCellBody">
+    <td><a name="wp2651724"> </a><div class="pCellHeading">
 <em class="cEmphasis">Trim all columns</em>
 </div>
 </td>
@@ -307,7 +307,7 @@ Select this check box to remove leading and trailing whitespaces from defined co
 &#160;
 </div>
 </td>
-    <td><a name="wp2651733"> </a><div class="pCellBody">
+    <td><a name="wp2651733"> </a><div class="pCellHeading">
 <em class="cEmphasis">Encoding</em>
 </div>
 </td>
@@ -320,7 +320,7 @@ Select the encoding type from the list or select <b class="cBold">Custom</b> and
 &#160;
 </div>
 </td>
-    <td><a name="wp2651745"> </a><div class="pCellBody">
+    <td><a name="wp2651745"> </a><div class="pCellHeading">
 <em class="cEmphasis">tStatCatcher Statistics</em>
 </div>
 </td>
@@ -334,7 +334,7 @@ Select this check box to gather the job processing metadata at a job level as we
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2651754"> </a><div class="pCellBody">
-Use this component to read a file and separate fields using a position separator value.
+Use this component to read a file and separate fields using a position separator value. You can also create a rejection flow using a <b class="cBold">Row &gt; Reject</b> link to filter the data which doesn&#39;t correspond to the type defined.  For an example of how to use these two links, see <em class="cEmphasis">Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file on page 1149</em>.
 </div>
 </td>
 </tr>
@@ -362,7 +362,7 @@ Use this component to read a file and separate fields using a position separator
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components08-27.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputPositional_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFileInputMSXML_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputPositional_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

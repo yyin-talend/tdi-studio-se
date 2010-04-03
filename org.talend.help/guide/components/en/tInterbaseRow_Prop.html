@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
     <title>tInterbaseRow</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tInterbaseOutput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tInterbaseRow_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tInterbaseRollback_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tInterbaseRow_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,7 +22,7 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1399659"> </a><h2 class="pHeading1">
+<a name="wp2871626"> </a><h2 class="pHeading1">
 tInterbaseRow
 </h2>
 <a name="wp1405919"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -36,291 +36,309 @@ tInterbaseRow properties
 <a name="wp1400014"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp1399690table1399682">
+<table border="1" id="wp3047160table1399682">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1399690"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047160"> </a><div class="pCellBody">
 <b class="cBold">Component family</b>
 </div>
 </td>
-    <td><a name="wp1399693"> </a><div class="pCellBody">
+    <td><a name="wp3047162"> </a><div class="pCellBody">
 Databases/Interbase
 </div>
 </td>
-    <td><a name="wp1399705"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconbh.png" id="wp1399700" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp3047170"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_iconfn.png" id="wp3047167" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1399713"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047175"> </a><div class="pCellBody">
 <b class="cBold">Function</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1399720"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp3047180"> </a><div class="pCellBody">
 <b class="cBold">tInterbaseRow</b> is the specific component for this database query. It executes the SQL query stated onto the specified database. The row suffix means the component implements a flow in the job design although it doesn&#39;t provide output. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1399731"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047187"> </a><div class="pCellBody">
 <b class="cBold">Purpose</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1399738"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp3047192"> </a><div class="pCellBody">
 Depending on the nature of the query and the database, <b class="cBold">tInterbaseRow</b> acts on the actual DB structure or on the data (although without handling data). The SQLBuilder tool helps you write easily your SQL statements.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1399749"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047199"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1399756"> </a><div class="pCellBody">
+    <td><a name="wp3047204"> </a><div class="pCellHeading">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
-    <td><a name="wp1399759"> </a><div class="pCellBody">
+    <td><a name="wp3047206"> </a><div class="pCellBody">
 Either Built-in or Repository. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1399763"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047208"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399766"> </a><div class="pCellBody">
+    <td><a name="wp3047210"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399773"> </a><div class="pCellBody">
+    <td><a name="wp3047215"> </a><div class="pCellBody">
 <b class="cBold">Built-in</b>: No property data stored centrally.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1399777"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047217"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399780"> </a><div class="pCellBody">
+    <td><a name="wp3047219"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399787"> </a><div class="pCellBody">
+    <td><a name="wp3047224"> </a><div class="pCellBody">
 <b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2213682"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047226"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2213688"> </a><div class="pCellBody">
+    <td><a name="wp3047230"> </a><div class="pCellHeading">
 <em class="cEmphasis">Use an existing connection</em>
 </div>
 </td>
-    <td><a name="wp2213692"> </a><div class="pCellBody">
+    <td><a name="wp3047233"> </a><div class="pCellBody">
 Select this check box and click the relevant <b class="cBold">tInterbaseConnection </b>component on the Component list to reuse the connection details you already defined.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1399791"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047238"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399798"> </a><div class="pCellBody">
+    <td><a name="wp3047243"> </a><div class="pCellHeading">
 <em class="cEmphasis">Host</em>
 </div>
 </td>
-    <td><a name="wp1399801"> </a><div class="pCellBody">
+    <td><a name="wp3047245"> </a><div class="pCellBody">
 Database server IP address
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1399819"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047247"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399826"> </a><div class="pCellBody">
+    <td><a name="wp3047252"> </a><div class="pCellHeading">
 <em class="cEmphasis">Database</em>
 </div>
 </td>
-    <td><a name="wp1399829"> </a><div class="pCellBody">
+    <td><a name="wp3047254"> </a><div class="pCellBody">
 Name of the database
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1399833"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047256"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399840"> </a><div class="pCellBody">
+    <td><a name="wp3047261"> </a><div class="pCellHeading">
 <em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
 </div>
 </td>
-    <td><a name="wp1399847"> </a><div class="pCellBody">
+    <td><a name="wp3047266"> </a><div class="pCellBody">
 DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1399851"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047268"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399861"> </a><div class="pCellBody">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp3047275"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp1399865"> </a><div class="pCellBody">
+    <td><a name="wp3047278"> </a><div class="pCellBody">
 A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1399869"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047280"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399872"> </a><div class="pCellBody">
+    <td><a name="wp3047282"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2654868"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+    <td><a name="wp3047287"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1399887"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047298"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399890"> </a><div class="pCellBody">
+    <td><a name="wp3047300"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2656263"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+    <td><a name="wp3047305"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1399905"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047316"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399912"> </a><div class="pCellBody">
+    <td><a name="wp3047321"> </a><div class="pCellHeading">
 <em class="cEmphasis">Query type</em>
 </div>
 </td>
-    <td><a name="wp1399915"> </a><div class="pCellBody">
+    <td><a name="wp3047323"> </a><div class="pCellBody">
 Either Built-in or Repository. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1399919"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047325"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399922"> </a><div class="pCellBody">
+    <td><a name="wp3047327"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399929"> </a><div class="pCellBody">
+    <td><a name="wp3047332"> </a><div class="pCellBody">
 <b class="cBold">Built-in</b>: Fill in manually the query statement or build it graphically using SQLBuilder
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1399933"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047334"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399936"> </a><div class="pCellBody">
+    <td><a name="wp3047336"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399943"> </a><div class="pCellBody">
+    <td><a name="wp3047341"> </a><div class="pCellBody">
 <b class="cBold">Repository</b>: Select the relevant query stored in the Repository. The Query field gets accordingly filled in.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1399947"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047343"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1399954"> </a><div class="pCellBody">
+    <td><a name="wp3047348"> </a><div class="pCellHeading">
 <em class="cEmphasis">Query</em>
 </div>
 </td>
-    <td><a name="wp1399957"> </a><div class="pCellBody">
+    <td><a name="wp3047350"> </a><div class="pCellBody">
 Enter your DB query paying particularly attention to properly sequence the fields in order to match the schema definition. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214899"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047352"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2214904"> </a><div class="pCellBody">
+    <td><a name="wp3047357"> </a><div class="pCellHeading">
 <em class="cEmphasis">Die on error</em>
 </div>
 </td>
-    <td><a name="wp2214906"> </a><div class="pCellBody">
-Clear this check box to skip the row on error and complete the process for error-free rows. 
+    <td><a name="wp3047359"> </a><div class="pCellBody">
+This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows. If needed, you can retrieve the rows on error via a <b class="cBold">Row</b> &gt; <b class="cBold">Rejects</b> link.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214927"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047370"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
-    <td><a name="wp2214933"> </a><div class="pCellBody">
+    <td><a name="wp3047374"> </a><div class="pCellHeading">
 <em class="cEmphasis">Propagate QUERY&#39;s recordset</em>
 </div>
 </td>
-    <td><a name="wp2214937"> </a><div class="pCellBody">
-Select this check box to insert the result of the query into a COLUMN of the current flow.
+    <td><a name="wp3047377"> </a><div class="pCellBody">
+Select this check box to insert the result of the query into a COLUMN of the current flow. Select this column from the <b class="cBold">use column</b> list.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214941"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047444"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2214948"> </a><div class="pCellBody">
+    <td><a name="wp3047447"> </a><div class="pCellBody">
+<em class="cEmphasis">Use PreparedStatement</em>
+</div>
+</td>
+    <td><a name="wp3047450"> </a><div class="pCellBody">
+Select this checkbox if you want to query the database using a PreparedStatement. In the <b class="cBold">Set PreparedStatement Parameter </b>table, define the parameters represented by &quot;?&quot; in the SQL instruction of the <b class="cBold">Query</b> field in the <b class="cBold">Basic Settings</b> tab.<br /><b class="cBold">Parameter Index</b>: Enter the parameter position in the SQL instruction.<br /><b class="cBold">Parameter Type</b>: Enter the parameter type.<br /><b class="cBold">Parameter Value</b>: Enter the parameter value.<br />
+</div>
+<a name="wp3047483"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/Components-06-155-193.jpg" height="47" width="47" align="left" id="wp3047479" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This option is very useful if you need to execute the same query several times. Performance levels are increased
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047379"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3047384"> </a><div class="pCellHeading">
 <em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
-    <td><a name="wp2214955"> </a><div class="pCellBody">
+    <td><a name="wp3047389"> </a><div class="pCellBody">
 Select the encoding from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214959"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047391"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2214966"> </a><div class="pCellBody">
+    <td><a name="wp3047396"> </a><div class="pCellHeading">
 <em class="cEmphasis">Commit every</em>
 </div>
 </td>
-    <td><a name="wp2214969"> </a><div class="pCellBody">
+    <td><a name="wp3047398"> </a><div class="pCellBody">
 Number of rows to be completed before committing batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214973"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3047400"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2214980"> </a><div class="pCellBody">
-<em class="cEmphasis">tState</em>Catcher Statistics
+    <td><a name="wp3047408"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
 </div>
 </td>
-    <td><a name="wp2214983"> </a><div class="pCellBody">
+    <td><a name="wp3047410"> </a><div class="pCellBody">
 Select this check box to collect log data at the component level.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1400003"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3047415"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1400006"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp3047417"> </a><div class="pCellBody">
 This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.
 </div>
 </td>
@@ -349,7 +367,7 @@ This component offers the flexibility benefit of the DB query and covers all pos
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tInterbaseOutput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tInterbaseRow_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tInterbaseRollback_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tInterbaseRow_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

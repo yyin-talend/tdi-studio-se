@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:24:28">
+    <meta name="LASTUPDATED" content="04/02/10 19:20:13">
     <title>Scenario1: Buffering data (Java)</title>
   </head>
 
@@ -110,7 +110,7 @@ Scenario 2: Buffering output data on the webapp server
 This scenario describes a Job that is called as a Webservice and stores the output data in a buffer directly on the server of the Web application. This scenario creates first a Webservice oriented Job with context variables, and next exports the Job as a Webservice.
 </p>
 <a name="wp1590031"> </a><p class="pBodyRelative">
-<b class="cBold">Creating a Webservice oriented Job with context variables:</b>
+<b class="cBold">Creating a Webservice-oriented Job with context variables:</b>
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -127,7 +127,7 @@ This scenario describes a Job that is called as a Webservice and stores the outp
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1567633"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tFixedFlowInput</b>.</li></div>
 <a name="wp1567643"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tFixedFlowInput</b>.</li></div>
-<a name="wp1587645"> </a><div class="pSmartList2"><li> Set the <b class="cBold">Schema Type</b> to <b class="cBold">Built-In</b> and click the three-dot [...] button next to <b class="cBold">Edit Schema </b>to describe the data structure you want to create from internal variables. In this scenario, the schema is made of three columns, <em class="cEmphasis">now</em>, <em class="cEmphasis">firstname</em>, and <em class="cEmphasis">lastname</em>.</li></div>
+<a name="wp1587645"> </a><div class="pSmartList2"><li> Set the <b class="cBold">Schema Type</b> to <b class="cBold">Built-In</b> and click the three-dot <b class="cBold">[...]</b> button next to <b class="cBold">Edit Schema </b>to describe the data structure you want to create from internal variables. In this scenario, the schema is made of three columns, <em class="cEmphasis">now</em>, <em class="cEmphasis">firstname</em>, and <em class="cEmphasis">lastname</em>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1587681"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -153,7 +153,7 @@ This scenario describes a Job that is called as a Webservice and stores the outp
 </ul></div>
 </ul></div>
 <a name="wp1588888"> </a><p class="pIndented1">
-For this scenario, we want to define two context variables: <em class="cEmphasis">nb_lines</em> and <em class="cEmphasis">lastname</em>. In the first we set the number of lines to be generated, and in the second we set the last name to display in the output list. The <b class="cBold">tFixedFlowInput </b>component will generate the number of lines set in the context variable with the three columns: <em class="cEmphasis">now</em>, <em class="cEmphasis">firstname</em> and <em class="cEmphasis">lastname</em>. For more information about how to create and use context variables, see <em class="cEmphasis">Defining variables on the Contexts view</em> of Talend Open Studio User Guide.
+For this scenario, we want to define two context variables: <em class="cEmphasis">nb_lines</em> and <em class="cEmphasis">lastname</em>. In the first we set the number of lines to be generated, and in the second we set the last name to display in the output list. The <b class="cBold">tFixedFlowInput </b>component will generate the number of lines set in the context variable with the three columns: <em class="cEmphasis">now</em>, <em class="cEmphasis">firstname</em> and <em class="cEmphasis">lastname</em>. For more information about how to create and use context variables, see <em class="cEmphasis">Defining variables on the Contexts view</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </p>
 <a name="wp1588969"> </a><p class="pIndented1">
 To define the two context variables:
@@ -195,7 +195,7 @@ To define the two context variables:
 <b class="cBold">Exporting your Job as a Webservice:</b>
 </p>
 <a name="wp1590843"> </a><p class="pIndented1">
-Before exporting your Job as a Web service, see <em class="cEmphasis">Exporting Job scripts</em> in Talend Open Studio User Guide for more information.
+Before exporting your Job as a Web service, see <em class="cEmphasis">Exporting job scripts</em> in Talend Integration Suite Studio <b class="cBold">User Guide</b> for more information.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -209,7 +209,7 @@ Before exporting your Job as a Web service, see <em class="cEmphasis">Exporting 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1591099"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Brows...</b> button to select a directory to archive your Job in.</li></div>
+<a name="wp1591099"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Browse...</b> button to select a directory to archive your Job in.</li></div>
 <a name="wp1591105"> </a><div class="pSmartList2"><li>In the <b class="cBold">Export type</b> panel, select the export type you want to use in the Tomcat webapp directory (WAR in this example) and click <b class="cBold">Finish</b>. The <b class="cBold">[Export Job Scripts]</b> dialog box disappears.</li></div>
 <a name="wp1591495"> </a><div class="pSmartList2"><li>Copy the War folder and paste it in a Tomcat webapp directory.</li></div>
 </ul></div>
@@ -289,7 +289,7 @@ This scenario describes a Job that calls another Job exported as a Webservice us
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1597436"> </a><div class="pSmartList2"><li> Set the <b class="cBold">Schema Type</b> to <b class="cBold">Built-In</b> and click the three-dot [...] button next to <b class="cBold">Edit Schema </b>to describe the data structure you want to call from the exported Job. In this scenario, the schema is made of three columns, <em class="cEmphasis">now</em>, <em class="cEmphasis">firstname</em>, and <em class="cEmphasis">lastname</em>.</li></div>
+<a name="wp1597436"> </a><div class="pSmartList2"><li> Set the <b class="cBold">Schema Type</b> to <b class="cBold">Built-In</b> and click the three-dot <b class="cBold">[...]</b> button next to <b class="cBold">Edit Schema </b>to describe the data structure you want to call from the exported Job. In this scenario, the schema is made of three columns, <em class="cEmphasis">now</em>, <em class="cEmphasis">firstname</em>, and <em class="cEmphasis">lastname</em>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1597454"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

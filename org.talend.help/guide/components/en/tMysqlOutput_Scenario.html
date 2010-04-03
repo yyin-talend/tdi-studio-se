@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
     <title>Scenario 1: Adding a new column and altering data in a DB table</title>
   </head>
 
@@ -54,7 +54,7 @@ This Java scenario is a three-component job that aims at creating random data us
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2751185"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Schema Type</b> to <b class="cBold">Built-In</b>.</li></div>
+<a name="wp2751185"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Schema</b> to <b class="cBold">Built-In</b>.</li></div>
 <a name="wp2751194"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> three-dot button to define the data to pass on to the <b class="cBold">tMap</b> component, two columns in this scenario, <em class="cEmphasis">name</em> and <em class="cEmphasis">random_date</em>.</li></div>
 </ul></div>
 </ul></div>
@@ -181,7 +181,7 @@ This Java scenario describes a two-component Job that updates data in a MySQL ta
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2751598"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
-<a name="wp2751611"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b>  if you have already stored the metadata of the delimited file in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view. Otherwise, select <b class="cBold">Built-In</b> to define manually the metadata of the delimited file. <br />For more information about storing metadata, see <em class="cEmphasis">Setting up a File Delimited schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
+<a name="wp2751611"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b>  if you have already stored the metadata of the delimited file in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view. Otherwise, select <b class="cBold">Built-In</b> to define manually the metadata of the delimited file. <br />For more information about storing metadata, see <em class="cEmphasis">Setting up a File Delimited schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2751635"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -230,7 +230,7 @@ It is necessary to define at least one column as a key column for the Job to be 
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2751758"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema of the preceding component. If needed, click the three-dot button next to <b class="cBold">Edit schema</b> to open a dialog box where you can check the retrieved schema. </li></div>
-<a name="wp2751771"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b> if you have already stored the connection metadata in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view. Otherwise, select <b class="cBold">Built-In</b> to define manually the connection information. <br />For more information about storing metadata, see <em class="cEmphasis">Setting up a DB connection</em> of <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
+<a name="wp2751771"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b> if you have already stored the connection metadata in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view. Otherwise, select <b class="cBold">Built-In</b> to define manually the connection information. <br />For more information about storing metadata, see <em class="cEmphasis">Setting up a DB connection</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
 <a name="wp2751791"> </a><div class="pSmartList2"><li>Fill in the database connection information in the corresponding fields.</li></div>
 <a name="wp2751798"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table </b>field, enter the name of the table to update.</li></div>
 <a name="wp2751807"> </a><div class="pSmartList2"><li>From the <b class="cBold">Action on table</b> list, select the operation you want to perform, <b class="cBold">None</b> in this example since the table already exists.</li></div>
@@ -248,6 +248,132 @@ Using you DB browser, you can verify if the MySQL table, <em class="cEmphasis">c
 </p>
 <a name="wp2752910"> </a><p class="pIndented1">
 In the above example, the database table has always the four columns <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">CustomerAddress</em> and <em class="cEmphasis">idState</em>, but certain fields have been modified according to the data in the delimited file used.
+</p>
+<a name="wp2939075"> </a><h2 class="pHeading2">
+Scenario&#160;3: Retrieve data in error with a Reject link
+</h2>
+<a name="wp2939785"> </a><p class="pIndented1">
+This scenario describes a four-component Job that carries out migration from a customer file to a MySQL database table and redirects data in error towards a CSV file using a <b class="cBold">Reject</b> link. 
+</p>
+<a name="wp2939090"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_1.png" id="wp2939087" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2939098"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b>, select the customer file metadata that you want to migrate and drop it onto the workspace. In the <b class="cBold">[Components]</b> dialog box, select <b class="cBold">tFileInputDelimited</b> and click <b class="cBold">OK</b>. The component properties will be filled in automatically.</li></div>
+<a name="wp2939111"> </a><div class="pSmartList2"><li>If you have not stored the information about your customer file under the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b>. Drop a <b class="cBold">tFileInputDelimited</b> component from the family <b class="cBold">File</b>&#160;&gt;&#160;<b class="cBold">Input</b>, in the <b class="cBold">Palette</b>, and fill in its properties manually in the <b class="cBold">Component</b> tab.</li></div>
+<a name="wp2939145"> </a><div class="pSmartList2"><li>From the <b class="cBold">Palette</b>, drop a <b class="cBold">tMap</b> from the <b class="cBold">Processing</b> family onto the workspace.</li></div>
+<a name="wp2939152"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b>, expand the <b class="cBold">Metadata</b> node, followed by the <b class="cBold">Db Connections</b> node and select the connection required to migrate your data to the appropriate database. Drop it onto the workspace. In the <b class="cBold">[Components]</b> dialog box, select  <b class="cBold">tMysqlOutput</b> and click <b class="cBold">OK</b>. The database connection properties will be automatically filled in.</li></div>
+<a name="wp2939165"> </a><div class="pSmartList2"><li>If you have not stored the database connection details under the <b class="cBold">Db Connections</b> node in the <b class="cBold">Repository</b>, drop a <b class="cBold">tMysqlOutput</b> from the <b class="cBold">Databases</b> family in the <b class="cBold">Palette</b> and fill in  its properties manually in the <b class="cBold">Component </b>tab. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2939193"> </a><p class="pIndented1">
+For more information, see <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a Repository schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide.</b> 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2939212"> </a><div class="pSmartList2"><li>From the <b class="cBold">Palette</b>, select a <b class="cBold">tFileOutputDelimited</b> from the <b class="cBold">File</b>&#160;&gt;&#160;<b class="cBold">Output</b> family, and drop it onto the workspace.</li></div>
+<a name="wp2939234"> </a><div class="pSmartList2"><li>Link the <b class="cBold">customers</b> component to the <b class="cBold">tMap</b> component, and the <b class="cBold">tMap</b> and <b class="cBold">Localhost</b> with a <b class="cBold">Row Main</b> link. Name this second link <em class="cEmphasis">out</em>.</li></div>
+<a name="wp2939250"> </a><div class="pSmartList2"><li>Link the <b class="cBold">Localhost</b> to the <b class="cBold">tFileOutputDelimited</b> using a <b class="cBold">Row</b>&#160;&gt;&#160;<b class="cBold">Reject</b> link. </li></div>
+<a name="wp2939266"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">customers</b> component to display the <b class="cBold">Component</b> view. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2939275"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_2.png" id="wp2939272" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2939289"> </a><div class="pSmartList2"><li>In the <b class="cBold">Property Type </b>list, select <b class="cBold">Repository</b> and click the <b class="cBold">[...] button </b> in order to select the metadata containing the connection to your file. You can also select the <b class="cBold">Built-in</b> mode and fill in the fields manually.</li></div>
+<a name="wp2939302"> </a><div class="pSmartList2"><li>Click the <b class="cBold">[...]</b> button next to the <b class="cBold">File Name </b>field, and fill in the path and the name of the file you want to use.</li></div>
+<a name="wp2939312"> </a><div class="pSmartList2"><li>In the <b class="cBold">Row</b> and <b class="cBold">Field Separator</b> fields, type in between inverted commas the row and field separator used in the file.</li></div>
+<a name="wp2939325"> </a><div class="pSmartList2"><li>In the <b class="cBold">Header</b>, <b class="cBold">Footer</b> and <b class="cBold">Limit</b> fields, type in the number of headers and footers to ignore, and the number of rows to which processing should be limited.</li></div>
+<a name="wp2939338"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema</b> list, select <b class="cBold">Repository</b> and click the <b class="cBold">[...] button</b> in order to select the schema of your file, if it is stored under the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b>. You can also click the <b class="cBold">[...]</b> button next to the <b class="cBold">Edit schema</b> field, and set the schema manually. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2939356"> </a><p class="pIndented1">
+The schema is as follows:
+</p>
+<a name="wp2939363"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_3.png" id="wp2939360" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2939373"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component to open its editor. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2939380"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_4.png" id="wp2939377" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2939403"> </a><div class="pSmartList2"><li>Select the <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">CustomerAddress</em>, <em class="cEmphasis">idSate</em>, <em class="cEmphasis">id2</em>, <em class="cEmphasis">RegTime</em> and <em class="cEmphasis">RegisterTime </em>columns on the table on the left and drop them on the <b class="cBold">out</b> table, on the right.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2939415"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_5.png" id="wp2939412" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2939426"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema editor</b> area, at the bottom of the <b class="cBold">tMap</b> editor, in the right table, change the length of the <b class="cBold">CustomerName</b> column to <em class="cEmphasis">28</em> to create an error. Thus, any data for which the length is greater than 28 will create errors, retrieved with the <b class="cBold">Reject </b>link.</li></div>
+<a name="wp2940738"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b>.</li></div>
+<a name="wp2940747"> </a><div class="pSmartList2"><li>In the workspace, double-click the output <b class="cBold">Localhost</b> component to display its <b class="cBold">Component </b> view. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2940756"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_6.png" id="wp2940753" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2940769"> </a><div class="pSmartList2"><li>In the <b class="cBold">Property Type </b>list, select <b class="cBold">Repository</b> and click the <b class="cBold">[...]</b> button to select the connection to the database metadata. The connection details will be automatically filled in. You can also select the <b class="cBold">Built-in</b> mode and set the fields manually.</li></div>
+<a name="wp2939485"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table</b> field, type in the name of the table to be created. In this scenario, we call it <em class="cEmphasis">customers_data</em>.</li></div>
+<a name="wp2939499"> </a><div class="pSmartList2"><li>In the <b class="cBold">Action on data </b>list, select the <b class="cBold">Create table </b>option. </li></div>
+<a name="wp2939506"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Sync columns</b> button to retrieve the schema from the previous component.</li></div>
+<a name="wp2939512"> </a><div class="pSmartList2"><li>Make sure the <b class="cBold">Die on error</b> check box isn&#39;t selected, so that the Job can be executed despite the error you just created.</li></div>
+<a name="wp2939522"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab of the <b class="cBold">Component</b> view to set the advanced parameters of the component.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2939531"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_7.png" id="wp2939528" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2939539"> </a><div class="pSmartList2"><li>Deselect the <b class="cBold">Extend Insert</b> check box which enables you to insert rows in batch, because this option is not compatible with the <b class="cBold">Reject</b> link.</li></div>
+<a name="wp2939549"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFileOutputDelimited </b>component to set its properties in the <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2939561"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_8.png" id="wp2939558" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2939572"> </a><div class="pSmartList2"><li>Click the <b class="cBold">[...]</b> button next to the <b class="cBold">File Name</b> field to fill in the path and name of the output file.</li></div>
+<a name="wp2939580"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Sync columns</b> button to retrieve the schema of the previous component.</li></div>
+<a name="wp2939588"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2939595"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput3_9.png" id="wp2939592" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2939598"> </a><p class="pIndented1">
+The data in error are sent to the delimited file, as well as the error type met. Here, we have: <b class="cBold">Data truncation</b>.
 </p>
     </blockquote>
     <hr>

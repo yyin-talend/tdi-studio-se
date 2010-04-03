@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
     <title>Scenario 1: Displaying selected data from DB table</title>
   </head>
 
@@ -73,7 +73,7 @@ The DB is parsed and queried data is extracted from the specified table and pass
 Scenario 2: Using StoreSQLQuery variable
 </h2>
 <a name="wp1294636"> </a><p class="pIndented1">
-StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which does not operate correctly. It allows you to dynamically feed the SQL query set in your <b class="cBold">tDBInput</b> component. 
+StoreSQLQuery is a variable that can be used to debug a <b class="cBold">tDBInput</b> scenario which does not operate correctly. It allows you to dynamically feed the SQL query set in your <b class="cBold">tDBInput</b> component. 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -83,7 +83,7 @@ StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which 
 <img src="images/bulb_small.png" align="left" id="wp2251385" border="0" hspace="0" vspace="0"/><br />
 <br />If you create scenario 1 using the Java language, you must use <b class="cBold">tJava</b> in this step.
 </p>
-<a name="wp2204935"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tDBInput</b> component to <b class="cBold">tPerl</b> component using a trigger connection of <b class="cBold">ThenRun</b> type. In this case, we want the <b class="cBold">tDBInput</b> to run before the <b class="cBold">tPerl</b> component.</li></div>
+<a name="wp2204935"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tDBInput</b> component to <b class="cBold">tPerl</b> component using a trigger connection of <b class="cBold">OnComponentOk</b> type. In this case, we want the <b class="cBold">tDBInput</b> to run before the <b class="cBold">tPerl</b> component.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2204893"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
+    <meta name="LASTUPDATED" content="04/02/10 19:19:03">
     <title>tFileInputFullRow </title>
   </head>
 
@@ -47,7 +47,7 @@ File/Input
 </div>
 </td>
     <td><a name="wp2091340"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-08-23-009.jpg" height="59" width="112" id="wp2091336" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-08-27-010.jpg" height="59" width="112" id="wp2091336" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -73,8 +73,8 @@ File/Input
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2091376"> </a><div class="pCellBody">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2091376"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp2091379"> </a><div class="pCellBody">
@@ -86,12 +86,12 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
-    <td><a name="wp2091395"> </a><div class="pCellBody">
+    <td><a name="wp2091395"> </a><div class="pCellHeading">
 <em class="cEmphasis">File Name</em>
 </div>
 </td>
     <td><a name="wp2651129"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+Name of the file and/or the variable to be processed<br /><br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -99,7 +99,7 @@ Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defi
 &#160;
 </div>
 </td>
-    <td><a name="wp2091410"> </a><div class="pCellBody">
+    <td><a name="wp2091410"> </a><div class="pCellHeading">
 <em class="cEmphasis">Row separator</em>
 </div>
 </td>
@@ -112,7 +112,7 @@ String (ex: &quot;\n&quot;on Unix) to separate rows.
 &#160;
 </div>
 </td>
-    <td><a name="wp2091419"> </a><div class="pCellBody">
+    <td><a name="wp2091419"> </a><div class="pCellHeading">
 <em class="cEmphasis">Header</em>
 </div>
 </td>
@@ -125,7 +125,7 @@ Number of rows to be skipped at the beginning of a file
 &#160;
 </div>
 </td>
-    <td><a name="wp2091428"> </a><div class="pCellBody">
+    <td><a name="wp2091428"> </a><div class="pCellHeading">
 <em class="cEmphasis">Footer</em>
 </div>
 </td>
@@ -138,7 +138,7 @@ Number of rows to be skipped at the end of a file.
 &#160;
 </div>
 </td>
-    <td><a name="wp2091437"> </a><div class="pCellBody">
+    <td><a name="wp2091437"> </a><div class="pCellHeading">
 <em class="cEmphasis">Limit</em>
 </div>
 </td>
@@ -151,7 +151,7 @@ Maximum number of rows to be processed. If Limit = 0, no row is read or processe
 &#160;
 </div>
 </td>
-    <td><a name="wp2091446"> </a><div class="pCellBody">
+    <td><a name="wp2091446"> </a><div class="pCellHeading">
 <em class="cEmphasis">Skip empty rows</em>
 </div>
 </td>
@@ -160,12 +160,25 @@ Select this check box to skip empty rows.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2091453"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2950759"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2950785"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp2950788"> </a><div class="pCellBody">
+This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows. If needed, you can retrieve the rows on error via a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2091453"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2091455"> </a><div class="pCellBody">
-Use this component to read full rows in delimited files that can get very large.
+Use this component to read full rows in delimited files that can get very large. You can also create a rejection flow using a <b class="cBold">Row &gt; Reject</b> link to filter the data which doesn&#39;t correspond to the type defined.  For an example of how to use these two links, see <em class="cEmphasis">Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file on page 1149</em>.
 </div>
 </td>
 </tr>

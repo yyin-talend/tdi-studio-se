@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
+    <meta name="LASTUPDATED" content="04/02/10 19:19:03">
     <title>tFileInputRegex</title>
   </head>
 
@@ -47,7 +47,7 @@ File/Input
 </div>
 </td>
     <td><a name="wp2089603"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-08-32-012.jpg" height="59" width="112" id="wp2089599" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-08-43-013.jpg" height="59" width="112" id="wp2089599" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -73,7 +73,7 @@ Opens a file and reads it row by row to split them up into fields using regular 
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2089631"> </a><div class="pCellBody">
+    <td><a name="wp2089631"> </a><div class="pCellHeading">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
@@ -112,12 +112,12 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp2089661"> </a><div class="pCellBody">
-<em class="cEmphasis">File Name</em>
+    <td><a name="wp2089661"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name/Stream</em>
 </div>
 </td>
     <td><a name="wp2651087"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">File name</b>: Name of the file and/or the variable to be processed<br /><b class="cBold">Stream</b>: Data flow to be processed.  The data must be added to the flow so that it can be collected by the <b class="cBold">tFileInputRegex </b>via the <em class="cEmphasis">INPUT_STREAM</em> variable in the autocompletion list (<b class="cBold">Ctrl+Space</b>)<br /><br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -125,7 +125,7 @@ Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defi
 &#160;
 </div>
 </td>
-    <td><a name="wp2089676"> </a><div class="pCellBody">
+    <td><a name="wp2089676"> </a><div class="pCellHeading">
 <em class="cEmphasis">Row separator</em>
 </div>
 </td>
@@ -138,16 +138,16 @@ String (ex: &quot;\n&quot;on Unix) to distinguish rows.
 &#160;
 </div>
 </td>
-    <td><a name="wp2089682"> </a><div class="pCellBody">
-Regex
+    <td><a name="wp2089682"> </a><div class="pCellHeading">
+<em class="cEmphasis">Regex</em>
 </div>
 </td>
     <td><a name="wp2089684"> </a><div class="pCellBody">
 This field is Perl or Java compatible and can contain multiple lines. Type in your regular expressions including the subpattern matching the fields to be extracted. <br /><b class="cBold">Note</b>: In Java, antislashes need to be doubled in regexp
 </div>
-<a name="wp2089695"> </a><div class="pCellBody">
+<a name="wp2089695"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2755486" border="0" hspace="0" vspace="0"/></table></div><div class="pCellBody">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2755486" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 Regex syntax is different in Java/Perl and requires doubel/single quotes respectively.
 </div>
 </td>
@@ -156,7 +156,7 @@ Regex syntax is different in Java/Perl and requires doubel/single quotes respect
 &#160;
 </div>
 </td>
-    <td><a name="wp2089702"> </a><div class="pCellBody">
+    <td><a name="wp2089702"> </a><div class="pCellHeading">
 <em class="cEmphasis">Header</em>
 </div>
 </td>
@@ -169,7 +169,7 @@ Number of rows to be skipped in the beginning of file
 &#160;
 </div>
 </td>
-    <td><a name="wp2089711"> </a><div class="pCellBody">
+    <td><a name="wp2089711"> </a><div class="pCellHeading">
 <em class="cEmphasis">Footer</em>
 </div>
 </td>
@@ -182,7 +182,7 @@ Number of rows to be skipped at the end of the file.
 &#160;
 </div>
 </td>
-    <td><a name="wp2089720"> </a><div class="pCellBody">
+    <td><a name="wp2089720"> </a><div class="pCellHeading">
 <em class="cEmphasis">Limit</em>
 </div>
 </td>
@@ -195,8 +195,8 @@ Maximum number of rows to be processed. If Limit = 0, no row is read or processe
 &#160;
 </div>
 </td>
-    <td><a name="wp2089731"> </a><div class="pCellBody">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2089731"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp2089734"> </a><div class="pCellBody">
@@ -213,7 +213,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2650652"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -226,7 +226,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2650929"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -234,7 +234,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
-    <td><a name="wp2089771"> </a><div class="pCellBody">
+    <td><a name="wp2089771"> </a><div class="pCellHeading">
 <em class="cEmphasis">Skip empty rows</em>
 </div>
 </td>
@@ -243,11 +243,24 @@ Select this check box to skip empty rows.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2089775"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2950871"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2089780"> </a><div class="pCellBody">
+    <td><a name="wp2950906"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp2950909"> </a><div class="pCellBody">
+This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows. If needed, you can retrieve the rows on error via a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2089775"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2089780"> </a><div class="pCellHeading">
 <em class="cEmphasis">Encoding</em>
 </div>
 </td>
@@ -256,16 +269,16 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2089787"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2089787"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2089789"> </a><div class="pCellBody">
-Use this component to read a file and separate fields contained in this file according to the defined Regex.
+Use this component to read a file and separate fields contained in this file according to the defined Regex. You can also create a rejection flow using a <b class="cBold">Row &gt; Reject</b> link to filter the data which doesn&#39;t correspond to the type defined.  For an example of how to use these two links, see <em class="cEmphasis">Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file on page 1149</em>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2089796"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2089796"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

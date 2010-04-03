@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
     <title>Scenario: Inserting data in mother/daughter tables</title>
   </head>
 
@@ -39,7 +39,7 @@ The following job is dedicated to advanced database users, who want to carry out
 </ul></div>
 </ul></div>
 <a name="wp1311920"> </a><p class="pIndented1">
-Back into <b class="cBold">Talend Open Studio</b>, the job requires seven components including <b class="cBold">tMysqlConnection</b> and <b class="cBold">tMysqlCommit</b>.
+Back into <b class="cBold">Talend Integration Suite Studio</b>, the job requires seven components including <b class="cBold">tMysqlConnection</b> and <b class="cBold">tMysqlCommit</b>.
 </p>
 <a name="wp1311135"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -52,8 +52,8 @@ Back into <b class="cBold">Talend Open Studio</b>, the job requires seven compon
 <a name="wp1311162"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileList</b> component to the input file component using an <b class="cBold">Iterate</b> link as the name of the file to be processed will be dynamically filled in from the <b class="cBold">tFileList</b> directory using a global variable. </li></div>
 <a name="wp1311175"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileInputDelimited</b> component to the <b class="cBold">tMap</b> and dispatch the flow between the two output Mysql DB components. Use a <b class="cBold">Row</b> link for each for these connections representing the main data flow.</li></div>
 <a name="wp1311186"> </a><div class="pSmartList2"><li>Set the <b class="cBold">tFileList</b> component properties, such as the directory. name where files will be fetched from.</li></div>
-<a name="wp1312490"> </a><div class="pSmartList2"><li>Add a <b class="cBold">tMysqlConnection</b> component and connect it to the starter component of this job, in this example, the <b class="cBold">tFileList</b> component using a ThenRun link to define the execution order.</li></div>
-<a name="wp1311192"> </a><div class="pSmartList2"><li>In the <b class="cBold">tMysqlConnection</b> Component view, set the connection details manually or fetch them from the Repository if you centrally stored them as a Metadata DB connection entry. For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> in <b class="cBold">Talend Open Studio</b> User Guide.</li></div>
+<a name="wp1312490"> </a><div class="pSmartList2"><li>Add a <b class="cBold">tMysqlConnection</b> component and connect it to the starter component of this job, in this example, the <b class="cBold">tFileList</b> component using an <b class="cBold">OnComponentOk</b> link to define the execution order.</li></div>
+<a name="wp1311192"> </a><div class="pSmartList2"><li>In the <b class="cBold">tMysqlConnection</b> Component view, set the connection details manually or fetch them from the Repository if you centrally stored them as a Metadata DB connection entry. For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
 <a name="wp1311205"> </a><div class="pSmartList2"><li>On the <b class="cBold">tFileInputDelimited</b> component&#39;s <b class="cBold">Basic settings</b> panel, press Ctrl+Space bar to access the variable list. Set the  <b class="cBold">File Name</b> field to the global variable: <em class="cEmphasis">$_globals{tFileList_1}{CURRENT_FILEPATH}</em> </li></div>
 </ul></div>
 </ul></div>
@@ -100,13 +100,11 @@ Back into <b class="cBold">Talend Open Studio</b>, the job requires seven compon
 <a name="wp1312263"> </a><div class="pSmartList2"><li>In the <b class="cBold">Additional columns</b> area of  the DB output component corresponding to the child table (<em class="cEmphasis">f1090_baby</em>), set the id_baby column so that it reuses the id from the parent table. </li></div>
 <a name="wp1312271"> </a><div class="pSmartList2"><li>In the <b class="cBold">SQL expression</b> field type in: &#39;(Select Last_Insert_id())&#39;</li></div>
 <a name="wp1312278"> </a><div class="pSmartList2"><li>The position is <em class="cEmphasis">Before</em> and the <b class="cBold">Reference column</b> is <em class="cEmphasis">years</em>.</li></div>
-<a name="wp1312515"> </a><div class="pSmartList2"><li>Add the <b class="cBold">tMysqlCommit</b> component to the design workspace and connect it from the <b class="cBold">tFileList</b> component using a <b class="cBold">ThenRun</b> connection in order for the job to terminate with  the transaction commit. </li></div>
+<a name="wp1312515"> </a><div class="pSmartList2"><li>Add the <b class="cBold">tMysqlCommit</b> component to the design workspace and connect it from the <b class="cBold">tFileList</b> component using a <b class="cBold">OnComponentOk</b> connection in order for the job to terminate with  the transaction commit. </li></div>
 <a name="wp1312716"> </a><div class="pSmartList2"><li>On the <b class="cBold">tMysqlCommit</b> <b class="cBold">Component</b> view, select in the list the connection to be used.</li></div>
+<a name="wp2889102"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp1312367"> </a><p class="pIndented1">
-Save your job and press <b class="cBold">F6</b> to run it.
-</p>
 <a name="wp1312404"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="center"><img src="images/Use_Case_tMysqlConnection5.png" id="wp1312409" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

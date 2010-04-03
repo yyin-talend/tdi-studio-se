@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:23:16">
+    <meta name="LASTUPDATED" content="04/02/10 19:19:03">
     <title>tFileInputExcel </title>
   </head>
 
@@ -47,7 +47,7 @@ File/Input
 </div>
 </td>
     <td><a name="wp2756620"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-08-21-017.jpg" height="59" width="112" id="wp2756616" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-08-25-018.jpg" height="59" width="112" id="wp2756616" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -73,7 +73,7 @@ File/Input
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2757088"> </a><div class="pCellBody">
+    <td><a name="wp2757088"> </a><div class="pCellHeading">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
@@ -117,7 +117,7 @@ Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 </div>
 </td>
     <td><a name="wp2757259"> </a><div class="pCellBody">
-Click this icon to open a connection wizard and store the Excel file connection parameters you set in the component <b class="cBold">Basic settings </b>view.<br />For more information about setting up and storing file connection parameters, see <em class="cEmphasis">Setting up a File XML schema</em> of Talend Open Studio User Guide.
+Click this icon to open a connection wizard and store the Excel file connection parameters you set in the component <b class="cBold">Basic settings </b>view.<br />For more information about setting up and storing file connection parameters, see <em class="cEmphasis">Setting up a File XML schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -125,12 +125,12 @@ Click this icon to open a connection wizard and store the Excel file connection 
 &#160;
 </div>
 </td>
-    <td><a name="wp2756705"> </a><div class="pCellBody">
-<em class="cEmphasis">File Name</em>
+    <td><a name="wp2756705"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name/Stream</em>
 </div>
 </td>
     <td><a name="wp2757299"> </a><div class="pCellBody">
-Name and path of the .xls file to be processed.<br />Related topic: <em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">File name</b>: Name of the file and/or the variable to be processed.<br /><b class="cBold">Stream</b>: Data flow to be processed. The data must be added to the flow in order to be collected by <b class="cBold">tFileInputExcel</b> via the <em class="cEmphasis">INPUT_STREAM</em> variable in the auto-completion list (<b class="cBold">Ctrl+Space</b>).<br /><br />Related topic: <em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -138,7 +138,7 @@ Name and path of the .xls file to be processed.<br />Related topic: <em class="c
 &#160;
 </div>
 </td>
-    <td><a name="wp2756723"> </a><div class="pCellBody">
+    <td><a name="wp2756723"> </a><div class="pCellHeading">
 <em class="cEmphasis">All sheets</em>
 </div>
 </td>
@@ -151,7 +151,7 @@ Select this check box to process all sheets of the Excel file.
 &#160;
 </div>
 </td>
-    <td><a name="wp2756732"> </a><div class="pCellBody">
+    <td><a name="wp2756732"> </a><div class="pCellHeading">
 <em class="cEmphasis">Sheet list</em>
 </div>
 </td>
@@ -164,7 +164,7 @@ Click the plus button to add as many lines as needed to the list of the excel sh
 &#160;
 </div>
 </td>
-    <td><a name="wp2756753"> </a><div class="pCellBody">
+    <td><a name="wp2756753"> </a><div class="pCellHeading">
 <em class="cEmphasis">Header</em>
 </div>
 </td>
@@ -177,7 +177,7 @@ Number of records to be skipped in the beginning of the file.
 &#160;
 </div>
 </td>
-    <td><a name="wp2756762"> </a><div class="pCellBody">
+    <td><a name="wp2756762"> </a><div class="pCellHeading">
 <em class="cEmphasis">Footer</em>
 </div>
 </td>
@@ -190,7 +190,7 @@ Number of records to be skipped at the end of the file.
 &#160;
 </div>
 </td>
-    <td><a name="wp2756771"> </a><div class="pCellBody">
+    <td><a name="wp2756771"> </a><div class="pCellHeading">
 <em class="cEmphasis">Limit</em>
 </div>
 </td>
@@ -216,12 +216,12 @@ Select this check box if you want to apply the parameters set in the <b class="c
 &#160;
 </div>
 </td>
-    <td><a name="wp2756792"> </a><div class="pCellBody">
+    <td><a name="wp2756792"> </a><div class="pCellHeading">
 <em class="cEmphasis">Die on error</em>
 </div>
 </td>
     <td><a name="wp2757350"> </a><div class="pCellBody">
-Clear this check box to skip the row on error and complete the process for error-free rows.
+This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows. If needed, you can retrieve the rows on error via a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link.
 </div>
 </td>
 </tr>
@@ -229,7 +229,7 @@ Clear this check box to skip the row on error and complete the process for error
 &#160;
 </div>
 </td>
-    <td><a name="wp2756803"> </a><div class="pCellBody">
+    <td><a name="wp2756803"> </a><div class="pCellHeading">
 <em class="cEmphasis">First column</em> and <em class="cEmphasis">Last column</em>
 </div>
 </td>
@@ -242,8 +242,8 @@ Define the range of the columns to be processed through setting the first and la
 &#160;
 </div>
 </td>
-    <td><a name="wp2757395"> </a><div class="pCellBody">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2757395"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp2757399"> </a><div class="pCellBody">
@@ -260,7 +260,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2757421"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -273,7 +273,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2757442"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -281,7 +281,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
-    <td><a name="wp2756874"> </a><div class="pCellBody">
+    <td><a name="wp2756874"> </a><div class="pCellHeading">
 <em class="cEmphasis">Advanced separator</em>
 </div>
 </td>
@@ -294,7 +294,7 @@ Select this check box to change the used data separators.
 &#160;
 </div>
 </td>
-    <td><a name="wp2756883"> </a><div class="pCellBody">
+    <td><a name="wp2756883"> </a><div class="pCellHeading">
 <em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
@@ -307,7 +307,7 @@ Select the encoding from the list or select <b class="cBold">Custom</b> and defi
 &#160;
 </div>
 </td>
-    <td><a name="wp2756894"> </a><div class="pCellBody">
+    <td><a name="wp2756894"> </a><div class="pCellHeading">
 <em class="cEmphasis">Read real values for numbers</em>
 </div>
 </td>
@@ -320,7 +320,7 @@ Select this check box to read numbers in real values.
 &#160;
 </div>
 </td>
-    <td><a name="wp2756903"> </a><div class="pCellBody">
+    <td><a name="wp2756903"> </a><div class="pCellHeading">
 <em class="cEmphasis">Stop to read on empty rows</em>
 </div>
 </td>
@@ -333,7 +333,7 @@ Select this check box to ignore empty lines.
 &#160;
 </div>
 </td>
-    <td><a name="wp2756912"> </a><div class="pCellBody">
+    <td><a name="wp2756912"> </a><div class="pCellHeading">
 <em class="cEmphasis">Don&#39;t validate the cells</em>
 </div>
 </td>
@@ -346,7 +346,7 @@ Select this check box to in order not to validate data.
 &#160;
 </div>
 </td>
-    <td><a name="wp2756922"> </a><div class="pCellBody">
+    <td><a name="wp2756922"> </a><div class="pCellHeading">
 <em class="cEmphasis">Ignore the warning</em>
 </div>
 </td>
@@ -359,7 +359,7 @@ Select this check box to ignore all warnings generated to indicate errors in the
 &#160;
 </div>
 </td>
-    <td><a name="wp2756931"> </a><div class="pCellBody">
+    <td><a name="wp2756931"> </a><div class="pCellHeading">
 <em class="cEmphasis">tState</em><span style="font-style: italic">Catcher Statistics</span>
 </div>
 </td>
@@ -372,8 +372,8 @@ Select this check box to gather the job processing metadata at a job level as we
 <b class="cBold">Usage</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2757518"> </a><div class="pCellBody">
-Use this component to read an Excel file and to output the data separately depending on the schemas identified in the file.
+    <td colspan="2" rowspan="1"><a name="wp2950665"> </a><div class="pCellBody">
+Use this component to read an Excel file and to output the data separately depending on the schemas identified in the file. You can use a <b class="cBold">Row &gt; Reject</b> link to filter the data which doesn&#39;t correspond to the type defined.  For an example of how to use these two links, see <em class="cEmphasis">Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file on page 1149</em>.
 </div>
 </td>
 </tr>

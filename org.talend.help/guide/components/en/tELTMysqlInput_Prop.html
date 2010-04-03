@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:23:03">
+    <meta name="LASTUPDATED" content="04/02/10 19:18:58">
     <title>tELTMysqlInput</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tELTFilterRows_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tELTMysqlInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tELTMSSqlOutput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tELTMysqlInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,105 +22,105 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1551010"> </a><h2 class="pHeading1">
+<a name="wp2978216"> </a><h2 class="pHeading1">
 tELTMysqlInput
 </h2>
-<a name="wp1405042"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2977508"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tELTMySQLInput.png" id="wp1405039" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tELTMySQLInput.png" id="wp2977503" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1293919"> </a><h2 class="pHeading2">
+<a name="wp2977515"> </a><h2 class="pHeading2">
 tELTMysqlInput properties
 </h2>
-<a name="wp1447344"> </a><p class="pIndented1">
-The <b class="cBold">tELTMysqlInput</b>,  <b class="cBold">tELTMysqlOutput</b>, and <b class="cBold">tELTMysqlMap</b> components are closely related together in regard to their operating condition. These components should be used to handle MySQL DB schemas to generate Insert statements including clauses, which are to be executed to the DB output table defined.
+<a name="wp2977518"> </a><p class="pIndented1">
+The three ELT Mysql components are closely related, in terms of their operating conditions. These components should be used to handle Mysql DB schemas to generate Insert statements, including clauses, which are to be executed in the DB output table defined.
 </p>
-<a name="wp1447348"> </a><p class="pBodyRelative">
+<a name="wp2977626"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp1293924table1293922">
+<table border="1" id="wp2977527table2977522">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1293924"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2977527"> </a><div class="pCellBody">
 <b class="cBold">Component family</b>
 </div>
 </td>
-    <td><a name="wp1293926"> </a><div class="pCellBody">
+    <td><a name="wp2977529"> </a><div class="pCellBody">
 ELT
 </div>
 </td>
-    <td><a name="wp1297031"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-07-08-04.jpg" height="59" width="112" id="wp1297026" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp2977538"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Components-07-22-041.jpg" height="59" width="112" id="wp2977534" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1293930"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2977543"> </a><div class="pCellBody">
 <b class="cBold">Function</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1293932"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2977545"> </a><div class="pCellBody">
 Provides the table schema to be used for the SQL statement to execute.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1293936"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2977552"> </a><div class="pCellBody">
 <b class="cBold">Purpose</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1293938"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2977554"> </a><div class="pCellBody">
 Allows to add as many Input tables as required for the most complicated Insert statement.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1293942"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2977561"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp1293949"> </a><div class="pCellBody">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2977568"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp1293952"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the nature and number of fields to be processed. The schema is either built-in or remotely stored in the Repository. The Schema defined is then passed on to the ELT Mapper to be included to the Insert SQL statement.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1293954"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp1293956"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2647481"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+    <td><a name="wp2977571"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the nature and number of fields to be processed. The schema is either built-in or remotely stored in the Repository. The Schema defined is then passed on to the ELT Mapper to be included to the Insert SQL statement.<br />Click <b class="cBold">Edit Schema</b> to modify the schema. Note that if you make the modifcation, the schema switches automatically to the <b class="cBold">Built-in</b> mode.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1293966"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2977573"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp1293968"> </a><div class="pCellBody">
+    <td><a name="wp2977575"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2647808"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+    <td><a name="wp2977580"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1293978"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2977588"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2977590"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2977595"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2977606"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1293986"> </a><div class="pCellBody">
-<b class="cBold">tELTMysqlInput</b> is to be used along with the <b class="cBold">tELTMysqlMap</b>. Note that the Output link to be used with these components has to reflect faithfully the name of the table 
+    <td colspan="2" rowspan="1"><a name="wp2977614"> </a><div class="pCellBody">
+<b class="cBold">tELTMysqlInput</b> is to be used along with the <b class="cBold">tELTMysqlMap</b>. Note that the Output link to be used with these components must correspond strictly to the syntax of the table name 
 </div>
-<a name="wp1654396"> </a><p class="pBodyRelative">
+<a name="wp2977620"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp1654390" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2977618" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 Note that the ELT components do not handle actual data flow but only schema information.
 </p>
 </td>
@@ -149,7 +149,7 @@ Note that the ELT components do not handle actual data flow but only schema info
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tELTFilterRows_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tELTMysqlInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tELTMSSqlOutput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tELTMysqlInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

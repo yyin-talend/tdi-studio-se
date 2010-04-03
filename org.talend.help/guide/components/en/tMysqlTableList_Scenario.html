@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
     <title>Scenario: Iterating on DB tables and deleting their content using a user-defined SQL template</title>
   </head>
 
@@ -36,7 +36,7 @@ For advanced use, start with creating a connection to the database that contains
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2766980"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and right click <b class="cBold">DB Connections</b> to create a connection to the relevant database and to store the connection information locally. <br />For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> of <b class="cBold">Talend Open Studio</b> User Guide.<br />Otherwise, drop a <b class="cBold">tMySQLConnection</b> component in the design workspace and fill the connection details manually. </li></div>
+<a name="wp2766980"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and right click <b class="cBold">DB Connections</b> to create a connection to the relevant database and to store the connection information locally. <br />For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.<br />Otherwise, drop a <b class="cBold">tMySQLConnection</b> component in the design workspace and fill the connection details manually. </li></div>
 <a name="wp2766996"> </a><div class="pSmartList2"><li>Drop the database connection you created from the <b class="cBold">Repository</b> onto the design workspace. <br />The <b class="cBold">[Components]</b> dialog box displays.</li></div>
 <a name="wp2767009"> </a><div class="pSmartList2"><li>Select <b class="cBold">tMySQLConnection</b> and click <b class="cBold">OK</b>.<br />The <b class="cBold">tMySQLConnection</b> components displays on the design workspace with all connection details automatically filled in its <b class="cBold">Basic settings</b> view.</li></div>
 <a name="wp2767022"> </a><div class="pSmartList2"><li>Drop the following two components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tMysqlTableList</b> and <b class="cBold">tELT</b>.</li></div>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:22">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
     <title>tNetezzaCommit</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tNetezzaBulkExec_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNetezzaCommit_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tNetezzaClose_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNetezzaCommit_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,7 +22,7 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2672983"> </a><h2 class="pHeading1">
+<a name="wp3190523"> </a><h2 class="pHeading1">
 tNetezzaCommit
 </h2>
 <a name="wp2672992"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -50,7 +50,7 @@ Databases/Netezza
 </div>
 </td>
     <td><a name="wp2673027"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconbh.png" id="wp2673024" border="0" hspace="0" vspace="0"/>
+<img src="images/java_iconfn.png" id="wp2673024" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -76,7 +76,7 @@ Using a unique connection, this component commits in one go a global transaction
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2673058"> </a><div class="pCellBody">
+    <td><a name="wp2673058"> </a><div class="pCellHeading">
 <em class="cEmphasis">Component list</em>
 </div>
 </td>
@@ -89,16 +89,34 @@ Select the <b class="cBold">tNetezzaConnection</b> component in the list if more
 &#160;
 </div>
 </td>
-    <td><a name="wp2673070"> </a><div class="pCellBody">
+    <td><a name="wp2673070"> </a><div class="pCellHeading">
 <em class="cEmphasis">Close Connection</em>
 </div>
 </td>
-    <td><a name="wp2673072"> </a><div class="pCellBody">
-Clear this check box to continue to use the selected connection once the component has performed its task.
+    <td><a name="wp2985543"> </a><div class="pCellBody">
+This check box is selected by default. It allows you to close the database connection once the commit is done. Clear this check box to continue to use the selected connection once the component has performed its task.
+</div>
+<a name="wp2985965"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallapt.png" align="left" id="wp2985532" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+If you want to use a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> connection to link <b class="cBold">tAS400Commit</b> to your Job, your data will be commited row by row. In this case, do not select the <b class="cBold">Close connection</b> check box or your connection will be closed before the end of your first row commit.<br />
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2673077"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2872744"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2872758"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher</em> <em class="cEmphasis">Statistics</em>
+</div>
+</td>
+    <td><a name="wp2872762"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2673077"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -107,7 +125,7 @@ This component is to be used along with Netezza components, especially with <b c
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2673092"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2673092"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>
@@ -140,7 +158,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tNetezzaBulkExec_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNetezzaCommit_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tNetezzaClose_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNetezzaCommit_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

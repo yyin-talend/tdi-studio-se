@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:23:51">
-    <title>Scenario: Creating an RSS flow.</title>
+    <meta name="LASTUPDATED" content="04/02/10 19:19:47">
+    <title>Scenario 1: Creating an RSS flow and storing files on an FTP server</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -26,7 +26,7 @@
 
 </div>
 <a name="wp1590220"> </a><h2 class="pHeading2">
-Scenario: Creating an RSS flow.
+Scenario 1: Creating an RSS flow and storing files on an FTP server
 </h2>
 <a name="wp1590227"> </a><p class="pIndented1">
 This Java scenario aims at:
@@ -79,9 +79,9 @@ This scenario writes an RSS feed XML file about a Mysql table holding informatio
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1593279"> </a><div class="pSmartList2"><li>In the <b class="cBold">File name </b>field, use the par default file name and path, or browse to set your own for the output XML file.</li></div>
+<a name="wp1593279"> </a><div class="pSmartList2"><li>In the <b class="cBold">File name </b>field, use the by default file name and path, or browse to set your own for the output XML file.</li></div>
 <a name="wp1593287"> </a><div class="pSmartList2"><li>Select the encoding type on the <b class="cBold">Encoding Type </b>list.</li></div>
-<a name="wp1593293"> </a><div class="pSmartList2"><li>On the <b class="cBold">Channel</b> panel, enter a title, a description, a publication date, and a link to define your input data as a whole.</li></div>
+<a name="wp1593293"> </a><div class="pSmartList2"><li>In the <b class="cBold">Channel</b> panel, enter a title, a description, a publication date, and a link to define your input data as a whole.</li></div>
 <a name="wp1593303"> </a><div class="pSmartList2"><li>Select your schema type on the <b class="cBold">Schema Type</b> list and click <b class="cBold">Edit Schema</b> to modify the schema if necessary.</li></div>
 <a name="wp1654448"> </a><p class="pBodyRelative">
 <br />
@@ -126,6 +126,86 @@ To store the complete files on an FTP server:
 </ul></div>
 <a name="wp1590445"> </a><p class="pIndented1">
 Files defined in the Filemask are copied on the remote server.
+</p>
+<a name="wp2841321"> </a><h2 class="pHeading2">
+Scenario 2: Creating an RSS flow that contains metadata
+</h2>
+<a name="wp2841324"> </a><p class="pIndented1">
+This Java scenario describes a two-component Job that creates an RSS flow that holds metadata and then redirects the obtained information in an XML file of the output RSS flow. 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2841333"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tRSSInput </b>and <b class="cBold">tRSSOutput </b>from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp2841343"> </a><div class="pSmartList2"><li>Connect the two components together using a <b class="cBold">Row Main</b> link.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2841355"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRSSOutput6.png" id="wp2841352" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2841364"> </a><div class="pSmartList2"><li>Click <b class="cBold">tRSSInput</b> to open its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2841385"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRSSOutput7.png" id="wp2841382" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2841396"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema type</b> to <b class="cBold">Built-in</b>.</li></div>
+<a name="wp2842235"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp2842157" border="0" hspace="0" vspace="0"/><br />
+If you have already stored your schema locally in the Repository, set schema type to <b class="cBold">Repository</b> and simply click the three-dot button next to the field to display a dialog box where you can select the appropriate metadata. For more information about metadata, see <em class="cEmphasis">Managing Metadata</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
+<a name="wp2842163"> </a><div class="pSmartList2"><li>If needed, click the three-dot button next to <b class="cBold">Edit Schema </b>to open a dialog box where you can check the schema. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2842129"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRSSInput1.png" id="wp2841418" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2841436"> </a><p class="pIndented1">
+The read-only schema of tRSSInput is composed of four columns: TITLE, DESCRIPTION, PUBDATE, and LINK.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2841452"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp2842439"> </a><div class="pSmartList2"><li>In the design workspace, click <b class="cBold">tRSSOutput</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2841473"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRSSOutput8.png" id="wp2841470" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2842555"> </a><div class="pSmartList2"><li>In the <b class="cBold">File name </b>field, use the by default file name and path, or browse to set your own for the output XML file.</li></div>
+<a name="wp2842565"> </a><div class="pSmartList2"><li>Select the encoding type on the <b class="cBold">Encoding Type </b>list.</li></div>
+<a name="wp2842573"> </a><div class="pSmartList2"><li>In the <b class="cBold">Channel</b> panel, enter a title, a description, a publication date and a link to define your input data as a whole.</li></div>
+<a name="wp2842728"> </a><div class="pSmartList2"><li>In the <b class="cBold">Optional Channel Element</b>, define the RSS flow metadata. In this example, the flow has two metadata: <em class="cEmphasis">copyright</em>, which value is <em class="cEmphasis">tos</em>, and <em class="cEmphasis">language</em> which value is <em class="cEmphasis">en_us</em>. </li></div>
+<a name="wp2842715"> </a><div class="pSmartList2"><li>Select your schema type on the <b class="cBold">Schema Type</b> list and click <b class="cBold">Edit Schema</b> to modify the schema if necessary.</li></div>
+<a name="wp2842600"> </a><p class="pBodyRelative">
+<br />
+<img src="images/bulb_small.png" align="left" id="wp2842593" border="0" hspace="0" vspace="0"/><br />
+You can click <b class="cBold">Sync Column</b> to retrieve the generated schema from the preceding component.
+</p>
+<a name="wp2841546"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2841553"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tRSSOutput9.png" id="wp2841550" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2841556"> </a><p class="pIndented1">
+The defined files are copied in the output XML file and the metadata display under the <em class="cEmphasis">&lt;channel&gt;</em> node above the information about the RSS flow. 
 </p>
     </blockquote>
     <hr>

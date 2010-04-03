@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:20:03">
+    <meta name="LASTUPDATED" content="04/02/10 19:15:03">
     <title>Scenario: Validating dates against schema (java)</title>
   </head>
 
@@ -87,7 +87,7 @@ The output is double as the valid data are gathered into a dedicated delimited f
 <a name="wp1502215"> </a><div class="pSmartList2"><li>The <b class="cBold">Base schema</b> should be automatically propagated from the input component. If not, click on the <b class="cBold">Sync columns</b> button.</li></div>
 <a name="wp1502264"> </a><div class="pSmartList2"><li>In this example, we use the <b class="cBold">Checked columns</b> table to set the validation parameters. But you could also select the <b class="cBold">Use another schema for compliance check</b> check box and define the schema description of the expected data.</li></div>
 <a name="wp1502313"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Check all columns from schema</b> check box if you want to check all the columns against all parameters (type, null values and length).</li></div>
-<a name="wp1502342"> </a><div class="pSmartList2"><li>On the <b class="cBold">Checked Columns</b> table, set the checks to be performed. Below is the setting for a job designed in <b class="cBold">Talend Open Studio</b> with Java generation language:<br />- The <em class="cEmphasis">Id</em> type should be <b class="cBold">Int</b>.<br />- The <em class="cEmphasis">Col2Label</em> and <em class="cEmphasis">Col3Label</em> should be checked for their <b class="cBold">Length</b><br />- The <em class="cEmphasis">Date</em> should of type <b class="cBold">Date</b><br />- The <em class="cEmphasis">Val</em> column should be checked for <b class="cBold">null</b> values (as it should not be null).<br />- The <em class="cEmphasis">Str_nullable</em> should be checked for <b class="cBold">null</b> values also (but it can be null).</li></div>
+<a name="wp1502342"> </a><div class="pSmartList2"><li>On the <b class="cBold">Checked Columns</b> table, set the checks to be performed. Below is the setting for a job designed in <b class="cBold">Talend Integration Suite Studio</b> with Java generation language:<br />- The <em class="cEmphasis">Id</em> type should be <b class="cBold">Int</b>.<br />- The <em class="cEmphasis">Col2Label</em> and <em class="cEmphasis">Col3Label</em> should be checked for their <b class="cBold">Length</b><br />- The <em class="cEmphasis">Date</em> should of type <b class="cBold">Date</b><br />- The <em class="cEmphasis">Val</em> column should be checked for <b class="cBold">null</b> values (as it should not be null).<br />- The <em class="cEmphasis">Str_nullable</em> should be checked for <b class="cBold">null</b> values also (but it can be null).</li></div>
 <a name="wp1503049"> </a><div class="pSmartList2"><li>In Perl, select the relevant <b class="cBold">Type</b> check boxes for the columns which the type needs to be selected (Date). Also, define the <b class="cBold">Date format</b> and <b class="cBold">Date language</b>.</li></div>
 <a name="wp1502466"> </a><div class="pSmartList2"><li>Then set the output components parameters.</li></div>
 <a name="wp1502481"> </a><div class="pSmartList2"><li>The schema is propagated automatically from the <b class="cBold">tSchemaComplianceCheck</b> to the output components.</li></div>

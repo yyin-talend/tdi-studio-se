@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:19:56">
+    <meta name="LASTUPDATED" content="04/02/10 19:14:55">
     <title>Scenario 1: Retrieving metadata from the SAP system</title>
   </head>
 
@@ -37,10 +37,10 @@ Talend SAP components (<b class="cBold">tSAPInput</b> and <b class="cBold">tSAPO
 This scenario uses the SAP wizard that leads a user through dialog steps to create SAP connection and call RFC and BAPI functions. This SAP wizard is available only for <b class="cBold">Talend Integration Suite </b>users. If you are a user of <b class="cBold">Talend Open Studio</b> or <b class="cBold">Talend On Demand</b>, you need to set the basic settings for the <b class="cBold">tSAPInput</b> component manually.
 </p>
 <a name="wp2710630"> </a><p class="pIndented1">
-This java scenario uses the SAP wizard to first create a connection to the SAP system, and then call a BAPI function to retrieve the details of a company from the SAP system. It finally displays in <b class="cBold">Talend Open Studio</b> the company details stored in the SAP system.
+This java scenario uses the SAP wizard to first create a connection to the SAP system, and then call a BAPI function to retrieve the details of a company from the SAP system. It finally displays in <b class="cBold">Talend Integration Suite Studio</b> the company details stored in the SAP system.
 </p>
 <a name="wp2710640"> </a><p class="pIndented1">
-The below figure shows the company detail parameters stored in the SAP system and that we want to read in <b class="cBold">Talend Open Studio</b> using the <b class="cBold">tSAPInput</b> component.
+The below figure shows the company detail parameters stored in the SAP system and that we want to read in <b class="cBold">Talend Integration Suite Studio</b> using the <b class="cBold">tSAPInput</b> component.
 </p>
 <a name="wp2710654"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -49,8 +49,8 @@ The below figure shows the company detail parameters stored in the SAP system an
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2710659"> </a><div class="pSmartList2"><li>Create a connection to the SAP system using the SAP connection wizard, in this scenario the SAP connection is called <em class="cEmphasis">sap</em> and is saved in the <b class="cBold">Metadata</b> node. For more information on how to set up a SAP connection using the wizard, see <em class="cEmphasis">Setting up an SAP connection</em> in Talend Open Studio User Guide.</li></div>
-<a name="wp2710678"> </a><div class="pSmartList2"><li>Call the BAPI function <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> using the SAP wizard to access the BAPI HTML document stored in the SAP system and see the company details. For more information on how to call functions, see <em class="cEmphasis">Setting up an SAP connection</em> in Talend Open Studio User Guide.</li></div>
+<a name="wp2710659"> </a><div class="pSmartList2"><li>Create a connection to the SAP system using the SAP connection wizard, in this scenario the SAP connection is called <em class="cEmphasis">sap</em> and is saved in the <b class="cBold">Metadata</b> node. For more information on how to set up a SAP connection using the wizard, see <em class="cEmphasis">Setting up an SAP connection</em> in <b class="cBold">Talend Integration Suite Studio</b> User Guide.</li></div>
+<a name="wp2710678"> </a><div class="pSmartList2"><li>Call the BAPI function <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> using the SAP wizard to access the BAPI HTML document stored in the SAP system and see the company details. For more information on how to call functions, see <em class="cEmphasis">Setting up an SAP connection</em> in <b class="cBold">Talend Integration Suite Studio</b> User Guide.</li></div>
 <a name="wp2710697"> </a><div class="pSmartList2"><li>In the <b class="cBold">Name filter</b> field, type in <em class="cEmphasis">BAPI</em>* and click the <b class="cBold">Search</b> button to display all available BAPI functions.</li></div>
 <a name="wp2710707"> </a><div class="pSmartList2"><li>Select <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> to display the schema that describe the company details.</li></div>
 </ul></div>
@@ -116,10 +116,10 @@ To retrieve the different schemas of the <b class="cBold">BAPI_COMPANY_GETDETAIL
 <a name="wp2733864"> </a><div class="pSmartList2"><li>Click <b class="cBold">Next</b> to display the two selected schemas and then <b class="cBold">Finish</b> to close the dialog box.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp80887"> </a><p class="pIndented1">
-For more information about retrieving schemas, see <em class="cEmphasis">Step 4: Retrieving the schemas of the called function</em> of Talend Open Studio User Guide.
+<a name="wp2737805"> </a><p class="pIndented1">
+For more information about retrieving schemas, see <em class="cEmphasis">Step 4: Retrieving the schemas of the called function</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </p>
-<a name="wp80948"> </a><p class="pIndented1">
+<a name="wp2737813"> </a><p class="pIndented1">
 The two schemas display under the <b class="cBold">BAPI_COMPANY_GETDETAIL</b> function in the <b class="cBold">Repository </b>tree view.
 </p>
 <a name="wp2734152"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -128,7 +128,7 @@ The two schemas display under the <b class="cBold">BAPI_COMPANY_GETDETAIL</b> fu
 
 </div>
 <a name="wp2734156"> </a><p class="pIndented1">
-To retrieve the company metadata that corresponds to the 000001 value and display it in <b class="cBold">Talend Open Studio</b>, do the following:
+To retrieve the company metadata that corresponds to the 000001 value and display it in <b class="cBold">Talend Integration Suite Studio</b>, do the following:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -210,12 +210,12 @@ Talend SAP components (<b class="cBold">tSAPInput</b> and <b class="cBold">tSAPO
 This scenario uses the SAP wizard that leads a user through dialog steps to create a SAP connection and call RFC and BAPI functions. This SAP wizard is available only for <b class="cBold">Talend Integration Suite</b> users. If you are a user of <b class="cBold">Talend Open Studio</b> or <b class="cBold">Talend On Demand</b>, you need to set the basic settings for the<b class="cBold"> tSAPInput</b> component manually.
 </p>
 <a name="wp2730058"> </a><p class="pIndented1">
-This java scenario uses the SAP wizard to first create a connection to the SAP system, and then call an RFC function to directly read from the SAP system a table called <em class="cEmphasis">SFLIGHT</em>. It finally displays in Talend Open Studio the structure of the <em class="cEmphasis">SFLIGHT</em> table stored in the SAP system.
+This java scenario uses the SAP wizard to first create a connection to the SAP system, and then call an RFC function to directly read from the SAP system a table called <em class="cEmphasis">SFLIGHT</em>. It finally displays in Talend Integration Suite Studio the structure of the <em class="cEmphasis">SFLIGHT</em> table stored in the SAP system.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2727888"> </a><div class="pSmartList2"><li>Create a connection to the SAP system using the SAP connection wizard, in this scenario the SAP connection is called <em class="cEmphasis">sap</em><em class="cEmphasis">.</em> For more information on how to set up an SAP connection using the wizard, see <em class="cEmphasis">Setting up an SAP connection</em> in Talend Open Studio User Guide.</li></div>
-<a name="wp2735991"> </a><div class="pSmartList2"><li>Call the <em class="cEmphasis">RFC_READ_TABLE</em> RFC function using the SAP wizard to access the table in the SAP system and see its structure. For more information on how to call functions, see <em class="cEmphasis">Setting up an SAP connection</em> in Talend Open Studio User Guide.</li></div>
+<a name="wp2727888"> </a><div class="pSmartList2"><li>Create a connection to the SAP system using the SAP connection wizard, in this scenario the SAP connection is called <em class="cEmphasis">sap</em><em class="cEmphasis">.</em> For more information on how to set up an SAP connection using the wizard, see <em class="cEmphasis">Setting up an SAP connection</em> in <b class="cBold">Talend Integration Suite Studio</b> User Guide.</li></div>
+<a name="wp2735991"> </a><div class="pSmartList2"><li>Call the <em class="cEmphasis">RFC_READ_TABLE</em> RFC function using the SAP wizard to access the table in the SAP system and see its structure. For more information on how to call functions, see <em class="cEmphasis">Setting up an SAP connection</em> in <b class="cBold">Talend Integration Suite Studio</b> User Guide.</li></div>
 <a name="wp2727935"> </a><div class="pSmartList2"><li>In the <b class="cBold">Name filter</b> field, type in <em class="cEmphasis">RFC</em>* and click the <b class="cBold">Search</b> button to display all available RFC functions.</li></div>
 </ul></div>
 </ul></div>
@@ -280,10 +280,10 @@ To retrieve the different schemas of the <b class="cBold">RFC_READ_TABLE</b> fun
 <a name="wp2730859"> </a><div class="pSmartList2"><li>Click <b class="cBold">Finish</b> to validate your operation and close the dialog box.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp81121"> </a><p class="pIndented1">
-For more information about retrieving schemas, see <em class="cEmphasis">Step 4: Retrieving the schemas of the called function</em> of Talend Open Studio User Guide.
+<a name="wp2737858"> </a><p class="pIndented1">
+For more information about retrieving schemas, see <em class="cEmphasis">Step 4: Retrieving the schemas of the called function</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </p>
-<a name="wp81188"> </a><p class="pIndented1">
+<a name="wp2737866"> </a><p class="pIndented1">
 The three schemas display under the <b class="cBold">RFC_READ_TABLE</b> function in the <b class="cBold">Repository</b> tree view.
 </p>
 <a name="wp2729412"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -292,7 +292,7 @@ The three schemas display under the <b class="cBold">RFC_READ_TABLE</b> function
 
 </div>
 <a name="wp2729415"> </a><p class="pIndented1">
-In this example, we want to retrieve the data and column names of the <b class="cBold">SFLIGHT</b> table and display them in <b class="cBold">Talend Open Studio</b>. To do that, proceed as the following: 
+In this example, we want to retrieve the data and column names of the <b class="cBold">SFLIGHT</b> table and display them in <b class="cBold">Talend Integration Suite Studio</b>. To do that, proceed as the following: 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">

@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:24:52">
-    <title>tFilterRows</title>
+    <meta name="LASTUPDATED" content="04/02/10 19:20:18">
+    <title>tFilterRow</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFilterColumn_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFilterRows_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFilterColumns_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFilterRow_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -23,7 +23,7 @@
 
     <blockquote>
 <a name="wp1438131"> </a><h2 class="pHeading1">
-tFilterRows
+tFilterRow
 </h2>
 <a name="wp1435018"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -31,7 +31,7 @@ tFilterRows
 
 </div>
 <a name="wp1447701"> </a><h2 class="pHeading2">
-tFilterRows Properties
+tFilterRow Properties
 </h2>
 <a name="wp1433357"> </a><p class="pBodyRelative">
 </p>
@@ -47,7 +47,7 @@ Processing
 </div>
 </td>
     <td><a name="wp1433143"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-14-24-022.jpg" height="59" width="112" id="wp1433138" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-14-25-024.jpg" height="59" width="112" id="wp1433138" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Processing
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1433154"> </a><div class="pCellBody">
-Compares a column from the main flow with a reference column from the lookup flow and outputs the main flow data displaying the distance 
+<b class="cBold">tFilterRow</b> filters input rows by setting conditions on the selected columns.
 </div>
 </td>
 </tr>
@@ -65,20 +65,25 @@ Compares a column from the main flow with a reference column from the lookup flo
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1433168"> </a><div class="pCellBody">
-Helps ensuring the data quality of any source data against a reference data source.
+<b class="cBold">tFilterRow</b> helps parametrizing filters on the source data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1433179"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1433186"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td colspan="1" rowspan="3"><a name="wp1433186"> </a><div class="pCellBody">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2763987"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp1433193"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository.  
+    <td><a name="wp2940061"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. 
+</div>
+<a name="wp2940088"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallapt.png" align="left" id="wp2940073" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+The schema is read-only.<br />
 </div>
 </td>
 </tr>
@@ -86,8 +91,12 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
+    <td><a name="wp1433200"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
     <td><a name="wp2514745"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -95,8 +104,12 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
+    <td><a name="wp1433218"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
     <td><a name="wp2515004"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -104,7 +117,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </div>
 </td>
-    <td><a name="wp2508601"> </a><div class="pCellBody">
+    <td><a name="wp2508601"> </a><div class="pCellHeading">
 <em class="cEmphasis">Logical operator used to combine conditions </em>
 </div>
 </td>
@@ -117,12 +130,12 @@ In the case you want to combine simple filtering and advanced mode, select the o
 &#160;
 </div>
 </td>
-    <td><a name="wp1433240"> </a><div class="pCellBody">
+    <td><a name="wp1433240"> </a><div class="pCellHeading">
 <em class="cEmphasis">Conditions</em>
 </div>
 </td>
-    <td><a name="wp1433243"> </a><div class="pCellBody">
-Click the plus button to add as many conditions as needed. The conditions are performed one after the other for each row.<br /><b class="cBold">Function</b>: Select the function on the list<br /><b class="cBold">Input column</b>: Select the column of the schema the function is to be operated on<br /><b class="cBold">Operator</b>: Select the operator to bind the input column with the value<br /><b class="cBold">Value</b>: Type in the filtered value, between quotes if need be.
+    <td><a name="wp2939969"> </a><div class="pCellBody">
+Click the plus button to add as many conditions as needed. The conditions are performed one after the other for each row.<br /><b class="cBold">Input column</b>: Select the column of the schema the function is to be operated on<br /><b class="cBold">Function</b>: Select the function on the list<br /><b class="cBold">Operator</b>: Select the operator to bind the input column with the value<br /><b class="cBold">Value</b>: Type in the filtered value, between quotes if need be.
 </div>
 </td>
 </tr>
@@ -130,7 +143,7 @@ Click the plus button to add as many conditions as needed. The conditions are pe
 &#160;
 </div>
 </td>
-    <td><a name="wp1433308"> </a><div class="pCellBody">
+    <td><a name="wp1433308"> </a><div class="pCellHeading">
 <em class="cEmphasis">Use advanced mode</em>
 </div>
 </td>
@@ -139,7 +152,20 @@ Select this check box when the operation you want to perform cannot be carried o
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1433333"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2932040"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2932046"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2932050"> </a><div class="pCellBody">
+Select this check box to gather the job processing metadata at the job level as well as at each component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1433333"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -172,7 +198,7 @@ This component is not startable (green background) and it requires an output com
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFilterColumn_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFilterRows_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFilterColumns_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFilterRow_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

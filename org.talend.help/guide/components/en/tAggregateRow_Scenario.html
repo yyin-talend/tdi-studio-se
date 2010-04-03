@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 18:24:52">
+    <meta name="LASTUPDATED" content="04/02/10 19:20:18">
     <title>Scenario: Aggregating values and sorting data</title>
   </head>
 
@@ -54,10 +54,10 @@ The following scenario describes a four-component Job. As input component, a CSV
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1354841"> </a><div class="pSmartList2"><li>In this example, we&#39;ll calculate the average notation value and we will display the max and the min notation for each country, given that each country holds several notations. Click OK when the schema is complete.</li></div>
-<a name="wp1354848"> </a><div class="pSmartList2"><li>To carry out the various set operations, back in the <b class="cBold">Basic settings</b> panel, define the sets holding the operations in the <b class="cBold">Group By </b>area. In this example, select <b class="cBold">Country</b> as group by column. Note that the output column needs to be defined a key field in the schema. The first column mentioned as output column in the Group By table is the main set of calculation. All other output sets will be secondary by order of display. </li></div>
+<a name="wp1354841"> </a><div class="pSmartList2"><li>In this example, we&#39;ll calculate the average notation value and we will display the max and the min notation for each country, given that each country holds several notations. Click <b class="cBold">OK</b> when the schema is complete.</li></div>
+<a name="wp1354848"> </a><div class="pSmartList2"><li>To carry out the various set operations, back in the <b class="cBold">Basic settings</b> panel, define the sets holding the operations in the <b class="cBold">Group By </b>area. In this example, select <b class="cBold">Country</b> as group by column. Note that the output column needs to be defined a key field in the schema. The first column mentioned as output column in the <b class="cBold">Group By</b> table is the main set of calculation. All other output sets will be secondary by order of display. </li></div>
 <a name="wp1354859"> </a><div class="pSmartList2"><li>Choose the input column which the values will be taken from.</li></div>
-<a name="wp1354862"> </a><div class="pSmartList2"><li>Then fill in the various operations to be carried out. The functions are average, min, max for this use case. Select the input columns, where the values are taken from and select the check boxes in the <b class="cBold">Ignore null values</b> list as needed.</li></div>
+<a name="wp1354862"> </a><div class="pSmartList2"><li>Then fill in the various operations to be carried out. The functions are <em class="cEmphasis">average</em>, <em class="cEmphasis">min</em>, <em class="cEmphasis">max</em> for this use case. Select the input columns, where the values are taken from and select the check boxes in the <b class="cBold">Ignore null values</b> list as needed.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1354871"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -67,7 +67,7 @@ The following scenario describes a four-component Job. As input component, a CSV
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1354879"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tSortRow</b> component from the <b class="cBold">Palette</b> onto the design workspace. For more information regarding this component <a href="tSortRow_Prop.html#wp1449441">, see&#160;<em class="cEmphasis">tSortRow properties.</em></a></li></div>
+<a name="wp1354879"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tSortRow</b> component from the <b class="cBold">Palette</b> onto the design workspace. For more information regarding this component<a href="tSortRow_Prop.html#wp1449441">, see&#160;<em class="cEmphasis">tSortRow properties.</em></a></li></div>
 <a name="wp1354890"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tAggregateRow</b> to this new component using a row main link. </li></div>
 <a name="wp1354893"> </a><div class="pSmartList2"><li>On the <b class="cBold">Component</b> view of the <b class="cBold">tSortRow</b> component, define the column the sorting is based on, the sorting type and order. </li></div>
 </ul></div>
@@ -81,8 +81,8 @@ The following scenario describes a four-component Job. As input component, a CSV
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1354907"> </a><div class="pSmartList2"><li>In this case, the column to be sorted by is Country, the sort type is alphabetical and the order is ascending.</li></div>
 <a name="wp1354911"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileOutputDelimited</b> from the <b class="cBold">Palette</b> to the design workspace and define it to set the output flow.</li></div>
-<a name="wp1354916"> </a><div class="pSmartList2"><li>Connect the tSortRow component to this output component.</li></div>
-<a name="wp1354919"> </a><div class="pSmartList2"><li>In the Component view, enter the output filepath. Edit the schema if need be. In this case the delimited file is of csv type. And select the <b class="cBold">Include Header</b> check box to reuse the schema column labels in your output flow.</li></div>
+<a name="wp1354916"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tSortRow</b> component to this output component.</li></div>
+<a name="wp1354919"> </a><div class="pSmartList2"><li>In the <b class="cBold">Component</b> view, enter the output filepath. Edit the schema if need be. In this case the delimited file is of csv type. And select the <b class="cBold">Include Header</b> check box to reuse the schema column labels in your output flow.</li></div>
 <a name="wp1354925"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to execute the Job. The csv file thus created contains the aggregating result. </li></div>
 </ul></div>
 </ul></div>
