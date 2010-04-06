@@ -199,6 +199,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // job
         // generation
 
+        // workaround for problem on children jobs generation
+        processItem.getProcess().getNode();
+        
         addContextScripts(process[i], selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needContext));
 
         // add children jobs
