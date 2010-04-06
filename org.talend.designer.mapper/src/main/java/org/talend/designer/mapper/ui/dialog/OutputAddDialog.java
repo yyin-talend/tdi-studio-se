@@ -341,7 +341,7 @@ public class OutputAddDialog extends Dialog {
             List<OutputTable> outputTables = this.mapperManager.getOutputTables();
             List<String> names = new ArrayList<String>();
             for (OutputTable table : outputTables) {
-                if (table.getIsJoinTableOf() == null) {
+                if (table.getIsJoinTableOf() == null && !mapperManager.ERROR_REJECT.equals(table.getName())) {
                     names.add(table.getName());
                 }
             }

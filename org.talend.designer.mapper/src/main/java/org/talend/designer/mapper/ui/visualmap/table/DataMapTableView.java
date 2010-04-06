@@ -1127,6 +1127,10 @@ public abstract class DataMapTableView extends Composite {
     }
 
     protected void createFiltersToolItems() {
+        boolean isErrorReject = false;
+        if (getDataMapTable() instanceof OutputTable) {
+            isErrorReject = getMapperManager().ERROR_REJECT.equals(getDataMapTable().getName());
+        }
 
         if (mapperManager.isAdvancedMap()) {
 
@@ -1135,7 +1139,7 @@ public abstract class DataMapTableView extends Composite {
         } else {
 
             ToolItem addFilterButton = new ToolItem(toolBarActions, SWT.PUSH);
-            addFilterButton.setEnabled(!mapperManager.componentIsReadOnly());
+            addFilterButton.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
             addFilterButton.setToolTipText(Messages.getString("DataMapTableView.buttonTooltip.addFilterRow")); //$NON-NLS-1$
             addFilterButton.setImage(ImageProviderMapper.getImage(ImageInfo.ADD_FILTER_ICON));
 
@@ -1171,7 +1175,7 @@ public abstract class DataMapTableView extends Composite {
         }
 
         final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectFilterCheck.setEnabled(!mapperManager.componentIsReadOnly());
+        rejectFilterCheck.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
         rejectFilterCheck.setToolTipText(Messages.getString("DataMapTableView.widgetTooltip.enableOutputReject")); //$NON-NLS-1$
         boolean isReject = ((OutputTable) abstractDataMapTable).isReject();
         // Image image = ImageProviderMapper.getImage(isReject ?
@@ -1217,7 +1221,7 @@ public abstract class DataMapTableView extends Composite {
 
         // // /////////////////////////////////////////////////////////////////
         final ToolItem rejectInnerJoinFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectInnerJoinFilterCheck.setEnabled(!mapperManager.componentIsReadOnly());
+        rejectInnerJoinFilterCheck.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
         rejectInnerJoinFilterCheck.setToolTipText(Messages.getString("DataMapTableView.widgetTooltip.enableLookupInnerJoin")); //$NON-NLS-1$
         boolean isRejectInnerJoin = ((OutputTable) abstractDataMapTable).isRejectInnerJoin();
         // image = ImageProviderMapper.getImage(isRejectInnerJoin ?
@@ -1275,8 +1279,12 @@ public abstract class DataMapTableView extends Composite {
      */
     protected void createActivateFilterCheck() {
         AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
+        boolean isErrorReject = false;
+        if (getDataMapTable() instanceof OutputTable) {
+            isErrorReject = getMapperManager().ERROR_REJECT.equals(getDataMapTable().getName());
+        }
         activateFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        activateFilterCheck.setEnabled(!mapperManager.componentIsReadOnly());
+        activateFilterCheck.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
         previousStateCheckFilter = table.isActivateExpressionFilter();
         activateFilterCheck.setSelection(table.isActivateExpressionFilter());
         activateFilterCheck.setToolTipText(Messages.getString("DataMapTableView.buttonTooltip.activateExpressionFilter")); //$NON-NLS-1$

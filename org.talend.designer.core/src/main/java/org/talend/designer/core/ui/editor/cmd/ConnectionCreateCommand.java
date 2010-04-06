@@ -151,7 +151,7 @@ public class ConnectionCreateCommand extends Command {
                         public String isValid(String newText) {
                             if (newText != null) {
                                 if (!source.getProcess().checkValidConnectionName(newText, creatingConnection)
-                                        || KeywordsValidator.isKeyword(newText)) {
+                                        || KeywordsValidator.isKeyword(newText) || newText.equals("ErrorReject")) {
                                     return Messages.getString("ConnectionCreateCommand.inputValid"); //$NON-NLS-1$
                                 }
                             }

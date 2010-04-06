@@ -180,14 +180,6 @@
 		} // T_TM_M_241
 
 		boolean firstLookupIsPersistentSorted = false;
-
-        boolean dieonerror = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
-
-		if (!dieonerror) {
-		%>
-			try {
-		<%
-		}
 		%>
 		
 		
@@ -1268,7 +1260,13 @@
             
         } // for (ExternalMapperTable externalTable : inputTables) {  // T_TM_M_261
         boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
+        boolean dieonerror = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 
+		if (!dieonerror) {
+		%>
+			try {
+		<%
+		}
         %>// ###############################
         <%
 
