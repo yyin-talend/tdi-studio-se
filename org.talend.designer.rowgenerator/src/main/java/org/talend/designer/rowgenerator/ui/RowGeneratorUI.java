@@ -154,7 +154,18 @@ public class RowGeneratorUI {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 updateFunParameter((Table) e.getSource());
-                dataTableView.getTableViewerCreator().getTableViewer().refresh();
+            }
+
+        });
+
+        dataTableView.getTable().addFocusListener(new FocusListener() {
+
+            public void focusGained(FocusEvent e) {
+                dataTableView.getTableViewerCreator().refresh();
+            }
+
+            public void focusLost(FocusEvent e) {
+                // TODO Auto-generated method stub
             }
 
         });
