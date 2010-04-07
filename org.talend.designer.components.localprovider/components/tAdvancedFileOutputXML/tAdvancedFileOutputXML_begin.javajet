@@ -120,7 +120,7 @@ class NestXMLTool_<%=cid%>{
             org.dom4j.Document doc4Str = org.dom4j.DocumentHelper.parseText("<root>"+ value + "</root>");
     		nestRoot.setContent(doc4Str.getRootElement().content());
     	} catch (Exception e) {
-    		e.printStackTrace();
+//    		e.printStackTrace();
     		nestRoot.setText(value);
         }
 	}

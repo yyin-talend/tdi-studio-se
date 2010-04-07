@@ -475,7 +475,7 @@ class GenerateToolByNull{
 			if(javaType == JavaTypesManager.OBJECT){
 %>
 		if(<%tool.getValue(node);%>!=null){
-			buf_<%=cid%>.append(<%tool.getValue(node);%>);
+			buf_<%=cid%>.append(TalendString.checkCDATAForXML(<%tool.getValue(node);%>));
 		}
 <%
 			}else{
@@ -487,7 +487,7 @@ class GenerateToolByNull{
 			}
 		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
 %>
-		buf_<%=cid %>.append("<%=node.defaultValue %>");
+		buf_<%=cid %>.append(TalendString.checkCDATAForXML("<%=node.defaultValue %>"));
 <%
 		}
 	}
