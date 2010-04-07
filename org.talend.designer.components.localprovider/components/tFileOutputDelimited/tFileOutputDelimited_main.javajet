@@ -100,14 +100,14 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 							%>
         							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
-        							FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
+        							FormatterUtils.format_Number(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
         							<% } else { %>
-        							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
+        							FormatterUtils.format_Number(new java.math.BigDecimal(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)).toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
         							<% } %>
 							<%
 						} else if(javaType == JavaTypesManager.BIGDECIMAL){
     						%>
-    						<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>
+    						<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
 							<%
 						} else if(javaType == JavaTypesManager.BYTE_ARRAY){
     						%>
@@ -323,11 +323,11 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 			            %>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
                 			            <%
                 			        } else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
-        								if(javaType == JavaTypesManager.BIGDECIMAL) {%>FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>);					
-                					<%  } else { %>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>);						
+        								if(javaType == JavaTypesManager.BIGDECIMAL) {%>FormatterUtils.format_Number(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>);					
+                					<%  } else { %>FormatterUtils.format_Number(new java.math.BigDecimal(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)).toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>);						
                 					<%	}
         							} else if (javaType == JavaTypesManager.BIGDECIMAL) {
-										%>String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>);
+										%><%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString();
 										<%
                 			        }else{
                 			            %>String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
