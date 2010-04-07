@@ -1456,7 +1456,7 @@ if(!isVirtualOut) { // T_TM_M_320
             
             //add for feature:2445
             if (!dieonerror){
-                if(outputTableName.equals("ErrorReject")){
+                if(isErrorReject(outputTable)){
                 	continue;
                 }
             }
@@ -1727,7 +1727,7 @@ if(!isVirtualOut) { // T_TM_M_320
                 
                 //add for feature:2445
                 if (!dieonerror){
-                    if(!outputTableName.equals("ErrorReject")){
+                    if(!isErrorReject(outputTable)){
                     	continue;
                     }
                 }
@@ -1827,7 +1827,7 @@ if(!isVirtualOut) { // T_TM_M_320
 %>            
                
                 <% stringBuffer.append(sb.toString()); %>
-                ErrorReject = ErrorReject_tmp;
+                <%=outputTableName %> = <%=outputTableName %>_tmp;
                 <%=outputTableName %>.errorMessage = e.getMessage();
                 <%=outputTableName %>.errorStackTrace = ResumeUtil.getExceptionStackTrace(e);
               
@@ -1845,7 +1845,7 @@ if(!isVirtualOut) { // T_TM_M_320
                 
                 //add for feature:2445
                 if (!dieonerror){
-                    if(outputTableName.equals("ErrorReject")){
+                    if(isErrorReject(outputTable)){
                     	continue;
                     }
                 }
@@ -1879,7 +1879,7 @@ if(!isVirtualOut) { // T_TM_M_320
                 
                 //add for feature:2445
                 if (!dieonerror){
-                    if(outputTableName.equals("ErrorReject")){
+                    if(isErrorReject(outputTable)){
                     	continue;
                     }
                 }

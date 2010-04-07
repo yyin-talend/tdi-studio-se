@@ -100,6 +100,26 @@ public class CLASS {
         }
         return false;
     }
+    
+    
+  public boolean isErrorReject(ExternalMapperTable table){
+        String errorMessage = null;
+        String errorStackTrace = null; 
+        if(table!=null&&table.getName()!=null&&table.getName().endsWith("ErrorReject")){
+            for(ExternalMapperTableEntry entry:table.getMetadataTableEntries()){
+                if("errorMessage".equals(entry.getName())){
+                    errorMessage = entry.getName();
+                }else if("errorStackTrace".equals(entry.getName())){
+                    errorStackTrace = entry.getName();
+                }
+            }
+            if(errorMessage!=null&&errorStackTrace!=null){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
     public String generate(Object argument) {
