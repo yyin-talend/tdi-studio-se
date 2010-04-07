@@ -13,6 +13,7 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.excel;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,8 +88,13 @@ public class ExcelReader {
             File file = new File(excelPath);
             Package clone = null;
             try {
-                Package createPackage = Package.openOrCreate(file);
-                clone = PackageHelper.clone(createPackage);
+                FileInputStream in = new FileInputStream(file);
+                Package open = Package.open(in);
+                clone = PackageHelper.clone(open);
+                open.close();
+
+                // Package createPackage = Package.openOrCreate(file);
+                // clone = PackageHelper.clone(createPackage);
             } catch (InvalidFormatException e) {
                 e.printStackTrace();
             } catch (OpenXML4JException e) {
