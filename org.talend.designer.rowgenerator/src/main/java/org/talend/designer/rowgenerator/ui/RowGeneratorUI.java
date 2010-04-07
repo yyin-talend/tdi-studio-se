@@ -154,6 +154,7 @@ public class RowGeneratorUI {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 updateFunParameter((Table) e.getSource());
+                dataTableView.getTableViewerCreator().getTableViewer().refresh();
             }
 
         });

@@ -145,7 +145,10 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 if (ext != null) {
                     ext.setChanged(true);
                 }
-                rowGenTableEditor2.getTableViewerCreator().getTableViewer().refresh();
+
+                if (!rowGenTableEditor2.getTableViewerCreator().getTableViewer().isCellEditorActive()) {
+                    rowGenTableEditor2.getTableViewerCreator().getTableViewer().refresh();
+                }
             }
 
         });
@@ -281,7 +284,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
     /**
      * 
-     *  ggu Comment method "getProcessProposals".
+     * ggu Comment method "getProcessProposals".
      * 
      * @return IContentProposalProvider
      */
