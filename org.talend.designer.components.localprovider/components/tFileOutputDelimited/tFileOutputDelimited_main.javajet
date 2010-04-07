@@ -306,33 +306,28 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 			IMetadataColumn column = columns.get(i);
                 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
                 			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-                			if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
-                			    %>
-                			    row<%=cid%>[<%=i%>] =String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>); 
-                			    <%
-                			}else { 
-                			    %>
-                			    row<%=cid%>[<%=i%>]=<%=conn.getName() %>.<%=column.getLabel() %> == null?"":<%					
-                			        if(javaType == JavaTypesManager.STRING ){
-                			            %><%=conn.getName() %>.<%=column.getLabel() %>;
-                			            <%
-                			        }else if(javaType == JavaTypesManager.DATE && pattern != null){
-                			            %>FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
-                			            <%
-                			        }else if(javaType == JavaTypesManager.BYTE_ARRAY){
-                			            %>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
-                			            <%
-                			        } else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
-        								if(javaType == JavaTypesManager.BIGDECIMAL) {%>FormatterUtils.format_Number(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>);					
-                					<%  } else { %>FormatterUtils.format_Number(new java.math.BigDecimal(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)).toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>);						
-                					<%	}
-        							} else if (javaType == JavaTypesManager.BIGDECIMAL) {
-										%><%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString();
-										<%
-                			        }else{
-                			            %>String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
-                			            <%
-                			        }
+                			boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
+                			    %> 
+                			row<%=cid%>[<%=i%>]=<%=isPrimitive? "":conn.getName()+"."+column.getLabel()+ "==null?\"\":"%><%					
+                			if(javaType == JavaTypesManager.STRING ){
+                			%><%=conn.getName() %>.<%=column.getLabel() %>;
+                			<%
+                			}else if(javaType == JavaTypesManager.DATE && pattern != null){
+                			%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
+                			<%
+                			}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+                			%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
+                			<%
+                			} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+        					if(javaType == JavaTypesManager.BIGDECIMAL) {%>FormatterUtils.format_Number(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>);					
+                			<%  } else { %>FormatterUtils.format_Number(new java.math.BigDecimal(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)).toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>);						
+                			<%	}
+        					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+							%><%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString();
+							<%
+                			 }else{
+                			%>String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
+                			<%
                 			}
             			}
 %>
