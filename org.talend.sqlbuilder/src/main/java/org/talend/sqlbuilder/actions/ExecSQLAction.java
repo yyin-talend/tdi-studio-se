@@ -30,6 +30,7 @@ import org.talend.sqlbuilder.sqlcontrol.SQLExecution;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
 import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.QueryTokenizer;
+import org.talend.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
@@ -190,6 +191,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      */
     public String getSQLToBeExecuted() {
         String sql = editor.getSQLToBeExecuted();
+        sql = TextUtil.calEscapeValue(sql);
         return sql;
     }
 

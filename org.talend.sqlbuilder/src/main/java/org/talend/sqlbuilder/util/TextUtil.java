@@ -259,4 +259,20 @@ public class TextUtil {
 
         return isOracle;
     }
+
+    public static String calEscapeValue(String value) {
+        if (value == null) {
+            return null;
+        }
+        if (value.contains(NEWLINE_EXPR)) {
+            value = value.replace(NEWLINE_EXPR, NEWLINE_SEPARATOR);
+        }
+        if (value.contains(RETURN_EXPR)) {
+            value = value.replace(RETURN_EXPR, "\r");
+        }
+        if (value.contains(TAB_EXPR)) {
+            value = value.replace(TAB_EXPR, "\t");
+        }
+        return value;
+    }
 }
