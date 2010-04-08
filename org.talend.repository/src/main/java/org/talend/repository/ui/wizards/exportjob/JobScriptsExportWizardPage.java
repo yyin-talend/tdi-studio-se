@@ -265,7 +265,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                         + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
             }
         } else {
-            path = new Path(destinationFile);
+            // path = new Path(destinationFile);
+            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
         }
 
         setDestinationValue(path.toOSString());
@@ -296,6 +297,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     // return "";
     //
     // }
+
     protected List getDefaultFileName() {
         List list = null;
         if (nodes.length >= 1) {
