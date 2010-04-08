@@ -106,6 +106,9 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 if (item instanceof ConnectionItem) {
                     for (IElementParameter param : node.getElementParameters()) {
                         if (param.getRepositoryValue() != null && !param.getRepositoryValue().equals("")) {
+                            if (param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                                continue;
+                            }
                             if (param.getField().equals(EParameterFieldType.TABLE)
                                     && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
                                 List<Map<String, Object>> table = (List<Map<String, Object>>) node.getPropertyValue(param
