@@ -248,15 +248,15 @@ public class ConnectionTraceFigure extends Figure {
             }
             variableWidth += 10;
             valueWidth += 10;
-            //
+
             // if (maximized) {
-            // if (variableWidth > MAX_VARIABLE_WIDTH) {
-            // variableWidth = MAX_VARIABLE_WIDTH;
-            // }
-            //
-            // if (valueWidth > MAX_VALUE_WIDTH) {
-            // valueWidth = MAX_VALUE_WIDTH;
-            // }
+            if (variableWidth < MAX_VARIABLE_WIDTH) {
+                variableWidth = MAX_VARIABLE_WIDTH;
+            }
+
+            if (valueWidth < MAX_VALUE_WIDTH) {
+                valueWidth = MAX_VALUE_WIDTH;
+            }
             // }
 
             if ((variableWidth + valueWidth) < titleFigure.getPreferredSize().width) {
