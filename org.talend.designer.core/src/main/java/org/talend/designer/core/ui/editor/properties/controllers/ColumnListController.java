@@ -558,17 +558,21 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             for (IMetadataColumn column : table.getListColumns()) {
 
                 if (lineName.equals(column.getLabel())) {
-                    // if (node.getComponent().getName().equals("tFileInputXML")) {
-                    // // newLine.put("SIZE", newLine.get("SIZE"));
-                    // break;
-                    // }
+                    final Object size = newLine.get("SIZE"); //$NON-NLS-1$
+                    final Integer length = column.getLength();
+                    // wzhang modified to fix 12131.
+                    if (size != null && length != null && length.intValue() > 0
+                            && Integer.parseInt((String) size) == column.getLength()) {
+                        break;
+                    }
+
                     if (!needSynchronizeSize(param)) {
                         break;
                     }
-                    if (column.getLength() != null && column.getLength().intValue() > 0) {
+                    if (length != null && length.intValue() > 0) {
 
                         // codes[1] is "SIZE"
-                        newLine.put("SIZE", column.getLength().toString()); //$NON-NLS-1$
+                        newLine.put("SIZE", length.toString()); //$NON-NLS-1$
                     } else {
                         newLine.put("SIZE", null); //$NON-NLS-1$
                     }
