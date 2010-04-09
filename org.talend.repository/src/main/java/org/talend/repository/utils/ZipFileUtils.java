@@ -21,9 +21,9 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-import org.apache.tools.zip.ZipEntry;
-import org.apache.tools.zip.ZipFile;
 import org.talend.commons.exception.ExceptionHandler;
 
 /**
@@ -122,8 +122,8 @@ public class ZipFileUtils {
         File destFile;
         ZipFile zipFile = null;
         try {
-            zipFile = new ZipFile(unzipFile, "GBK");
-            for (Enumeration entries = zipFile.getEntries(); entries.hasMoreElements();) {
+            zipFile = new ZipFile(unzipFile);
+            for (Enumeration entries = zipFile.entries(); entries.hasMoreElements();) {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 destFile = new File(destFileName, entry.getName());
 
