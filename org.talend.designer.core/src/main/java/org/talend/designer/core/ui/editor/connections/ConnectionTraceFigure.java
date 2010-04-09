@@ -248,16 +248,16 @@ public class ConnectionTraceFigure extends Figure {
             }
             variableWidth += 10;
             valueWidth += 10;
-
-            if (maximized) {
-                if (variableWidth > MAX_VARIABLE_WIDTH) {
-                    variableWidth = MAX_VARIABLE_WIDTH;
-                }
-
-                if (valueWidth > MAX_VALUE_WIDTH) {
-                    valueWidth = MAX_VALUE_WIDTH;
-                }
-            }
+            //
+            // if (maximized) {
+            // if (variableWidth > MAX_VARIABLE_WIDTH) {
+            // variableWidth = MAX_VARIABLE_WIDTH;
+            // }
+            //
+            // if (valueWidth > MAX_VALUE_WIDTH) {
+            // valueWidth = MAX_VALUE_WIDTH;
+            // }
+            // }
 
             if ((variableWidth + valueWidth) < titleFigure.getPreferredSize().width) {
                 valueWidth = titleFigure.getPreferredSize().width - variableWidth;
@@ -346,7 +346,7 @@ public class ConnectionTraceFigure extends Figure {
             if (size.width < titleFigure.getPreferredSize().width) {
                 size.width = titleFigure.getPreferredSize().width;
             }
-            size.width = size.width * 2;
+            // size.width = size.width * 2;
             size.expand(5, 3);
             setPreferredSize(size);
             setVisible(true);
