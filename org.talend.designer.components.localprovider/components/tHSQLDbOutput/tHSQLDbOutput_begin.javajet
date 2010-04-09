@@ -86,7 +86,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	} else if(("HSQLDB_INPROGRESS_PERSISTENT").equals(runningMode)) {
 		%>
-		url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%> + ";ifexists=true";
+		url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%> ;
 		<%
 	}else if(("HSQLDB_IN_MEMORY").equals(runningMode)) {
 		%>
