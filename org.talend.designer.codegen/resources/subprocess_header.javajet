@@ -265,14 +265,201 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     <%
 	} // T_SH_001
 	%>
+
+<%
+		if (metadata !=null) {
+			boolean hasString = false;
+			boolean hasDate = false;
+			boolean hasByteArray = false;
+			for (IMetadataColumn column: metadata.getListColumns()) {
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+
+				if(typeToGenerate.equals("String")) {
+					if (!hasString) {
+						hasString =true;
+						if (!isLookup || hashableColumnsNames.contains(column.getLabel())) {
+%>
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray.length) {
+				if(length < 1024 && commonByteArray.length == 0) {
+   					commonByteArray = new byte[1024];
+				} else {
+   					commonByteArray = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray, 0, length);
+			strReturn = new String(commonByteArray, 0, length);
+		}
+		return strReturn;
+	}
+	
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes();
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+<%
+						}else{
+%>
+
+	private String readString(DataInputStream dis, ObjectInputStream ois) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			byte[] byteArray = new byte[length];
+			dis.read(byteArray);
+			strReturn = new String(byteArray);
+		}
+		return strReturn;
+	}
+	
+	private void writeString(String str, DataOutputStream dos, ObjectOutputStream oos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes();
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+	}
+<%
+						}
+					}
+				} else if(typeToGenerate.equals("java.util.Date")) {
+					if (!hasDate) {
+						hasDate = true;
+						if(!isLookup || hashableColumnsNames.contains(column.getLabel())) {
+%>
+
+	private java.util.Date readDate(ObjectInputStream dis) throws IOException{
+		java.util.Date dateReturn = null;
+        int length = 0;
+        length = dis.readByte();
+		if (length == -1) {
+			dateReturn = null;
+		} else {
+	    	dateReturn = new Date(dis.readLong());
+		}
+		return dateReturn;
+	}
     
+    private void writeDate(java.util.Date date1, ObjectOutputStream dos) throws IOException{
+		if(date1 == null) {
+            dos.writeByte(-1);
+		} else {
+			dos.writeByte(0);
+	    	dos.writeLong(date1.getTime());
+    	}
+    }
+<%
+						}else{
+%>
+
+	private java.util.Date readDate(DataInputStream dis, ObjectInputStream ois) throws IOException{
+		java.util.Date dateReturn = null;
+		int length = 0;
+        length = dis.readByte();
+		if (length == -1) {
+			dateReturn = null;
+		} else {
+	    	dateReturn = new Date(dis.readLong());
+		}
+		return dateReturn;
+	}
+	
+	private void writeDate(java.util.Date date1, DataOutputStream dos, ObjectOutputStream oos) throws IOException{
+		if(date1 == null) {
+            dos.writeByte(-1);
+		} else {
+			dos.writeByte(0);
+	    	dos.writeLong(date1.getTime());
+    	}
+	}
+<%
+						}
+					}
+				} else if(typeToGenerate.equals("byte[]")) {
+					if (!hasByteArray){
+						hasByteArray = true;
+						if(!isLookup || hashableColumnsNames.contains(column.getLabel())) {
+%>
+	private byte[] readByteArray(ObjectInputStream dis) throws IOException{
+		byte[] byteArrayReturn;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			byteArrayReturn = null;
+		} else {
+			byte[] byteArray = new byte[length];
+			dis.readFully(byteArray);
+			byteArrayReturn = byteArray;
+		}
+		return byteArrayReturn;
+	}
+    
+    private void writeByteArray(byte[] byteArray, ObjectOutputStream dos) throws IOException{
+		if(byteArray == null) {
+            dos.writeInt(-1);
+		} else {
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+<%
+						}else{
+%>
+	private byte[] readByteArray(DataInputStream dis, ObjectInputStream ois) throws IOException{
+		byte[] byteArrayReturn;
+        int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			byteArrayReturn = null;
+		} else {
+			byte[] byteArray = new byte[length];
+			dis.read(byteArray);
+			byteArrayReturn = byteArray;
+		}
+		return byteArrayReturn;
+	}
+
+	private void writeByteArray(byte[] byteArray, DataOutputStream dos, ObjectOutputStream oos) throws IOException{	
+		if(byteArray == null) {
+            dos.writeInt(-1);
+		} else {
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+	}
+<%
+						}
+					}
+				}
+			}
+    	}
+%>	
+	   
     public void <%= isLookup ? "readKeys" : "read" %>Data(ObjectInputStream dis) {
 
 		synchronized(commonByteArrayLock) {
 
         	try {
-
-				int length = 0;
+        	
+        		int length = 0;
 		<%	
 		boolean hasAtLeastOneRead = false;
 		boolean hasAtLeastOneObjectType = false;
@@ -286,50 +473,24 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					%>
-			            this.<%=column.getLabel() %> = dis.read<%= typeToGenerate %>();
+			        this.<%=column.getLabel() %> = dis.read<%= typeToGenerate %>();
 					<%
 				} else if(typeToGenerate.equals("String")) {
 					%>
-			            length = dis.readInt();
-           				if (length == -1) {
-           	    			this.<%=column.getLabel() %> = null;
-           				} else {
-           					if(length > commonByteArray.length) {
-           						if(length < 1024 && commonByteArray.length == 0) {
-	               					commonByteArray = new byte[1024];
-           						} else {
-	               					commonByteArray = new byte[2 * length];
-	               				}
-           					}
-               				dis.readFully(commonByteArray, 0, length);
-               				this.<%=column.getLabel() %> = new String(commonByteArray, 0, length);
-           				}
+					this.<%=column.getLabel() %> = readString(dis);
 					<%
 				} else if(typeToGenerate.equals("java.util.Date")) {
 					%>
-			            length = dis.readByte();
-           				if (length == -1) {
-           	    			this.<%=column.getLabel() %> = null;
-           				} else {
-           			    	this.<%=column.getLabel() %> = new Date(dis.readLong());
-           				}
+					this.<%=column.getLabel() %> = readDate(dis);
 					<%
 				} else if(typeToGenerate.equals("byte[]")) {
 					%>
-			            length = dis.readInt();
-           				if (length == -1) {
-           	    			this.<%=column.getLabel() %> = null;
-           				} else {
-               				byte[] byteArray = new byte[length];
-               				dis.readFully(byteArray);
-               				this.<%=column.getLabel() %> = byteArray;
-           				}
+					this.<%=column.getLabel() %> = readByteArray(dis);
 					<%
 				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 			 		hasAtLeastOneObjectType = true;
 					%>
 						this.<%=column.getLabel() %> = (<%= typeToGenerate %>) dis.readObject();
-					
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -400,31 +561,15 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 					<%
 				} else if(typeToGenerate.equals("String")) {
 					%>
-						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-			                byte[] byteArray = this.<%=column.getLabel() %>.getBytes();
-           			    	dos.writeInt(byteArray.length);
-               				dos.write(byteArray);
-		            	}
+						writeString(this.<%=column.getLabel() %>,dos);
 					<%
 				} else if(typeToGenerate.equals("java.util.Date")) {
 					%>
-						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeByte(-1);
-						} else {
-               				dos.writeByte(0);
-           			    	dos.writeLong(this.<%=column.getLabel() %>.getTime());
-		            	}
+						writeDate(this.<%=column.getLabel() %>,dos);
 					<%
 				} else if(typeToGenerate.equals("byte[]")) {
 					%>
-						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-           			    	dos.writeInt(this.<%=column.getLabel() %>.length);
-               				dos.write(this.<%=column.getLabel() %>);
-		            	}
+						writeByteArray(this.<%=column.getLabel() %>,dos);
 					<%
 				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 					%>
@@ -494,34 +639,15 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 					<%
 				} else if(typeToGenerate.equals("String")) {
 					%>
-			            length = dis.readInt();
-           				if (length == -1) {
-           	    			this.<%=column.getLabel() %> = null;
-           				} else {
-               				byte[] byteArray = new byte[length];
-               				dis.read(byteArray);
-               				this.<%=column.getLabel() %> = new String(byteArray);
-           				}
+						this.<%=column.getLabel() %> = readString(dis,ois);
 					<%
 				} else if(typeToGenerate.equals("byte[]")) {
 					%>
-			            length = dis.readInt();
-           				if (length == -1) {
-           	    			this.<%=column.getLabel() %> = null;
-           				} else {
-               				byte[] byteArray = new byte[length];
-               				dis.read(byteArray);
-               				this.<%=column.getLabel() %> = byteArray;
-           				}
+						this.<%=column.getLabel() %> = readByteArray(dis,ois);
 					<%
 				} else if(typeToGenerate.equals("java.util.Date")) {
 					%>
-			            length = dis.readByte();
-           				if (length == -1) {
-           	    			this.<%=column.getLabel() %> = null;
-           				} else {
-           			    	this.<%=column.getLabel() %> = new Date(dis.readLong());
-           				}
+						this.<%=column.getLabel() %> = readDate(dis,ois);
 					<%
 				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 			 		hasAtLeastOneObjectType = true;
@@ -593,31 +719,15 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 					<%
 				} else if(typeToGenerate.equals("String")) {
 					%>
-						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-			                byte[] byteArray = this.<%=column.getLabel() %>.getBytes();
-           			    	dos.writeInt(byteArray.length);
-               				dos.write(byteArray);
-		            	}
+						writeString(this.<%=column.getLabel() %>, dos, oos);
 					<%
 				} else if(typeToGenerate.equals("byte[]")) {
 					%>
-						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-           			    	dos.writeInt(this.<%=column.getLabel() %>.length);
-               				dos.write(this.<%=column.getLabel() %>);
-		            	}
+						writeByteArray(this.<%=column.getLabel() %>, dos, oos);
 					<%
 				} else if(typeToGenerate.equals("java.util.Date")) {
 					%>
-						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeByte(-1);
-						} else {
-               				dos.writeByte(0);
-           			    	dos.writeLong(this.<%=column.getLabel() %>.getTime());
-		            	}
+						writeDate(this.<%=column.getLabel() %>, dos, oos);
 					<%
 				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 					%>
@@ -667,24 +777,24 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString());
 		sb.append("[");
-		<%	
-		String comma = "";
+<%	
 		if (metadata !=null) {
-			for (IMetadataColumn column: metadata.getListColumns()) {
-					if(comma.length() > 0) {
-					%>
-						sb.append("<%= comma %>");
-					<%
-					}
-					%>
-					sb.append("<%=column.getLabel() %>");
-					sb.append("=");
-					sb.append(String.valueOf(this.<%=column.getLabel() %>));
-				<%
-				comma = ", ";
+			List<IMetadataColumn> clmlist = metadata.getListColumns();
+			for(int i=0; i< clmlist.size(); i++) {
+				IMetadataColumn column = clmlist.get(i);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				if(typeToGenerate.equals("String")) {
+%>
+		sb.append("<%=i==0?"":"," %><%=column.getLabel() %>="+<%=column.getLabel() %>);
+<%
+				}else{
+%>
+		sb.append("<%=i==0?"":"," %><%=column.getLabel() %>="+String.valueOf(<%=column.getLabel() %>));
+<%
+				}
 			}
     	}
-	    %>
+%>
 	    sb.append("]");
 	    
 	    return sb.toString();
