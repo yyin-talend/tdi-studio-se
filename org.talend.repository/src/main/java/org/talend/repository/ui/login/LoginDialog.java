@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -33,6 +34,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
+import org.epic.core.preferences.PerlMainPreferencePage;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -40,8 +43,10 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.RepositoryPlugin;
@@ -198,7 +203,12 @@ public class LoginDialog extends TrayDialog {
         prefManipulator.setLastConnection(connBean.getName());
         prefManipulator.setLastProject(project.getLabel());
         saveLastConnBean(connBean);
-
+        if (project.getLanguage().equals(ECodeLanguage.PERL)) {
+            IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
+            String prelExecutableValue = store.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+            PerlEditorPlugin.getDefault().setExecutablePreference("\"" + prelExecutableValue + "\"");
+            PerlMainPreferencePage.refreshExecutableTextValue("\"" + prelExecutableValue + "\"");
+        }
         final Shell shell = this.getShell();
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
 

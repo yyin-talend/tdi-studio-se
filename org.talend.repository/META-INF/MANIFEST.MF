@@ -22,7 +22,8 @@ Require-Bundle: org.apache.axis,
  org.talend.registration;visibility:=reexport,
  org.talend.libraries.dom4j-jaxen,
  javax.wsdl,
- org.eclipse.jdt.core.manipulation
+ org.eclipse.jdt.core.manipulation,
+ org.epic.perleditor;bundle-version="2.2.0"
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,
