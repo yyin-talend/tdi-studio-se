@@ -39,8 +39,9 @@ imports="
 	int preColumnSize = preColumns.size();
 	int minSize = Math.min(columnSize, preColumnSize);
 	
-	List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+	List< ? extends IConnection> outConns = node.getOutgoingConnections();
 	for (IConnection conn : outConns) {	
+		if(conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)||conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)){
 		String outputConnName = conn.getName();				
 %>
 	<%=outputConnName %> = new <%=outputConnName %>Struct();
@@ -53,6 +54,7 @@ imports="
 	<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;			
 <%			
 			} //4
+		}
 	}
 %>
 
