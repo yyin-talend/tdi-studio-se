@@ -201,7 +201,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         // workaround for problem on children jobs generation
         processItem.getProcess().getNode();
-        
+
         addContextScripts(process[i], selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needContext));
 
         // add children jobs
@@ -587,13 +587,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
-            String processLabel = subjobInfo.getJobName();
-            if (processLabel.equals(rootName)) {
-                continue;
-            }
-
             list.add(subjobInfo);
-
             getChildrenJobAndContextName(allResources, rootName, list, subjobInfo.getProcessItem(), projectName, processedJob,
                     resource, exportChoice);
         }

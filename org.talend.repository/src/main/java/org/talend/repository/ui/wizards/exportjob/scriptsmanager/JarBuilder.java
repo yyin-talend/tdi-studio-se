@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,9 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.repository.utils.ZipFileUtils;
 
 /**
  * This is a jar file builder. <br/>
@@ -47,6 +51,10 @@ public class JarBuilder {
     List<File> includeSystemRoutines = null;
 
     private static final String SYSTEM = "system"; //$NON-NLS-1$
+
+    private static final String CONTEXT = "context"; //$NON-NLS-1$
+
+    private static final String TEMP = "temp"; //$NON-NLS-1$
 
     /**
      * Constructure.
@@ -153,6 +161,24 @@ public class JarBuilder {
     }
 
     /**
+     * Create temp folder for zip files to jar file. Add by nma, order 12346
+     * 
+     * @throws Exception
+     */
+    private void createTempSubFolder(String tempFolderPath, File srcFile) {
+        if (srcFile.isDirectory() && !srcFile.getName().equals(CONTEXT)) {
+            File projectFolder = new File(tempFolderPath + File.separator + srcFile.getName());
+            if (!projectFolder.exists()) {
+                projectFolder.mkdir();
+                File[] folderFiles = srcFile.listFiles();
+                for (File f : folderFiles) {
+                    createTempSubFolder(projectFolder.getAbsolutePath(), f);
+                }
+            }
+        }
+    }
+
+    /**
      * exports the jar to specific location.
      * 
      * @param root
@@ -160,34 +186,58 @@ public class JarBuilder {
      * @param manifest
      */
     private void exportJar(File root, List<File> list, Manifest manifest) throws Exception {
-        JarOutputStream jarOut = null;
-        try {
-            jarOut = new JarOutputStream(new FileOutputStream(jarFile), manifest);
-
-            for (int i = 0; i < list.size(); i++) {
-                String filename = list.get(i).getAbsolutePath();
-                filename = filename.substring(root.getAbsolutePath().length() + 1);
-                JarEntry entry = new JarEntry(filename.replace('\\', '/'));
-                jarOut.putNextEntry(entry);
-
-                FileInputStream fin = new FileInputStream(list.get(i));
-                byte[] buf = new byte[4096];
-                int read;
-                while ((read = fin.read(buf)) != -1) {
-                    jarOut.write(buf, 0, read);
+        File file = new File(jarFile);
+        if (file.exists()) {
+            String tempFolderPath = file.getParent() + File.separator + TEMP;
+            ZipFileUtils.unZip(jarFile, tempFolderPath);
+            for (File subf : list) {
+                String desFileName = subf.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
+                File srcFile = subf;
+                while (!srcFile.getParentFile().getAbsolutePath().equals(root.getAbsolutePath())) {
+                    srcFile = srcFile.getParentFile();
                 }
-                fin.close();
-
-                jarOut.closeEntry();
-                jarOut.flush();
-            }
-        } finally {
-
-            if (jarOut != null) {
+                createTempSubFolder(tempFolderPath, srcFile);
                 try {
-                    jarOut.close();
-                } catch (Exception e) {
-                    // do nothing
+                    FileChannel srcChannel = new FileInputStream(subf.getAbsoluteFile()).getChannel();
+                    FileChannel dstChannel = new FileOutputStream(tempFolderPath + File.separator + desFileName).getChannel();
+                    dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+                    srcChannel.close();
+                    dstChannel.close();
+                } catch (IOException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+            ZipFileUtils.zip(tempFolderPath, jarFile, false);
+        } else {
+            JarOutputStream jarOut = null;
+            try {
+                jarOut = new JarOutputStream(new FileOutputStream(jarFile), manifest);
+
+                for (int i = 0; i < list.size(); i++) {
+                    String filename = list.get(i).getAbsolutePath();
+                    filename = filename.substring(root.getAbsolutePath().length() + 1);
+                    JarEntry entry = new JarEntry(filename.replace('\\', '/'));
+                    jarOut.putNextEntry(entry);
+
+                    FileInputStream fin = new FileInputStream(list.get(i));
+                    byte[] buf = new byte[4096];
+                    int read;
+                    while ((read = fin.read(buf)) != -1) {
+                        jarOut.write(buf, 0, read);
+                    }
+                    fin.close();
+
+                    jarOut.closeEntry();
+                    jarOut.flush();
+                }
+            } finally {
+
+                if (jarOut != null) {
+                    try {
+                        jarOut.close();
+                    } catch (Exception e) {
+                        // do nothing
+                    }
                 }
             }
         }
