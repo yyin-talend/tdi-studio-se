@@ -25,53 +25,62 @@ imports="
     	   dbquery = dbquery.replaceAll("\r"," ");
     
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
+	
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 %>
 
 String url_<%=cid %> = null;
 
 <%
-String runningMode = ElementParameterParser.getValue(node, "__RUNNING_MODE__");
-String tls = ElementParameterParser.getValue(node, "__TLS__");
-if(("HSQLDB_SERVER").equals(runningMode))
-{
-	if(("true").equals(tls))
+	String runningMode = ElementParameterParser.getValue(node, "__RUNNING_MODE__");
+	String tls = ElementParameterParser.getValue(node, "__TLS__");
+	if(("HSQLDB_SERVER").equals(runningMode))
 	{
-	%>
-		url_<%=cid %> = "jdbc:hsqldb:hsqls://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
-	<%
+		if(("true").equals(tls))
+		{
+		%>
+			url_<%=cid %> = "jdbc:hsqldb:hsqls://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
+		<%
+		}
+		else
+		{
+		%>
+			url_<%=cid %> = "jdbc:hsqldb:hsql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
+		<%
+		}
 	}
-	else
+	else if(("HSQLDB_WEBSERVER").equals(runningMode))
 	{
-	%>
-		url_<%=cid %> = "jdbc:hsqldb:hsql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
-	<%
+		if(("true").equals(tls))
+		{
+		%>
+			url_<%=cid %> = "jdbc:hsqldb:https://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
+		<%
+		}
+		else
+		{
+		%>
+			url_<%=cid %> = "jdbc:hsqldb:http://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
+		<%
+		}
 	}
-}
-else if(("HSQLDB_WEBSERVER").equals(runningMode))
-{
-	if(("true").equals(tls))
+	else if(("HSQLDB_INPROGRESS_PERSISTENT").equals(runningMode))
 	{
-	%>
-		url_<%=cid %> = "jdbc:hsqldb:https://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
-	<%
+		%>
+		url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%> ;
+		<%
+	} else if(("HSQLDB_IN_MEMORY").equals(runningMode)) {
+		%>
+		url_<%=cid %> = "jdbc:hsqldb:mem:" + <%=dbname%> ;
+		<%
 	}
-	else
-	{
-	%>
-		url_<%=cid %> = "jdbc:hsqldb:http://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbalias%>;
-	<%
+
+	if(dbproperties != null && !("\"\"").equals(dbproperties) && !("").equals(dbproperties)) {
+%>
+		url_<%=cid %> += ";" + <%=dbproperties%>;
+<%
 	}
-}
-else if(("HSQLDB_INPROGRESS_PERSISTENT").equals(runningMode))
-{
-	%>
-	url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%> + ";ifexists=true";
-	<%
-} else if(("HSQLDB_IN_MEMORY").equals(runningMode)) {
-	%>
-	url_<%=cid %> = "jdbc:hsqldb:mem:" + <%=dbname%> ;
-	<%
-}
+	
 %>
 
 java.lang.Class.forName("org.hsqldb.jdbcDriver");

@@ -49,7 +49,7 @@ imports="
 		        }
 		    } else if(("HSQLDB_INPROGRESS_PERSISTENT").equals(runningMode)) {
 %>
-		        url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%> + ";ifexists=true";
+		        url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%>;
 <%
 		    } else if(("HSQLDB_IN_MEMORY").equals(runningMode)) {
 %>
@@ -58,6 +58,11 @@ imports="
 			}
 %>
 <%
+			if(dbproperties != null && !("\"\"").equals(dbproperties) && !("").equals(dbproperties)) {
+%>
+				url_<%=cid %> += ";" + <%=dbproperties%>;
+<%
+			}
 		}
 		
 		public String getDirverClassName(INode node){
