@@ -24,10 +24,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -132,6 +134,8 @@ public class RunProcessContext {
     private boolean isTracPause = false;
 
     private boolean startingMessageWritten;
+
+    private List<PerformanceMonitor> perMonitorList = new ArrayList<PerformanceMonitor>();
 
     /**
      * Constrcuts a new RunProcessContext.
@@ -390,8 +394,10 @@ public class RunProcessContext {
                             // findNewStatsPort();
                             final IContext context = getSelectedContext();
                             if (monitorPerf) {
+                                clearThreads();
                                 perfMonitor = new PerformanceMonitor();
                                 new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
+                                perMonitorList.add(perfMonitor);
                             }
                             // findNewTracesPort();
                             if (monitorTrace) {
@@ -1157,8 +1163,10 @@ public class RunProcessContext {
                         // findNewStatsPort();
                         final IContext context = getSelectedContext();
                         if (monitorPerf) {
+                            clearThreads();
                             perfMonitor = new PerformanceMonitor();
                             new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
+                            perMonitorList.add(perfMonitor);
                         }
                         // findNewTracesPort();
                         if (monitorTrace) {
@@ -1177,5 +1185,13 @@ public class RunProcessContext {
         } catch (InterruptedException e1) {
             addErrorMessage(e1);
         }
+    }
+
+    private void clearThreads() {
+        for (PerformanceMonitor perMonitor : perMonitorList) {
+            perMonitor.stopThread();
+            perMonitor = null;
+        }
+        perMonitorList.clear();
     }
 }
