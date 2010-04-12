@@ -247,7 +247,7 @@ for(IConnection conn : connections){
 %>
     		<%=conn.getName() %> = null;
     		
-    		if("<%=conn.getName() %>".equals(seg_<%=cid %>.getName())){
+    		if("<%=metadata.getLabel() %>".equals(seg_<%=cid %>.getName())){
     			<%=conn.getName() %> = new <%=conn.getName() %>Struct();
 <%
 			List<IMetadataColumn> columns = metadata.getListColumns();

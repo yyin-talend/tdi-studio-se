@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
+import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -180,6 +181,18 @@ public class RepositoryDoubleClickAction extends Action {
         return false;
     }
 
+    private boolean isHL7Table(RepositoryNode node) {
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
+            node = node.getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_FILE_HL7) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private ITreeContextualAction getAction(RepositoryNode obj) {
         final boolean isCDC = isLinkCDCNode(obj);
         final ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
@@ -206,6 +219,10 @@ public class RepositoryDoubleClickAction extends Action {
                 }
 
                 if (isMDMTable(obj) && current.getClassForDoubleClick().equals(MDMConnection.class)) {
+                    return current;
+                }
+
+                if (isHL7Table(obj) && current.getClassForDoubleClick().equals(HL7Connection.class)) {
                     return current;
                 }
 

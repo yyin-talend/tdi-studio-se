@@ -1046,10 +1046,15 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             } else if (param.getField().equals(EParameterFieldType.TABLE)
                                     && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {
                                 List<Map<String, Object>> newMaps = RepositoryToComponentProperty.getXMLMappingValue(
-                                        repositoryConnection, node.getMetadataList().get(0));
+                                        repositoryConnection, node.getMetadataList());
                                 if ((value instanceof List) && newMaps != null) {
                                     List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) value;
                                     // sameValues = oldMaps.size() == newMaps.size();
+                                    if (oldMaps.size() != newMaps.size()) {
+                                        sameValues = false;
+                                        break;
+                                    }
+
                                     for (int i = 0; i < newMaps.size() && sameValues; i++) {
                                         Map<String, Object> newmap = newMaps.get(i);
                                         Map<String, Object> oldmap = null; // oldMaps.get(i);
@@ -1065,19 +1070,45 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                 sameValues = oldmap.get(UpdatesConstants.QUERY) == null;
                                             }
                                         }
+                                        // for hl7
+                                        if (newmap.get(UpdatesConstants.SCHEMA) != null) {
+                                            if (!newmap.get(UpdatesConstants.SCHEMA).equals(newmap.get(UpdatesConstants.SCHEMA))) {
+                                                oldmap = null;
+                                                for (int j = 0; j < oldMaps.size(); j++) {
+                                                    Map<String, Object> m = oldMaps.get(j);
+                                                    if (newmap.get(UpdatesConstants.SCHEMA)
+                                                            .equals(m.get(UpdatesConstants.SCHEMA))) {
+                                                        oldmap = m;
+                                                    }
+                                                }
+                                            }
+                                            if (oldmap == null) {
+                                                sameValues = false;
+                                            } else {
+                                                Object o = newmap.get(UpdatesConstants.MAPPING);
+
+                                                if (o != null) {
+                                                    sameValues = o.equals(oldmap.get(UpdatesConstants.MAPPING));
+                                                } else {
+                                                    sameValues = oldmap.get(UpdatesConstants.MAPPING) == null;
+                                                }
+
+                                            }
+                                        }
+
                                         if (!sameValues) {
                                             break;
                                         }
                                     }
-                                    if (oldMaps.size() > newMaps.size()) {
-                                        int size = newMaps.size();
-                                        for (int i = size; i < oldMaps.size(); i++) {
-                                            Map<String, Object> map = new HashMap<String, Object>();
-                                            map.put(UpdatesConstants.QUERY, UpdatesConstants.EMPTY);
-                                            newMaps.add(map);
-                                        }
-                                        sameValues = false;
-                                    }
+                                    // if (oldMaps.size() > newMaps.size()) {
+                                    // int size = newMaps.size();
+                                    // for (int i = size; i < oldMaps.size(); i++) {
+                                    // Map<String, Object> map = new HashMap<String, Object>();
+                                    // map.put(UpdatesConstants.QUERY, UpdatesConstants.EMPTY);
+                                    // newMaps.add(map);
+                                    // }
+                                    // sameValues = false;
+                                    // }
                                 }
                             } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) {
                                 objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, param.getName(), node

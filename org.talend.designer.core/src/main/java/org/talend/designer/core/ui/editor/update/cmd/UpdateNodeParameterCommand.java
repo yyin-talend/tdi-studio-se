@@ -266,7 +266,7 @@ public class UpdateNodeParameterCommand extends Command {
                                     && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {
                                 RepositoryToComponentProperty.getTableXMLMappingValue(
                                         (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-                                        (List<Map<String, Object>>) param.getValue(), node.getMetadataList().get(0));
+                                        (List<Map<String, Object>>) param.getValue(), node);
                             } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) {
                                 objectValue = RepositoryToComponentProperty.getValue(
                                         (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
