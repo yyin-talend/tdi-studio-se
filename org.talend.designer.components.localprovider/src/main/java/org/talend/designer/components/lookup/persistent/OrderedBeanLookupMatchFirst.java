@@ -30,9 +30,10 @@ public class OrderedBeanLookupMatchFirst<B extends Comparable<B> & IPersistableL
 
     private int previousValuesSize;
 
-    public OrderedBeanLookupMatchFirst(String keysFilePath, String valuesFilePath, int fileIndex, IRowProvider<B> rowProvider)
+    public OrderedBeanLookupMatchFirst(String keysFilePath, String valuesFilePath, int fileIndex, IRowProvider<B> rowProvider,
+            boolean skipBytesEnabled)
             throws IOException {
-        super(keysFilePath, valuesFilePath, fileIndex, rowProvider);
+        super(keysFilePath, valuesFilePath, fileIndex, rowProvider, skipBytesEnabled);
         lookupInstance = rowProvider.createInstance();
         resultLookupInstance = rowProvider.createInstance();
     }
@@ -116,6 +117,9 @@ public class OrderedBeanLookupMatchFirst<B extends Comparable<B> & IPersistableL
 
                     }
                     localSkip += currentValuesSize;
+                    if (currentValuesSize > 0) {
+                        countBeansToSkip++;
+                    }
                     previousValuesSize = currentValuesSize;
                 } while (true);
             }

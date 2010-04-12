@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import org.jboss.serial.io.JBossObjectInputStream;
 import org.talend.designer.components.lookup.common.ILookupManagerUnit;
 import org.talend.designer.components.persistent.IRowProvider;
 
@@ -26,7 +27,8 @@ import routines.system.IPersistableLookupRow;
 
 /**
  * 
- * Abstract class for ordered beans used in lookups with "Store on disk". 
+ * Abstract class for ordered beans used in lookups with "Store on disk".
+ * 
  * @param <B> bean
  */
 public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersistableLookupRow<B>> implements
@@ -37,11 +39,11 @@ public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersi
     protected static final int KEYS_SIZE_PLUS_VALUES_SIZE = 8;
 
     protected BufferedInputStream keysBufferedInStream;
-    
+
     protected ObjectInputStream keysObjectInStream;
 
     protected DataInputStream valuesDataInStream;
-    
+
     protected ObjectInputStream valuesObjectInStream;
 
     protected long length;
@@ -51,6 +53,8 @@ public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersi
     protected int currentValuesSize;
 
     protected long skipValuesSize;
+
+    protected long countBeansToSkip;
 
     protected boolean nextDirty = true;
 
@@ -84,6 +88,7 @@ public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersi
 
     protected int fileIndex;
 
+    private boolean skipBytesEnabled;
 
     /**
      * 
@@ -92,25 +97,50 @@ public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersi
      * @param keysFilePath
      * @param valuesFilePath
      * @param fileIndex
+     * @param skipBytesEnabled
      * @param internalKeyInstance
      * @param keys_management
      * @throws IOException
      */
-    public AbstractOrderedBeanLookup(String keysFilePath, String valuesFilePath, int fileIndex, IRowProvider<B> rowProvider)
-            throws IOException {
+    public AbstractOrderedBeanLookup(String keysFilePath, String valuesFilePath, int fileIndex, IRowProvider<B> rowProvider,
+            boolean skipBytesEnabled) throws IOException {
         File keysDataFile = new File(keysFilePath);
         this.length = keysDataFile.length();
 
         this.fileIndex = fileIndex;
 
         this.keysBufferedInStream = new BufferedInputStream(new FileInputStream(keysDataFile));
-        this.keysObjectInStream = new ObjectInputStream(keysBufferedInStream);
+        if (PersistentSortedLookupManager.USE_JBOSS_IMPLEMENTATION) {
+            this.keysObjectInStream = new JBossObjectInputStream(keysBufferedInStream);
+        } else {
+            this.keysObjectInStream = new ObjectInputStream(keysBufferedInStream);
+        }
         this.valuesDataInStream = new DataInputStream(new BufferedInputStream(new FileInputStream(valuesFilePath)));
-        this.valuesObjectInStream = new ObjectInputStream(this.valuesDataInStream);
+        if (PersistentSortedLookupManager.USE_JBOSS_IMPLEMENTATION) {
+            this.valuesObjectInStream = new JBossObjectInputStream(valuesDataInStream);
+        } else {
+            this.valuesObjectInStream = new ObjectInputStream(valuesDataInStream);
+        }
         this.lookupInstance = rowProvider.createInstance();
         this.previousAskedKey = rowProvider.createInstance();
         this.rowProvider = rowProvider;
 
+        this.skipBytesEnabled = skipBytesEnabled;
+
+        // readDescriptors();
+
+    }
+
+    private void readDescriptors() throws IOException {
+        int countObjects = valuesDataInStream.readInt();
+        for (int i = 0; i < countObjects; i++) {
+            try {
+                Object readObject = valuesObjectInStream.readObject();
+                System.out.println(readObject);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /*
@@ -141,19 +171,28 @@ public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersi
     }
 
     protected boolean isEndOfKeysFile() throws IOException {
-        return !(keysObjectInStream.available() > 0 || keysBufferedInStream.available() > 0);
+        return !(keysObjectInStream.available() > (PersistentSortedLookupManager.USE_JBOSS_IMPLEMENTATION ? 1 : 0) || keysBufferedInStream
+                .available() > 0);
     }
 
     protected void loadDataValues(B lookupInstance, int valuesSize) throws IOException {
         if (skipValuesSize > 0) {
             skipValuesSize += remainingSkip;
 
-            int currentSkipped = 0;
-            while (skipValuesSize != (currentSkipped += valuesDataInStream.skip(skipValuesSize - currentSkipped))) {
+            if (skipBytesEnabled) {
+                int currentSkipped = 0;
+                while (skipValuesSize != (currentSkipped += valuesDataInStream.skip(skipValuesSize - currentSkipped)))
+                    ;
+            } else {
+                for (long i = 0; i < countBeansToSkip; i++) {
+                    lookupInstance.readValuesData(valuesDataInStream, valuesObjectInStream);
+                }
             }
+
             // System.out.println("Data skipped:" + skipValuesSize);
             remainingSkip = 0;
             skipValuesSize = 0;
+            countBeansToSkip = 0;
         }
         lookupInstance.readValuesData(valuesDataInStream, valuesObjectInStream);
 
@@ -165,6 +204,7 @@ public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersi
      * @see org.talend.designer.components.persistent.ILookupManager#close()
      */
     public void close() throws IOException {
+
         if (keysObjectInStream != null) {
             keysObjectInStream.close();
         }

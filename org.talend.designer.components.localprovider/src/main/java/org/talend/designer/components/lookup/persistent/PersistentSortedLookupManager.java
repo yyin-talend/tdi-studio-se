@@ -16,13 +16,23 @@ package org.talend.designer.components.lookup.persistent;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
+import org.jboss.serial.io.JBossObjectOutputStream;
 import org.talend.designer.components.lookup.common.ILookupManagerUnit;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.components.persistent.IRowCreator;
@@ -33,10 +43,39 @@ import routines.system.IPersistableLookupRow;
 
 /**
  * Persistent Sorted Lookup Manager.
+ * 
  * @param <B> bean
  */
 public class PersistentSortedLookupManager<B extends IPersistableComparableLookupRow<B>> extends AbstractPersistentLookup<B>
         implements IPersistentLookupManager<B>, Cloneable {
+
+    /**
+     * 
+     * DOC amaumont PersistentSortedLookupManager class global comment. Detailled comment
+     */
+    public enum CHECK_PROPERTY_TYPE {
+        CHECK_WHILE_NULL,
+        CHECK_ALWAYS,
+        CHECK_ALWAYS_INHERITED,
+    }
+
+    private static final Class<?>[] CUSTOM_SERIALIZATION_CLASSES = new Class[] { char.class, Character.class, boolean.class,
+            Boolean.class, byte.class, Byte.class, byte[].class, short.class, Short.class, int.class, Integer.class, long.class,
+            Long.class, float.class, Float.class, double.class, Double.class, String.class, };
+
+    private static final Set<Class<?>> CUSTOM_SERIALIZATION_CLASSES_SET = new HashSet<Class<?>>(Arrays
+            .asList(CUSTOM_SERIALIZATION_CLASSES));
+
+    private static final Class<?>[] WRITE_WARNING_IF_INHERITED = new Class[] { BigDecimal.class };
+
+    private static final Set<Class<?>> WRITE_WARNING_IF_INHERITED_SET = new HashSet<Class<?>>(Arrays
+            .asList(WRITE_WARNING_IF_INHERITED));
+
+    private static final Set<String> ALREADY_PROCESSED_PROPERTY_TO_WARN_CHANGE_TO_OBJECT = new HashSet<String>();
+
+    private static final String[] FIELDS_TO_OMIT = new String[] { "hashCodeDirty" };
+
+    private static final Set<String> FIELDS_TO_OMIT_SET = new HashSet<String>(Arrays.asList(FIELDS_TO_OMIT));
 
     private static final float MARGIN_MAX = 0.35f;
 
@@ -93,13 +132,29 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
     private boolean waitingHeapException;
 
     private boolean sortEnabled = true;
-    
-    public PersistentSortedLookupManager(MATCHING_MODE matchingMode, String container, IRowCreator<B> rowCreator)
+
+    private boolean skipBytesEnabled = true;
+
+    public static final boolean USE_JBOSS_IMPLEMENTATION = true;
+
+    // private List<Field> propNameToCheckAtEachLine = new ArrayList<Field>();
+    //
+    // private List<Field> propNameToCheckWhileValueIsNull = new ArrayList<Field>();
+
+    private List<Field> propNameToCheckIsInherited = new ArrayList<Field>();
+
+    private Map<String, Object> objectsToWriteAtBeginningOfValuesFile = new HashMap<String, Object>();
+
+    public PersistentSortedLookupManager(MATCHING_MODE matchingMode, String filePath, IRowCreator<B> rowCreator)
             throws IOException {
         this.matchingMode = matchingMode;
-        this.container = container;
+        this.container = filePath;
         this.rowCreator = rowCreator;
-        FileUtils.createParentFolderIfNotExists(container);
+        FileUtils.createParentFolderIfNotExists(filePath);
+
+        // System.out.println("skipBytesEnabled=" + skipBytesEnabled);
+        // System.out.println("USE_JBOSS_IMPLEMENTATION=" + USE_JBOSS_IMPLEMENTATION);
+
     }
 
     public PersistentSortedLookupManager(MATCHING_MODE matchingMode, String container, IRowCreator<B> rowCreator, int bufferSize)
@@ -114,6 +169,11 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
     }
 
     public void put(B bean) throws IOException {
+
+        // if (bufferBeanIndex == 0 && fileIndex == 0) {
+        // checkClassOfBeanPropertiesInit(bean);
+        // }
+        // checkClassOfBeanProperties(bean);
 
         if (!MemoryHelper.hasFreeMemory(MARGIN_MAX)) {
             if (!bufferIsMarked) {
@@ -131,7 +191,8 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
                     } else {
                         bufferMarkLimit = (int) v10P;
                     }
-                    System.out.println("Buffer marked at index (1-Lookup) " + bufferMarkLimit); //$NON-NLS-1$
+                    System.out
+                            .println("Buffer marked at index (1-Lookup) " + bufferMarkLimit + ", to avoid a heap space memory error try to increase the JVM Xmx parameter."); //$NON-NLS-1$
                     bufferIsMarked = true;
                 }
             }
@@ -146,7 +207,127 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
             }
             bufferBeanIndex = 0;
         }
+
         buffer[bufferBeanIndex++] = bean;
+    }
+
+    private void checkClassOfBeanPropertiesInit(B bean) {
+        Class<? extends IPersistableComparableLookupRow> beanClass = bean.getClass();
+        Field[] declaredFields = beanClass.getDeclaredFields();
+
+        for (int i = 0; i < declaredFields.length; i++) {
+            Field propertyDescriptor = declaredFields[i];
+            int fieldModifier = propertyDescriptor.getModifiers();
+            if (Modifier.isPublic(fieldModifier)) {
+                Class<?> clazzOfBeanProperty = propertyDescriptor.getType();
+                String propertyName = propertyDescriptor.getName();
+                if (!FIELDS_TO_OMIT_SET.contains(propertyName) && !CUSTOM_SERIALIZATION_CLASSES_SET.contains(clazzOfBeanProperty)) {
+                    // if (WRITE_WARNING_IF_INHERITED_SET.contains(clazzOfBeanProperty)) {
+                    // propNameToCheckIsInherited.add(propertyDescriptor);
+                    // } else {
+                    // skipBytesEnabled = false;
+                    // break;
+                    // }
+                    skipBytesEnabled = false;
+                    break;
+                }
+
+                // boolean propertyIsPrimtive = clazzOfBeanProperty.isPrimitive();
+                // Object[] signers = clazzOfBeanProperty.getSigners();
+                // if (!propertyIsPrimtive) {
+                // int modifiers = clazzOfBeanProperty.getModifiers();
+                // boolean propertyHasFinalType = Modifier.isFinal(modifiers);
+                // if (!propertyHasFinalType) {
+                // propNameToCheckAtEachLine.add(propertyDescriptor);
+                // } else {
+                // Object propertyValue = null;
+                // try {
+                // propertyValue = propertyDescriptor.get(bean);
+                // } catch (IllegalAccessException e) {
+                // // TODO Auto-generated catch block
+                // e.printStackTrace();
+                // }
+                // if (propertyValue != null) {
+                // String className = clazzOfBeanProperty.getName();
+                // objectsToWriteAtBeginningOfValuesFile.put(className, propertyValue);
+                // } else {
+                // propNameToCheckWhileValueIsNull.add(propertyDescriptor);
+                // }
+                // }
+                // }
+            }
+        }
+
+        System.out.println("skipBytesEnabled=" + skipBytesEnabled);
+
+    }
+
+    private void checkClassOfBeanProperties(B bean) {
+        if (propNameToCheckIsInherited.size() > 0) {
+            int propNameToCheckIsInheritedListSize = propNameToCheckIsInherited.size();
+            for (int i = 0; i < propNameToCheckIsInheritedListSize; i++) {
+                Field propertyName = propNameToCheckIsInherited.get(i);
+                checkProperty(bean, propertyName, CHECK_PROPERTY_TYPE.CHECK_ALWAYS_INHERITED);
+            }
+        }
+        // if (propNameToCheckAtEachLine.size() > 0) {
+        // int propNameToCheckAtEachLineListSize = propNameToCheckAtEachLine.size();
+        // for (int i = 0; i < propNameToCheckAtEachLineListSize; i++) {
+        // Field propertyName = propNameToCheckAtEachLine.get(i);
+        // checkProperty(bean, propertyName, CHECK_PROPERTY_TYPE.CHECK_ALWAYS);
+        // }
+        // }
+        // if (propNameToCheckWhileValueIsNull.size() > 0) {
+        // for (Iterator<Field> iterator = propNameToCheckWhileValueIsNull.iterator(); iterator.hasNext();) {
+        // Field propertyName = iterator.next();
+        // boolean propertyNameToRemoveFromList = checkProperty(bean, propertyName,
+        // CHECK_PROPERTY_TYPE.CHECK_WHILE_NULL);
+        // if (propertyNameToRemoveFromList) {
+        // iterator.remove();
+        // }
+        // }
+        // }
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "checkProperty".
+     * 
+     * @param bean
+     * @param property
+     * @param checkType
+     * @return true if property has to be removed from list <code>propNameToCheckWhileValueIsNull</code>
+     */
+    private boolean checkProperty(B bean, Field property, CHECK_PROPERTY_TYPE checkType) {
+        Object propertyValue = null;
+        try {
+            propertyValue = property.get(bean);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        boolean removePropertyName = false;
+        if (propertyValue != null) {
+            String propertyName = property.getName();
+            String propertyClassName = propertyValue.getClass().getName();
+            if (checkType == CHECK_PROPERTY_TYPE.CHECK_ALWAYS_INHERITED
+                    && propertyValue.getClass().isInstance(propertyName.getClass())
+                    && !ALREADY_PROCESSED_PROPERTY_TO_WARN_CHANGE_TO_OBJECT.contains(propertyName)) {
+                ALREADY_PROCESSED_PROPERTY_TO_WARN_CHANGE_TO_OBJECT.add(propertyName);
+                System.out.println("To avoid some serialization error, we advice you to declare the field name '" + propertyName //$NON-NLS-1$
+                        + "' with the type 'Object'"); //$NON-NLS-1$
+            }
+            if ((checkType == CHECK_PROPERTY_TYPE.CHECK_ALWAYS_INHERITED || checkType == CHECK_PROPERTY_TYPE.CHECK_ALWAYS)
+                    && !objectsToWriteAtBeginningOfValuesFile.containsKey(propertyClassName)) {
+                objectsToWriteAtBeginningOfValuesFile.put(propertyClassName, propertyValue);
+            }
+            // if (checkType == CHECK_PROPERTY_TYPE.CHECK_WHILE_NULL
+            // && !objectsToWriteAtBeginningOfValuesFile.containsKey(propertyClassName)) {
+            // objectsToWriteAtBeginningOfValuesFile.put(propertyClassName, propertyValue);
+            // removePropertyName = true;
+            // }
+        }
+        return removePropertyName;
     }
 
     public void endPut() throws IOException {
@@ -161,23 +342,40 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
 
     }
 
-    private void writeBuffer() throws FileNotFoundException, IOException {
+    private void writeBuffer() throws IOException {
         if (this.sortEnabled) {
             Arrays.sort(buffer, 0, bufferBeanIndex);
         }
         File keysDataFile = new File(buildKeysFilePath(fileIndex));
         File valuesDataFile = new File(buildValuesFilePath(fileIndex));
-        ObjectOutputStream keysDataOutputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(
-                keysDataFile)));
-        DataOutputStream valuesDataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(
-                valuesDataFile)));
-        ObjectOutputStream valuesObjectOutputStream = new ObjectOutputStream(valuesDataOutputStream);
+
+        BufferedOutputStream keysBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(keysDataFile));
+        ObjectOutputStream keysDataOutputStream = null;
+        if (USE_JBOSS_IMPLEMENTATION) {
+            keysDataOutputStream = new JBossObjectOutputStream(keysBufferedOutputStream);
+        } else {
+            keysDataOutputStream = new ObjectOutputStream(keysBufferedOutputStream);
+        }
+
+        BufferedOutputStream valuesBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(valuesDataFile));
+        DataOutputStream valuesDataOutputStream = new DataOutputStream(valuesBufferedOutputStream);
+        ObjectOutputStream valuesObjectOutputStream = null;
+        if (USE_JBOSS_IMPLEMENTATION) {
+            valuesObjectOutputStream = new JBossObjectOutputStream(valuesDataOutputStream);
+        } else {
+            valuesObjectOutputStream = new ObjectOutputStream(valuesDataOutputStream);
+        }
 
         // System.out.println("Writing LOOKUP buffer " + fileIndex + "... ");
 
         int previousSize = valuesDataOutputStream.size();
         int writtenValuesDataSize = 0;
         int newSize = 0;
+
+        // writeDescriptors(valuesDataOutputStream, valuesObjectOutputStream);
+
+        previousSize = valuesDataOutputStream.size();
+
         for (int i = 0; i < bufferBeanIndex; i++) {
 
             IPersistableLookupRow<B> curBean = buffer[i];
@@ -212,24 +410,37 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
             RowProvider<B> rowProvider = new RowProvider<B>(rowCreator);
             lookupList[i] = getOrderedBeanLoohupInstance(buildKeysFilePath(i), buildValuesFilePath(i), i, rowProvider,
                     this.matchingMode);
+
         }
         lookupListSize = lookupList.length;
+    }
+
+    private void writeDescriptors(DataOutputStream valuesDataOutputStream, ObjectOutputStream valuesObjectOutputStream)
+            throws IOException {
+        Collection<Object> values = objectsToWriteAtBeginningOfValuesFile.values();
+        int countObjects = values.size();
+        valuesDataOutputStream.writeInt(countObjects);
+        if (countObjects > 0) {
+            for (Object object : values) {
+                valuesObjectOutputStream.writeObject(object);
+            }
+        }
     }
 
     private ILookupManagerUnit<B> getOrderedBeanLoohupInstance(String keysFilePath, String valuesFilePath, int i,
             RowProvider<B> rowProvider, MATCHING_MODE keysManagement) throws IOException {
         switch (keysManagement) {
         case FIRST_MATCH:
-            return new OrderedBeanLookupMatchFirst<B>(keysFilePath, valuesFilePath, i, rowProvider);
+            return new OrderedBeanLookupMatchFirst<B>(keysFilePath, valuesFilePath, i, rowProvider, skipBytesEnabled);
 
         case LAST_MATCH:
         case UNIQUE_MATCH:
 
-            return new OrderedBeanLookupMatchLast<B>(keysFilePath, valuesFilePath, i, rowProvider);
+            return new OrderedBeanLookupMatchLast<B>(keysFilePath, valuesFilePath, i, rowProvider, skipBytesEnabled);
 
         case ALL_MATCHES:
 
-            return new OrderedBeanLookupMatchAll<B>(keysFilePath, valuesFilePath, i, rowProvider);
+            return new OrderedBeanLookupMatchAll<B>(keysFilePath, valuesFilePath, i, rowProvider, skipBytesEnabled);
 
         case ALL_ROWS:
 
@@ -389,7 +600,6 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
         return super.clone();
     }
 
-    
     /**
      * Getter for sortEnabled.
      * 

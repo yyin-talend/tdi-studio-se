@@ -36,6 +36,21 @@
         MODULE="commons-collections-3.2.jar"
         REQUIRED="true"
       />
+      <IMPORT
+        NAME="Jboss"
+        MODULE="jboss-serialization.jar"
+        REQUIRED="true"
+      />
+      <IMPORT
+        NAME="Trove"
+        MODULE="trove.jar"
+        REQUIRED="true"
+      />
+      <IMPORT
+        NAME="Log4j"
+        MODULE="log4j.jar"
+        REQUIRED="true"
+      />
     </IMPORTS>
   </CODEGENERATION>
   

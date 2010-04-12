@@ -32,9 +32,10 @@ public class OrderedBeanLookupMatchLast<B extends Comparable<B> & IPersistableLo
 
     private boolean resultIsObsolete = true;
 
-    public OrderedBeanLookupMatchLast(String keysFilePath, String valuesFilePath, int fileIndex, IRowProvider<B> rowProvider)
+    public OrderedBeanLookupMatchLast(String keysFilePath, String valuesFilePath, int fileIndex, IRowProvider<B> rowProvider,
+            boolean skipBytesEnabled)
             throws IOException {
-        super(keysFilePath, valuesFilePath, fileIndex, rowProvider);
+        super(keysFilePath, valuesFilePath, fileIndex, rowProvider, skipBytesEnabled);
         lookupInstance = rowProvider.createInstance();
         previousLookupInstance = rowProvider.createInstance();
         resultLookupInstance = rowProvider.createInstance();
@@ -100,6 +101,9 @@ public class OrderedBeanLookupMatchLast<B extends Comparable<B> & IPersistableLo
                         lookupInstance.copyKeysDataTo(resultLookupInstance);
                     } else {
                         localSkip += currentValuesSize;
+                        if (currentValuesSize > 0) {
+                            countBeansToSkip++;
+                        }
                         previousValuesSize = currentValuesSize;
                         compareResult = -1;
                         previousCompareHasMatched = true;
@@ -108,6 +112,9 @@ public class OrderedBeanLookupMatchLast<B extends Comparable<B> & IPersistableLo
                 } else if (compareResult < 0) {
                     previousValuesSizeAlreadyAdded = true;
                     localSkip += previousValuesSize;
+                    if (previousValuesSize > 0) {
+                        countBeansToSkip++;
+                    }
                 }
             }
             startWithNewKey = false;
@@ -137,6 +144,9 @@ public class OrderedBeanLookupMatchLast<B extends Comparable<B> & IPersistableLo
 
                                     if (!previousCompareHasMatched && !previousValuesSizeAlreadyAdded) {
                                         localSkip += previousValuesSize;
+                                        if (previousValuesSize > 0) {
+                                            countBeansToSkip++;
+                                        }
                                     }
 
                                 } else if (compareResult > 0) {
@@ -145,8 +155,14 @@ public class OrderedBeanLookupMatchLast<B extends Comparable<B> & IPersistableLo
                                         compareResult = 0;
                                         sizeDataToRead = previousValuesSize;
                                         localSkip -= previousValuesSize;
+                                        if (previousValuesSize > 0) {
+                                            countBeansToSkip--;
+                                        }
                                     } else if (!previousValuesSizeAlreadyAdded) {
                                         localSkip += previousValuesSize;
+                                        if (previousValuesSize > 0) {
+                                            countBeansToSkip++;
+                                        }
                                     }
                                 }
 
@@ -154,9 +170,15 @@ public class OrderedBeanLookupMatchLast<B extends Comparable<B> & IPersistableLo
                                 sizeDataToRead = previousValuesSize;
                                 if (previousCompareHasMatched) {
                                     localSkip -= previousValuesSize;
+                                    if (previousValuesSize > 0) {
+                                        countBeansToSkip--;
+                                    }
                                     compareResult = 0;
                                 } else if (!previousValuesSizeAlreadyAdded) {
                                     localSkip += previousValuesSize;
+                                    if (previousValuesSize > 0) {
+                                        countBeansToSkip++;
+                                    }
                                 }
                                 previousLookupInstance.copyKeysDataTo(resultLookupInstance);
                             }
@@ -168,11 +190,17 @@ public class OrderedBeanLookupMatchLast<B extends Comparable<B> & IPersistableLo
                         }
                         lookupInstance.copyKeysDataTo(previousLookupInstance);
                         localSkip += currentValuesSize;
+                        if (currentValuesSize > 0) {
+                            countBeansToSkip++;
+                        }
                         previousValuesSizeAlreadyAdded = false;
                         previousValuesSize = currentValuesSize;
                     }
                     if (compareResult < 0 && !searchingNextNotMatchAfterMatchFound) {
                         localSkip += currentValuesSize;
+                        if (currentValuesSize > 0) {
+                            countBeansToSkip++;
+                        }
                     }
                 } while (true);
             }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="/home/amaumont/data/dev/eclipse/workspaces/workspace-talend-e34-linux-trunk/org.talend.designer.components.localprovider/components/tAdvancedHash/advancedPersistentLookupLib.jar"/>
+    <jar path="/home/amaumont/data/dev/eclipse/workspaces/workspace-talend-e35-linux-trunk/org.talend.designer.components.localprovider/components/tAdvancedHash/advancedPersistentLookupLib.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/org.talend.designer.components.localprovider/components/tAdvancedHash/export_advancedPersistentLookupLib.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -24,5 +24,4 @@
         <javaElement handleIdentifier="=org.talend.designer.components.localprovider/src\/main\/java&lt;org.talend.designer.components.persistent"/>
         <javaElement handleIdentifier="=org.talend.commons/src\/main\/java&lt;org.talend.commons.utils.time"/>
     </selectedElements>
-    <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
 </jardesc>

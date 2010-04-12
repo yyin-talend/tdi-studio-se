@@ -22,10 +22,10 @@ import routines.system.IPersistableLookupRow;
 
 /**
  * Ordered bean lookup for "All matches" matching mode.
+ * 
  * @param <B> bean
  */
-public class OrderedBeanLookupMatchAll<B extends Comparable<B> & IPersistableLookupRow<B>> extends
-        AbstractOrderedBeanLookup<B> {
+public class OrderedBeanLookupMatchAll<B extends Comparable<B> & IPersistableLookupRow<B>> extends AbstractOrderedBeanLookup<B> {
 
     protected boolean nextFromCache;
 
@@ -41,12 +41,13 @@ public class OrderedBeanLookupMatchAll<B extends Comparable<B> & IPersistableLoo
      * @param valuesFilePath
      * @param fileIndex
      * @param rowProvider
+     * @param skipBytesEnabled
      * @param keysManagement
      * @throws IOException
      */
-    public OrderedBeanLookupMatchAll(String keysFilePath, String valuesFilePath, int fileIndex,
-            IRowProvider<B> rowProvider) throws IOException {
-        super(keysFilePath, valuesFilePath, fileIndex, rowProvider);
+    public OrderedBeanLookupMatchAll(String keysFilePath, String valuesFilePath, int fileIndex, IRowProvider<B> rowProvider,
+            boolean skipBytesEnabled) throws IOException {
+        super(keysFilePath, valuesFilePath, fileIndex, rowProvider, skipBytesEnabled);
         lookupInstance = rowProvider.getFreeInstance();
     }
 
@@ -103,6 +104,9 @@ public class OrderedBeanLookupMatchAll<B extends Comparable<B> & IPersistableLoo
                 compareResult = lookupInstance.compareTo(currentSearchedKey);
                 if (compareResult == 0) {
                     localSkip -= previousValuesSize;
+                    if (previousValuesSize > 0) {
+                        countBeansToSkip--;
+                    }
                     // lookupInstance = previousLookupInstance;
                     if (previousCompareResultMatch) {
                         remainingSkip = 0;
@@ -138,6 +142,9 @@ public class OrderedBeanLookupMatchAll<B extends Comparable<B> & IPersistableLoo
                             lookupInstance.copyKeysDataTo(previousLookupInstance);
                             previousValuesSize = currentValuesSize;
                             localSkip += currentValuesSize;
+                            if (currentValuesSize > 0) {
+                                countBeansToSkip++;
+                            }
                         }
                         sizeDataToRead = currentValuesSize;
                         // previousLookupInstance = lookupInstance;
@@ -145,6 +152,9 @@ public class OrderedBeanLookupMatchAll<B extends Comparable<B> & IPersistableLoo
                     }
                     if (compareResult < 0) {
                         localSkip += currentValuesSize;
+                        if (currentValuesSize > 0) {
+                            countBeansToSkip++;
+                        }
                     }
                 } while (true);
             }
