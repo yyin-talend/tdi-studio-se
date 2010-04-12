@@ -145,12 +145,12 @@ public class JobContextLoadComponent implements IComponent {
         return null;
     }
 
-    public Boolean hasConditionalOutputs() {
+    public boolean hasConditionalOutputs() {
         return false;
     }
 
-    public Boolean isMultiplyingOutputs() {
-        return null;
+    public boolean isMultiplyingOutputs() {
+        return false;
     }
 
     public boolean isDataAutoPropagated() {

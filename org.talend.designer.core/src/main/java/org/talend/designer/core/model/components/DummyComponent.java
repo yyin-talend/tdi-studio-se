@@ -312,8 +312,7 @@ public class DummyComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
      */
-    public Boolean hasConditionalOutputs() {
-        // TODO Auto-generated method stub
+    public boolean hasConditionalOutputs() {
         return false;
     }
 
@@ -372,9 +371,8 @@ public class DummyComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isMultiplyingOutputs()
      */
-    public Boolean isMultiplyingOutputs() {
-        // TODO Auto-generated method stub
-        return null;
+    public boolean isMultiplyingOutputs() {
+        return false;
     }
 
     /*

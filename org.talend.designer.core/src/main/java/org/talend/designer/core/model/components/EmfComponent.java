@@ -1791,7 +1791,7 @@ public class EmfComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
      */
-    public Boolean hasConditionalOutputs() {
+    public boolean hasConditionalOutputs() {
         return compType.getHEADER().isHASCONDITIONALOUTPUTS();
     }
 
@@ -2342,7 +2342,7 @@ public class EmfComponent implements IComponent {
         return useMerge;
     }
 
-    public Boolean isMultiplyingOutputs() {
+    public boolean isMultiplyingOutputs() {
         return compType.getHEADER().isISMULTIPLYINGOUTPUTS();
     }
 

@@ -1770,11 +1770,11 @@ public class Node extends Element implements INode {
      * 
      * @see org.talend.core.model.process.INode#hasConditionnalOutputs()
      */
-    public Boolean hasConditionalOutputs() {
+    public boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
 
-    public Boolean isMultiplyingOutputs() {
+    public boolean isMultiplyingOutputs() {
         return component.isMultiplyingOutputs();
     }
 

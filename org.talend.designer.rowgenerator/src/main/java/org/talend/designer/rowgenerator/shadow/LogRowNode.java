@@ -203,11 +203,11 @@ public class LogRowNode extends AbstractNode {
         return this.componentName;
     }
 
-    public Boolean hasConditionalOutputs() {
+    public boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
 
-    public Boolean isMultiplyingOutputs() {
+    public boolean isMultiplyingOutputs() {
         return component.isMultiplyingOutputs();
     }
 

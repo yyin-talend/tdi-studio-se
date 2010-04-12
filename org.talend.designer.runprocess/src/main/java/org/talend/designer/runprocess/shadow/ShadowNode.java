@@ -254,7 +254,7 @@ public abstract class ShadowNode extends AbstractNode {
         // TODO Auto-generated method stub
     }
 
-    public Boolean hasConditionalOutputs() {
+    public boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
 
@@ -263,7 +263,7 @@ public abstract class ShadowNode extends AbstractNode {
      * 
      * @see org.talend.core.model.process.INode#isMultiplyingOutputs()
      */
-    public Boolean isMultiplyingOutputs() {
+    public boolean isMultiplyingOutputs() {
         return component.isMultiplyingOutputs();
     }
 
