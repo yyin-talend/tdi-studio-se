@@ -101,12 +101,15 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
+import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
+import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.User;
+import org.talend.core.model.properties.impl.JobletDocumentationItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
@@ -119,6 +122,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -547,6 +551,21 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     }
                     if ((items.contains(statusCode) || items.contains(user)) && !isStableItem(node)) {
                         visible = false;
+                    } else if (items.contains(RepositoryConstants.NOT_SET_STATUS)
+                            && (statusCode == null || "".equals(statusCode))) {
+                        visible = false;
+                        if (property != null) {
+                            if (property.getLabel().equals("aaIaaIaa")) {
+                                System.out.println();
+                            }
+                            Item item = property.getItem();
+                            if (item instanceof RoutineItem && ((RoutineItem) item).isBuiltIn() || item instanceof SQLPatternItem
+                                    && ((SQLPatternItem) item).isSystem() || item instanceof BusinessProcessItem
+                                    || item instanceof JobDocumentationItem || item instanceof JobletDocumentationItemImpl) {
+                                visible = true;
+                            }
+                        }
+
                     }
 
                 }
@@ -556,7 +575,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 if (visible && isMatchNameFilterPattern(label)) {
                     visible = true;
                 } else {
-
                     if (enableNameFilter && !isStableItem(node)) {
                         visible = false;
                     }

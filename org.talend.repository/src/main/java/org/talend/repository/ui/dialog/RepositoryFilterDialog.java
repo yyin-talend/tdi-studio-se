@@ -55,6 +55,7 @@ import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProjectRepositoryNode;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -284,6 +285,12 @@ public class RepositoryFilterDialog extends Dialog {
             }
 
         }
+        TableItem item = new TableItem(statusTable, SWT.NONE);
+        item.setText(1, "not set status");
+        item.setData(RepositoryConstants.NOT_SET_STATUS, RepositoryConstants.NOT_SET_STATUS);
+        if (!uncheckedStatus.contains(RepositoryConstants.NOT_SET_STATUS)) {
+            item.setChecked(true);
+        }
     }
 
     private boolean filterRepositoryNode(Object element) {
@@ -455,10 +462,17 @@ public class RepositoryFilterDialog extends Dialog {
             public void widgetSelected(SelectionEvent e) {
                 if (e.detail == SWT.CHECK) {
                     TableItem item = (TableItem) e.item;
+                    String text = item.getText(0);
+                    if (text == null || "".equals(text)) {
+                        Object data = item.getData(RepositoryConstants.NOT_SET_STATUS);
+                        if (data != null && RepositoryConstants.NOT_SET_STATUS.equals(data)) {
+                            text = data.toString();
+                        }
+                    }
                     if (!item.getChecked()) {
-                        uncheckedStatus.add(item.getText(0));
+                        uncheckedStatus.add(text);
                     } else {
-                        uncheckedStatus.remove(item.getText(0));
+                        uncheckedStatus.remove(text);
                     }
                 }
             }
