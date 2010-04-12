@@ -12,9 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.jobsettings;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -36,10 +40,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -49,6 +57,15 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.model.update.UpdatesConstants;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -57,11 +74,14 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Add buttons for loading and saving values between preference page and job view.
@@ -337,33 +357,98 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                  * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
                  */
                 public void widgetSelected(SelectionEvent e) {
-                    for (INode runjobNode : tRunJobNodes) {
+                    // zli for bug 12335
+                    final ProgressDialog progress = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                            .getShell()) {
 
-                        String id = (String) runjobNode.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName())
-                                .getValue();
-                        String version = (String) runjobNode.getElementParameter(EParameterName.PROCESS_TYPE_VERSION.getName())
-                                .getValue();
-                        if ("".equals(id) || id == null) { //$NON-NLS-1$
-                            MessageDialog.openWarning(getShell(), Messages.getString(
-                                    "AbstractPreferenceComposite.warning", runjobNode.getUniqueName()), //$NON-NLS-1$
-                                    Messages.getString("AbstractPreferenceComposite.jobAssigned", runjobNode.getUniqueName())); //$NON-NLS-1$
-                            return;
-                        }
-                        IEditorReference[] editorReferences = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                                .getActivePage().getEditorReferences();
-                        IEditorPart activeEditorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                                .getActiveEditor();
-                        for (IEditorReference editorReference : editorReferences) {
-                            IEditorPart editorPart = editorReference.getEditor(false);
-                            if ((editorPart != activeEditorPart) && (editorPart instanceof MultiPageTalendEditor)) {
-                                IElement element = ((MultiPageTalendEditor) editorPart).getProcess();
-                                StatsAndLogsViewHelper.applySettings(elem, element, AbstractPreferenceComposite.this);
+                        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+
+                            IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                            IEditorReference[] editorReferences = activePage.getEditorReferences();
+
+                            CorePlugin defaultPlugin = CorePlugin.getDefault();
+                            IDesignerCoreService designerCoreService = defaultPlugin.getDesignerCoreService();
+                            List<IProcess> openedProcessList = designerCoreService.getOpenedProcess(RepositoryUpdateManager
+                                    .getEditors());
+
+                            List<String> activeProcessId = new ArrayList<String>();
+                            for (IProcess process : openedProcessList) {
+                                activeProcessId.add(process.getId());
+                            }
+                            final int rate = 1 / openedProcessList.size() - activeProcessId.size();
+                            for (INode runjobNode : tRunJobNodes) {
+                                String id = (String) runjobNode
+                                        .getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getValue();
+                                String version = (String) runjobNode.getElementParameter(
+                                        EParameterName.PROCESS_TYPE_VERSION.getName()).getValue();
+                                if ("".equals(id) || id == null) { //$NON-NLS-1$
+                                    MessageDialog.openWarning(getShell(), Messages.getString(
+                                            "AbstractPreferenceComposite.warning", runjobNode.getUniqueName()), //$NON-NLS-1$
+                                            Messages.getString(
+                                                    "AbstractPreferenceComposite.jobAssigned", runjobNode.getUniqueName())); //$NON-NLS-1$
+                                    return;
+                                }
+                                if (activeProcessId.contains(id)) {
+                                    IEditorPart activeEditorPart = activePage.getActiveEditor();
+                                    for (IEditorReference editorReference : editorReferences) {
+                                        IEditorPart editorPart = editorReference.getEditor(false);
+                                        if ((editorPart != activeEditorPart) && (editorPart instanceof MultiPageTalendEditor)) {
+                                            IElement element = ((MultiPageTalendEditor) editorPart).getProcess();
+                                            StatsAndLogsViewHelper.applySettings(elem, element, AbstractPreferenceComposite.this);
+                                        }
+                                    }
+                                } else {
+                                    try {
+                                        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor,
+                                                1 * UpdatesConstants.SCALE, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
+                                        subMonitor.beginTask(UpdatesConstants.EMPTY, 1 * rate);
+                                        IRepositoryObject lastVersion = DesignerPlugin.getDefault().getProxyRepositoryFactory()
+                                                .getLastVersion(id);
+                                        if (lastVersion != null) {
+                                            Item item = lastVersion.getProperty().getItem();
+                                            IProcess processFromItem = designerCoreService.getProcessFromItem(item);
+                                            if (processFromItem instanceof Process) {
+
+                                                Process process = (Process) processFromItem;
+
+                                                StatsAndLogsViewHelper.applySettings(elem, process,
+                                                        AbstractPreferenceComposite.this);
+
+                                                IProxyRepositoryFactory factory = defaultPlugin.getProxyRepositoryFactory();
+                                                Property property = factory.getUptodateProperty(process.getProperty());
+                                                process.setProperty(property);
+                                                subMonitor.subTask(RepositoryUpdateManager.getUpdateJobInfor(process
+                                                        .getProperty()));
+
+                                                ProcessType processType = process.saveXmlFile();
+                                                Item item2 = process.getProperty().getItem();
+                                                if (item2 instanceof JobletProcessItem) {
+                                                    ((JobletProcessItem) item2).setJobletProcess((JobletProcess) processType);
+                                                } else {
+                                                    ((ProcessItem) item2).setProcess(processType);
+                                                }
+                                                factory.save(item2);
+                                                subMonitor.done();
+
+                                            }
+                                        }
+                                    } catch (PersistenceException e1) {
+                                        e1.printStackTrace();
+                                    } catch (IOException e2) {
+                                        e2.printStackTrace();
+                                    }
+                                }
+                                applySettingsToSubJob(id, version);
                             }
                         }
-                        applySettingsToSubJob(id, version);
-
+                    };
+                    try {
+                        progress.executeProcess();
+                    } catch (InvocationTargetException e1) {
+                        e1.printStackTrace();
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
                     }
-
                 }
 
                 /**

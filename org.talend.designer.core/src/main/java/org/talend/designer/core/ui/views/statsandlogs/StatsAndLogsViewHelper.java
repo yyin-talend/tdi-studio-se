@@ -29,7 +29,6 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -142,42 +141,12 @@ public class StatsAndLogsViewHelper {
             }
 
             if (parameterName.equals(EParameterName.PROPERTY_TYPE.getName())) {
-                //elementParameterType.setValue(String.valueOf(element.getElementParameter(EParameterName.PROPERTY_TYPE.
-                // getName())
-                // .getValue()));
-                //
-                // ElementParameter repositoryPropertyType = (ElementParameter)
-                // elementParameterType.getChildParameters().get(
-                // EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                // repositoryPropertyType.setValue(element.getElementParameter(
-                // EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
-                // .getValue());
-                //
-                // ElementParameter repositorPropertyType = (ElementParameter)
-                // elementParameterType.getChildParameters().get(
-                // EParameterName.PROPERTY_TYPE.getName());
-                // repositorPropertyType.setValue(element.getElementParameter(
-                // EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue());
 
                 String id = (String) element.getElementParameter(
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()) //$NON-NLS-1$
                         .getValue();
                 String propertyType = (String) element.getElementParameter(
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue(); //$NON-NLS-1$
-                // String connectionLabel = null;
-                //
-                // RepositoryContentProvider contentProvider = (RepositoryContentProvider)
-                // RepositoryView.show().getViewer()
-                // .getContentProvider();
-                // RepositoryNode repositoryNode = (contentProvider).getMetadataConNode();
-                //
-                // IElementParameter parameterRepositoryType =
-                // element.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
-                // .getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                // if (parameterRepositoryType != null) {
-                // parameterRepositoryType.setLinkedRepositoryItem(findConnectionItem(contentProvider, repositoryNode,
-                // connectionLabel));
-                // }
 
                 Connection repositoryConnection = null;
                 Map<String, ConnectionItem> repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
@@ -195,7 +164,7 @@ public class StatsAndLogsViewHelper {
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
                 cmd2.setMaps(dynamicProperty.getRepositoryTableMap());
 
-                AbstractMultiPageTalendEditor part = ((Process) element).getEditor();
+                AbstractMultiPageTalendEditor part = ((Process) applyTo).getEditor();
                 if (part instanceof AbstractMultiPageTalendEditor) {
                     Object adapter = ((AbstractMultiPageTalendEditor) part).getTalendEditor().getAdapter(CommandStack.class);
                     if (adapter != null) {
@@ -203,6 +172,12 @@ public class StatsAndLogsViewHelper {
                         commandStack.execute(cmd1);
                         commandStack.execute(cmd2);
                     }
+                } else {
+                    // zli for bug 12335
+                    CommandStack commandStack = ((Process) applyTo).getCommandStack();
+                    commandStack.execute(cmd1);
+                    commandStack.execute(cmd2);
+
                 }
 
                 continue;
