@@ -503,12 +503,29 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             }
 
             private boolean filterByUserStatusName(RepositoryNode node) {
-                boolean visible = true;
-                // empty folder created by current user
-                boolean emptyFolderVisible = true;
-
                 String[] statusFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_STATUS);
                 String[] userFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_USER);
+                boolean enableNameFilter = RepositoryManager.getPreferenceStore().getBoolean(
+                        IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED);
+                if (statusFilter == null && userFilter == null && !enableNameFilter) {
+                    return true;
+                }
+
+                boolean visible = true;
+
+                if (ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
+                    visible = isStableItem(node);
+                    if (visible) {
+                        return true;
+                    }
+                    for (RepositoryNode childNode : node.getChildren()) {
+                        visible = visible || filterByUserStatusName(childNode);
+                        if (visible) {
+                            return true;
+                        }
+                    }
+                    return visible;
+                }
 
                 List items = new ArrayList();
                 if (statusFilter != null && statusFilter.length > 0) {
@@ -531,9 +548,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     if ((items.contains(statusCode) || items.contains(user)) && !isStableItem(node)) {
                         visible = false;
                     }
-                    if (items.contains(user)) {
-                        emptyFolderVisible = false;
-                    }
 
                 }
 
@@ -542,19 +556,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 if (visible && isMatchNameFilterPattern(label)) {
                     visible = true;
                 } else {
-                    boolean enable = RepositoryManager.getPreferenceStore().getBoolean(
-                            IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED);
-                    if (enable && !isStableItem(node)) {
-                        visible = false;
-                    }
-                }
 
-                // hide user created folder that has no visible children
-                if (!emptyFolderVisible && ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
-                    if (!isStableItem(node) && !hasVisibleChildren(node)) {
+                    if (enableNameFilter && !isStableItem(node)) {
                         visible = false;
-                    } else {
-                        visible = true;
                     }
                 }
 
