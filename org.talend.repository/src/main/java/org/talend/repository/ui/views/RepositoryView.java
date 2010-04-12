@@ -1063,7 +1063,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     public void refreshAllChildNodes(RepositoryNode rootNode) {
         if (rootNode != null) {
             rootNode.setInitialized(false);
-            rootNode.getChildren().clear();
+            if (!rootNode.getContentType().equals(ERepositoryObjectType.METADATA))
+                rootNode.getChildren().clear();
             // for bug 11786
             if (rootNode.getParent() instanceof ProjectRepositoryNode) {
                 ((ProjectRepositoryNode) rootNode.getParent()).clearNodeAndProjectCash();
