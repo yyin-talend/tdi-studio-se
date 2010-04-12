@@ -268,17 +268,18 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 
 <%
 		if (metadata !=null) {
-			boolean hasString = false;
-			boolean hasDate = false;
-			boolean hasByteArray = false;
+			boolean hasString1 = false;
+			boolean hasString2 = false;
+			boolean hasDate1 = false;
+			boolean hasDate2 = false;
+			boolean hasByteArray1 = false;
+			boolean hasByteArray2 = false;
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 
 				if(typeToGenerate.equals("String")) {
-					if (!hasString) {
-						hasString =true;
-						if (!isLookup || hashableColumnsNames.contains(column.getLabel())) {
+					if (!hasString1 && (!isLookup || hashableColumnsNames.contains(column.getLabel()))) {
+						hasString1 =true;
 %>
 
 	private String readString(ObjectInputStream dis) throws IOException{
@@ -311,7 +312,8 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     	}
     }
 <%
-						}else{
+					} else if(!hasString2 && (isLookup && !hashableColumnsNames.contains(column.getLabel()))){
+						hasString2 = true;
 %>
 
 	private String readString(DataInputStream dis, ObjectInputStream ois) throws IOException{
@@ -338,12 +340,10 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     	}
 	}
 <%
-						}
 					}
 				} else if(typeToGenerate.equals("java.util.Date")) {
-					if (!hasDate) {
-						hasDate = true;
-						if(!isLookup || hashableColumnsNames.contains(column.getLabel())) {
+					if(!hasDate1 && (!isLookup || hashableColumnsNames.contains(column.getLabel()))) {
+						hasDate1 = true;
 %>
 
 	private java.util.Date readDate(ObjectInputStream dis) throws IOException{
@@ -367,7 +367,8 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     	}
     }
 <%
-						}else{
+					}else if (!hasDate2 && (isLookup && !hashableColumnsNames.contains(column.getLabel()))) {
+						hasDate2 = true;
 %>
 
 	private java.util.Date readDate(DataInputStream dis, ObjectInputStream ois) throws IOException{
@@ -391,12 +392,10 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     	}
 	}
 <%
-						}
 					}
 				} else if(typeToGenerate.equals("byte[]")) {
-					if (!hasByteArray){
-						hasByteArray = true;
-						if(!isLookup || hashableColumnsNames.contains(column.getLabel())) {
+					if(!hasByteArray1 && (!isLookup || hashableColumnsNames.contains(column.getLabel()))) {
+						hasByteArray1 = true;
 %>
 	private byte[] readByteArray(ObjectInputStream dis) throws IOException{
 		byte[] byteArrayReturn;
@@ -421,7 +420,8 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     	}
     }
 <%
-						}else{
+					}else if (!hasByteArray2 && (isLookup && !hashableColumnsNames.contains(column.getLabel()))) {
+						hasByteArray2 = true;
 %>
 	private byte[] readByteArray(DataInputStream dis, ObjectInputStream ois) throws IOException{
 		byte[] byteArrayReturn;
@@ -446,7 +446,6 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     	}
 	}
 <%
-						}
 					}
 				}
 			}
