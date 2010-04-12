@@ -37,6 +37,8 @@ String fileName = ElementParameterParser.getValue(node, "__FILENAME__") ;
 
 String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__") ;
 
+boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
+
 List<IMetadataColumn> columnList = getColumnList(node);
 
 if(useExistingConn) {
@@ -219,6 +221,14 @@ if(columnList != null && columnList.size() > 0) {
 }
 %>
     strSQL =strSQL + " escapes off ";
+    
+<%
+	if (isIncludeHeader) {
+%>
+	strSQL =strSQL + " skip 1 ";
+<%
+	}
+%>
     
     stmt_<%=cid %>.execute(strSQL);
 
