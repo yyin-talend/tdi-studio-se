@@ -1483,24 +1483,35 @@ public class ProcessComposite extends Composite {
             String mess = psMess.getContent();
             String[] linesMess = mess.split("\n");//$NON-NLS-1$
             StringBuffer currentMess = new StringBuffer();
+            String currenctJobName = processContext.getProcess().getName();
             for (int i = 0; i < linesMess.length; i++) {
+                String tRunJobName = currenctJobName;
                 String linemess = linesMess[i].trim(); //$NON-NLS-1$
                 Pattern pattern = Pattern.compile("^Exception\\s*in\\s*component\\s*(\\w)+_\\d$");//$NON-NLS-1$
                 Matcher m = pattern.matcher(linemess);
                 if (m.find()) {
                     String[] allwords = linemess.split("\\s"); //$NON-NLS-1$
                     String componentName = allwords[allwords.length - 1];
-                    if (i == 0) {
-                        errorMessMap.put(componentName, psMess);
-                    } else {
-                        for (int j = i; j < linesMess.length; j++) {
-                            currentMess.append(linesMess[j] + "\n"); //$NON-NLS-1$
-                        }
-                        IProcessMessage currentProMess = new ProcessMessage(MsgType.STD_ERR, currentMess.toString());
-                        errorMessMap.put(componentName, currentProMess);
+                    int currentI = i;
+                    if (currentI < linesMess.length - 1) {
+                        do {
+                            tRunJobName = linesMess[++currentI];
+                        } while ((tRunJobName.lastIndexOf("(") == -1 || tRunJobName.lastIndexOf(".java") == -1)
+                                && currentI < linesMess.length - 1);
+                        tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName.lastIndexOf(".java"));
                     }
-
-                    break;
+                    if (tRunJobName != null && tRunJobName.equals(currenctJobName)) {
+                        if (i == 0) {
+                            errorMessMap.put(componentName, psMess);
+                        } else {
+                            for (int j = i; j < linesMess.length; j++) {
+                                currentMess.append(linesMess[j] + "\n"); //$NON-NLS-1$
+                            }
+                            IProcessMessage currentProMess = new ProcessMessage(MsgType.STD_ERR, currentMess.toString());
+                            errorMessMap.put(componentName, currentProMess);
+                        }
+                    }
+                    // break;
                 }
 
             }
