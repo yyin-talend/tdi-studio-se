@@ -260,7 +260,8 @@ public enum EParameterName {
     // BASED_ON_INPUT_SCHEMAS
     BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS"), //$NON-NLS-1$
     KEEP_CDC_DATAS(Messages.getString("EParameterName.KeepCDCDatasTitle")), //$NON-NLS-1$
-    VALUES("VALUES"); //$NON-NLS-1$
+    VALUES("VALUES"), //$NON-NLS-1$
+    JAVA_LIBRARY_PATH("JAVA_LIBRARY_PATH"); //$NON-NLS-1$
 
     private String displayName;
 

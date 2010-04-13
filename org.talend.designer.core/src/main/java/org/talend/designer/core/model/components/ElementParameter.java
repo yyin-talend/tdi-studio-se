@@ -129,6 +129,14 @@ public class ElementParameter implements IElementParameter {
 
     private boolean noContextAssist;
 
+    private String javaClass; // for JAVA_COMMAND
+
+    private String javaFunction; // for JAVA_COMMAND
+
+    private String jar; // for JAVA_COMMAND
+
+    private String[] args;
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -942,5 +950,77 @@ public class ElementParameter implements IElementParameter {
         clone.setNoContextAssist(isNoContextAssist());
 
         return clone;
+    }
+
+    /**
+     * Getter for javaMethod.
+     * 
+     * @return the javaMethod
+     */
+    public String getJavaClass() {
+        return this.javaClass;
+    }
+
+    /**
+     * Sets the javaMethod.
+     * 
+     * @param javaMethod the javaMethod to set
+     */
+    public void setJavaClass(String javaClass) {
+        this.javaClass = javaClass;
+    }
+
+    /**
+     * Getter for jar.
+     * 
+     * @return the jar
+     */
+    public String getJar() {
+        return this.jar;
+    }
+
+    /**
+     * Sets the jar.
+     * 
+     * @param jar the jar to set
+     */
+    public void setJar(String jar) {
+        this.jar = jar;
+    }
+
+    /**
+     * Getter for args.
+     * 
+     * @return the args
+     */
+    public String[] getArgs() {
+        return this.args;
+    }
+
+    /**
+     * Sets the args.
+     * 
+     * @param args the args to set
+     */
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
+    /**
+     * Getter for javaFunction.
+     * 
+     * @return the javaFunction
+     */
+    public String getJavaFunction() {
+        return this.javaFunction;
+    }
+
+    /**
+     * Sets the javaFunction.
+     * 
+     * @param javaFunction the javaFunction to set
+     */
+    public void setJavaFunction(String javaFunction) {
+        this.javaFunction = javaFunction;
     }
 }

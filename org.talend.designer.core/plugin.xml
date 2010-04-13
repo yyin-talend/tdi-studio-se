@@ -402,15 +402,6 @@
       <GlobalAction class="org.talend.designer.core.ui.action.ShowEditorPageAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowDesignerPageAction"/>
    </extension>
-   <extension
-         point="org.talend.core.service">
-      <Service
-      		serviceId="IDesignerCoreService"
-      		class="org.talend.designer.core.DesignerCoreService"/>
-      <Service
-            class="org.talend.designer.core.ui.editor.TalendEditor"
-            serviceId="ITalendEditorService"/>
-   </extension>
       <extension
             point="org.talend.designer.core.generators">
       <generator
@@ -576,8 +567,22 @@
            class="org.talend.designer.core.ui.editor.properties.controllers.generator.TNSEditorGenerator"
            mapping="TNS_EDITOR"
            name="Tns Deitor">
+     </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.JavaCommandGenerator"
+           mapping="JAVA_COMMAND"
+           name="Java Command">
      </generator>     
 	 
+   </extension>
+   <extension
+         point="org.talend.core.service">
+      <Service
+      		serviceId="IDesignerCoreService"
+      		class="org.talend.designer.core.DesignerCoreService"/>
+      <Service
+            class="org.talend.designer.core.ui.editor.TalendEditor"
+            serviceId="ITalendEditorService"/>
    </extension>
    
    <extension

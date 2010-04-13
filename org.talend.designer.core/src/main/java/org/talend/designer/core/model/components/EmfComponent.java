@@ -76,6 +76,7 @@ import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
+import org.talend.designer.core.model.utils.emf.component.ARGType;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
 import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
@@ -874,6 +875,17 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
 
         param = new ElementParameter(node);
+        param.setName(EParameterName.JAVA_LIBRARY_PATH.getName());
+        param.setCategory(EComponentCategory.ADVANCED);
+        param.setField(EParameterFieldType.DIRECTORY);
+        param.setDisplayName(EParameterName.JAVA_LIBRARY_PATH.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setValue(CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath());
+        param.setReadOnly(true);
+        listParam.add(param);
+
+        param = new ElementParameter(node);
         param.setName(EParameterName.SUBJOB_COLOR.getName());
         param.setValue(compType.getHEADER().getSUBJOBCOLOR());
         param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
@@ -1279,6 +1291,18 @@ public class EmfComponent implements IComponent {
             case PROPERTY_TYPE:
                 param.setValue(""); //$NON-NLS-1$
                 break;
+            case JAVA_COMMAND:
+                param.setValue("");
+                if (xmlParam.getJAVACOMMAND() != null) {
+                    param.setJar(xmlParam.getJAVACOMMAND().getJAR());
+                    param.setJavaClass(xmlParam.getJAVACOMMAND().getCLASS());
+                    param.setJavaFunction(xmlParam.getJAVACOMMAND().getFUNCTION());
+                    List<String> args = new ArrayList<String>();
+                    for (ARGType argType : (List<ARGType>) xmlParam.getJAVACOMMAND().getARG()) {
+                        args.add(argType.getValue());
+                    }
+                    param.setArgs(args.toArray(new String[0]));
+                }
             default:
                 param.setValue(""); //$NON-NLS-1$
             }
