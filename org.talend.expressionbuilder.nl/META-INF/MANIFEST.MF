@@ -4,5 +4,4 @@ Bundle-Name: Expression Builder Nl Fragment
 Bundle-SymbolicName: org.talend.expressionbuilder.nl
 Bundle-Version: 2.2.0.qualifier
 Fragment-Host: org.talend.expressionbuilder
-Bundle-Localization: plugin
 Bundle-Vendor: .Talend SA.
