@@ -58,11 +58,16 @@ imports="
 		//-----------according schema type to generate ResultSet
 	    public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-			if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>) != null) {
-			    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
-			} else {
-			    <%=firstConnName%>.<%=column.getLabel()%> =  null;
-			}			 
+	        if(rs_<%=cid %>.getString(<%=currentColNo%>) != null) {
+	            String dateString_<%=cid%> = rs_<%=cid%>.getString(<%=currentColNo%>);
+	            if (!("0000-00-00").equals(dateString_<%=cid%>) && !("0000-00-00 00:00:00").equals(dateString_<%=cid%>)) {
+	                <%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid%>.getTimestamp(<%=currentColNo%>);
+	            } else {
+	                <%=firstConnName%>.<%=column.getLabel()%> = (java.util.Date) year0_<%=cid%>.clone();
+	            }
+	        } else {
+	            <%=firstConnName%>.<%=column.getLabel()%> =  null;
+	        }			 
 <%
 	    }
 	    
