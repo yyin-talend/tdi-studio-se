@@ -151,7 +151,7 @@ public enum EParameterName {
     PORT(Messages.getString("EParameterName.port")), //$NON-NLS-1$
     DBNAME(Messages.getString("EParameterName.dbName")), //$NON-NLS-1$
     SCHEMA_DB(Messages.getString("EParameterName.schemaDb")), //$NON-NLS-1$
-    LOCAL_SERVICE_NAME(Messages.getString("EParameterName.service_name")),
+    LOCAL_SERVICE_NAME(Messages.getString("EParameterName.service_name")), //$NON-NLS-1$
     USER(Messages.getString("EParameterName.user")), //$NON-NLS-1$
     PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$
     TABLE_STATS(Messages.getString("EParameterName.tableStats")), //$NON-NLS-1$
@@ -167,6 +167,8 @@ public enum EParameterName {
     DATASOURCE(Messages.getString("EParameterName.dataSource")), //$NON-NLS-1$
     USE_SHARED_CONNECTION(Messages.getString("EParameterName.useSharedConnection")), //$NON-NLS-1$
     SHARED_CONNECTION_NAME(Messages.getString("EParameterName.sharedConnectionName")), //$NON-NLS-1$
+    SAP_FUNCTION(Messages.getString("EParameterName.FunName")), //$NON-NLS-1$
+
     /**
      * For Job Settings extra parameters.
      */
