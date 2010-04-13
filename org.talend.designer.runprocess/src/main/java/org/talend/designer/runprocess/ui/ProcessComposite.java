@@ -1498,7 +1498,11 @@ public class ProcessComposite extends Composite {
                             tRunJobName = linesMess[++currentI];
                         } while ((tRunJobName.lastIndexOf("(") == -1 || tRunJobName.lastIndexOf(".java") == -1)
                                 && currentI < linesMess.length - 1);
-                        tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName.lastIndexOf(".java"));
+                        if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
+                            tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName
+                                    .lastIndexOf(".java"));
+                        else
+                            tRunJobName = currenctJobName;
                     }
                     if (tRunJobName != null && tRunJobName.equals(currenctJobName)) {
                         if (i == 0) {
