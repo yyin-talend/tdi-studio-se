@@ -871,9 +871,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // achen modify to fix bug 0006108
         // rearchieve the jobscript zip file
         ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
-        if (curLanguage == ECodeLanguage.JAVA) {
-            reBuildJobZipFile();
-        }
+        // if (curLanguage == ECodeLanguage.JAVA) {
+        reBuildJobZipFile();
+        // }
         // see bug 7181
         if (zipOption != null && zipOption.equals("true")) { //$NON-NLS-1$
             // unzip
