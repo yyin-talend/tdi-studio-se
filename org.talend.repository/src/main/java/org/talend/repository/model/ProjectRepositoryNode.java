@@ -871,8 +871,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     .getReferencedProjects()) {
                 String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields().get(
                         IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel());
-
-                if (refProject.getBranch() != null && refProject.getBranch().equals(parentBranch)) {
+                // if not a DB ref project, modified by nma, order 12519
+                if (refProject.getReferencedProject().getUrl().startsWith("teneo")
+                        || (refProject.getBranch() != null && refProject.getBranch().equals(parentBranch))) {
                     Project emfProject = refProject.getReferencedProject();
                     ProjectRepositoryNode referencedProjectNode = new ProjectRepositoryNode(
                             new org.talend.core.model.general.Project(emfProject), null, parent, this,
