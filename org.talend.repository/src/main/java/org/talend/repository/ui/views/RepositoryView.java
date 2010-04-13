@@ -555,9 +555,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                             && (statusCode == null || "".equals(statusCode))) {
                         visible = false;
                         if (property != null) {
-                            if (property.getLabel().equals("aaIaaIaa")) {
-                                System.out.println();
-                            }
                             Item item = property.getItem();
                             if (item instanceof RoutineItem && ((RoutineItem) item).isBuiltIn() || item instanceof SQLPatternItem
                                     && ((SQLPatternItem) item).isSystem() || item instanceof BusinessProcessItem
