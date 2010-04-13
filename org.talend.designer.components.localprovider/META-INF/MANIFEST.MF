@@ -19,4 +19,5 @@ Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.designer.components,
  org.talend.designer.components.lookup.common,
  org.talend.designer.components.ui
-Bundle-ClassPath: components/tAdvancedHash/jboss-serialization.jar
+Bundle-ClassPath: components/tAdvancedHash/jboss-serialization.jar,
+ .
