@@ -37,7 +37,7 @@
     <PARAMETER
       NAME="ENDPOINT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>"http://127.0.0.1:8088/sugarcrm/soap.php"</DEFAULT>
@@ -46,7 +46,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="20"
       REQUIRED="true"
     >
       <DEFAULT>"admin"</DEFAULT>
@@ -55,7 +55,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="20"
       REQUIRED="true"
     >
       <DEFAULT>"password"</DEFAULT>
@@ -64,7 +64,7 @@
     <PARAMETER
       NAME="ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="5"      
+      NUM_ROW="50"      
       REQUIRED="true"
     >
       <ITEMS DEFAULT="insert">
@@ -73,7 +73,7 @@
       </ITEMS>
     </PARAMETER>
 
-    <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="3" REQUIRED="true">
+    <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="30" REQUIRED="true">
        <ITEMS DEFAULT="Contacts">
 	  <ITEM NAME="ACL"   VALUE="ACL" />
 	  <ITEM NAME="ACLActions"   VALUE="ACLActions" />
@@ -140,13 +140,22 @@
 	  <ITEM NAME="Users"   VALUE="Users" />
 	  <ITEM NAME="Versions"   VALUE="Versions" />
 	  <ITEM NAME="iFrames"   VALUE="iFrames" />
+	  <ITEM NAME="CustomModule"   VALUE="CustomModule" />
        </ITEMS>
     </PARAMETER>
-    
+     <PARAMETER NAME="CUSTOM_MODULE_PACKAGE" FIELD="TEXT" NUM_ROW="40" REQUIRED="true"
+    		 SHOW_IF="MODULENAME=='CustomModule'">
+			<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="40" REQUIRED="true"
+    		 SHOW_IF="MODULENAME=='CustomModule'">
+			<DEFAULT>""</DEFAULT>
+	</PARAMETER>
         <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REQUIRED="true"
     >
       <TABLE IF="(MODULENAME=='Home') and (ACTION=='insert')">
@@ -2096,6 +2105,8 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='MergeRecords') and (ACTION=='update')">
       </TABLE>    
+      <TABLE IF="MODULENAME=='CustomModule'">
+      </TABLE> 
    </PARAMETER>	
     
     
