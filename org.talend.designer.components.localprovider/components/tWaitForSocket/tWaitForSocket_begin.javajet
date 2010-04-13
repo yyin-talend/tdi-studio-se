@@ -40,11 +40,9 @@ while (ifContinue<%=cid%>) {
         out<%=cid%> = new java.io.PrintWriter(socket<%=cid%>.getOutputStream(), true);
         out<%=cid%>.println(<%=output%>); 
         
-        in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream()));
+        in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream()),1024);
         StringBuilder sb<%=cid%> = new StringBuilder();
-        char[] target<%=cid%> = new char[1024];
-        in<%=cid%>.read(target<%=cid%>);
-        sb<%=cid%>.append(target<%=cid%>);
+		sb<%=cid%>.append(in<%=cid%>.readLine()); 
         <% if(("true").equals(print)){ %>
         //get data from client
             System.out.println(socket<%=cid%>.getInetAddress()+" input is : ");
