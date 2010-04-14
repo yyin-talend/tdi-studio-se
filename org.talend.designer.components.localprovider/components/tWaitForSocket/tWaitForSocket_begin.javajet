@@ -42,7 +42,11 @@ while (ifContinue<%=cid%>) {
         
         in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream()));
         StringBuilder sb<%=cid%> = new StringBuilder();
-		sb<%=cid%>.append(in<%=cid%>.readLine()); 
+        String line_<%=cid%> = in<%=cid%>.readLine();
+        while(line_<%=cid%> != null){
+			sb<%=cid%>.append(line_<%=cid%>+"\n");
+			line_<%=cid%> = in<%=cid%>.readLine();
+        }
         <% if(("true").equals(print)){ %>
         //get data from client
             System.out.println(socket<%=cid%>.getInetAddress()+" input is : ");
