@@ -371,6 +371,10 @@ public class DataProcess {
         dataConnec.setConnectorName(connection.getConnectorName());
         dataConnec.setInputId(connection.getInputId());
         dataConnec.setTarget(targetNode);
+        if (connection instanceof DataConnection) {
+            dataConnec.setLinkNodeForHash(((DataConnection) connection).getLinkNodeForHash());
+            ((DataConnection) connection).setLinkNodeForHash(null);
+        }
         ((List<IConnection>) targetNode.getIncomingConnections()).add(dataConnec);
         ((List<IConnection>) meterNode.getOutgoingConnections()).add(dataConnec);
 
