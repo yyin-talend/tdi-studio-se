@@ -144,7 +144,8 @@ public class UpdateContextParameterCommand extends Command {
                         && result.isChecked()) {
                     IContext context = (IContext) updateObject;
                     String name = context.getName();
-                    if (!listContext.contains(context)) {
+                    if (!listContext.contains(context) && result.getParameter() instanceof ContextItem) {
+                        ContextItem item = (ContextItem) result.getParameter();
 
                         JobContext newContext = new JobContext(name);
                         List<IContextParameter> newParamList = new ArrayList<IContextParameter>();
@@ -154,6 +155,7 @@ public class UpdateContextParameterCommand extends Command {
                         for (int i = 0; i < context.getContextParameterList().size(); i++) {
                             param = (JobContextParameter) context.getContextParameterList().get(i).clone();
                             param.setContext(newContext);
+                            param.setSource(item.getProperty().getLabel());
                             newParamList.add(param);
                         }
                         listContext.add(newContext);

@@ -166,13 +166,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
             if (addGroupContext.size() > 0) {
                 for (IContext context : addGroupContext) {
-                    String name = context.getName();
-                    List<Object> parameterList = new ArrayList<Object>();
-                    parameterList.add(name);
 
                     UpdateCheckResult result = new UpdateCheckResult(context);
                     String remark = UpdateRepositoryUtils.getRepositorySourceName(item);
-                    result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.ADD, parameterList, remark);
+                    result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.ADD, item, remark);
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     contextResults.add(result);
