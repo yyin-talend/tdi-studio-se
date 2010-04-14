@@ -95,6 +95,19 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       <%
       }
     }
+    public void testPrecision(Integer iPrecision, String _sInConnName, IMetadataColumn metadataColumn, String cid) {
+      JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
+      String colName = metadataColumn.getLabel();
+      if (javaType == JavaTypesManager.BIGDECIMAL) {
+      %>
+      	if(<%=_sInConnName%>.<%=colName%>.precision() != <%=iPrecision%>){
+            ifPassed_<%=cid%> = false;
+            errorCode_<%=cid%> += 8;
+            errorMessage_<%=cid%> += "|wrong precision";
+      	}
+      <%
+      }
+    }
     
     public void testDataLength(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, Integer maxLength, String cid) {
       JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
@@ -259,6 +272,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
 
   for (IMetadataColumn inColumn : listInColumns) {
     int iInColIndex = listInColumns.indexOf(inColumn);
+    Integer iPrecision = null;
     String sInColumnName = inColumn.getLabel(), sTestColName = null, sTestColType = null, sTestColPattern = null;
     boolean bNullable = true, bMaxLenLimited = false;
     Object maxLength = null;
@@ -287,6 +301,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
         sTestColType = JavaTypesManager.getTypeToGenerate(schemaColumn.getTalendType(), true);
         sTestColPattern = schemaColumn.getPattern();
         bNullable = schemaColumn.isNullable();
+        iPrecision = schemaColumn.getPrecision();
         bMaxLenLimited = false;
       } else{
         break;
@@ -309,6 +324,11 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
     // length checking
     if (bMaxLenLimited){
       checker.testDataLength(bNullable, sInConnName, inColumn, Integer.valueOf(maxLength.toString()), cid);
+    }
+    
+    // precision checking
+    if(iPrecision != null){
+    	checker.testPrecision(iPrecision, sInConnName, inColumn, cid);
     }
     %>
     

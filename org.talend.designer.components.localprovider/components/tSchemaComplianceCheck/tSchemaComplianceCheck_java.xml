@@ -92,7 +92,7 @@
           <DEFAULT>The errCode value is a summation of all error code:
 (1) Type discrepancy (include wrong date pattern): 2
 (2) Empty or NULL: 4
-(3) Length Error: 8</DEFAULT>
+(3) Length/Precision Error: 8</DEFAULT>
         </PARAMETER>
     
 		<PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE"
