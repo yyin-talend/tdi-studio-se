@@ -12,7 +12,7 @@ imports="
 		public void createURL(INode node) {
 			super.createURL(node);
 %>
-		String url_<%=cid %> = "jdbc:sqlite:" + "/" + <%= dbname%>.toLowerCase(); 
+		String url_<%=cid %> = "jdbc:sqlite:" + "/" + <%= dbname%>; 
 <%	
 		}
 	
