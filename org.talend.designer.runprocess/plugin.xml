@@ -66,12 +66,12 @@
      
       <key
             commandId="debugProcess"
-            contextId="talend.runProcess"
+            contextId="talend.global"
             schemeId="org.talend.core.scheme"
             sequence="F7"/>
       <key
             commandId="killProcess"
-            contextId="talend.runProcess"
+            contextId="talend.global"
             schemeId="org.talend.core.scheme"
             sequence="F8"/>
    </extension>

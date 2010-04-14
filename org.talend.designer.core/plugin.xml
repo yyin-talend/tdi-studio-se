@@ -155,62 +155,6 @@
       </propertyTabs>
    </extension>
    <extension
-         point="org.eclipse.ui.views.properties.tabbed.propertySections">
-        <propertySections contributorId="org.talend.repository.views.repository">
-  <!--       <propertySection
-               class="org.talend.designer.core.ui.editor.properties.nodes.MainNodeSection"
-               id="MainNodeSection"
-               tab="mainTab">
-            <input type="org.talend.designer.core.ui.editor.nodes.Node"/>
-            <input type="org.talend.designer.core.ui.editor.nodes.NodeLabel"/>
-       </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.nodes.PropertyNodeSection"
-               id="PropertyNodeSection"
-               tab="propertyTab">
-            <input type="org.talend.designer.core.ui.editor.nodes.Node"/>
-            <input type="org.talend.designer.core.ui.editor.nodes.NodeLabel"/>
-         </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.nodes.ViewNodeSection"
-               id="ViewNodeSection"
-               tab="viewTab">
-            <input type="org.talend.designer.core.ui.editor.nodes.Node"/>
-            <input type="org.talend.designer.core.ui.editor.nodes.NodeLabel"/>
-         </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.nodes.DocumentationNodeSection"
-               id="DocumentationNodeSection"
-               tab="docTab">
-            <input type="org.talend.designer.core.ui.editor.nodes.Node"/>
-            <input type="org.talend.designer.core.ui.editor.nodes.NodeLabel"/>
-         </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.connections.MainConnectionSection"
-               id="MainConnectionSection"
-               tab="mainTab">
-            <input type="org.talend.designer.core.ui.editor.connections.Connection"/>
-            <input type="org.talend.designer.core.ui.editor.connections.ConnectionLabel"/>
-         </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.notes.OpaqueNotePropertySection"
-               enablesFor="1"
-               id="TextNotePropertySection"
-               tab="mainTab">
-            <input type="org.talend.designer.core.ui.editor.notes.Note"/>
-         </propertySection>
-         <propertySection
-               afterSection="TextNotePropertySection"
-               class="org.talend.designer.core.ui.editor.properties.notes.TextNotePropertySection"
-               enablesFor="1"
-               id="OpaqueNotePropertySection"
-               tab="mainTab">
-            <input type="org.talend.designer.core.ui.editor.notes.Note"/>
-         </propertySection>
-         -->
-      </propertySections>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
        
       <view
@@ -382,12 +326,12 @@
    </key>
    <key
          contextId="org.eclipse.ui.textEditorScope"
-         schemeId="org.talend.designer.core.delete.binding.textEditor"
+         schemeId="org.talend.core.scheme"
          sequence="F2">
    </key>
    <key
          contextId="org.eclipse.jdt.ui.javaEditorScope"
-         schemeId="org.talend.designer.core.delete.binding.window"
+         schemeId="org.talend.core.scheme"
          sequence="CTRL+F3">
    </key>
    <key
@@ -610,7 +554,6 @@
 	<extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
-            category="org.talend.rcp.perspective"
             class="org.talend.designer.core.debug.JobLaunchShortcut"
             icon="platform:/plugin/org.talend.core/icons/process_icon.gif"
             id="org.talend.designer.runprocess.debug.JobLaunchShortcut"
