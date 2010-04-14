@@ -612,7 +612,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             temp_row_<%= cid %>[i] =String.valueOf(cell_<%=cid%>.getBooleanCellValue());
                             break;
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_FORMULA:
-                            temp_row_<%= cid %>[i] =cell_<%=cid%>.getCellFormula();
+        					switch (cell_<%=cid%>.getCachedFormulaResultType()) {
+                                case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING:
+                                    temp_row_<%= cid %>[i] = cell_<%=cid%>.getRichStringCellValue().getString();
+                                    break;
+                                case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
+                                    if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
+                                        temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
+                                    } else {
+                                        temp_row_<%= cid %>[i] =new java.math.BigDecimal(cell_<%=cid%>.getNumericCellValue()).toPlainString();
+                                    }
+                                    break;
+                                case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
+                                    temp_row_<%= cid %>[i] =String.valueOf(cell_<%=cid%>.getBooleanCellValue());
+                                    break;
+                                default:
+                            		temp_row_<%= cid %>[i] = "";
+                            }
                             break;
                         default:
                             temp_row_<%= cid %>[i] = "";
