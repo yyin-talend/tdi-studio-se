@@ -347,6 +347,12 @@ public class DatabaseTableForm extends AbstractForm {
                     //                    returnValue = "\"" + returnValue + "\""; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 bean.setDefaultValue(returnValue);
+            } else if (bean.getTalendType().equals("id_Boolean")) {
+                String returnBoolean = returnValue.replaceAll("\"", "");
+                if (returnBoolean.getBytes()[0] == 1) {
+                    returnValue = "\"1\"";
+                    bean.setDefaultValue(returnValue);
+                }
             }
         default:
             // if (bean.getTalendType() != null && bean.getTalendType().equals("string")
