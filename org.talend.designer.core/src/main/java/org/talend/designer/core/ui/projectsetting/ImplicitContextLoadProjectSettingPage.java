@@ -52,7 +52,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
@@ -68,7 +67,7 @@ import org.talend.repository.preference.ProjectSettingPage;
  */
 public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
 
-    private MultipleThreadDynamicComposite mComposite;
+    private ProjectSettingMultipleThreadDynamicComposite mComposite;
 
     private Element elem;
 
@@ -133,7 +132,7 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
 
         ImplicitContextSettings implicit = null;
         ParametersType parameters = null;
-        if (mComposite != null) {
+        if (mComposite != null && mComposite.isCommandExcute()) {
             // save the Element's parameters to EMF model
             Element elem = pro.getInitialContextLoad();
             implicit = pro.getEmfProject().getImplicitContextSettings();
@@ -145,9 +144,9 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
                 }
             }
             ProjectSettingManager.saveProject();
+            save();
         }
 
-        save();
         // if (parameters != null) {
         // ElementParameter2ParameterType.loadProjectsettingsParameters(parameters);
         // }
@@ -242,7 +241,7 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor
                         .beginTask(
-                                Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (implicitCheckedNodes.size()) * 100); //$NON-NLS-1$                
+                                Messages.getString("ImplicitContextLoadProjectSettingPage.saveProjectSettings"), (implicitCheckedNodes.size()) * 100); //$NON-NLS-1$                
                 saveChangedNode(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), monitor);
                 monitor.done();
             }

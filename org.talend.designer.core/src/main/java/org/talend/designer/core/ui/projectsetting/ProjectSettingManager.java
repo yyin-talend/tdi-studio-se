@@ -182,6 +182,12 @@ public class ProjectSettingManager extends Utils {
         // StatsAndLogsHelper.changeRepositoryConnection(process, statsComposite);
     }
 
+    public static void reloadStatsAndLogFromProjectSettings(ParametersType processType, Project pro) {
+        createStatsAndLogsElement(pro);
+        ParametersType stats = pro.getEmfProject().getStatAndLogsSettings().getParameters();
+        ElementParameter2ParameterType.loadElementParameters(processType, stats, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS);
+    }
+
     public static void reloadImplicitValuesFromProjectSettings(Element process, Project pro, ExtraComposite extraComposite) {
 
         createImplicitContextLoadElement(pro);

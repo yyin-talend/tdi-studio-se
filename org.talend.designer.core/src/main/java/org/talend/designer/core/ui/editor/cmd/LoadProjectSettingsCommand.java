@@ -16,6 +16,7 @@ import org.eclipse.gef.commands.Command;
 import org.talend.core.model.general.Project;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.repository.ProjectManager;
 
@@ -44,14 +45,13 @@ public class LoadProjectSettingsCommand extends Command {
         if (process == null || paramName == null) {
             return;
         }
-        // ElementParameter2ParameterType.setParameterValue(process, paramName, isUseProjectSettings);
+        ElementParameter2ParameterType.setParameterValue(process, paramName, isUseProjectSettings);
         if (isUseProjectSettings) {
             if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
                 ProjectSettingManager.reloadImplicitValuesFromProjectSettings(process, pro, null);
             } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
                 ProjectSettingManager.reloadStatsAndLogFromProjectSettings(process, pro, null);
             }
-
         }
     }
 

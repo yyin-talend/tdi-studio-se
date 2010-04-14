@@ -13,6 +13,8 @@
 package org.talend.designer.core.ui.projectsetting;
 
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CommandStackEvent;
+import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -25,6 +27,8 @@ public class ProjectSettingMultipleThreadDynamicComposite extends MultipleThread
 
     private CommandStack cs;
 
+    private boolean isCommandExcute;
+
     public ProjectSettingMultipleThreadDynamicComposite(Composite parentComposite, int styles, EComponentCategory section,
             Element element, boolean isCompactView) {
         super(parentComposite, styles, section, element, isCompactView);
@@ -34,7 +38,19 @@ public class ProjectSettingMultipleThreadDynamicComposite extends MultipleThread
     public CommandStack getCommandStack() {
         if (cs == null) { // fixed bug 12476
             cs = new CommandStack();
+            cs.addCommandStackEventListener(new CommandStackEventListener() {
+
+                public void stackChanged(CommandStackEvent event) {
+                    if (event.getDetail() == CommandStack.POST_EXECUTE) {
+                        isCommandExcute = true;
+                    }
+                }
+            });
         }
         return cs;
+    }
+
+    public boolean isCommandExcute() {
+        return this.isCommandExcute;
     }
 }

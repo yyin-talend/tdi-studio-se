@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.projectsetting;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,14 +29,10 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
@@ -55,12 +50,11 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProjectRepositoryNode;
@@ -76,7 +70,7 @@ import org.talend.repository.ui.views.RepositoryContentProvider;
  */
 public class StatLogsProjectSettingPage extends ProjectSettingPage {
 
-    private MultipleThreadDynamicComposite mComposite;
+    private ProjectSettingMultipleThreadDynamicComposite mComposite;
 
     private Element elem;
 
@@ -139,46 +133,22 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
      */
     @Override
     public boolean performOk() {
-        save();
-        Shell activeShell = Display.getCurrent().getActiveShell();
-        if (activeShell == null) {
-            activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        }
-        ProgressDialog progressDialog = new ProgressDialog(activeShell, 0) {
 
-            private IProgressMonitor monitorWrap;
-
-            @Override
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-
-                monitorWrap = new EventLoopProgressMonitor(monitor);
-                monitorWrap.beginTask("Use Project Settings ...", IProgressMonitor.UNKNOWN); //$NON-NLS-1$ 
-
-                ParametersType parameters = null;
-                if (mComposite != null) {
-                    // save the Element's parameters to EMF model
-                    Element elem = pro.getStatsAndLog();
-                    StatAndLogsSettings stats = pro.getEmfProject().getStatAndLogsSettings();
-                    if (stats != null) {
-                        parameters = stats.getParameters();
-                        if (parameters != null && !"".equals(parameters)) {
-                            // save to the memory
-                            ElementParameter2ParameterType.saveElementParameters(elem, parameters);
-                        }
-                    }
-                    ProjectSettingManager.saveProject();
-
+        ParametersType parameters = null;
+        if (mComposite != null && mComposite.isCommandExcute()) {
+            // save the Element's parameters to EMF model
+            Element elem = pro.getStatsAndLog();
+            StatAndLogsSettings stats = pro.getEmfProject().getStatAndLogsSettings();
+            if (stats != null) {
+                parameters = stats.getParameters();
+                if (parameters != null && !"".equals(parameters)) {
+                    // save to the memory
+                    ElementParameter2ParameterType.saveElementParameters(elem, parameters);
                 }
-                monitorWrap.worked(20);
             }
+            ProjectSettingManager.saveProject();
 
-        };
-        try {
-            progressDialog.executeProcess();
-        } catch (InvocationTargetException e) {
-            ExceptionHandler.process(e);
-        } catch (Exception e) {
-            MessageBoxExceptionHandler.process(e);
+            save();
         }
 
         return super.performOk();
@@ -191,7 +161,6 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
      */
     @Override
     protected void performApply() {
-        save();
         performOk();
         super.performApply();
     }
@@ -248,7 +217,7 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor
                         .beginTask(
-                                Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (processList.size()) * 100); //$NON-NLS-1$                
+                                Messages.getString("StatLogsProjectSettingPage.saveProjectSetting"), (processList.size()) * 100); //$NON-NLS-1$                
                 saveChangedNode(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), monitor);
                 monitor.done();
             }
@@ -267,7 +236,7 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
 
     private void saveChangedNode(String paramName, IProgressMonitor monitor) {
         for (RepositoryNode node : statCheckedNode) {
-            saveProcess(node, paramName, Boolean.TRUE, monitor);
+            saveProcess(node, paramName, monitor);
         }
     }
 
@@ -310,53 +279,43 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
         }
     }
 
-    private void saveProcess(RepositoryNode node, String paramName, Boolean isUseProjectSettings, IProgressMonitor monitor) {
+    private void saveProcess(RepositoryNode node, String paramName, IProgressMonitor monitor) {
         Property property = node.getObject().getProperty();
         ProcessItem pItem = (ProcessItem) property.getItem();
         ParametersType pType = pItem.getProcess().getParameters();
         if (isOpenProcess(node)) {
             Process process = getProcess(openedProcessList, node);
+            LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, Boolean.TRUE);
+            exeCommand(process, command);
 
-            ElementParameter2ParameterType.setParameterValue(process, paramName, isUseProjectSettings);
-            if (isUseProjectSettings) {
-                LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
-                exeCommand(process, command);
+            Element statsAndLogElement = pro.getStatsAndLog();
+            IElementParameter propertyElem = statsAndLogElement.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
+                    .getChildParameters().get(EParameterName.PROPERTY_TYPE.getName());
+            Object proValue = propertyElem.getValue();
+            if (proValue instanceof String && ((String) proValue).equalsIgnoreCase(EmfComponent.REPOSITORY)) {
+                IElementParameter repositoryElem = statsAndLogElement.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE
+                        .getName());
+                String value = (String) repositoryElem.getValue();
+                String propertyType = EParameterName.PROPERTY_TYPE.getName() + ":" //$NON-NLS-1$ 
+                        + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+                ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(value);
+                Connection connection = connectionItem.getConnection();
+                ChangeValuesFromRepository cmd = new ChangeValuesFromRepository(process, connection, propertyType, value);
+                cmd.ignoreContextMode(true);
+                exeCommand(process, cmd);
 
-                Element statsAndLogElement = pro.getStatsAndLog();
-                IElementParameter propertyElem = statsAndLogElement.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
-                        .getChildParameters().get(EParameterName.PROPERTY_TYPE.getName());
-                Object proValue = propertyElem.getValue();
-                if (proValue instanceof String && ((String) proValue).equalsIgnoreCase(EmfComponent.REPOSITORY)) {
-                    IElementParameter repositoryElem = statsAndLogElement
-                            .getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                    String value = (String) repositoryElem.getValue();
-                    String propertyType = EParameterName.PROPERTY_TYPE.getName() + ":" //$NON-NLS-1$ 
-                            + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
-                    ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(value);
-                    Connection connection = connectionItem.getConnection();
-                    ChangeValuesFromRepository cmd = new ChangeValuesFromRepository(process, connection, propertyType, value);
-                    cmd.ignoreContextMode(true);
-                    exeCommand(process, cmd);
-                }
             }
             monitor.worked(100);
         } else {
-            ElementParameter2ParameterType.setParameterValue(pType, paramName, isUseProjectSettings);
-            if (isUseProjectSettings) {
-                try {
-                    Process process = (Process) CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(pItem);
-                    LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
-                    exeCommand(process, command);
-                    ProcessType processType = process.saveXmlFile();
-                    pItem.setProcess(processType);
-                    factory.save(pItem);
-                    monitor.worked(100);
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
-                } catch (IOException e) {
-                    ExceptionHandler.process(e);
-                }
+            try {
+                ProjectSettingManager.reloadStatsAndLogFromProjectSettings(pType, ProjectManager.getInstance()
+                        .getCurrentProject());
+                factory.save(pItem);
+                monitor.worked(100);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
             }
+
         }
     }
 

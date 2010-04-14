@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.projectsetting;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,6 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -51,11 +49,11 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -86,7 +84,9 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     private List<RepositoryNode> checkedObjects = new ArrayList<RepositoryNode>();
 
-    private List<RepositoryNode> uncheckedObjects = new ArrayList<RepositoryNode>();
+    private List<RepositoryNode> addedObjects = new ArrayList<RepositoryNode>();
+
+    private List<RepositoryNode> removedObjects = new ArrayList<RepositoryNode>();
 
     // stats and log tree
     private CheckboxRepositoryTreeViewer statViewer;
@@ -95,7 +95,9 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     private List<RepositoryNode> statCheckedObjects = new ArrayList<RepositoryNode>();
 
-    private List<RepositoryNode> statUncheckedObjects = new ArrayList<RepositoryNode>();
+    private List<RepositoryNode> statAddedObjects = new ArrayList<RepositoryNode>();
+
+    private List<RepositoryNode> statRemovedObjects = new ArrayList<RepositoryNode>();
 
     private WidgetFactory widgetFactory = new WidgetFactory();
 
@@ -177,11 +179,13 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
                 List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
                 processItems(objects, node);
                 if (event.getChecked()) {
-                    checkedObjects.addAll(objects);
-                    uncheckedObjects.removeAll(objects);
+                    addedObjects.addAll(objects);
+                    removedObjects.removeAll(objects);
+                    checkedObjects.addAll(addedObjects);
                 } else {
+                    addedObjects.removeAll(objects);
+                    removedObjects.addAll(objects);
                     checkedObjects.removeAll(objects);
-                    uncheckedObjects.addAll(objects);
                 }
                 // set checked
                 viewer.setCheckedElements(checkedObjects.toArray());
@@ -189,14 +193,6 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             }
         });
 
-        init();
-
-        viewer.setCheckedElements(checkedObjects.toArray());
-        viewer.setExpandedElements(contentProvider.getContents());
-
-    }
-
-    private void init() {
         RepositoryNode[] nodes = contentProvider.getContents();
         List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
         for (RepositoryNode n : nodes) {
@@ -206,15 +202,14 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
                     if (!checkedObjects.contains(node)) {
                         checkedObjects.add(node);
                     }
-                    uncheckedObjects.remove(node);
-                } else {
-                    checkedObjects.remove(node);
-                    if (!uncheckedObjects.contains(node)) {
-                        uncheckedObjects.add(node);
-                    }
+
                 }
             }
         }
+
+        viewer.setCheckedElements(checkedObjects.toArray());
+        viewer.setExpandedElements(contentProvider.getContents());
+
     }
 
     private void createStatTree(Composite composite) {
@@ -261,11 +256,13 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
                 List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
                 processItems(objects, node);
                 if (event.getChecked()) {
+                    statAddedObjects.addAll(objects);
+                    statRemovedObjects.removeAll(objects);
                     statCheckedObjects.addAll(objects);
-                    statUncheckedObjects.removeAll(objects);
                 } else {
+                    statAddedObjects.removeAll(objects);
+                    statRemovedObjects.addAll(objects);
                     statCheckedObjects.removeAll(objects);
-                    statUncheckedObjects.addAll(objects);
                 }
                 // set checked
                 statViewer.setCheckedElements(statCheckedObjects.toArray());
@@ -273,7 +270,18 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             }
         });
 
-        initstat();
+        RepositoryNode[] nodes = statContentProvider.getContents();
+        List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
+        for (RepositoryNode n : nodes) {
+            processItems(objects, n);
+            for (RepositoryNode node : objects) {
+                if (isStatUseProjectSetting(node)) {
+                    if (!statCheckedObjects.contains(node)) {
+                        statCheckedObjects.add(node);
+                    }
+                }
+            }
+        }
 
         statViewer.setCheckedElements(statCheckedObjects.toArray());
         statViewer.setExpandedElements(statContentProvider.getContents());
@@ -286,14 +294,14 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             processItems(objects, n);
             for (RepositoryNode node : objects) {
                 if (isStatUseProjectSetting(node)) {
-                    if (!statCheckedObjects.contains(node)) {
-                        statCheckedObjects.add(node);
+                    if (!statAddedObjects.contains(node)) {
+                        statAddedObjects.add(node);
                     }
-                    statUncheckedObjects.remove(node);
+                    statRemovedObjects.remove(node);
                 } else {
-                    statCheckedObjects.remove(node);
-                    if (!statUncheckedObjects.contains(node)) {
-                        statUncheckedObjects.add(node);
+                    statAddedObjects.remove(node);
+                    if (!statRemovedObjects.contains(node)) {
+                        statRemovedObjects.add(node);
                     }
                 }
             }
@@ -433,28 +441,23 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         if (isOpenProcess(node)) {
             Process process = getProcess(opendProcess, node);
-
-            ElementParameter2ParameterType.setParameterValue(process, paramName, isUseProjectSettings);
-            if (isUseProjectSettings) {
-                LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
-                exeCommand(process, command);
-            }
+            LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
+            exeCommand(process, command);
             monitor.worked(100);
         } else {
-
             ElementParameter2ParameterType.setParameterValue(pType, paramName, isUseProjectSettings);
             if (isUseProjectSettings) {
                 try {
-                    Process process = (Process) CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(pItem);
-                    LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
-                    exeCommand(process, command);
-                    ProcessType processType = process.saveXmlFile();
-                    pItem.setProcess(processType);
+                    if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+                        ProjectSettingManager.reloadImplicitValuesFromProjectSettings(pType, ProjectManager.getInstance()
+                                .getCurrentProject());
+                    } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+                        ProjectSettingManager.reloadStatsAndLogFromProjectSettings(pType, ProjectManager.getInstance()
+                                .getCurrentProject());
+                    }
                     factory.save(pItem);
                     monitor.worked(100);
                 } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
-                } catch (IOException e) {
                     ExceptionHandler.process(e);
                 }
             }
@@ -466,11 +469,11 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         List<RepositoryNode> checked = new ArrayList<RepositoryNode>();
         List<RepositoryNode> unChecked = new ArrayList<RepositoryNode>();
         if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-            checked = checkedObjects;
-            unChecked = uncheckedObjects;
+            checked = addedObjects;
+            unChecked = removedObjects;
         } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-            checked = statCheckedObjects;
-            unChecked = statUncheckedObjects;
+            checked = statAddedObjects;
+            unChecked = statRemovedObjects;
         }
         for (RepositoryNode node : checked) {
             saveProcess(node, paramName, Boolean.TRUE, monitor);
@@ -490,7 +493,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor
                         .beginTask(
-                                Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (checkedObjects.size() + statCheckedObjects.size()) * 100); //$NON-NLS-1$                
+                                Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (addedObjects.size() + statAddedObjects.size()) * 100); //$NON-NLS-1$                
 
                 saveChangedNode(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), monitor);
                 saveChangedNode(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), monitor);
