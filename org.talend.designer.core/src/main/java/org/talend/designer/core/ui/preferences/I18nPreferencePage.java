@@ -68,7 +68,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
     private OneLineComboFieldEditor languageSelectionEditor;
 
-    private String fs = System.getProperties().getProperty("file.separator");
+    private String fs = System.getProperties().getProperty("file.separator"); //$NON-NLS-1$
 
     private List<FieldEditor> fields = new ArrayList<FieldEditor>();
 
@@ -142,7 +142,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         addField(importAll);
 
         Button allUpdate = new Button(composite, SWT.FLAT);
-        allUpdate.setText("Import Translation from Babili"); //$NON-NLS-1$
+        allUpdate.setText(Messages.getString("I18nPreferencePage.importBabili")); //$NON-NLS-1$
         allUpdate.setLayoutData(new GridData());
 
         allUpdate.addSelectionListener(new SelectionListener() {
@@ -151,16 +151,19 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 // import all update from Babili
                 // select the .zip file
                 FileDialog fd = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OPEN);
-                fd.setText("Open");
-                fd.setFilterPath("C:" + fs);
-                String[] filterExtensions = { "*.zip" };
+                fd.setText("Open"); //$NON-NLS-1$
+                fd.setFilterPath("C:" + fs); //$NON-NLS-1$
+                String[] filterExtensions = { "*.zip" }; //$NON-NLS-1$
                 fd.setFilterExtensions(filterExtensions);
                 String selected = fd.open();
-                isBabiliButtonClicked = true;
-                runProgressMonitorDialog(selected);
-                if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Restart",
-                        "Need to restart to take effect."))
-                    PlatformUI.getWorkbench().restart();
+                if (selected != null) {
+                    isBabiliButtonClicked = true;
+                    runProgressMonitorDialog(selected);
+                    if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
+                            .getString("I18nPreferencePage.restart"), //$NON-NLS-1$
+                            Messages.getString("I18nPreferencePage.restartButton"))) //$NON-NLS-1$
+                        PlatformUI.getWorkbench().restart();
+                }
             }
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -180,9 +183,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
             public void widgetSelected(SelectionEvent e) {
                 isBabiliButtonClicked = true;
-                runProgressMonitorDialog("Restore default");
-                if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Restart",
-                        "Need to restart to take effect."))
+                runProgressMonitorDialog(Messages.getString("I18nPreferencePage.restoreDefault")); //$NON-NLS-1$
+                if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
+                        .getString("I18nPreferencePage.restart"), Messages.getString("I18nPreferencePage.restartButton"))) //$NON-NLS-1$ //$NON-NLS-2$
                     PlatformUI.getWorkbench().restart();
             }
         });
@@ -201,8 +204,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
             public void run(IProgressMonitor monitor) {
                 try {
-                    String jarFolderPath = System.getProperty("user.dir") + fs + "jarTemp";
-                    String zipFolderPath = System.getProperty("user.dir") + fs + "zipTemp";
+                    String jarFolderPath = System.getProperty("user.dir") + fs + "jarTemp"; //$NON-NLS-1$ //$NON-NLS-2$
+                    String zipFolderPath = System.getProperty("user.dir") + fs + "zipTemp"; //$NON-NLS-1$ //$NON-NLS-2$
                     File jarFolderPathFile = new File(jarFolderPath);
                     File zipFolderPathFile = new File(zipFolderPath);
                     if (!jarFolderPathFile.exists()) {
@@ -211,42 +214,42 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                     if (!zipFolderPathFile.exists()) {
                         zipFolderPathFile.mkdir();
                     }
-                    String pluginPath = System.getProperty("user.dir") + fs + "plugins";
+                    String pluginPath = System.getProperty("user.dir") + fs + "plugins"; //$NON-NLS-1$ //$NON-NLS-2$
                     HashMap jarFileMap = new HashMap();
                     File file = new File(pluginPath);
                     if (file.isDirectory()) {
                         String[] fileNameList = file.list();
                         File[] fileList = file.listFiles();
                         for (File f : fileList) {
-                            if (f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) {
-                                jarFileMap.put("net.sourceforge.sqlexplorer.nl", f);
+                            if (f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
+                                jarFileMap.put("net.sourceforge.sqlexplorer.nl", f); //$NON-NLS-1$
                             }
-                            if (f.getName().startsWith("org.talend.designer.components.localprovider")) {
-                                jarFileMap.put("org.talend.designer.components.localprovider", f);
+                            if (f.getName().startsWith("org.talend.designer.components.localprovider")) { //$NON-NLS-1$
+                                jarFileMap.put("org.talend.designer.components.localprovider", f); //$NON-NLS-1$
                             }
-                            if (f.getName().endsWith(".jar") && f.getName().indexOf("nl") != -1
-                                    && f.getName().indexOf("talend") != -1) {
-                                String[] fileNameArr = f.getName().split("_");
+                            if (f.getName().endsWith(".jar") && f.getName().indexOf("nl") != -1 //$NON-NLS-1$ //$NON-NLS-2$
+                                    && f.getName().indexOf("talend") != -1) { //$NON-NLS-1$
+                                String[] fileNameArr = f.getName().split("_"); //$NON-NLS-1$
                                 jarFileMap.put(fileNameArr[0], f);
                             }
                         }
                     }
-                    if (zipFileName.equals("Restore default")) {
+                    if (zipFileName.equals("Restore default")) { //$NON-NLS-1$
                         Iterator iter = jarFileMap.entrySet().iterator();
                         while (iter.hasNext()) {
                             Map.Entry entry = (Map.Entry) iter.next();
                             Object key = entry.getKey();
                             File currentFileToBak = (File) entry.getValue();
-                            if (key.toString().endsWith(".nl")
-                                    || key.toString().startsWith("org.talend.designer.components.localprovider")
-                                    || key.toString().startsWith("net.sourceforge.sqlexplorer.nl")) {
+                            if (key.toString().endsWith(".nl") //$NON-NLS-1$
+                                    || key.toString().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
+                                    || key.toString().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
                                 ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
                                 File jarFiles = new File(jarFolderPath + fs + currentFileToBak.getName());
                                 File[] jarSubFiles = jarFiles.listFiles();
                                 for (File subJarf : jarSubFiles) {
-                                    if (subJarf.getName().endsWith(".original")) {
+                                    if (subJarf.getName().endsWith(".original")) { //$NON-NLS-1$
                                         String subjarfPath = subJarf.getAbsolutePath().substring(0,
-                                                subJarf.getAbsolutePath().indexOf(".original"));
+                                                subJarf.getAbsolutePath().indexOf(".original")); //$NON-NLS-1$
                                         File subjarfPathFile = new File(subjarfPath);
                                         if (subjarfPathFile.exists())
                                             subjarfPathFile.delete();
@@ -263,9 +266,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         File zipFile = new File(zipFolderPath);
                         File[] zipFiles = zipFile.listFiles()[0].listFiles();
                         for (File f : zipFiles) {
-                            if (f.getName().endsWith(".nl")
-                                    || f.getName().startsWith("org.talend.designer.components.localprovider")
-                                    || f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) {
+                            if (f.getName().endsWith(".nl") //$NON-NLS-1$
+                                    || f.getName().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
+                                    || f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
                                 File writeJarFile = (File) jarFileMap.get(f.getName());
                                 if (writeJarFile == null)
                                     continue;
@@ -276,7 +279,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                                 File[] jarSubFiles = jarFiles.listFiles();
                                 boolean bakBool = false;
                                 for (File subJarf : jarSubFiles) {
-                                    if (subJarf.getName().endsWith(".original")) {
+                                    if (subJarf.getName().endsWith(".original")) { //$NON-NLS-1$
                                         bakBool = true;
                                     }
                                 }
@@ -285,7 +288,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                                     for (File subJarf : jarSubFiles) {
                                         if (subf.getName().equals(subJarf.getName())) {
                                             String subjarfPath = subJarf.getAbsolutePath();
-                                            File newSubJarf = new File(subjarfPath + ".original");
+                                            File newSubJarf = new File(subjarfPath + ".original"); //$NON-NLS-1$
                                             if (!newSubJarf.exists() && bakBool == false)
                                                 subJarf.renameTo(newSubJarf);
                                             try {
