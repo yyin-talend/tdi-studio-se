@@ -1835,7 +1835,12 @@ public class Node extends Element implements INode {
         return null;
     }
 
-    private INode getMainBranch() {
+    private INode getMainBranch(List<INode> visitedNodes) {
+        if (visitedNodes.contains(this)) {
+            return this;
+        } else {
+            visitedNodes.add(this);
+        }
         Node targetWithRef = null;
         for (int i = 0; i < getOutgoingConnections().size() && targetWithRef == null; i++) {
             IConnection connection = getOutgoingConnections().get(i);
@@ -1861,7 +1866,7 @@ public class Node extends Element implements INode {
                     if (mergeInfo.get(node) != 1) {
                         // get the first merge connection to have the main branch (id 1 for merge connection)
                         IConnection connection = NodeUtil.getIncomingConnections(node, IConnectionCategory.MERGE).get(0);
-                        return ((Node) connection.getSource()).getMainBranch();
+                        return ((Node) connection.getSource()).getMainBranch(visitedNodes);
                     }
                 }
                 // if go here, then this component is on the main branch.
@@ -1871,8 +1876,12 @@ public class Node extends Element implements INode {
         } else {
             // System.out.println(" ** Check Ref Links in:" + targetWithRef + "
             // from:" + this);
-            return targetWithRef.getMainBranch();
+            return targetWithRef.getMainBranch(visitedNodes);
         }
+    }
+
+    private INode getMainBranch() {
+        return getMainBranch(new ArrayList<INode>());
     }
 
     public Node getProcessStartNode(boolean withConditions) {
