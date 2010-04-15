@@ -1999,7 +1999,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         if (uniqueConnectionNameList != null) {
             for (String value : uniqueConnectionNameList) {
-                if (value.equals(connectionName)) {
+                if (value.equalsIgnoreCase(connectionName)) {
                     return true;
                 }
             }

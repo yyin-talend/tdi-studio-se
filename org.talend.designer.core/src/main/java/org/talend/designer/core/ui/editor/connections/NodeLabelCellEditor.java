@@ -12,17 +12,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.IConnection;
-import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.model.process.ConnectionManager;
 
 /**
@@ -62,9 +56,12 @@ public class NodeLabelCellEditor extends TextCellEditor {
         text.setBackground(null);
         if (connection != null) {
             if (text.getText() != null) {
-                if (!ConnectionManager.canRename(connection.getSource(), connection.getTarget(), connection.getLineStyle(), text
-                        .getText())) {
-                    text.setBackground(ERROR_COLOR);
+                // if the user enter the same name as the current connection, we just ignore it.
+                if (!connection.getName().equalsIgnoreCase(text.getText())) {
+                    if (!ConnectionManager.canRename(connection.getSource(), connection.getTarget(), connection.getLineStyle(),
+                            text.getText())) {
+                        text.setBackground(ERROR_COLOR);
+                    }
                 }
             }
         }
