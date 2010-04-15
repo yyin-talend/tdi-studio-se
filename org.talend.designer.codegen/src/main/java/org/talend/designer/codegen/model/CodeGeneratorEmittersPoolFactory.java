@@ -40,6 +40,7 @@ import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
@@ -458,6 +459,21 @@ public final class CodeGeneratorEmittersPoolFactory {
                 TalendJetEmitter emitter = new TalendJetEmitter(getFullTemplatePath(jetBean), jetBean.getClassLoader(), jetBean
                         .getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(), dummyEmitter
                         .getTalendEclipseHelper());
+                // wzhang modified to fix bug 11439
+                if (monitorWrap.isCanceled()) {
+                    if (!CommonsPlugin.isHeadless()) {
+                        Display.getDefault().syncExec(new Runnable() {
+
+                            public void run() {
+                                MessageDialog
+                                        .openError(Display.getDefault().getActiveShell(), Messages.getString("CodeGeneratorEmittersPoolFactory.operationCanceled"), //$NON-NLS-1$
+                                                Messages.getString("CodeGeneratorEmittersPoolFactory.dialogContent")); //$NON-NLS-1$
+
+                            }
+                        });
+                    }
+                    return;
+                }
                 // 10901: Component synchronization fails
                 try {
                     emitter.initialize(sub);
@@ -707,6 +723,11 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
 
         public boolean isCanceled() {
+            for (IProgressMonitor monitor : delegates) {
+                if (monitor.isCanceled()) {
+                    return true;
+                }
+            }
             return cancelled;
         }
 
