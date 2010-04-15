@@ -42,7 +42,7 @@
       <TABLE>
         <COLUMN NAME="host"    TYPE="string" LENGTH="50"/>
         <COLUMN NAME="user"    TYPE="string" LENGTH="50"/>
-        <COLUMN NAME="date"    TYPE="date" />
+        <COLUMN NAME="date"    TYPE="date" LENGTH="13"/>
         <COLUMN NAME="time"    TYPE="string" LENGTH="10"/>
         <COLUMN NAME="diffgmt" TYPE="string" LENGTH="10"/>
         <COLUMN NAME="rtype"   TYPE="string" LENGTH="10"/>
