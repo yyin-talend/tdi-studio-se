@@ -1066,20 +1066,12 @@ public class DatabaseForm extends AbstractForm {
                     }
 
                     getConnection().setDbmsId(mapping);
-                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.MYSQL.getDBDisplayName())) {
-                        // additionParamText.setText(DataStringConnection.
-                        // mySQlDefaultValue);
-                        additionParamText.setText(EDatabaseConnTemplate.MYSQL.getAdditionProperty());
-                    }
-                    if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.AS400.getDBDisplayName())) {
-                        additionParamText.setText(EDatabaseConnTemplate.AS400.getAdditionProperty());
-                    }
+                    additionParamText.setText(EDatabaseConnTemplate.getAdditionProperty(dbTypeCombo.getText()));
                     if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.INFORMIX.getDBDisplayName())) {
                         datasourceText.setLabelText(Messages.getString("DatabaseForm.informixInstance"));
                     }
                     checkAS400SpecificCase();
                     checkFieldsValue();
-
                     hideDbVersion();
 
                     // see bug 0005237: Create DB Connection issue.
