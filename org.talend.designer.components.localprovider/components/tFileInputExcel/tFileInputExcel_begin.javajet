@@ -286,7 +286,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if(<%= i%><actual_end_column_<%= cid %>){
 				try{
 					java.util.Date dateGMT_<%=cid %> = ((jxl.DateCell)row_<%= cid %>[<%=i%> + start_column_<%= cid %>]).getDate();
-					<%=firstConnName %>.<%=column.getLabel() %> = new java.util.Date(dateGMT_<%=cid %>.getTime() - java.util.TimeZone.getDefault().getRawOffset());
+					<%=firstConnName %>.<%=column.getLabel() %> = new java.util.Date(dateGMT_<%=cid %>.getTime() - java.util.TimeZone.getDefault().getOffset(dateGMT_<%=cid %>.getTime()));
 				}catch(Exception e){
 					throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1)+" column "+(<%=i%> + start_column_<%= cid %>+1));
 				}
