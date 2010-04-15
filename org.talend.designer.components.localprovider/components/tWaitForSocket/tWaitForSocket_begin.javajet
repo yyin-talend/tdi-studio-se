@@ -41,9 +41,10 @@ while (ifContinue<%=cid%>) {
         
         in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream(),<%=encoding%>));
         StringBuilder sb<%=cid%> = new StringBuilder();
-        char[] target_<%=cid%> = new char[1];
-		while(in<%=cid%>.read(target_<%=cid%>) > -1){
-			sb<%=cid%>.append(target_<%=cid%>);
+        char[] target_<%=cid%> = new char[1024];
+        int length_<%=cid%> = -1;
+		while((length_<%=cid%> = in<%=cid%>.read(target_<%=cid%>)) != -1){
+			sb<%=cid%>.append(new String(target_<%=cid%>,0,length_<%=cid%>));
 		}
         <% if(("true").equals(print)){ %>
         //get data from client
