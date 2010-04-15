@@ -25,6 +25,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.htmlgeneration.GenerateDocAsHTMLWizard;
@@ -50,10 +51,12 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
             if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS) {
                 if (node.getObject() != null && instance.isInCurrentMainProject(node)) {
                     canWork = true;
-                    break;
-
                 }
-
+            }
+            RepositoryNode parent = node.getParent();
+            if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+                canWork = false;
+                break;
             }
         }
         setEnabled(canWork);

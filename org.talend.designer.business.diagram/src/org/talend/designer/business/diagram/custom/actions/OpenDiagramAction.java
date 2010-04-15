@@ -32,6 +32,7 @@ import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -105,6 +106,10 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
                 if (enabled
                         && (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()
                                 || !ProjectManager.getInstance().isInCurrentMainProject(repositoryNode) || !isLastVersion(repositoryNode))) {
+                    enabled = false;
+                }
+                RepositoryNode parent = repositoryNode.getParent();
+                if (enabled && parent != null && parent instanceof BinRepositoryNode) {
                     enabled = false;
                 }
             }

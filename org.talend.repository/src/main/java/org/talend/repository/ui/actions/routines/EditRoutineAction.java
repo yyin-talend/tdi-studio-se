@@ -23,6 +23,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -56,12 +57,16 @@ public class EditRoutineAction extends AbstractRoutineAction {
         if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
+        RepositoryNode node = (RepositoryNode) selection.getFirstElement();
         if (canWork) {
-            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             if (node.getObjectType() != ERepositoryObjectType.ROUTINES
                     || !ProjectManager.getInstance().isInCurrentMainProject(node) || !isLastVersion(node)) {
                 canWork = false;
             }
+        }
+        RepositoryNode parent = node.getParent();
+        if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+            canWork = false;
         }
         setEnabled(canWork);
     }

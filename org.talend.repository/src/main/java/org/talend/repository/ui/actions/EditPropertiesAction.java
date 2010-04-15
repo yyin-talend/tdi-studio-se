@@ -65,6 +65,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -269,6 +270,11 @@ public class EditPropertiesAction extends AContextualAction {
                         }
                         break;
                     default:
+                        canWork = false;
+                        break;
+                    }
+                    RepositoryNode parent = node.getParent();
+                    if (canWork && parent != null && parent instanceof BinRepositoryNode) {
                         canWork = false;
                         break;
                     }

@@ -34,6 +34,7 @@ import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -67,10 +68,14 @@ public class ExtractDocumentationAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
+        RepositoryNode node = (RepositoryNode) selection.getFirstElement();
         if (canWork) {
-            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
                     && node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION;
+        }
+        RepositoryNode parent = node.getParent();
+        if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+            canWork = false;
         }
         setEnabled(canWork);
     }

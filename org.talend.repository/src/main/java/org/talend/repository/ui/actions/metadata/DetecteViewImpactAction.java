@@ -32,6 +32,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ISubRepositoryObject;
 import org.talend.repository.model.MetadataTableRepositoryObject;
@@ -135,6 +136,10 @@ public class DetecteViewImpactAction extends AContextualAction {
                     }
                     break;
                 default:
+                    canWork = false;
+                }
+                RepositoryNode parent = node.getParent();
+                if (canWork && parent != null && parent instanceof BinRepositoryNode) {
                     canWork = false;
                 }
                 if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {

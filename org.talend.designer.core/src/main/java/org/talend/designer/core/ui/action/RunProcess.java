@@ -23,6 +23,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -81,6 +82,10 @@ public class RunProcess extends AContextualAction {
                 }
                 break;
             default:
+                canWork = false;
+            }
+            RepositoryNode parent = node.getParent();
+            if (canWork && parent != null && parent instanceof BinRepositoryNode) {
                 canWork = false;
             }
         }

@@ -41,6 +41,7 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -194,6 +195,10 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
                 }
                 break;
             default:
+                canWork = false;
+            }
+            RepositoryNode parent = node.getParent();
+            if (canWork && parent != null && parent instanceof BinRepositoryNode) {
                 canWork = false;
             }
             if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {

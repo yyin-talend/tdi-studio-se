@@ -24,6 +24,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -55,6 +56,11 @@ public class ExportJobScriptAction extends AContextualAction {
         for (RepositoryNode node : nodes) {
             if (node.getType() != ENodeType.REPOSITORY_ELEMENT
                     || node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.PROCESS) {
+                canWork = false;
+                break;
+            }
+            RepositoryNode parent = node.getParent();
+            if (canWork && parent != null && parent instanceof BinRepositoryNode) {
                 canWork = false;
                 break;
             }
