@@ -19,6 +19,7 @@ import java.util.List;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.update.EUpdateResult;
@@ -87,17 +88,12 @@ public class UpdateCheckResult extends UpdateResult {
         case JOB_PROPERTY_STATS_LOGS:
             displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.STATSANDLOGS.getTitle());
             break;
-        case CONTEXT:
         case CONTEXT_GROUP:
-            if (getParameter() != null) {
-                String str = getParameter().toString();
-                if (getParameter() instanceof String) {
-                    displayName = str;
-                } else if (str.startsWith("[") && str.endsWith("]") && str.length() > 2) {//$NON-NLS-1$//$NON-NLS-1$
-                    displayName = str.substring(1, str.length() - 1);
-                }
+            if (getUpdateObject() != null && getUpdateObject() instanceof IContext) {
+                displayName = ((IContext) getUpdateObject()).getName();
             }
             break;
+        case CONTEXT:
         case JOBLET_CONTEXT: {
             String display = null;
             switch (getResultType()) {
