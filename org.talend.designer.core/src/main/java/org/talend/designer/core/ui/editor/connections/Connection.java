@@ -691,9 +691,11 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
                 // if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
                 IMetadataTable table = getMetadataTable();
-                table.setTableName(uniqueName);
-                if (table.getLabel() == null) {
-                    table.setLabel(name);
+                if (table != null) {
+                    table.setTableName(uniqueName);
+                    if (table.getLabel() == null) {
+                        table.setLabel(name);
+                    }
                 }
                 metaName = uniqueName;
                 // }
