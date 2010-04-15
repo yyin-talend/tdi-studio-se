@@ -27,6 +27,8 @@ imports="
     
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
+	
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
@@ -69,10 +71,24 @@ imports="
     } else { // dataAction equals "INSERT" or "UPDATE" or "DELETE" 
         %>
         
-        <%if ( ("true".equals(useBatchSize)) && (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+        <%if (  (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
         %>
                 try {
-						if (batchSizeCounter_<%=cid%> > 0) {  // do not commit empty batch, this is a jdbc error
+        			<%	
+					if("true".equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+					%>
+						if ( batchSizeCounter_<%=cid%> > 0 ) { // do not commit empty batch, this is a jdbc error
+					<%
+					} else if (!useExistingConn &&!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+					%>
+						if ( commitCounter_<%=cid%> > 0 ) { // do not commit empty batch, this is a jdbc error
+					<%
+					} else {
+					%>
+						{
+					<%
+					} 
+					%>		
 						pstmt_<%=cid %>.executeBatch();                	
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
@@ -87,6 +103,7 @@ imports="
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    	}%>
+            	    	
 						}
                 //}catch (java.sql.BatchUpdateException e){
 				}catch (java.sql.SQLException e){

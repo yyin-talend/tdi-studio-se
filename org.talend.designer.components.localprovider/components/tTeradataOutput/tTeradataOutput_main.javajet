@@ -749,25 +749,43 @@ skeleton="../templates/db_output_bulk.skeleton"
                 
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
                 
-                	<%if( ("true").equals(useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ){
+                	<%if((("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ){
                 	%>
 		                try {
-								if (batchSizeCounter_<%=cid%> > 0) {
+							<%	
+    						if("true".equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+    						%>
+    							if ( batchSizeCounter_<%=cid%> > 0 ) {
+    						<%
+    						}
+							%>
 		                		    pstmt_<%=cid %>.executeBatch();
-		            	    	<%if (("INSERT").equals(dataAction)) {
+		            	    	<%
+		            	    		if (("INSERT").equals(dataAction)) {
 		            	    	%>
 		            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 		            	    	<%
-		            	    	}else if (("UPDATE").equals(dataAction)) {
+		            	    		}else if (("UPDATE").equals(dataAction)) {
 		            	    	%>            	    		
 		            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 		            	    	<%
-		            	    	}else if (("DELETE").equals(dataAction)) {
+		            	    		}else if (("DELETE").equals(dataAction)) {
 		            	    	%>
 		            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 		            	    	<%
-		            	    	}%>
-								}
+		            	    		}%>
+							<%	
+    						if("true".equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
+    						%>
+    							}
+    						<%
+    						}
+							%>	
+								                
+		                	conn_<%=cid%>.commit();
+		                	
+		                	commitCounter_<%=cid%> = 0;
+		                	
 		                }catch (java.sql.BatchUpdateException e){
 		                	<%if(("true").equals(dieOnError)) {
 		                	%>
@@ -781,10 +799,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 		                }            	                  	
                 	<%
                 	}%>
-                
-                	conn_<%=cid%>.commit();
-                	
-                	commitCounter_<%=cid%> = 0;
                 	
                 }	
                 <%
