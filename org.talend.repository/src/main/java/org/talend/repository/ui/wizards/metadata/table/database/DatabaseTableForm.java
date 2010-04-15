@@ -335,7 +335,8 @@ public class DatabaseTableForm extends AbstractForm {
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
             String returnValue = bean.getDefaultValue();
-            if (bean.getTalendType().equals("id_String") || bean.getTalendType().equals("id_Date")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (bean.getTalendType().equals(JavaTypesManager.STRING.getId())
+                    || bean.getTalendType().equals(JavaTypesManager.DATE.getId())) { //$NON-NLS-1$ //$NON-NLS-2$
                 if (returnValue == null || returnValue.length() == 0) {
                     returnValue = null;
                 } else if (returnValue.equalsIgnoreCase("null")) { //$NON-NLS-1$
@@ -347,10 +348,10 @@ public class DatabaseTableForm extends AbstractForm {
                     //                    returnValue = "\"" + returnValue + "\""; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 bean.setDefaultValue(returnValue);
-            } else if (bean.getTalendType().equals("id_Boolean")) {
-                String returnBoolean = returnValue.replaceAll("\"", "");
+            } else if (bean.getTalendType().equals(JavaTypesManager.BOOLEAN.getId())) {
+                String returnBoolean = TalendTextUtils.removeQuotes(returnValue);
                 if (returnBoolean.getBytes()[0] == 1) {
-                    returnValue = "\"1\"";
+                    returnValue = TalendTextUtils.addQuotes("1");
                     bean.setDefaultValue(returnValue);
                 }
             }
