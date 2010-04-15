@@ -395,6 +395,7 @@ public class LoginComposite extends Composite {
         readConnectionData();
         fillContents();
         addListeners();
+        parent.getShell().pack();
     }
 
     private ManageItem[] getManageElements() {
