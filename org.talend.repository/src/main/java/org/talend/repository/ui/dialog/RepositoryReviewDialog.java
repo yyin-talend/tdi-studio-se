@@ -585,7 +585,7 @@ class JobTypeProcessor implements ITypeProcessor {
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 RepositoryNode node = (RepositoryNode) element;
                 if (curJobId != null && node.getObject() != null) {
-                    if (node.getObject().getId().equals(curJobId)) {
+                    if (node.getObject().getId() == null || node.getObject().getId().equals(curJobId)) {
                         return false;
                     }
                 }
