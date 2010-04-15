@@ -1541,6 +1541,7 @@ public class MultiSchemasUI {
     }
 
     public ProcessDescription getProcessDescription() {
+
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
 
         processDescription.setHeaderRow(-1);
@@ -1556,6 +1557,8 @@ public class MultiSchemasUI {
             orignalPath = multiSchemaManager.getOriginalValue(curFilePath);
             processDescription.setFilepath(orignalPath);
         }
+        processDescription.setFieldSeparator(multiSchemaManager.getOriginalValue(processDescription.getFieldSeparator()));
+        processDescription.setRowSeparator(multiSchemaManager.getOriginalValue(processDescription.getRowSeparator()));
 
         return processDescription;
     }
