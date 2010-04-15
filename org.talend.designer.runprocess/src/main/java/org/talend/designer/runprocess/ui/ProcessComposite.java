@@ -1527,7 +1527,13 @@ public class ProcessComposite extends Composite {
         Display.getDefault().asyncExec(new Runnable() {
 
             public void run() {
+                if (processContext == null) {
+                    return;
+                }
                 org.talend.core.model.process.IProcess process = processContext.getProcess();
+                if (process == null) {
+                    return;
+                }
                 List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
                 for (INode inode : nodeList) {
                     if (!inode.isActivate()) {

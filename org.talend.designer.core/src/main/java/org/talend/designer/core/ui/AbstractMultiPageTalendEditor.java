@@ -1018,4 +1018,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     }
 
+    public abstract AbstractTalendEditor getDesignerEditor();
+
 }
