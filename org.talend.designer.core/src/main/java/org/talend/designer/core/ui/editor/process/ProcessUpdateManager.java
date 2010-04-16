@@ -670,93 +670,101 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
         }
         // check the metadata from the repository to see if it's up to date.
-        IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-        if (schemaTypeParam != null) {
-            IElementParameter schemaParam = schemaTypeParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-            if (schemaParam != null && ((ElementParameter) schemaTypeParam).isDisplayedByDefault()) {
-                if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
-                    String propertyValue = (String) schemaTypeParam.getChildParameters().get(
-                            EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
-                    ConnectionItem connectionItem = null;
-                    String schemaName = null;
-                    String[] names = UpdateManagerUtils.getSourceIdAndChildName(propertyValue);
-                    if (names != null && names.length > 1) {
-                        connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
-                        schemaName = names[1];
-                    }
+        List<IElementParameter> schemaTypeParams = node.getElementParametersFromField(EParameterFieldType.SCHEMA_TYPE);
+        // IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+        if (schemaTypeParams != null) {
+            for (IElementParameter schemaTypeParam : schemaTypeParams) {
+                UpdateCheckResult result = null;
+                IElementParameter schemaParam = schemaTypeParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+                if (schemaParam != null && ((ElementParameter) schemaTypeParam).isDisplayedByDefault()) {
+                    if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
+                        String propertyValue = (String) schemaTypeParam.getChildParameters().get(
+                                EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
+                        ConnectionItem connectionItem = null;
+                        String schemaName = null;
+                        String[] names = UpdateManagerUtils.getSourceIdAndChildName(propertyValue);
+                        if (names != null && names.length > 1) {
+                            connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
+                            schemaName = names[1];
+                        }
 
-                    //
-                    boolean builtIn = true;
-                    UpdateCheckResult result = null;
+                        //
 
-                    if (connectionItem != null) {
-                        final String uniqueName = node.getUniqueName();
-                        String newSourceId = getSchemaRenamedMap().get(propertyValue);
-                        // renamed
-                        if (newSourceId != null && !newSourceId.equals(propertyValue)) {
-                            String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
-                            if (newSourceIdAndName != null) {
-                                IMetadataTable table = UpdateRepositoryUtils
-                                        .getTableByName(connectionItem, newSourceIdAndName[1]);
+                        boolean builtIn = true;
+                        if (connectionItem != null) {
+                            final String uniqueName = node.getUniqueName();
+                            String newSourceId = getSchemaRenamedMap().get(propertyValue);
+                            // renamed
+                            if (newSourceId != null && !newSourceId.equals(propertyValue)) {
+                                String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
+                                if (newSourceIdAndName != null) {
+                                    IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem,
+                                            newSourceIdAndName[1]);
+                                    if (table != null) {
+                                        String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+
+                                        final IMetadataTable copyOfrepositoryMetadata = table.clone();
+                                        copyOfrepositoryMetadata.setTableName(uniqueName);
+                                        copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
+
+                                        List<Object> parameter = new ArrayList<Object>();
+                                        parameter.add(copyOfrepositoryMetadata);
+                                        parameter.add(propertyValue);
+                                        parameter.add(newSourceId);
+
+                                        result = new UpdateCheckResult(node);
+                                        result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.RENAME, parameter, source);
+                                        builtIn = false;
+                                    }
+                                }
+                            } else {
+                                IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
                                 if (table != null) {
-                                    String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+                                    String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
+                                            + UpdatesConstants.SEGMENT_LINE + table.getLabel();
+
+                                    if (node.getComponent() != null && "tELTAggregate".equals(node.getComponent().getName())) {//$NON-NLS-1$
+                                        source = connectionItem.getProperty().getId() + UpdatesConstants.SEGMENT_LINE
+                                                + table.getLabel();
+                                    }
 
                                     final IMetadataTable copyOfrepositoryMetadata = table.clone();
                                     copyOfrepositoryMetadata.setTableName(uniqueName);
                                     copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
 
-                                    List<Object> parameter = new ArrayList<Object>();
-                                    parameter.add(copyOfrepositoryMetadata);
-                                    parameter.add(propertyValue);
-                                    parameter.add(newSourceId);
+                                    // // fixed the such as tContextDump component.
+                                    // MetadataTool.initilializeSchemaFromElementParameters(copyOfrepositoryMetadata,
+                                    // (List<IElementParameter>) node.getElementParameters());
 
-                                    result = new UpdateCheckResult(node);
-                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.RENAME, parameter, source);
+                                    IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                                    /*
+                                     * should ignore the db type column. because database component can use other
+                                     * database schema.
+                                     */
+                                    if (onlySimpleShow
+                                            || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
+                                                    IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
+                                        result = new UpdateCheckResult(node);
+                                        result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE,
+                                                copyOfrepositoryMetadata, source);
+                                    }
                                     builtIn = false;
                                 }
                             }
-                        } else {
-                            IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
-                            if (table != null) {
-                                String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
-                                        + UpdatesConstants.SEGMENT_LINE + table.getLabel();
-
-                                final IMetadataTable copyOfrepositoryMetadata = table.clone();
-                                copyOfrepositoryMetadata.setTableName(uniqueName);
-                                copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
-
-                                // // fixed the such as tContextDump component.
-                                // MetadataTool.initilializeSchemaFromElementParameters(copyOfrepositoryMetadata,
-                                // (List<IElementParameter>) node.getElementParameters());
-
-                                IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
-                                /*
-                                 * should ignore the db type column. because database component can use other database
-                                 * schema.
-                                 */
-                                if (onlySimpleShow
-                                        || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
-                                                IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
-                                    result = new UpdateCheckResult(node);
-                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, copyOfrepositoryMetadata,
-                                            source);
-                                }
-                                builtIn = false;
-                            }
                         }
-                    }
 
-                    if (builtIn) {
-                        // if the repository connection doesn't exists then set to built-in
-                        result = new UpdateCheckResult(node);
-                        result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.BUIL_IN);
-                    }
+                        if (builtIn) {
+                            // if the repository connection doesn't exists then set to built-in
+                            result = new UpdateCheckResult(node);
+                            result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.BUIL_IN, schemaTypeParam.getContext());
+                        }
 
-                    // add the check result to resultList, hold the value.
-                    if (result != null) {
-                        result.setJob(getProcess());
-                        setConfigrationForReadOnlyJob(result);
-                        schemaResults.add(result);
+                        // add the check result to resultList, hold the value.
+                        if (result != null) {
+                            result.setJob(getProcess());
+                            setConfigrationForReadOnlyJob(result);
+                            schemaResults.add(result);
+                        }
                     }
                 }
             }

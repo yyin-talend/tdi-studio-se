@@ -352,25 +352,42 @@ public class UpdateNodeParameterCommand extends Command {
 
                             for (INodeConnector nodeConnector : node.getListConnector()) {
                                 if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
-                                    IElementParameter param = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                                    if (param != null) {
-                                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, newTable);
-                                        // wzhang added to fix 9251. get the current connection.
-                                        String propertyValue = (String) node
-                                                .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                                        IRepositoryObject lastVersion = UpdateRepositoryUtils
-                                                .getRepositoryObjectById(propertyValue);
-                                        Connection repositoryConn = null;
-                                        if (lastVersion != null) {
-                                            final Item item = lastVersion.getProperty().getItem();
-                                            if (item != null && item instanceof ConnectionItem) {
-                                                repositoryConn = ((ConnectionItem) item).getConnection();
+                                    List<IElementParameter> params = node
+                                            .getElementParametersFromField(EParameterFieldType.SCHEMA_TYPE);
+                                    // IElementParameter param =
+                                    // node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                                    if (params != null) {
+                                        for (IElementParameter param : params) {
+                                            ChangeMetadataCommand cmd = null;
+                                            if (node.getComponent() != null
+                                                    && "tELTAggregate".equals(node.getComponent().getName())) {//$NON-NLS-1$
+                                                IElementParameter childParam = param.getChildParameters().get(
+                                                        UpdatesConstants.REPOSITORY_SCHEMA_TYPE);
+                                                if (childParam != null && childParam.getValue().equals(result.getRemark())) {
+                                                    cmd = new ChangeMetadataCommand(node, param, null, newTable);
+                                                }
+                                            } else {
+                                                cmd = new ChangeMetadataCommand(node, param, null, newTable);
+                                            }
+                                            if (cmd != null) {
+                                                // wzhang added to fix 9251. get the current connection.
+                                                String propertyValue = (String) node
+                                                        .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                                                IRepositoryObject lastVersion = UpdateRepositoryUtils
+                                                        .getRepositoryObjectById(propertyValue);
+                                                Connection repositoryConn = null;
+                                                if (lastVersion != null) {
+                                                    final Item item = lastVersion.getProperty().getItem();
+                                                    if (item != null && item instanceof ConnectionItem) {
+                                                        repositoryConn = ((ConnectionItem) item).getConnection();
+                                                    }
+                                                }
+                                                cmd.setConnection(repositoryConn);
+
+                                                cmd.setRepositoryMode(true);
+                                                cmd.execute(true);
                                             }
                                         }
-                                        cmd.setConnection(repositoryConn);
-
-                                        cmd.setRepositoryMode(true);
-                                        cmd.execute(true);
                                     } else {
                                         MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
                                     }
@@ -419,7 +436,6 @@ public class UpdateNodeParameterCommand extends Command {
                     IElementParameter repositoryParam = node.getElementParameter(schemaParamName);
                     if (repositoryParam != null && oldSourceId.equals(repositoryParam.getValue())) {
                         node.setPropertyValue(schemaParamName, newSourceId);
-
                         if (newTable != null) {
                             for (INodeConnector nodeConnector : node.getListConnector()) {
                                 if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
@@ -429,29 +445,51 @@ public class UpdateNodeParameterCommand extends Command {
                         }
                         builtIn = false;
                     }
-                }
-            }
-            if (builtIn) { // built-in
-                // for ebcdic
-                if (PluginChecker.isEBCDICPluginLoaded()) {
-                    IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
-                            IEBCDICProviderService.class);
-                    if (service != null) {
-                        if (service.isEbcdicNode(node)) {
-                            Object parameter = result.getParameter();
-                            if (parameter instanceof Map) {
-                                Map<String, Object> lineValue = (Map<String, Object>) parameter;
-                                lineValue.remove(IEbcdicConstant.FIELD_SCHEMA + IEbcdicConstant.REF_TYPE);
+                    // for tELTAggregate
+                    schemaParamName = UpdatesConstants.SCHEMA_TARGET + UpdatesConstants.COLON
+                            + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+                    repositoryParam = node.getElementParameter(schemaParamName);
+                    if (repositoryParam != null && oldSourceId.equals(repositoryParam.getValue())) {
+                        node.setPropertyValue(schemaParamName, newSourceId);
+                        if (newTable != null) {
+                            for (INodeConnector nodeConnector : node.getListConnector()) {
+                                if (nodeConnector.getBaseSchema().equals(repositoryParam.getContext())) {
+                                    MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                }
                             }
-                            return;
+                        }
+                        builtIn = false;
+                    }
+
+                }
+            } else if (result.getResultType() == EUpdateResult.BUIL_IN) {
+                // for tELTAgrregate
+                if (UpdatesConstants.SCHEMA_TARGET.equals(result.getParameter())) {
+                    node.setPropertyValue(UpdatesConstants.SCHEMA_TARGET + ":" + EParameterName.SCHEMA_TYPE.getName(),
+                            EmfComponent.BUILTIN);
+                } else {
+                    // for ebcdic
+                    if (PluginChecker.isEBCDICPluginLoaded()) {
+                        IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                                IEBCDICProviderService.class);
+                        if (service != null) {
+                            if (service.isEbcdicNode(node)) {
+                                Object parameter = result.getParameter();
+                                if (parameter instanceof Map) {
+                                    Map<String, Object> lineValue = (Map<String, Object>) parameter;
+                                    lineValue.remove(IEbcdicConstant.FIELD_SCHEMA + IEbcdicConstant.REF_TYPE);
+                                }
+                                return;
+                            }
                         }
                     }
-                }
-                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                for (IElementParameter param : node.getElementParameters()) {
-                    SAPParametersUtils.setNoRepositoryParams(param);
+                    node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    for (IElementParameter param : node.getElementParameters()) {
+                        SAPParametersUtils.setNoRepositoryParams(param);
+                    }
                 }
             }
+
         }
     }
 
