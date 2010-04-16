@@ -43,18 +43,24 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 		<%
 		} else {
 		%>
-		java.net.URL url<%=cid %> = new java.io.File(<%=xmlfile%>).toURL();
+		java.net.URL url<%=cid %> = new java.io.File(<%=xmlfile%>).toURI().toURL();
 		<%
 		}
 		%>
 		
-		java.io.BufferedReader br<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(url<%=cid %>.openStream()));
+		java.io.BufferedReader br<%=cid %> = null;
 		java.lang.StringBuilder sb<%=cid %>=new java.lang.StringBuilder("");
 		
-		char[] buffer<%=cid %> = new char[1024];
-		int length<%=cid %> = -1;
-		while ((length<%=cid %> = br<%=cid %>.read(buffer<%=cid %>)) != -1)
-			sb<%=cid %>.append(buffer<%=cid %>, 0, length<%=cid %>);//read xml document
+		try{
+    		br<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(url<%=cid %>.openStream()));
+    		
+    		char[] buffer<%=cid %> = new char[1024];
+    		int length<%=cid %> = -1;
+    		while ((length<%=cid %> = br<%=cid %>.read(buffer<%=cid %>)) != -1)
+    			sb<%=cid %>.append(buffer<%=cid %>, 0, length<%=cid %>);//read xml document
+    	}finally{
+    		br<%=cid %>.close();
+    	}
 		
 		String doctype<%=cid%> = null;
 		int start<%=cid%>=sb<%=cid%>.indexOf("<!DOCTYPE");
