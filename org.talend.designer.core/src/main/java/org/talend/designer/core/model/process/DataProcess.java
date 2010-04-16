@@ -848,6 +848,10 @@ public class DataProcess {
                     dataConnec.setTarget(subDataNodeStartTarget);
                     // dataConnec.setTarget(subDataNodeStartSource);
 
+                    // the target component can't be start in all case, so no matter where it has been defined, remove
+                    // the start state.
+                    subDataNodeStartTarget.setStart(false);
+
                     outgoingConnections.add(dataConnec);
                     incomingConnections.add(dataConnec);
                 }
