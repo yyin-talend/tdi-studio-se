@@ -281,9 +281,9 @@ public class EditPropertiesAction extends AContextualAction {
                     if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                         canWork = false;
                     }
-                    if (canWork && !isLastVersion(node)) {
-                        canWork = false;
-                    }
+                    // if (canWork && !isLastVersion(node)) {
+                    // canWork = false;
+                    // }
                 }
             }
         }
