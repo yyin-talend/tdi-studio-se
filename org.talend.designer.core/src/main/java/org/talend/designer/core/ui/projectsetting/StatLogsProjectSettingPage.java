@@ -169,8 +169,11 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
         List<String> statCheckedObjects = new ArrayList<String>();
         IRepositoryView repositoryView;
         repositoryView = RepositoryManager.getRepositoryView();
-        AllJobContentProvider statContentProvider = new AllJobContentProvider(repositoryView);
-        RepositoryNode[] nodes = statContentProvider.getContents();
+        // AllJobContentProvider statContentProvider = new AllJobContentProvider(repositoryView);
+        // RepositoryNode[] nodes = statContentProvider.getContents();
+        RepositoryNode root = ((RepositoryContentProvider) repositoryView.getViewer().getContentProvider()).getRoot();
+        RepositoryNode[] nodes = new RepositoryNode[] { ((ProjectRepositoryNode) root)
+                .getRootRepositoryNode(ERepositoryObjectType.PROCESS) };
         List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
         for (RepositoryNode n : nodes) {
             processItems(objects, n);

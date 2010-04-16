@@ -267,4 +267,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     public RepositoryNode getRootRepositoryNode(ERepositoryObjectType type) {
         return root.getRootRepositoryNode(type);
     }
+
+    public RepositoryNode getRoot() {
+        return root;
+    }
 }

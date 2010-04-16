@@ -61,6 +61,8 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.preference.ProjectSettingPage;
+import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryContentProvider;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -214,8 +216,11 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
 
     private void save() {
         List<String> implicitCheckedObjects = new ArrayList<String>();
-        ProjectRepositoryNode root = (ProjectRepositoryNode) RepositoryManager.getRepositoryView().getRoot();
-        RepositoryNode processNode = root.getProcessNode();
+        // ProjectRepositoryNode root = (ProjectRepositoryNode) RepositoryManager.getRepositoryView().getRoot();
+        IRepositoryView repositoryView;
+        repositoryView = RepositoryManager.getRepositoryView();
+        RepositoryNode root = ((RepositoryContentProvider) repositoryView.getViewer().getContentProvider()).getRoot();
+        RepositoryNode processNode = ((ProjectRepositoryNode) root).getProcessNode();
         List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
         processItems(objects, processNode);
         for (RepositoryNode node : objects) {
