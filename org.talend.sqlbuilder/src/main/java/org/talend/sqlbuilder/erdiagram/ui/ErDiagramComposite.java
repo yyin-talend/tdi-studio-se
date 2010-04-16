@@ -271,7 +271,8 @@ public class ErDiagramComposite extends SashForm {
                                         Matcher matcher = pattern.matcher(columnContent);
 
                                         // modify for bug 12092
-                                        boolean sqlKeyword = KeywordsValidator.isSqlKeyword(column.getElementName());
+                                        boolean sqlKeyword = KeywordsValidator
+                                                .isSqlKeyword(column.getElementName(), oracleDbType);
 
                                         if (!matcher.matches() || (sqlKeyword && oracleDbType)) {
                                             columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
