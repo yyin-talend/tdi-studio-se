@@ -520,4 +520,13 @@ public class JobContextLoadComponent implements IComponent {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getShortName()
+     */
+    public String getShortName() {
+        return "icl";
+    }
+
 }

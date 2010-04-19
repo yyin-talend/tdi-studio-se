@@ -503,4 +503,13 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     public boolean canParallelize() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getShortName()
+     */
+    public String getShortName() {
+        return "slog";
+    }
 }

@@ -47,6 +47,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.core.IReplaceNodeInProcess;
 import org.talend.designer.core.ReplaceNodesInProcessProvider;
@@ -96,6 +97,8 @@ public class DataProcess {
 
     private Process duplicatedProcess;
 
+    private List<String> shortUniqueNameList = null;
+
     public DataProcess(Process process) {
         this.process = process;
     }
@@ -109,6 +112,7 @@ public class DataProcess {
         checkFileScaleMap = new HashMap<INode, INode>();
         buildGraphicalMap = new DualHashBidiMap();
         connectionsToIgnoreInMerge = new ArrayList<IConnection>();
+        shortUniqueNameList = new ArrayList<String>();
     }
 
     private void copyElementParametersValue(IElement sourceElement, IElement targetElement) {
@@ -1265,6 +1269,9 @@ public class DataProcess {
                 preStaLogConNode = node;
                 break;
             }
+            ((AbstractNode) node).setUniqueShortName(UniqueNodeNameGenerator.generateUniqueNodeName(((AbstractNode) node)
+                    .getComponent().getShortName(), shortUniqueNameList));
+            shortUniqueNameList.add(node.getUniqueShortName());
         }
         if (preStaLogConNode != null) {
             dataNodeList.remove(preStaLogConNode);
@@ -1276,6 +1283,7 @@ public class DataProcess {
         buildCheckMap = null;
         buildGraphicalMap = null;
         connectionsToIgnoreInMerge = null;
+        shortUniqueNameList = null;
     }
 
     private void checkMergeComponents(INode node) {

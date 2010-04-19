@@ -198,8 +198,6 @@ public class Node extends Element implements INode {
 
     private boolean reloadingComponent = false;
 
-    private List<IMultipleComponentManager> multipleComponentManagers;
-
     private boolean showHint;
 
     private boolean errorFlag;
@@ -3095,5 +3093,15 @@ public class Node extends Element implements INode {
      */
     public boolean isUseLoopOnConditionalOutput(String outputName) {
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#getUniqueShortName()
+     */
+    public String getUniqueShortName() {
+        // should't be call from here, should be called from something extends AbstractNode (DataNode, ExternalNode...).
+        return null;
     }
 }

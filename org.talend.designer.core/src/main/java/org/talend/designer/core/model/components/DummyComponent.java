@@ -495,4 +495,13 @@ public class DummyComponent implements IComponent {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getShortName()
+     */
+    public String getShortName() {
+        return "dc";
+    }
+
 }

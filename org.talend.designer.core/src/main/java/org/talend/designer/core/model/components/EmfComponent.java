@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -1821,6 +1822,30 @@ public class EmfComponent implements IComponent {
 
     public String getName() {
         return file.getParentFile().getName();
+    }
+
+    // if doesn't exist, return by default the name of the component.
+    public String getShortName() {
+        if (!StringUtils.isEmpty(compType.getHEADER().getSHORTNAME())) {
+            return compType.getHEADER().getSHORTNAME();
+        } else {
+            String originalComponentName = getName();
+            String calculatedShortName = "";
+            char[] cars = new char[originalComponentName.length()];
+            int nbChars = 0;
+
+            for (int i = 0; i < originalComponentName.length(); i++) {
+                for (char c = 'A'; c <= 'Z'; c++) {
+                    if (originalComponentName.charAt(i) == c) {
+                        cars[nbChars] = originalComponentName.charAt(i);
+                        nbChars++;
+                    }
+                }
+            }
+            calculatedShortName = String.copyValueOf(cars, 0, nbChars);
+            calculatedShortName = calculatedShortName.toLowerCase();
+            return calculatedShortName;
+        }
     }
 
     public String getLongName() {
