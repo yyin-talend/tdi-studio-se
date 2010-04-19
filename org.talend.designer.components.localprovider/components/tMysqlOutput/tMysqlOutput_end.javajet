@@ -319,11 +319,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 							pstmt_<%=cid %>.executeBatch();                	
 	            	    	<%if (("INSERT").equals(dataAction)) {
 	            	    	%>
-	            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+	            	    		insertedCount_<%=cid%> += batchSizeCounter_<%=cid%>;
 	            	    	<%
 	            	    	}
 	            	    	%>                         	    	
-	            	    	batchSizeCounter_<%=cid%> = 0;    
             	    	}         	                	                	
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
@@ -336,6 +335,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	<%
                 	}%>
                 }
+                batchSizeCounter_<%=cid%> = 0;    
                 <%
                 }
                 %>    			
