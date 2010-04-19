@@ -324,7 +324,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	            	    	}
 	            	    	%>                         	    	
             	    	}         	                	                	
-                }catch (java.sql.BatchUpdateException e){
+                }catch (java.sql.SQLException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);
