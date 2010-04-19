@@ -1656,7 +1656,18 @@ public class EmfComponent implements IComponent {
             }
             item = (ITEMType) items.getITEM().get(currentItem);
             listItemsDisplayCodeValue[k] = item.getNAME();
-            listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
+            // wzhang modified for 10846
+            boolean displayAsValue = item.isDISPLAYNAMEASVALUE();
+            if (displayAsValue) {
+                String value = item.getVALUE();
+                if (value != null) {
+                    listItemsDisplayValue[k] = value;
+                } else {
+                    listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
+                }
+            } else {
+                listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
+            }
             if (type != EParameterFieldType.TABLE) {
                 listItemsValue[k] = item.getVALUE();
             } else {
