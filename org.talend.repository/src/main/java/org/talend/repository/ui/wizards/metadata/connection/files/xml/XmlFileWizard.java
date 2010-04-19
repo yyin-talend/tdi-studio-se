@@ -12,13 +12,19 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
@@ -26,20 +32,40 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
+import org.talend.core.model.metadata.types.JavaDataTypeHelper;
+import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.metadata.types.PerlDataTypeHelper;
+import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.preview.ProcessDescription;
+import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils;
+import org.talend.repository.ui.utils.ShadowProcessHelper;
 import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
@@ -64,9 +90,11 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
+    private XmlFileConnectionItem connectionItem;
 
     private boolean isToolbar;
+
+    protected static final String DEFAULT_LABEL = "Column"; //$NON-NLS-1$
 
     /**
      * Sets the isToolbar.
@@ -129,7 +157,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         case REPOSITORY_ELEMENT:
             connection = (XmlFileConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
             connectionProperty = node.getObject().getProperty();
-            connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            connectionItem = (XmlFileConnectionItem) node.getObject().getProperty().getItem();
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             setRepositoryObject(node.getObject());
             isRepositoryObjectEditable();
@@ -179,7 +207,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         case REPOSITORY_ELEMENT:
             connection = (XmlFileConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
             connectionProperty = node.getObject().getProperty();
-            connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            connectionItem = (XmlFileConnectionItem) node.getObject().getProperty().getItem();
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             setRepositoryObject(node.getObject());
             isRepositoryObjectEditable();
@@ -269,6 +297,17 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         boolean formIsPerformed;
         if (xmlFileWizardPage3 == null) {
             formIsPerformed = xmlFileWizardPage2.isPageComplete();
+            if (formIsPerformed) {
+                List schemas = connection.getSchema();
+                List tables = connection.getTables();
+                if (!schemas.isEmpty() && !tables.isEmpty()) {
+                    XmlXPathLoopDescriptor currentSchema = (XmlXPathLoopDescriptor) schemas.get(0);
+                    MetadataTable currentTable = (MetadataTable) tables.get(0);
+                    if (currentSchema.getSchemaTargets().size() != currentTable.getColumns().size()) {
+                        resetMetadata(currentSchema.getSchemaTargets());
+                    }
+                }
+            }
         } else {
             formIsPerformed = xmlFileWizardPage3.isPageComplete();
         }
@@ -312,4 +351,183 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
     public ConnectionItem getConnectionItem() {
         return this.connectionItem;
     }
+
+    private void resetMetadata(List<SchemaTarget> schemaTarget) {
+        XmlFileConnection connection2 = OtherConnectionContextUtils.getOriginalValueConnection(connection, this.connectionItem,
+                connection.isContextMode(), true);
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(connection2);
+        CsvArray csvArray = null;
+        try {
+            csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_XML");//$NON-NLS-1$
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+
+        List<MetadataColumn> newColumns = new ArrayList<MetadataColumn>();
+
+        String file = ((XmlFileConnection) this.connectionItem.getConnection()).getXmlFilePath();
+        if (connection.isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
+            file = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, file));
+        }
+
+        if (file != null && file.endsWith(".xsd")) { //$NON-NLS-1$
+            // prepareColumnsFromXSD(file, newColumns, schemaTarget);
+            return;
+        }
+
+        if (csvArray == null || csvArray.getRows().isEmpty()) {
+            return;
+        } else {
+
+            List<String[]> csvRows = csvArray.getRows();
+            String[] fields = csvRows.get(0);
+            int numberOfCol = fields.length;
+
+            // define the label to the metadata width the content of the first row
+            int firstRowToExtractMetadata = 0;
+
+            // the first rows is used to define the label of any metadata
+            String[] label = new String[numberOfCol];
+            for (int i = 0; i < numberOfCol; i++) {
+                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
+
+                if (firstRowToExtractMetadata == 0) {
+                    if (schemaTarget.get(i).getTagName() != null && !schemaTarget.get(i).getTagName().equals("")) { //$NON-NLS-1$
+                        label[i] = "" + schemaTarget.get(i).getTagName().trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
+                    }
+                }
+            }
+
+            for (int i = 0; i < numberOfCol; i++) {
+                // define the first currentType and assimile it to globalType
+                String globalType = null;
+                int lengthValue = 0;
+                int precisionValue = 0;
+
+                int current = firstRowToExtractMetadata;
+                while (globalType == null) {
+                    if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                        if (i >= csvRows.get(current).length) {
+                            globalType = "id_String"; //$NON-NLS-1$
+                        } else {
+                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
+                            current++;
+                            // if (current == csvRows.size()) {
+                            // globalType = "id_String"; //$NON-NLS-1$
+                            // }
+                        }
+                    } else {
+                        if (i >= csvRows.get(current).length) {
+                            globalType = "String"; //$NON-NLS-1$
+                        } else {
+                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
+                            current++;
+                            // if (current == csvRows.size()) {
+                            // globalType = "String"; //$NON-NLS-1$
+                            // }
+                        }
+                    }
+                }
+                // for another lines
+                for (int f = firstRowToExtractMetadata; f < csvRows.size(); f++) {
+                    fields = csvRows.get(f);
+                    if (fields.length > i) {
+                        String value = fields[i];
+                        if (!value.equals("")) { //$NON-NLS-1$
+
+                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                                if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
+                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
+                                            .getTalendTypeOfValue(value));
+                                }
+                            } else {
+                                if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
+                                    globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
+                                            .getTalendTypeOfValue(value));
+                                }
+                            }
+                            if (lengthValue < value.length()) {
+                                lengthValue = value.length();
+                            }
+                            int positionDecimal = 0;
+                            if (value.indexOf(',') > -1) {
+                                positionDecimal = value.lastIndexOf(',');
+                                precisionValue = lengthValue - positionDecimal;
+                            } else if (value.indexOf('.') > -1) {
+                                positionDecimal = value.lastIndexOf('.');
+                                precisionValue = lengthValue - positionDecimal;
+                            }
+                        } else {
+                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                                if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                        MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
+                                        && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
+                                    globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                                    if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                            && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
+                                        lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                    }
+                                }
+                            } else {
+                                if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                        MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
+                                        && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
+                                    globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
+                                    if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
+                                            && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
+                                        lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                // define the metadataColumn to field i
+                MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                // hshen bug7249
+                metadataColumn.setPattern("\"dd-MM-yyyy\""); //$NON-NLS-1$
+                // Convert javaType to TalendType
+                String talendType = null;
+                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                    talendType = globalType;
+                    if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
+                        metadataColumn.setPrecision(precisionValue);
+                    } else {
+                        metadataColumn.setPrecision(0);
+                    }
+                } else {
+                    talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
+                            "TALENDDEFAULT", false)); //$NON-NLS-1$
+                    if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        metadataColumn.setPrecision(precisionValue);
+                    } else {
+                        metadataColumn.setPrecision(0);
+                    }
+                }
+                metadataColumn.setTalendType(talendType);
+                metadataColumn.setLength(lengthValue);
+                metadataColumn.setLabel(label[i]);
+
+                newColumns.add(i, metadataColumn);
+            }
+        }
+        EList columns = ((MetadataTable) connection.getTables().get(0)).getColumns();
+        columns.clear();
+        columns.addAll(newColumns);
+    }
+
 }
