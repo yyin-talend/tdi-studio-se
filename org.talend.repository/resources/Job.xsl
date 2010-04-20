@@ -432,7 +432,7 @@
 							</th>
 						</tr>
 						<xsl:for-each
-							select="$job/contextList/context/contextParameter">
+							select="contextParameter">
 							<tr>
 								<td class="FONTSTYLE" align="left">
 									<xsl:value-of select="@name" />
