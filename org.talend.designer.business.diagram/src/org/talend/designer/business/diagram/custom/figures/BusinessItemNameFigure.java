@@ -26,7 +26,8 @@ public class BusinessItemNameFigure extends WrapLabel {
      * DOC mhelleboid BusinessItemNameFigure constructor comment.
      */
     public BusinessItemNameFigure() {
-        setTextWrap(true);
+        // fixed bug 10303
+        // setTextWrap(true);
     }
 
 }
