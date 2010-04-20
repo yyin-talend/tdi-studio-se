@@ -61,7 +61,8 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
- * Detailled comment for this class. <br/> $Id: DBTreeProvider.java Version 1.0 Nov 6, 2006 2:29:19 AM $
+ * Detailled comment for this class. <br/>
+ * $Id: DBTreeProvider.java Version 1.0 Nov 6, 2006 2:29:19 AM $
  * 
  * @author phou
  * 
@@ -243,7 +244,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         try {
             container = factory.getMetadataConnection(pManager.getCurrentProject());
             pManager.retrieveReferencedProjects();
-            for (Project p : pManager.getReferencedProjects()) {
+            for (Project p : pManager.getAllReferencedProjects()) {
                 RootContainer rContainer = factory.getMetadataConnection(p);
                 if (container == null) {
                     container = rContainer;

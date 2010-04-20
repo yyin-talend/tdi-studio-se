@@ -474,7 +474,7 @@ class FakeRepositoryView extends RepositoryView {
     }
 
     private RepositoryNode getInput() {
-        getViewer().expandAll();
+        // getViewer().expandAll();
         RepositoryContentProvider contentProvider = (RepositoryContentProvider) getViewer().getContentProvider();
         return typeProcessor.getInputRoot(contentProvider);
     }
@@ -645,29 +645,43 @@ class RepositoryTypeProcessor implements ITypeProcessor {
         // referenced project.
         nodesList.removeAll(null);
         if (contentProvider.getReferenceProjectNode() != null) {
+            RepositoryNode contentRepositoryNode = contentProvider.getReferenceProjectNode();
+            if (!contentRepositoryNode.isInitialized()) {
+                if (contentRepositoryNode.getParent() instanceof ProjectRepositoryNode) {
+                    ((ProjectRepositoryNode) contentRepositoryNode.getParent()).initializeChildren(contentRepositoryNode);
+                }
+                contentRepositoryNode.setInitialized(true);
+
+            }
             List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
-
                 for (RepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
-
                     RepositoryNode refMetadataNode = getMetadataNode(refProject);
-
                     if (refMetadataNode != null) {
                         newProject.getChildren().add(refMetadataNode);
                         nodesList.add(newProject);
-                        this.addSubRefProjectNodes(refProject);
+                        addSubRefProjectNodes(refProject);
                     }
                 }
                 metadataNode.getChildren().addAll(nodesList);
             }
         }
+
     }
 
     private void addSubRefProjectNodes(ProjectRepositoryNode subRefProject) {
         if (subRefProject.getReferenceProjectNode() == null)
             return;
+        RepositoryNode contentRepositoryNode = subRefProject.getReferenceProjectNode();
+        if (!contentRepositoryNode.isInitialized()) {
+            if (contentRepositoryNode.getParent() instanceof ProjectRepositoryNode) {
+                ((ProjectRepositoryNode) contentRepositoryNode.getParent()).initializeChildren(contentRepositoryNode);
+            }
+            contentRepositoryNode.setInitialized(true);
+
+        }
         List<RepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
         if (refProjects != null && !refProjects.isEmpty()) {
             for (RepositoryNode repositoryNode : refProjects) {
