@@ -408,13 +408,31 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent evt) {
-        if (!(evt.getNewValue() instanceof IRepositoryObject)) {
+        IRepositoryObject object = null;
+        if (evt.getNewValue() instanceof IRepositoryObject) {
+            object = (IRepositoryObject) evt.getNewValue();
+        } else if (evt.getNewValue() instanceof List) {
+            // get last version
+            IRepositoryObject lastVersion = null;
+            for (Object obj : (List) evt.getNewValue()) {
+                if (obj instanceof IRepositoryObject) {
+                    IRepositoryObject repositoryObj = (IRepositoryObject) obj;
+                    if (repositoryObj.getType() != ERepositoryObjectType.ROUTINES) {
+                        return;
+                    }
+                    if (lastVersion == null
+                            || Float.valueOf(repositoryObj.getVersion()) > Float.valueOf(lastVersion.getVersion())) {
+                        lastVersion = repositoryObj;
+                    }
+                }
+            }
+            object = lastVersion;
+        }
+
+        if (object == null) {
             return;
         }
-        IRepositoryObject object = (IRepositoryObject) evt.getNewValue();
-        if (object.getType() != ERepositoryObjectType.ROUTINES) {
-            return;
-        }
+
         if (evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName())
                 || evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_FOREVER.getName())) {
             String routineLabel = object.getProperty().getLabel();
