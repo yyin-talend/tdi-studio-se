@@ -49,7 +49,7 @@
       READONLY="false" 
       REQUIRED="true" 
       SHOW="true">
-      <DEFAULT>"1"</DEFAULT>
+      <DEFAULT>1</DEFAULT>
     </PARAMETER>
     
     <PARAMETER FIELD="TABLE" 

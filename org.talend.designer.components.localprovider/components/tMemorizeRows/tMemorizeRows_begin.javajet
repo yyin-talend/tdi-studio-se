@@ -22,9 +22,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
   List<? extends IConnection> connsIn = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
   IMetadataTable preMetadata = connsIn.get(0).getMetadataTable();
   List<IMetadataColumn> preColumns = preMetadata.getListColumns();
-  String sRows = ElementParameterParser.getValue(node, "__ROW_COUNT__");
+  String sRowsCount = ElementParameterParser.getValue(node, "__ROW_COUNT__");
   %>
-  int iRows_<%=cid%> = Integer.parseInt(<%=sRows%>);
+  int iRows_<%=cid%> = <%=sRowsCount%>;
   <%
   for (IMetadataColumn column : preColumns){
     String sType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
