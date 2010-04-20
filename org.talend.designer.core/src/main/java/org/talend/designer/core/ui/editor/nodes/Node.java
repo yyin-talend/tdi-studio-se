@@ -2518,9 +2518,16 @@ public class Node extends Element implements INode {
                                     | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
                                     | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
                                     | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
-                        schemaSynchronized = false;
-                        String errorMessage = Messages.getString("Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
+                                && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
+                            String warningMessage = Messages.getString("Node.lengthWarning", //$NON-NLS-1$
+                                    inputConnecion.getName());
+                            Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                        } else {
+                            schemaSynchronized = false;
+                            String errorMessage = Messages.getString("Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
                     }
                 }
             } else {
