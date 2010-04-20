@@ -685,15 +685,6 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             case METADATA_CONNECTIONS:
                 item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
                 connection = (DatabaseConnection) item.getConnection();
-                // metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-                // try {
-                // int nextId = RepositoryFactoryProvider.getInstance().getNextId();
-                // metadataTable.setId(nextId);
-                // } catch (PersistenceException e) {
-                // e.printStackTrace();
-                // }
-                // metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                // connection.getTables().add(metadataTable);
                 creation = true;
                 break;
             default:
@@ -716,7 +707,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 if (!monitor.isCanceled()) {
                     final ManagerConnection managerConnection = new ManagerConnection();
 
-                    IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
+                    DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+                    IMetadataConnection metadataConnection = ConvertionHelper.convert(connection);
                     if (!metadataConnection.getDbType().equals(EDatabaseConnTemplate.GODBC.getDBDisplayName())
                             && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())
                             && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
@@ -728,31 +720,41 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                         metadataConnection.setUrl(genUrl);
                     }
 
-                    final boolean skipStep = checkConnectStatus(managerConnection, metadataConnection);
-                    // if (skipStep) {
-                    // MessageDialog.openError(null, "Connection error", managerConnection.getMessageException());
-                    // }
-                    DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(), creation, item,
-                            metadataTable, getExistingNames(), forceReadOnly, managerConnection, metadataConnection);
-                    databaseTableWizard.setSkipStep(skipStep);
-                    databaseTableWizard.setRepositoryObject(node.getObject());
-                    UIJob uijob = new UIJob("") { //$NON-NLS-1$
+                    boolean check = managerConnection.check(metadataConnection);
+                    List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
 
-                        // modified by wzhang. when connection failed,error message display.
-                        public IStatus runInUIThread(IProgressMonitor monitor) {
-                            if (!managerConnection.getIsValide()) {
-                                MessageDialog.openError(null, Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
-                                        Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
+                    boolean noTableExistInDB = noTableExistInDB(check, itemTableName);
+
+                    if (noTableExistInDB) {
+                        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
+                                .getString("AbstractCreateTableAction.retrieveForbidden"), Messages
+                                .getString("AbstractCreateTableAction.retrieveForbidden.Message"));
+                    } else {
+
+                        final boolean skipStep = checkConnectStatus(check, itemTableName);
+
+                        DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(), creation,
+                                item, metadataTable, getExistingNames(), forceReadOnly, managerConnection, metadataConnection);
+                        databaseTableWizard.setSkipStep(skipStep);
+                        databaseTableWizard.setRepositoryObject(node.getObject());
+                        UIJob uijob = new UIJob("") { //$NON-NLS-1$
+
+                            // modified by wzhang. when connection failed,error message display.
+                            public IStatus runInUIThread(IProgressMonitor monitor) {
+                                if (!managerConnection.getIsValide()) {
+                                    MessageDialog.openError(null, Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
+                                            Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
+                                }
+                                return Status.OK_STATUS;
                             }
-                            return Status.OK_STATUS;
-                        }
 
-                    };
-                    WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                            databaseTableWizard);
-                    wizardDialog.setBlockOnOpen(true);
-                    uijob.schedule(1300);
-                    handleWizard(node, wizardDialog);
+                        };
+                        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                .getShell(), databaseTableWizard);
+                        wizardDialog.setBlockOnOpen(true);
+                        uijob.schedule(1300);
+                        handleWizard(node, wizardDialog);
+                    }
                 }
                 monitor.done();
                 return Status.OK_STATUS;
@@ -765,7 +767,6 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
     public boolean checkConnectStatus(ManagerConnection managerConnection, IMetadataConnection metadataConnection) {
         boolean skipStep = false;
-
         managerConnection.check(metadataConnection);
         if (managerConnection.getIsValide()) {
             List<String> itemTableName = null;
@@ -778,5 +779,39 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             skipStep = true;
         }
         return skipStep;
+    }
+
+    /**
+     * DOC zli Comment method "checkConnectStatus".
+     * 
+     * @param check
+     * @param itemTableName
+     * @return
+     */
+    public boolean checkConnectStatus(Boolean check, List<String> itemTableName) {
+        boolean skipStep = false;
+        if (check) {
+            if (itemTableName == null || itemTableName.isEmpty()) {
+                skipStep = true;
+            }
+        } else {
+            skipStep = true;
+        }
+        return skipStep;
+    }
+
+    /**
+     * DOC zli Comment method "noTableExistInDB".
+     * 
+     * @param managerConnection
+     * @param metadataConnection
+     * @return
+     */
+
+    public boolean noTableExistInDB(Boolean check, List<String> itemTableName) {
+        if (check && (itemTableName == null || itemTableName.isEmpty())) {
+            return true;
+        }
+        return false;
     }
 }
