@@ -47,8 +47,11 @@ conn_<%=cid%> .close();
 <%	
 	}else{
 %>
-pstmt_<%=cid %>.executeBatch();
-pstmt_<%=cid %>.clearBatch();
+if (commitCounter_<%=cid%> > 0) {
+	pstmt_<%=cid %>.executeBatch();
+	pstmt_<%=cid %>.clearBatch();
+	commitCounter_<%=cid%>=0;
+}
 pstmt_<%=cid %>.close();
 conn_<%=cid%>.commit();
 conn_<%=cid%> .close();
