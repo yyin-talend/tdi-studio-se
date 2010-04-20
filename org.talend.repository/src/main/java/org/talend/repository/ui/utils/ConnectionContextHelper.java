@@ -498,9 +498,10 @@ public final class ConnectionContextHelper {
                             added = true;
                         } else {
                             // show
-                            ShowAddedContextdialog showDialog = new ShowAddedContextdialog(addedVars, UpdateRepositoryUtils
-                                    .getRepositorySourceName(connItem));
-                            if (showDialog.open() == Window.OK && showDialog.isChecked()) {
+                            Map<String, Set<String>> addedVarsMap = new HashMap<String, Set<String>>();
+                            addedVarsMap.put(connItem.getProperty().getId(), addedVars);
+                            ShowAddedContextdialog showDialog = new ShowAddedContextdialog(addedVarsMap, true);
+                            if (showDialog.open() == Window.OK) {
                                 addContextVarForJob(process, contextItem, addedVars);
                                 added = true;
                             }
@@ -556,7 +557,7 @@ public final class ConnectionContextHelper {
             if (!addedVarsMap.isEmpty()) {
                 // show
                 ShowAddedContextdialog showDialog = new ShowAddedContextdialog(addedVarsMap);
-                if (showDialog.open() == Window.OK && showDialog.isChecked()) {
+                if (showDialog.open() == Window.OK) {
                     boolean added = false;
                     for (String id : varsMap.keySet()) {
                         ConnectionItem connItem = UpdateRepositoryUtils.getConnectionItemByItemId(id);

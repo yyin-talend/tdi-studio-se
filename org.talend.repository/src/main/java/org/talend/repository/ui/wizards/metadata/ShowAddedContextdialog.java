@@ -13,27 +13,34 @@
 package org.talend.repository.ui.wizards.metadata;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.context.ContextUtils;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -43,41 +50,27 @@ public class ShowAddedContextdialog extends SelectionDialog {
 
     private static final String TITILE = Messages.getString("ShowAddedContextdialog.Title"); //$NON-NLS-1$
 
-    private List<String> contextList = new ArrayList<String>();
-
-    private boolean checked = true;
+    private final List<AddedContextBean> addedVarBeans = new ArrayList<AddedContextBean>();
 
     public ShowAddedContextdialog(Map<String, Set<String>> addedVarsMap) {
+        this(addedVarsMap, false);
+    }
+
+    public ShowAddedContextdialog(Map<String, Set<String>> addedVarsMap, boolean isIdKey) {
         super(PlatformUI.getWorkbench().getDisplay().getActiveShell());
         Assert.isNotNull(addedVarsMap);
-        for (String lable : addedVarsMap.keySet()) {
-            contextList.addAll(addedVarsMap.get(lable));
+        for (String idOrLabel : addedVarsMap.keySet()) {
+            addedVarBeans.add(new AddedContextBean(idOrLabel, addedVarsMap.get(idOrLabel), isIdKey));
         }
-        String label = ""; //$NON-NLS-1$
-        for (String source : addedVarsMap.keySet()) {
-            label += source + "/"; //$NON-NLS-1$
-        }
-        if (label.length() > 1) {
-            label = label.substring(0, label.length() - 1);
-        }
-
-        init(label);
+        init();
     }
 
-    public ShowAddedContextdialog(Set<String> contextSet, final String label) {
-        super(PlatformUI.getWorkbench().getDisplay().getActiveShell());
-        Assert.isNotNull(contextSet);
-        this.contextList.addAll(contextSet);
-        init(label);
-    }
-
-    private void init(String label) {
-        Collections.sort(contextList);
+    private void init() {
         setShellStyle(getShellStyle() | SWT.RESIZE);
         setBlockOnOpen(true);
         setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
         setTitle(TITILE);
-        setMessage(Messages.getString("ShowAddedContextdialog.Messages", label)); //$NON-NLS-1$
+        setMessage(Messages.getString("ShowAddedContextdialog.Messages")); //$NON-NLS-1$
         setHelpAvailable(false);
     }
 
@@ -97,49 +90,131 @@ public class ShowAddedContextdialog extends SelectionDialog {
         gridData.minimumWidth = 200;
         inner.setLayoutData(gridData);
 
-        ListViewer listViewer = new ListViewer(inner);
-        listViewer.add(contextList.toArray());
+        TreeViewer treeViewer = new TreeViewer(inner);
+        treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+        Tree tree = treeViewer.getTree();
+        tree.setHeaderVisible(false);
+        tree.setLinesVisible(false);
 
-        listViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-        // option
+        treeViewer.setContentProvider(new AddedContextProvider());
+        treeViewer.setLabelProvider(new AddedContextProvider());
+        treeViewer.setInput(addedVarBeans);
 
-        final Button checkBtn = new Button(inner, SWT.CHECK);
-        checkBtn.setText(Messages.getString("ShowAddedContextdialog.CheckLabel")); //$NON-NLS-1$
-        checkBtn.setSelection(checked);
+        treeViewer.expandAll();
 
-        checkBtn.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent e) {
-                checked = checkBtn.getSelection();
-                if (!checked) {
-                    String messages = Messages.getString("ShowAddedContextdialog.CheckWarningMessages"); //$NON-NLS-1$
-                    MessageDialog.openWarning(getParentShell(), Messages.getString("ShowAddedContextdialog.CheckWarningTitile"), //$NON-NLS-1$
-                            messages);
-                    checkBtn.setToolTipText(messages); //$NON-NLS-1$
-
-                } else {
-                    checkBtn.setToolTipText(""); //$NON-NLS-1$
-                }
-                //
-                Button okBtn = getOkButton();
-                if (okBtn != null) {
-                    okBtn.setEnabled(checked);
-                }
-            }
-        });
         return composite;
+    }
+
+    protected void buttonPressed(int buttonId) {
+        if (IDialogConstants.YES_ID == buttonId) {
+            okPressed();
+        } else if (IDialogConstants.NO_ID == buttonId) {
+            cancelPressed();
+        }
     }
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        super.createButtonsForButtonBar(parent);
-        if (getOkButton() != null) {
-            getOkButton().setText(Messages.getString("ShowAddedContextdialog.AddLabel")); //$NON-NLS-1$
-        }
+        createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
+        createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, false);
     }
 
-    public boolean isChecked() {
-        return this.checked;
+    /**
+     * 
+     * ggu AddedContextBean class global comment. Detailled comment
+     */
+    class AddedContextBean {
+
+        String idOrLabel;
+
+        Set<String> vars;
+
+        boolean isIdKey;
+
+        AddedContextBean(String idOrLabel, Set<String> vars, boolean isIdKey) {
+            super();
+            this.idOrLabel = idOrLabel;
+            this.vars = vars;
+            this.isIdKey = isIdKey;
+        }
+
+        public String getIdOrLabel() {
+            return this.idOrLabel;
+        }
+
+        public Set<String> getVars() {
+            return this.vars;
+        }
+
+        public boolean isIdKey() {
+            return this.isIdKey;
+        }
+
+    }
+
+    /**
+     * 
+     * ggu AddedContextTreeContentProvider class global comment. Detailled comment
+     */
+    class AddedContextProvider extends ArrayContentProvider implements ITreeContentProvider, ITableLabelProvider, ILabelProvider {
+
+        public Object[] getChildren(Object parentElement) {
+            if (parentElement instanceof AddedContextBean) {
+                return ((AddedContextBean) parentElement).getVars().toArray();
+            }
+            return null;
+        }
+
+        public Object getParent(Object element) {
+            return null;
+        }
+
+        public boolean hasChildren(Object element) {
+            return getChildren(element) != null;
+        }
+
+        public String getText(Object element) {
+            return getColumnText(element, 0);
+        }
+
+        public String getColumnText(Object element, int columnIndex) {
+            if (element instanceof AddedContextBean) {
+                AddedContextBean element2 = (AddedContextBean) element;
+                if (element2.isIdKey()) {
+                    ConnectionItem connItem = UpdateRepositoryUtils.getConnectionItemByItemId(element2.getIdOrLabel());
+                    if (connItem != null && connItem.getConnection().isContextMode()) {
+                        ContextItem item = ContextUtils.getContextItemById(connItem.getConnection().getContextId());
+                        if (item != null) {
+                            return item.getProperty().getLabel();
+                        }
+                    }
+                }
+                return element2.getIdOrLabel();
+            } else if (element instanceof String) {
+                return ((String) element);
+            }
+            return null;
+        }
+
+        public Image getImage(Object element) {
+            return getColumnImage(element, 0);
+        }
+
+        public Image getColumnImage(Object element, int columnIndex) {
+            return null;
+        }
+
+        public void addListener(ILabelProviderListener listener) {
+        }
+
+        public boolean isLabelProperty(Object element, String property) {
+            return false;
+        }
+
+        public void removeListener(ILabelProviderListener listener) {
+
+        }
+
     }
 
 }
