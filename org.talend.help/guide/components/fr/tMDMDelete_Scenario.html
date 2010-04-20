@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/02/10 19:20:45">
+    <title>Scenario: Deleting data from an MDM database</title>
+  </head>
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMDMDelete_Prop.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMInput_Prop.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+    <blockquote>
+<a name="wp2948574"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp2948581"> </a><h2 class="pHeading2">
+Scenario: Deleting data from an MDM database
+</h2>
+<a name="wp2948585"> </a><p class="pIndented1">
+This scenario describes a two-component Job that deletes the specified data from a MDM database. 
+</p>
+<a name="wp2948592"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../en/images/Use_Case_tMDMDelete1.png" id="wp2948589" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2948609"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tMDMInput</b> and <b class="cBold">tMDMDelete</b> of the <b class="cBold">Talend MDM</b> family from the <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp2948620"> </a><div class="pSmartList2"><li>Connect the two components together using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> link.</li></div>
+<a name="wp2948629"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tMDMInput</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2948638"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../en/images/Use_Case_tMDMDelete2.png" id="wp2948635" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2948649"> </a><div class="pSmartList2"><li>In the <b class="cBold">Property Type</b> list, select <b class="cBold">Built-in</b> to complete the fields manually. If you have stored the MDM connection information in the repository metadata, select <b class="cBold">Repository</b> from the list and the fields will be completed automatically.</li></div>
+<a name="wp2948668"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema Type</b> list, select <b class="cBold">Built-in</b> and click <b class="cBold">[...]</b> next to <b class="cBold">Edit schema</b> to open a dialog box in which you can define the structure of the data you want to read in the MDM database.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2948677"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../en/images/Use_Case_tMDMDelete3.png" id="wp2948674" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2948697"> </a><div class="pSmartList2"><li>The data is collected in a four column schema of the type <b class="cBold">String</b>: <em class="cEmphasis">Id</em>, <em class="cEmphasis">Name</em>, <em class="cEmphasis">City</em> and <em class="cEmphasis">State</em>. Click <b class="cBold">OK</b>.</li></div>
+<a name="wp2948707"> </a><div class="pSmartList2"><li>In the <b class="cBold">URL</b> field, enter the MDM database URL, between quotes: <em class="cEmphasis">&quot;http://localhost:8080/talend/TalendPort&quot;</em>.</li></div>
+<a name="wp2948720"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> and <b class="cBold">Password</b> fields, enter your login and password to connect to the MDM database. In this scenario, we used the user <em class="cEmphasis">Frank</em>.</li></div>
+<a name="wp2948730"> </a><div class="pSmartList2"><li>In the <b class="cBold">Version</b> field, enter the name of the perspective you want to access, between quotes. Leave this field empty to display the default perspective.</li></div>
+<a name="wp2948737"> </a><div class="pSmartList2"><li>In the <b class="cBold">Entity</b> field, enter the name of the entity that holds the data you want to read, between quotes. Here, we work with <em class="cEmphasis">Agency</em> entity.</li></div>
+<a name="wp2948747"> </a><div class="pSmartList2"><li>In the <b class="cBold">Data Container</b> field, enter the name of the directory that holds the data you want to read, between quotes. Here, we use <em class="cEmphasis">DStar</em> data container.</li></div>
+<a name="wp2948757"> </a><div class="pSmartList2"><li>The <b class="cBold">Use multiple conditions</b> check box is selected by default. Type in a condition to filter the data you want to delete. In the <b class="cBold">Operations</b> table, click <b class="cBold">[+]</b> to add a new line.<br />In the <b class="cBold">Xpath</b> column, enter the Xpath and the tag of the XML node on which you want to apply the filter, between quotes. Here, we work with <b class="cBold">Agency</b> entity, so enter <em class="cEmphasis">&quot;Agency/Id&quot;</em>.<br />In the <b class="cBold">Function</b> column, select the function you want to use. In this scenario, we use the <em class="cEmphasis">Starts With</em> function.<br />In the <b class="cBold">Value</b> column, enter the value of you filter. Here, we want to filter the data whose Id starts with <em class="cEmphasis">&quot;TA&quot;</em>. </li></div>
+<a name="wp2948796"> </a><div class="pSmartList2"><li>In the <b class="cBold">Component</b> view, click <b class="cBold">Advanced settings</b> to set the advanced parameters. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2948803"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../en/images/Use_Case_tMDMDelete4.png" id="wp2948800" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2948811"> </a><div class="pSmartList2"><li>In the <b class="cBold">Loop XPath query</b> field, enter the structure and the name of the XML node on which the loop is to be carried out, between quotes.</li></div>
+<a name="wp2948821"> </a><div class="pSmartList2"><li>In the <b class="cBold">Mapping</b> area and in the <b class="cBold">XPath query</b> column, enter the name of the XML tag in which you want to collect the data, between quotes, next to the corresponding output column name.</li></div>
+<a name="wp2948831"> </a><div class="pSmartList2"><li>In the design workspace, click on the <b class="cBold">tMDMDelete</b> component to display the <b class="cBold">Basic settings</b> in the <b class="cBold">Component</b> view and set the properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2948843"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../en/images/Use_Case_tMDMDelete5.png" id="wp2948840" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2948860"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema Type</b> list, select <b class="cBold">Built-in</b> and click <b class="cBold">[...]</b> next to the <b class="cBold">Edit Schema</b> field to describe the structure of the data you want to load in the MDM database.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2948869"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../en/images/Use_Case_tMDMDelete6.png" id="wp2948866" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2948883"> </a><div class="pSmartList2"><li>Click <b class="cBold">[+]</b> to the right to add one column of the type <b class="cBold">String</b>. Name this column <em class="cEmphasis">xmlOutput</em>. Click <b class="cBold">OK</b>.</li></div>
+<a name="wp2948893"> </a><div class="pSmartList2"><li>In the <b class="cBold">URL</b> field, enter the URL required to connect to the MDM database: <em class="cEmphasis">&quot;http://localhost:8080/talend/TalendPort&quot;</em>.</li></div>
+<a name="wp2948906"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> and <b class="cBold">Password</b> fields, enter the authentication information required to connect to the database. In this scenario, we used the user <em class="cEmphasis">Frank</em>.</li></div>
+<a name="wp2948916"> </a><div class="pSmartList2"><li>In the <b class="cBold">Version</b> field, enter the name of the perspective you want to access, between inverted commas. Leave the field blank to access the default perspective.</li></div>
+<a name="wp2948923"> </a><div class="pSmartList2"><li>In the <b class="cBold">Entity</b> field, enter the name of the entity that holds the data you want to delete. Here, we work with <em class="cEmphasis">Agency</em> entity.</li></div>
+<a name="wp2948933"> </a><div class="pSmartList2"><li>In the <b class="cBold">Data Container</b>, enter the name of the directory into which the information is to be deleted. Here, we use <em class="cEmphasis">DStar</em> data container.</li></div>
+<a name="wp2948949"> </a><div class="pSmartList2"><li>In the <b class="cBold">Keys</b> table, click <b class="cBold">[+]</b> to add a new line. In the <b class="cBold">Keys</b> column, select the column holding the key of the Agency entity. If the entity has a multiple key, add as many line as field of the key and select them in sequence order. Here, the key of the Agency entity is on the <em class="cEmphasis">Id</em> field. </li></div>
+<a name="wp2948959"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Logical delete</b> check box to send the deleted data to the Recycle bin and fill in the <b class="cBold">Recycle bin path</b> field. Here, we left the default path but if your recycle bin is in an specific folder, specify the path. Once in the Recycle bin, the data can be definitely deleted or restored. If you leave this check box clear, the data will be permanently deleted.</li></div>
+<a name="wp2948974"> </a><div class="pSmartList2"><li>Press <b class="cBold">Ctrl+S</b> to save your Job and <b class="cBold">F6</b> to execute it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2948980"> </a><p class="pIndented1">
+The data which Id starts with &quot;TA&quot; have been deleted and sent to MDM Recycle bin. 
+</p>
+    </blockquote>
+    <hr>
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMDMDelete_Prop.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMInput_Prop.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>
