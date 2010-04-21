@@ -299,20 +299,20 @@ if(inputConn != null) { // T_OutMain_AggR_501
 			if(function.equals(COUNT_DISTINCT)){
 				%>
 				
-				AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %> countDistinctValues_<%=inputColumnName %>_<%=cid %> = new AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %>();
+				AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %> countDistinctValues_<%=outputColumnName %>_<%=cid %> = new AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %>();
 			
 				<%
 				for (IMetadataColumn column : inputColumns) {
 					if(inputKeysColumns.containsKey(column.getLabel())) {
 				
-						%>countDistinctValues_<%=inputColumnName %>_<%=cid %>.<%=column.getLabel()%> = <%=inputConn.getName() %>.<%=column.getLabel()%>;
+						%>countDistinctValues_<%=outputColumnName %>_<%=cid %>.<%=column.getLabel()%> = <%=inputConn.getName() %>.<%=column.getLabel()%>;
 						<%
 						
 					}
 				}
 				%>
-				countDistinctValues_<%=inputColumnName %>_<%=cid %>.<%=inputColumnName %> = <%=inputConn.getName() %>.<%=inputColumnName %>;
-				operation_result_<%=cid %>.distinctValues_<%=inputColumnName %>.add(countDistinctValues_<%=inputColumnName %>_<%=cid %>);
+				countDistinctValues_<%=outputColumnName %>_<%=cid %>.<%=inputColumnName %> = <%=inputConn.getName() %>.<%=inputColumnName %>;
+				operation_result_<%=cid %>.distinctValues_<%=outputColumnName %>.add(countDistinctValues_<%=outputColumnName %>_<%=cid %>);
 				<%
 			}
 			

@@ -489,7 +489,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			}
        		
        		if(function.equals(COUNT_DISTINCT)) {
-           			%>java.util.Set<AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %>> distinctValues_<%=inputColumnName %> = new java.util.HashSet<AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %>>();
+           			%>java.util.Set<AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %>> distinctValues_<%=outputColumnName %> = new java.util.HashSet<AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %>>();
            			<%
            	} 
            	else if(isValidTypeForOperation) { // T_OutBegin_AggR_138

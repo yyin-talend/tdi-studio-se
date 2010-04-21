@@ -284,18 +284,18 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
                 			
 								if(outputIsBigDecimal) {
 								%>
-    								<%= outputConn.getName() %>.<%=outOperation %> = new BigDecimal(aggregated_row_<%=cid %>.distinctValues_<%=inOperation %>.size());
+    								<%= outputConn.getName() %>.<%=outOperation %> = new BigDecimal(aggregated_row_<%=cid %>.distinctValues_<%=outOperation %>.size());
 								<%
 								} else {
             			
 									if(outputIsString) {
 									
-	    								%><%= outputConn.getName() %>.<%=outOperation %> = String.valueOf(aggregated_row_<%=cid %>.distinctValues_<%=inOperation %>.size());
+	    								%><%= outputConn.getName() %>.<%=outOperation %> = String.valueOf(aggregated_row_<%=cid %>.distinctValues_<%=outOperation %>.size());
 										<%
 										
 									} else {
 	    							
-	                                	%><%= outputConn.getName() %>.<%=outOperation %> = (<%=primitiveOutputType%>) aggregated_row_<%=cid %>.distinctValues_<%=inOperation %>.size();
+	                                	%><%= outputConn.getName() %>.<%=outOperation %> = (<%=primitiveOutputType%>) aggregated_row_<%=cid %>.distinctValues_<%=outOperation %>.size();
 	                                	<%
 									
 									}
