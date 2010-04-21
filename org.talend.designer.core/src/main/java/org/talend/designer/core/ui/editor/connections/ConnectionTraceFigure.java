@@ -106,6 +106,9 @@ public class ConnectionTraceFigure extends Figure {
             Figure outlineFigure = new Figure();
             outlineFigure.setLayoutManager(new ToolbarLayout(true));
 
+            int title1With = 0;
+            int title2With = 0;
+
             if (tooltip != null) {
                 collapseButton = new CollapseFigure();
                 collapseButton.setCollapsed(connection.getConnectionTrace().isCollapse());
@@ -135,6 +138,7 @@ public class ConnectionTraceFigure extends Figure {
                 titleFigure.setOpaque(false);
             }
             titleFigure.getPreferredSize().expand(20, 2);
+            title1With = titleFigure.getPreferredSize().width;
 
             SimpleHtmlFigure titleFigureSe = new SimpleHtmlFigure();
 
@@ -143,7 +147,9 @@ public class ConnectionTraceFigure extends Figure {
                 titleFigureSe.setBackgroundColor(ColorConstants.white);
                 titleFigureSe.setOpaque(false);
             }
+
             titleFigureSe.getPreferredSize().expand(20, 2);
+            title2With = titleFigureSe.getPreferredSize().width;
             if (flag == true)
                 outlineFigure.add(titleFigure);
 
@@ -248,6 +254,14 @@ public class ConnectionTraceFigure extends Figure {
             }
             variableWidth += 10;
             valueWidth += 10;
+
+            if (variableWidth < title1With) {
+                variableWidth = title1With;
+            }
+
+            if (valueWidth < title2With) {
+                valueWidth = title2With;
+            }
 
             // if (maximized) {
             if (variableWidth < MAX_VARIABLE_WIDTH) {
