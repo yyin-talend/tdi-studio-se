@@ -7,6 +7,7 @@ public class CLASS {
     public static final String INGRES = "INGRES";    
     public static final String MSSQL = "MSSQL";
     public static final String MYSQL = "MYSQL";
+    public static final String NETEZZA = "NETEZZA";
     public static final String ORACLE = "ORACLE";
     public static final String POSTGRESQL = "POSTGRESQL";
     public static final String POSTGREPLUS = "POSTGREPLUS";
@@ -1660,6 +1661,52 @@ public class CLASS {
             return setStatement.toString();
         }
     }
+    
+    public class NetezzaSCDManager extends SCDManager {
+        public NetezzaSCDManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return "netezza_id";
+        }        
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }
+        protected String getSequence(String surrogateKeySequence) {
+            return "next value for \" + " + surrogateKeySequence + " + \"";
+        }
+        protected String getIncrement() {
+            return "";
+        }        
+        protected String getDate(String endDateValue) {
+            return "'\" + " + endDateValue + " + \"-01-01'";
+        }        
+        protected String getYear(String endDateField) {
+            return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+        }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "b'1'";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "b'0'";
+            } else {
+                return "0";
+            }            
+        }        
+    }
+    
     public class OracleSCDManager extends SCDManager {
         public OracleSCDManager(String cid) {
             super(cid);
@@ -1857,6 +1904,8 @@ public class CLASS {
                 manager = new SybaseSCDManager(cid);
             } else if(dbType.equals(INFORMIX)) {
                 manager = new InfromixSCDManager(cid);
+            } else if(dbType.equals(NETEZZA)) {
+                manager = new NetezzaSCDManager(cid);
             }
             managerMap.put(cid, manager);
         }
