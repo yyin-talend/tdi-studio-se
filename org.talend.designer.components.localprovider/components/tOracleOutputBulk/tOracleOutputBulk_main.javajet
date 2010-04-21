@@ -30,6 +30,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
     	
+    	boolean useFieldsEnclosure = ("true").equals(ElementParameterParser.getValue(node,"__USE_FIELDS_ENCLOSURE__"));
+    	
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
     			List<IMetadataColumn> columns = metadata.getListColumns();
@@ -47,6 +49,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				<%
     				} 
     				%>
+    				
+    				<%
+					if (useFieldsEnclosure && !( "BLOB".equals (dbType) || "CLOB".equals(dbType))) {
+					%>		
+						out<%=cid %>.write(OUT_FIELDS_ENCLOSURE_LEFT_<%=cid %>);
+					<%
+					}
+					%>
     						out<%=cid %>.write(
 					<% if ("BLOB".equals (dbType) || "CLOB".equals(dbType)) {
 						hasLobflag=true;
@@ -67,7 +77,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                       FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)                                           
                             <% } %> 
 							<%
-					}else if(javaType == JavaTypesManager.STRING) {
+					} else if(javaType == JavaTypesManager.STRING) {
 %>
 								<%=conn.getName()%>.<%=column.getLabel()%>
 <%				
@@ -75,18 +85,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 							 new String(((byte[])(<%=conn.getName() %>.<%=column.getLabel()%>)))
 <%					
-					}else   					
-					{
+					} else  {
 %>
 								String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>)
 <%				
 					}
 %>
-		<% if ("BLOB".equals (dbType) || "CLOB".equals(dbType)) {%>
+<% 
+					if ("BLOB".equals (dbType) || "CLOB".equals(dbType)) {%>
 						+"<endlob>"
-		<%}%>   
-			);
 <%
+					}
+%>   
+						);
+<%	
+					if (useFieldsEnclosure && !( "BLOB".equals (dbType) || "CLOB".equals(dbType))) {
+					%>		
+						out<%=cid %>.write(OUT_FIELDS_ENCLOSURE_RIGHT_<%=cid %>);
+					<%
+					}
 					if(!isPrimitive) {
     				%>
 	    				} 
