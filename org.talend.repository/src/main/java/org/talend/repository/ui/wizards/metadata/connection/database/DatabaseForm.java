@@ -867,10 +867,13 @@ public class DatabaseForm extends AbstractForm {
                     }
                     // Check port
                     boolean b = true;
-                    if (getConnection().getDatabaseType().equals("Ingres")) { //$NON-NLS-1$
-                        b = Pattern.matches(Messages.getString("DatabaseForm.ingresDBRegex"), portText.getText()); //$NON-NLS-1$
-                    } else {
-                        b = Pattern.matches(Messages.getString("DatabaseForm.otherDBRegex"), portText.getText()); //$NON-NLS-1$
+                    String databaseType = getConnection().getDatabaseType();
+                    if (databaseType != null) {
+                        if (databaseType.equals("Ingres")) { //$NON-NLS-1$
+                            b = Pattern.matches(Messages.getString("DatabaseForm.ingresDBRegex"), portText.getText()); //$NON-NLS-1$
+                        } else {
+                            b = Pattern.matches(Messages.getString("DatabaseForm.otherDBRegex"), portText.getText()); //$NON-NLS-1$
+                        }
                     }
                     if (b) {
                         b = portText.getText().length() <= 5;
@@ -1036,6 +1039,61 @@ public class DatabaseForm extends AbstractForm {
 
             // Event Modify
             public void modifyText(final ModifyEvent e) {
+
+                // add for bug 12649
+                boolean isGeneralJDBC = isGeneralJDBC();
+                if (isGeneralJDBC) {
+                    if (generalJdbcUrlText != null) {
+                        generalJdbcUrlText.setText("");
+                    }
+                    if (generalJdbcUserText != null) {
+                        generalJdbcUserText.setText("");
+                    }
+                    if (generalJdbcPasswordText != null) {
+                        generalJdbcPasswordText.setText("");
+                    }
+                } else {
+                    if (urlConnectionStringText != null) {
+                        urlConnectionStringText.setText("");
+                    }
+                    if (usernameText != null) {
+
+                        usernameText.setText("");
+                    }
+                    if (passwordText != null) {
+                        passwordText.setText("");
+                    }
+                    if (schemaText != null) {
+                        schemaText.setText("");
+                    }
+                }
+                if (serverText != null) {
+                    serverText.setText("");
+                }
+                if (sidOrDatabaseText != null) {
+                    sidOrDatabaseText.setText("");
+                }
+                if (portText != null && portText.getText() != null) {
+                    portText.setText("");
+                }
+                if (fileField != null) {
+                    fileField.setText("");
+                }
+                if (datasourceText != null) {
+                    datasourceText.setText("");
+                }
+                if (additionParamText != null) {
+                    additionParamText.setText("");
+                }
+                if (generalJdbcClassNameText != null) {
+                    generalJdbcClassNameText.setText("");
+                }
+                if (generalJdbcDriverjarText != null) {
+                    generalJdbcDriverjarText.setText("");
+                }
+                if (additionParamText != null) {
+                    additionParamText.setText("");
+                }
 
                 boolean hiddenGeneral = !isGeneralJDBC();
                 // change controls
