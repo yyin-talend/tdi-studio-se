@@ -61,6 +61,7 @@ List<String[]> funinOperations = new java.util.ArrayList<String[]>();
 boolean listFlag = false;
 boolean haveSTD_DEV = false;
 boolean hasCountDistinctOperation = false;
+java.util.Map<String, String> distinctCols = new java.util.HashMap<String, String>();
 next:
 for(int i=0; i<sizeOperations; i++){
 	Map<String, String> operation = operations.get(i);
@@ -91,6 +92,7 @@ for(int i=0; i<sizeOperations; i++){
 	*/
 	
 	if(fun.equals(COUNT_DISTINCT)){
+		distinctCols.put(in, in);
 		hasCountDistinctOperation = true;
 	}
 	if(("avg").equals(fun)){
@@ -275,9 +277,12 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 
 	<%
 	if(hasCountDistinctOperation) { // T_OutBegin_AggR_160
+		java.util.Iterator<String> iter = distinctCols.values().iterator();
+		while(iter.hasNext()){
+			String distinctName = iter.next();
 	%>
 	
-		class AggCountDistinctValuesStruct_<%=cid %> { // G_OutBegin_AggR_1100
+		class AggCountDistinctValuesStruct_<%=distinctName %>_<%=cid %> { // G_OutBegin_AggR_1100
 	
 			private static final int DEFAULT_HASHCODE = 1;
 		    private static final int PRIME = 31;
@@ -287,8 +292,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 	        <%
 	        if (inputMetadataTable !=null) {
     			for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_1143
-    				if(inputValuesColumns.containsKey(column.getLabel())){
-    	
+    				if(keysColumns.containsKey(column.getLabel()) || column.getLabel().equals(distinctName)){
     					%>
     					<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
     					
@@ -305,7 +309,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			<%
 				if (inputMetadataTable !=null) {
 					for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
-						if (inputValuesColumns.containsKey(column.getLabel())) {
+						if (keysColumns.containsKey(column.getLabel()) || column.getLabel().equals(distinctName)) {
 
 							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 		
@@ -349,11 +353,11 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 				if (this == obj) return true;
 				if (obj == null) return false;
 				if (getClass() != obj.getClass()) return false;
-				final AggCountDistinctValuesStruct_<%=cid %> other = (AggCountDistinctValuesStruct_<%=cid %>) obj;
+				final AggCountDistinctValuesStruct_<%=distinctName %>_<%=cid %> other = (AggCountDistinctValuesStruct_<%=distinctName %>_<%=cid %>) obj;
 				<%	
 				if (inputMetadataTable !=null) {
 					for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
-						if (inputValuesColumns.containsKey(column.getLabel())) {
+						if (keysColumns.containsKey(column.getLabel()) || column.getLabel().equals(distinctName)) {
 						
 							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						
@@ -389,6 +393,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		} // G_OutBegin_AggR_1100
 
 	<%
+		}
 	} // T_OutBegin_AggR_160
 	%>
 
@@ -484,12 +489,8 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			}
        		
        		if(function.equals(COUNT_DISTINCT)) {
-       			if(!hasAlreadyDistinctCountProperty) { 
-           			hasAlreadyDistinctCountProperty = true;
-       			
-           			%>java.util.Set<AggCountDistinctValuesStruct_<%=cid %>> distinctValues = new java.util.HashSet<AggCountDistinctValuesStruct_<%=cid %>>();
+           			%>java.util.Set<AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %>> distinctValues_<%=inputColumnName %> = new java.util.HashSet<AggCountDistinctValuesStruct_<%=inputColumnName %>_<%=cid %>>();
            			<%
-           		}
            	} 
            	else if(isValidTypeForOperation) { // T_OutBegin_AggR_138
 
