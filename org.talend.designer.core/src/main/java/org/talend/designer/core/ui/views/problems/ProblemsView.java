@@ -411,6 +411,9 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         IRepositoryObject object = null;
         if (evt.getNewValue() instanceof IRepositoryObject) {
             object = (IRepositoryObject) evt.getNewValue();
+            if (object.getType() != ERepositoryObjectType.ROUTINES) {
+                return;
+            }
         } else if (evt.getNewValue() instanceof List) {
             // get last version
             IRepositoryObject lastVersion = null;
