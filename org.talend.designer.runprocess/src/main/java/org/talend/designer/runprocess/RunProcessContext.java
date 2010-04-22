@@ -408,6 +408,9 @@ public class RunProcessContext {
                             final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
                             processor.setContext(context);
                             processor.setTargetExecutionConfig(getSelectedTargetExecutionConfig());
+
+                            ProcessorUtilities.generateCode(process, context, getStatisticsPort() != IProcessor.NO_STATISTICS,
+                                    getTracesPort() != IProcessor.NO_TRACES, true, progressMonitor);
                             final boolean[] refreshUiAndWait = new boolean[1];
                             refreshUiAndWait[0] = true;
                             final Display display = shell.getDisplay();
@@ -419,10 +422,6 @@ public class RunProcessContext {
                                         public void run() {
                                             try {
                                                 startingMessageWritten = false;
-
-                                                ProcessorUtilities.generateCode(process, context,
-                                                        getStatisticsPort() != IProcessor.NO_STATISTICS,
-                                                        getTracesPort() != IProcessor.NO_TRACES, true, progressMonitor);
 
                                                 // see feature 0004820: The run
                                                 // job doesn't verify if code is
@@ -842,19 +841,33 @@ public class RunProcessContext {
                     while (!stopThread) {
 
                         String line = reader.readLine();
-                        // "GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
-                        if (line != null && line.trim().length() > 22) {
-                            String temp = line.substring(23);
-                            line = temp;
+
+                        if (line != null) {
+                            if (line.startsWith("0")) {
+                                // 0 = job information
+                                // 1 = connection information
+                                continue;
+                            }
+                            String[] infos = line.split("\\|");
+                            if (infos.length < 5 || !infos[1].equals(infos[2]) || !infos[1].equals(infos[3])) {
+                                // we only take actually informations for the main jobs, other informations won't be
+                                // used.
+                                continue;
+                            }
+
+                            // "0|GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
+                            if (line.trim().length() > 22) {
+                                String temp = line.substring(23);
+                                line = temp;
+                            }
                         }
                         final String data = line;
 
-                        // for feature:11356
-                        if (data != null && data.split("\\|").length == 2) {
-                            continue;
-                        }
+                        // // for feature:11356
+                        // if (data != null && data.split("\\|").length == 2) {
+                        // continue;
+                        // }
 
-                        // final String data = reader.readLine();
                         if (data == null) {
                             stopThread = true;
                         } else {
@@ -865,16 +878,17 @@ public class RunProcessContext {
                             final IConnection conn = findConnection(connectionId);
                             if (conn != null && conn instanceof IPerformance) {
                                 final IPerformance performance = (IPerformance) conn;
+                                if (!performanceDataSet.contains(performance)) {
+                                    performance.resetStatus();
+                                }
                                 performanceDataSet.add(performance);
                                 Display.getDefault().syncExec(new Runnable() {
 
                                     public void run() {
                                         if (data != null) {
                                             if (perfData.isClearCommand()) {
-
                                                 performance.clearPerformanceDataOnUI();
                                             } else {
-
                                                 performance.setPerformanceData(data);
                                             }
                                         }
@@ -900,9 +914,6 @@ public class RunProcessContext {
         }
 
         public void stopThread() {
-            for (IPerformance performance : performanceDataSet) {
-                performance.resetStatus();
-            }
             // stopThread = true;
             synchronized (this) {
                 notify();
@@ -1141,51 +1152,51 @@ public class RunProcessContext {
         return ps;
     }
 
-    /**
-     * DOC xzhang Comment method "startPerformanceMonitor".
-     * 
-     * For bug 5430, modifyed by xzhang
-     */
-    public void startPerformanceMonitor() {
-        final IProcessor processor = getProcessor(process);
-        IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
-
-        try {
-            progressService.run(false, true, new IRunnableWithProgress() {
-
-                public void run(final IProgressMonitor monitor) {
-
-                    final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
-
-                    progressMonitor.beginTask(Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                    try {
-                        testPort();
-                        // findNewStatsPort();
-                        final IContext context = getSelectedContext();
-                        if (monitorPerf) {
-                            clearThreads();
-                            perfMonitor = new PerformanceMonitor();
-                            new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
-                            perMonitorList.add(perfMonitor);
-                        }
-                        // findNewTracesPort();
-                        if (monitorTrace) {
-                            traceMonitor = new TraceMonitor();
-                            new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
-                        }
-                    } catch (Throwable e) {
-                        ExceptionHandler.process(e);
-                        addErrorMessage(e);
-                        kill();
-                    }
-                }
-            });
-        } catch (InvocationTargetException e1) {
-            addErrorMessage(e1);
-        } catch (InterruptedException e1) {
-            addErrorMessage(e1);
-        }
-    }
+    // /**
+    // * DOC xzhang Comment method "startPerformanceMonitor".
+    // *
+    // * For bug 5430, modifyed by xzhang
+    // */
+    // public void startPerformanceMonitor() {
+    // final IProcessor processor = getProcessor(process);
+    // IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
+    //
+    // try {
+    // progressService.run(false, true, new IRunnableWithProgress() {
+    //
+    // public void run(final IProgressMonitor monitor) {
+    //
+    // final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
+    //
+    //                    progressMonitor.beginTask(Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+    // try {
+    // testPort();
+    // // findNewStatsPort();
+    // final IContext context = getSelectedContext();
+    // if (monitorPerf) {
+    // clearThreads();
+    // perfMonitor = new PerformanceMonitor();
+    //                            new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
+    // perMonitorList.add(perfMonitor);
+    // }
+    // // findNewTracesPort();
+    // if (monitorTrace) {
+    // traceMonitor = new TraceMonitor();
+    //                            new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
+    // }
+    // } catch (Throwable e) {
+    // ExceptionHandler.process(e);
+    // addErrorMessage(e);
+    // kill();
+    // }
+    // }
+    // });
+    // } catch (InvocationTargetException e1) {
+    // addErrorMessage(e1);
+    // } catch (InterruptedException e1) {
+    // addErrorMessage(e1);
+    // }
+    // }
 
     private void clearThreads() {
         for (PerformanceMonitor perMonitor : perMonitorList) {

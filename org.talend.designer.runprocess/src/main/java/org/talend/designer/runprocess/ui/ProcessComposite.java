@@ -1220,9 +1220,6 @@ public class ProcessComposite extends Composite {
                         // use this function to generate childrens also.
                         ProcessorUtilities.generateCode(processContext.getProcess(), context, false, false, true, monitor);
 
-                        // For bug 5430, modifyed by xzhang
-                        processContext.startPerformanceMonitor();
-
                         ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(processContext
                                 .getStatisticsPort(), processContext.getTracesPort(), null);
 
