@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //
@@ -20,10 +20,8 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 
-
-
 /**
- * DOC hcw  class global comment. Detailled comment
+ * DOC hcw class global comment. Detailled comment
  */
 public class SearchComponentAction extends SelectionAction {
 
@@ -50,25 +48,29 @@ public class SearchComponentAction extends SelectionAction {
         if (parts.size() != 1) {
             return false;
         }
+        Object o = parts.get(0);
+        if (o instanceof NodePart) {
+            return true;
+        }
 
-        return true;
+        return false;
     }
-    
+
     @Override
     public void run() {
 
         List selection = getSelectedObjects();
 
-        Object input = selection.get(0);        
+        Object input = selection.get(0);
         if (input instanceof NodePart) {
             NodePart part = (NodePart) input;
             Node node = (Node) part.getModel();
             final String nodeName = node.getComponent().getName();
-          // System.out.println(nodeName);
+            // System.out.println(nodeName);
             ComponentSearcher searcher = new ComponentSearcher(nodeName, getWorkbenchPart().getSite().getShell());
             searcher.run();
-          
+
         }
-    }  
+    }
 
 }

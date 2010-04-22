@@ -276,7 +276,9 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             }
             action = new ShowComponentSettingViewerAction(part);
             ((ShowComponentSettingViewerAction) action).update();
-            menu.appendToGroup(GROUP_OTHER, action);
+            if (action.isEnabled()) {
+                menu.appendToGroup(GROUP_OTHER, action);
+            }
 
             action = new DisplaySubjobAction(part);
             ((SelectionAction) action).update();
@@ -287,7 +289,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             // see feature 5027
             action = new ParallelExecutionAction(part);
             ((SelectionAction) action).update();
-            if (PluginChecker.isTIS()) {
+            if (PluginChecker.isTIS() && action.isEnabled()) {
                 menu.appendToGroup(GROUP_OTHER, action);
             }
 
