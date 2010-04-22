@@ -59,58 +59,106 @@ public class MapDataDelegateHelper {
         return this.varsTables;
     }
 
-    public Map<IExternalMapTable, List<IExternalMapEntry>> getExpressionColumns(String expression,
-            ExternalDataType... types) {
+    /**
+     * 
+     * ggu Comment method "getExpressionColumns".
+     * 
+     * @param expression -> if null, will return the all table for type
+     * @param types ->
+     * @return
+     */
+    public Map<IExternalMapTable, List<IExternalMapEntry>> getExpressionColumns(String expression, ExternalDataType... types) {
 
         Map<IExternalMapTable, List<IExternalMapEntry>> tableMap = new HashMap<IExternalMapTable, List<IExternalMapEntry>>();
 
         if (types != null && types.length > 0) {
 
             for (ExternalDataType type : types) {
-                List<? extends IExternalMapTable> emTables = null;
-
                 switch (type) {
                 case INPUT:
-                    emTables = getInputTables();
-                    break;
+                    return getExpressionColumns(getInputTables(), expression);
                 case OUTPUT:
-                    emTables = getOutputTables();
-                    break;
+                    return getExpressionColumns(getOutputTables(), expression);
                 case VAR:
-                    emTables = getVarsTables();
-                    break;
+                    return getExpressionColumns(getVarsTables(), expression);
                 default:
                 }
 
-                if (emTables != null) {
-                    for (IExternalMapTable table : emTables) {
-                        for (IExternalMapEntry entry : table.getTableEntries()) {
-                            //
-                            if (entry.getExpression() != null) {
-                                PatternCompiler compiler = new Perl5Compiler();
-                                try {
-                                    Pattern pattern = compiler
-                                            .compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(expression) + ")(\\b|\\_)"); //$NON-NLS-1$ //$NON-NLS-2$
-                                    PatternMatcher matcher = new Perl5Matcher();
-                                    ((Perl5Matcher) matcher).setMultiline(true);
-                                    if (matcher.contains(entry.getExpression(), pattern)) {
-                                        List<IExternalMapEntry> entryList = tableMap.get(table);
-                                        if (entryList == null) {
-                                            entryList = new ArrayList<IExternalMapEntry>();
-                                            tableMap.put(table, entryList);
-                                        }
-                                        entryList.add(entry);
-                                    }
-                                } catch (MalformedPatternException e) {
-                                    //
-                                }
-                            }
+            }
+        } else {
+            addAll(tableMap, getExpressionColumns(getInputTables(), expression));
+            addAll(tableMap, getExpressionColumns(getOutputTables(), expression));
+            addAll(tableMap, getExpressionColumns(getVarsTables(), expression));
+        }
+        return tableMap;
+    }
+
+    private void addAll(Map<IExternalMapTable, List<IExternalMapEntry>> targetMap,
+            Map<IExternalMapTable, List<IExternalMapEntry>> sourceMap) {
+        for (IExternalMapTable table : sourceMap.keySet()) {
+            List<IExternalMapEntry> tlist = targetMap.get(table);
+            List<IExternalMapEntry> sList = sourceMap.get(table);
+            if (sList != null) {
+                if (tlist == null) {
+                    targetMap.put(table, sList);
+                } else {
+                    for (IExternalMapEntry entry : sList) {
+                        if (!tlist.contains(entry)) {
+                            tlist.add(entry);
                         }
                     }
                 }
+            }
+        }
+    }
 
+    /**
+     * 
+     * cli Comment method "getExpressionColumns".
+     * 
+     */
+    private Map<IExternalMapTable, List<IExternalMapEntry>> getExpressionColumns(List<? extends IExternalMapTable> checkedTables,
+            String expression) {
+        Map<IExternalMapTable, List<IExternalMapEntry>> tableMap = new HashMap<IExternalMapTable, List<IExternalMapEntry>>();
+        if (checkedTables != null) {
+            for (IExternalMapTable emTable : checkedTables) {
+                List<? extends IExternalMapEntry> tableEntries = emTable.getTableEntries();
+                if (tableEntries != null) {
+                    for (IExternalMapEntry emEntry : tableEntries) {
+                        matchAndAddEntry(emTable, emEntry, expression, tableMap);
+                    }
+                }
             }
         }
         return tableMap;
+    }
+
+    private void matchAndAddEntry(IExternalMapTable emTable, IExternalMapEntry emEntry, String expression,
+            Map<IExternalMapTable, List<IExternalMapEntry>> tableMap) {
+        if (emEntry.getExpression() != null && matchExpression(expression, emEntry.getExpression()) || expression == null) {
+            List<IExternalMapEntry> entryList = tableMap.get(emTable);
+            if (entryList == null) {
+                entryList = new ArrayList<IExternalMapEntry>();
+                tableMap.put(emTable, entryList);
+            }
+            if (!entryList.contains(emEntry)) {
+                entryList.add(emEntry);
+            }
+        }
+    }
+
+    private boolean matchExpression(String regex, String expression) {
+        PatternCompiler compiler = new Perl5Compiler();
+        try {
+            Pattern pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(regex) + ")(\\b|\\_)"); //$NON-NLS-1$ //$NON-NLS-2$
+            PatternMatcher matcher = new Perl5Matcher();
+            ((Perl5Matcher) matcher).setMultiline(true);
+            if (matcher.contains(expression, pattern)) {
+                return true;
+            }
+        } catch (MalformedPatternException e) {
+            //
+        }
+        return false;
     }
 }
