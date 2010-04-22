@@ -123,7 +123,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
         ECodeLanguage lang = LanguageManager.getCurrentLanguage();
-        if ((!TalendTextUtils.isCommonString(query) || QueryUtil.checkIfIsNoQuotesAtAll(query)) && (lang == ECodeLanguage.JAVA)) {// if
+        if ((!TalendTextUtils.isCommonString(query) || QueryUtil.checkIfHasSpecialEscapeValue(query) || QueryUtil
+                .checkIfIsNoQuotesAtAll(query))
+                && (lang == ECodeLanguage.JAVA)) {// if
             // the input query is in context mode in java
             // String pid = SqlBuilderPlugin.PLUGIN_ID;
             // String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
