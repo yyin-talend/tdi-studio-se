@@ -559,11 +559,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$ //$NON-NLS-2$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.logicalDeletion", str)); //$NON-NLS-1$
 
-        List<IRepositoryObject> allVersionToDelete = getAllVersion(project, objToDelete.getId());
         // TODO this need to be refactered after M2.
         if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET
                 || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
-            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName(), null, allVersionToDelete);
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName(), null, objToDelete);
         }
 
         if (objToDelete.getType() == ERepositoryObjectType.BUSINESS_PROCESS) {
@@ -607,7 +606,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (project == null || objToDelete == null) {
             return;
         }
-        List<IRepositoryObject> allVersionToDelete = getAllVersion(project, objToDelete.getId());
+
         this.repositoryFactoryFromProvider.deleteObjectPhysical(project, objToDelete, version);
         // i18n
         // log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
@@ -615,7 +614,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         log.info(Messages.getString("ProxyRepositoryFactory.log.physicalDeletion", str)); //$NON-NLS-1$
         if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET
                 || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
-            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, allVersionToDelete);
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
             if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
                 // delete the job launch, for bug 8878
                 IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();

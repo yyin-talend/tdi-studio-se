@@ -408,33 +408,10 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent evt) {
-        IRepositoryObject object = null;
-        if (evt.getNewValue() instanceof IRepositoryObject) {
-            object = (IRepositoryObject) evt.getNewValue();
-            if (object.getType() != ERepositoryObjectType.ROUTINES) {
-                return;
-            }
-        } else if (evt.getNewValue() instanceof List) {
-            // get last version
-            IRepositoryObject lastVersion = null;
-            for (Object obj : (List) evt.getNewValue()) {
-                if (obj instanceof IRepositoryObject) {
-                    IRepositoryObject repositoryObj = (IRepositoryObject) obj;
-                    if (repositoryObj.getType() != ERepositoryObjectType.ROUTINES) {
-                        return;
-                    }
-                    if (lastVersion == null
-                            || Float.valueOf(repositoryObj.getVersion()) > Float.valueOf(lastVersion.getVersion())) {
-                        lastVersion = repositoryObj;
-                    }
-                }
-            }
-            object = lastVersion;
-        }
-
-        if (object == null) {
+        if (!(evt.getNewValue() instanceof IRepositoryObject)) {
             return;
         }
+        IRepositoryObject object = (IRepositoryObject) evt.getNewValue();
         if (object.getType() != ERepositoryObjectType.ROUTINES) {
             return;
         }
