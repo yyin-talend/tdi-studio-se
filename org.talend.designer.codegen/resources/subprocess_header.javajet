@@ -274,9 +274,11 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 			boolean hasDate2 = false;
 			boolean hasByteArray1 = false;
 			boolean hasByteArray2 = false;
+			boolean hasInteger1 = false;
+			boolean hasInteger2 = false;
 			for (IMetadataColumn column: metadata.getListColumns()) {
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-
+			 	if(JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) continue;
 				if(typeToGenerate.equals("String")) {
 					if (!hasString1 && (!isLookup || hashableColumnsNames.contains(column.getLabel()))) {
 						hasString1 =true;
@@ -447,6 +449,60 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 	}
 <%
 					}
+				}else {
+					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
+					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+					if(typeToGenerate.equals("Int")){
+						if(!hasInteger1 && (!isLookup || hashableColumnsNames.contains(column.getLabel()))) {
+							hasInteger1 = true;
+%>
+	private int readInteger(ObjectInputStream dis) throws IOException{
+		Integer intReturn;
+        int length = 0;
+        length = dis.readByte();
+		if (length == -1) {
+			intReturn = null;
+		} else {
+	    	intReturn = dis.read<%= typeToGenerate %>();
+		}
+		return intReturn;
+	}
+	
+	private void writeInteger(Integer intNum, ObjectOutputStream dos) throws IOException{
+		if(intNum == null) {
+            dos.writeByte(-1);
+		} else {
+			dos.writeByte(0);
+	    	dos.write<%= typeToGenerate %>(intNum);
+    	}
+	}
+<%
+						} else if(!hasInteger2 && (isLookup && !hashableColumnsNames.contains(column.getLabel()))){
+							hasInteger2 = true;
+%>
+	private Integer readInteger(DataInputStream dis, ObjectInputStream ois) throws IOException{
+		Integer intReturn;
+        int length = 0;
+        length = dis.readByte();
+		if (length == -1) {
+			intReturn = null;
+		} else {
+			intReturn = dis.read<%= typeToGenerate %>();
+		}
+		return intReturn;
+	}
+
+	private void writeInteger(Integer intNum, DataOutputStream dos, ObjectOutputStream oos) throws IOException{	
+		if(intNum == null) {
+            dos.writeByte(-1);
+		} else {
+			dos.writeByte(0);
+	    	dos.write<%= typeToGenerate %>(intNum);
+    	}
+	}
+<%
+						}
+					}
 				}
 			}
     	}
@@ -494,6 +550,11 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+					if(typeToGenerate.equals("Int")){
+					%>
+						this.<%=column.getLabel() %> = readInteger(dis);
+					<%
+					} else {
 					%>
 			            length = dis.readByte();
            				if (length == -1) {
@@ -502,6 +563,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
            			    	this.<%=column.getLabel() %> = dis.read<%= typeToGenerate %>();
            				}
 					<%
+					}
 				}
 			  }
 			}
@@ -577,6 +639,11 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
 					typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+					if(typeToGenerate.equals("Int")){
+					%>
+						writeInteger(this.<%=column.getLabel() %>,dos);
+					<%
+					} else {
 					%>
 						if(this.<%=column.getLabel() %> == null) {
 			                dos.writeByte(-1);
@@ -585,7 +652,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
            			    	dos.write<%= typeToGenerate %>(this.<%=column.getLabel() %>);
 		            	}
 					<%
-				
+					}
 				}
 			  }
 			}
@@ -656,6 +723,11 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+					if(typeToGenerate.equals("Int")){
+					%>
+						this.<%=column.getLabel() %> = readInteger(dis,ois);
+					<%
+					} else {
 					%>
 			            length = dis.readByte();
            				if (length == -1) {
@@ -664,6 +736,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
            			    	this.<%=column.getLabel() %> = dis.read<%= typeToGenerate %>();
            				}
 					<%
+					}
 				}
 			  }
 			}
@@ -735,6 +808,11 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
 					typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+					if(typeToGenerate.equals("Int")){
+					%>
+					writeInteger(this.<%=column.getLabel() %>, dos, oos);
+					<%
+					} else {
 					%>
 						if(this.<%=column.getLabel() %> == null) {
 			                dos.writeByte(-1);
@@ -743,7 +821,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
            			    	dos.write<%= typeToGenerate %>(this.<%=column.getLabel() %>);
 		            	}
 					<%
-				
+					}
 				}
 			  }
 			}
