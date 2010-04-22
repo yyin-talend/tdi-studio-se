@@ -435,7 +435,9 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         if (object == null) {
             return;
         }
-
+        if (object.getType() != ERepositoryObjectType.ROUTINES) {
+            return;
+        }
         if (evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName())
                 || evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_FOREVER.getName())) {
             String routineLabel = object.getProperty().getLabel();
