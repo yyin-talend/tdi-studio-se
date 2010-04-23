@@ -118,37 +118,27 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         ISVNProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
-            if (service.isProjectInSvnMode()) {
-                revisionBool = true;
-                revisionNumStr = service.getLastSVNRevision(this.getProcess());
+            if (revisionChanged && service.isProjectInSvnMode()) {
+                revisionNumStr = service.getCurrentSVNRevision(this.getProcess());
+                revisionChanged = false;
                 if (revisionNumStr != null) {
                     revisionNumStr = ".r" + revisionNumStr;
                 }
             }
         }
-        if (revisionBool == true && revisionNumStr != null) {
+        if (revisionNumStr != null) {
             setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + revisionNumStr); //$NON-NLS-1$
         } else {
             setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion)); //$NON-NLS-1$
         }
-        // } else {
-        // setPartName(Messages.getString("other Label??", label));
-        // //$NON-NLS-1$
-        // }
     }
 
     public void setName(String RevisionNumStr) {
         super.setName();
         String label = getEditorInput().getName();
         String jobVersion = this.getProcess().getVersion();
-        // if (getActivePage() == 1) {
         setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + RevisionNumStr); //$NON-NLS-1$
-        revisionBool = true;
         revisionNumStr = RevisionNumStr;
-        // } else {
-        // setPartName(Messages.getString("other Label??", label));
-        // //$NON-NLS-1$
-        // }
     }
 
     /*

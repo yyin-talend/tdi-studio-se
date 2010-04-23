@@ -60,7 +60,6 @@ import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -133,16 +132,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     Object data = descriptor.getData();
                     if (data instanceof Element) {
                         element = (Element) data;
-                        // added by nma, order 11283: NPE happen when select SVN History in job settings view of a node
-                        // in referenced project
-                        if (element instanceof Process && ((Process) element).getProperty().getItem().eContainer() == null) {
-                            try {
-                                ((Process) element).setProperty(ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                                        ((Process) element).getProperty().getItem().getProperty()));
-                            } catch (PersistenceException e) {
-                                ExceptionHandler.process(e);
-                            }
-                        }
                         currentSelectedTab = descriptor;
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), element, descriptor
                                 .getCategory());

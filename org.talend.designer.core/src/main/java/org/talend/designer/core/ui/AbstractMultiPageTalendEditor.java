@@ -176,9 +176,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected boolean useCodeView = true;
 
-    public boolean revisionBool = false;
+    public boolean revisionChanged = false;
 
-    public String revisionNumStr;
+    public String revisionNumStr = null;
 
     private IPartListener partListener = new IPartListener() {
 
@@ -273,6 +273,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 propertyInformation = new ArrayList(property.getInformations());
                 property.eAdapters().add(dirtyListener);
                 repFactory.lock(currentProcess);
+                revisionChanged = true;
             } catch (PersistenceException e) {
                 // e.printStackTrace();
                 ExceptionHandler.process(e);
@@ -282,6 +283,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
         } else {
             setReadOnly(true);
+            revisionChanged = true;
         }
         if (processEditorInput.getItem() instanceof ProcessItem) {
             RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
@@ -530,10 +532,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (!isDirty()) {
             return;
         }
-        revisionBool = false;
         updateRunJobContext();
         designerEditor.getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);
+        revisionChanged = true;
         designerEditor.getProperty().eAdapters().add(dirtyListener);
         propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
         propertyIsDirty = false;
